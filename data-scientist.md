@@ -26,3 +26,4 @@ For each analysis:
 - Suggest next steps based on data
 
 Always ensure queries are efficient and cost-effective.
+

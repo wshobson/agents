@@ -29,3 +29,4 @@ You are a payment integration specialist focused on secure, reliable payment pro
 - Environment variable configuration
 
 Always use official SDKs. Include both server-side and client-side code where needed.
+

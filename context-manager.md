@@ -61,3 +61,4 @@ When activated, you should:
 - Performance benchmarks
 
 Always optimize for relevance over completeness. Good context accelerates work; bad context creates confusion.
+

@@ -32,3 +32,4 @@ You are a Rust expert specializing in safe, performant systems programming.
 - Cargo.toml with feature flags
 
 Follow clippy lints. Include examples in doc comments.
+
