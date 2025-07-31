@@ -4,7 +4,7 @@ A comprehensive collection of specialized AI subagents for [Claude Code](https:/
 
 ## Overview
 
-This repository contains 46 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
+This repository contains 47 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
 
 ## Available Subagents
 
@@ -55,6 +55,7 @@ This repository contains 46 specialized subagents that extend Claude Code's capa
 
 ### Specialized Domains
 - **[api-documenter](api-documenter.md)** - Create OpenAPI/Swagger specs and write developer documentation
+- **[blockchain-developer](blockchain-developer.md)** - Develop smart contracts, DApps, and blockchain integrations
 - **[payment-integration](payment-integration.md)** - Integrate Stripe, PayPal, and payment processors
 - **[quant-analyst](quant-analyst.md)** - Build financial models, backtest trading strategies, and analyze market data
 - **[risk-manager](risk-manager.md)** - Monitor portfolio risk, R-multiples, and position limits
@@ -73,7 +74,7 @@ This repository contains 46 specialized subagents that extend Claude Code's capa
 
 ## Model Assignments
 
-All 46 subagents are configured with specific Claude models based on task complexity:
+All 47 subagents are configured with specific Claude models based on task complexity:
 
 ### 🚀 Claude Haiku 3.5 (Fast & Cost-Effective) - 8 agents
 **Model:** `claude-3-5-haiku-20241022`
@@ -86,7 +87,7 @@ All 46 subagents are configured with specific Claude models based on task comple
 - `search-specialist` - Web research and information gathering
 - `legal-advisor` - Privacy policies and compliance documents
 
-### ⚡ Claude Sonnet 4 (Balanced Performance) - 26 agents
+### ⚡ Claude Sonnet 4 (Balanced Performance) - 27 agents
 **Model:** `claude-sonnet-4-20250514`
 
 **Development & Languages:**
@@ -101,6 +102,7 @@ All 46 subagents are configured with specific Claude models based on task comple
 - `mobile-developer` - React Native/Flutter apps
 - `sql-pro` - Complex SQL optimization
 - `graphql-architect` - GraphQL schemas and resolvers
+- `blockchain-developer` - Smart contracts and DApps
 
 **Infrastructure & Operations:**
 - `devops-troubleshooter` - Production debugging
