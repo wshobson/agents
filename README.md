@@ -66,9 +66,7 @@ This repository contains 46 specialized subagents that extend Claude Code's capa
 - **[content-marketer](content-marketer.md)** - Write blog posts, social media content, and email newsletters
 - **[sales-automator](sales-automator.md)** - Draft cold emails, follow-ups, and proposal templates
 - **[customer-support](customer-support.md)** - Handle support tickets, FAQ responses, and customer emails
-<<<<<<< HEAD
 - **[legal-advisor](legal-advisor.md)** - Draft privacy policies, terms of service, disclaimers, and legal notices
-=======
 - **[legal-advisor](legal-advisor.md)** - Draft privacy policies, terms of service, and compliance documents
 
 ## Model Assignments
