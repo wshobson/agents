@@ -4,7 +4,7 @@ A comprehensive collection of specialized AI subagents for [Claude Code](https:/
 
 ## Overview
 
-This repository contains 48 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
+This repository contains 49 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
 
 ## Available Subagents
 
@@ -24,6 +24,7 @@ This repository contains 48 specialized subagents that extend Claude Code's capa
 - **[cpp-pro](cpp-pro.md)** - Write idiomatic C++ code with modern features, RAII, smart pointers, and STL algorithms
 - **[javascript-pro](javascript-pro.md)** - Master modern JavaScript with ES6+, async patterns, and Node.js APIs
 - **[php-pro](php-pro.md)** - Write idiomatic PHP code with modern features and performance optimizations
+- **[android-developer](android-developer.md)** - Develop native Android applications using Kotlin and Jetpack Compose
 - **[ios-developer](ios-developer.md)** - Develop native iOS applications with Swift/SwiftUI
 - **[sql-pro](sql-pro.md)** - Write complex SQL queries, optimize execution plans, and design normalized schemas
 
@@ -73,7 +74,7 @@ This repository contains 48 specialized subagents that extend Claude Code's capa
 
 ## Model Assignments
 
-All 48 subagents are configured with specific Claude models based on task complexity:
+All 49 subagents are configured with specific Claude models based on task complexity:
 
 ### 🚀 Haiku (Fast & Cost-Effective) - 8 agents
 **Model:** `haiku`
@@ -86,7 +87,7 @@ All 48 subagents are configured with specific Claude models based on task comple
 - `search-specialist` - Web research and information gathering
 - `legal-advisor` - Privacy policies and compliance documents
 
-### ⚡ Claude Sonnet 4 (Balanced Performance) - 27 agents
+### ⚡ Claude Sonnet 4 (Balanced Performance) - 28 agents
 **Model:** `claude-sonnet-4-20250514`
 
 **Development & Languages:**
@@ -97,6 +98,7 @@ All 48 subagents are configured with specific Claude models based on task comple
 - `c-pro` - C programming and embedded systems
 - `cpp-pro` - Modern C++ with STL and templates
 - `php-pro` - Modern PHP with advanced features
+- `android-developer` - Native Android development with Kotlin
 - `ios-developer` - Native iOS development with Swift/SwiftUI
 - `frontend-developer` - React components and UI
 - `ui-ux-designer` - Interface design and wireframes
@@ -322,6 +324,7 @@ payment-integration → security-auditor → Validated implementation
 - **rust-pro**: Rust-specific development, memory safety, systems programming
 - **c-pro**: C programming, embedded systems, performance-critical code
 - **javascript-pro**: Modern JavaScript, async patterns, Node.js/browser code
+- **android-developer**: Native Android development with Kotlin and Jetpack Compose
 - **ios-developer**: Native iOS development with Swift/SwiftUI
 - **sql-pro**: Database queries, schema design, query optimization
 - **mobile-developer**: React Native/Flutter development
