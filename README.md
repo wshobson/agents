@@ -57,6 +57,7 @@ This repository contains 48 specialized subagents that extend Claude Code's capa
 
 ### Specialized Domains
 - **[api-documenter](api-documenter.md)** - Create OpenAPI/Swagger specs and write developer documentation
+- **[blockchain-developer](blockchain-developer.md)** - Develop smart contracts, DApps, and blockchain integrations
 - **[payment-integration](payment-integration.md)** - Integrate Stripe, PayPal, and payment processors
 - **[quant-analyst](quant-analyst.md)** - Build financial models, backtest trading strategies, and analyze market data
 - **[risk-manager](risk-manager.md)** - Monitor portfolio risk, R-multiples, and position limits
@@ -85,8 +86,8 @@ All 48 subagents are configured with specific Claude models based on task comple
 - `search-specialist` - Web research and information gathering
 - `legal-advisor` - Privacy policies and compliance documents
 
-### ⚡ Sonnet (Balanced Performance) - 29 agents
-**Model:** `sonnet`
+### ⚡ Claude Sonnet 4 (Balanced Performance) - 27 agents
+**Model:** `claude-sonnet-4-20250514`
 
 **Development & Languages:**
 - `python-pro` - Python development with advanced features
@@ -103,6 +104,7 @@ All 48 subagents are configured with specific Claude models based on task comple
 - `mobile-developer` - React Native/Flutter apps
 - `sql-pro` - Complex SQL optimization
 - `graphql-architect` - GraphQL schemas and resolvers
+- `blockchain-developer` - Smart contracts and DApps
 
 **Infrastructure & Operations:**
 - `devops-troubleshooter` - Production debugging
