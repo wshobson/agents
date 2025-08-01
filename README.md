@@ -4,13 +4,14 @@ A comprehensive collection of specialized AI subagents for [Claude Code](https:/
 
 ## Overview
 
-This repository contains 47 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
+This repository contains 48 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
 
 ## Available Subagents
 
 ### Development & Architecture
 - **[backend-architect](backend-architect.md)** - Design RESTful APIs, microservice boundaries, and database schemas
 - **[frontend-developer](frontend-developer.md)** - Build React components, implement responsive layouts, and handle client-side state management
+- **[ui-ux-designer](ui-ux-designer.md)** - Create interface designs, wireframes, and design systems
 - **[mobile-developer](mobile-developer.md)** - Develop React Native or Flutter apps with native integrations
 - **[graphql-architect](graphql-architect.md)** - Design GraphQL schemas, resolvers, and federation
 - **[architect-reviewer](architect-review.md)** - Reviews code changes for architectural consistency and patterns
@@ -23,6 +24,7 @@ This repository contains 47 specialized subagents that extend Claude Code's capa
 - **[cpp-pro](cpp-pro.md)** - Write idiomatic C++ code with modern features, RAII, smart pointers, and STL algorithms
 - **[javascript-pro](javascript-pro.md)** - Master modern JavaScript with ES6+, async patterns, and Node.js APIs
 - **[php-pro](php-pro.md)** - Write idiomatic PHP code with modern features and performance optimizations
+- **[ios-developer](ios-developer.md)** - Develop native iOS applications with Swift/SwiftUI
 - **[sql-pro](sql-pro.md)** - Write complex SQL queries, optimize execution plans, and design normalized schemas
 
 ### Infrastructure & Operations
@@ -67,17 +69,14 @@ This repository contains 47 specialized subagents that extend Claude Code's capa
 - **[content-marketer](content-marketer.md)** - Write blog posts, social media content, and email newsletters
 - **[sales-automator](sales-automator.md)** - Draft cold emails, follow-ups, and proposal templates
 - **[customer-support](customer-support.md)** - Handle support tickets, FAQ responses, and customer emails
-<<<<<<< HEAD
 - **[legal-advisor](legal-advisor.md)** - Draft privacy policies, terms of service, disclaimers, and legal notices
-=======
-- **[legal-advisor](legal-advisor.md)** - Draft privacy policies, terms of service, and compliance documents
 
 ## Model Assignments
 
 All 47 subagents are configured with specific Claude models based on task complexity:
 
-### 🚀 Claude Haiku 3.5 (Fast & Cost-Effective) - 8 agents
-**Model:** `claude-3-5-haiku-20241022`
+### 🚀 Haiku (Fast & Cost-Effective) - 8 agents
+**Model:** `haiku`
 - `data-scientist` - SQL queries and data analysis
 - `api-documenter` - OpenAPI/Swagger documentation
 - `business-analyst` - Metrics and KPI tracking
@@ -97,7 +96,10 @@ All 47 subagents are configured with specific Claude models based on task comple
 - `rust-pro` - Rust memory safety and systems programming
 - `c-pro` - C programming and embedded systems
 - `cpp-pro` - Modern C++ with STL and templates
+- `php-pro` - Modern PHP with advanced features
+- `ios-developer` - Native iOS development with Swift/SwiftUI
 - `frontend-developer` - React components and UI
+- `ui-ux-designer` - Interface design and wireframes
 - `backend-architect` - API design and microservices
 - `mobile-developer` - React Native/Flutter apps
 - `sql-pro` - Complex SQL optimization
@@ -123,8 +125,8 @@ All 47 subagents are configured with specific Claude models based on task comple
 - `legacy-modernizer` - Framework migrations
 - `payment-integration` - Payment processing
 
-### 🧠 Claude Opus 4 (Maximum Capability) - 11 agents
-**Model:** `claude-opus-4-20250514`
+### 🧠 Opus (Maximum Capability) - 11 agents
+**Model:** `opus`
 - `ai-engineer` - LLM applications and RAG systems
 - `security-auditor` - Vulnerability analysis
 - `performance-engineer` - Application optimization
@@ -248,7 +250,7 @@ Each subagent follows this structure:
 ---
 name: subagent-name
 description: When this subagent should be invoked
-model: claude-3-5-haiku-20241022  # Optional - specify which model to use
+model: haiku  # Optional - specify which model to use (haiku/sonnet/opus)
 tools: tool1, tool2  # Optional - defaults to all tools
 ---
 
@@ -259,14 +261,14 @@ System prompt defining the subagent's role and capabilities
 
 As of Claude Code v1.0.64, subagents can specify which Claude model they should use. This allows for cost-effective task delegation based on complexity:
 
-- **Low Complexity (Haiku 3.5)**: Simple tasks like basic data analysis, documentation generation, and standard responses
-- **Medium Complexity (Sonnet 4)**: Development tasks, code review, testing, and standard engineering work  
-- **High Complexity (Opus 4)**: Critical tasks like security auditing, architecture review, incident response, and AI/ML engineering
+- **Low Complexity (Haiku)**: Simple tasks like basic data analysis, documentation generation, and standard responses
+- **Medium Complexity (Sonnet)**: Development tasks, code review, testing, and standard engineering work  
+- **High Complexity (Opus)**: Critical tasks like security auditing, architecture review, incident response, and AI/ML engineering
 
-Available models:
-- `claude-3-5-haiku-20241022` - Fast and cost-effective for simple tasks
-- `claude-sonnet-4-20250514` - Balanced performance for most development work
-- `claude-opus-4-20250514` - Most capable for complex analysis and critical tasks
+Available models (using simplified naming as of Claude Code v1.0.64):
+- `haiku` - Fast and cost-effective for simple tasks
+- `sonnet` - Balanced performance for most development work
+- `opus` - Most capable for complex analysis and critical tasks
 
 If no model is specified, the subagent will use the system's default model.
 
@@ -311,6 +313,7 @@ payment-integration → security-auditor → Validated implementation
 ### 🏗️ Planning & Architecture
 - **backend-architect**: API design, database schemas, system architecture
 - **frontend-developer**: UI/UX planning, component architecture
+- **ui-ux-designer**: Interface design, wireframes, design systems, user research
 - **cloud-architect**: Infrastructure design, scalability planning
 
 ### 🔧 Implementation & Development  
@@ -319,6 +322,7 @@ payment-integration → security-auditor → Validated implementation
 - **rust-pro**: Rust-specific development, memory safety, systems programming
 - **c-pro**: C programming, embedded systems, performance-critical code
 - **javascript-pro**: Modern JavaScript, async patterns, Node.js/browser code
+- **ios-developer**: Native iOS development with Swift/SwiftUI
 - **sql-pro**: Database queries, schema design, query optimization
 - **mobile-developer**: React Native/Flutter development
 
@@ -408,6 +412,10 @@ If agents aren't working as expected:
 2. Try more specific language in your requests
 3. Use explicit invocation to test specific agents
 4. Provide more context about your project and goals
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Learn More
 
