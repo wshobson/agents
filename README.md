@@ -73,7 +73,7 @@ This repository contains 48 specialized subagents that extend Claude Code's capa
 
 ## Model Assignments
 
-All 47 subagents are configured with specific Claude models based on task complexity:
+All 48 subagents are configured with specific Claude models based on task complexity:
 
 ### 🚀 Haiku (Fast & Cost-Effective) - 8 agents
 **Model:** `haiku`
