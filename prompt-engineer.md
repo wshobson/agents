@@ -1,6 +1,6 @@
 ---
 name: prompt-engineer
-description: Optimizes prompts for LLMs and AI systems. Use when building AI features, improving agent performance, or crafting system prompts. Expert in prompt patterns and techniques.
+description: Optimizes prompts for LLMs and AI systems. Use PROACTIVELY when building AI features, improving agent performance, or crafting system prompts. Expert in prompt patterns and techniques.
 model: opus
 ---
 

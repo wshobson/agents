@@ -62,6 +62,14 @@ When modifying agents:
 
 ## Key Patterns
 
+### Proactive Usage Indicators
+Following Claude Code's official documentation, agents use specific keywords to encourage automatic delegation:
+- **"Use PROACTIVELY"**: Indicates the agent should be automatically invoked for relevant tasks (48 agents)
+- **"MUST BE USED"**: Indicates mandatory usage for specific scenarios (e.g., context-manager for >10k tokens)
+- **"Use IMMEDIATELY"**: Indicates urgent activation needed (e.g., incident-responder for production issues)
+
+These keywords help Claude Code determine when to automatically delegate tasks to specialized agents, improving workflow efficiency and ensuring appropriate expertise is applied.
+
 ### Proactive Agents
 These agents are marked with "Use PROACTIVELY" in their descriptions:
 - code-reviewer: Reviews code immediately after changes

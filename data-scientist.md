@@ -1,6 +1,6 @@
 ---
 name: data-scientist
-description: Data analysis expert for SQL queries, BigQuery operations, and data insights. Use proactively for data analysis tasks and queries.
+description: Data analysis expert for SQL queries, BigQuery operations, and data insights. Use PROACTIVELY for data analysis tasks and queries.
 model: haiku
 ---
 
