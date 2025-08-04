@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is the Claude Code Subagents Collection - a comprehensive set of 50 specialized AI agents designed to extend Claude Code's capabilities with domain-specific expertise. Each agent is configured with specific Claude models (haiku/sonnet/opus) based on task complexity for optimal performance.
+This is the Claude Code Subagents Collection - a comprehensive set of 79 specialized AI agents designed to extend Claude Code's capabilities with domain-specific expertise. Each agent is configured with specific Claude models (haiku/sonnet/opus) based on task complexity for optimal performance.
 
 ## Architecture
 
@@ -22,17 +22,19 @@ System prompt defining the agent's role and capabilities
 ```
 
 ### Model Tiers
-- **Haiku (8 agents)**: Simple tasks - documentation, basic analysis, content generation
-- **Sonnet (31 agents)**: Development tasks - coding, testing, standard engineering work
-- **Opus (11 agents)**: Complex tasks - security auditing, architecture, AI/ML, incident response
+- **Haiku (11 agents)**: Simple tasks - documentation, basic analysis, content generation, estimation
+- **Sonnet (54 agents)**: Development tasks - coding, testing, standard engineering work, implementation
+- **Opus (14 agents)**: Complex tasks - security auditing, architecture, AI/ML, incident response, coordination
 
 ### Agent Categories
-1. **Development & Architecture**: backend-architect, frontend-developer, ui-ux-designer, etc.
+1. **Development & Architecture**: backend-architect, frontend-developer, ui-ux-designer, feature-builder, api-developer, component-developer, service-builder, system-designer, etc.
 2. **Language Specialists**: python-pro, golang-pro, rust-pro, c-pro, etc.
-3. **Infrastructure & Operations**: devops-troubleshooter, deployment-engineer, cloud-architect, etc.
-4. **Quality & Security**: code-reviewer, security-auditor, test-automator, etc.
-5. **Data & AI**: data-scientist, ai-engineer, ml-engineer, mlops-engineer, etc.
-6. **Business & Marketing**: business-analyst, content-marketer, sales-automator, etc.
+3. **Infrastructure & Operations**: devops-troubleshooter, deployment-engineer, cloud-architect, build-engineer, build-troubleshooter, etc.
+4. **Quality & Security**: code-reviewer, security-auditor, test-automator, quality-auditor, security-analyst, performance-analyst, architecture-analyst, code-improver, refactoring-specialist, test-runner, test-generator, issue-investigator, etc.
+5. **Data & AI**: data-scientist, ai-engineer, ml-engineer, mlops-engineer, database-designer, etc.
+6. **Business & Marketing**: business-analyst, content-marketer, sales-automator, project-estimator, etc.
+7. **Documentation & Planning**: technical-documenter, api-spec-writer, task-planner, workflow-designer, code-explainer, etc.
+8. **Maintenance & Navigation**: code-cleaner, import-optimizer, git-workflow-expert, codebase-navigator, project-loader, task-coordinator, etc.
 
 ## Development Guidelines
 
