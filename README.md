@@ -35,7 +35,7 @@ A comprehensive collection of specialized AI subagents for [Claude Code](https:/
 
 ## Overview
 
-This repository contains 58 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
+This repository contains 60 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
 
 ## Available Subagents
 
@@ -49,6 +49,7 @@ This repository contains 58 specialized subagents that extend Claude Code's capa
 
 ### Language Specialists
 - **[python-pro](python-pro.md)** - Write idiomatic Python code with advanced features and optimizations
+- **[ruby-pro](ruby-pro.md)** - Write idiomatic Ruby code with metaprogramming, Rails patterns, gem development, and testing frameworks
 - **[golang-pro](golang-pro.md)** - Write idiomatic Go code with goroutines, channels, and interfaces
 - **[rust-pro](rust-pro.md)** - Write idiomatic Rust with ownership patterns, lifetimes, and trait implementations
 - **[c-pro](c-pro.md)** - Write efficient C code with proper memory management and system calls
@@ -135,6 +136,7 @@ All 58 subagents are configured with specific Claude models based on task comple
 
 **Development & Languages:**
 - `python-pro` - Python development with advanced features
+- `ruby-pro` - Ruby development with metaprogramming, Rails patterns, and gem development
 - `javascript-pro` - Modern JavaScript and Node.js
 - `typescript-pro` - Advanced TypeScript with type systems
 - `golang-pro` - Go concurrency and idiomatic patterns
@@ -372,6 +374,7 @@ payment-integration → security-auditor → Validated implementation
 
 ### 🔧 Implementation & Development  
 - **python-pro**: Python-specific development tasks
+- **ruby-pro**: Ruby metaprogramming, Rails applications, gem development, RSpec/Minitest testing
 - **golang-pro**: Go-specific development tasks
 - **rust-pro**: Rust-specific development, memory safety, systems programming
 - **c-pro**: C programming, embedded systems, performance-critical code
