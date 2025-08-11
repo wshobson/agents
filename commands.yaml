@@ -1,0 +1,1492 @@
+commands:
+  # Development & Architecture Agents
+  - name: backend-architect
+    title: Backend Architect
+    description: Design RESTful APIs, microservice boundaries, and database schemas with scalable architecture patterns
+    type: agent
+    category: architecture
+    content: backend-architect.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - api-design
+      - microservices
+      - database-schema
+      - system-architecture
+    agentCapabilities:
+      - Design RESTful and GraphQL APIs
+      - Architect microservice boundaries
+      - Design database schemas and relationships
+      - Plan system integrations and data flow
+      - Optimize for scalability and performance
+    agentTools:
+      - API design patterns
+      - Database modeling
+      - System architecture principles
+      - Performance optimization
+
+  - name: frontend-developer
+    title: Frontend Developer
+    description: Build React components, implement responsive layouts, and handle client-side state management
+    type: agent
+    category: development
+    content: frontend-developer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - react-development
+      - responsive-design
+      - state-management
+      - component-architecture
+    agentCapabilities:
+      - Create reusable React components
+      - Implement responsive CSS layouts
+      - Manage application state
+      - Optimize frontend performance
+      - Handle client-side routing
+    agentTools:
+      - React framework
+      - CSS preprocessors
+      - State management libraries
+      - Build tools and bundlers
+
+  - name: ui-ux-designer
+    title: UI/UX Designer
+    description: Create interface designs, wireframes, and design systems with user-centered design principles
+    type: agent
+    category: app-design
+    content: ui-ux-designer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - interface-design
+      - wireframing
+      - design-systems
+      - user-research
+    agentCapabilities:
+      - Create wireframes and mockups
+      - Design consistent UI components
+      - Develop design systems
+      - Conduct user research
+      - Optimize user experience flows
+    agentTools:
+      - Design thinking methodology
+      - Prototyping tools
+      - Accessibility guidelines
+      - User research techniques
+
+  - name: mobile-developer
+    title: Mobile Developer
+    description: Develop React Native or Flutter apps with native integrations and platform-specific features
+    type: agent
+    category: mobile-development
+    content: mobile-developer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - react-native
+      - flutter
+      - native-integration
+      - cross-platform
+    agentCapabilities:
+      - Build cross-platform mobile apps
+      - Integrate with native device features
+      - Optimize for mobile performance
+      - Handle platform-specific requirements
+      - Implement offline functionality
+    agentTools:
+      - React Native framework
+      - Flutter SDK
+      - Native development tools
+      - Mobile testing frameworks
+
+  - name: graphql-architect
+    title: GraphQL Architect
+    description: Design GraphQL schemas, resolvers, and federation patterns for efficient data querying
+    type: agent
+    category: architecture
+    content: graphql-architect.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - schema-design
+      - resolver-optimization
+      - federation
+      - query-optimization
+    agentCapabilities:
+      - Design efficient GraphQL schemas
+      - Implement resolver patterns
+      - Set up schema federation
+      - Optimize query performance
+      - Handle data loading strategies
+    agentTools:
+      - GraphQL schema design
+      - Apollo Server/Client
+      - DataLoader patterns
+      - Federation tools
+
+  - name: architect-reviewer
+    title: Architecture Reviewer
+    description: Reviews code changes for architectural consistency, design patterns, and system integration quality
+    type: agent
+    category: architecture
+    content: architect-review.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - architectural-review
+      - design-patterns
+      - code-consistency
+      - system-integration
+    agentCapabilities:
+      - Evaluate architectural decisions
+      - Ensure design pattern consistency
+      - Review system integrations
+      - Assess scalability implications
+      - Validate technical debt management
+    agentTools:
+      - Architecture review frameworks
+      - Design pattern analysis
+      - Code quality metrics
+      - Technical debt assessment
+
+  # Language Specialists
+  - name: python-pro
+    title: Python Pro
+    description: Write idiomatic Python code with advanced features like decorators, generators, and async/await patterns
+    type: agent
+    category: language-specialist
+    content: python-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - python-development
+      - async-programming
+      - performance-optimization
+      - testing-frameworks
+    agentCapabilities:
+      - Write clean, idiomatic Python code
+      - Implement async/await patterns
+      - Use advanced Python features
+      - Create comprehensive test suites
+      - Optimize Python performance
+    agentTools:
+      - Python standard library
+      - pytest framework
+      - Type hints and mypy
+      - Performance profiling
+
+  - name: ruby-pro
+    title: Ruby Pro
+    description: Write idiomatic Ruby code with metaprogramming, Rails patterns, gem development, and testing frameworks
+    type: agent
+    category: language-specialist
+    content: ruby-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - ruby-development
+      - rails-patterns
+      - metaprogramming
+      - gem-development
+    agentCapabilities:
+      - Write clean Ruby code
+      - Implement Rails best practices
+      - Use metaprogramming techniques
+      - Develop Ruby gems
+      - Create comprehensive tests
+    agentTools:
+      - Ruby language features
+      - Rails framework
+      - RSpec and Minitest
+      - Bundler and gem tools
+
+  - name: golang-pro
+    title: Go Pro
+    description: Write idiomatic Go code with goroutines, channels, and interfaces for concurrent systems
+    type: agent
+    category: language-specialist
+    content: golang-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - go-development
+      - concurrency
+      - system-programming
+      - microservices
+    agentCapabilities:
+      - Write idiomatic Go code
+      - Implement concurrent patterns
+      - Design efficient interfaces
+      - Build microservices
+      - Handle error management
+    agentTools:
+      - Go standard library
+      - Goroutines and channels
+      - Testing framework
+      - Profiling tools
+
+  - name: rust-pro
+    title: Rust Pro
+    description: Write idiomatic Rust with ownership patterns, lifetimes, and trait implementations for systems programming
+    type: agent
+    category: language-specialist
+    content: rust-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - rust-development
+      - memory-safety
+      - systems-programming
+      - performance-optimization
+    agentCapabilities:
+      - Write memory-safe Rust code
+      - Implement ownership patterns
+      - Design trait systems
+      - Optimize for performance
+      - Handle concurrency safely
+    agentTools:
+      - Rust compiler and borrow checker
+      - Cargo build system
+      - Testing frameworks
+      - Performance analysis
+
+  - name: c-pro
+    title: C Pro
+    description: Write efficient C code with proper memory management, system calls, and embedded systems programming
+    type: agent
+    category: language-specialist
+    content: c-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - c-programming
+      - memory-management
+      - system-calls
+      - embedded-systems
+    agentCapabilities:
+      - Write efficient C code
+      - Manage memory manually
+      - Use system calls effectively
+      - Develop embedded systems
+      - Optimize for performance
+    agentTools:
+      - C standard library
+      - Memory debugging tools
+      - System programming APIs
+      - Embedded development tools
+
+  - name: cpp-pro
+    title: C++ Pro
+    description: Write idiomatic C++ code with modern features, RAII, smart pointers, and STL algorithms
+    type: agent
+    category: language-specialist
+    content: cpp-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - cpp-development
+      - modern-cpp
+      - template-programming
+      - performance-optimization
+    agentCapabilities:
+      - Write modern C++ code
+      - Use RAII and smart pointers
+      - Implement template systems
+      - Leverage STL algorithms
+      - Optimize for performance
+    agentTools:
+      - Modern C++ standards
+      - STL and Boost libraries
+      - Template metaprogramming
+      - Performance profiling
+
+  - name: javascript-pro
+    title: JavaScript Pro
+    description: Master modern JavaScript with ES6+, async patterns, and Node.js APIs for web and server development
+    type: agent
+    category: language-specialist
+    content: javascript-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - javascript-development
+      - async-programming
+      - nodejs-development
+      - web-apis
+    agentCapabilities:
+      - Write modern JavaScript code
+      - Implement async patterns
+      - Develop Node.js applications
+      - Use web APIs effectively
+      - Handle event-driven programming
+    agentTools:
+      - ES6+ features
+      - Node.js runtime
+      - NPM ecosystem
+      - Web APIs and standards
+
+  - name: typescript-pro
+    title: TypeScript Pro
+    description: Master TypeScript with advanced types, generics, and strict type safety for large-scale applications
+    type: agent
+    category: language-specialist
+    content: typescript-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - typescript-development
+      - type-systems
+      - generic-programming
+      - enterprise-patterns
+    agentCapabilities:
+      - Write type-safe TypeScript code
+      - Design complex type systems
+      - Use advanced generics
+      - Implement enterprise patterns
+      - Ensure compile-time safety
+    agentTools:
+      - TypeScript compiler
+      - Advanced type features
+      - Generic programming
+      - IDE integration
+
+  - name: php-pro
+    title: PHP Pro
+    description: Write idiomatic PHP code with modern features, frameworks, and performance optimizations
+    type: agent
+    category: language-specialist
+    content: php-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - php-development
+      - framework-development
+      - performance-optimization
+      - web-development
+    agentCapabilities:
+      - Write modern PHP code
+      - Use PHP frameworks effectively
+      - Optimize PHP performance
+      - Handle web development tasks
+      - Implement security best practices
+    agentTools:
+      - Modern PHP features
+      - Popular PHP frameworks
+      - Composer package manager
+      - Performance profiling
+
+  - name: java-pro
+    title: Java Pro
+    description: Master modern Java with streams, concurrency, Spring Boot, and JVM optimization
+    type: agent
+    category: language-specialist
+    content: java-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - java-development
+      - spring-framework
+      - concurrency
+      - jvm-optimization
+    agentCapabilities:
+      - Write modern Java code
+      - Use streams and lambdas
+      - Implement concurrent systems
+      - Develop Spring applications
+      - Optimize JVM performance
+    agentTools:
+      - Java SE/EE APIs
+      - Spring ecosystem
+      - Concurrency utilities
+      - JVM profiling tools
+
+  - name: elixir-pro
+    title: Elixir Pro
+    description: Write idiomatic Elixir code with OTP patterns, functional programming, and Phoenix frameworks
+    type: agent
+    category: language-specialist
+    content: elixir-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - elixir-development
+      - otp-patterns
+      - functional-programming
+      - phoenix-framework
+    agentCapabilities:
+      - Write functional Elixir code
+      - Implement OTP patterns
+      - Build Phoenix applications
+      - Handle distributed systems
+      - Manage fault tolerance
+    agentTools:
+      - Elixir language features
+      - OTP framework
+      - Phoenix web framework
+      - Fault tolerance patterns
+
+  - name: csharp-pro
+    title: C# Pro
+    description: Write modern C# code with advanced features, .NET optimization, and enterprise patterns
+    type: agent
+    category: language-specialist
+    content: csharp-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - csharp-development
+      - dotnet-framework
+      - enterprise-patterns
+      - async-programming
+    agentCapabilities:
+      - Write modern C# code
+      - Use .NET frameworks effectively
+      - Implement enterprise patterns
+      - Handle async programming
+      - Optimize .NET performance
+    agentTools:
+      - .NET framework/Core
+      - Visual Studio tools
+      - NuGet packages
+      - Performance analyzers
+
+  - name: scala-pro
+    title: Scala Pro
+    description: Master enterprise-grade Scala development with functional programming, distributed systems, and big data processing
+    type: agent
+    category: language-specialist
+    content: scala-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - scala-development
+      - functional-programming
+      - distributed-systems
+      - big-data-processing
+    agentCapabilities:
+      - Write functional Scala code
+      - Design distributed systems
+      - Process big data efficiently
+      - Use actor systems
+      - Implement reactive patterns
+    agentTools:
+      - Scala language features
+      - Apache Spark
+      - Akka/Pekko framework
+      - ZIO/Cats Effect
+
+  - name: flutter-expert
+    title: Flutter Expert
+    description: Master Flutter development with Dart, widgets, state management, and cross-platform deployment
+    type: agent
+    category: mobile-development
+    content: flutter-expert.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - flutter-development
+      - dart-programming
+      - widget-systems
+      - state-management
+    agentCapabilities:
+      - Build Flutter applications
+      - Create custom widgets
+      - Manage application state
+      - Implement animations
+      - Deploy to multiple platforms
+    agentTools:
+      - Flutter SDK
+      - Dart language
+      - Widget framework
+      - State management solutions
+
+  - name: unity-developer
+    title: Unity Developer
+    description: Build Unity games with optimized scripts, performance tuning, and game development best practices
+    type: agent
+    category: game-development
+    content: unity-developer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - unity-development
+      - game-programming
+      - performance-optimization
+      - 3d-graphics
+    agentCapabilities:
+      - Develop Unity games
+      - Write optimized C# scripts
+      - Implement game mechanics
+      - Optimize performance
+      - Handle asset management
+    agentTools:
+      - Unity engine
+      - C# scripting
+      - Asset pipeline
+      - Performance profiler
+
+  - name: minecraft-bukkit-pro
+    title: Minecraft Bukkit Pro
+    description: Master Minecraft server plugin development with Bukkit, Spigot, and Paper APIs
+    type: agent
+    category: game-development
+    content: minecraft-bukkit-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - minecraft-development
+      - bukkit-plugins
+      - server-administration
+      - event-systems
+    agentCapabilities:
+      - Develop Bukkit plugins
+      - Handle server events
+      - Implement game mechanics
+      - Manage player data
+      - Optimize server performance
+    agentTools:
+      - Bukkit/Spigot/Paper APIs
+      - Plugin development tools
+      - Event handling systems
+      - Configuration management
+
+  - name: ios-developer
+    title: iOS Developer
+    description: Develop native iOS applications with Swift, SwiftUI, and iOS-specific features
+    type: agent
+    category: mobile-development
+    content: ios-developer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - ios-development
+      - swift-programming
+      - swiftui
+      - app-store-deployment
+    agentCapabilities:
+      - Build native iOS apps
+      - Write Swift code
+      - Create SwiftUI interfaces
+      - Integrate iOS frameworks
+      - Handle App Store deployment
+    agentTools:
+      - Xcode IDE
+      - Swift language
+      - SwiftUI framework
+      - iOS SDK
+
+  - name: sql-pro
+    title: SQL Pro
+    description: Write complex SQL queries, optimize execution plans, and design normalized database schemas
+    type: agent
+    category: database-management
+    content: sql-pro.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - sql-development
+      - query-optimization
+      - database-design
+      - performance-tuning
+    agentCapabilities:
+      - Write complex SQL queries
+      - Optimize query performance
+      - Design database schemas
+      - Analyze execution plans
+      - Handle data migrations
+    agentTools:
+      - SQL standards
+      - Query optimization
+      - Database design principles
+      - Performance analysis
+
+  # Infrastructure & Operations Agents
+  - name: devops-troubleshooter
+    title: DevOps Troubleshooter
+    description: Debug production issues, analyze logs, and fix deployment failures with systematic problem-solving
+    type: agent
+    category: incident-response
+    content: devops-troubleshooter.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - production-debugging
+      - log-analysis
+      - deployment-issues
+      - system-monitoring
+    agentCapabilities:
+      - Debug production issues
+      - Analyze system logs
+      - Fix deployment failures
+      - Monitor system health
+      - Implement incident response
+    agentTools:
+      - Log analysis tools
+      - Monitoring systems
+      - Debugging techniques
+      - Incident management
+
+  - name: deployment-engineer
+    title: Deployment Engineer
+    description: Configure CI/CD pipelines, Docker containers, and cloud deployments for automated software delivery
+    type: agent
+    category: deployment
+    content: deployment-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - cicd-pipelines
+      - containerization
+      - cloud-deployment
+      - automation
+    agentCapabilities:
+      - Design CI/CD pipelines
+      - Configure container deployments
+      - Automate release processes
+      - Manage infrastructure as code
+      - Implement deployment strategies
+    agentTools:
+      - CI/CD platforms
+      - Docker containers
+      - Cloud services
+      - Infrastructure automation
+
+  - name: cloud-architect
+    title: Cloud Architect
+    description: Design AWS/Azure/GCP infrastructure, optimize cloud costs, and implement scalable cloud solutions
+    type: agent
+    category: infrastructure
+    content: cloud-architect.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - cloud-infrastructure
+      - cost-optimization
+      - scalability-design
+      - multi-cloud
+    agentCapabilities:
+      - Design cloud architectures
+      - Optimize cloud costs
+      - Implement auto-scaling
+      - Manage multi-cloud environments
+      - Ensure cloud security
+    agentTools:
+      - AWS/Azure/GCP services
+      - Cost optimization tools
+      - Infrastructure as code
+      - Cloud monitoring
+
+  - name: database-optimizer
+    title: Database Optimizer
+    description: Optimize SQL queries, design efficient indexes, and handle database migrations for peak performance
+    type: agent
+    category: database-management
+    content: database-optimizer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - query-optimization
+      - index-design
+      - performance-tuning
+      - migration-management
+    agentCapabilities:
+      - Optimize database queries
+      - Design efficient indexes
+      - Analyze query execution
+      - Handle data migrations
+      - Monitor database performance
+    agentTools:
+      - Query analyzers
+      - Index optimization
+      - Performance monitoring
+      - Migration tools
+
+  - name: database-admin
+    title: Database Administrator
+    description: Manage database operations, backups, replication, monitoring, and disaster recovery
+    type: agent
+    category: database-management
+    content: database-admin.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - database-administration
+      - backup-management
+      - replication-setup
+      - disaster-recovery
+    agentCapabilities:
+      - Manage database operations
+      - Configure backup strategies
+      - Set up replication
+      - Implement disaster recovery
+      - Monitor database health
+    agentTools:
+      - Database management systems
+      - Backup tools
+      - Monitoring solutions
+      - Recovery procedures
+
+  - name: terraform-specialist
+    title: Terraform Specialist
+    description: Write advanced Terraform modules, manage state files, and implement Infrastructure as Code best practices
+    type: agent
+    category: infrastructure
+    content: terraform-specialist.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - terraform-modules
+      - state-management
+      - infrastructure-as-code
+      - cloud-provisioning
+    agentCapabilities:
+      - Write Terraform modules
+      - Manage state files
+      - Implement IaC patterns
+      - Provision cloud resources
+      - Handle infrastructure changes
+    agentTools:
+      - Terraform CLI
+      - State management
+      - Module development
+      - Cloud providers
+
+  - name: incident-responder
+    title: Incident Responder
+    description: Handles production incidents with urgency, systematic diagnosis, and rapid resolution
+    type: agent
+    category: incident-response
+    content: incident-responder.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - incident-response
+      - crisis-management
+      - root-cause-analysis
+      - communication
+    agentCapabilities:
+      - Respond to critical incidents
+      - Coordinate response teams
+      - Perform root cause analysis
+      - Communicate with stakeholders
+      - Implement prevention measures
+    agentTools:
+      - Incident management systems
+      - Communication platforms
+      - Monitoring dashboards
+      - Post-mortem analysis
+
+  - name: network-engineer
+    title: Network Engineer
+    description: Debug network connectivity, configure load balancers, analyze traffic patterns, and optimize network performance
+    type: agent
+    category: network-engineering
+    content: network-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - network-debugging
+      - load-balancing
+      - traffic-analysis
+      - network-optimization
+    agentCapabilities:
+      - Debug network issues
+      - Configure load balancers
+      - Analyze network traffic
+      - Optimize network performance
+      - Implement security measures
+    agentTools:
+      - Network diagnostic tools
+      - Load balancer configuration
+      - Traffic analyzers
+      - Security appliances
+
+  - name: dx-optimizer
+    title: Developer Experience Optimizer
+    description: Improve development tooling, setup processes, and workflows to enhance developer productivity
+    type: agent
+    category: dx-improvement
+    content: dx-optimizer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - developer-experience
+      - tooling-optimization
+      - workflow-improvement
+      - productivity-enhancement
+    agentCapabilities:
+      - Optimize development workflows
+      - Improve tooling setup
+      - Enhance productivity tools
+      - Streamline processes
+      - Measure developer satisfaction
+    agentTools:
+      - Development tools
+      - Workflow automation
+      - Productivity metrics
+      - Process optimization
+
+  # Quality & Security Agents
+  - name: code-reviewer
+    title: Code Reviewer
+    description: Expert code review with deep configuration security focus and production reliability assessment
+    type: agent
+    category: code-review
+    content: code-reviewer.md
+    aiPlatform: claude-code@2025.06
+    mcpRequirements:
+      - serverId: filesystem
+        tier: required
+      - serverId: github
+        tier: optional
+    agentSpecializations:
+      - code-review
+      - security-analysis
+      - quality-assurance
+      - best-practices
+    agentCapabilities:
+      - Perform thorough code reviews
+      - Identify security vulnerabilities
+      - Ensure coding standards
+      - Assess production readiness
+      - Provide improvement suggestions
+    agentTools:
+      - Static code analysis
+      - Security scanning
+      - Quality metrics
+      - Best practice guidelines
+
+  - name: security-auditor
+    title: Security Auditor
+    description: Review code for vulnerabilities, ensure OWASP compliance, and provide comprehensive security assessments
+    type: agent
+    category: security-audit
+    content: security-auditor.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - vulnerability-assessment
+      - owasp-compliance
+      - penetration-testing
+      - security-analysis
+    agentCapabilities:
+      - Identify security vulnerabilities
+      - Ensure OWASP compliance
+      - Perform security audits
+      - Assess threat vectors
+      - Provide remediation guidance
+    agentTools:
+      - Vulnerability scanners
+      - Security frameworks
+      - Compliance checkers
+      - Penetration testing tools
+
+  - name: test-automator
+    title: Test Automator
+    description: Create comprehensive test suites with unit, integration, and end-to-end tests for quality assurance
+    type: agent
+    category: testing
+    content: test-automator.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - test-automation
+      - test-strategy
+      - quality-assurance
+      - continuous-testing
+    agentCapabilities:
+      - Design test strategies
+      - Create automated test suites
+      - Implement various test types
+      - Set up test pipelines
+      - Measure test coverage
+    agentTools:
+      - Testing frameworks
+      - Test automation tools
+      - Coverage analysis
+      - CI/CD integration
+
+  - name: performance-engineer
+    title: Performance Engineer
+    description: Profile applications, optimize bottlenecks, implement caching strategies, and improve system performance
+    type: agent
+    category: performance-optimization
+    content: performance-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - performance-optimization
+      - bottleneck-analysis
+      - caching-strategies
+      - scalability
+    agentCapabilities:
+      - Profile application performance
+      - Identify bottlenecks
+      - Implement optimization strategies
+      - Design caching solutions
+      - Plan for scalability
+    agentTools:
+      - Performance profilers
+      - Benchmarking tools
+      - Caching systems
+      - Load testing tools
+
+  - name: debugger
+    title: Debugger
+    description: Debugging specialist for errors, test failures, and unexpected behavior with systematic problem-solving
+    type: agent
+    category: debugging
+    content: debugger.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - error-debugging
+      - test-failure-analysis
+      - problem-solving
+      - root-cause-analysis
+    agentCapabilities:
+      - Debug complex errors
+      - Analyze test failures
+      - Trace execution paths
+      - Identify root causes
+      - Provide fix recommendations
+    agentTools:
+      - Debugging tools
+      - Error tracking
+      - Stack trace analysis
+      - Code inspection
+
+  - name: error-detective
+    title: Error Detective
+    description: Search logs and codebases for error patterns, stack traces, and anomalies with advanced analysis
+    type: agent
+    category: error-handling
+    content: error-detective.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - error-pattern-analysis
+      - log-investigation
+      - anomaly-detection
+      - forensic-analysis
+    agentCapabilities:
+      - Analyze error patterns
+      - Search through logs
+      - Detect anomalies
+      - Correlate issues
+      - Track error trends
+    agentTools:
+      - Log analysis tools
+      - Pattern recognition
+      - Search algorithms
+      - Correlation analysis
+
+  - name: search-specialist
+    title: Search Specialist
+    description: Expert web researcher using advanced search techniques, information synthesis, and fact-checking
+    type: agent
+    category: research
+    content: search-specialist.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - web-research
+      - information-synthesis
+      - fact-checking
+      - competitive-analysis
+    agentCapabilities:
+      - Conduct advanced web research
+      - Synthesize information
+      - Verify facts and sources
+      - Analyze competitors
+      - Generate research reports
+    agentTools:
+      - Search engines
+      - Research databases
+      - Fact-checking tools
+      - Analysis frameworks
+
+  # Data & AI Agents
+  - name: data-scientist
+    title: Data Scientist
+    description: Data analysis expert for SQL queries, BigQuery operations, and data insights with statistical analysis
+    type: agent
+    category: data-analysis
+    content: data-scientist.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - data-analysis
+      - sql-queries
+      - statistical-analysis
+      - data-visualization
+    agentCapabilities:
+      - Analyze complex datasets
+      - Write efficient SQL queries
+      - Perform statistical analysis
+      - Create data visualizations
+      - Generate insights and reports
+    agentTools:
+      - SQL databases
+      - Statistical software
+      - Visualization tools
+      - BigQuery platform
+
+  - name: data-engineer
+    title: Data Engineer
+    description: Build ETL pipelines, data warehouses, and streaming architectures for large-scale data processing
+    type: agent
+    category: data-analysis
+    content: data-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - etl-pipelines
+      - data-warehousing
+      - streaming-architectures
+      - data-integration
+    agentCapabilities:
+      - Build ETL pipelines
+      - Design data warehouses
+      - Implement streaming systems
+      - Manage data integration
+      - Optimize data processing
+    agentTools:
+      - ETL frameworks
+      - Data warehouse platforms
+      - Streaming technologies
+      - Data integration tools
+
+  - name: ai-engineer
+    title: AI Engineer
+    description: Build LLM applications, RAG systems, and prompt pipelines with advanced AI engineering practices
+    type: agent
+    category: ml-ai
+    content: ai-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - llm-applications
+      - rag-systems
+      - prompt-engineering
+      - ai-integration
+    agentCapabilities:
+      - Develop LLM applications
+      - Build RAG systems
+      - Engineer effective prompts
+      - Integrate AI services
+      - Optimize AI performance
+    agentTools:
+      - LLM frameworks
+      - Vector databases
+      - Prompt optimization
+      - AI service APIs
+
+  - name: ml-engineer
+    title: ML Engineer
+    description: Implement ML pipelines, model serving, feature engineering, and production ML systems
+    type: agent
+    category: ml-ai
+    content: ml-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - ml-pipelines
+      - model-deployment
+      - feature-engineering
+      - production-ml
+    agentCapabilities:
+      - Build ML pipelines
+      - Deploy models to production
+      - Engineer features
+      - Monitor model performance
+      - Implement ML workflows
+    agentTools:
+      - ML frameworks
+      - Model serving platforms
+      - Feature stores
+      - ML monitoring tools
+
+  - name: mlops-engineer
+    title: MLOps Engineer
+    description: Build ML pipelines, experiment tracking, model registries, and production ML infrastructure
+    type: agent
+    category: ml-ai
+    content: mlops-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - ml-infrastructure
+      - experiment-tracking
+      - model-management
+      - pipeline-automation
+    agentCapabilities:
+      - Design ML infrastructure
+      - Track experiments
+      - Manage model registries
+      - Automate ML pipelines
+      - Monitor model performance
+    agentTools:
+      - MLOps platforms
+      - Experiment tracking
+      - Model registries
+      - Pipeline orchestration
+
+  - name: prompt-engineer
+    title: Prompt Engineer
+    description: Optimize prompts for LLMs and AI systems with advanced prompt engineering techniques
+    type: agent
+    category: prompt-engineering
+    content: prompt-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - prompt-optimization
+      - llm-interaction
+      - response-tuning
+      - prompt-templates
+    agentCapabilities:
+      - Design effective prompts
+      - Optimize LLM responses
+      - Create prompt templates
+      - Test prompt variations
+      - Measure prompt performance
+    agentTools:
+      - Prompt testing frameworks
+      - LLM evaluation tools
+      - Response analysis
+      - Template systems
+
+  # Specialized Domain Agents
+  - name: api-documenter
+    title: API Documenter
+    description: Create OpenAPI/Swagger specifications and write comprehensive developer documentation
+    type: agent
+    category: documentation
+    content: api-documenter.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - api-documentation
+      - openapi-specs
+      - developer-docs
+      - documentation-standards
+    agentCapabilities:
+      - Create API documentation
+      - Write OpenAPI specifications
+      - Generate developer guides
+      - Maintain documentation standards
+      - Provide usage examples
+    agentTools:
+      - OpenAPI tools
+      - Documentation generators
+      - API testing tools
+      - Writing frameworks
+
+  - name: payment-integration
+    title: Payment Integration Specialist
+    description: Integrate Stripe, PayPal, and payment processors with secure payment handling and compliance
+    type: agent
+    category: payment-processing
+    content: payment-integration.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - payment-processing
+      - stripe-integration
+      - payment-security
+      - compliance
+    agentCapabilities:
+      - Integrate payment systems
+      - Handle secure transactions
+      - Ensure PCI compliance
+      - Implement payment flows
+      - Manage payment webhooks
+    agentTools:
+      - Payment processor APIs
+      - Security frameworks
+      - Compliance tools
+      - Testing environments
+
+  - name: quant-analyst
+    title: Quantitative Analyst
+    description: Build financial models, backtest trading strategies, and analyze market data with quantitative methods
+    type: agent
+    category: data-analysis
+    content: quant-analyst.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - financial-modeling
+      - algorithmic-trading
+      - risk-analysis
+      - market-analysis
+    agentCapabilities:
+      - Build financial models
+      - Develop trading algorithms
+      - Analyze market data
+      - Perform risk assessments
+      - Backtest strategies
+    agentTools:
+      - Financial libraries
+      - Backtesting frameworks
+      - Market data APIs
+      - Statistical tools
+
+  - name: risk-manager
+    title: Risk Manager
+    description: Monitor portfolio risk, R-multiples, position limits, and implement risk management strategies
+    type: agent
+    category: data-analysis
+    content: risk-manager.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - portfolio-risk
+      - position-sizing
+      - risk-metrics
+      - compliance-monitoring
+    agentCapabilities:
+      - Monitor portfolio risk
+      - Calculate position sizes
+      - Analyze risk metrics
+      - Ensure compliance
+      - Generate risk reports
+    agentTools:
+      - Risk management systems
+      - Portfolio analytics
+      - Compliance monitoring
+      - Reporting tools
+
+  - name: legacy-modernizer
+    title: Legacy Modernizer
+    description: Refactor legacy codebases and implement gradual modernization strategies with minimal disruption
+    type: agent
+    category: legacy-modernization
+    content: legacy-modernizer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - legacy-refactoring
+      - modernization-strategy
+      - migration-planning
+      - technical-debt
+    agentCapabilities:
+      - Analyze legacy systems
+      - Plan modernization strategies
+      - Refactor existing code
+      - Migrate to new technologies
+      - Reduce technical debt
+    agentTools:
+      - Code analysis tools
+      - Refactoring frameworks
+      - Migration utilities
+      - Modernization patterns
+
+  - name: context-manager
+    title: Context Manager
+    description: Manages context across multiple agents and long-running tasks with intelligent coordination
+    type: agent
+    category: ml-ai
+    content: context-manager.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - context-management
+      - agent-coordination
+      - task-orchestration
+      - information-synthesis
+    agentCapabilities:
+      - Manage agent context
+      - Coordinate multiple tasks
+      - Synthesize information
+      - Track project state
+      - Facilitate collaboration
+    agentTools:
+      - Context tracking systems
+      - Agent orchestration
+      - State management
+      - Information synthesis
+
+  # Documentation Agents
+  - name: docs-architect
+    title: Documentation Architect
+    description: Creates comprehensive technical documentation from existing codebases with structured information architecture
+    type: agent
+    category: documentation
+    content: docs-architect.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - technical-documentation
+      - information-architecture
+      - documentation-strategy
+      - content-organization
+    agentCapabilities:
+      - Create technical documentation
+      - Design information architecture
+      - Organize content effectively
+      - Generate from codebases
+      - Maintain documentation standards
+    agentTools:
+      - Documentation generators
+      - Content management systems
+      - Architecture design
+      - Writing frameworks
+
+  - name: mermaid-expert
+    title: Mermaid Expert
+    description: Create Mermaid diagrams for flowcharts, sequences, ERDs, and architectural visualizations
+    type: agent
+    category: documentation
+    content: mermaid-expert.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - diagram-creation
+      - visual-documentation
+      - flowcharts
+      - system-architecture
+    agentCapabilities:
+      - Create various diagram types
+      - Design flowcharts
+      - Build sequence diagrams
+      - Visualize architectures
+      - Generate ERDs
+    agentTools:
+      - Mermaid syntax
+      - Diagram generators
+      - Visual design principles
+      - Documentation integration
+
+  - name: reference-builder
+    title: Reference Builder
+    description: Creates exhaustive technical references and API documentation with comprehensive coverage
+    type: agent
+    category: documentation
+    content: reference-builder.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - reference-documentation
+      - api-references
+      - comprehensive-coverage
+      - technical-writing
+    agentCapabilities:
+      - Build comprehensive references
+      - Document APIs thoroughly
+      - Create usage examples
+      - Organize information systematically
+      - Maintain accuracy
+    agentTools:
+      - Reference generators
+      - API documentation tools
+      - Content organization
+      - Quality assurance
+
+  - name: tutorial-engineer
+    title: Tutorial Engineer
+    description: Creates step-by-step tutorials and educational content from code with clear learning paths
+    type: agent
+    category: education
+    content: tutorial-engineer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - tutorial-creation
+      - educational-content
+      - learning-paths
+      - instructional-design
+    agentCapabilities:
+      - Create step-by-step tutorials
+      - Design learning paths
+      - Generate educational content
+      - Provide clear instructions
+      - Test tutorial effectiveness
+    agentTools:
+      - Tutorial frameworks
+      - Educational design
+      - Content validation
+      - Learning assessment
+
+  # Business & Marketing Agents
+  - name: business-analyst
+    title: Business Analyst
+    description: Analyze metrics, create reports, track KPIs, and provide business intelligence insights
+    type: agent
+    category: business-strategy
+    content: business-analyst.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - business-analysis
+      - metrics-tracking
+      - report-generation
+      - kpi-monitoring
+    agentCapabilities:
+      - Analyze business metrics
+      - Create comprehensive reports
+      - Track key performance indicators
+      - Identify trends and patterns
+      - Provide actionable insights
+    agentTools:
+      - Analytics platforms
+      - Reporting tools
+      - Data visualization
+      - Business intelligence
+
+  - name: content-marketer
+    title: Content Marketer
+    description: Write blog posts, social media content, email newsletters, and SEO-optimized marketing materials
+    type: agent
+    category: marketing
+    content: content-marketer.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - content-creation
+      - seo-optimization
+      - social-media
+      - email-marketing
+    agentCapabilities:
+      - Write engaging content
+      - Optimize for SEO
+      - Create social media posts
+      - Design email campaigns
+      - Develop content strategies
+    agentTools:
+      - Content management systems
+      - SEO tools
+      - Social media platforms
+      - Email marketing software
+
+  - name: sales-automator
+    title: Sales Automator
+    description: Draft cold emails, follow-ups, proposal templates, and automated sales sequences
+    type: agent
+    category: sales-automation
+    content: sales-automator.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - sales-automation
+      - email-sequences
+      - proposal-writing
+      - lead-nurturing
+    agentCapabilities:
+      - Create sales sequences
+      - Write compelling emails
+      - Generate proposals
+      - Automate follow-ups
+      - Track conversion rates
+    agentTools:
+      - CRM systems
+      - Email automation
+      - Proposal generators
+      - Sales analytics
+
+  - name: customer-support
+    title: Customer Support Specialist
+    description: Handle support tickets, FAQ responses, customer emails, and support documentation
+    type: agent
+    category: customer-support
+    content: customer-support.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - customer-service
+      - support-documentation
+      - ticket-resolution
+      - communication
+    agentCapabilities:
+      - Handle support requests
+      - Create FAQ content
+      - Write clear responses
+      - Document solutions
+      - Improve customer satisfaction
+    agentTools:
+      - Support ticket systems
+      - Knowledge bases
+      - Communication tools
+      - Customer feedback
+
+  - name: legal-advisor
+    title: Legal Advisor
+    description: Draft privacy policies, terms of service, disclaimers, and legal notices with compliance focus
+    type: agent
+    category: legal-compliance
+    content: legal-advisor.md
+    aiPlatform: claude-code@2025.06
+    agentSpecializations:
+      - legal-documentation
+      - compliance
+      - policy-writing
+      - risk-assessment
+    agentCapabilities:
+      - Draft legal documents
+      - Ensure compliance
+      - Write clear policies
+      - Assess legal risks
+      - Provide legal guidance
+    agentTools:
+      - Legal templates
+      - Compliance frameworks
+      - Risk assessment tools
+      - Document management
+
+repository:
+  license: LICENSE
+  description: A comprehensive collection of 61 specialized AI subagents for Claude Code, designed to enhance development workflows with domain-specific expertise across development, operations, security, AI/ML, and business domains.
+
+metadata:
+  created: "2025-01-01"
+  updated: "2025-08-11"
+  total_commands: 61
+  supported_platforms:
+    - claude-code
+    - claude
+  minimum_requirements:
+    - Claude Code v1.0.64 or higher
+    - MCP support for enhanced functionality
