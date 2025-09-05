@@ -29,46 +29,46 @@
   </details>
 </div>
 
-# Claude Code Subagents Collection
+# Claude Code 智能体集合
 
-A comprehensive collection of specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), designed to enhance development workflows with domain-specific expertise.
+为 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 打造的全面专业智能体集合，通过领域专业知识增强开发工作流程。
 
-## Overview
+## 概述
 
-This repository contains 76 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
+本仓库包含76个专业智能体，扩展了Claude Code的功能。每个智能体都是特定领域的专家，根据上下文自动调用或在需要时显式调用。所有智能体根据任务复杂度配置特定的Claude模型，以实现最佳性能和成本效益。
 
-## Available Subagents
+## 可用智能体
 
-### Development & Architecture
-- **[backend-architect](backend-architect.md)** - Design RESTful APIs, microservice boundaries, and database schemas
-- **[frontend-developer](frontend-developer.md)** - Build React components, implement responsive layouts, and handle client-side state management
-- **[ui-ux-designer](ui-ux-designer.md)** - Create interface designs, wireframes, and design systems
-- **[ui-visual-validator](ui-visual-validator.md)** - Verify whether UI modifications have achieved their intended goals through rigorous screenshot analysis
-- **[mobile-developer](mobile-developer.md)** - Develop React Native or Flutter apps with native integrations
-- **[graphql-architect](graphql-architect.md)** - Design GraphQL schemas, resolvers, and federation
-- **[architect-reviewer](architect-review.md)** - Reviews code changes for architectural consistency and patterns
+### 开发与架构
+- **[backend-architect](backend-architect.md)** - 设计RESTful API、微服务边界和数据库架构
+- **[frontend-developer](frontend-developer.md)** - 构建React组件、实现响应式布局和处理客户端状态管理
+- **[ui-ux-designer](ui-ux-designer.md)** - 创建界面设计、线框图和设计系统
+- **[ui-visual-validator](ui-visual-validator.md)** - 通过严格的截图分析验证UI修改是否达到预期目标
+- **[mobile-developer](mobile-developer.md)** - 开发具有原生集成的React Native或Flutter应用
+- **[graphql-architect](graphql-architect.md)** - 设计GraphQL架构、解析器和联邦
+- **[architect-reviewer](architect-review.md)** - 审查代码变更的架构一致性和模式
 
-### Language Specialists
-- **[python-pro](python-pro.md)** - Write idiomatic Python code with advanced features and optimizations
-- **[ruby-pro](ruby-pro.md)** - Write idiomatic Ruby code with metaprogramming, Rails patterns, gem development, and testing frameworks
-- **[golang-pro](golang-pro.md)** - Write idiomatic Go code with goroutines, channels, and interfaces
-- **[rust-pro](rust-pro.md)** - Write idiomatic Rust with ownership patterns, lifetimes, and trait implementations
-- **[c-pro](c-pro.md)** - Write efficient C code with proper memory management and system calls
-- **[cpp-pro](cpp-pro.md)** - Write idiomatic C++ code with modern features, RAII, smart pointers, and STL algorithms
-- **[javascript-pro](javascript-pro.md)** - Master modern JavaScript with ES6+, async patterns, and Node.js APIs
-- **[typescript-pro](typescript-pro.md)** - Master TypeScript with advanced types, generics, and strict type safety
-- **[php-pro](php-pro.md)** - Write idiomatic PHP code with modern features and performance optimizations
-- **[java-pro](java-pro.md)** - Master modern Java with streams, concurrency, and JVM optimization
-- **[elixir-pro](elixir-pro.md)** - Write idiomatic Elixir code with OTP patterns, functional programming, and Phoenix frameworks
-- **[csharp-pro](csharp-pro.md)** - Write modern C# code with advanced features and .NET optimization
-- **[scala-pro](scala-pro.md)** - Master enterprise-grade Scala development with functional programming, distributed systems, and big data processing
-- **[flutter-expert](flutter-expert.md)** - Master Flutter development with Dart, widgets, and platform integrations
-- **[unity-developer](unity-developer.md)** - Build Unity games with optimized scripts and performance tuning
-- **[minecraft-bukkit-pro](minecraft-bukkit-pro.md)** - Master Minecraft server plugin development with Bukkit, Spigot, and Paper APIs
-- **[ios-developer](ios-developer.md)** - Develop native iOS applications with Swift/SwiftUI
-- **[sql-pro](sql-pro.md)** - Write complex SQL queries, optimize execution plans, and design normalized schemas
+### 语言专家
+- **[python-pro](python-pro.md)** - 编写具有高级特性和优化的地道Python代码
+- **[ruby-pro](ruby-pro.md)** - 编写地道的Ruby代码，包含元编程、Rails模式、gem开发和测试框架
+- **[golang-pro](golang-pro.md)** - 编写具有goroutines、通道和接口的地道Go代码
+- **[rust-pro](rust-pro.md)** - 编写具有所有权模式、生命周期和trait实现的地道Rust代码
+- **[c-pro](c-pro.md)** - 编写高效的C代码，具备适当的内存管理和系统调用
+- **[cpp-pro](cpp-pro.md)** - 编写具有现代特性、RAII、智能指针和STL算法的地道C++代码
+- **[javascript-pro](javascript-pro.md)** - 掌握现代JavaScript的ES6+、异步模式和Node.js API
+- **[typescript-pro](typescript-pro.md)** - 掌握具有高级类型、泛型和严格类型安全的TypeScript
+- **[php-pro](php-pro.md)** - 编写具有现代特性和性能优化的地道PHP代码
+- **[java-pro](java-pro.md)** - 掌握具有流处理、并发和JVM优化的现代Java
+- **[elixir-pro](elixir-pro.md)** - 编写具有OTP模式、函数式编程和Phoenix框架的地道Elixir代码
+- **[csharp-pro](csharp-pro.md)** - 编写具有高级特性和.NET优化的现代C#代码
+- **[scala-pro](scala-pro.md)** - 掌握企业级Scala开发，包含函数式编程、分布式系统和大数据处理
+- **[flutter-expert](flutter-expert.md)** - 掌握Flutter开发，包含Dart、组件和平台集成
+- **[unity-developer](unity-developer.md)** - 构建具有优化脚本和性能调优的Unity游戏
+- **[minecraft-bukkit-pro](minecraft-bukkit-pro.md)** - 掌握使用Bukkit、Spigot和Paper API的Minecraft服务器插件开发
+- **[ios-developer](ios-developer.md)** - 使用Swift/SwiftUI开发原生iOS应用
+- **[sql-pro](sql-pro.md)** - 编写复杂SQL查询、优化执行计划和设计规范化架构
 
-### Infrastructure & Operations
+### 基础设施与运维
 - **[devops-troubleshooter](devops-troubleshooter.md)** - Debug production issues, analyze logs, and fix deployment failures
 - **[deployment-engineer](deployment-engineer.md)** - Configure CI/CD pipelines, Docker containers, and cloud deployments
 - **[cloud-architect](cloud-architect.md)** - Design AWS/Azure/GCP infrastructure and optimize cloud costs
@@ -132,12 +132,12 @@ This repository contains 76 specialized subagents that extend Claude Code's capa
 - **[seo-content-writer](seo-content-writer.md)** - Writes SEO-optimized content based on keywords and briefs
 - **[seo-content-planner](seo-content-planner.md)** - Creates content outlines, topic clusters, and calendars
 
-## Model Assignments
+## 模型分配
 
-All 76 subagents are configured with specific Claude models based on task complexity:
+所有76个智能体根据任务复杂度配置特定的Claude模型：
 
-### 🚀 Haiku (Fast & Cost-Effective) - 15 agents
-**Model:** `haiku`
+### 🚀 Haiku（快速且具成本效益） - 15个智能体
+**模型：** `haiku`
 - `data-scientist` - SQL queries and data analysis
 - `api-documenter` - OpenAPI/Swagger documentation
 - `reference-builder` - Exhaustive technical references and API documentation
@@ -224,57 +224,57 @@ All 76 subagents are configured with specific Claude models based on task comple
 - `docs-architect` - Comprehensive technical documentation from codebases
 - `tutorial-engineer` - Step-by-step tutorials and educational content
 
-## Installation
+## 安装
 
-These subagents are automatically available when placed in `~/.claude/agents/` directory.
+将这些智能体放置在 `~/.claude/agents/` 目录中后，它们会自动可用。
 
 ```bash
 cd ~/.claude
 git clone https://github.com/wshobson/agents.git
 ```
 
-## Usage
+## 用法
 
-### Automatic Invocation
-Claude Code will automatically delegate to the appropriate subagent based on the task context and the subagent's description.
+### 自动调用
+Claude Code将根据任务上下文和智能体的描述自动委派给适当的智能体。
 
-### Explicit Invocation
-Mention the subagent by name in your request:
+### 显式调用
+在请求中按名称提及智能体：
 ```
-"Use the code-reviewer to check my recent changes"
-"Have the security-auditor scan for vulnerabilities"
-"Get the performance-engineer to optimize this bottleneck"
+"使用code-reviewer检查我最近的更改"
+"让security-auditor扫描漏洞"
+"让performance-engineer优化这个瓶颈"
 ```
 
-## Usage Examples
+## 使用示例
 
-### Single Agent Tasks
+### 单智能体任务
 ```bash
-# Code quality and review
-"Use code-reviewer to analyze this component for best practices"
-"Have code-reviewer scrutinize these configuration changes"
-"Have security-auditor check for OWASP compliance issues"
+# 代码质量和审查
+"使用code-reviewer分析此组件的最佳实践"
+"让code-reviewer仔细审查这些配置更改"
+"让security-auditor检查OWASP合规问题"
 
-# Development tasks  
-"Get backend-architect to design a user authentication API"
-"Use frontend-developer to create a responsive dashboard layout"
+# 开发任务  
+"让backend-architect设计用户身份验证API"
+"使用frontend-developer创建响应式仪表板布局"
 
-# Infrastructure and operations
-"Have devops-troubleshooter analyze these production logs"
-"Use cloud-architect to design a scalable AWS architecture"
-"Get network-engineer to debug SSL certificate issues"
-"Use database-admin to set up backup and replication"
+# 基础设施和运维
+"让devops-troubleshooter分析这些生产日志"
+"使用cloud-architect设计可扩展的AWS架构"
+"让network-engineer调试SSL证书问题"
+"使用database-admin设置备份和复制"
 
-# Data and AI
-"Get data-scientist to analyze this customer behavior dataset"
-"Use ai-engineer to build a RAG system for document search"
-"Have mlops-engineer set up MLflow experiment tracking"
+# 数据和AI
+"让data-scientist分析这个客户行为数据集"
+"使用ai-engineer构建用于文档搜索的RAG系统"
+"让mlops-engineer设置MLflow实验跟踪"
 
-# Business and marketing
-"Have business-analyst create investor deck with growth metrics"
-"Use content-marketer to write SEO-optimized blog post"
-"Get sales-automator to create cold email sequence"
-"Have customer-support draft FAQ documentation"
+# 业务和营销
+"让business-analyst创建包含增长指标的投资者演示文稿"
+"使用content-marketer编写SEO优化的博客文章"
+"让sales-automator创建冷邮件序列"
+"让customer-support起草FAQ文档"
 ```
 
 ### Multi-Agent Workflows
@@ -329,34 +329,35 @@ For more sophisticated multi-subagent orchestration, use the companion [Commands
 /security-hardening Implement OAuth2 with zero-trust architecture
 ```
 
-## Subagent Format
+## 智能体格式
 
-Each subagent follows this structure:
+每个智能体遵循以下结构：
 ```markdown
 ---
-name: subagent-name
-description: When this subagent should be invoked
-model: haiku  # Optional - specify which model to use (haiku/sonnet/opus)
-tools: tool1, tool2  # Optional - defaults to all tools
+name: 智能体名称
+description: 何时应调用此智能体的描述
+model: inherit  # 可选 - 指定使用哪个模型
+tools: 工具1, 工具2  # 可选 - 默认为所有工具
 ---
 
-System prompt defining the subagent's role and capabilities
+定义智能体角色和能力的系统提示词
 ```
 
-### Model Configuration
+### 模型配置
 
-As of Claude Code v1.0.64, subagents can specify which Claude model they should use. This allows for cost-effective task delegation based on complexity:
+从Claude Code v1.0.64开始，智能体可以指定它们应该使用哪个Claude模型。这允许根据复杂性进行具成本效益的任务委派：
 
-- **Low Complexity (Haiku)**: Simple tasks like basic data analysis, documentation generation, and standard responses
-- **Medium Complexity (Sonnet)**: Development tasks, code review, testing, and standard engineering work  
-- **High Complexity (Opus)**: Critical tasks like security auditing, architecture review, incident response, and AI/ML engineering
+- **低复杂度（Haiku）**：简单任务，如基础数据分析、文档生成和标准响应
+- **中等复杂度（Sonnet）**：开发任务、代码审查、测试和标准工程工作
+- **高复杂度（Opus）**：关键任务，如安全审计、架构审查、事件响应和AI/ML工程
 
-Available models (using simplified naming as of Claude Code v1.0.64):
-- `haiku` - Fast and cost-effective for simple tasks
-- `sonnet` - Balanced performance for most development work
-- `opus` - Most capable for complex analysis and critical tasks
+可用模型（使用Claude Code v1.0.64的简化命名）：
+- `inherit` - 继承系统默认模型设置
+- `haiku` - 快速且具成本效益的简单任务
+- `sonnet` - 大多数开发工作的平衡性能
+- `opus` - 复杂分析和关键任务的最强能力
 
-If no model is specified, the subagent will use the system's default model.
+如果没有指定模型，智能体将使用系统的默认模型。
 
 ## Agent Orchestration Patterns
 
