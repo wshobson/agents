@@ -224,57 +224,57 @@
 - `docs-architect` - Comprehensive technical documentation from codebases
 - `tutorial-engineer` - Step-by-step tutorials and educational content
 
-## Installation
+## 安装
 
-These subagents are automatically available when placed in `~/.claude/agents/` directory.
+将这些智能体放置在 `~/.claude/agents/` 目录中后，它们会自动可用。
 
 ```bash
 cd ~/.claude
 git clone https://github.com/wshobson/agents.git
 ```
 
-## Usage
+## 用法
 
-### Automatic Invocation
-Claude Code will automatically delegate to the appropriate subagent based on the task context and the subagent's description.
+### 自动调用
+Claude Code将根据任务上下文和智能体的描述自动委派给适当的智能体。
 
-### Explicit Invocation
-Mention the subagent by name in your request:
+### 显式调用
+在请求中按名称提及智能体：
 ```
-"Use the code-reviewer to check my recent changes"
-"Have the security-auditor scan for vulnerabilities"
-"Get the performance-engineer to optimize this bottleneck"
+"使用code-reviewer检查我最近的更改"
+"让security-auditor扫描漏洞"
+"让performance-engineer优化这个瓶颈"
 ```
 
-## Usage Examples
+## 使用示例
 
-### Single Agent Tasks
+### 单智能体任务
 ```bash
-# Code quality and review
-"Use code-reviewer to analyze this component for best practices"
-"Have code-reviewer scrutinize these configuration changes"
-"Have security-auditor check for OWASP compliance issues"
+# 代码质量和审查
+"使用code-reviewer分析此组件的最佳实践"
+"让code-reviewer仔细审查这些配置更改"
+"让security-auditor检查OWASP合规问题"
 
-# Development tasks  
-"Get backend-architect to design a user authentication API"
-"Use frontend-developer to create a responsive dashboard layout"
+# 开发任务  
+"让backend-architect设计用户身份验证API"
+"使用frontend-developer创建响应式仪表板布局"
 
-# Infrastructure and operations
-"Have devops-troubleshooter analyze these production logs"
-"Use cloud-architect to design a scalable AWS architecture"
-"Get network-engineer to debug SSL certificate issues"
-"Use database-admin to set up backup and replication"
+# 基础设施和运维
+"让devops-troubleshooter分析这些生产日志"
+"使用cloud-architect设计可扩展的AWS架构"
+"让network-engineer调试SSL证书问题"
+"使用database-admin设置备份和复制"
 
-# Data and AI
-"Get data-scientist to analyze this customer behavior dataset"
-"Use ai-engineer to build a RAG system for document search"
-"Have mlops-engineer set up MLflow experiment tracking"
+# 数据和AI
+"让data-scientist分析这个客户行为数据集"
+"使用ai-engineer构建用于文档搜索的RAG系统"
+"让mlops-engineer设置MLflow实验跟踪"
 
-# Business and marketing
-"Have business-analyst create investor deck with growth metrics"
-"Use content-marketer to write SEO-optimized blog post"
-"Get sales-automator to create cold email sequence"
-"Have customer-support draft FAQ documentation"
+# 业务和营销
+"让business-analyst创建包含增长指标的投资者演示文稿"
+"使用content-marketer编写SEO优化的博客文章"
+"让sales-automator创建冷邮件序列"
+"让customer-support起草FAQ文档"
 ```
 
 ### Multi-Agent Workflows
@@ -329,34 +329,35 @@ For more sophisticated multi-subagent orchestration, use the companion [Commands
 /security-hardening Implement OAuth2 with zero-trust architecture
 ```
 
-## Subagent Format
+## 智能体格式
 
-Each subagent follows this structure:
+每个智能体遵循以下结构：
 ```markdown
 ---
-name: subagent-name
-description: When this subagent should be invoked
-model: haiku  # Optional - specify which model to use (haiku/sonnet/opus)
-tools: tool1, tool2  # Optional - defaults to all tools
+name: 智能体名称
+description: 何时应调用此智能体的描述
+model: inherit  # 可选 - 指定使用哪个模型
+tools: 工具1, 工具2  # 可选 - 默认为所有工具
 ---
 
-System prompt defining the subagent's role and capabilities
+定义智能体角色和能力的系统提示词
 ```
 
-### Model Configuration
+### 模型配置
 
-As of Claude Code v1.0.64, subagents can specify which Claude model they should use. This allows for cost-effective task delegation based on complexity:
+从Claude Code v1.0.64开始，智能体可以指定它们应该使用哪个Claude模型。这允许根据复杂性进行具成本效益的任务委派：
 
-- **Low Complexity (Haiku)**: Simple tasks like basic data analysis, documentation generation, and standard responses
-- **Medium Complexity (Sonnet)**: Development tasks, code review, testing, and standard engineering work  
-- **High Complexity (Opus)**: Critical tasks like security auditing, architecture review, incident response, and AI/ML engineering
+- **低复杂度（Haiku）**：简单任务，如基础数据分析、文档生成和标准响应
+- **中等复杂度（Sonnet）**：开发任务、代码审查、测试和标准工程工作
+- **高复杂度（Opus）**：关键任务，如安全审计、架构审查、事件响应和AI/ML工程
 
-Available models (using simplified naming as of Claude Code v1.0.64):
-- `haiku` - Fast and cost-effective for simple tasks
-- `sonnet` - Balanced performance for most development work
-- `opus` - Most capable for complex analysis and critical tasks
+可用模型（使用Claude Code v1.0.64的简化命名）：
+- `inherit` - 继承系统默认模型设置
+- `haiku` - 快速且具成本效益的简单任务
+- `sonnet` - 大多数开发工作的平衡性能
+- `opus` - 复杂分析和关键任务的最强能力
 
-If no model is specified, the subagent will use the system's default model.
+如果没有指定模型，智能体将使用系统的默认模型。
 
 ## Agent Orchestration Patterns
 
