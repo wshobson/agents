@@ -29,46 +29,46 @@
   </details>
 </div>
 
-# Claude Code Subagents Collection
+# Claude Code 智能体集合
 
-A comprehensive collection of specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), designed to enhance development workflows with domain-specific expertise.
+为 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 打造的全面专业智能体集合，通过领域专业知识增强开发工作流程。
 
-## Overview
+## 概述
 
-This repository contains 76 specialized subagents that extend Claude Code's capabilities. Each subagent is an expert in a specific domain, automatically invoked based on context or explicitly called when needed. All agents are configured with specific Claude models based on task complexity for optimal performance and cost-effectiveness.
+本仓库包含76个专业智能体，扩展了Claude Code的功能。每个智能体都是特定领域的专家，根据上下文自动调用或在需要时显式调用。所有智能体根据任务复杂度配置特定的Claude模型，以实现最佳性能和成本效益。
 
-## Available Subagents
+## 可用智能体
 
-### Development & Architecture
-- **[backend-architect](backend-architect.md)** - Design RESTful APIs, microservice boundaries, and database schemas
-- **[frontend-developer](frontend-developer.md)** - Build React components, implement responsive layouts, and handle client-side state management
-- **[ui-ux-designer](ui-ux-designer.md)** - Create interface designs, wireframes, and design systems
-- **[ui-visual-validator](ui-visual-validator.md)** - Verify whether UI modifications have achieved their intended goals through rigorous screenshot analysis
-- **[mobile-developer](mobile-developer.md)** - Develop React Native or Flutter apps with native integrations
-- **[graphql-architect](graphql-architect.md)** - Design GraphQL schemas, resolvers, and federation
-- **[architect-reviewer](architect-review.md)** - Reviews code changes for architectural consistency and patterns
+### 开发与架构
+- **[backend-architect](backend-architect.md)** - 设计RESTful API、微服务边界和数据库架构
+- **[frontend-developer](frontend-developer.md)** - 构建React组件、实现响应式布局和处理客户端状态管理
+- **[ui-ux-designer](ui-ux-designer.md)** - 创建界面设计、线框图和设计系统
+- **[ui-visual-validator](ui-visual-validator.md)** - 通过严格的截图分析验证UI修改是否达到预期目标
+- **[mobile-developer](mobile-developer.md)** - 开发具有原生集成的React Native或Flutter应用
+- **[graphql-architect](graphql-architect.md)** - 设计GraphQL架构、解析器和联邦
+- **[architect-reviewer](architect-review.md)** - 审查代码变更的架构一致性和模式
 
-### Language Specialists
-- **[python-pro](python-pro.md)** - Write idiomatic Python code with advanced features and optimizations
-- **[ruby-pro](ruby-pro.md)** - Write idiomatic Ruby code with metaprogramming, Rails patterns, gem development, and testing frameworks
-- **[golang-pro](golang-pro.md)** - Write idiomatic Go code with goroutines, channels, and interfaces
-- **[rust-pro](rust-pro.md)** - Write idiomatic Rust with ownership patterns, lifetimes, and trait implementations
-- **[c-pro](c-pro.md)** - Write efficient C code with proper memory management and system calls
-- **[cpp-pro](cpp-pro.md)** - Write idiomatic C++ code with modern features, RAII, smart pointers, and STL algorithms
-- **[javascript-pro](javascript-pro.md)** - Master modern JavaScript with ES6+, async patterns, and Node.js APIs
-- **[typescript-pro](typescript-pro.md)** - Master TypeScript with advanced types, generics, and strict type safety
-- **[php-pro](php-pro.md)** - Write idiomatic PHP code with modern features and performance optimizations
-- **[java-pro](java-pro.md)** - Master modern Java with streams, concurrency, and JVM optimization
-- **[elixir-pro](elixir-pro.md)** - Write idiomatic Elixir code with OTP patterns, functional programming, and Phoenix frameworks
-- **[csharp-pro](csharp-pro.md)** - Write modern C# code with advanced features and .NET optimization
-- **[scala-pro](scala-pro.md)** - Master enterprise-grade Scala development with functional programming, distributed systems, and big data processing
-- **[flutter-expert](flutter-expert.md)** - Master Flutter development with Dart, widgets, and platform integrations
-- **[unity-developer](unity-developer.md)** - Build Unity games with optimized scripts and performance tuning
-- **[minecraft-bukkit-pro](minecraft-bukkit-pro.md)** - Master Minecraft server plugin development with Bukkit, Spigot, and Paper APIs
-- **[ios-developer](ios-developer.md)** - Develop native iOS applications with Swift/SwiftUI
-- **[sql-pro](sql-pro.md)** - Write complex SQL queries, optimize execution plans, and design normalized schemas
+### 语言专家
+- **[python-pro](python-pro.md)** - 编写具有高级特性和优化的地道Python代码
+- **[ruby-pro](ruby-pro.md)** - 编写地道的Ruby代码，包含元编程、Rails模式、gem开发和测试框架
+- **[golang-pro](golang-pro.md)** - 编写具有goroutines、通道和接口的地道Go代码
+- **[rust-pro](rust-pro.md)** - 编写具有所有权模式、生命周期和trait实现的地道Rust代码
+- **[c-pro](c-pro.md)** - 编写高效的C代码，具备适当的内存管理和系统调用
+- **[cpp-pro](cpp-pro.md)** - 编写具有现代特性、RAII、智能指针和STL算法的地道C++代码
+- **[javascript-pro](javascript-pro.md)** - 掌握现代JavaScript的ES6+、异步模式和Node.js API
+- **[typescript-pro](typescript-pro.md)** - 掌握具有高级类型、泛型和严格类型安全的TypeScript
+- **[php-pro](php-pro.md)** - 编写具有现代特性和性能优化的地道PHP代码
+- **[java-pro](java-pro.md)** - 掌握具有流处理、并发和JVM优化的现代Java
+- **[elixir-pro](elixir-pro.md)** - 编写具有OTP模式、函数式编程和Phoenix框架的地道Elixir代码
+- **[csharp-pro](csharp-pro.md)** - 编写具有高级特性和.NET优化的现代C#代码
+- **[scala-pro](scala-pro.md)** - 掌握企业级Scala开发，包含函数式编程、分布式系统和大数据处理
+- **[flutter-expert](flutter-expert.md)** - 掌握Flutter开发，包含Dart、组件和平台集成
+- **[unity-developer](unity-developer.md)** - 构建具有优化脚本和性能调优的Unity游戏
+- **[minecraft-bukkit-pro](minecraft-bukkit-pro.md)** - 掌握使用Bukkit、Spigot和Paper API的Minecraft服务器插件开发
+- **[ios-developer](ios-developer.md)** - 使用Swift/SwiftUI开发原生iOS应用
+- **[sql-pro](sql-pro.md)** - 编写复杂SQL查询、优化执行计划和设计规范化架构
 
-### Infrastructure & Operations
+### 基础设施与运维
 - **[devops-troubleshooter](devops-troubleshooter.md)** - Debug production issues, analyze logs, and fix deployment failures
 - **[deployment-engineer](deployment-engineer.md)** - Configure CI/CD pipelines, Docker containers, and cloud deployments
 - **[cloud-architect](cloud-architect.md)** - Design AWS/Azure/GCP infrastructure and optimize cloud costs
@@ -132,12 +132,12 @@ This repository contains 76 specialized subagents that extend Claude Code's capa
 - **[seo-content-writer](seo-content-writer.md)** - Writes SEO-optimized content based on keywords and briefs
 - **[seo-content-planner](seo-content-planner.md)** - Creates content outlines, topic clusters, and calendars
 
-## Model Assignments
+## 模型分配
 
-All 76 subagents are configured with specific Claude models based on task complexity:
+所有76个智能体根据任务复杂度配置特定的Claude模型：
 
-### 🚀 Haiku (Fast & Cost-Effective) - 15 agents
-**Model:** `haiku`
+### 🚀 Haiku（快速且具成本效益） - 15个智能体
+**模型：** `haiku`
 - `data-scientist` - SQL queries and data analysis
 - `api-documenter` - OpenAPI/Swagger documentation
 - `reference-builder` - Exhaustive technical references and API documentation
