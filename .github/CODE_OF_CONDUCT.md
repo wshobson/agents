@@ -1,70 +1,70 @@
-# Code of Conduct
+# 行为准则
 
-## Our Pledge
+## 我们的承诺
 
-We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation.
+作为成员、贡献者和领导者，我们承诺为每个人创造一个无骚扰的社区参与体验，无论年龄、体型、明显或不明显的残疾、种族、性别特征、性别认同和表达、经验水平、教育程度、社会经济地位、国籍、外貌、种族、种姓、肤色、宗教或性认同和取向如何。
 
-We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
+我们承诺以有助于开放、友好、多元、包容和健康社区的方式行事和互动。
 
-## Our Standards
+## 我们的标准
 
-### Acceptable Behavior
+### 可接受的行为
 
-- Using welcoming and inclusive language
-- Being respectful of differing viewpoints and experiences
-- Gracefully accepting constructive criticism
-- Focusing on what is best for the community
-- Showing empathy towards other community members
-- Contributing constructively to discussions about AI agents and development
+- 使用友好和包容的语言
+- 尊重不同的观点和经历
+- 优雅地接受建设性批评
+- 专注于对社区最有利的事情
+- 对其他社区成员表示同情
+- 对AI智能体和开发的讨论做出建设性贡献
 
-### Unacceptable Behavior
+### 不可接受的行为
 
-The following behaviors are considered harassment and are unacceptable:
+以下行为被视为骚扰且不可接受：
 
-- **Hate speech**: The use of abusive or threatening speech that expresses prejudice against a particular group, especially on the basis of race, religion, gender, sexual orientation, or other characteristics
-- **Discriminatory language**: Slurs, offensive comments, or language targeting protected characteristics
-- **Personal attacks**: Insulting, demeaning, or hostile comments directed at individuals
-- **Harassment**: Deliberate intimidation, stalking, following, or threatening
-- **Doxxing**: Publishing private information without consent
-- **Spam**: Excessive off-topic content, promotional material, or repetitive posts
-- **Trolling**: Deliberately inflammatory or disruptive behavior
-- **Sexual harassment**: Unwelcome sexual attention or advances
+- **仇恨言论**：使用辱骂或威胁性言论表达对特定群体的偏见，特别是基于种族、宗教、性别、性取向或其他特征
+- **歧视性语言**：诽谤、冒犯性评论或针对受保护特征的语言
+- **人身攻击**：对个人的侮辱、贬低或敌对评论
+- **骚扰**：故意恐吓、跟踪、关注或威胁
+- **人肉搜索**：未经同意发布私人信息
+- **垃圾信息**：过度的偏离主题内容、宣传材料或重复帖子
+- **钓鱼**：故意煽动或破坏性行为
+- **性骚扰**：不受欢迎的性关注或行为
 
-## Enforcement
+## 执行
 
-### Reporting
+### 举报
 
-If you experience or witness unacceptable behavior, please report it by:
-- Creating an issue with the `moderation` label
-- Contacting the repository maintainers directly
-- Using GitHub's built-in reporting mechanisms
+如果您遭遇或目睹不可接受的行为，请通过以下方式举报：
+- 创建标记为`moderation`标签的问题
+- 直接联系仓库维护者
+- 使用GitHub的内置举报机制
 
-### Consequences
+### 后果
 
-Community leaders will follow these guidelines in determining consequences:
+社区领导者将遵循以下指导原则来确定后果：
 
-1. **Warning**: First offense or minor violation
-2. **Temporary restriction**: Temporary loss of interaction privileges
-3. **Permanent ban**: Severe or repeated violations
+1. **警告**：首次违规或轻微违规
+2. **临时限制**：暂时失去互动权限
+3. **永久禁止**：严重或重复违规
 
-### Enforcement Actions
+### 执行行动
 
-- **Immediate removal**: Hate speech, threats, or doxxing will result in immediate content removal and user blocking
-- **Issue/PR closure**: Inappropriate content will be closed and locked
-- **Account blocking**: Repeat offenders will be blocked from the repository
+- **立即移除**：仇恨言论、威胁或人肉搜索将导致立即移除内容并阻止用户
+- **问题/PR关闭**：不当内容将被关闭和锁定
+- **账户阻止**：重复违规者将被阻止访问仓库
 
-## Scope
+## 适用范围
 
-This Code of Conduct applies within all community spaces, including:
-- Issues and pull requests
-- Discussions and comments
-- Wiki and documentation
-- External representations of the project
+本行为准则适用于所有社区空间，包括：
+- 问题和拉取请求
+- 讨论和评论
+- Wiki和文档
+- 项目的外部代表
 
-## Attribution
+## 归属
 
-This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org/), version 2.1.
+本行为准则改编自[贡献者公约](https://www.contributor-covenant.org/)第2.1版。
 
-## Contact
+## 联系
 
-Questions about the Code of Conduct can be directed to the repository maintainers through GitHub issues or discussions.
+关于行为准则的问题可通过GitHub问题或讨论向仓库维护者咨询。

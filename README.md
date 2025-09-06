@@ -69,68 +69,68 @@
 - **[sql-pro](sql-pro.md)** - 编写复杂SQL查询、优化执行计划和设计规范化架构
 
 ### 基础设施与运维
-- **[devops-troubleshooter](devops-troubleshooter.md)** - Debug production issues, analyze logs, and fix deployment failures
-- **[deployment-engineer](deployment-engineer.md)** - Configure CI/CD pipelines, Docker containers, and cloud deployments
-- **[cloud-architect](cloud-architect.md)** - Design AWS/Azure/GCP infrastructure and optimize cloud costs
-- **[hybrid-cloud-architect](hybrid-cloud-architect.md)** - Design hybrid cloud infrastructure across AWS/Azure/GCP and OpenStack on-premises environments
-- **[kubernetes-architect](kubernetes-architect.md)** - Design cloud-native infrastructure with Kubernetes at its core and GitOps principles across AWS/Azure/GCP and hybrid environments.
-- **[database-optimizer](database-optimizer.md)** - Optimize SQL queries, design efficient indexes, and handle database migrations
-- **[database-admin](database-admin.md)** - Manage database operations, backups, replication, and monitoring
-- **[terraform-specialist](terraform-specialist.md)** - Write advanced Terraform modules, manage state files, and implement IaC best practices
-- **[incident-responder](incident-responder.md)** - Handles production incidents with urgency and precision
-- **[network-engineer](network-engineer.md)** - Debug network connectivity, configure load balancers, and analyze traffic patterns
-- **[dx-optimizer](dx-optimizer.md)** - Developer Experience specialist that improves tooling, setup, and workflows
+- **[devops-troubleshooter](devops-troubleshooter.md)** - 调试生产问题，分析日志，修复部署失败
+- **[deployment-engineer](deployment-engineer.md)** - 配置CI/CD管道、Docker容器和云部署
+- **[cloud-architect](cloud-architect.md)** - 设计AWS/Azure/GCP基础设施并优化云成本
+- **[hybrid-cloud-architect](hybrid-cloud-architect.md)** - 设计跨AWS/Azure/GCP和本地OpenStack环境的混合云基础设施
+- **[kubernetes-architect](kubernetes-architect.md)** - 设计以Kubernetes为核心的云原生基础设施，跨AWS/Azure/GCP和混合环境实施GitOps原则
+- **[database-optimizer](database-optimizer.md)** - 优化SQL查询，设计高效索引，处理数据库迁移
+- **[database-admin](database-admin.md)** - 管理数据库操作、备份、复制和监控
+- **[terraform-specialist](terraform-specialist.md)** - 编写高级Terraform模块，管理状态文件，实施IaC最佳实践
+- **[incident-responder](incident-responder.md)** - 紧急准确地处理生产事件
+- **[network-engineer](network-engineer.md)** - 调试网络连接，配置负载均衡器，分析流量模式
+- **[dx-optimizer](dx-optimizer.md)** - 开发体验专家，改进工具、设置和工作流
 
-### Quality & Security
-- **[code-reviewer](code-reviewer.md)** - Expert code review with deep configuration security focus and production reliability
-- **[security-auditor](security-auditor.md)** - Review code for vulnerabilities and ensure OWASP compliance
-- **[test-automator](test-automator.md)** - Create comprehensive test suites with unit, integration, and e2e tests
-- **[performance-engineer](performance-engineer.md)** - Profile applications, optimize bottlenecks, and implement caching strategies
-- **[debugger](debugger.md)** - Debugging specialist for errors, test failures, and unexpected behavior
-- **[error-detective](error-detective.md)** - Search logs and codebases for error patterns, stack traces, and anomalies
-- **[search-specialist](search-specialist.md)** - Expert web researcher using advanced search techniques and synthesis
+### 质量与安全
+- **[code-reviewer](code-reviewer.md)** - 专家代码审查，深度关注配置安全和生产可靠性
+- **[security-auditor](security-auditor.md)** - 审查代码漏洞并确保OWASP合规性
+- **[test-automator](test-automator.md)** - 创建包含单元、集成和端到端测试的综合测试套件
+- **[performance-engineer](performance-engineer.md)** - 分析应用程序，优化瓶颈，实施缓存策略
+- **[debugger](debugger.md)** - 专门处理错误、测试失败和意外行为的调试专家
+- **[error-detective](error-detective.md)** - 搜索日志和代码库中的错误模式、堆栈跟踪和异常
+- **[search-specialist](search-specialist.md)** - 使用高级搜索技术和综合分析的专业网络研究员
 
-### Data & AI
-- **[data-scientist](data-scientist.md)** - Data analysis expert for SQL queries, BigQuery operations, and data insights
-- **[data-engineer](data-engineer.md)** - Build ETL pipelines, data warehouses, and streaming architectures
-- **[ai-engineer](ai-engineer.md)** - Build LLM applications, RAG systems, and prompt pipelines
-- **[ml-engineer](ml-engineer.md)** - Implement ML pipelines, model serving, and feature engineering
-- **[mlops-engineer](mlops-engineer.md)** - Build ML pipelines, experiment tracking, and model registries
-- **[prompt-engineer](prompt-engineer.md)** - Optimizes prompts for LLMs and AI systems
+### 数据与人工智能
+- **[data-scientist](data-scientist.md)** - 数据分析专家，处理SQL查询、BigQuery操作和数据洞察
+- **[data-engineer](data-engineer.md)** - 构建ETL管道、数据仓库和流式架构
+- **[ai-engineer](ai-engineer.md)** - 构建LLM应用、RAG系统和提示管道
+- **[ml-engineer](ml-engineer.md)** - 实施ML管道、模型服务和特征工程
+- **[mlops-engineer](mlops-engineer.md)** - 构建ML管道、实验跟踪和模型注册
+- **[prompt-engineer](prompt-engineer.md)** - 为LLM和AI系统优化提示词
 
-### Specialized Domains
-- **[api-documenter](api-documenter.md)** - Create OpenAPI/Swagger specs and write developer documentation
-- **[payment-integration](payment-integration.md)** - Integrate Stripe, PayPal, and payment processors
-- **[quant-analyst](quant-analyst.md)** - Build financial models, backtest trading strategies, and analyze market data
-- **[risk-manager](risk-manager.md)** - Monitor portfolio risk, R-multiples, and position limits
-- **[legacy-modernizer](legacy-modernizer.md)** - Refactor legacy codebases and implement gradual modernization
-- **[context-manager](context-manager.md)** - Manages context across multiple agents and long-running tasks
+### 专门领域
+- **[api-documenter](api-documenter.md)** - 创建OpenAPI/Swagger规范并编写开发者文档
+- **[payment-integration](payment-integration.md)** - 集成Stripe、PayPal和支付处理器
+- **[quant-analyst](quant-analyst.md)** - 构建金融模型，回测交易策略，分析市场数据
+- **[risk-manager](risk-manager.md)** - 监控投资组合风险、R倍数和持仓限制
+- **[legacy-modernizer](legacy-modernizer.md)** - 重构遗留代码库并实施渐进式现代化
+- **[context-manager](context-manager.md)** - 管理多个智能体和长期运行任务的上下文
 
-### Documentation
-- **[docs-architect](docs-architect.md)** - Creates comprehensive technical documentation from existing codebases
-- **[mermaid-expert](mermaid-expert.md)** - Create Mermaid diagrams for flowcharts, sequences, ERDs, and architectures
-- **[reference-builder](reference-builder.md)** - Creates exhaustive technical references and API documentation
-- **[tutorial-engineer](tutorial-engineer.md)** - Creates step-by-step tutorials and educational content from code
+### 文档
+- **[docs-architect](docs-architect.md)** - 从现有代码库创建综合技术文档
+- **[mermaid-expert](mermaid-expert.md)** - 为流程图、序列图、ERD和架构创建Mermaid图表
+- **[reference-builder](reference-builder.md)** - 创建详尽的技术参考和API文档
+- **[tutorial-engineer](tutorial-engineer.md)** - 从代码创建分步教程和教育内容
 
-### Business & Marketing
-- **[business-analyst](business-analyst.md)** - Analyze metrics, create reports, and track KPIs
-- **[content-marketer](content-marketer.md)** - Write blog posts, social media content, and email newsletters
-- **[hp-pro](hp-pro.md)** - Partner for hiring, onboarding/offboarding, PTO and leave, performance, compliant policies, and employee relations.
-- **[sales-automator](sales-automator.md)** - Draft cold emails, follow-ups, and proposal templates
-- **[customer-support](customer-support.md)** - Handle support tickets, FAQ responses, and customer emails
-- **[legal-advisor](legal-advisor.md)** - Draft privacy policies, terms of service, disclaimers, and legal notices
+### 业务与营销
+- **[business-analyst](business-analyst.md)** - 分析指标，创建报告，跟踪KPI
+- **[content-marketer](content-marketer.md)** - 编写博客文章、社交媒体内容和邮件通讯
+- **[hp-pro](hp-pro.md)** - 招聘、入职/离职、PTO和请假、绩效、合规政策和员工关系的合作伙伴
+- **[sales-automator](sales-automator.md)** - 起草冷邮件、跟进和提案模板
+- **[customer-support](customer-support.md)** - 处理支持工单、FAQ回复和客户邮件
+- **[legal-advisor](legal-advisor.md)** - 起草隐私政策、服务条款、免责声明和法律通知
 
-### SEO & Content Optimization
-- **[seo-content-auditor](seo-content-auditor.md)** - Analyzes provided content for quality, E-E-A-T signals, and SEO best practices
-- **[seo-meta-optimizer](seo-meta-optimizer.md)** - Creates optimized meta titles, descriptions, and URL suggestions
-- **[seo-keyword-strategist](seo-keyword-strategist.md)** - Analyzes keyword usage, calculates density, suggests semantic variations
-- **[seo-structure-architect](seo-structure-architect.md)** - Optimizes content structure, header hierarchy, and schema markup
-- **[seo-snippet-hunter](seo-snippet-hunter.md)** - Formats content for featured snippets and SERP features
-- **[seo-content-refresher](seo-content-refresher.md)** - Identifies outdated elements and suggests content updates
-- **[seo-cannibalization-detector](seo-cannibalization-detector.md)** - Analyzes multiple pages for keyword overlap and conflicts
-- **[seo-authority-builder](seo-authority-builder.md)** - Analyzes content for E-E-A-T signals and trust indicators
-- **[seo-content-writer](seo-content-writer.md)** - Writes SEO-optimized content based on keywords and briefs
-- **[seo-content-planner](seo-content-planner.md)** - Creates content outlines, topic clusters, and calendars
+### SEO与内容优化
+- **[seo-content-auditor](seo-content-auditor.md)** - 分析提供的内容质量、E-E-A-T信号和SEO最佳实践
+- **[seo-meta-optimizer](seo-meta-optimizer.md)** - 创建优化的元标题、描述和URL建议
+- **[seo-keyword-strategist](seo-keyword-strategist.md)** - 分析关键词使用，计算密度，建议语义变体
+- **[seo-structure-architect](seo-structure-architect.md)** - 优化内容结构、标题层次结构和架构标记
+- **[seo-snippet-hunter](seo-snippet-hunter.md)** - 为精选摘要和SERP功能格式化内容
+- **[seo-content-refresher](seo-content-refresher.md)** - 识别过时元素并建议内容更新
+- **[seo-cannibalization-detector](seo-cannibalization-detector.md)** - 分析多个页面的关键词重叠和冲突
+- **[seo-authority-builder](seo-authority-builder.md)** - 分析内容的E-E-A-T信号和信任指标
+- **[seo-content-writer](seo-content-writer.md)** - 根据关键词和简介编写SEO优化内容
+- **[seo-content-planner](seo-content-planner.md)** - 创建内容大纲、主题集群和日历
 
 ## 模型分配
 
@@ -155,74 +155,74 @@
 - `seo-cannibalization-detector` - Keyword overlap detection
 - `seo-content-planner` - Content calendars and outlines
 
-### ⚡ Sonnet (Balanced Performance) - 45 agents
-**Model:** `sonnet`
+### ⚡ Sonnet（平衡性能） - 45个智能体
+**模型：** `sonnet`
 
-**Development & Languages:**
-- `python-pro` - Python development with advanced features
-- `ruby-pro` - Ruby development with metaprogramming, Rails patterns, and gem development
-- `javascript-pro` - Modern JavaScript and Node.js
-- `typescript-pro` - Advanced TypeScript with type systems
-- `golang-pro` - Go concurrency and idiomatic patterns
-- `rust-pro` - Rust memory safety and systems programming
-- `c-pro` - C programming and embedded systems
-- `cpp-pro` - Modern C++ with STL and templates
-- `php-pro` - Modern PHP with advanced features
-- `java-pro` - Modern Java with streams and concurrency
-- `elixir-pro` - Elixir with OTP patterns and Phoenix
-- `csharp-pro` - Modern C# with .NET frameworks and patterns
-- `scala-pro` - Enterprise Scala with Apache Pekko, Akka, Spark, and ZIO/Cats Effect
-- `flutter-expert` - Flutter development with state management and animations
-- `unity-developer` - Unity game development and optimization
-- `minecraft-bukkit-pro` - Minecraft plugin development with Bukkit/Spigot/Paper
-- `ios-developer` - Native iOS development with Swift/SwiftUI
-- `frontend-developer` - React components and UI
-- `ui-ux-designer` - Interface design and wireframes
-- `ui-visual-validator` - Rigorous UI validation through screenshot analysis
-- `backend-architect` - API design and microservices
-- `mobile-developer` - React Native/Flutter apps
-- `sql-pro` - Complex SQL optimization
-- `graphql-architect` - GraphQL schemas and resolvers
+**开发与语言：**
+- `python-pro` - 具有高级特性的Python开发
+- `ruby-pro` - Ruby开发，包含元编程、Rails模式和gem开发
+- `javascript-pro` - 现代JavaScript和Node.js
+- `typescript-pro` - 具有类型系统的高级TypeScript
+- `golang-pro` - Go并发和惯用模式
+- `rust-pro` - Rust内存安全和系统编程
+- `c-pro` - C编程和嵌入式系统
+- `cpp-pro` - 具有STL和模板的现代C++
+- `php-pro` - 具有高级特性的现代PHP
+- `java-pro` - 具有流和并发的现代Java
+- `elixir-pro` - 具有OTP模式和Phoenix的Elixir
+- `csharp-pro` - 具有.NET框架和模式的现代C#
+- `scala-pro` - 企业级Scala，包含Apache Pekko、Akka、Spark和ZIO/Cats Effect
+- `flutter-expert` - 具有状态管理和动画的Flutter开发
+- `unity-developer` - Unity游戏开发和优化
+- `minecraft-bukkit-pro` - 使用Bukkit/Spigot/Paper的Minecraft插件开发
+- `ios-developer` - 使用Swift/SwiftUI的原生iOS开发
+- `frontend-developer` - React组件和UI
+- `ui-ux-designer` - 界面设计和线框图
+- `ui-visual-validator` - 通过截图分析进行严格的UI验证
+- `backend-architect` - API设计和微服务
+- `mobile-developer` - React Native/Flutter应用
+- `sql-pro` - 复杂SQL优化
+- `graphql-architect` - GraphQL架构和解析器
 
-**Infrastructure & Operations:**
-- `devops-troubleshooter` - Production debugging
-- `deployment-engineer` - CI/CD pipelines
-- `database-optimizer` - Query optimization
-- `database-admin` - Database operations
-- `terraform-specialist` - Infrastructure as Code
-- `network-engineer` - Network configuration
-- `dx-optimizer` - Developer experience
-- `data-engineer` - ETL pipelines
+**基础设施和运维：**
+- `devops-troubleshooter` - 生产环境调试
+- `deployment-engineer` - CI/CD管道
+- `database-optimizer` - 查询优化
+- `database-admin` - 数据库操作
+- `terraform-specialist` - 基础设施即代码
+- `network-engineer` - 网络配置
+- `dx-optimizer` - 开发体验
+- `data-engineer` - ETL管道
 
-**Quality & Support:**
-- `test-automator` - Test suite creation
-- `code-reviewer` - Code quality analysis
-- `debugger` - Error investigation
-- `error-detective` - Log analysis
-- `ml-engineer` - ML model deployment
-- `legacy-modernizer` - Framework migrations
-- `payment-integration` - Payment processing
-- `mermaid-expert` - Mermaid diagrams and visual documentation
-- `flutter-expert` - Flutter development
-- `seo-content-auditor` - Content quality and E-E-A-T analysis
-- `seo-authority-builder` - Authority signal optimization
-- `seo-content-writer` - SEO-optimized content creation
+**质量和支持：**
+- `test-automator` - 测试套件创建
+- `code-reviewer` - 代码质量分析
+- `debugger` - 错误调查
+- `error-detective` - 日志分析
+- `ml-engineer` - ML模型部署
+- `legacy-modernizer` - 框架迁移
+- `payment-integration` - 支付处理
+- `mermaid-expert` - Mermaid图表和可视化文档
+- `flutter-expert` - Flutter开发
+- `seo-content-auditor` - 内容质量和E-E-A-T分析
+- `seo-authority-builder` - 权威信号优化
+- `seo-content-writer` - SEO优化内容创建
 
-### 🧠 Opus (Maximum Capability) - 15 agents
-**Model:** `opus`
-- `ai-engineer` - LLM applications and RAG systems
-- `security-auditor` - Vulnerability analysis
-- `performance-engineer` - Application optimization
-- `incident-responder` - Production incident handling
-- `mlops-engineer` - ML infrastructure
-- `architect-reviewer` - Architectural consistency
-- `cloud-architect` - Cloud infrastructure design
-- `prompt-engineer` - LLM prompt optimization
-- `context-manager` - Multi-agent coordination
-- `quant-analyst` - Financial modeling
-- `risk-manager` - Portfolio risk management
-- `docs-architect` - Comprehensive technical documentation from codebases
-- `tutorial-engineer` - Step-by-step tutorials and educational content
+### 🧠 Opus（最强能力） - 15个智能体
+**模型：** `opus`
+- `ai-engineer` - LLM应用和RAG系统
+- `security-auditor` - 漏洞分析
+- `performance-engineer` - 应用程序优化
+- `incident-responder` - 生产事件处理
+- `mlops-engineer` - ML基础设施
+- `architect-reviewer` - 架构一致性
+- `cloud-architect` - 云基础设施设计
+- `prompt-engineer` - LLM提示词优化
+- `context-manager` - 多智能体协调
+- `quant-analyst` - 金融建模
+- `risk-manager` - 投资组合风险管理
+- `docs-architect` - 从代码库生成综合技术文档
+- `tutorial-engineer` - 分步教程和教育内容
 
 ## 安装
 
@@ -277,9 +277,57 @@ Claude Code将根据任务上下文和智能体的描述自动委派给适当的
 "让customer-support起草FAQ文档"
 ```
 
-### Multi-Agent Workflows
+### 多智能体工作流
 
-These subagents work together seamlessly, and for more complex orchestrations, you can use the **[Claude Code Commands](https://github.com/wshobson/commands)** collection which provides 52 pre-built slash commands that leverage these subagents in sophisticated workflows.
+这些子智能体可以无缝协作，对于更复杂的编排，您可以使用 **[Claude Code Commands](https://github.com/wshobson/commands)** 集合，它提供52个预构建的斜杠命令，以复杂的工作流方式利用这些子智能体。
+
+```bash
+# 功能开发工作流
+"实现用户身份验证功能"
+# 自动使用：backend-architect → frontend-developer → test-automator → security-auditor
+
+# 性能优化工作流  
+"优化结账流程性能"
+# 自动使用：performance-engineer → database-optimizer → frontend-developer
+
+# 生产事件工作流
+"调试生产环境高内存使用"
+# 自动使用：incident-responder → devops-troubleshooter → error-detective → performance-engineer
+
+# 网络连接工作流
+"修复间歇性API超时"
+# 自动使用：network-engineer → devops-troubleshooter → performance-engineer
+
+# 数据库维护工作流
+"为生产数据库设置灾难恢复"
+# 自动使用：database-admin → database-optimizer → incident-responder
+
+# ML管道工作流
+"构建端到端ML管道并监控"
+# 自动使用：mlops-engineer → ml-engineer → data-engineer → performance-engineer
+
+# 产品发布工作流
+"通过营销活动发布新功能"
+# 自动使用：business-analyst → content-marketer → sales-automator → customer-support
+```
+
+### 与斜杠命令的高级工作流
+
+对于更复杂的多子智能体编排，请使用配套的[Commands仓库](https://github.com/wshobson/commands)：
+
+```bash
+# 复杂功能开发（8+个子智能体）
+./full-stack-feature 构建具有实时分析的用户仪表板
+
+# 生产事件响应（5+个子智能体） 
+./incident-response 数据库连接池耗尽
+
+# ML基础设施设置（6+个子智能体）
+./ml-pipeline 创建具有A/B测试的推荐引擎
+
+# 安全重点实现（7+个子智能体）
+./security-hardening 实现具有零信任架构的OAuth2
+```
 
 ```bash
 # Feature development workflow
@@ -359,168 +407,168 @@ tools: 工具1, 工具2  # 可选 - 默认为所有工具
 
 如果没有指定模型，智能体将使用系统的默认模型。
 
-## Agent Orchestration Patterns
+## 智能体编排模式
 
-Claude Code automatically coordinates agents using these common patterns:
+Claude Code使用以下常见模式自动协调智能体：
 
-### Sequential Workflows
+### 顺序工作流
 ```
-User Request → Agent A → Agent B → Agent C → Result
+用户请求 → 智能体A → 智能体B → 智能体C → 结果
 
-Example: "Build a new API feature"
+示例："构建新的API功能"
 backend-architect → frontend-developer → test-automator → security-auditor
 ```
 
-### Parallel Execution
+### 并行执行
 ```
-User Request → Agent A + Agent B (simultaneously) → Merge Results
+用户请求 → 智能体A + 智能体B（同时执行） → 合并结果
 
-Example: "Optimize application performance" 
-performance-engineer + database-optimizer → Combined recommendations
-```
-
-### Conditional Branching
-```
-User Request → Analysis → Route to appropriate specialist
-
-Example: "Fix this bug"
-debugger (analyzes) → Routes to: backend-architect OR frontend-developer OR devops-troubleshooter
+示例："优化应用程序性能" 
+performance-engineer + database-optimizer → 组合建议
 ```
 
-### Review & Validation
+### 条件分支
 ```
-Primary Agent → Review Agent → Final Result
+用户请求 → 分析 → 路由到合适的专家
 
-Example: "Implement payment processing"
-payment-integration → security-auditor → Validated implementation
+示例："修复这个bug"
+debugger（分析） → 路由到：backend-architect 或 frontend-developer 或 devops-troubleshooter
 ```
 
-## When to Use Which Agent
+### 审查和验证
+```
+主要智能体 → 审查智能体 → 最终结果
 
-### 🏗️ Planning & Architecture
-- **backend-architect**: API design, database schemas, system architecture
-- **frontend-developer**: UI/UX planning, component architecture
-- **ui-ux-designer**: Interface design, wireframes, design systems, user research
-- **cloud-architect**: Infrastructure design, scalability planning
+示例："实现支付处理"
+payment-integration → security-auditor → 已验证的实现
+```
 
-### 🔧 Implementation & Development  
-- **python-pro**: Python-specific development tasks
-- **ruby-pro**: Ruby metaprogramming, Rails applications, gem development, RSpec/Minitest testing
-- **golang-pro**: Go-specific development tasks
-- **rust-pro**: Rust-specific development, memory safety, systems programming
-- **c-pro**: C programming, embedded systems, performance-critical code
-- **javascript-pro**: Modern JavaScript, async patterns, Node.js/browser code
-- **typescript-pro**: Advanced TypeScript, generics, type inference, enterprise patterns
-- **java-pro**: Modern Java development, streams, concurrency, Spring Boot
-- **elixir-pro**: Elixir development, OTP patterns, Phoenix frameworks, functional programming
-- **csharp-pro**: Modern C# development, .NET frameworks, enterprise patterns
-- **scala-pro**: Enterprise Scala with functional programming, Apache Pekko/Akka actors, Apache Spark, ZIO/Cats Effect, reactive architectures
-- **flutter-expert**: Flutter development, Dart, state management, animations, cross-platform deployment
-- **unity-developer**: Unity game development, C# scripting, performance optimization
-- **minecraft-bukkit-pro**: Minecraft plugin development, event systems, server-side features
-- **ios-developer**: Native iOS development with Swift/SwiftUI
-- **sql-pro**: Database queries, schema design, query optimization
-- **mobile-developer**: React Native/Flutter development
+## 何时使用哪个智能体
 
-### 🛠️ Operations & Maintenance
-- **devops-troubleshooter**: Production issues, deployment problems
-- **incident-responder**: Critical outages requiring immediate response
-- **database-optimizer**: Query performance, indexing strategies
-- **database-admin**: Backup strategies, replication, user management, disaster recovery
-- **terraform-specialist**: Infrastructure as Code, Terraform modules, state management
-- **network-engineer**: Network connectivity, load balancers, SSL/TLS, DNS debugging
+### 🏗️ 规划与架构
+- **backend-architect**：API设计、数据库架构、系统架构
+- **frontend-developer**：UI/UX规划、组件架构
+- **ui-ux-designer**：界面设计、线框图、设计系统、用户研究
+- **cloud-architect**：基础设施设计、可扩展性规划
 
-### 📊 Analysis & Optimization
-- **performance-engineer**: Application bottlenecks, optimization
-- **security-auditor**: Vulnerability scanning, compliance checks
-- **data-scientist**: Data analysis, insights, reporting
-- **mlops-engineer**: ML infrastructure, experiment tracking, model registries, pipeline automation
+### 🔧 实现与开发  
+- **python-pro**：Python特定开发任务
+- **ruby-pro**：Ruby元编程、Rails应用、gem开发、RSpec/Minitest测试
+- **golang-pro**：Go特定开发任务
+- **rust-pro**：Rust特定开发、内存安全、系统编程
+- **c-pro**：C编程、嵌入式系统、性能关键代码
+- **javascript-pro**：现代JavaScript、异步模式、Node.js/浏览器代码
+- **typescript-pro**：高级TypeScript、泛型、类型推断、企业模式
+- **java-pro**：现代Java开发、流、并发、Spring Boot
+- **elixir-pro**：Elixir开发、OTP模式、Phoenix框架、函数式编程
+- **csharp-pro**：现代C#开发、.NET框架、企业模式
+- **scala-pro**：企业级Scala，包含函数式编程、Apache Pekko/Akka actors、Apache Spark、ZIO/Cats Effect、响应式架构
+- **flutter-expert**：Flutter开发、Dart、状态管理、动画、跨平台部署
+- **unity-developer**：Unity游戏开发、C#脚本、性能优化
+- **minecraft-bukkit-pro**：Minecraft插件开发、事件系统、服务器端功能
+- **ios-developer**：使用Swift/SwiftUI的原生iOS开发
+- **sql-pro**：数据库查询、架构设计、查询优化
+- **mobile-developer**：React Native/Flutter开发
 
-### 🧪 Quality Assurance
-- **code-reviewer**: Code quality, configuration security, production reliability
-- **test-automator**: Test strategy, test suite creation
-- **debugger**: Bug investigation, error resolution
-- **error-detective**: Log analysis, error pattern recognition, root cause analysis
-- **search-specialist**: Deep web research, competitive analysis, fact-checking
+### 🛠️ 运维与维护
+- **devops-troubleshooter**：生产问题、部署问题
+- **incident-responder**：需要立即响应的关键故障
+- **database-optimizer**：查询性能、索引策略
+- **database-admin**：备份策略、复制、用户管理、灾难恢复
+- **terraform-specialist**：基础设施即代码、Terraform模块、状态管理
+- **network-engineer**：网络连接、负载均衡器、SSL/TLS、DNS调试
 
-### 📚 Documentation
-- **api-documenter**: OpenAPI/Swagger specs, API documentation
-- **docs-architect**: Comprehensive technical documentation, architecture guides, system manuals
-- **reference-builder**: Exhaustive API references, configuration guides, parameter documentation
-- **tutorial-engineer**: Step-by-step tutorials, learning paths, educational content
+### 📊 分析与优化
+- **performance-engineer**：应用程序瓶颈、优化
+- **security-auditor**：漏洞扫描、合规检查
+- **data-scientist**：数据分析、洞察、报告
+- **mlops-engineer**：ML基础设施、实验跟踪、模型注册、管道自动化
 
-### 💼 Business & Strategy
-- **business-analyst**: KPIs, revenue models, growth projections, investor metrics
-- **risk-manager**: Portfolio risk, hedging strategies, R-multiples, position sizing
-- **content-marketer**: SEO content, blog posts, social media, email campaigns
-- **sales-automator**: Cold emails, follow-ups, proposals, lead nurturing
-- **customer-support**: Support tickets, FAQs, help documentation, troubleshooting
-- **legal-advisor** - Draft privacy policies, terms of service, disclaimers, and legal notices
+### 🧪 质量保证
+- **code-reviewer**：代码质量、配置安全、生产可靠性
+- **test-automator**：测试策略、测试套件创建
+- **debugger**：错误调查、错误解决
+- **error-detective**：日志分析、错误模式识别、根本原因分析
+- **search-specialist**：深度网络研究、竞争分析、事实核查
 
-## Best Practices
+### 📚 文档
+- **api-documenter**：OpenAPI/Swagger规范、API文档
+- **docs-architect**：综合技术文档、架构指南、系统手册
+- **reference-builder**：详尽的API参考、配置指南、参数文档
+- **tutorial-engineer**：分步教程、学习路径、教育内容
 
-### 🎯 Task Delegation
-1. **Let Claude Code delegate automatically** - The main agent analyzes context and selects optimal agents
-2. **Be specific about requirements** - Include constraints, tech stack, and quality requirements
-3. **Trust agent expertise** - Each agent is optimized for their domain
+### 💼 业务与策略
+- **business-analyst**：KPI、收入模型、增长预测、投资者指标
+- **risk-manager**：投资组合风险、对冲策略、R倍数、仓位规模
+- **content-marketer**：SEO内容、博客文章、社交媒体、邮件营销
+- **sales-automator**：冷邮件、跟进、提案、潜在客户培育
+- **customer-support**：支持工单、FAQ、帮助文档、故障排除
+- **legal-advisor**：起草隐私政策、服务条款、免责声明和法律通知
 
-### 🔄 Multi-Agent Workflows
-4. **Start with high-level requests** - Let agents coordinate complex multi-step tasks
-5. **Provide context between agents** - Ensure agents have necessary background information
-6. **Review integration points** - Check how different agents' outputs work together
+## 最佳实践
 
-### 🎛️ Explicit Control
-7. **Use explicit invocation for specific needs** - When you want a particular expert's perspective
-8. **Combine multiple agents strategically** - Different specialists can validate each other's work
-9. **Request specific review patterns** - "Have security-auditor review backend-architect's API design"
+### 🎯 任务委派
+1. **让Claude Code自动委派** - 主智能体分析上下文并选择最优智能体
+2. **明确说明需求** - 包括约束条件、技术栈和质量要求
+3. **信任智能体专业知识** - 每个智能体都为其领域进行了优化
 
-### 📈 Optimization
-10. **Monitor agent effectiveness** - Learn which agents work best for your use cases
-11. **Iterate on complex tasks** - Use agent feedback to refine requirements
-12. **Leverage agent strengths** - Match task complexity to agent capabilities
+### 🔄 多智能体工作流
+4. **从高级请求开始** - 让智能体协调复杂的多步骤任务
+5. **在智能体之间提供上下文** - 确保智能体有必要的背景信息
+6. **审查集成点** - 检查不同智能体的输出如何协同工作
 
-## Contributing
+### 🎛️ 显式控制
+7. **针对特定需求使用显式调用** - 当您需要特定专家的观点时
+8. **策略性地组合多个智能体** - 不同专家可以验证彼此的工作
+9. **请求特定审查模式** - "让security-auditor审查backend-architect的API设计"
 
-To add a new subagent:
-1. Create a new `.md` file following the format above
-2. Use lowercase, hyphen-separated names
-3. Write clear descriptions for when the subagent should be used
-4. Include specific instructions in the system prompt
+### 📈 优化
+10. **监控智能体效果** - 了解哪些智能体最适合您的用例
+11. **在复杂任务上迭代** - 使用智能体反馈来完善需求
+12. **利用智能体优势** - 将任务复杂度与智能体能力相匹配
 
-## Troubleshooting
+## 贡献
 
-### Common Issues
+要添加新的子智能体：
+1. 按照上述格式创建新的`.md`文件
+2. 使用小写、连字符分隔的名称
+3. 写清楚何时应该使用子智能体的描述
+4. 在系统提示中包含具体指令
 
-**Agent not being invoked automatically:**
-- Ensure your request clearly indicates the domain (e.g., "performance issue" → performance-engineer)
-- Be specific about the task type (e.g., "review code" → code-reviewer)
+## 故障排除
 
-**Unexpected agent selection:**
-- Provide more context about your tech stack and requirements
-- Use explicit invocation if you need a specific agent
+### 常见问题
 
-**Multiple agents producing conflicting advice:**
-- This is normal - different specialists may have different priorities
-- Ask for clarification: "Reconcile the recommendations from security-auditor and performance-engineer"
+**智能体未自动调用：**
+- 确保您的请求清楚地表明了领域（例如，"性能问题" → performance-engineer）
+- 明确任务类型（例如，"审查代码" → code-reviewer）
 
-**Agent seems to lack context:**
-- Provide background information in your request
-- Reference previous conversations or established patterns
+**意外的智能体选择：**
+- 提供更多关于您的技术栈和需求的上下文
+- 如果需要特定智能体，使用显式调用
 
-### Getting Help
+**多个智能体产生冲突建议：**
+- 这是正常的 - 不同专家可能有不同的优先级
+- 要求澄清："协调security-auditor和performance-engineer的建议"
 
-If agents aren't working as expected:
-1. Check agent descriptions in their individual files
-2. Try more specific language in your requests
-3. Use explicit invocation to test specific agents
-4. Provide more context about your project and goals
+**智能体似乎缺乏上下文：**
+- 在您的请求中提供背景信息
+- 参考以前的对话或已建立的模式
 
-## License
+### 获取帮助
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+如果智能体没有按预期工作：
+1. 检查各个文件中智能体的描述
+2. 在您的请求中尝试更具体的语言
+3. 使用显式调用来测试特定智能体
+4. 提供更多关于您的项目和目标的上下文
 
-## Learn More
+## 许可证
 
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
-- [Subagents Documentation](https://docs.anthropic.com/en/docs/claude-code/sub-agents)
+本项目根据MIT许可证进行许可 - 详情请参见 [LICENSE](LICENSE) 文件。
+
+## 了解更多
+
+- [Claude Code文档](https://docs.anthropic.com/en/docs/claude-code)
+- [子智能体文档](https://docs.anthropic.com/en/docs/claude-code/sub-agents)
 - [Claude Code GitHub](https://github.com/anthropics/claude-code)

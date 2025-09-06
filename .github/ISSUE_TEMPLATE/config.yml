@@ -1,12 +1,12 @@
 ---
 blank_issues_enabled: false
 contact_links:
-  - name: GitHub Discussions
+  - name: GitHub讨论
     url: https://github.com/wshobson/agents/discussions
-    about: For questions, brainstorming, and general discussions about subagents
-  - name: Community Guidelines
+    about: 用于问题讨论、头脑风暴和关于智能体的一般讨论
+  - name: 社区准则
     url: https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md
-    about: Read our Code of Conduct and community standards
-  - name: Contributing Guide
+    about: 阅读我们的行为准则和社区标准
+  - name: 贡献指南
     url: https://github.com/wshobson/agents/blob/main/.github/CONTRIBUTING.md
-    about: Learn how to contribute effectively to this project
+    about: 了解如何有效地为此项目做出贡献
