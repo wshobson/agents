@@ -1,81 +1,81 @@
 ---
-name: Feature Request
-description: Suggest an improvement or new feature for existing subagents
+name: 功能请求
+description: 为现有智能体建议改进或新功能
 title: "[FEATURE] "
 labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for suggesting a feature! Please provide detailed
-        information to help us understand your request.
+        感谢您建议功能！请提供详细信息
+        以帮助我们理解您的请求。
 
-        **Note**: For new subagent proposals, please use the
-        "New Subagent Proposal" template instead.
+        **注意**：如要提议新智能体，请使用
+        "新智能体提案"模板。
 
   - type: checkboxes
     id: preliminary-checks
     attributes:
-      label: Preliminary Checks
-      description: Please confirm you have completed these steps
+      label: 初步检查
+      description: 请确认您已完成这些步骤
       options:
-        - label: I have read the [Code of Conduct](.github/CODE_OF_CONDUCT.md)
+        - label: 我已阅读[行为准则](.github/CODE_OF_CONDUCT.md)
           required: true
         - label: >-
-            I have searched existing issues to ensure this is not a duplicate
+            我已搜索现有问题以确保这不是重复问题
           required: true
-        - label: This is a constructive feature request for legitimate use cases
+        - label: 这是一个针对合法用例的建设性功能请求
           required: true
 
   - type: input
     id: subagent
     attributes:
-      label: Target Subagent
-      description: Which subagent would this feature enhance?
-      placeholder: e.g., python-pro, frontend-developer, etc.
+      label: 目标智能体
+      description: 此功能将增强哪个智能体？
+      placeholder: 例如：python-pro、frontend-developer等
     validations:
       required: true
 
   - type: textarea
     id: problem-description
     attributes:
-      label: Problem Description
-      description: What problem does this feature solve?
-      placeholder: Currently, users need to... This is frustrating because...
+      label: 问题描述
+      description: 此功能解决什么问题？
+      placeholder: 目前，用户需要...这令人沮丧，因为...
     validations:
       required: true
 
   - type: textarea
     id: proposed-solution
     attributes:
-      label: Proposed Solution
-      description: Describe your preferred solution
-      placeholder: I would like the subagent to be able to...
+      label: 建议的解决方案
+      description: 描述您的首选解决方案
+      placeholder: 我希望智能体能够...
     validations:
       required: true
 
   - type: textarea
     id: use-cases
     attributes:
-      label: Use Cases
-      description: Provide specific examples of how this would be used
+      label: 用例
+      description: 提供如何使用此功能的具体示例
       placeholder: |
-        1. When developing...
-        2. For projects that...
-        3. To help with...
+        1. 在开发...时
+        2. 对于...项目
+        3. 为了帮助...
     validations:
       required: true
 
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternatives Considered
-      description: Other solutions you've considered
-      placeholder: I also considered... but this wouldn't work because...
+      label: 考虑的替代方案
+      description: 您考虑过的其他解决方案
+      placeholder: 我还考虑了...但这不起作用，因为...
 
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional Context
-      description: Any other relevant information
-      placeholder: Add any other context, examples, or screenshots here...
+      label: 附加上下文
+      description: 任何其他相关信息
+      placeholder: 在此添加任何其他上下文、示例或屏幕截图...

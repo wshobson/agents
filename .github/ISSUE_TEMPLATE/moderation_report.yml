@@ -1,118 +1,117 @@
 ---
-name: Moderation Report
+name: 管理报告
 description: >-
-  Report inappropriate content, behavior, or Code of Conduct violations
+  报告不当内容、行为或行为准则违规
 title: "[MODERATION] "
 labels: ["moderation"]
 body:
   - type: markdown
     attributes:
       value: |
-        **⚠️ Use this template to report violations of our Code of Conduct,
-        inappropriate content, or concerning behavior.**
+        **⚠️ 使用此模板报告我们行为准则的违规行为、
+        不当内容或令人担忧的行为。**
 
-        All reports are taken seriously and will be reviewed by maintainers.
-        False reports may result in moderation action.
+        所有报告都将被认真对待，并由维护者审查。
+        虚假报告可能导致管理措施。
 
-        **For urgent safety concerns or severe violations, you may also use
-        GitHub's built-in reporting tools.**
+        **对于紧急安全问题或严重违规，您也可以使用
+        GitHub的内置报告工具。**
 
   - type: checkboxes
     id: preliminary-checks
     attributes:
-      label: Reporting Guidelines
-      description: Please confirm you understand these guidelines
+      label: 报告准则
+      description: 请确认您了解这些准则
       options:
-        - label: I am reporting a genuine violation of the Code of Conduct
+        - label: 我正在报告真正的行为准则违规行为
           required: true
-        - label: I understand that false reports may result in moderation action
+        - label: 我理解虚假报告可能导致管理措施
           required: true
         - label: >-
-            I have attempted to resolve minor issues through direct
-            communication (if applicable)
+            我已尝试通过直接沟通解决轻微问题（如适用）
           required: false
 
   - type: dropdown
     id: violation-type
     attributes:
-      label: Type of Violation
-      description: What type of inappropriate behavior are you reporting?
+      label: 违规类型
+      description: 您报告的是哪种不当行为？
       options:
-        - Hate speech or discriminatory language
-        - Personal attacks or harassment
-        - Spam or off-topic content
-        - Inappropriate or offensive content
-        - Threats or intimidation
-        - Doxxing or privacy violations
-        - Impersonation
-        - Other Code of Conduct violation
+        - 仇恨言论或歧视性语言
+        - 人身攻击或骚扰
+        - 垃圾信息或偏离主题的内容
+        - 不当或冒犯性内容
+        - 威胁或恐吓
+        - 人肉搜索或隐私侵犯
+        - 冒充他人
+        - 其他行为准则违规
     validations:
       required: true
 
   - type: input
     id: location
     attributes:
-      label: Location of Violation
+      label: 违规位置
       description: >-
-        Where did this occur? (issue number, PR, comment link, etc.)
-      placeholder: e.g., Issue #123, PR #456, comment in issue #789  # Location
+        这发生在哪里？（问题编号、PR、评论链接等）
+      placeholder: 例如：Issue #123、PR #456、问题#789中的评论
     validations:
       required: true
 
   - type: input
     id: user-involved
     attributes:
-      label: User(s) Involved
+      label: 涉及的用户
       description: >-
-        GitHub username(s) of the person(s) involved (if known)
-      placeholder: e.g., @username1, @username2
+        涉及人员的GitHub用户名（如已知）
+      placeholder: 例如：@username1、@username2
 
   - type: textarea
     id: description
     attributes:
-      label: Description of Violation
+      label: 违规描述
       description: >-
-        Detailed description of what happened and why it violates
-        our Code of Conduct
-      placeholder: Please provide specific details about the violation...
+        详细描述发生了什么以及为什么违反了
+        我们的行为准则
+      placeholder: 请提供有关违规行为的具体详情...
     validations:
       required: true
 
   - type: textarea
     id: evidence
     attributes:
-      label: Evidence
-      description: Any additional evidence (quotes, screenshots, etc.)
+      label: 证据
+      description: 任何其他证据（引用、屏幕截图等）
       placeholder: |
-        You can include:
-        - Direct quotes (use > for blockquotes)
-        - Links to specific comments
-        - Screenshots (drag and drop images here)
-        - Timestamps of when violations occurred
+        您可以包括：
+        - 直接引用（使用>进行块引用）
+        - 特定评论的链接
+        - 屏幕截图（拖放图片到此处）
+        - 违规发生时间的时间戳
 
   - type: textarea
     id: impact
     attributes:
-      label: Impact
-      description: How has this affected you or the community?
+      label: 影响
+      description: 这如何影响了您或社区？
       placeholder: >-
-        This behavior has made me feel... It affects the community by...
+        这种行为让我感到...它通过...影响社区
 
   - type: checkboxes
     id: previous-reports
     attributes:
-      label: Previous Reports
+      label: 之前的报告
       options:
-        - label: This is the first time I'm reporting this user/behavior
-        - label: I have reported this user/behavior before
+        - label: 这是我第一次报告此用户/行为
+        - label: 我之前报告过此用户/行为
 
   - type: markdown
     attributes:
       value: |
-        **What happens next:**
-        - Maintainers will review your report within 24-48 hours
-        - We may follow up with questions if needed
-        - We will take appropriate action based on our Code of Conduct
-        - We will update you on the resolution when possible
+        **接下来会发生什么：**
+        - 维护者将在24-48小时内审查您的报告
+        - 如需要，我们可能会跟进提问
+        - 我们将根据我们的行为准则采取适当措施
+        - 我们将在可能的情况下向您更新解决方案
 
-        Thank you for helping maintain a respectful community.
+        感谢您帮助维护一个受人尊敬的社区。

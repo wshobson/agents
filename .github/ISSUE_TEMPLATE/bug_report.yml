@@ -1,75 +1,75 @@
 ---
-name: Bug Report
-description: Report a bug or issue with an existing subagent
+name: Bug报告
+description: 报告现有智能体的错误或问题
 title: "[BUG] "
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for reporting a bug! Please fill out this template
-        to help us understand and resolve the issue.
+        感谢您报告错误！请填写此模板以帮助我们
+        理解和解决问题。
 
-        **Important**: This template is for technical bugs only.
-        For questions, discussions, or general feedback, please use
-        GitHub Discussions instead.
+        **重要**：此模板仅用于技术错误。
+        如有疑问、讨论或一般反馈，请使用
+        GitHub Discussions。
 
   - type: checkboxes
     id: preliminary-checks
     attributes:
-      label: Preliminary Checks
-      description: Please confirm you have completed these steps
+      label: 初步检查
+      description: 请确认您已完成这些步骤
       options:
-        - label: I have read the [Code of Conduct](.github/CODE_OF_CONDUCT.md)
+        - label: 我已阅读[行为准则](.github/CODE_OF_CONDUCT.md)
           required: true
         - label: >-
-            I have searched existing issues to ensure this is not a duplicate
+            我已搜索现有问题以确保这不是重复问题
           required: true
-        - label: This report contains only technical information about a bug
+        - label: 此报告仅包含关于错误的技术信息
 
   - type: input
     id: subagent
     attributes:
-      label: Affected Subagent
-      description: Which subagent is experiencing the issue?
-      placeholder: e.g., python-pro, frontend-developer, etc.
+      label: 受影响的智能体
+      description: 哪个智能体出现了问题？
+      placeholder: 例如：python-pro、frontend-developer等
     validations:
       required: true
 
   - type: textarea
     id: bug-description
     attributes:
-      label: Bug Description
-      description: A clear and concise description of what the bug is
-      placeholder: Describe the unexpected behavior...
+      label: 错误描述
+      description: 清晰简洁地描述错误是什么
+      placeholder: 描述意外行为...
     validations:
       required: true
 
   - type: textarea
     id: reproduction-steps
     attributes:
-      label: Steps to Reproduce
-      description: Steps to reproduce the behavior
+      label: 重现步骤
+      description: 重现该行为的步骤
       placeholder: |
-        1. Use subagent for...
-        2. Provide input...
-        3. Observe output...
-        4. See error...
+        1. 使用智能体进行...
+        2. 提供输入...
+        3. 观察输出...
+        4. 看到错误...
     validations:
       required: true
 
   - type: textarea
     id: expected-behavior
     attributes:
-      label: Expected Behavior
-      description: What you expected to happen
-      placeholder: The subagent should have...
+      label: 预期行为
+      description: 您期望发生什么
+      placeholder: 智能体应该...
     validations:
       required: true
 
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional Context
-      description: Any other context, screenshots, or examples
-      placeholder: Add any other context about the problem here...
+      label: 附加上下文
+      description: 任何其他上下文、屏幕截图或示例
+      placeholder: 在此添加关于问题的任何其他上下文...

@@ -1,126 +1,125 @@
 ---
-name: New Subagent Proposal
-description: Propose a new specialized subagent for the collection
+name: 新智能体提案
+description: 为集合提议一个新的专业智能体
 title: "[NEW AGENT] "
 labels: ["new-subagent"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for proposing a new subagent! Quality subagents
-        require careful design and clear specialization.
+        感谢您提议新智能体！高质量的智能体
+        需要精心设计和明确的专业化。
 
-        **Important**: Only propose subagents for legitimate,
-        constructive use cases. Proposals for malicious or harmful
-        capabilities will be rejected and may result in moderation action.
+        **重要**：仅为合法、建设性的用例提议智能体。
+        恶意或有害功能的提案将被拒绝，并可能导致管理措施。
 
   - type: checkboxes
     id: preliminary-checks
     attributes:
-      label: Preliminary Checks
-      description: Please confirm you have completed these steps
+      label: 初步检查
+      description: 请确认您已完成这些步骤
       options:
-        - label: I have read the [Code of Conduct](.github/CODE_OF_CONDUCT.md)
+        - label: 我已阅读[行为准则](.github/CODE_OF_CONDUCT.md)
           required: true
         - label: >-
-            I have reviewed existing subagents to ensure this is not a duplicate
+            我已查看现有智能体以确保这不是重复的
           required: true
-        - label: This proposal is for legitimate, constructive use cases only
+        - label: 此提案仅用于合法、建设性的用例
           required: true
-        - label: I have domain expertise in the proposed area
+        - label: 我在提议的领域拥有专业知识
           required: true
 
   - type: input
     id: agent-name
     attributes:
-      label: Proposed Agent Name
-      description: What should this subagent be called?
-      placeholder: e.g., blockchain-developer, devops-security, etc.
+      label: 建议的智能体名称
+      description: 这个智能体应该叫什么？
+      placeholder: 例如：blockchain-developer、devops-security等
     validations:
       required: true
 
   - type: textarea
     id: domain-expertise
     attributes:
-      label: Domain Expertise
+      label: 专业领域
       description: >-
-        What specific domain or technology does this agent specialize in?
-      placeholder: This agent specializes in...
+        此智能体专门从事哪个特定领域或技术？
+      placeholder: 此智能体专门从事...
     validations:
       required: true
 
   - type: textarea
     id: unique-value
     attributes:
-      label: Unique Value Proposition
+      label: 独特价值主张
       description: >-
-        How is this different from existing subagents?
-        What unique capabilities does it provide?
-      placeholder: Unlike existing agents, this one would...
+        这与现有智能体有何不同？
+        它提供什么独特的功能？
+      placeholder: 与现有智能体不同，这个会...
     validations:
       required: true
 
   - type: textarea
     id: use-cases
     attributes:
-      label: Primary Use Cases
-      description: What specific tasks would this agent handle?
+      label: 主要用例
+      description: 此智能体将处理哪些特定任务？
       placeholder: |
-        1. Design and implement...
-        2. Optimize performance for...
-        3. Debug issues related to...
-        4. Review code for...
+        1. 设计和实现...
+        2. 优化...的性能
+        3. 调试与...相关的问题
+        4. 审查...的代码
     validations:
       required: true
 
   - type: textarea
     id: tools-capabilities
     attributes:
-      label: Required Tools & Capabilities
-      description: What tools and capabilities would this agent need?
+      label: 所需工具和功能
+      description: 此智能体需要哪些工具和功能？
       placeholder: |
-        - File manipulation for...
-        - Bash commands for...
-        - Specialized knowledge of...
-        - Integration with...
+        - 用于...的文件操作
+        - 用于...的Bash命令
+        - ...的专业知识
+        - 与...的集成
     validations:
       required: true
 
   - type: textarea
     id: examples
     attributes:
-      label: Example Interactions
+      label: 示例交互
       description: >-
-        Provide 2-3 example interactions showing how users would
-        work with this agent
+        提供2-3个示例交互，展示用户如何
+        与此智能体合作
       placeholder: |
-        **Example 1:**
-        User: "Implement a smart contract for..."
-        Agent response: "I'll create a secure smart contract with..."
+        **示例1：**
+        用户："实现一个智能合约用于..."
+        智能体回应："我将创建一个安全的智能合约..."
 
-        **Example 2:**
-        User: "Optimize this blockchain query..."
-        Agent response: "Let me analyze the query and suggest optimizations..."
+        **示例2：**
+        用户："优化这个区块链查询..."
+        智能体回应："让我分析查询并建议优化..."
     validations:
       required: true
 
   - type: textarea
     id: expertise-evidence
     attributes:
-      label: Your Expertise
+      label: 您的专业知识
       description: >-
-        What experience or credentials do you have in this domain?
+        您在此领域有什么经验或证书？
       placeholder: >-
-        I have X years of experience in... I've worked with...
-        I hold certifications in...
+        我在...方面有X年经验，我使用过...
+        我拥有...认证
     validations:
       required: true
 
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional Context
+      label: 附加上下文
       description: >-
-        Any other relevant information, resources, or considerations
+        任何其他相关信息、资源或考虑事项
       placeholder: >-
-        Relevant documentation, similar tools, potential challenges...
+        相关文档、类似工具、潜在挑战...
