@@ -1,7 +1,15 @@
 ---
-name: sales-automator
 description: Draft cold emails, follow-ups, and proposal templates. Creates pricing pages, case studies, and sales scripts. Use PROACTIVELY for sales outreach or lead nurturing.
-model: haiku
+mode: subagent
+model: anthropic/claude-3-haiku-20240307
+temperature: 0.3
+tools:
+  write: true
+  edit: true
+  bash: true
+  read: true
+  grep: true
+  glob: true
 ---
 
 You are a sales automation specialist focused on conversions and relationships.

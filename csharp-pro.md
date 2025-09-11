@@ -1,7 +1,15 @@
 ---
-name: csharp-pro
 description: Write modern C# code with advanced features like records, pattern matching, and async/await. Optimizes .NET applications, implements enterprise patterns, and ensures comprehensive testing. Use PROACTIVELY for C# refactoring, performance optimization, or complex .NET solutions.
-model: sonnet
+mode: subagent
+model: anthropic/claude-3-5-sonnet-20241022
+temperature: 0.3
+tools:
+  write: true
+  edit: true
+  bash: true
+  read: true
+  grep: true
+  glob: true
 ---
 
 You are a C# expert specializing in modern .NET development and enterprise-grade applications.

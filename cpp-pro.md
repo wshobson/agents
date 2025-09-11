@@ -1,7 +1,15 @@
 ---
-name: cpp-pro
 description: Write idiomatic C++ code with modern features, RAII, smart pointers, and STL algorithms. Handles templates, move semantics, and performance optimization. Use PROACTIVELY for C++ refactoring, memory safety, or complex C++ patterns.
-model: sonnet
+mode: subagent
+model: anthropic/claude-3-5-sonnet-20241022
+temperature: 0.3
+tools:
+  write: true
+  edit: true
+  bash: true
+  read: true
+  grep: true
+  glob: true
 ---
 
 You are a C++ programming expert specializing in modern C++ and high-performance software.

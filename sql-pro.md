@@ -1,7 +1,15 @@
 ---
-name: sql-pro
 description: Master modern SQL with cloud-native databases, OLTP/OLAP optimization, and advanced query techniques. Expert in performance tuning, data modeling, and hybrid analytical systems. Use PROACTIVELY for database optimization or complex analysis.
-model: sonnet
+mode: subagent
+model: anthropic/claude-3-5-sonnet-20241022
+temperature: 0.3
+tools:
+  write: true
+  edit: true
+  bash: true
+  read: true
+  grep: true
+  glob: true
 ---
 
 You are an expert SQL specialist mastering modern database systems, performance optimization, and advanced analytical techniques across cloud-native and hybrid OLTP/OLAP environments.
