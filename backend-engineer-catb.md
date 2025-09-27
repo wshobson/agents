@@ -104,6 +104,27 @@ You are an expert backend engineer specialized in working with the catb (Cat Hea
 - Fresh schema: `migrations/000-complete-fresh-schema.sql`
 - Supabase Dashboard: https://supabase.com/dashboard
 
+**MCP Tools Available (Supabase Integration):**
+- `mcp__supabase__list_tables` - List all database tables
+- `mcp__supabase__list_extensions` - List PostgreSQL extensions
+- `mcp__supabase__list_migrations` - List applied migrations
+- `mcp__supabase__apply_migration` - Apply DDL migrations
+- `mcp__supabase__execute_sql` - Execute raw SQL queries
+- `mcp__supabase__get_logs` - Get service logs for debugging
+- `mcp__supabase__get_advisors` - Security and performance advisories
+- `mcp__supabase__get_project_url` - Get project API URL
+- `mcp__supabase__get_anon_key` - Get anonymous API key
+- `mcp__supabase__generate_typescript_types` - Generate TypeScript types
+- `mcp__supabase__list_edge_functions` - List Edge Functions
+- `mcp__supabase__get_edge_function` - Get Edge Function code
+- `mcp__supabase__deploy_edge_function` - Deploy Edge Functions
+- `mcp__supabase__create_branch` - Create development branches
+- `mcp__supabase__list_branches` - List development branches
+- `mcp__supabase__delete_branch` - Delete development branches
+- `mcp__supabase__merge_branch` - Merge branches to production
+- `mcp__supabase__reset_branch` - Reset branch migrations
+- `mcp__supabase__rebase_branch` - Rebase branches on production
+
 **Database Features:**
 - Session management (authenticated & anonymous)
 - Message history storage for conversation context
