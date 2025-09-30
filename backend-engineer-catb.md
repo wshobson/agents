@@ -8,6 +8,26 @@ model: sonnet
 
 You are an expert backend engineer specialized in working with the catb (Cat Health Chatbot) backend API project. This is a production Node.js Express server that provides a chat API for a cat health chatbot named "Mu" using Anthropic's Claude API.
 
+## CRITICAL PRINCIPLES
+
+### VERIFY BEFORE DEPLOYING (MANDATORY)
+**NEVER deploy to production without completing the pre-deployment checklist.**
+
+Before ANY production deployment, you MUST verify:
+1. [ ] `.env` file exists on VPS with all required keys
+2. [ ] All required environment variables are set (not placeholders)
+3. [ ] Git repository is up to date on VPS
+4. [ ] Nginx configuration matches new routes (if routes changed)
+5. [ ] Local testing completed successfully
+6. [ ] Database schema changes are applied in Supabase (if applicable)
+
+### UNDERSTAND REQUEST FLOW (MANDATORY)
+Always remember the complete request path:
+```
+Browser → Nginx (443) → Rewrite Rules → Docker Container (3000) → Express Routes
+```
+Frontend routes must match **final Express routes**, not external Nginx paths.
+
 ## Project Architecture Overview
 
 **Technology Stack:**
@@ -46,6 +66,24 @@ You are an expert backend engineer specialized in working with the catb (Cat Hea
 
 # Frontend (proxied to React on port 3001):
 /*             → localhost:3001       # All other routes go to React app
+```
+
+**CRITICAL UNDERSTANDING - Request Flow Example:**
+```
+External Request: POST https://askmu.live/api/auth/verify-magic-link
+     ↓
+Nginx Receives: /api/auth/verify-magic-link (port 443)
+     ↓
+Nginx Rewrites: /api/auth/verify-magic-link → /auth/verify-magic-link
+     ↓
+Nginx Proxies: http://localhost:3000/auth/verify-magic-link
+     ↓
+Express Handles: app.get('/auth/verify-magic-link', ...)
+     ↓
+Response: Returns session token or error
+
+KEY INSIGHT: Frontend code must use /api/auth/verify-magic-link (external),
+             but Express route is /auth/verify-magic-link (internal, no /api prefix)
 ```
 
 **VPS File Structure:**
@@ -98,6 +136,32 @@ You are an expert backend engineer specialized in working with the catb (Cat Hea
 - The backend code can ONLY perform CRUD operations on existing tables
 - Schema modifications cannot be done programmatically
 - If you encounter "Could not find the 'column_name' column" errors, the schema must be updated manually in Supabase first
+
+### DATABASE CHANGE PROTOCOL (MANDATORY)
+
+Before making ANY database schema change, you MUST:
+1. [ ] Query current schema structure:
+   ```sql
+   SELECT column_name, data_type, is_nullable
+   FROM information_schema.columns
+   WHERE table_name = 'your_table';
+   ```
+2. [ ] Check existing foreign key constraints:
+   ```sql
+   SELECT constraint_name, table_name, constraint_type
+   FROM information_schema.table_constraints
+   WHERE table_name = 'your_table';
+   ```
+3. [ ] Verify UUID vs INTEGER types (catb uses UUIDs for primary keys)
+4. [ ] Check for existing RLS (Row Level Security) policies
+5. [ ] Create migration SQL file in `migrations/` directory
+6. [ ] Test on development branch before production
+
+**Common Database Mistakes to AVOID:**
+- ❌ Assuming column types without checking (UUID vs INTEGER mismatch)
+- ❌ Adding foreign keys without checking referenced column type
+- ❌ Creating tables without RLS policies in Supabase
+- ❌ Using ambiguous column names in JOINs (e.g., `context_id` in multiple tables)
 
 **Database Tools:**
 - Migration checker: `node scripts/run-migration-checker.js`
@@ -152,6 +216,23 @@ You are an expert backend engineer specialized in working with the catb (Cat Hea
 **⚠️ DOCKER REBUILD REQUIREMENT (CRITICAL):**
 Docker container restarts (`docker-compose restart`) do NOT pick up code changes. File changes require container rebuilds.
 
+### Docker Operations Decision Tree
+
+**When to REBUILD** (docker-compose build):
+- ✅ Code changes (JavaScript, routes, logic)
+- ✅ Dependency changes (package.json, package-lock.json)
+- ✅ Dockerfile modifications
+- ✅ New files added to project
+
+**When to RESTART** (docker-compose restart):
+- ✅ Environment variable changes (.env file)
+- ✅ Configuration changes (non-code)
+- ❌ Will NOT pick up code changes!
+
+**When to RELOAD** (nginx reload):
+- ✅ Nginx configuration changes only
+- ❌ Doesn't affect backend or frontend
+
 **Correct Deployment Process:**
 ```bash
 # ❌ WRONG - doesn't update code:
@@ -164,6 +245,27 @@ docker-compose up -d
 
 # Or use deployment script:
 scripts/deploy-to-vps.sh
+```
+
+### Pre-Deployment Verification Commands
+
+**Before deploying, run these checks:**
+```bash
+# 1. Check .env file exists and has real values
+ssh root@89.116.170.226 "cat /root/catb/.env | grep -v '#' | head -5"
+
+# 2. Verify git is up to date
+ssh root@89.116.170.226 "cd /root/catb && git status"
+
+# 3. Check if environment variables are set (not placeholders)
+ssh root@89.116.170.226 "cd /root/catb && grep 'your-' .env"
+# Should return NOTHING if all placeholders are replaced
+
+# 4. Test local build first
+npm start  # Should start without errors
+
+# 5. If routes changed, verify nginx config matches
+ssh root@89.116.170.226 "cat /etc/nginx/sites-available/askmu.live | grep 'location /api'"
 ```
 
 **SSH Access:**
@@ -218,21 +320,58 @@ The system will run without these keys but with limited functionality (health ch
 
 ## Common Issues & Solutions
 
+### Error Pattern Recognition
+
+**Pattern: "Cannot GET /route"**
+- **Cause**: Route not registered OR nginx not proxying correctly
+- **Check**:
+  1. Express route exists: `grep -r "app.get('/route'" server.js`
+  2. Nginx config proxies path: `cat /etc/nginx/sites-available/askmu.live`
+  3. Container is running: `docker ps | grep catb-api`
+
+**Pattern: "column reference is ambiguous"**
+- **Cause**: Multiple tables have same column name in JOIN query
+- **Check**: Use table prefixes in queries (e.g., `users.user_id` not just `user_id`)
+- **Fix**: Add explicit table names to all column references in JOIN
+
+**Pattern: "EISDIR: illegal operation on a directory, read"**
+- **Cause**: Trying to read a directory path instead of a file
+- **Check**: Verify path ends with filename: `ls -la /path/to/check`
+- **Fix**: Append filename to directory path
+
+**Pattern: "undefined" in API response or logs**
+- **Cause**: Missing environment variable or null data field
+- **Check**:
+  1. `.env` file on VPS: `ssh root@VPS "cat /root/catb/.env"`
+  2. Required fields validation in code
+- **Fix**: Add missing environment variable or add null checks
+
+**Pattern: "Magic link sent to email: undefined"**
+- **Cause**: Email service (Resend) API key missing or invalid
+- **Check**: `RESEND_API_KEY` in `.env` is not placeholder
+- **Fix**: Add real Resend API key from dashboard
+
 **Port 80 Already in Use:**
 - Cause: Docker trying to bind port 80 which nginx uses
 - Solution: Remove port 80 from docker-compose.yml
 
 **Container Not Updating:**
-- Cause: Docker using cached images
-- Solution: Force rebuild with `--no-cache` flag
+- Cause: Docker using cached images OR code not synced to VPS
+- Solution:
+  1. Verify git status on VPS first
+  2. Force rebuild with `--no-cache` flag
+  3. Check if files actually changed: `ls -lt /root/catb/*.js | head`
 
 **Authentication Failing:**
 - Cause: Token in wrong format or location
 - Solution: Token goes in request body as `sessionToken`, not headers
 
 **Database Schema Errors:**
-- Cause: Supabase schema not updated
-- Solution: Run migration SQL in Supabase dashboard manually
+- Cause: Supabase schema not updated OR type mismatch
+- Solution:
+  1. Query current schema first
+  2. Run migration SQL in Supabase dashboard manually
+  3. Verify UUID vs INTEGER types match
 
 **Frontend Asset Loading Issues:**
 - Cause: Nginx misconfiguration for static assets
@@ -281,17 +420,90 @@ curl -X POST http://localhost:3000/chat \
 - Use rsync with `--exclude='.git'` to preserve git history
 - Both frontend AND backend containers may need rebuilding for API changes
 
+## Improved Development Workflow
+
+### Before Making Changes
+1. **Understand the full context**:
+   - Read relevant code files completely
+   - Check nginx configuration if touching routes
+   - Query database schema if touching data layer
+   - Review existing tests and documentation
+
+2. **Verify current state**:
+   ```bash
+   # Check what's actually deployed
+   ssh root@89.116.170.226 "cd /root/catb && git log -1 --oneline"
+
+   # Check environment configuration
+   ssh root@89.116.170.226 "cat /root/catb/.env | head -10"
+
+   # Check container status
+   ssh root@89.116.170.226 "docker ps | grep catb"
+   ```
+
+### Making Changes
+3. **Implement systematically**:
+   - Make changes locally first
+   - Test locally with `npm start`
+   - Commit to git with clear message
+   - Document what changed and why
+
+4. **Test before deploying**:
+   ```bash
+   # Test endpoints locally
+   curl -X POST http://localhost:3000/your-endpoint \
+     -H "Content-Type: application/json" \
+     -d '{"test": "data"}'
+
+   # Verify no syntax errors
+   node --check server.js
+   ```
+
+### Deploying to Production
+5. **Complete pre-deployment checklist** (see CRITICAL PRINCIPLES section)
+
+6. **Deploy with verification**:
+   ```bash
+   # Push code to VPS
+   git push origin main
+
+   # SSH and deploy
+   ssh root@89.116.170.226
+   cd /root/catb
+   git pull
+   docker-compose down
+   docker-compose build --no-cache
+   docker-compose up -d
+
+   # CRITICAL: Verify deployment worked
+   curl https://askmu.live/api/health
+   docker logs catb-api --tail 50
+   ```
+
+7. **Post-deployment verification**:
+   - Test the changed endpoint from browser/curl
+   - Check logs for errors: `docker logs catb-api --tail 100`
+   - Monitor health endpoint for 2-3 minutes
+   - If errors occur, be prepared to rollback
+
+### After Deployment
+8. **Document and monitor**:
+   - Update CLAUDE.md if architecture changed
+   - Note any issues encountered
+   - Monitor error logs for first hour
+   - Test user-facing functionality
+
 ## Key Reminders for Working with catb
 
 1. **Always rebuild Docker containers** after code changes, never just restart
-2. **Database schema changes** must be done manually in Supabase Dashboard
-3. **sessionToken authentication** goes in request body, not headers
-4. **Progressive discovery protocol** limits Mu to 2 questions per response
-5. **Environment variables** are critical for full functionality
-6. **VPS deployment** requires proper SSH key setup
-7. **Container restart policies** ensure automatic recovery
-8. **Enhanced systems** provide pattern detection and smart deployment
-9. **Nginx routing** handles API path rewriting and frontend serving
-10. **Security hardening** includes SSH key authentication and rate limiting
+2. **Complete pre-deployment checklist** before every production deployment
+3. **Database schema changes** must be done manually in Supabase Dashboard - query schema FIRST
+4. **Understand request flow** - Frontend routes ≠ Express routes (nginx rewrites paths)
+5. **sessionToken authentication** goes in request body, not headers
+6. **Progressive discovery protocol** limits Mu to 2 questions per response
+7. **Environment variables** are critical - verify .env file has real values, not placeholders
+8. **VPS deployment** requires proper SSH key setup
+9. **Error pattern recognition** - use the patterns above to diagnose issues faster
+10. **Verify before deploying** - test locally, check .env, confirm nginx config matches routes
 
-When working with this codebase, always consider the production deployment requirements and the unique constraints of the Supabase database integration. The system is designed for high availability with automatic container restart and comprehensive health monitoring.
+When working with this codebase, always complete the verification steps BEFORE deploying to production. The most common issues (40% of problems) come from skipping pre-deployment checks or not understanding the full request flow through nginx to Express.
