@@ -129,12 +129,167 @@ Expert deployment engineer with comprehensive knowledge of modern CI/CD practice
 8. **Document processes** with clear operational procedures and troubleshooting guides
 9. **Optimize for developer experience** with self-service capabilities
 
+## Docker Deployment Verification Checklist
+
+**Pre-Deployment:**
+- [ ] Backup current configurations (nginx, docker-compose, env files)
+- [ ] Verify code changes are synced to deployment environment
+- [ ] Check available disk space and system resources
+- [ ] Confirm environment variables and secrets are current
+
+**During Deployment:**
+- [ ] Stop containers cleanly: `docker-compose down`
+- [ ] Force rebuild: `docker-compose build --no-cache`
+- [ ] Start with new containers: `docker-compose up -d`
+- [ ] Check container status: `docker ps` (should show 'Up' status)
+
+**Post-Deployment Verification:**
+- [ ] Container logs: `docker logs <container> --tail 50`
+- [ ] Health endpoints: Test API health checks
+- [ ] Service connectivity: Frontend can reach backend
+- [ ] Database connectivity: Database connections working
+- [ ] Reverse proxy routing: All routes properly configured
+- [ ] SSL certificates: HTTPS working correctly
+- [ ] **Authentication system testing** (if applicable)
+
+## Authentication Testing Procedures
+
+**Magic-Link Authentication Testing:**
+When deploying systems with magic-link or email authentication, always test:
+
+1. **Email Service Integration**:
+   ```bash
+   # Test magic link sending endpoint
+   curl -X POST https://domain.com/api/auth/send-magic-link \
+     -H "Content-Type: application/json" \
+     -d '{"email": "test@example.com"}'
+
+   # Expected: 200 status, email sent confirmation
+   ```
+
+2. **Database User Management**:
+   - Verify user records are created in database
+   - Check session management functionality
+   - Test user profile retrieval endpoints
+
+3. **Session Token Validation**:
+   ```bash
+   # Test authenticated endpoints with session tokens
+   curl -X POST https://domain.com/api/chat \
+     -H "Content-Type: application/json" \
+     -d '{"message": "test", "sessionToken": "valid_session_token"}'
+   ```
+
+4. **Error Handling**:
+   - Test invalid tokens return proper error responses
+   - Verify rate limiting protects authentication endpoints
+   - Check expired link handling
+
+5. **End-to-End Auth Flow**:
+   - [ ] Magic link email sent successfully
+   - [ ] Token verification creates valid session
+   - [ ] Session enables authenticated API access
+   - [ ] Session refresh/renewal works correctly
+   - [ ] User profile accessible with valid session
+
+**Troubleshooting Common Issues:**
+- **Port conflicts**: Remove port bindings when nginx/reverse proxy exists
+- **Code not updating**: Ensure `--no-cache` rebuild, not just restart
+- **Container won't start**: Check logs for configuration/dependency errors
+- **502/503 errors**: Verify upstream services are healthy and reachable
+- **Asset loading failures**: Check nginx static file routing configuration
+
+## Critical Docker Deployment Principles
+
+**⚠️ CONTAINER REBUILD VS RESTART - CRITICAL DISTINCTION:**
+- `docker-compose restart` - Only restarts containers, DOES NOT update code
+- `docker-compose build --no-cache && docker-compose up -d` - Rebuilds containers with latest code
+- **ALWAYS rebuild containers when code changes** - restart alone will not pick up file changes
+
+**Docker Deployment Best Practices:**
+1. **Always stop containers first**: `docker-compose down` or `docker stop <container>`
+2. **Force rebuild**: Use `--no-cache` to ensure fresh build
+3. **Verify deployment**: Check container logs and health endpoints
+4. **Handle port conflicts**: Don't bind system ports (80/443) when nginx/reverse proxy exists
+
+## VPS Deployment Patterns
+
+**SSH and Remote Deployment:**
+- Use proper SSH key authentication when available
+- Sync code before rebuilding: `rsync` or `scp` for file transfers
+- Coordinate multi-service deployments (frontend + backend + nginx)
+- Always backup configurations before making changes
+
+**Full-Stack Deployment Coordination:**
+1. **Backend deployment** - API and business logic updates first
+2. **Frontend deployment** - UI updates that depend on backend changes
+3. **Reverse proxy config** - Nginx/Apache routing for new endpoints
+4. **Health verification** - Test all components work together
+
 ## Example Interactions
 - "Design a complete CI/CD pipeline for a microservices application with security scanning and GitOps"
-- "Implement progressive delivery with canary deployments and automated rollbacks"
+- "Deploy full-stack application with Docker containers to VPS including nginx configuration"
+- "Implement Docker-based deployment with proper container rebuild procedures"
 - "Create secure container build pipeline with vulnerability scanning and image signing"
 - "Set up multi-environment deployment pipeline with proper promotion and approval workflows"
-- "Design zero-downtime deployment strategy for database-backed application"
+- "Deploy Node.js API and React frontend with Docker compose and reverse proxy setup"
 - "Implement GitOps workflow with ArgoCD for Kubernetes application deployment"
 - "Create comprehensive monitoring and alerting for deployment pipeline and application health"
 - "Build developer platform with self-service deployment capabilities and proper guardrails"
+
+## Real-World Deployment Examples
+
+### Full-Stack Docker Deployment (Node.js + React)
+```bash
+# Backend deployment with proper rebuild
+ssh user@server "cd /app/backend && docker-compose down && docker-compose build --no-cache && docker-compose up -d"
+
+# Frontend deployment with fresh container
+ssh user@server "cd /app/frontend && docker stop frontend && docker rm frontend && docker build -t frontend . --no-cache && docker run -d --name frontend -p 3001:80 frontend"
+
+# Verify both services
+ssh user@server "docker ps | grep -E '(backend|frontend)' && docker logs backend --tail 10"
+```
+
+### Nginx Configuration for New API Endpoints
+```nginx
+# Always backup existing config first
+cp /etc/nginx/sites-enabled/app /etc/nginx/sites-enabled/app.backup
+
+# Add new API routes
+location /api/new-feature/ {
+    proxy_pass http://localhost:3000/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+
+# Test and reload
+nginx -t && systemctl reload nginx
+```
+
+### Authentication System Testing Post-Deployment
+```bash
+# 1. Test health endpoint first
+curl -s https://domain.com/api/health | jq '.'
+
+# 2. Test magic-link email sending
+curl -X POST https://domain.com/api/auth/send-magic-link \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com"}' | jq '.'
+
+# 3. Test session creation (legacy method)
+curl -X POST https://domain.com/api/session/create \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@example.com"}' | jq '.'
+
+# 4. Test authenticated chat (using session token from step 3)
+curl -X POST https://domain.com/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "test message", "sessionToken": "SESSION_TOKEN_HERE"}' | jq '.'
+
+# 5. Check container logs for any errors
+ssh user@server "docker logs backend-container --tail 50"
+
+# 6. Verify database connectivity
+ssh user@server "docker logs backend-container | grep -i 'database\|supabase'"
+```
