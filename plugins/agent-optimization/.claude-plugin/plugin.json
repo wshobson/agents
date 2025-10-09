@@ -1,0 +1,36 @@
+{
+  "name": "agent-optimization",
+  "description": "AI agent prompt engineering, multi-agent workflow coordination, context window management, and performance tuning for LLM-based automation systems",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "ai-agents",
+    "prompt-engineering",
+    "optimization",
+    "llm",
+    "claude",
+    "gpt",
+    "multi-agent",
+    "context-management"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/improve-agent.md",
+    "../../tools/prompt-optimize.md",
+    "../../tools/multi-agent-optimize.md",
+    "../../tools/context-save.md",
+    "../../tools/context-restore.md",
+    "../../tools/ai-assistant.md"
+  ],
+  "agents": [
+    "../../agents/prompt-engineer.md",
+    "../../agents/ai-engineer.md",
+    "../../agents/context-manager.md"
+  ]
+}

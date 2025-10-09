@@ -1,0 +1,45 @@
+{
+  "name": "data-ml-pipeline",
+  "description": "Data pipeline construction, ML model training workflows, MLOps automation, LangChain agent development, RAG system implementation, and model deployment for machine learning projects",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "machine-learning",
+    "data-science",
+    "mlops",
+    "ai",
+    "feature-engineering",
+    "llm",
+    "langchain",
+    "rag",
+    "vector-database",
+    "tensorflow",
+    "pytorch",
+    "mlflow"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/data-driven-feature.md",
+    "../../workflows/ml-pipeline.md",
+    "../../tools/langchain-agent.md",
+    "../../tools/data-validation.md",
+    "../../tools/data-pipeline.md",
+    "../../tools/ai-assistant.md"
+  ],
+  "agents": [
+    "../../agents/data-scientist.md",
+    "../../agents/data-engineer.md",
+    "../../agents/ml-engineer.md",
+    "../../agents/mlops-engineer.md",
+    "../../agents/ai-engineer.md",
+    "../../agents/prompt-engineer.md",
+    "../../agents/backend-architect.md",
+    "../../agents/performance-engineer.md"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "seo-content-suite",
+  "description": "SEO content analysis, keyword research, meta tag optimization, E-E-A-T signal assessment, featured snippet formatting, content freshness updates, and cannibalization detection",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "seo",
+    "content-optimization",
+    "keywords",
+    "meta-tags",
+    "e-e-a-t",
+    "search-ranking",
+    "serp",
+    "featured-snippets",
+    "schema-markup"
+  ],
+  "category": "marketing",
+  "agents": [
+    "../../agents/seo-content-writer.md",
+    "../../agents/seo-content-auditor.md",
+    "../../agents/seo-keyword-strategist.md",
+    "../../agents/seo-meta-optimizer.md",
+    "../../agents/seo-structure-architect.md",
+    "../../agents/seo-snippet-hunter.md",
+    "../../agents/seo-content-refresher.md",
+    "../../agents/seo-cannibalization-detector.md",
+    "../../agents/seo-authority-builder.md",
+    "../../agents/seo-content-planner.md"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "accessibility-compliance",
+  "description": "WCAG accessibility auditing, compliance validation, UI testing for screen readers, keyboard navigation, and inclusive design implementation",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "accessibility",
+    "wcag",
+    "a11y",
+    "compliance",
+    "inclusive-design",
+    "screen-reader",
+    "keyboard-navigation",
+    "aria"
+  ],
+  "category": "accessibility",
+  "commands": [
+    "../../tools/accessibility-audit.md"
+  ],
+  "agents": [
+    "../../agents/ui-visual-validator.md"
+  ]
+}

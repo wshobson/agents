@@ -1,0 +1,37 @@
+{
+  "name": "code-quality-review",
+  "description": "Multi-agent code review analyzing architectural patterns, security vulnerabilities, performance bottlenecks, test coverage, and production reliability for comprehensive quality assessment",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "code-review",
+    "quality",
+    "architecture",
+    "best-practices",
+    "clean-code",
+    "solid",
+    "design-patterns",
+    "refactoring",
+    "maintainability"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/full-review.md",
+    "../../tools/pr-enhance.md",
+    "../../tools/ai-review.md",
+    "../../tools/multi-agent-review.md"
+  ],
+  "agents": [
+    "../../agents/code-reviewer.md",
+    "../../agents/architect-review.md",
+    "../../agents/security-auditor.md",
+    "../../agents/performance-engineer.md",
+    "../../agents/test-automator.md"
+  ]
+}

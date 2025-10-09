@@ -1,0 +1,26 @@
+{
+  "name": "payment-processing",
+  "description": "Payment gateway integration with Stripe, PayPal, and other processors, checkout flow implementation, subscription billing, and PCI compliance",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "payments",
+    "stripe",
+    "paypal",
+    "checkout",
+    "billing",
+    "subscriptions",
+    "pci",
+    "e-commerce"
+  ],
+  "category": "payments",
+  "agents": [
+    "../../agents/payment-integration.md"
+  ]
+}

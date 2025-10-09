@@ -1,0 +1,38 @@
+{
+  "name": "infrastructure-devops",
+  "description": "Kubernetes manifest generation, Docker image optimization, Terraform infrastructure-as-code, configuration validation, cost analysis, and deployment checklists for container orchestration",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "kubernetes",
+    "docker",
+    "terraform",
+    "infrastructure",
+    "devops",
+    "k8s",
+    "containers",
+    "helm",
+    "argocd",
+    "gitops"
+  ],
+  "category": "infrastructure",
+  "commands": [
+    "../../tools/k8s-manifest.md",
+    "../../tools/docker-optimize.md",
+    "../../tools/config-validate.md",
+    "../../tools/cost-optimize.md",
+    "../../tools/deploy-checklist.md"
+  ],
+  "agents": [
+    "../../agents/kubernetes-architect.md",
+    "../../agents/terraform-specialist.md",
+    "../../agents/deployment-engineer.md",
+    "../../agents/cloud-architect.md"
+  ]
+}

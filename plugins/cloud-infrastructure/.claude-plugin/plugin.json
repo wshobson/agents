@@ -1,0 +1,35 @@
+{
+  "name": "cloud-infrastructure",
+  "description": "Cloud architecture design for AWS/Azure/GCP, Kubernetes cluster configuration, Terraform infrastructure-as-code, hybrid cloud networking, and multi-cloud cost optimization",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "cloud",
+    "aws",
+    "azure",
+    "gcp",
+    "kubernetes",
+    "terraform",
+    "infrastructure",
+    "eks",
+    "aks",
+    "gke",
+    "cloudformation",
+    "multi-cloud"
+  ],
+  "category": "infrastructure",
+  "agents": [
+    "../../agents/cloud-architect.md",
+    "../../agents/kubernetes-architect.md",
+    "../../agents/hybrid-cloud-architect.md",
+    "../../agents/terraform-specialist.md",
+    "../../agents/network-engineer.md",
+    "../../agents/deployment-engineer.md"
+  ]
+}

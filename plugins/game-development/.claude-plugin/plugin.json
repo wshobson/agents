@@ -1,0 +1,27 @@
+{
+  "name": "game-development",
+  "description": "Unity game development with C# scripting, Minecraft server plugin development with Bukkit/Spigot APIs, and game mechanics implementation",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "gaming",
+    "unity",
+    "minecraft",
+    "game-dev",
+    "bukkit",
+    "spigot",
+    "csharp",
+    "game-mechanics"
+  ],
+  "category": "gaming",
+  "agents": [
+    "../../agents/unity-developer.md",
+    "../../agents/minecraft-bukkit-pro.md"
+  ]
+}

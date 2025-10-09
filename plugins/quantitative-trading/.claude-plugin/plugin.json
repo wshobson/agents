@@ -1,0 +1,27 @@
+{
+  "name": "quantitative-trading",
+  "description": "Quantitative analysis, algorithmic trading strategies, financial modeling, portfolio risk management, and backtesting frameworks",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "fintech",
+    "quant",
+    "trading",
+    "algorithmic-trading",
+    "financial-modeling",
+    "risk-management",
+    "portfolio",
+    "backtesting"
+  ],
+  "category": "finance",
+  "agents": [
+    "../../agents/quant-analyst.md",
+    "../../agents/risk-manager.md"
+  ]
+}

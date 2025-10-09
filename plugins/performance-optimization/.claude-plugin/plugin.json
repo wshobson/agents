@@ -1,0 +1,39 @@
+{
+  "name": "performance-optimization",
+  "description": "Application profiling, database query optimization, caching strategy implementation, Core Web Vitals analysis, load testing, and scalability assessment for performance improvements",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "performance",
+    "optimization",
+    "scalability",
+    "caching",
+    "profiling",
+    "redis",
+    "cdn",
+    "database-optimization",
+    "query-tuning",
+    "core-web-vitals",
+    "lighthouse"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/performance-optimization.md",
+    "../../tools/cost-optimize.md"
+  ],
+  "agents": [
+    "../../agents/performance-engineer.md",
+    "../../agents/database-optimizer.md",
+    "../../agents/database-architect.md",
+    "../../agents/frontend-developer.md",
+    "../../agents/backend-architect.md",
+    "../../agents/observability-engineer.md",
+    "../../agents/cloud-architect.md"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "documentation-generation",
+  "description": "OpenAPI specification generation, Mermaid diagram creation, tutorial writing, API reference documentation, and technical documentation from codebases",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "documentation",
+    "api-docs",
+    "diagrams",
+    "technical-writing",
+    "openapi",
+    "swagger",
+    "mermaid",
+    "readme",
+    "docusaurus"
+  ],
+  "category": "documentation",
+  "commands": [
+    "../../tools/doc-generate.md"
+  ],
+  "agents": [
+    "../../agents/docs-architect.md",
+    "../../agents/api-documenter.md",
+    "../../agents/mermaid-expert.md",
+    "../../agents/tutorial-engineer.md",
+    "../../agents/reference-builder.md"
+  ]
+}

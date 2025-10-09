@@ -1,0 +1,42 @@
+{
+  "name": "testing-quality-suite",
+  "description": "Test-driven development workflows, automated test generation, test harness setup, and multi-perspective code review for unit, integration, and end-to-end testing",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "tdd",
+    "test-automation",
+    "quality-assurance",
+    "unit-tests",
+    "integration-tests",
+    "e2e",
+    "jest",
+    "pytest",
+    "cypress",
+    "playwright",
+    "code-coverage"
+  ],
+  "category": "quality",
+  "commands": [
+    "../../workflows/tdd-cycle.md",
+    "../../tools/tdd-red.md",
+    "../../tools/tdd-green.md",
+    "../../tools/tdd-refactor.md",
+    "../../tools/test-harness.md",
+    "../../tools/ai-review.md"
+  ],
+  "agents": [
+    "../../agents/tdd-orchestrator.md",
+    "../../agents/test-automator.md",
+    "../../agents/debugger.md",
+    "../../agents/code-reviewer.md",
+    "../../agents/architect-review.md"
+  ]
+}

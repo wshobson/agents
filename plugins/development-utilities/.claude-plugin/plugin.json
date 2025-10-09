@@ -1,0 +1,41 @@
+{
+  "name": "development-utilities",
+  "description": "Code refactoring, dependency auditing, technical debt tracking, error log analysis, issue management, and standup note generation for daily development workflows",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "refactoring",
+    "dependencies",
+    "technical-debt",
+    "code-quality",
+    "error-analysis",
+    "github-issues",
+    "collaboration",
+    "maintenance"
+  ],
+  "category": "utilities",
+  "commands": [
+    "../../tools/refactor-clean.md",
+    "../../tools/deps-audit.md",
+    "../../tools/tech-debt.md",
+    "../../tools/error-analysis.md",
+    "../../tools/error-trace.md",
+    "../../tools/multi-agent-review.md",
+    "../../tools/issue.md",
+    "../../tools/standup-notes.md",
+    "../../tools/context-restore.md"
+  ],
+  "agents": [
+    "../../agents/legacy-modernizer.md",
+    "../../agents/code-reviewer.md",
+    "../../agents/debugger.md",
+    "../../agents/error-detective.md",
+    "../../agents/dx-optimizer.md"
+  ]
+}

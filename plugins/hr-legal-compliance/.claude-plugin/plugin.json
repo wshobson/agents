@@ -1,0 +1,28 @@
+{
+  "name": "hr-legal-compliance",
+  "description": "HR policy documentation, legal compliance templates (GDPR/SOC2/HIPAA), employment contracts, and regulatory documentation",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "hr",
+    "legal",
+    "compliance",
+    "gdpr",
+    "soc2",
+    "hipaa",
+    "policies",
+    "employment",
+    "contracts"
+  ],
+  "category": "business",
+  "agents": [
+    "../../agents/hr-pro.md",
+    "../../agents/legal-advisor.md"
+  ]
+}

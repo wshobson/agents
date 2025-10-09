@@ -1,0 +1,43 @@
+{
+  "name": "security-hardening",
+  "description": "OWASP vulnerability scanning, penetration testing workflows, security-focused code review, compliance validation for SOC2/HIPAA/GDPR, and automated security remediation",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "vulnerability-assessment",
+    "owasp",
+    "penetration-testing",
+    "compliance",
+    "soc2",
+    "hipaa",
+    "gdpr",
+    "xss",
+    "sql-injection",
+    "csrf",
+    "devsecops"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/security-hardening.md",
+    "../../tools/security-scan.md",
+    "../../tools/compliance-check.md"
+  ],
+  "agents": [
+    "../../agents/security-auditor.md",
+    "../../agents/backend-security-coder.md",
+    "../../agents/frontend-security-coder.md",
+    "../../agents/mobile-security-coder.md",
+    "../../agents/backend-architect.md",
+    "../../agents/frontend-developer.md",
+    "../../agents/test-automator.md",
+    "../../agents/deployment-engineer.md",
+    "../../agents/devops-troubleshooter.md"
+  ]
+}

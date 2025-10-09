@@ -1,0 +1,38 @@
+{
+  "name": "legacy-modernization",
+  "description": "Codebase refactoring, framework migration, dependency updates, architectural transformation, and backward compatibility testing for legacy system modernization",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "legacy",
+    "modernization",
+    "refactoring",
+    "migration",
+    "technical-debt",
+    "framework-upgrade",
+    "angular",
+    "react",
+    "vue"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/legacy-modernize.md",
+    "../../tools/code-migrate.md",
+    "../../tools/deps-upgrade.md",
+    "../../tools/deps-audit.md",
+    "../../tools/tech-debt.md",
+    "../../tools/refactor-clean.md"
+  ],
+  "agents": [
+    "../../agents/legacy-modernizer.md",
+    "../../agents/architect-review.md",
+    "../../agents/test-automator.md",
+    "../../agents/code-reviewer.md"
+  ]
+}

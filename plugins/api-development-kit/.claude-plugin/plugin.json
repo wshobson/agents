@@ -1,0 +1,41 @@
+{
+  "name": "api-development-kit",
+  "description": "REST and GraphQL API scaffolding, OpenAPI documentation generation, request mocking, security scanning, and input validation for backend API development",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "api",
+    "rest",
+    "graphql",
+    "openapi",
+    "swagger",
+    "fastapi",
+    "express",
+    "spring-boot",
+    "django",
+    "microservices",
+    "authentication",
+    "jwt"
+  ],
+  "category": "development",
+  "commands": [
+    "../../tools/api-scaffold.md",
+    "../../tools/api-mock.md",
+    "../../tools/security-scan.md",
+    "../../tools/data-validation.md"
+  ],
+  "agents": [
+    "../../agents/backend-architect.md",
+    "../../agents/graphql-architect.md",
+    "../../agents/api-documenter.md",
+    "../../agents/backend-security-coder.md",
+    "../../agents/fastapi-pro.md",
+    "../../agents/django-pro.md"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "cicd-automation",
+  "description": "CI/CD pipeline configuration, GitHub Actions/GitLab CI workflow setup, progressive deployment strategies, automated rollback, canary releases, and deployment monitoring",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "ci-cd",
+    "automation",
+    "deployment",
+    "devops",
+    "pipeline",
+    "github-actions",
+    "gitlab-ci",
+    "jenkins",
+    "argocd",
+    "gitops",
+    "canary",
+    "blue-green"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/workflow-automate.md",
+    "../../tools/deploy-checklist.md",
+    "../../tools/config-validate.md"
+  ],
+  "agents": [
+    "../../agents/deployment-engineer.md",
+    "../../agents/devops-troubleshooter.md",
+    "../../agents/kubernetes-architect.md",
+    "../../agents/cloud-architect.md",
+    "../../agents/terraform-specialist.md"
+  ]
+}

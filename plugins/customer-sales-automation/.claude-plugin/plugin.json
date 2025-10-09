@@ -1,0 +1,26 @@
+{
+  "name": "customer-sales-automation",
+  "description": "Customer support workflow automation, sales pipeline management, email campaigns, and CRM integration for customer relationship workflows",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "customer-support",
+    "sales",
+    "crm",
+    "email-campaigns",
+    "automation",
+    "outreach",
+    "customer-service"
+  ],
+  "category": "business",
+  "agents": [
+    "../../agents/customer-support.md",
+    "../../agents/sales-automator.md"
+  ]
+}

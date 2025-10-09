@@ -1,0 +1,47 @@
+{
+  "name": "incident-response",
+  "description": "Production incident diagnostics, distributed tracing analysis, root cause identification, automated rollback procedures, post-mortem documentation, and on-call playbook execution",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "incident-response",
+    "debugging",
+    "production",
+    "monitoring",
+    "sre",
+    "troubleshooting",
+    "outage",
+    "logs",
+    "kubernetes",
+    "on-call",
+    "prometheus",
+    "grafana"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/incident-response.md",
+    "../../workflows/smart-fix.md",
+    "../../tools/smart-debug.md",
+    "../../tools/debug-trace.md",
+    "../../tools/monitor-setup.md",
+    "../../tools/slo-implement.md",
+    "../../tools/error-trace.md",
+    "../../tools/error-analysis.md"
+  ],
+  "agents": [
+    "../../agents/incident-responder.md",
+    "../../agents/devops-troubleshooter.md",
+    "../../agents/debugger.md",
+    "../../agents/error-detective.md",
+    "../../agents/observability-engineer.md",
+    "../../agents/performance-engineer.md",
+    "../../agents/database-optimizer.md",
+    "../../agents/network-engineer.md"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "name": "full-stack-development",
+  "description": "Multi-agent workflow orchestrating backend API design, frontend implementation, mobile development, testing, security review, and deployment automation for complete feature implementation",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "full-stack",
+    "api-design",
+    "frontend",
+    "mobile",
+    "microservices",
+    "deployment",
+    "react",
+    "nextjs",
+    "rest-api",
+    "graphql",
+    "typescript"
+  ],
+  "category": "workflows",
+  "commands": [
+    "../../workflows/feature-development.md",
+    "../../workflows/full-stack-feature.md"
+  ],
+  "agents": [
+    "../../agents/backend-architect.md",
+    "../../agents/graphql-architect.md",
+    "../../agents/frontend-developer.md",
+    "../../agents/mobile-developer.md",
+    "../../agents/test-automator.md",
+    "../../agents/security-auditor.md",
+    "../../agents/performance-engineer.md",
+    "../../agents/deployment-engineer.md",
+    "../../agents/tdd-orchestrator.md"
+  ]
+}

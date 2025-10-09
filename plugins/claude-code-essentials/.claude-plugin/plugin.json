@@ -1,0 +1,38 @@
+{
+  "name": "claude-code-essentials",
+  "description": "Code explanation, debugging, documentation generation, PR enhancement, and git workflow tools for daily development tasks",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "beginner",
+    "starter",
+    "essential",
+    "code-explanation",
+    "debugging",
+    "documentation",
+    "git",
+    "pull-request"
+  ],
+  "category": "essentials",
+  "commands": [
+    "../../tools/code-explain.md",
+    "../../tools/smart-debug.md",
+    "../../tools/doc-generate.md",
+    "../../tools/pr-enhance.md",
+    "../../tools/onboard.md",
+    "../../workflows/git-workflow.md"
+  ],
+  "agents": [
+    "../../agents/code-reviewer.md",
+    "../../agents/debugger.md",
+    "../../agents/docs-architect.md",
+    "../../agents/dx-optimizer.md",
+    "../../agents/tutorial-engineer.md"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "name": "database-operations",
+  "description": "Database schema design, SQL query optimization, index analysis, data migration automation, and performance tuning for PostgreSQL, MySQL, MongoDB, and other database systems",
+  "version": "1.0.0",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "database",
+    "sql",
+    "nosql",
+    "optimization",
+    "migration",
+    "postgres",
+    "mysql",
+    "mongodb",
+    "redis",
+    "query-optimization",
+    "indexing"
+  ],
+  "category": "database",
+  "commands": [
+    "../../tools/db-migrate.md"
+  ],
+  "agents": [
+    "../../agents/database-architect.md",
+    "../../agents/database-optimizer.md",
+    "../../agents/database-admin.md",
+    "../../agents/sql-pro.md"
+  ]
+}
