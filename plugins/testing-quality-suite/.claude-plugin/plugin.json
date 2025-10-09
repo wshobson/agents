@@ -25,18 +25,18 @@
   ],
   "category": "quality",
   "commands": [
-    "../../workflows/tdd-cycle.md",
-    "../../tools/tdd-red.md",
-    "../../tools/tdd-green.md",
-    "../../tools/tdd-refactor.md",
-    "../../tools/test-harness.md",
-    "../../tools/ai-review.md"
+    "./workflows/tdd-cycle.md",
+    "./tools/tdd-red.md",
+    "./tools/tdd-green.md",
+    "./tools/tdd-refactor.md",
+    "./tools/test-harness.md",
+    "./tools/ai-review.md"
   ],
   "agents": [
-    "../../agents/tdd-orchestrator.md",
-    "../../agents/test-automator.md",
-    "../../agents/debugger.md",
-    "../../agents/code-reviewer.md",
-    "../../agents/architect-review.md"
+    "./agents/tdd-orchestrator.md",
+    "./agents/test-automator.md",
+    "./agents/debugger.md",
+    "./agents/code-reviewer.md",
+    "./agents/architect-review.md"
   ]
 }

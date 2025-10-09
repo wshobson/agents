@@ -22,16 +22,16 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/full-review.md",
-    "../../tools/pr-enhance.md",
-    "../../tools/ai-review.md",
-    "../../tools/multi-agent-review.md"
+    "./workflows/full-review.md",
+    "./tools/pr-enhance.md",
+    "./tools/ai-review.md",
+    "./tools/multi-agent-review.md"
   ],
   "agents": [
-    "../../agents/code-reviewer.md",
-    "../../agents/architect-review.md",
-    "../../agents/security-auditor.md",
-    "../../agents/performance-engineer.md",
-    "../../agents/test-automator.md"
+    "./agents/code-reviewer.md",
+    "./agents/architect-review.md",
+    "./agents/security-auditor.md",
+    "./agents/performance-engineer.md",
+    "./agents/test-automator.md"
   ]
 }

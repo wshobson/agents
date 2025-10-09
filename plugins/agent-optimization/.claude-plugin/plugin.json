@@ -21,16 +21,16 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/improve-agent.md",
-    "../../tools/prompt-optimize.md",
-    "../../tools/multi-agent-optimize.md",
-    "../../tools/context-save.md",
-    "../../tools/context-restore.md",
-    "../../tools/ai-assistant.md"
+    "./workflows/improve-agent.md",
+    "./tools/prompt-optimize.md",
+    "./tools/multi-agent-optimize.md",
+    "./tools/context-save.md",
+    "./tools/context-restore.md",
+    "./tools/ai-assistant.md"
   ],
   "agents": [
-    "../../agents/prompt-engineer.md",
-    "../../agents/ai-engineer.md",
-    "../../agents/context-manager.md"
+    "./agents/prompt-engineer.md",
+    "./agents/ai-engineer.md",
+    "./agents/context-manager.md"
   ]
 }

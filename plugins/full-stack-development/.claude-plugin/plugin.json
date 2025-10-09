@@ -24,18 +24,18 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/feature-development.md",
-    "../../workflows/full-stack-feature.md"
+    "./workflows/feature-development.md",
+    "./workflows/full-stack-feature.md"
   ],
   "agents": [
-    "../../agents/backend-architect.md",
-    "../../agents/graphql-architect.md",
-    "../../agents/frontend-developer.md",
-    "../../agents/mobile-developer.md",
-    "../../agents/test-automator.md",
-    "../../agents/security-auditor.md",
-    "../../agents/performance-engineer.md",
-    "../../agents/deployment-engineer.md",
-    "../../agents/tdd-orchestrator.md"
+    "./agents/backend-architect.md",
+    "./agents/graphql-architect.md",
+    "./agents/frontend-developer.md",
+    "./agents/mobile-developer.md",
+    "./agents/test-automator.md",
+    "./agents/security-auditor.md",
+    "./agents/performance-engineer.md",
+    "./agents/deployment-engineer.md",
+    "./agents/tdd-orchestrator.md"
   ]
 }

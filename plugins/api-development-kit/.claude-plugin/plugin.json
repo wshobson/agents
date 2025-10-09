@@ -25,17 +25,17 @@
   ],
   "category": "development",
   "commands": [
-    "../../tools/api-scaffold.md",
-    "../../tools/api-mock.md",
-    "../../tools/security-scan.md",
-    "../../tools/data-validation.md"
+    "./tools/api-scaffold.md",
+    "./tools/api-mock.md",
+    "./tools/security-scan.md",
+    "./tools/data-validation.md"
   ],
   "agents": [
-    "../../agents/backend-architect.md",
-    "../../agents/graphql-architect.md",
-    "../../agents/api-documenter.md",
-    "../../agents/backend-security-coder.md",
-    "../../agents/fastapi-pro.md",
-    "../../agents/django-pro.md"
+    "./agents/backend-architect.md",
+    "./agents/graphql-architect.md",
+    "./agents/api-documenter.md",
+    "./agents/backend-security-coder.md",
+    "./agents/fastapi-pro.md",
+    "./agents/django-pro.md"
   ]
 }

@@ -25,23 +25,23 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/incident-response.md",
-    "../../workflows/smart-fix.md",
-    "../../tools/smart-debug.md",
-    "../../tools/debug-trace.md",
-    "../../tools/monitor-setup.md",
-    "../../tools/slo-implement.md",
-    "../../tools/error-trace.md",
-    "../../tools/error-analysis.md"
+    "./workflows/incident-response.md",
+    "./workflows/smart-fix.md",
+    "./tools/smart-debug.md",
+    "./tools/debug-trace.md",
+    "./tools/monitor-setup.md",
+    "./tools/slo-implement.md",
+    "./tools/error-trace.md",
+    "./tools/error-analysis.md"
   ],
   "agents": [
-    "../../agents/incident-responder.md",
-    "../../agents/devops-troubleshooter.md",
-    "../../agents/debugger.md",
-    "../../agents/error-detective.md",
-    "../../agents/observability-engineer.md",
-    "../../agents/performance-engineer.md",
-    "../../agents/database-optimizer.md",
-    "../../agents/network-engineer.md"
+    "./agents/incident-responder.md",
+    "./agents/devops-troubleshooter.md",
+    "./agents/debugger.md",
+    "./agents/error-detective.md",
+    "./agents/observability-engineer.md",
+    "./agents/performance-engineer.md",
+    "./agents/database-optimizer.md",
+    "./agents/network-engineer.md"
   ]
 }

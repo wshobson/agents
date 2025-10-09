@@ -22,6 +22,6 @@
   ],
   "category": "blockchain",
   "agents": [
-    "../../agents/blockchain-developer.md"
+    "./agents/blockchain-developer.md"
   ]
 }

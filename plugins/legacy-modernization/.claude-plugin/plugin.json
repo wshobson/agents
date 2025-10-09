@@ -22,17 +22,17 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/legacy-modernize.md",
-    "../../tools/code-migrate.md",
-    "../../tools/deps-upgrade.md",
-    "../../tools/deps-audit.md",
-    "../../tools/tech-debt.md",
-    "../../tools/refactor-clean.md"
+    "./workflows/legacy-modernize.md",
+    "./tools/code-migrate.md",
+    "./tools/deps-upgrade.md",
+    "./tools/deps-audit.md",
+    "./tools/tech-debt.md",
+    "./tools/refactor-clean.md"
   ],
   "agents": [
-    "../../agents/legacy-modernizer.md",
-    "../../agents/architect-review.md",
-    "../../agents/test-automator.md",
-    "../../agents/code-reviewer.md"
+    "./agents/legacy-modernizer.md",
+    "./agents/architect-review.md",
+    "./agents/test-automator.md",
+    "./agents/code-reviewer.md"
   ]
 }

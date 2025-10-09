@@ -22,7 +22,7 @@
   ],
   "category": "business",
   "agents": [
-    "../../agents/hr-pro.md",
-    "../../agents/legal-advisor.md"
+    "./agents/hr-pro.md",
+    "./agents/legal-advisor.md"
   ]
 }

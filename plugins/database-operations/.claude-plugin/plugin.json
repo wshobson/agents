@@ -24,12 +24,12 @@
   ],
   "category": "database",
   "commands": [
-    "../../tools/db-migrate.md"
+    "./tools/db-migrate.md"
   ],
   "agents": [
-    "../../agents/database-architect.md",
-    "../../agents/database-optimizer.md",
-    "../../agents/database-admin.md",
-    "../../agents/sql-pro.md"
+    "./agents/database-architect.md",
+    "./agents/database-optimizer.md",
+    "./agents/database-admin.md",
+    "./agents/sql-pro.md"
   ]
 }

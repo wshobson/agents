@@ -21,6 +21,6 @@
   ],
   "category": "business",
   "agents": [
-    "../../agents/business-analyst.md"
+    "./agents/business-analyst.md"
   ]
 }

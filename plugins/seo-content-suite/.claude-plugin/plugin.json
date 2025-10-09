@@ -22,15 +22,15 @@
   ],
   "category": "marketing",
   "agents": [
-    "../../agents/seo-content-writer.md",
-    "../../agents/seo-content-auditor.md",
-    "../../agents/seo-keyword-strategist.md",
-    "../../agents/seo-meta-optimizer.md",
-    "../../agents/seo-structure-architect.md",
-    "../../agents/seo-snippet-hunter.md",
-    "../../agents/seo-content-refresher.md",
-    "../../agents/seo-cannibalization-detector.md",
-    "../../agents/seo-authority-builder.md",
-    "../../agents/seo-content-planner.md"
+    "./agents/seo-content-writer.md",
+    "./agents/seo-content-auditor.md",
+    "./agents/seo-keyword-strategist.md",
+    "./agents/seo-meta-optimizer.md",
+    "./agents/seo-structure-architect.md",
+    "./agents/seo-snippet-hunter.md",
+    "./agents/seo-content-refresher.md",
+    "./agents/seo-cannibalization-detector.md",
+    "./agents/seo-authority-builder.md",
+    "./agents/seo-content-planner.md"
   ]
 }

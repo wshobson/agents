@@ -21,7 +21,7 @@
   ],
   "category": "gaming",
   "agents": [
-    "../../agents/unity-developer.md",
-    "../../agents/minecraft-bukkit-pro.md"
+    "./agents/unity-developer.md",
+    "./agents/minecraft-bukkit-pro.md"
   ]
 }

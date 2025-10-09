@@ -21,6 +21,6 @@
   ],
   "category": "payments",
   "agents": [
-    "../../agents/payment-integration.md"
+    "./agents/payment-integration.md"
   ]
 }

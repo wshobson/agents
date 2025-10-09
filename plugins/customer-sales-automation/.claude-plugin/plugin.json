@@ -20,7 +20,7 @@
   ],
   "category": "business",
   "agents": [
-    "../../agents/customer-support.md",
-    "../../agents/sales-automator.md"
+    "./agents/customer-support.md",
+    "./agents/sales-automator.md"
   ]
 }

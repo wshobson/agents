@@ -25,11 +25,11 @@
   ],
   "category": "infrastructure",
   "agents": [
-    "../../agents/cloud-architect.md",
-    "../../agents/kubernetes-architect.md",
-    "../../agents/hybrid-cloud-architect.md",
-    "../../agents/terraform-specialist.md",
-    "../../agents/network-engineer.md",
-    "../../agents/deployment-engineer.md"
+    "./agents/cloud-architect.md",
+    "./agents/kubernetes-architect.md",
+    "./agents/hybrid-cloud-architect.md",
+    "./agents/terraform-specialist.md",
+    "./agents/network-engineer.md",
+    "./agents/deployment-engineer.md"
   ]
 }

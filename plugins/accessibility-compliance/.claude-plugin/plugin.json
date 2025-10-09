@@ -21,9 +21,9 @@
   ],
   "category": "accessibility",
   "commands": [
-    "../../tools/accessibility-audit.md"
+    "./tools/accessibility-audit.md"
   ],
   "agents": [
-    "../../agents/ui-visual-validator.md"
+    "./agents/ui-visual-validator.md"
   ]
 }

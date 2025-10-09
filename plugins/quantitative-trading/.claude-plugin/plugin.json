@@ -21,7 +21,7 @@
   ],
   "category": "finance",
   "agents": [
-    "../../agents/quant-analyst.md",
-    "../../agents/risk-manager.md"
+    "./agents/quant-analyst.md",
+    "./agents/risk-manager.md"
   ]
 }

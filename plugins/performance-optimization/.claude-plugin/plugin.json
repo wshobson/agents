@@ -24,16 +24,16 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/performance-optimization.md",
-    "../../tools/cost-optimize.md"
+    "./workflows/performance-optimization.md",
+    "./tools/cost-optimize.md"
   ],
   "agents": [
-    "../../agents/performance-engineer.md",
-    "../../agents/database-optimizer.md",
-    "../../agents/database-architect.md",
-    "../../agents/frontend-developer.md",
-    "../../agents/backend-architect.md",
-    "../../agents/observability-engineer.md",
-    "../../agents/cloud-architect.md"
+    "./agents/performance-engineer.md",
+    "./agents/database-optimizer.md",
+    "./agents/database-architect.md",
+    "./agents/frontend-developer.md",
+    "./agents/backend-architect.md",
+    "./agents/observability-engineer.md",
+    "./agents/cloud-architect.md"
   ]
 }

@@ -25,19 +25,19 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/security-hardening.md",
-    "../../tools/security-scan.md",
-    "../../tools/compliance-check.md"
+    "./workflows/security-hardening.md",
+    "./tools/security-scan.md",
+    "./tools/compliance-check.md"
   ],
   "agents": [
-    "../../agents/security-auditor.md",
-    "../../agents/backend-security-coder.md",
-    "../../agents/frontend-security-coder.md",
-    "../../agents/mobile-security-coder.md",
-    "../../agents/backend-architect.md",
-    "../../agents/frontend-developer.md",
-    "../../agents/test-automator.md",
-    "../../agents/deployment-engineer.md",
-    "../../agents/devops-troubleshooter.md"
+    "./agents/security-auditor.md",
+    "./agents/backend-security-coder.md",
+    "./agents/frontend-security-coder.md",
+    "./agents/mobile-security-coder.md",
+    "./agents/backend-architect.md",
+    "./agents/frontend-developer.md",
+    "./agents/test-automator.md",
+    "./agents/deployment-engineer.md",
+    "./agents/devops-troubleshooter.md"
   ]
 }

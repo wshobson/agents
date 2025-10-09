@@ -21,18 +21,18 @@
   ],
   "category": "essentials",
   "commands": [
-    "../../tools/code-explain.md",
-    "../../tools/smart-debug.md",
-    "../../tools/doc-generate.md",
-    "../../tools/pr-enhance.md",
-    "../../tools/onboard.md",
-    "../../workflows/git-workflow.md"
+    "./tools/code-explain.md",
+    "./tools/smart-debug.md",
+    "./tools/doc-generate.md",
+    "./tools/pr-enhance.md",
+    "./tools/onboard.md",
+    "./workflows/git-workflow.md"
   ],
   "agents": [
-    "../../agents/code-reviewer.md",
-    "../../agents/debugger.md",
-    "../../agents/docs-architect.md",
-    "../../agents/dx-optimizer.md",
-    "../../agents/tutorial-engineer.md"
+    "./agents/code-reviewer.md",
+    "./agents/debugger.md",
+    "./agents/docs-architect.md",
+    "./agents/dx-optimizer.md",
+    "./agents/tutorial-engineer.md"
   ]
 }

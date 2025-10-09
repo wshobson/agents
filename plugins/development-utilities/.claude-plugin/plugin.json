@@ -21,21 +21,21 @@
   ],
   "category": "utilities",
   "commands": [
-    "../../tools/refactor-clean.md",
-    "../../tools/deps-audit.md",
-    "../../tools/tech-debt.md",
-    "../../tools/error-analysis.md",
-    "../../tools/error-trace.md",
-    "../../tools/multi-agent-review.md",
-    "../../tools/issue.md",
-    "../../tools/standup-notes.md",
-    "../../tools/context-restore.md"
+    "./tools/refactor-clean.md",
+    "./tools/deps-audit.md",
+    "./tools/tech-debt.md",
+    "./tools/error-analysis.md",
+    "./tools/error-trace.md",
+    "./tools/multi-agent-review.md",
+    "./tools/issue.md",
+    "./tools/standup-notes.md",
+    "./tools/context-restore.md"
   ],
   "agents": [
-    "../../agents/legacy-modernizer.md",
-    "../../agents/code-reviewer.md",
-    "../../agents/debugger.md",
-    "../../agents/error-detective.md",
-    "../../agents/dx-optimizer.md"
+    "./agents/legacy-modernizer.md",
+    "./agents/code-reviewer.md",
+    "./agents/debugger.md",
+    "./agents/error-detective.md",
+    "./agents/dx-optimizer.md"
   ]
 }

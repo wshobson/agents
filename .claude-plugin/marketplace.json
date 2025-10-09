@@ -13,137 +13,137 @@
     {
       "name": "accessibility-compliance",
       "source": "./plugins/accessibility-compliance",
-      "strict": true
+      "strict": false
     },
     {
       "name": "agent-optimization",
       "source": "./plugins/agent-optimization",
-      "strict": true
+      "strict": false
     },
     {
       "name": "api-development-kit",
       "source": "./plugins/api-development-kit",
-      "strict": true
+      "strict": false
     },
     {
       "name": "blockchain-web3",
       "source": "./plugins/blockchain-web3",
-      "strict": true
+      "strict": false
     },
     {
       "name": "business-analytics",
       "source": "./plugins/business-analytics",
-      "strict": true
+      "strict": false
     },
     {
       "name": "cicd-automation",
       "source": "./plugins/cicd-automation",
-      "strict": true
+      "strict": false
     },
     {
       "name": "claude-code-essentials",
       "source": "./plugins/claude-code-essentials",
-      "strict": true
+      "strict": false
     },
     {
       "name": "cloud-infrastructure",
       "source": "./plugins/cloud-infrastructure",
-      "strict": true
+      "strict": false
     },
     {
       "name": "code-quality-review",
       "source": "./plugins/code-quality-review",
-      "strict": true
+      "strict": false
     },
     {
       "name": "customer-sales-automation",
       "source": "./plugins/customer-sales-automation",
-      "strict": true
+      "strict": false
     },
     {
       "name": "data-ml-pipeline",
       "source": "./plugins/data-ml-pipeline",
-      "strict": true
+      "strict": false
     },
     {
       "name": "database-operations",
       "source": "./plugins/database-operations",
-      "strict": true
+      "strict": false
     },
     {
       "name": "development-utilities",
       "source": "./plugins/development-utilities",
-      "strict": true
+      "strict": false
     },
     {
       "name": "documentation-generation",
       "source": "./plugins/documentation-generation",
-      "strict": true
+      "strict": false
     },
     {
       "name": "full-stack-development",
       "source": "./plugins/full-stack-development",
-      "strict": true
+      "strict": false
     },
     {
       "name": "game-development",
       "source": "./plugins/game-development",
-      "strict": true
+      "strict": false
     },
     {
       "name": "hr-legal-compliance",
       "source": "./plugins/hr-legal-compliance",
-      "strict": true
+      "strict": false
     },
     {
       "name": "incident-response",
       "source": "./plugins/incident-response",
-      "strict": true
+      "strict": false
     },
     {
       "name": "infrastructure-devops",
       "source": "./plugins/infrastructure-devops",
-      "strict": true
+      "strict": false
     },
     {
       "name": "legacy-modernization",
       "source": "./plugins/legacy-modernization",
-      "strict": true
+      "strict": false
     },
     {
       "name": "multi-platform-apps",
       "source": "./plugins/multi-platform-apps",
-      "strict": true
+      "strict": false
     },
     {
       "name": "payment-processing",
       "source": "./plugins/payment-processing",
-      "strict": true
+      "strict": false
     },
     {
       "name": "performance-optimization",
       "source": "./plugins/performance-optimization",
-      "strict": true
+      "strict": false
     },
     {
       "name": "quantitative-trading",
       "source": "./plugins/quantitative-trading",
-      "strict": true
+      "strict": false
     },
     {
       "name": "security-hardening",
       "source": "./plugins/security-hardening",
-      "strict": true
+      "strict": false
     },
     {
       "name": "seo-content-suite",
       "source": "./plugins/seo-content-suite",
-      "strict": true
+      "strict": false
     },
     {
       "name": "testing-quality-suite",
       "source": "./plugins/testing-quality-suite",
-      "strict": true
+      "strict": false
     }
   ]
 }

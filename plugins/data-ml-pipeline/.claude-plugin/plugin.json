@@ -25,21 +25,21 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/data-driven-feature.md",
-    "../../workflows/ml-pipeline.md",
-    "../../tools/langchain-agent.md",
-    "../../tools/data-validation.md",
-    "../../tools/data-pipeline.md",
-    "../../tools/ai-assistant.md"
+    "./workflows/data-driven-feature.md",
+    "./workflows/ml-pipeline.md",
+    "./tools/langchain-agent.md",
+    "./tools/data-validation.md",
+    "./tools/data-pipeline.md",
+    "./tools/ai-assistant.md"
   ],
   "agents": [
-    "../../agents/data-scientist.md",
-    "../../agents/data-engineer.md",
-    "../../agents/ml-engineer.md",
-    "../../agents/mlops-engineer.md",
-    "../../agents/ai-engineer.md",
-    "../../agents/prompt-engineer.md",
-    "../../agents/backend-architect.md",
-    "../../agents/performance-engineer.md"
+    "./agents/data-scientist.md",
+    "./agents/data-engineer.md",
+    "./agents/ml-engineer.md",
+    "./agents/mlops-engineer.md",
+    "./agents/ai-engineer.md",
+    "./agents/prompt-engineer.md",
+    "./agents/backend-architect.md",
+    "./agents/performance-engineer.md"
   ]
 }

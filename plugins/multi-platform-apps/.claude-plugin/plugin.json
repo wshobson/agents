@@ -24,14 +24,14 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/multi-platform.md"
+    "./workflows/multi-platform.md"
   ],
   "agents": [
-    "../../agents/mobile-developer.md",
-    "../../agents/flutter-expert.md",
-    "../../agents/ios-developer.md",
-    "../../agents/frontend-developer.md",
-    "../../agents/backend-architect.md",
-    "../../agents/ui-ux-designer.md"
+    "./agents/mobile-developer.md",
+    "./agents/flutter-expert.md",
+    "./agents/ios-developer.md",
+    "./agents/frontend-developer.md",
+    "./agents/backend-architect.md",
+    "./agents/ui-ux-designer.md"
   ]
 }

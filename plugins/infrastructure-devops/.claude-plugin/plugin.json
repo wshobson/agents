@@ -23,16 +23,16 @@
   ],
   "category": "infrastructure",
   "commands": [
-    "../../tools/k8s-manifest.md",
-    "../../tools/docker-optimize.md",
-    "../../tools/config-validate.md",
-    "../../tools/cost-optimize.md",
-    "../../tools/deploy-checklist.md"
+    "./tools/k8s-manifest.md",
+    "./tools/docker-optimize.md",
+    "./tools/config-validate.md",
+    "./tools/cost-optimize.md",
+    "./tools/deploy-checklist.md"
   ],
   "agents": [
-    "../../agents/kubernetes-architect.md",
-    "../../agents/terraform-specialist.md",
-    "../../agents/deployment-engineer.md",
-    "../../agents/cloud-architect.md"
+    "./agents/kubernetes-architect.md",
+    "./agents/terraform-specialist.md",
+    "./agents/deployment-engineer.md",
+    "./agents/cloud-architect.md"
   ]
 }

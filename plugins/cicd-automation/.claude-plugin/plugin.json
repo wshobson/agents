@@ -25,15 +25,15 @@
   ],
   "category": "workflows",
   "commands": [
-    "../../workflows/workflow-automate.md",
-    "../../tools/deploy-checklist.md",
-    "../../tools/config-validate.md"
+    "./workflows/workflow-automate.md",
+    "./tools/deploy-checklist.md",
+    "./tools/config-validate.md"
   ],
   "agents": [
-    "../../agents/deployment-engineer.md",
-    "../../agents/devops-troubleshooter.md",
-    "../../agents/kubernetes-architect.md",
-    "../../agents/cloud-architect.md",
-    "../../agents/terraform-specialist.md"
+    "./agents/deployment-engineer.md",
+    "./agents/devops-troubleshooter.md",
+    "./agents/kubernetes-architect.md",
+    "./agents/cloud-architect.md",
+    "./agents/terraform-specialist.md"
   ]
 }
