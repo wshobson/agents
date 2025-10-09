@@ -1,6 +1,8 @@
-# Claude Code Subagents Collection
+# April9's Claude Code Subagents Collection
 
-A comprehensive collection of 83 specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), providing domain-specific expertise across software development, infrastructure, and business operations.
+A curated collection of specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), providing domain-specific expertise across software development, infrastructure, and business operations.
+
+> **Note:** This is a fork of [wshobson/agents](https://github.com/wshobson/agents) with organization-wide configuration management. This repository contains a **whitelisted subset** of agents from the upstream repository. For the complete list of available agents, visit [wshobson/agents](https://github.com/wshobson/agents).
 
 ## Overview
 
@@ -12,101 +14,47 @@ This repository provides production-ready subagents that extend Claude Code's ca
 - Modern technology stacks and frameworks
 - Optimized model selection based on task complexity
 
-## Agent Categories
+### Whitelisted Agents
+
+This repository syncs **only the agents whitelisted in `agents-config.json`** to your local Claude Code configuration. If you want to use additional agents from the upstream repository, you must add them to the whitelist.
+
+## Whitelisted Agents
+
+This repository contains a curated subset of agents from [wshobson/agents](https://github.com/wshobson/agents). Only the agents listed below are synced to your local Claude Code configuration.
 
 ### Architecture & System Design
-
-#### Core Architecture
 
 | Agent | Model | Description |
 |-------|-------|-------------|
 | [backend-architect](agents/backend-architect.md) | opus | RESTful API design, microservice boundaries, database schemas |
-| [frontend-developer](agents/frontend-developer.md) | sonnet | React components, responsive layouts, client-side state management |
-| [graphql-architect](agents/graphql-architect.md) | opus | GraphQL schemas, resolvers, federation architecture |
-| [architect-reviewer](agents/architect-review.md) | opus | Architectural consistency analysis and pattern validation |
 | [cloud-architect](agents/cloud-architect.md) | opus | AWS/Azure/GCP infrastructure design and cost optimization |
-| [hybrid-cloud-architect](agents/hybrid-cloud-architect.md) | opus | Multi-cloud strategies across cloud and on-premises environments |
-| [kubernetes-architect](agents/kubernetes-architect.md) | opus | Cloud-native infrastructure with Kubernetes and GitOps |
+| [architect-reviewer](agents/architect-review.md) | opus | Architectural consistency analysis and pattern validation |
+| [ui-ux-designer](agents/ui-ux-designer.md) | sonnet | Interface design, wireframes, design systems |
 
-#### UI/UX & Mobile
+### Frontend & Mobile Development
 
 | Agent | Model | Description |
 |-------|-------|-------------|
-| [ui-ux-designer](agents/ui-ux-designer.md) | sonnet | Interface design, wireframes, design systems |
-| [ui-visual-validator](agents/ui-visual-validator.md) | sonnet | Visual regression testing and UI verification |
-| [mobile-developer](agents/mobile-developer.md) | sonnet | React Native and Flutter application development |
-| [ios-developer](agents/ios-developer.md) | sonnet | Native iOS development with Swift/SwiftUI |
+| [frontend-developer](agents/frontend-developer.md) | sonnet | React components, responsive layouts, client-side state management |
 | [flutter-expert](agents/flutter-expert.md) | sonnet | Advanced Flutter development with state management |
 
 ### Programming Languages
 
-#### Systems & Low-Level
-
 | Agent | Model | Description |
 |-------|-------|-------------|
-| [c-pro](agents/c-pro.md) | sonnet | System programming with memory management and OS interfaces |
-| [cpp-pro](agents/cpp-pro.md) | sonnet | Modern C++ with RAII, smart pointers, STL algorithms |
-| [rust-pro](agents/rust-pro.md) | sonnet | Memory-safe systems programming with ownership patterns |
-| [golang-pro](agents/golang-pro.md) | sonnet | Concurrent programming with goroutines and channels |
-
-#### Web & Application
-
-| Agent | Model | Description |
-|-------|-------|-------------|
-| [javascript-pro](agents/javascript-pro.md) | sonnet | Modern JavaScript with ES6+, async patterns, Node.js |
 | [typescript-pro](agents/typescript-pro.md) | sonnet | Advanced TypeScript with type systems and generics |
-| [python-pro](agents/python-pro.md) | sonnet | Python development with advanced features and optimization |
-| [ruby-pro](agents/ruby-pro.md) | sonnet | Ruby with metaprogramming, Rails patterns, gem development |
-| [php-pro](agents/php-pro.md) | sonnet | Modern PHP with frameworks and performance optimization |
-
-#### Enterprise & JVM
-
-| Agent | Model | Description |
-|-------|-------|-------------|
-| [java-pro](agents/java-pro.md) | sonnet | Modern Java with streams, concurrency, JVM optimization |
-| [scala-pro](agents/scala-pro.md) | sonnet | Enterprise Scala with functional programming and distributed systems |
-| [csharp-pro](agents/csharp-pro.md) | sonnet | C# development with .NET frameworks and patterns |
-
-#### Specialized Platforms
-
-| Agent | Model | Description |
-|-------|-------|-------------|
-| [elixir-pro](agents/elixir-pro.md) | sonnet | Elixir with OTP patterns and Phoenix frameworks |
-| [django-pro](agents/django-pro.md) | sonnet | Django development with ORM and async views |
-| [fastapi-pro](agents/fastapi-pro.md) | sonnet | FastAPI with async patterns and Pydantic |
-| [unity-developer](agents/unity-developer.md) | sonnet | Unity game development and optimization |
-| [minecraft-bukkit-pro](agents/minecraft-bukkit-pro.md) | sonnet | Minecraft server plugin development |
-| [sql-pro](agents/sql-pro.md) | sonnet | Complex SQL queries and database optimization |
 
 ### Infrastructure & Operations
-
-#### DevOps & Deployment
 
 | Agent | Model | Description |
 |-------|-------|-------------|
 | [devops-troubleshooter](agents/devops-troubleshooter.md) | sonnet | Production debugging, log analysis, deployment troubleshooting |
 | [deployment-engineer](agents/deployment-engineer.md) | sonnet | CI/CD pipelines, containerization, cloud deployments |
-| [terraform-specialist](agents/terraform-specialist.md) | opus | Infrastructure as Code with Terraform modules and state management |
 | [dx-optimizer](agents/dx-optimizer.md) | sonnet | Developer experience optimization and tooling improvements |
-
-#### Database Management
-
-| Agent | Model | Description |
-|-------|-------|-------------|
 | [database-optimizer](agents/database-optimizer.md) | opus | Query optimization, index design, migration strategies |
-| [database-admin](agents/database-admin.md) | sonnet | Database operations, backup, replication, monitoring |
-| [database-architect](agents/database-architect.md) | opus | Database design from scratch, technology selection, schema modeling |
-
-#### Incident Response & Network
-
-| Agent | Model | Description |
-|-------|-------|-------------|
 | [incident-responder](agents/incident-responder.md) | opus | Production incident management and resolution |
-| [network-engineer](agents/network-engineer.md) | sonnet | Network debugging, load balancing, traffic analysis |
 
 ### Quality Assurance & Security
-
-#### Code Quality & Review
 
 | Agent | Model | Description |
 |-------|-------|-------------|
@@ -114,42 +62,17 @@ This repository provides production-ready subagents that extend Claude Code's ca
 | [security-auditor](agents/security-auditor.md) | opus | Vulnerability assessment and OWASP compliance |
 | [backend-security-coder](agents/backend-security-coder.md) | opus | Secure backend coding practices, API security implementation |
 | [frontend-security-coder](agents/frontend-security-coder.md) | opus | XSS prevention, CSP implementation, client-side security |
-| [mobile-security-coder](agents/mobile-security-coder.md) | opus | Mobile security patterns, WebView security, biometric auth |
-
-#### Testing & Debugging
-
-| Agent | Model | Description |
-|-------|-------|-------------|
 | [test-automator](agents/test-automator.md) | sonnet | Comprehensive test suite creation (unit, integration, e2e) |
-| [tdd-orchestrator](agents/tdd-orchestrator.md) | sonnet | Test-Driven Development methodology guidance |
 | [debugger](agents/debugger.md) | sonnet | Error resolution and test failure analysis |
 | [error-detective](agents/error-detective.md) | sonnet | Log analysis and error pattern recognition |
-
-#### Performance & Observability
-
-| Agent | Model | Description |
-|-------|-------|-------------|
 | [performance-engineer](agents/performance-engineer.md) | opus | Application profiling and optimization |
-| [observability-engineer](agents/observability-engineer.md) | opus | Production monitoring, distributed tracing, SLI/SLO management |
-| [search-specialist](agents/search-specialist.md) | haiku | Advanced web research and information synthesis |
 
-### Data & AI
-
-#### Data Engineering & Analytics
+### AI & Research
 
 | Agent | Model | Description |
 |-------|-------|-------------|
-| [data-scientist](agents/data-scientist.md) | opus | Data analysis, SQL queries, BigQuery operations |
-| [data-engineer](agents/data-engineer.md) | sonnet | ETL pipelines, data warehouses, streaming architectures |
-
-#### Machine Learning & AI
-
-| Agent | Model | Description |
-|-------|-------|-------------|
-| [ai-engineer](agents/ai-engineer.md) | opus | LLM applications, RAG systems, prompt pipelines |
-| [ml-engineer](agents/ml-engineer.md) | opus | ML pipelines, model serving, feature engineering |
-| [mlops-engineer](agents/mlops-engineer.md) | opus | ML infrastructure, experiment tracking, model registries |
 | [prompt-engineer](agents/prompt-engineer.md) | opus | LLM prompt optimization and engineering |
+| [search-specialist](agents/search-specialist.md) | haiku | Advanced web research and information synthesis |
 
 ### Documentation & Technical Writing
 
@@ -161,39 +84,13 @@ This repository provides production-ready subagents that extend Claude Code's ca
 | [tutorial-engineer](agents/tutorial-engineer.md) | sonnet | Step-by-step tutorials and educational content |
 | [mermaid-expert](agents/mermaid-expert.md) | sonnet | Diagram creation (flowcharts, sequences, ERDs) |
 
-### Business & Operations
-
-#### Business Analysis & Finance
-
-| Agent | Model | Description |
-|-------|-------|-------------|
-| [business-analyst](agents/business-analyst.md) | sonnet | Metrics analysis, reporting, KPI tracking |
-| [quant-analyst](agents/quant-analyst.md) | opus | Financial modeling, trading strategies, market analysis |
-| [risk-manager](agents/risk-manager.md) | sonnet | Portfolio risk monitoring and management |
-
-#### Marketing & Sales
+### Business & Marketing
 
 | Agent | Model | Description |
 |-------|-------|-------------|
 | [content-marketer](agents/content-marketer.md) | sonnet | Blog posts, social media, email campaigns |
 | [sales-automator](agents/sales-automator.md) | haiku | Cold emails, follow-ups, proposal generation |
-
-#### Support & Legal
-
-| Agent | Model | Description |
-|-------|-------|-------------|
 | [customer-support](agents/customer-support.md) | sonnet | Support tickets, FAQ responses, customer communication |
-| [hr-pro](agents/hr-pro.md) | opus | HR operations, policies, employee relations |
-| [legal-advisor](agents/legal-advisor.md) | opus | Privacy policies, terms of service, legal documentation |
-
-### Specialized Domains
-
-| Agent | Model | Description |
-|-------|-------|-------------|
-| [blockchain-developer](agents/blockchain-developer.md) | sonnet | Web3 apps, smart contracts, DeFi protocols |
-| [payment-integration](agents/payment-integration.md) | sonnet | Payment processor integration (Stripe, PayPal) |
-| [legacy-modernizer](agents/legacy-modernizer.md) | sonnet | Legacy code refactoring and modernization |
-| [context-manager](agents/context-manager.md) | haiku | Multi-agent context management |
 
 ### SEO & Content Optimization
 
@@ -201,64 +98,47 @@ This repository provides production-ready subagents that extend Claude Code's ca
 |-------|-------|-------------|
 | [seo-content-auditor](agents/seo-content-auditor.md) | sonnet | Content quality analysis, E-E-A-T signals assessment |
 | [seo-meta-optimizer](agents/seo-meta-optimizer.md) | haiku | Meta title and description optimization |
-| [seo-keyword-strategist](agents/seo-keyword-strategist.md) | haiku | Keyword analysis and semantic variations |
 | [seo-structure-architect](agents/seo-structure-architect.md) | haiku | Content structure and schema markup |
-| [seo-snippet-hunter](agents/seo-snippet-hunter.md) | haiku | Featured snippet formatting |
-| [seo-content-refresher](agents/seo-content-refresher.md) | haiku | Content freshness analysis |
-| [seo-cannibalization-detector](agents/seo-cannibalization-detector.md) | haiku | Keyword overlap detection |
-| [seo-authority-builder](agents/seo-authority-builder.md) | sonnet | E-E-A-T signal analysis |
 | [seo-content-writer](agents/seo-content-writer.md) | sonnet | SEO-optimized content creation |
-| [seo-content-planner](agents/seo-content-planner.md) | haiku | Content planning and topic clusters |
 
 ## Model Configuration
 
-Agents are assigned to specific Claude models based on task complexity and computational requirements. The system uses three model tiers:
+Agents are assigned to specific Claude models based on task complexity and computational requirements:
 
-### Model Distribution Summary
+- **Haiku**: Quick, focused tasks with minimal computational overhead
+- **Sonnet**: Standard development and specialized engineering tasks
+- **Opus**: Complex reasoning, architecture, and critical analysis
 
-| Model | Agent Count | Use Case |
-|-------|-------------|----------|
-| Haiku | 11 | Quick, focused tasks with minimal computational overhead |
-| Sonnet | 50 | Standard development and specialized engineering tasks |
-| Opus | 22 | Complex reasoning, architecture, and critical analysis |
+### Model Distribution (Whitelisted Agents)
 
-### Haiku Model Agents
-
-| Category | Agents |
-|----------|--------|
-| Context & Reference | `context-manager`, `reference-builder`, `sales-automator`, `search-specialist` |
-| SEO Optimization | `seo-meta-optimizer`, `seo-keyword-strategist`, `seo-structure-architect`, `seo-snippet-hunter`, `seo-content-refresher`, `seo-cannibalization-detector`, `seo-content-planner` |
-
-### Sonnet Model Agents
-
-| Category | Count | Agents |
-|----------|-------|--------|
-| Programming Languages | 18 | All language-specific agents (JavaScript, Python, Java, C++, etc.) |
-| Frontend & UI | 5 | `frontend-developer`, `ui-ux-designer`, `ui-visual-validator`, `mobile-developer`, `ios-developer` |
-| Infrastructure | 8 | `devops-troubleshooter`, `deployment-engineer`, `dx-optimizer`, `database-admin`, `network-engineer`, `flutter-expert`, `api-documenter`, `tutorial-engineer` |
-| Quality & Testing | 4 | `test-automator`, `tdd-orchestrator`, `debugger`, `error-detective` |
-| Business & Support | 6 | `business-analyst`, `risk-manager`, `content-marketer`, `customer-support`, `mermaid-expert`, `legacy-modernizer` |
-| Data & Content | 5 | `data-engineer`, `payment-integration`, `seo-content-auditor`, `seo-authority-builder`, `seo-content-writer` |
-
-### Opus Model Agents
-
-| Category | Count | Agents |
-|----------|-------|--------|
-| Architecture & Design | 7 | `architect-reviewer`, `backend-architect`, `cloud-architect`, `hybrid-cloud-architect`, `kubernetes-architect`, `graphql-architect`, `terraform-specialist` |
-| Critical Analysis | 6 | `code-reviewer`, `security-auditor`, `performance-engineer`, `observability-engineer`, `incident-responder`, `database-optimizer` |
-| AI/ML Complex | 5 | `ai-engineer`, `ml-engineer`, `mlops-engineer`, `data-scientist`, `prompt-engineer` |
-| Business Critical | 4 | `docs-architect`, `hr-pro`, `legal-advisor`, `quant-analyst` |
+| Model | Agent Count | Agents |
+|-------|-------------|--------|
+| Haiku | 4 | `reference-builder`, `sales-automator`, `search-specialist`, `seo-meta-optimizer`, `seo-structure-architect` |
+| Sonnet | 16 | `frontend-developer`, `flutter-expert`, `typescript-pro`, `ui-ux-designer`, `devops-troubleshooter`, `deployment-engineer`, `dx-optimizer`, `test-automator`, `debugger`, `error-detective`, `api-documenter`, `tutorial-engineer`, `mermaid-expert`, `content-marketer`, `customer-support`, `seo-content-auditor`, `seo-content-writer` |
+| Opus | 11 | `backend-architect`, `cloud-architect`, `architect-reviewer`, `database-optimizer`, `incident-responder`, `code-reviewer`, `security-auditor`, `backend-security-coder`, `frontend-security-coder`, `performance-engineer`, `prompt-engineer`, `docs-architect` |
 
 ## Installation
 
-Clone the repository to the Claude agents directory:
+Clone the repository and run the sync script:
 
 ```bash
-cd ~/.claude
-git clone https://github.com/wshobson/agents.git
+# Clone the repository
+git clone https://github.com/@april9/a9-agents.git
+cd a9-agents
+
+# Sync whitelisted agents to ~/.claude/agents
+node sync-agents.js
 ```
 
-The subagents will be automatically available to Claude Code once placed in the `~/.claude/agents/` directory.
+That's it! The whitelisted agents from `agents-config.json` are now available in Claude Code.
+
+### Updating Agents
+
+```bash
+cd a9-agents
+git pull
+node sync-agents.js
+```
 
 ## Usage
 
@@ -280,41 +160,33 @@ Specify a subagent by name to use a particular specialist:
 ```
 code-reviewer: Analyze component for best practices
 security-auditor: Check for OWASP compliance
-tdd-orchestrator: Implement feature with test-first approach
+test-automator: Implement comprehensive test suite
 performance-engineer: Profile and optimize bottlenecks
+backend-security-coder: Implement secure API authentication
 ```
 
 ### Development & Architecture
 ```
 backend-architect: Design authentication API
 frontend-developer: Create responsive dashboard
-graphql-architect: Design federated GraphQL schema
-mobile-developer: Build cross-platform mobile app
+flutter-expert: Build cross-platform mobile app
+typescript-pro: Implement type-safe data layer
 ```
 
 ### Infrastructure & Operations
 ```
 devops-troubleshooter: Analyze production logs
 cloud-architect: Design scalable AWS architecture
-network-engineer: Debug SSL certificate issues
-database-admin: Configure backup and replication
-terraform-specialist: Write infrastructure modules
+deployment-engineer: Set up CI/CD pipeline
+incident-responder: Handle production outage
 ```
 
-### Data & Machine Learning
+### Documentation & Content
 ```
-data-scientist: Analyze customer behavior dataset
-ai-engineer: Build RAG system for document search
-mlops-engineer: Set up experiment tracking
-ml-engineer: Deploy model to production
-```
-
-### Business & Documentation
-```
-business-analyst: Create metrics dashboard
 docs-architect: Generate technical documentation
 api-documenter: Write OpenAPI specifications
 content-marketer: Create SEO-optimized content
+tutorial-engineer: Create step-by-step guide
 ```
 
 ## Multi-Agent Workflows
@@ -341,16 +213,10 @@ Subagents coordinate automatically for complex tasks. The system intelligently s
 → incident-responder → devops-troubleshooter → error-detective → performance-engineer
 ```
 
-**Infrastructure Setup**
+**Documentation & Content**
 ```
-"Set up disaster recovery"
-→ database-admin → database-optimizer → terraform-specialist
-```
-
-**ML Pipeline Development**
-```
-"Build ML pipeline with monitoring"
-→ mlops-engineer → ml-engineer → data-engineer → performance-engineer
+"Create comprehensive API documentation"
+→ api-documenter → tutorial-engineer → docs-architect
 ```
 
 ## Subagent Format
@@ -397,7 +263,7 @@ debugger → [backend-architect | frontend-developer | devops-troubleshooter]
 ### Validation Pipeline
 Primary work followed by specialized review:
 ```
-payment-integration → security-auditor → Validated implementation
+backend-architect → security-auditor → Validated implementation
 ```
 
 ## Agent Selection Guide
@@ -411,15 +277,13 @@ payment-integration → security-auditor → Validated implementation
 | UI/UX Design | `ui-ux-designer` | Interface design, wireframes, design systems |
 | System Architecture | `architect-reviewer` | Pattern validation, consistency analysis |
 
-### Development by Language
+### Development
 
-| Language Category | Agents | Primary Use Cases |
-|-------------------|--------|-------------------|
-| Systems Programming | `c-pro`, `cpp-pro`, `rust-pro`, `golang-pro` | OS interfaces, embedded systems, high performance |
-| Web Development | `javascript-pro`, `typescript-pro`, `python-pro`, `ruby-pro`, `php-pro` | Full-stack web applications, APIs, scripting |
-| Enterprise | `java-pro`, `csharp-pro`, `scala-pro` | Large-scale applications, enterprise systems |
-| Mobile | `ios-developer`, `flutter-expert`, `mobile-developer` | Native and cross-platform mobile apps |
-| Specialized | `elixir-pro`, `django-pro`, `fastapi-pro`, `unity-developer`, `minecraft-bukkit-pro` | Domain-specific development |
+| Task | Recommended Agent | Key Capabilities |
+|------|------------------|------------------|
+| Frontend Development | `frontend-developer` | React components, responsive layouts, state management |
+| Mobile Development | `flutter-expert` | Cross-platform mobile apps with Flutter |
+| TypeScript Development | `typescript-pro` | Type-safe applications with advanced TypeScript |
 
 ### Operations & Infrastructure
 
@@ -428,9 +292,8 @@ payment-integration → security-auditor → Validated implementation
 | Production Issues | `devops-troubleshooter` | Log analysis, deployment debugging |
 | Critical Incidents | `incident-responder` | Outage response, immediate mitigation |
 | Database Performance | `database-optimizer` | Query optimization, indexing strategies |
-| Database Operations | `database-admin` | Backup, replication, disaster recovery |
-| Infrastructure as Code | `terraform-specialist` | Terraform modules, state management |
-| Network Issues | `network-engineer` | Network debugging, load balancing |
+| CI/CD Pipelines | `deployment-engineer` | Containerization, cloud deployments |
+| Developer Experience | `dx-optimizer` | Tooling improvements, workflow optimization |
 
 ### Quality & Security
 
@@ -438,27 +301,33 @@ payment-integration → security-auditor → Validated implementation
 |------|------------------|------------------|
 | Code Review | `code-reviewer` | Security focus, best practices |
 | Security Audit | `security-auditor` | Vulnerability scanning, OWASP compliance |
+| Backend Security | `backend-security-coder` | Secure API implementation |
+| Frontend Security | `frontend-security-coder` | XSS prevention, CSP implementation |
 | Test Creation | `test-automator` | Unit, integration, E2E test suites |
 | Performance Issues | `performance-engineer` | Profiling, optimization |
 | Bug Investigation | `debugger` | Error resolution, root cause analysis |
+| Log Analysis | `error-detective` | Error pattern recognition |
 
-### Data & Machine Learning
+### AI & Research
 
 | Task | Recommended Agent | Key Capabilities |
 |------|------------------|------------------|
-| Data Analysis | `data-scientist` | SQL queries, statistical analysis |
-| LLM Applications | `ai-engineer` | RAG systems, prompt pipelines |
-| ML Development | `ml-engineer` | Model training, feature engineering |
-| ML Operations | `mlops-engineer` | ML infrastructure, experiment tracking |
+| Prompt Engineering | `prompt-engineer` | LLM prompt optimization |
+| Web Research | `search-specialist` | Information synthesis |
 
-### Documentation & Business
+### Documentation & Content
 
 | Task | Recommended Agent | Key Capabilities |
 |------|------------------|------------------|
 | Technical Docs | `docs-architect` | Comprehensive documentation generation |
 | API Documentation | `api-documenter` | OpenAPI/Swagger specifications |
-| Business Metrics | `business-analyst` | KPI tracking, reporting |
-| Legal Compliance | `legal-advisor` | Privacy policies, terms of service |
+| Technical References | `reference-builder` | API documentation |
+| Tutorials | `tutorial-engineer` | Step-by-step guides |
+| Diagrams | `mermaid-expert` | Flowcharts, sequences, ERDs |
+| Content Marketing | `content-marketer` | Blog posts, email campaigns |
+| Sales Content | `sales-automator` | Cold emails, proposals |
+| Support Content | `customer-support` | FAQ responses, customer communication |
+| SEO Content | `seo-content-writer` | SEO-optimized content creation |
 
 ## Best Practices
 
@@ -482,14 +351,50 @@ payment-integration → security-auditor → Validated implementation
 2. **Iterative refinement** - Use agent feedback to improve requirements
 3. **Complexity matching** - Align task complexity with agent capabilities
 
+## Repository Structure
+
+```
+agents/                      # All agent definitions from upstream
+tools/                       # Optional Claude Code tools
+workflows/                   # Example multi-agent workflows
+examples/                    # Usage examples
+
+agents-config.json           # Organization-wide agent whitelist
+sync-agents.js              # Sync script
+```
+
 ## Contributing
 
-To add a new subagent:
+### Adding Agents from Upstream
+
+To use additional agents from [wshobson/agents](https://github.com/wshobson/agents):
+
+1. Review the [complete agent list](https://github.com/wshobson/agents) in the upstream repository
+2. Add the agent filename (with or without `.md` extension) to the `whitelist` array in `agents-config.json`
+3. Run `node sync-agents.js` to sync the newly whitelisted agent
+
+**Example:**
+```json
+{
+  "whitelist": [
+    "backend-architect.md",
+    "your-new-agent.md"
+  ]
+}
+```
+
+### Creating Custom Agents
+
+To create a custom agent for your organization:
 
 1. Create a new `.md` file in the `agents/` directory with appropriate frontmatter
 2. Use lowercase, hyphen-separated naming convention
 3. Write clear activation criteria in the description
 4. Define comprehensive system prompt with expertise areas
+5. Add the agent filename to the `whitelist` in `agents-config.json`
+6. Run `node sync-agents.js` to sync your custom agent
+
+**Important:** Only agents whitelisted in `agents-config.json` will be synced to your local Claude Code configuration.
 
 ## Troubleshooting
 
@@ -522,3 +427,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [Subagents Documentation](https://docs.anthropic.com/en/docs/claude-code/sub-agents)
 - [Claude Code GitHub](https://github.com/anthropics/claude-code)
+- [Original Repository](https://github.com/wshobson/agents)
