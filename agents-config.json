@@ -4,7 +4,7 @@
   "whitelist": [
     "backend-architect.md",
     "frontend-developer.md",
-    "architect-reviewer",
+    "architect-review.md",
     "code-reviewer.md",
     "security-auditor.md",
     "test-automator.md",
