@@ -96,7 +96,7 @@ Prompt engineering → Multi-agent coordination → Context management
 ```bash
 /plugin install documentation-generation
 ```
-OpenAPI specs → Mermaid diagrams → Tutorials → API references
+OpenAPI specs → Mermaid diagrams → Mintlify docs → Tutorials → API references
 
 #### Focused Development Kits
 
