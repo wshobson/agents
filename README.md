@@ -20,6 +20,10 @@ To install plugins, run the `/plugin` command in Claude Code and follow the inte
 
 **Note:** When adding a marketplace, enter `wshobson/agents` to access all plugins from this repository.
 
+```bash
+/plugin marketplace add wshobson/agents
+```
+
 ### Available Plugins
 
 #### Getting Started
