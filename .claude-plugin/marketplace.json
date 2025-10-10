@@ -643,7 +643,7 @@
     {
       "name": "documentation-generation",
       "source": "./",
-      "description": "OpenAPI specification generation, Mermaid diagram creation, tutorial writing, API reference documentation, and technical documentation from codebases",
+      "description": "OpenAPI specification generation, Mermaid diagram creation, tutorial writing, API reference documentation, Mintlify docs management, and technical documentation from codebases",
       "version": "1.0.0",
       "author": {
         "name": "Seth Hobson",
@@ -661,11 +661,16 @@
         "swagger",
         "mermaid",
         "readme",
-        "docusaurus"
+        "docusaurus",
+        "mintlify",
+        "end-user-docs"
       ],
       "category": "documentation",
       "strict": false,
-      "commands": ["./tools/doc-generate.md"],
+      "commands": [
+        "./tools/doc-generate.md",
+        "./tools/mintlify-docs-manager.md"
+      ],
       "agents": [
         "./agents/docs-architect.md",
         "./agents/api-documenter.md",
