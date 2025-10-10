@@ -1,6 +1,6 @@
 # Claude Code Subagents Collection
 
-A comprehensive collection of 83 specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), providing domain-specific expertise across software development, infrastructure, and business operations.
+A comprehensive collection of 84 specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), providing domain-specific expertise across software development, infrastructure, and business operations.
 
 ## Overview
 
@@ -155,6 +155,7 @@ This repository provides production-ready subagents that extend Claude Code's ca
 |-------|-------|-------------|
 | [docs-architect](docs-architect.md) | opus | Comprehensive technical documentation generation |
 | [api-documenter](api-documenter.md) | sonnet | OpenAPI/Swagger specifications and developer docs |
+| [mintlify-docs-manager](mintlify-docs-manager.md) | sonnet | Mintlify documentation platform expertise and MDX authoring |
 | [reference-builder](reference-builder.md) | haiku | Technical references and API documentation |
 | [tutorial-engineer](tutorial-engineer.md) | sonnet | Step-by-step tutorials and educational content |
 | [mermaid-expert](mermaid-expert.md) | sonnet | Diagram creation (flowcharts, sequences, ERDs) |
@@ -233,7 +234,7 @@ Agents are assigned to specific Claude models based on task complexity and compu
 |----------|-------|--------|
 | Programming Languages | 18 | All language-specific agents (JavaScript, Python, Java, C++, etc.) |
 | Frontend & UI | 5 | `frontend-developer`, `ui-ux-designer`, `ui-visual-validator`, `mobile-developer`, `ios-developer` |
-| Infrastructure | 8 | `devops-troubleshooter`, `deployment-engineer`, `dx-optimizer`, `database-admin`, `network-engineer`, `flutter-expert`, `api-documenter`, `tutorial-engineer` |
+| Infrastructure | 9 | `devops-troubleshooter`, `deployment-engineer`, `dx-optimizer`, `database-admin`, `network-engineer`, `flutter-expert`, `api-documenter`, `tutorial-engineer`, `mintlify-docs-manager` |
 | Quality & Testing | 4 | `test-automator`, `tdd-orchestrator`, `debugger`, `error-detective` |
 | Business & Support | 6 | `business-analyst`, `risk-manager`, `content-marketer`, `customer-support`, `mermaid-expert`, `legacy-modernizer` |
 | Data & Content | 5 | `data-engineer`, `payment-integration`, `seo-content-auditor`, `seo-authority-builder`, `seo-content-writer` |
