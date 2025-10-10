@@ -1,12 +1,12 @@
 # Claude Code Workflows & Agents
 
-A comprehensive production-ready system combining **83 specialized AI agents**, **15 multi-agent workflow orchestrators**, and **42 development tools** for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+A comprehensive production-ready system combining **84 specialized AI agents**, **15 multi-agent workflow orchestrators**, and **42 development tools** for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **83 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
+- **84 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
 - **15 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
 - **42 Development Tools** - Focused utilities for specific tasks including API scaffolding, security scanning, test automation, and infrastructure setup
 
@@ -209,7 +209,7 @@ All agents, workflows, and tools will be automatically available to Claude Code.
 
 ```
 agents/
-├── agents/                        # 83 specialized AI agents
+├── agents/                        # 84 specialized AI agents
 │   ├── backend-architect.md
 │   ├── frontend-developer.md
 │   └── ... (all agent definitions)
@@ -412,6 +412,7 @@ Plugins provide pre-configured multi-agent workflows that coordinate complex ope
 |-------|-------|-------------|
 | [docs-architect](agents/docs-architect.md) | opus | Comprehensive technical documentation generation |
 | [api-documenter](agents/api-documenter.md) | sonnet | OpenAPI/Swagger specifications and developer docs |
+| [mintlify-docs-manager](agents/mintlify-docs-manager.md) | sonnet | Mintlify documentation platform expertise and MDX authoring |
 | [reference-builder](agents/reference-builder.md) | haiku | Technical references and API documentation |
 | [tutorial-engineer](agents/tutorial-engineer.md) | sonnet | Step-by-step tutorials and educational content |
 | [mermaid-expert](agents/mermaid-expert.md) | sonnet | Diagram creation (flowcharts, sequences, ERDs) |

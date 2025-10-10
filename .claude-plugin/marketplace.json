@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration system with 83 specialized agents, 15 multi-agent workflows, and 42 development tools",
+    "description": "Production-ready workflow orchestration system with 84 specialized agents, 15 multi-agent workflows, and 42 development tools",
     "version": "1.0.0"
   },
   "plugins": [
@@ -674,6 +674,7 @@
       "agents": [
         "./agents/docs-architect.md",
         "./agents/api-documenter.md",
+        "./agents/mintlify-docs-manager.md",
         "./agents/mermaid-expert.md",
         "./agents/tutorial-engineer.md",
         "./agents/reference-builder.md"
