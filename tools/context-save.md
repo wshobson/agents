@@ -1,5 +1,5 @@
 ---
-model: sonnet
+model: claude-sonnet-4-5-20250929
 ---
 
 Save current project context for future agent coordination:

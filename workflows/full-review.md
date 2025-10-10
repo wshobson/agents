@@ -1,5 +1,5 @@
 ---
-model: sonnet
+model: claude-sonnet-4-5-20250929
 ---
 
 Perform a comprehensive review using multiple specialized agents with explicit Task tool invocations:

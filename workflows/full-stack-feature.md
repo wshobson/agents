@@ -1,5 +1,5 @@
 ---
-model: sonnet
+model: claude-sonnet-4-5-20250929
 ---
 
 Implement a full-stack feature across multiple platforms with coordinated agent orchestration:

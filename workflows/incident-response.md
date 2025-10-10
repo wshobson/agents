@@ -1,5 +1,5 @@
 ---
-model: sonnet
+model: claude-sonnet-4-5-20250929
 ---
 
 Respond to production incidents with coordinated agent expertise for rapid resolution:

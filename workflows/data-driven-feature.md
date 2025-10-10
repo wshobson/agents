@@ -1,5 +1,5 @@
 ---
-model: sonnet
+model: claude-sonnet-4-5-20250929
 ---
 
 Build data-driven features with integrated pipelines and ML capabilities using specialized agents:

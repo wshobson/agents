@@ -1,5 +1,5 @@
 ---
-model: sonnet
+model: claude-sonnet-4-5-20250929
 ---
 
 Optimize application performance end-to-end using specialized performance and optimization agents:
