@@ -1,7 +1,3 @@
----
-model: sonnet
----
-
 # Automated Documentation Generation
 
 You are a documentation expert specializing in creating comprehensive, maintainable documentation from code. Generate API docs, architecture diagrams, user guides, and technical references using AI-powered analysis and industry best practices.
@@ -12,11 +8,77 @@ The user needs automated documentation generation that extracts information from
 ## Requirements
 $ARGUMENTS
 
+## How to Use This Tool
+
+This tool provides both **concise instructions** (what to create) and **detailed reference examples** (how to create it). Structure:
+- **Instructions**: High-level guidance and documentation types to generate
+- **Reference Examples**: Complete implementation patterns to adapt and use as templates
+
 ## Instructions
 
-### 1. Code Analysis for Documentation
+Generate comprehensive documentation by analyzing the codebase and creating the following artifacts:
 
-Extract documentation elements from source code:
+### 1. **API Documentation**
+- Extract endpoint definitions, parameters, and responses from code
+- Generate OpenAPI/Swagger specifications
+- Create interactive API documentation (Swagger UI, Redoc)
+- Produce SDK documentation for multiple languages
+- Include authentication, rate limiting, and error handling details
+
+### 2. **Architecture Documentation**
+- Create system architecture diagrams (Mermaid, PlantUML)
+- Document component relationships and data flows
+- Explain service dependencies and communication patterns
+- Provide deployment architecture and infrastructure details
+- Include scalability and reliability considerations
+
+### 3. **Code Documentation**
+- Generate inline documentation and docstrings
+- Create README files with setup, usage, and contribution guidelines
+- Document configuration options and environment variables
+- Provide troubleshooting guides and FAQs
+- Include code examples and usage patterns
+
+### 4. **User Documentation**
+- Write step-by-step user guides with screenshots
+- Create getting started tutorials
+- Document common workflows and use cases
+- Provide reference materials and glossaries
+- Include accessibility and localization notes
+
+### 5. **Interactive Documentation**
+- Set up API playgrounds and live examples
+- Generate code snippets in multiple languages
+- Create runnable examples and sandboxes
+- Implement search and navigation features
+- Add versioning and changelog integration
+
+### 6. **Documentation Automation**
+- Configure CI/CD pipelines for automatic doc generation
+- Set up documentation linting and validation
+- Implement documentation coverage checks
+- Create version-specific documentation branches
+- Automate deployment to hosting platforms
+
+### Quality Standards
+
+Ensure all generated documentation:
+- Is accurate and synchronized with current code
+- Uses consistent terminology and formatting
+- Includes practical examples and use cases
+- Is searchable and well-organized
+- Follows accessibility best practices
+- Is version-controlled and reviewable
+
+## Reference Examples
+
+Below are complete implementation examples you can adapt for your documentation needs. These demonstrate best practices and provide ready-to-use code patterns.
+
+### Example 1: Code Analysis for Documentation
+
+**Purpose**: Extract documentation elements from source code automatically.
+
+**Implementation Example**:
 
 **API Documentation Extraction**
 ```python
@@ -143,9 +205,11 @@ function extractTypeScriptInterfaces(code) {
 }
 ```
 
-### 2. API Documentation Generation
+### Example 2: API Documentation Generation
 
-Create comprehensive API documentation:
+**Purpose**: Create comprehensive OpenAPI/Swagger specifications.
+
+**Implementation Example**:
 
 **OpenAPI/Swagger Generation**
 ```yaml
@@ -351,9 +415,11 @@ while True:
 """
 ```
 
-### 3. Architecture Documentation
+### Example 3: Architecture Documentation
 
-Generate architecture diagrams and documentation:
+**Purpose**: Generate architecture diagrams and component documentation.
+
+**Implementation Example**:
 
 **System Architecture Diagram (Mermaid)**
 ```mermaid
@@ -453,9 +519,11 @@ user_service:
 ```
 ```
 
-### 4. Code Documentation
+### Example 4: Code Documentation
 
-Generate inline documentation and README files:
+**Purpose**: Generate inline documentation, docstrings, and README files.
+
+**Implementation Example**:
 
 **Function Documentation**
 ```python
@@ -695,9 +763,11 @@ This project is licensed under the ${LICENSE} License - see the [LICENSE](LICENS
 ${ACKNOWLEDGMENTS}
 ```
 
-### 5. User Documentation
+### Example 5: User Documentation
 
-Generate end-user documentation:
+**Purpose**: Generate end-user guides and tutorials.
+
+**Implementation Example**:
 
 **User Guide Template**
 ```markdown
@@ -768,9 +838,11 @@ Generate end-user documentation:
 | "Server error" | Technical issue | Try again later |
 ```
 
-### 6. Interactive Documentation
+### Example 6: Interactive Documentation
 
-Generate interactive documentation elements:
+**Purpose**: Create interactive API playgrounds and code examples.
+
+**Implementation Example**:
 
 **API Playground**
 ```html
@@ -857,9 +929,11 @@ curl -X {endpoint['method']} https://api.example.com{endpoint['path']} \\
     return examples
 ```
 
-### 7. Documentation CI/CD
+### Example 7: Documentation CI/CD
 
-Automate documentation updates:
+**Purpose**: Automate documentation generation and deployment.
+
+**Implementation Example**:
 
 **GitHub Actions Workflow**
 ```yaml
@@ -910,9 +984,11 @@ jobs:
         publish_dir: ./docs/build
 ```
 
-### 8. Documentation Quality Checks
+### Example 8: Documentation Quality Checks
 
-Ensure documentation completeness:
+**Purpose**: Validate documentation coverage and quality.
+
+**Implementation Example**:
 
 **Documentation Coverage**
 ```python

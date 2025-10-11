@@ -1,75 +1,111 @@
----
-model: sonnet
----
-
 Optimize application performance end-to-end using specialized performance and optimization agents:
 
-[Extended thinking: This workflow coordinates multiple agents to identify and fix performance bottlenecks across the entire stack. From database queries to frontend rendering, each agent contributes their expertise to create a highly optimized application.]
+[Extended thinking: This workflow orchestrates a comprehensive performance optimization process across the entire application stack. Starting with deep profiling and baseline establishment, the workflow progresses through targeted optimizations in each system layer, validates improvements through load testing, and establishes continuous monitoring for sustained performance. Each phase builds on insights from previous phases, creating a data-driven optimization strategy that addresses real bottlenecks rather than theoretical improvements. The workflow emphasizes modern observability practices, user-centric performance metrics, and cost-effective optimization strategies.]
 
-## Phase 1: Performance Analysis
+## Phase 1: Performance Profiling & Baseline
 
-### 1. Application Profiling
+### 1. Comprehensive Performance Profiling
 - Use Task tool with subagent_type="performance-engineer"
-- Prompt: "Profile application performance for: $ARGUMENTS. Identify CPU, memory, and I/O bottlenecks. Include flame graphs, memory profiles, and resource utilization metrics."
-- Output: Performance profile, bottleneck analysis, optimization priorities
+- Prompt: "Profile application performance comprehensively for: $ARGUMENTS. Generate flame graphs for CPU usage, heap dumps for memory analysis, trace I/O operations, and identify hot paths. Use APM tools like DataDog or New Relic if available. Include database query profiling, API response times, and frontend rendering metrics. Establish performance baselines for all critical user journeys."
+- Context: Initial performance investigation
+- Output: Detailed performance profile with flame graphs, memory analysis, bottleneck identification, baseline metrics
 
-### 2. Database Performance Analysis
+### 2. Observability Stack Assessment
+- Use Task tool with subagent_type="observability-engineer"
+- Prompt: "Assess current observability setup for: $ARGUMENTS. Review existing monitoring, distributed tracing with OpenTelemetry, log aggregation, and metrics collection. Identify gaps in visibility, missing metrics, and areas needing better instrumentation. Recommend APM tool integration and custom metrics for business-critical operations."
+- Context: Performance profile from step 1
+- Output: Observability assessment report, instrumentation gaps, monitoring recommendations
+
+### 3. User Experience Analysis
+- Use Task tool with subagent_type="performance-engineer"
+- Prompt: "Analyze user experience metrics for: $ARGUMENTS. Measure Core Web Vitals (LCP, FID, CLS), page load times, time to interactive, and perceived performance. Use Real User Monitoring (RUM) data if available. Identify user journeys with poor performance and their business impact."
+- Context: Performance baselines from step 1
+- Output: UX performance report, Core Web Vitals analysis, user impact assessment
+
+## Phase 2: Database & Backend Optimization
+
+### 4. Database Performance Optimization
 - Use Task tool with subagent_type="database-optimizer"
-- Prompt: "Analyze database performance for: $ARGUMENTS. Review query execution plans, identify slow queries, check indexing, and analyze connection pooling."
-- Output: Query optimization report, index recommendations, schema improvements
+- Prompt: "Optimize database performance for: $ARGUMENTS based on profiling data: {context_from_phase_1}. Analyze slow query logs, create missing indexes, optimize execution plans, implement query result caching with Redis/Memcached. Review connection pooling, prepared statements, and batch processing opportunities. Consider read replicas and database sharding if needed."
+- Context: Performance bottlenecks from phase 1
+- Output: Optimized queries, new indexes, caching strategy, connection pool configuration
 
-## Phase 2: Backend Optimization
-
-### 3. Backend Code Optimization
-- Use Task tool with subagent_type="performance-engineer"
-- Prompt: "Optimize backend code for: $ARGUMENTS based on profiling results. Focus on algorithm efficiency, caching strategies, and async operations."
-- Output: Optimized code, caching implementation, performance improvements
-
-### 4. API Optimization
+### 5. Backend Code & API Optimization
 - Use Task tool with subagent_type="backend-architect"
-- Prompt: "Optimize API design and implementation for: $ARGUMENTS. Consider pagination, response compression, field filtering, and batch operations."
-- Output: Optimized API endpoints, GraphQL query optimization, response time improvements
+- Prompt: "Optimize backend services for: $ARGUMENTS targeting bottlenecks: {context_from_phase_1}. Implement efficient algorithms, add application-level caching, optimize N+1 queries, use async/await patterns effectively. Implement pagination, response compression, GraphQL query optimization, and batch API operations. Add circuit breakers and bulkheads for resilience."
+- Context: Database optimizations from step 4, profiling data from phase 1
+- Output: Optimized backend code, caching implementation, API improvements, resilience patterns
 
-## Phase 3: Frontend Optimization
+### 6. Microservices & Distributed System Optimization
+- Use Task tool with subagent_type="performance-engineer"
+- Prompt: "Optimize distributed system performance for: $ARGUMENTS. Analyze service-to-service communication, implement service mesh optimizations, optimize message queue performance (Kafka/RabbitMQ), reduce network hops. Implement distributed caching strategies and optimize serialization/deserialization."
+- Context: Backend optimizations from step 5
+- Output: Service communication improvements, message queue optimization, distributed caching setup
 
-### 5. Frontend Performance
+## Phase 3: Frontend & CDN Optimization
+
+### 7. Frontend Bundle & Loading Optimization
 - Use Task tool with subagent_type="frontend-developer"
-- Prompt: "Optimize frontend performance for: $ARGUMENTS. Focus on bundle size, lazy loading, code splitting, and rendering performance. Implement Core Web Vitals improvements."
-- Output: Optimized bundles, lazy loading implementation, performance metrics
+- Prompt: "Optimize frontend performance for: $ARGUMENTS targeting Core Web Vitals: {context_from_phase_1}. Implement code splitting, tree shaking, lazy loading, and dynamic imports. Optimize bundle sizes with webpack/rollup analysis. Implement resource hints (prefetch, preconnect, preload). Optimize critical rendering path and eliminate render-blocking resources."
+- Context: UX analysis from phase 1, backend optimizations from phase 2
+- Output: Optimized bundles, lazy loading implementation, improved Core Web Vitals
 
-### 6. Mobile App Optimization
-- Use Task tool with subagent_type="mobile-developer"
-- Prompt: "Optimize mobile app performance for: $ARGUMENTS. Focus on startup time, memory usage, battery efficiency, and offline performance."
-- Output: Optimized mobile code, reduced app size, improved battery life
-
-## Phase 4: Infrastructure Optimization
-
-### 7. Cloud Infrastructure Optimization
+### 8. CDN & Edge Optimization
 - Use Task tool with subagent_type="cloud-architect"
-- Prompt: "Optimize cloud infrastructure for: $ARGUMENTS. Review auto-scaling, instance types, CDN usage, and geographic distribution."
-- Output: Infrastructure improvements, cost optimization, scaling strategy
+- Prompt: "Optimize CDN and edge performance for: $ARGUMENTS. Configure CloudFlare/CloudFront for optimal caching, implement edge functions for dynamic content, set up image optimization with responsive images and WebP/AVIF formats. Configure HTTP/2 and HTTP/3, implement Brotli compression. Set up geographic distribution for global users."
+- Context: Frontend optimizations from step 7
+- Output: CDN configuration, edge caching rules, compression setup, geographic optimization
 
-### 8. Deployment Optimization
-- Use Task tool with subagent_type="deployment-engineer"
-- Prompt: "Optimize deployment and build processes for: $ARGUMENTS. Improve CI/CD performance, implement caching, and optimize container images."
-- Output: Faster builds, optimized containers, improved deployment times
+### 9. Mobile & Progressive Web App Optimization
+- Use Task tool with subagent_type="mobile-developer"
+- Prompt: "Optimize mobile experience for: $ARGUMENTS. Implement service workers for offline functionality, optimize for slow networks with adaptive loading. Reduce JavaScript execution time for mobile CPUs. Implement virtual scrolling for long lists. Optimize touch responsiveness and smooth animations. Consider React Native/Flutter specific optimizations if applicable."
+- Context: Frontend optimizations from steps 7-8
+- Output: Mobile-optimized code, PWA implementation, offline functionality
 
-## Phase 5: Monitoring and Validation
+## Phase 4: Load Testing & Validation
 
-### 9. Performance Monitoring Setup
-- Use Task tool with subagent_type="devops-troubleshooter"
-- Prompt: "Set up comprehensive performance monitoring for: $ARGUMENTS. Include APM, real user monitoring, and custom performance metrics."
-- Output: Monitoring dashboards, alert thresholds, SLO definitions
+### 10. Comprehensive Load Testing
+- Use Task tool with subagent_type="performance-engineer"
+- Prompt: "Conduct comprehensive load testing for: $ARGUMENTS using k6/Gatling/Artillery. Design realistic load scenarios based on production traffic patterns. Test normal load, peak load, and stress scenarios. Include API testing, browser-based testing, and WebSocket testing if applicable. Measure response times, throughput, error rates, and resource utilization at various load levels."
+- Context: All optimizations from phases 1-3
+- Output: Load test results, performance under load, breaking points, scalability analysis
 
-### 10. Performance Testing
+### 11. Performance Regression Testing
 - Use Task tool with subagent_type="test-automator"
-- Prompt: "Create performance test suites for: $ARGUMENTS. Include load tests, stress tests, and performance regression tests."
-- Output: Performance test suite, benchmark results, regression prevention
+- Prompt: "Create automated performance regression tests for: $ARGUMENTS. Set up performance budgets for key metrics, integrate with CI/CD pipeline using GitHub Actions or similar. Create Lighthouse CI tests for frontend, API performance tests with Artillery, and database performance benchmarks. Implement automatic rollback triggers for performance regressions."
+- Context: Load test results from step 10, baseline metrics from phase 1
+- Output: Performance test suite, CI/CD integration, regression prevention system
 
-## Coordination Notes
-- Performance metrics guide optimization priorities
-- Each optimization must be validated with measurements
-- Consider trade-offs between different performance aspects
-- Document all optimizations and their impact
+## Phase 5: Monitoring & Continuous Optimization
+
+### 12. Production Monitoring Setup
+- Use Task tool with subagent_type="observability-engineer"
+- Prompt: "Implement production performance monitoring for: $ARGUMENTS. Set up APM with DataDog/New Relic/Dynatrace, configure distributed tracing with OpenTelemetry, implement custom business metrics. Create Grafana dashboards for key metrics, set up PagerDuty alerts for performance degradation. Define SLIs/SLOs for critical services with error budgets."
+- Context: Performance improvements from all previous phases
+- Output: Monitoring dashboards, alert rules, SLI/SLO definitions, runbooks
+
+### 13. Continuous Performance Optimization
+- Use Task tool with subagent_type="performance-engineer"
+- Prompt: "Establish continuous optimization process for: $ARGUMENTS. Create performance budget tracking, implement A/B testing for performance changes, set up continuous profiling in production. Document optimization opportunities backlog, create capacity planning models, and establish regular performance review cycles."
+- Context: Monitoring setup from step 12, all previous optimization work
+- Output: Performance budget tracking, optimization backlog, capacity planning, review process
+
+## Configuration Options
+
+- **performance_focus**: "latency" | "throughput" | "cost" | "balanced" (default: "balanced")
+- **optimization_depth**: "quick-wins" | "comprehensive" | "enterprise" (default: "comprehensive")
+- **tools_available**: ["datadog", "newrelic", "prometheus", "grafana", "k6", "gatling"]
+- **budget_constraints**: Set maximum acceptable costs for infrastructure changes
+- **user_impact_tolerance**: "zero-downtime" | "maintenance-window" | "gradual-rollout"
+
+## Success Criteria
+
+- **Response Time**: P50 < 200ms, P95 < 1s, P99 < 2s for critical endpoints
+- **Core Web Vitals**: LCP < 2.5s, FID < 100ms, CLS < 0.1
+- **Throughput**: Support 2x current peak load with <1% error rate
+- **Database Performance**: Query P95 < 100ms, no queries > 1s
+- **Resource Utilization**: CPU < 70%, Memory < 80% under normal load
+- **Cost Efficiency**: Performance per dollar improved by minimum 30%
+- **Monitoring Coverage**: 100% of critical paths instrumented with alerting
 
 Performance optimization target: $ARGUMENTS

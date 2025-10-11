@@ -1,68 +1,194 @@
----
-model: sonnet
----
+# Multi-Agent Code Review Orchestration Tool
 
-Perform comprehensive multi-agent code review with specialized reviewers:
+## Role: Expert Multi-Agent Review Orchestration Specialist
 
-[Extended thinking: This tool command invokes multiple review-focused agents to provide different perspectives on code quality, security, and architecture. Each agent reviews independently, then findings are consolidated.]
+A sophisticated AI-powered code review system designed to provide comprehensive, multi-perspective analysis of software artifacts through intelligent agent coordination and specialized domain expertise.
 
-## Review Process
+## Context and Purpose
 
-### 1. Code Quality Review
-Use Task tool with subagent_type="code-reviewer" to examine:
-- Code style and readability
-- Adherence to SOLID principles
-- Design patterns and anti-patterns
-- Code duplication and complexity
-- Documentation completeness
-- Test coverage and quality
+The Multi-Agent Review Tool leverages a distributed, specialized agent network to perform holistic code assessments that transcend traditional single-perspective review approaches. By coordinating agents with distinct expertise, we generate a comprehensive evaluation that captures nuanced insights across multiple critical dimensions:
 
-Prompt: "Perform detailed code review of: $ARGUMENTS. Focus on maintainability, readability, and best practices. Provide specific line-by-line feedback where appropriate."
+- **Depth**: Specialized agents dive deep into specific domains
+- **Breadth**: Parallel processing enables comprehensive coverage
+- **Intelligence**: Context-aware routing and intelligent synthesis
+- **Adaptability**: Dynamic agent selection based on code characteristics
 
-### 2. Security Review
-Use Task tool with subagent_type="security-auditor" to check:
-- Authentication and authorization flaws
-- Input validation and sanitization
-- SQL injection and XSS vulnerabilities
-- Sensitive data exposure
-- Security misconfigurations
-- Dependency vulnerabilities
+## Tool Arguments and Configuration
 
-Prompt: "Conduct security review of: $ARGUMENTS. Identify vulnerabilities, security risks, and OWASP compliance issues. Provide severity ratings and remediation steps."
+### Input Parameters
+- `$ARGUMENTS`: Target code/project for review
+  - Supports: File paths, Git repositories, code snippets
+  - Handles multiple input formats
+  - Enables context extraction and agent routing
 
-### 3. Architecture Review
-Use Task tool with subagent_type="architect-reviewer" to evaluate:
-- Service boundaries and coupling
-- Scalability considerations
-- Design pattern appropriateness
-- Technology choices
-- API design quality
-- Data flow and dependencies
+### Agent Types
+1. Code Quality Reviewers
+2. Security Auditors
+3. Architecture Specialists
+4. Performance Analysts
+5. Compliance Validators
+6. Best Practices Experts
 
-Prompt: "Review architecture and design of: $ARGUMENTS. Evaluate scalability, maintainability, and architectural patterns. Identify potential bottlenecks and design improvements."
+## Multi-Agent Coordination Strategy
 
-## Consolidated Review Output
+### 1. Agent Selection and Routing Logic
+- **Dynamic Agent Matching**:
+  - Analyze input characteristics
+  - Select most appropriate agent types
+  - Configure specialized sub-agents dynamically
+- **Expertise Routing**:
+  ```python
+  def route_agents(code_context):
+      agents = []
+      if is_web_application(code_context):
+          agents.extend([
+              "security-auditor",
+              "web-architecture-reviewer"
+          ])
+      if is_performance_critical(code_context):
+          agents.append("performance-analyst")
+      return agents
+  ```
 
-After all agents complete their reviews, consolidate findings into:
+### 2. Context Management and State Passing
+- **Contextual Intelligence**:
+  - Maintain shared context across agent interactions
+  - Pass refined insights between agents
+  - Support incremental review refinement
+- **Context Propagation Model**:
+  ```python
+  class ReviewContext:
+      def __init__(self, target, metadata):
+          self.target = target
+          self.metadata = metadata
+          self.agent_insights = {}
 
-1. **Critical Issues** - Must fix before merge
-   - Security vulnerabilities
-   - Broken functionality
-   - Major architectural flaws
+      def update_insights(self, agent_type, insights):
+          self.agent_insights[agent_type] = insights
+  ```
 
-2. **Important Issues** - Should fix soon
-   - Performance problems
-   - Code quality issues
-   - Missing tests
+### 3. Parallel vs Sequential Execution
+- **Hybrid Execution Strategy**:
+  - Parallel execution for independent reviews
+  - Sequential processing for dependent insights
+  - Intelligent timeout and fallback mechanisms
+- **Execution Flow**:
+  ```python
+  def execute_review(review_context):
+      # Parallel independent agents
+      parallel_agents = [
+          "code-quality-reviewer",
+          "security-auditor"
+      ]
 
-3. **Minor Issues** - Nice to fix
-   - Style inconsistencies
-   - Documentation gaps
-   - Refactoring opportunities
+      # Sequential dependent agents
+      sequential_agents = [
+          "architecture-reviewer",
+          "performance-optimizer"
+      ]
+  ```
 
-4. **Positive Findings** - Good practices to highlight
-   - Well-designed components
-   - Good test coverage
-   - Security best practices
+### 4. Result Aggregation and Synthesis
+- **Intelligent Consolidation**:
+  - Merge insights from multiple agents
+  - Resolve conflicting recommendations
+  - Generate unified, prioritized report
+- **Synthesis Algorithm**:
+  ```python
+  def synthesize_review_insights(agent_results):
+      consolidated_report = {
+          "critical_issues": [],
+          "important_issues": [],
+          "improvement_suggestions": []
+      }
+      # Intelligent merging logic
+      return consolidated_report
+  ```
+
+### 5. Conflict Resolution Mechanism
+- **Smart Conflict Handling**:
+  - Detect contradictory agent recommendations
+  - Apply weighted scoring
+  - Escalate complex conflicts
+- **Resolution Strategy**:
+  ```python
+  def resolve_conflicts(agent_insights):
+      conflict_resolver = ConflictResolutionEngine()
+      return conflict_resolver.process(agent_insights)
+  ```
+
+### 6. Performance Optimization
+- **Efficiency Techniques**:
+  - Minimal redundant processing
+  - Cached intermediate results
+  - Adaptive agent resource allocation
+- **Optimization Approach**:
+  ```python
+  def optimize_review_process(review_context):
+      return ReviewOptimizer.allocate_resources(review_context)
+  ```
+
+### 7. Quality Validation Framework
+- **Comprehensive Validation**:
+  - Cross-agent result verification
+  - Statistical confidence scoring
+  - Continuous learning and improvement
+- **Validation Process**:
+  ```python
+  def validate_review_quality(review_results):
+      quality_score = QualityScoreCalculator.compute(review_results)
+      return quality_score > QUALITY_THRESHOLD
+  ```
+
+## Example Implementations
+
+### 1. Parallel Code Review Scenario
+```python
+multi_agent_review(
+    target="/path/to/project",
+    agents=[
+        {"type": "security-auditor", "weight": 0.3},
+        {"type": "architecture-reviewer", "weight": 0.3},
+        {"type": "performance-analyst", "weight": 0.2}
+    ]
+)
+```
+
+### 2. Sequential Workflow
+```python
+sequential_review_workflow = [
+    {"phase": "design-review", "agent": "architect-reviewer"},
+    {"phase": "implementation-review", "agent": "code-quality-reviewer"},
+    {"phase": "testing-review", "agent": "test-coverage-analyst"},
+    {"phase": "deployment-readiness", "agent": "devops-validator"}
+]
+```
+
+### 3. Hybrid Orchestration
+```python
+hybrid_review_strategy = {
+    "parallel_agents": ["security", "performance"],
+    "sequential_agents": ["architecture", "compliance"]
+}
+```
+
+## Reference Implementations
+
+1. **Web Application Security Review**
+2. **Microservices Architecture Validation**
+
+## Best Practices and Considerations
+
+- Maintain agent independence
+- Implement robust error handling
+- Use probabilistic routing
+- Support incremental reviews
+- Ensure privacy and security
+
+## Extensibility
+
+The tool is designed with a plugin-based architecture, allowing easy addition of new agent types and review strategies.
+
+## Invocation
 
 Target for review: $ARGUMENTS

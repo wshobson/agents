@@ -1,90 +1,189 @@
----
-model: sonnet
----
+# Multi-Agent Optimization Toolkit
 
-Optimize application stack using specialized optimization agents:
+## Role: AI-Powered Multi-Agent Performance Engineering Specialist
 
-[Extended thinking: This tool coordinates database, performance, and frontend optimization agents to improve application performance holistically. Each agent focuses on their domain while ensuring optimizations work together.]
+### Context
+The Multi-Agent Optimization Tool is an advanced AI-driven framework designed to holistically improve system performance through intelligent, coordinated agent-based optimization. Leveraging cutting-edge AI orchestration techniques, this tool provides a comprehensive approach to performance engineering across multiple domains.
 
-## Optimization Strategy
+### Core Capabilities
+- Intelligent multi-agent coordination
+- Performance profiling and bottleneck identification
+- Adaptive optimization strategies
+- Cross-domain performance optimization
+- Cost and efficiency tracking
 
-### 1. Database Optimization
-Use Task tool with subagent_type="database-optimizer" to:
-- Analyze query performance and execution plans
-- Optimize indexes and table structures
-- Implement caching strategies
-- Review connection pooling and configurations
-- Suggest schema improvements
+## Arguments Handling
+The tool processes optimization arguments with flexible input parameters:
+- `$TARGET`: Primary system/application to optimize
+- `$PERFORMANCE_GOALS`: Specific performance metrics and objectives
+- `$OPTIMIZATION_SCOPE`: Depth of optimization (quick-win, comprehensive)
+- `$BUDGET_CONSTRAINTS`: Cost and resource limitations
+- `$QUALITY_METRICS`: Performance quality thresholds
 
-Prompt: "Optimize database layer for: $ARGUMENTS. Analyze and improve:
-1. Slow query identification and optimization
-2. Index analysis and recommendations
-3. Schema optimization for performance
-4. Connection pool tuning
-5. Caching strategy implementation"
+## 1. Multi-Agent Performance Profiling
 
-### 2. Application Performance
-Use Task tool with subagent_type="performance-engineer" to:
-- Profile application code
-- Identify CPU and memory bottlenecks
-- Optimize algorithms and data structures
-- Implement caching at application level
-- Improve async/concurrent operations
+### Profiling Strategy
+- Distributed performance monitoring across system layers
+- Real-time metrics collection and analysis
+- Continuous performance signature tracking
 
-Prompt: "Optimize application performance for: $ARGUMENTS. Focus on:
-1. Code profiling and bottleneck identification
-2. Algorithm optimization
-3. Memory usage optimization
-4. Concurrency improvements
-5. Application-level caching"
+#### Profiling Agents
+1. **Database Performance Agent**
+   - Query execution time analysis
+   - Index utilization tracking
+   - Resource consumption monitoring
 
-### 3. Frontend Optimization
-Use Task tool with subagent_type="frontend-developer" to:
-- Reduce bundle sizes
-- Implement lazy loading
-- Optimize rendering performance
-- Improve Core Web Vitals
-- Implement efficient state management
+2. **Application Performance Agent**
+   - CPU and memory profiling
+   - Algorithmic complexity assessment
+   - Concurrency and async operation analysis
 
-Prompt: "Optimize frontend performance for: $ARGUMENTS. Improve:
-1. Bundle size reduction strategies
-2. Lazy loading implementation
-3. Rendering optimization
-4. Core Web Vitals (LCP, FID, CLS)
-5. Network request optimization"
+3. **Frontend Performance Agent**
+   - Rendering performance metrics
+   - Network request optimization
+   - Core Web Vitals monitoring
 
-## Consolidated Optimization Plan
+### Profiling Code Example
+```python
+def multi_agent_profiler(target_system):
+    agents = [
+        DatabasePerformanceAgent(target_system),
+        ApplicationPerformanceAgent(target_system),
+        FrontendPerformanceAgent(target_system)
+    ]
 
-### Performance Baseline
-- Current performance metrics
-- Identified bottlenecks
-- User experience impact
+    performance_profile = {}
+    for agent in agents:
+        performance_profile[agent.__class__.__name__] = agent.profile()
 
-### Optimization Roadmap
-1. **Quick Wins** (< 1 day)
-   - Simple query optimizations
-   - Basic caching implementation
-   - Bundle splitting
+    return aggregate_performance_metrics(performance_profile)
+```
 
-2. **Medium Improvements** (1-3 days)
-   - Index optimization
-   - Algorithm improvements
-   - Lazy loading implementation
+## 2. Context Window Optimization
 
-3. **Major Optimizations** (3+ days)
-   - Schema redesign
-   - Architecture changes
-   - Full caching layer
+### Optimization Techniques
+- Intelligent context compression
+- Semantic relevance filtering
+- Dynamic context window resizing
+- Token budget management
 
-### Expected Improvements
-- Database query time reduction: X%
-- API response time improvement: X%
-- Frontend load time reduction: X%
-- Overall user experience impact
+### Context Compression Algorithm
+```python
+def compress_context(context, max_tokens=4000):
+    # Semantic compression using embedding-based truncation
+    compressed_context = semantic_truncate(
+        context,
+        max_tokens=max_tokens,
+        importance_threshold=0.7
+    )
+    return compressed_context
+```
 
-### Implementation Priority
-- Ordered list of optimizations by impact/effort ratio
-- Dependencies between optimizations
-- Risk assessment for each change
+## 3. Agent Coordination Efficiency
 
-Target for optimization: $ARGUMENTS
+### Coordination Principles
+- Parallel execution design
+- Minimal inter-agent communication overhead
+- Dynamic workload distribution
+- Fault-tolerant agent interactions
+
+### Orchestration Framework
+```python
+class MultiAgentOrchestrator:
+    def __init__(self, agents):
+        self.agents = agents
+        self.execution_queue = PriorityQueue()
+        self.performance_tracker = PerformanceTracker()
+
+    def optimize(self, target_system):
+        # Parallel agent execution with coordinated optimization
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = {
+                executor.submit(agent.optimize, target_system): agent
+                for agent in self.agents
+            }
+
+            for future in concurrent.futures.as_completed(futures):
+                agent = futures[future]
+                result = future.result()
+                self.performance_tracker.log(agent, result)
+```
+
+## 4. Parallel Execution Optimization
+
+### Key Strategies
+- Asynchronous agent processing
+- Workload partitioning
+- Dynamic resource allocation
+- Minimal blocking operations
+
+## 5. Cost Optimization Strategies
+
+### LLM Cost Management
+- Token usage tracking
+- Adaptive model selection
+- Caching and result reuse
+- Efficient prompt engineering
+
+### Cost Tracking Example
+```python
+class CostOptimizer:
+    def __init__(self):
+        self.token_budget = 100000  # Monthly budget
+        self.token_usage = 0
+        self.model_costs = {
+            'gpt-4': 0.03,
+            'claude-3-sonnet': 0.015,
+            'claude-3-haiku': 0.0025
+        }
+
+    def select_optimal_model(self, complexity):
+        # Dynamic model selection based on task complexity and budget
+        pass
+```
+
+## 6. Latency Reduction Techniques
+
+### Performance Acceleration
+- Predictive caching
+- Pre-warming agent contexts
+- Intelligent result memoization
+- Reduced round-trip communication
+
+## 7. Quality vs Speed Tradeoffs
+
+### Optimization Spectrum
+- Performance thresholds
+- Acceptable degradation margins
+- Quality-aware optimization
+- Intelligent compromise selection
+
+## 8. Monitoring and Continuous Improvement
+
+### Observability Framework
+- Real-time performance dashboards
+- Automated optimization feedback loops
+- Machine learning-driven improvement
+- Adaptive optimization strategies
+
+## Reference Workflows
+
+### Workflow 1: E-Commerce Platform Optimization
+1. Initial performance profiling
+2. Agent-based optimization
+3. Cost and performance tracking
+4. Continuous improvement cycle
+
+### Workflow 2: Enterprise API Performance Enhancement
+1. Comprehensive system analysis
+2. Multi-layered agent optimization
+3. Iterative performance refinement
+4. Cost-efficient scaling strategy
+
+## Key Considerations
+- Always measure before and after optimization
+- Maintain system stability during optimization
+- Balance performance gains with resource consumption
+- Implement gradual, reversible changes
+
+Target Optimization: $ARGUMENTS

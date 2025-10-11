@@ -1,88 +1,144 @@
----
-model: sonnet
----
+Orchestrate end-to-end feature development from requirements to production deployment:
 
-Implement a new feature using specialized agents with explicit Task tool invocations:
+[Extended thinking: This workflow orchestrates specialized agents through comprehensive feature development phases - from discovery and planning through implementation, testing, and deployment. Each phase builds on previous outputs, ensuring coherent feature delivery. The workflow supports multiple development methodologies (traditional, TDD/BDD, DDD), feature complexity levels, and modern deployment strategies including feature flags, gradual rollouts, and observability-first development. Agents receive detailed context from previous phases to maintain consistency and quality throughout the development lifecycle.]
 
-[Extended thinking: This workflow orchestrates multiple specialized agents to implement a complete feature from design to deployment. Each agent receives context from previous agents to ensure coherent implementation. Supports both traditional and TDD-driven development approaches.]
+## Configuration Options
 
-## Development Mode Selection
+### Development Methodology
+- **traditional**: Sequential development with testing after implementation
+- **tdd**: Test-Driven Development with red-green-refactor cycles
+- **bdd**: Behavior-Driven Development with scenario-based testing
+- **ddd**: Domain-Driven Design with bounded contexts and aggregates
 
-Choose your development approach:
+### Feature Complexity
+- **simple**: Single service, minimal integration (1-2 days)
+- **medium**: Multiple services, moderate integration (3-5 days)
+- **complex**: Cross-domain, extensive integration (1-2 weeks)
+- **epic**: Major architectural changes, multiple teams (2+ weeks)
 
-### Option A: Traditional Development (Default)
-Use the Task tool to delegate to specialized agents in sequence:
+### Deployment Strategy
+- **direct**: Immediate rollout to all users
+- **canary**: Gradual rollout starting with 5% of traffic
+- **feature-flag**: Controlled activation via feature toggles
+- **blue-green**: Zero-downtime deployment with instant rollback
+- **a-b-test**: Split traffic for experimentation and metrics
 
-### Option B: TDD-Driven Development
-For test-first development, use the tdd-orchestrator agent:
-- Use Task tool with subagent_type="tdd-orchestrator"
-- Prompt: "Implement feature using TDD methodology: $ARGUMENTS. Follow red-green-refactor cycle strictly."
-- Alternative: Use the dedicated tdd-cycle workflow for granular TDD control
+## Phase 1: Discovery & Requirements Planning
 
-When TDD mode is selected, the workflow follows this pattern:
-1. Write failing tests first (Red phase)
-2. Implement minimum code to pass tests (Green phase)
-3. Refactor while keeping tests green (Refactor phase)
-4. Repeat cycle for each feature component
+1. **Business Analysis & Requirements**
+   - Use Task tool with subagent_type="business-analyst"
+   - Prompt: "Analyze feature requirements for: $ARGUMENTS. Define user stories, acceptance criteria, success metrics, and business value. Identify stakeholders, dependencies, and risks. Create feature specification document with clear scope boundaries."
+   - Expected output: Requirements document with user stories, success metrics, risk assessment
+   - Context: Initial feature request and business context
 
-## Traditional Development Steps
+2. **Technical Architecture Design**
+   - Use Task tool with subagent_type="architect-review"
+   - Prompt: "Design technical architecture for feature: $ARGUMENTS. Using requirements: [include business analysis from step 1]. Define service boundaries, API contracts, data models, integration points, and technology stack. Consider scalability, performance, and security requirements."
+   - Expected output: Technical design document with architecture diagrams, API specifications, data models
+   - Context: Business requirements, existing system architecture
 
-1. **Backend Architecture Design**
-   - Use Task tool with subagent_type="backend-architect" 
-   - Prompt: "Design RESTful API and data model for: $ARGUMENTS. Include endpoint definitions, database schema, and service boundaries."
-   - Save the API design and schema for next agents
+3. **Feasibility & Risk Assessment**
+   - Use Task tool with subagent_type="security-auditor"
+   - Prompt: "Assess security implications and risks for feature: $ARGUMENTS. Review architecture: [include technical design from step 2]. Identify security requirements, compliance needs, data privacy concerns, and potential vulnerabilities."
+   - Expected output: Security assessment with risk matrix, compliance checklist, mitigation strategies
+   - Context: Technical design, regulatory requirements
 
-2. **Frontend Implementation**
+## Phase 2: Implementation & Development
+
+4. **Backend Services Implementation**
+   - Use Task tool with subagent_type="backend-architect"
+   - Prompt: "Implement backend services for: $ARGUMENTS. Follow technical design: [include architecture from step 2]. Build RESTful/GraphQL APIs, implement business logic, integrate with data layer, add resilience patterns (circuit breakers, retries), implement caching strategies. Include feature flags for gradual rollout."
+   - Expected output: Backend services with APIs, business logic, database integration, feature flags
+   - Context: Technical design, API contracts, data models
+
+5. **Frontend Implementation**
    - Use Task tool with subagent_type="frontend-developer"
-   - Prompt: "Create UI components for: $ARGUMENTS. Use the API design from backend-architect: [include API endpoints and data models from step 1]"
-   - Ensure UI matches the backend API contract
+   - Prompt: "Build frontend components for: $ARGUMENTS. Integrate with backend APIs: [include API endpoints from step 4]. Implement responsive UI, state management, error handling, loading states, and analytics tracking. Add feature flag integration for A/B testing capabilities."
+   - Expected output: Frontend components with API integration, state management, analytics
+   - Context: Backend APIs, UI/UX designs, user stories
 
-3. **Test Coverage**
+6. **Data Pipeline & Integration**
+   - Use Task tool with subagent_type="data-engineer"
+   - Prompt: "Build data pipelines for: $ARGUMENTS. Design ETL/ELT processes, implement data validation, create analytics events, set up data quality monitoring. Integrate with product analytics platforms for feature usage tracking."
+   - Expected output: Data pipelines, analytics events, data quality checks
+   - Context: Data requirements, analytics needs, existing data infrastructure
+
+## Phase 3: Testing & Quality Assurance
+
+7. **Automated Test Suite**
    - Use Task tool with subagent_type="test-automator"
-   - Prompt: "Write comprehensive tests for: $ARGUMENTS. Cover both backend API endpoints: [from step 1] and frontend components: [from step 2]"
-   - Include unit, integration, and e2e tests
+   - Prompt: "Create comprehensive test suite for: $ARGUMENTS. Write unit tests for backend: [from step 4] and frontend: [from step 5]. Add integration tests for API endpoints, E2E tests for critical user journeys, performance tests for scalability validation. Ensure minimum 80% code coverage."
+   - Expected output: Test suites with unit, integration, E2E, and performance tests
+   - Context: Implementation code, acceptance criteria, test requirements
 
-4. **Production Deployment**
-   - Use Task tool with subagent_type="deployment-engineer"
-   - Prompt: "Prepare production deployment for: $ARGUMENTS. Include CI/CD pipeline, containerization, and monitoring for the implemented feature."
-   - Ensure all components from previous steps are deployment-ready
+8. **Security Validation**
+   - Use Task tool with subagent_type="security-auditor"
+   - Prompt: "Perform security testing for: $ARGUMENTS. Review implementation: [include backend and frontend from steps 4-5]. Run OWASP checks, penetration testing, dependency scanning, and compliance validation. Verify data encryption, authentication, and authorization."
+   - Expected output: Security test results, vulnerability report, remediation actions
+   - Context: Implementation code, security requirements
 
-## TDD Development Steps
+9. **Performance Optimization**
+   - Use Task tool with subagent_type="performance-engineer"
+   - Prompt: "Optimize performance for: $ARGUMENTS. Analyze backend services: [from step 4] and frontend: [from step 5]. Profile code, optimize queries, implement caching, reduce bundle sizes, improve load times. Set up performance budgets and monitoring."
+   - Expected output: Performance improvements, optimization report, performance metrics
+   - Context: Implementation code, performance requirements
 
-When using TDD mode, the sequence changes to:
+## Phase 4: Deployment & Monitoring
 
-1. **Test-First Backend Design**
-   - Use Task tool with subagent_type="tdd-orchestrator"
-   - Prompt: "Design and write failing tests for backend API: $ARGUMENTS. Define test cases before implementation."
-   - Create comprehensive test suite for API endpoints
+10. **Deployment Strategy & Pipeline**
+    - Use Task tool with subagent_type="deployment-engineer"
+    - Prompt: "Prepare deployment for: $ARGUMENTS. Create CI/CD pipeline with automated tests: [from step 7]. Configure feature flags for gradual rollout, implement blue-green deployment, set up rollback procedures. Create deployment runbook and rollback plan."
+    - Expected output: CI/CD pipeline, deployment configuration, rollback procedures
+    - Context: Test suites, infrastructure requirements, deployment strategy
 
-2. **Test-First Frontend Design**
-   - Use Task tool with subagent_type="tdd-orchestrator"
-   - Prompt: "Write failing tests for frontend components: $ARGUMENTS. Include unit and integration tests."
-   - Define expected UI behavior through tests
+11. **Observability & Monitoring**
+    - Use Task tool with subagent_type="observability-engineer"
+    - Prompt: "Set up observability for: $ARGUMENTS. Implement distributed tracing, custom metrics, error tracking, and alerting. Create dashboards for feature usage, performance metrics, error rates, and business KPIs. Set up SLOs/SLIs with automated alerts."
+    - Expected output: Monitoring dashboards, alerts, SLO definitions, observability infrastructure
+    - Context: Feature implementation, success metrics, operational requirements
 
-3. **Incremental Implementation**
-   - Use Task tool with subagent_type="tdd-orchestrator"
-   - Prompt: "Implement features to pass tests for: $ARGUMENTS. Follow strict red-green-refactor cycles."
-   - Build features incrementally, guided by tests
-
-4. **Refactoring & Optimization**
-   - Use Task tool with subagent_type="tdd-orchestrator"
-   - Prompt: "Refactor implementation while maintaining green tests: $ARGUMENTS. Optimize for maintainability."
-   - Improve code quality with test safety net
-
-5. **Production Deployment**
-   - Use Task tool with subagent_type="deployment-engineer"
-   - Prompt: "Deploy TDD-developed feature: $ARGUMENTS. Verify all tests pass in CI/CD pipeline."
-   - Ensure test suite runs in deployment pipeline
+12. **Documentation & Knowledge Transfer**
+    - Use Task tool with subagent_type="doc-generator"
+    - Prompt: "Generate comprehensive documentation for: $ARGUMENTS. Create API documentation, user guides, deployment guides, troubleshooting runbooks. Include architecture diagrams, data flow diagrams, and integration guides. Generate automated changelog from commits."
+    - Expected output: API docs, user guides, runbooks, architecture documentation
+    - Context: All previous phases' outputs
 
 ## Execution Parameters
 
-- **--tdd**: Enable TDD mode (uses tdd-orchestrator agent)
-- **--strict-tdd**: Enforce strict red-green-refactor cycles
-- **--test-coverage-min**: Set minimum test coverage threshold (default: 80%)
-- **--tdd-cycle**: Use dedicated tdd-cycle workflow for granular control
+### Required Parameters
+- **--feature**: Feature name and description
+- **--methodology**: Development approach (traditional|tdd|bdd|ddd)
+- **--complexity**: Feature complexity level (simple|medium|complex|epic)
 
-Aggregate results from all agents and present a unified implementation plan.
+### Optional Parameters
+- **--deployment-strategy**: Deployment approach (direct|canary|feature-flag|blue-green|a-b-test)
+- **--test-coverage-min**: Minimum test coverage threshold (default: 80%)
+- **--performance-budget**: Performance requirements (e.g., <200ms response time)
+- **--rollout-percentage**: Initial rollout percentage for gradual deployment (default: 5%)
+- **--feature-flag-service**: Feature flag provider (launchdarkly|split|unleash|custom)
+- **--analytics-platform**: Analytics integration (segment|amplitude|mixpanel|custom)
+- **--monitoring-stack**: Observability tools (datadog|newrelic|grafana|custom)
+
+## Success Criteria
+
+- All acceptance criteria from business requirements are met
+- Test coverage exceeds minimum threshold (80% default)
+- Security scan shows no critical vulnerabilities
+- Performance meets defined budgets and SLOs
+- Feature flags configured for controlled rollout
+- Monitoring and alerting fully operational
+- Documentation complete and approved
+- Successful deployment to production with rollback capability
+- Product analytics tracking feature usage
+- A/B test metrics configured (if applicable)
+
+## Rollback Strategy
+
+If issues arise during or after deployment:
+1. Immediate feature flag disable (< 1 minute)
+2. Blue-green traffic switch (< 5 minutes)
+3. Full deployment rollback via CI/CD (< 15 minutes)
+4. Database migration rollback if needed (coordinate with data team)
+5. Incident post-mortem and fixes before re-deployment
 
 Feature description: $ARGUMENTS

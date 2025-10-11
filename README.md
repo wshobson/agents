@@ -1,24 +1,28 @@
 # Claude Code Workflows & Agents
 
-A comprehensive production-ready system combining **83 specialized AI agents**, **15 multi-agent workflow orchestrators**, and **42 development tools** for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+A comprehensive production-ready system combining **84 specialized AI agents**, **15 multi-agent workflow orchestrators**, and **42 development tools** for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **83 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
+- **84 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
 - **15 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
 - **42 Development Tools** - Focused utilities for specific tasks including API scaffolding, security scanning, test automation, and infrastructure setup
 
 ## Installation
 
-To install plugins, run the `/plugin` command in Claude Code and follow the interactive prompts:
+Add this marketplace to Claude Code:
 
-1. Browse & install plugins from available marketplaces
-2. Add custom marketplace sources
-3. Manage installed plugins
+```bash
+/plugin marketplace add https://github.com/wshobson/agents
+```
 
-**Note:** When adding a marketplace, enter `wshobson/agents` to access all plugins from this repository.
+Then browse and install plugins using:
+
+```bash
+/plugin
+```
 
 ### Available Plugins
 
@@ -196,20 +200,11 @@ Unity C# scripting → Minecraft Bukkit/Spigot plugins → Game mechanics
 ```
 WCAG validation → Screen reader testing → Keyboard navigation → Inclusive design
 
-### Manual Installation
-
-```bash
-cd ~/.claude
-git clone https://github.com/wshobson/agents.git
-```
-
-All agents, workflows, and tools will be automatically available to Claude Code.
-
 ## Repository Structure
 
 ```
 agents/
-├── agents/                        # 83 specialized AI agents
+├── agents/                        # 84 specialized AI agents
 │   ├── backend-architect.md
 │   ├── frontend-developer.md
 │   └── ... (all agent definitions)
@@ -341,14 +336,14 @@ Plugins provide pre-configured multi-agent workflows that coordinate complex ope
 |-------|-------|-------------|
 | [devops-troubleshooter](agents/devops-troubleshooter.md) | sonnet | Production debugging, log analysis, deployment troubleshooting |
 | [deployment-engineer](agents/deployment-engineer.md) | sonnet | CI/CD pipelines, containerization, cloud deployments |
-| [terraform-specialist](agents/terraform-specialist.md) | opus | Infrastructure as Code with Terraform modules and state management |
+| [terraform-specialist](agents/terraform-specialist.md) | sonnet | Infrastructure as Code with Terraform modules and state management |
 | [dx-optimizer](agents/dx-optimizer.md) | sonnet | Developer experience optimization and tooling improvements |
 
 #### Database Management
 
 | Agent | Model | Description |
 |-------|-------|-------------|
-| [database-optimizer](agents/database-optimizer.md) | opus | Query optimization, index design, migration strategies |
+| [database-optimizer](agents/database-optimizer.md) | sonnet | Query optimization, index design, migration strategies |
 | [database-admin](agents/database-admin.md) | sonnet | Database operations, backup, replication, monitoring |
 | [database-architect](agents/database-architect.md) | opus | Database design from scratch, technology selection, schema modeling |
 
@@ -475,7 +470,7 @@ Agents are assigned to specific Claude models based on task complexity and compu
 |-------|-------------|----------|
 | Haiku | 11 | Quick, focused tasks with minimal computational overhead |
 | Sonnet | 50 | Standard development and specialized engineering tasks |
-| Opus | 22 | Complex reasoning, architecture, and critical analysis |
+| Opus | 23 | Complex reasoning, architecture, and critical analysis |
 
 ### Haiku Model Agents
 
@@ -490,7 +485,7 @@ Agents are assigned to specific Claude models based on task complexity and compu
 |----------|-------|--------|
 | Programming Languages | 18 | All language-specific agents (JavaScript, Python, Java, C++, etc.) |
 | Frontend & UI | 5 | `frontend-developer`, `ui-ux-designer`, `ui-visual-validator`, `mobile-developer`, `ios-developer` |
-| Infrastructure | 8 | `devops-troubleshooter`, `deployment-engineer`, `dx-optimizer`, `database-admin`, `network-engineer`, `flutter-expert`, `api-documenter`, `tutorial-engineer` |
+| Infrastructure | 10 | `devops-troubleshooter`, `deployment-engineer`, `terraform-specialist`, `dx-optimizer`, `database-admin`, `database-optimizer`, `network-engineer`, `flutter-expert`, `api-documenter`, `tutorial-engineer` |
 | Quality & Testing | 4 | `test-automator`, `tdd-orchestrator`, `debugger`, `error-detective` |
 | Business & Support | 6 | `business-analyst`, `risk-manager`, `content-marketer`, `customer-support`, `mermaid-expert`, `legacy-modernizer` |
 | Data & Content | 5 | `data-engineer`, `payment-integration`, `seo-content-auditor`, `seo-authority-builder`, `seo-content-writer` |
@@ -499,10 +494,11 @@ Agents are assigned to specific Claude models based on task complexity and compu
 
 | Category | Count | Agents |
 |----------|-------|--------|
-| Architecture & Design | 7 | `architect-reviewer`, `backend-architect`, `cloud-architect`, `hybrid-cloud-architect`, `kubernetes-architect`, `graphql-architect`, `terraform-specialist` |
-| Critical Analysis | 6 | `code-reviewer`, `security-auditor`, `performance-engineer`, `observability-engineer`, `incident-responder`, `database-optimizer` |
+| Architecture & Design | 5 | `backend-architect`, `cloud-architect`, `hybrid-cloud-architect`, `kubernetes-architect`, `database-architect` |
+| Security & Code Review | 4 | `code-reviewer`, `security-auditor`, `backend-security-coder`, `frontend-security-coder`, `mobile-security-coder` |
+| Performance & Observability | 3 | `performance-engineer`, `observability-engineer`, `incident-responder` |
 | AI/ML Complex | 5 | `ai-engineer`, `ml-engineer`, `mlops-engineer`, `data-scientist`, `prompt-engineer` |
-| Business Critical | 4 | `docs-architect`, `hr-pro`, `legal-advisor`, `quant-analyst` |
+| Business Critical | 5 | `docs-architect`, `hr-pro`, `legal-advisor`, `quant-analyst`, `risk-manager` |
 
 ## Contributing
 
