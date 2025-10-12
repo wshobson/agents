@@ -551,7 +551,9 @@
       ],
       "category": "workflows",
       "strict": false,
-      "commands": ["./workflows/multi-platform.md"],
+      "commands": [
+        "./workflows/multi-platform.md"
+      ],
       "agents": [
         "./agents/mobile-developer.md",
         "./agents/flutter-expert.md",
@@ -665,7 +667,9 @@
       ],
       "category": "documentation",
       "strict": false,
-      "commands": ["./tools/doc-generate.md"],
+      "commands": [
+        "./tools/doc-generate.md"
+      ],
       "agents": [
         "./agents/docs-architect.md",
         "./agents/api-documenter.md",
@@ -738,7 +742,9 @@
       ],
       "category": "database",
       "strict": false,
-      "commands": ["./tools/db-migrate.md"],
+      "commands": [
+        "./tools/db-migrate.md"
+      ],
       "agents": [
         "./agents/database-architect.md",
         "./agents/database-optimizer.md",
@@ -808,7 +814,9 @@
       ],
       "category": "business",
       "strict": false,
-      "agents": ["./agents/business-analyst.md"]
+      "agents": [
+        "./agents/business-analyst.md"
+      ]
     },
     {
       "name": "hr-legal-compliance",
@@ -835,7 +843,10 @@
       ],
       "category": "business",
       "strict": false,
-      "agents": ["./agents/hr-pro.md", "./agents/legal-advisor.md"]
+      "agents": [
+        "./agents/hr-pro.md",
+        "./agents/legal-advisor.md"
+      ]
     },
     {
       "name": "customer-sales-automation",
@@ -860,7 +871,10 @@
       ],
       "category": "business",
       "strict": false,
-      "agents": ["./agents/customer-support.md", "./agents/sales-automator.md"]
+      "agents": [
+        "./agents/customer-support.md",
+        "./agents/sales-automator.md"
+      ]
     },
     {
       "name": "blockchain-web3",
@@ -887,7 +901,9 @@
       ],
       "category": "blockchain",
       "strict": false,
-      "agents": ["./agents/blockchain-developer.md"]
+      "agents": [
+        "./agents/blockchain-developer.md"
+      ]
     },
     {
       "name": "quantitative-trading",
@@ -913,7 +929,10 @@
       ],
       "category": "finance",
       "strict": false,
-      "agents": ["./agents/quant-analyst.md", "./agents/risk-manager.md"]
+      "agents": [
+        "./agents/quant-analyst.md",
+        "./agents/risk-manager.md"
+      ]
     },
     {
       "name": "payment-processing",
@@ -939,7 +958,9 @@
       ],
       "category": "payments",
       "strict": false,
-      "agents": ["./agents/payment-integration.md"]
+      "agents": [
+        "./agents/payment-integration.md"
+      ]
     },
     {
       "name": "game-development",
@@ -994,8 +1015,66 @@
       ],
       "category": "accessibility",
       "strict": false,
-      "commands": ["./tools/accessibility-audit.md"],
-      "agents": ["./agents/ui-visual-validator.md"]
+      "commands": [
+        "./tools/accessibility-audit.md"
+      ],
+      "agents": [
+        "./agents/ui-visual-validator.md"
+      ]
+    },
+    {
+      "name": "debate-consensus",
+      "source": "https://github.com/KostasNoreika/claude-code-plugin-debate-consensus",
+      "description": "Multi-model AI consensus through structured debates. Orchestrates debates between Claude, GPT, Gemini, and other AI models with full MCP tool access.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kostas Noreika",
+        "url": "https://github.com/KostasNoreika"
+      },
+      "homepage": "https://github.com/KostasNoreika/claude-code-plugin-debate-consensus",
+      "repository": "https://github.com/KostasNoreika/claude-code-plugin-debate-consensus",
+      "license": "MIT",
+      "keywords": [
+        "debate",
+        "consensus",
+        "multi-model",
+        "ai",
+        "decision-making",
+        "architecture",
+        "gpt",
+        "gemini",
+        "claude"
+      ],
+      "category": "productivity",
+      "strict": false,
+      "commands": [
+        {
+          "name": "debate",
+          "description": "Full multi-model debate with 3-7 models"
+        },
+        {
+          "name": "consensus",
+          "description": "Quick 3-model consensus"
+        },
+        {
+          "name": "verify",
+          "description": "Adversarial verification"
+        },
+        {
+          "name": "debate-rapid",
+          "description": "Ultra-fast answer"
+        },
+        {
+          "name": "debate-history",
+          "description": "View past debates"
+        }
+      ],
+      "agents": [
+        {
+          "name": "multi-model-analyst",
+          "description": "Orchestrates debates between multiple AI models"
+        }
+      ]
     }
   ]
 }
