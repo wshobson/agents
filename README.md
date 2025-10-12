@@ -572,7 +572,7 @@ Agents are assigned to specific Claude models based on task complexity and compu
 | Category | Count | Agents |
 |----------|-------|--------|
 | Architecture & Design | 5 | `backend-architect`, `cloud-architect`, `hybrid-cloud-architect`, `kubernetes-architect`, `database-architect` |
-| Security & Code Review | 4 | `code-reviewer`, `security-auditor`, `backend-security-coder`, `frontend-security-coder`, `mobile-security-coder` |
+| Security & Code Review | 5 | `code-reviewer`, `security-auditor`, `backend-security-coder`, `frontend-security-coder`, `mobile-security-coder` |
 | Performance & Observability | 3 | `performance-engineer`, `observability-engineer`, `incident-responder` |
 | AI/ML Complex | 5 | `ai-engineer`, `ml-engineer`, `mlops-engineer`, `data-scientist`, `prompt-engineer` |
 | Business Critical | 5 | `docs-architect`, `hr-pro`, `legal-advisor`, `quant-analyst`, `risk-manager` |
