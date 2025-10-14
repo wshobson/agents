@@ -859,9 +859,10 @@ Use these commands to explore available functionality:
 
 ### Specialized Domains
 
-| Agent                                                                        | Model  | Description                                    |
-| ---------------------------------------------------------------------------- | ------ | ---------------------------------------------- |
-| [blockchain-developer](plugins/blockchain-web3/agents/blockchain-developer.md) | sonnet | Web3 apps, smart contracts, DeFi protocols     |
+| Agent                                                                        | Model  | Description                                                |
+| ---------------------------------------------------------------------------- | ------ | ---------------------------------------------------------- |
+| [arm-cortex-expert](agents/arm-cortex-expert.md)                            | sonnet | ARM Cortex-M firmware and peripheral driver development    |
+| [blockchain-developer](plugins/blockchain-web3/agents/blockchain-developer.md) | sonnet | Web3 apps, smart contracts, DeFi protocols                 |
 | [payment-integration](plugins/payment-processing/agents/payment-integration.md) | sonnet | Payment processor integration (Stripe, PayPal) |
 | [legacy-modernizer](plugins/framework-migration/agents/legacy-modernizer.md) | sonnet | Legacy code refactoring and modernization      |
 | [context-manager](plugins/agent-orchestration/agents/context-manager.md)    | haiku  | Multi-agent context management                 |

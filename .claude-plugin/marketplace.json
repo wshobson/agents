@@ -1814,6 +1814,34 @@
       "agents": [
         "./agents/elixir-pro.md"
       ]
+    },
+    {
+      "name": "arm-cortex-microcontrollers",
+      "source": "./agents",
+      "description": "ARM Cortex-M firmware development for Teensy, STM32, nRF52, and SAMD with peripheral drivers and memory safety patterns",
+      "version": "1.2.0",
+      "author": {
+        "name": "Ryan Snodgrass",
+        "url": "https://github.com/rsnodgrass"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "embedded",
+        "arm",
+        "cortex-m",
+        "firmware",
+        "microcontroller",
+        "teensy",
+        "stm32"
+      ],
+      "category": "languages",
+      "strict": false,
+      "commands": [],
+      "agents": [
+        "./arm-cortex-expert.md"
+      ]
     }
   ]
 }
