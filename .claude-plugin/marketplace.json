@@ -1842,6 +1842,41 @@
       "agents": [
         "./agents/arm-cortex-expert.md"
       ]
+    },
+    {
+      "name": "sugar",
+      "source": "./plugins/sugar",
+      "description": "Autonomous AI development platform with rich task context, specialized agents, and intelligent workflow automation for complex multi-step development",
+      "version": "2.0.0",
+      "author": {
+        "name": "Steven Leggett",
+        "url": "https://github.com/cdnsteve"
+      },
+      "homepage": "https://github.com/cdnsteve/sugar",
+      "repository": "https://github.com/cdnsteve/sugar",
+      "license": "MIT",
+      "keywords": [
+        "autonomous",
+        "task-management",
+        "agents",
+        "workflow",
+        "mcp",
+        "orchestration"
+      ],
+      "category": "workflows",
+      "strict": false,
+      "commands": [
+        "./commands/sugar-task.md",
+        "./commands/sugar-status.md",
+        "./commands/sugar-run.md",
+        "./commands/sugar-review.md",
+        "./commands/sugar-analyze.md"
+      ],
+      "agents": [
+        "./agents/sugar-orchestrator.md",
+        "./agents/task-planner.md",
+        "./agents/quality-guardian.md"
+      ]
     }
   ]
 }
