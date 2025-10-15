@@ -30,7 +30,7 @@ Each plugin is completely isolated with its own agents and commands:
 
 **Example**: Installing `python-development` loads only 3 Python agents and 1 scaffolding tool (~300 tokens), not the entire marketplace.
 
-## Installation
+## Standard Installation
 
 ### Step 1: Add the Marketplace
 
@@ -56,6 +56,14 @@ Install only the plugins you need:
 /plugin install python-development
 /plugin install backend-development
 ```
+
+### One-Command Installation
+Use the [Claude Plugins CLI](https://claude-plugins.dev) to skip the marketplace setup:
+```bash
+npx claude-plugins install @wshobson/claude-code-workflows/python-development
+```
+
+This automatically adds the marketplace and installs the plugin in a single step.
 
 Each installed plugin loads **only its specific agents and commands** into Claude's context.
 
