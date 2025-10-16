@@ -2,20 +2,20 @@
 
 > **⚡ Updated for Sonnet 4.5 & Haiku 4.5** — All agents optimized for latest models with hybrid orchestration
 
-A comprehensive production-ready system combining **85 specialized AI agents**, **15 multi-agent workflow orchestrators**, and **44 development tools** organized into **63 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **87 specialized AI agents**, **15 multi-agent workflow orchestrators**, and **44 development tools** organized into **64 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **63 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
-- **85 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
+- **64 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
+- **87 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
 - **15 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
 - **44 Development Tools** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 63 focused plugins optimized for minimal token usage
+- **Granular Plugin Architecture**: 64 focused plugins optimized for minimal token usage
 - **Comprehensive Tooling**: 44 development tools including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
 - **Clear Organization**: 23 categories with 1-6 plugins each for easy discovery
@@ -42,7 +42,7 @@ Add this marketplace to Claude Code:
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 63 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 64 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -175,7 +175,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 
 ## Complete Plugin Reference
 
-> 📋 **All 63 Plugins** - Browse by category to find specialized plugins for your workflow.
+> 📋 **All 64 Plugins** - Browse by category to find specialized plugins for your workflow.
 
 ### 🎨 Development (4 plugins)
 
@@ -314,7 +314,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **hr-legal-compliance**       | HR policies and legal templates      | `/plugin install hr-legal-compliance`       |
 | **customer-sales-automation** | Support and sales automation         | `/plugin install customer-sales-automation` |
 
-### 💻 Languages (7 plugins)
+### 💻 Languages (8 plugins)
 
 | Plugin                     | Description                              | Install                                  |
 | -------------------------- | ---------------------------------------- | ---------------------------------------- |
@@ -324,6 +324,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **jvm-languages**          | Java, Scala, C# with enterprise patterns | `/plugin install jvm-languages`          |
 | **web-scripting**          | PHP and Ruby for web applications        | `/plugin install web-scripting`          |
 | **functional-programming**        | Elixir with OTP and Phoenix              | `/plugin install functional-programming`        |
+| **shell-scripting**        | Production Bash with defensive programming | `/plugin install shell-scripting`        |
 | **arm-cortex-microcontrollers** | ARM Cortex-M firmware and drivers        | `/plugin install arm-cortex-microcontrollers` |
 
 ### 🔗 Blockchain (1 plugin)
@@ -361,7 +362,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (62 plugins)
+│   └── marketplace.json          # Marketplace catalog (64 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -731,6 +732,8 @@ Use these commands to explore available functionality:
 | Agent                                                                    | Model  | Description                                     |
 | ------------------------------------------------------------------------ | ------ | ----------------------------------------------- |
 | [elixir-pro](plugins/functional-programming/agents/elixir-pro.md)       | sonnet | Elixir with OTP patterns and Phoenix frameworks |
+| [bash-pro](plugins/shell-scripting/agents/bash-pro.md)                  | sonnet | Defensive Bash scripting with POSIX compliance  |
+| [posix-shell-pro](plugins/shell-scripting/agents/posix-shell-pro.md)    | sonnet | Strict POSIX sh for maximum portability         |
 | [django-pro](plugins/api-scaffolding/agents/django-pro.md)              | sonnet | Django development with ORM and async views     |
 | [fastapi-pro](plugins/api-scaffolding/agents/fastapi-pro.md)            | sonnet | FastAPI with async patterns and Pydantic        |
 | [unity-developer](plugins/game-development/agents/unity-developer.md)   | sonnet | Unity game development and optimization         |
@@ -879,7 +882,7 @@ Agents are assigned to specific Claude models based on task complexity and compu
 | Model  | Agent Count | Use Case                                                                           |
 | ------ | ----------- | ---------------------------------------------------------------------------------- |
 | Haiku  | 47          | Fast execution tasks: testing, documentation, ops, database optimization, business |
-| Sonnet | 97          | Complex reasoning, architecture, language expertise, orchestration, security       |
+| Sonnet | 99          | Complex reasoning, architecture, language expertise, orchestration, security       |
 
 ### Haiku Model Agents
 
@@ -901,7 +904,8 @@ Agents are assigned to specific Claude models based on task complexity and compu
 | Category                    | Count | Key Agents                                                                                                                                                              |
 | --------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Architecture & Design       | 12    | `backend-architect`, `frontend-developer`, `cloud-architect`, `hybrid-cloud-architect`, `kubernetes-architect`, `database-architect`, `graphql-architect`               |
-| Programming Languages       | 18    | All language-specific experts: `python-pro`, `javascript-pro`, `typescript-pro`, `rust-pro`, `golang-pro`, `java-pro`, `cpp-pro`, `c-pro`, etc.                        |
+| Programming Languages       | 18    | All language-specific experts: `python-pro`, `javascript-pro`, `typescript-pro`, `rust-pro`, `golang-pro`, `java-pro`, `cpp-pro`, `c-pro`, `php-pro`, `ruby-pro`, etc. |
+| Scripting Languages         | 2     | `bash-pro`, `posix-shell-pro`                                                                                                                                           |
 | Security & Code Review      | 8     | `code-reviewer`, `security-auditor`, `backend-security-coder`, `frontend-security-coder`, `mobile-security-coder`                                                      |
 | Frontend & UI               | 5     | `frontend-developer`, `ui-ux-designer`, `ui-visual-validator`, `mobile-developer`, `ios-developer`, `flutter-expert`                                                   |
 | AI/ML & Data                | 7     | `ai-engineer`, `ml-engineer`, `mlops-engineer`, `data-scientist`, `prompt-engineer`, `data-engineer`                                                                   |
@@ -979,13 +983,13 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Granular Plugin Architecture
 
-- **63 focused plugins** optimized for specific use cases
+- **64 focused plugins** optimized for specific use cases
 - **23 clear categories** with 1-6 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 4 plugins (debugging, backend, frontend, multi-platform)
   - **Security**: 4 plugins (scanning, compliance, backend-api, frontend-mobile)
   - **Operations**: 4 plugins (incident, diagnostics, distributed, observability)
-  - **Languages**: 7 plugins (Python, JS/TS, systems, JVM, scripting, functional, embedded)
+  - **Languages**: 8 plugins (Python, JS/TS, systems, JVM, web scripting, functional, shell, embedded)
   - **Infrastructure**: 5 plugins (deployment, validation, K8s, cloud, CI/CD)
   - And 18 more specialized categories
 
@@ -999,7 +1003,7 @@ This marketplace follows industry best practices with a focus on granularity, co
   - `typescript-scaffold.md` - TypeScript project scaffolding (Next.js/Vite)
   - `rust-project.md` - Rust project scaffolding (cargo/Axum)
 - **100% agent coverage** - all plugins include at least one agent
-- **Language-specific plugins** - 6 dedicated plugins for language experts
+- **Language-specific plugins** - 8 dedicated plugins for language experts
 
 ### Performance & Quality
 
@@ -1007,7 +1011,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 - **Better context efficiency** - granular plugins reduce unnecessary context
 - **Clear discoverability** - well-organized categories and focused purposes
 - **Isolated dependencies** - each plugin contains only its required resources
-- **100% component coverage** - all 85 agents available across plugins
+- **100% component coverage** - all 87 agents available across plugins
 
 ### Design Philosophy
 

@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 62 focused plugins, 84 specialized agents, and 42 tools - optimized for granular installation and minimal token usage",
+    "description": "Production-ready workflow orchestration with 64 focused plugins, 87 specialized agents, and 44 tools - optimized for granular installation and minimal token usage",
     "version": "1.2.0"
   },
   "plugins": [
@@ -1841,6 +1841,35 @@
       "commands": [],
       "agents": [
         "./agents/arm-cortex-expert.md"
+      ]
+    },
+    {
+      "name": "shell-scripting",
+      "source": "./plugins/shell-scripting",
+      "description": "Production-grade Bash scripting with defensive programming, POSIX compliance, and comprehensive testing",
+      "version": "1.2.0",
+      "author": {
+        "name": "Ryan Snodgrass",
+        "url": "https://github.com/rsnodgrass"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "bash",
+        "shell",
+        "scripting",
+        "automation",
+        "posix",
+        "shellcheck",
+        "testing"
+      ],
+      "category": "languages",
+      "strict": false,
+      "commands": [],
+      "agents": [
+        "./agents/bash-pro.md",
+        "./agents/posix-shell-pro.md"
       ]
     }
   ]
