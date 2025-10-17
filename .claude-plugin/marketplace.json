@@ -1922,7 +1922,7 @@
       "name": "shell-scripting",
       "source": "./plugins/shell-scripting",
       "description": "Production-grade Bash scripting with defensive programming, POSIX compliance, and comprehensive testing",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Ryan Snodgrass",
         "url": "https://github.com/rsnodgrass"
@@ -1945,6 +1945,11 @@
       "agents": [
         "./agents/bash-pro.md",
         "./agents/posix-shell-pro.md"
+      ],
+      "skills": [
+        "./skills/bash-defensive-patterns/SKILL.md",
+        "./skills/shellcheck-configuration/SKILL.md",
+        "./skills/bats-testing-patterns/SKILL.md"
       ]
     }
   ]
