@@ -102,7 +102,7 @@
       "name": "backend-development",
       "source": "./plugins/backend-development",
       "description": "Backend API design, GraphQL architecture, and test-driven backend development",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -126,6 +126,11 @@
         "./agents/backend-architect.md",
         "./agents/graphql-architect.md",
         "./agents/tdd-orchestrator.md"
+      ],
+      "skills": [
+        "./skills/api-design-principles",
+        "./skills/architecture-patterns",
+        "./skills/microservices-patterns"
       ]
     },
     {
@@ -395,7 +400,7 @@
       "name": "llm-application-dev",
       "source": "./plugins/llm-application-dev",
       "description": "LLM application development, prompt engineering, and AI assistant optimization",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -421,6 +426,12 @@
       "agents": [
         "./agents/ai-engineer.md",
         "./agents/prompt-engineer.md"
+      ],
+      "skills": [
+        "./skills/langchain-architecture",
+        "./skills/llm-evaluation",
+        "./skills/prompt-engineering-patterns",
+        "./skills/rag-implementation"
       ]
     },
     {
@@ -483,7 +494,7 @@
       "name": "machine-learning-ops",
       "source": "./plugins/machine-learning-ops",
       "description": "ML model training pipelines, hyperparameter tuning, model deployment automation, experiment tracking, and MLOps workflows",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -508,6 +519,9 @@
         "./agents/data-scientist.md",
         "./agents/ml-engineer.md",
         "./agents/mlops-engineer.md"
+      ],
+      "skills": [
+        "./skills/ml-pipeline-workflow"
       ]
     },
     {
@@ -631,7 +645,7 @@
       "name": "observability-monitoring",
       "source": "./plugins/observability-monitoring",
       "description": "Metrics collection, logging infrastructure, distributed tracing, SLO implementation, and monitoring dashboards",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -660,6 +674,12 @@
         "./agents/performance-engineer.md",
         "./agents/database-optimizer.md",
         "./agents/network-engineer.md"
+      ],
+      "skills": [
+        "./skills/distributed-tracing",
+        "./skills/grafana-dashboards",
+        "./skills/prometheus-configuration",
+        "./skills/slo-implementation"
       ]
     },
     {
@@ -720,7 +740,7 @@
       "name": "kubernetes-operations",
       "source": "./plugins/kubernetes-operations",
       "description": "Kubernetes manifest generation, networking configuration, security policies, observability setup, GitOps workflows, and auto-scaling",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -741,13 +761,19 @@
       "commands": [],
       "agents": [
         "./agents/kubernetes-architect.md"
+      ],
+      "skills": [
+        "./skills/gitops-workflow",
+        "./skills/helm-chart-scaffolding",
+        "./skills/k8s-manifest-generator",
+        "./skills/k8s-security-policies"
       ]
     },
     {
       "name": "cloud-infrastructure",
       "source": "./plugins/cloud-infrastructure",
       "description": "Cloud architecture design for AWS/Azure/GCP, Kubernetes cluster configuration, Terraform infrastructure-as-code, hybrid cloud networking, and multi-cloud cost optimization",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -774,13 +800,19 @@
         "./agents/terraform-specialist.md",
         "./agents/network-engineer.md",
         "./agents/deployment-engineer.md"
+      ],
+      "skills": [
+        "./skills/cost-optimization",
+        "./skills/hybrid-cloud-networking",
+        "./skills/multi-cloud-architecture",
+        "./skills/terraform-module-library"
       ]
     },
     {
       "name": "cicd-automation",
       "source": "./plugins/cicd-automation",
       "description": "CI/CD pipeline configuration, GitHub Actions/GitLab CI workflow setup, and automated deployment pipeline orchestration",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -806,6 +838,12 @@
         "./agents/kubernetes-architect.md",
         "./agents/cloud-architect.md",
         "./agents/terraform-specialist.md"
+      ],
+      "skills": [
+        "./skills/deployment-pipeline-design",
+        "./skills/github-actions-templates",
+        "./skills/gitlab-ci-patterns",
+        "./skills/secrets-management"
       ]
     },
     {
@@ -930,7 +968,7 @@
       "name": "framework-migration",
       "source": "./plugins/framework-migration",
       "description": "Framework updates, migration planning, and architectural transformation workflows",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -955,6 +993,12 @@
       "agents": [
         "./agents/legacy-modernizer.md",
         "./agents/architect-review.md"
+      ],
+      "skills": [
+        "./skills/angular-migration",
+        "./skills/database-migration",
+        "./skills/dependency-upgrade",
+        "./skills/react-modernization"
       ]
     },
     {
@@ -1047,7 +1091,7 @@
       "name": "security-scanning",
       "source": "./plugins/security-scanning",
       "description": "SAST analysis, dependency vulnerability scanning, OWASP Top 10 compliance, container security scanning, and automated security hardening",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -1071,6 +1115,9 @@
       ],
       "agents": [
         "./agents/security-auditor.md"
+      ],
+      "skills": [
+        "./skills/sast-configuration"
       ]
     },
     {
@@ -1189,7 +1236,7 @@
       "name": "api-scaffolding",
       "source": "./plugins/api-scaffolding",
       "description": "REST and GraphQL API scaffolding, framework selection, backend architecture, and API generation",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -1213,6 +1260,9 @@
         "./agents/graphql-architect.md",
         "./agents/fastapi-pro.md",
         "./agents/django-pro.md"
+      ],
+      "skills": [
+        "./skills/fastapi-templates"
       ]
     },
     {
@@ -1507,7 +1557,7 @@
       "name": "blockchain-web3",
       "source": "./plugins/blockchain-web3",
       "description": "Smart contract development with Solidity, DeFi protocol implementation, NFT platforms, and Web3 application architecture",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -1529,6 +1579,12 @@
       "commands": [],
       "agents": [
         "./agents/blockchain-developer.md"
+      ],
+      "skills": [
+        "./skills/defi-protocol-templates",
+        "./skills/nft-standards",
+        "./skills/solidity-security",
+        "./skills/web3-testing"
       ]
     },
     {
@@ -1562,7 +1618,7 @@
       "name": "payment-processing",
       "source": "./plugins/payment-processing",
       "description": "Payment gateway integration with Stripe, PayPal, checkout flow implementation, subscription billing, and PCI compliance",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -1584,6 +1640,12 @@
       "commands": [],
       "agents": [
         "./agents/payment-integration.md"
+      ],
+      "skills": [
+        "./skills/billing-automation",
+        "./skills/paypal-integration",
+        "./skills/pci-compliance",
+        "./skills/stripe-integration"
       ]
     },
     {
@@ -1646,7 +1708,7 @@
       "name": "python-development",
       "source": "./plugins/python-development",
       "description": "Modern Python development with Python 3.12+, Django, FastAPI, async patterns, and production best practices",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -1670,13 +1732,20 @@
         "./agents/python-pro.md",
         "./agents/django-pro.md",
         "./agents/fastapi-pro.md"
+      ],
+      "skills": [
+        "./skills/async-python-patterns",
+        "./skills/python-testing-patterns",
+        "./skills/python-packaging",
+        "./skills/python-performance-optimization",
+        "./skills/uv-package-manager"
       ]
     },
     {
       "name": "javascript-typescript",
       "source": "./plugins/javascript-typescript",
       "description": "JavaScript and TypeScript development with ES6+, Node.js, React, and modern web frameworks",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -1699,6 +1768,12 @@
       "agents": [
         "./agents/javascript-pro.md",
         "./agents/typescript-pro.md"
+      ],
+      "skills": [
+        "./skills/typescript-advanced-types",
+        "./skills/nodejs-backend-patterns",
+        "./skills/javascript-testing-patterns",
+        "./skills/modern-javascript-patterns"
       ]
     },
     {
