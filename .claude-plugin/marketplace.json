@@ -6,8 +6,8 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 66 focused plugins, 89 specialized agents, and 46 tools - optimized for granular installation and minimal token usage",
-    "version": "1.2.2"
+    "description": "Production-ready workflow orchestration with 66 focused plugins, 89 specialized agents, 46 tools, and 47 agent skills - optimized for granular installation and minimal token usage",
+    "version": "1.2.3"
   },
   "plugins": [
     {
@@ -2022,7 +2022,8 @@
       "skills": [
         "./skills/technical-analysis",
         "./skills/fundamental-analysis",
-        "./skills/portfolio-analysis"
+        "./skills/portfolio-analysis",
+        "./skills/patent-research"
       ]
     }
   ]
