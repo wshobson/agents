@@ -6,8 +6,8 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 64 focused plugins, 87 specialized agents, and 44 tools - optimized for granular installation and minimal token usage",
-    "version": "1.2.0"
+    "description": "Production-ready workflow orchestration with 65 focused plugins, 88 specialized agents, and 45 tools - optimized for granular installation and minimal token usage",
+    "version": "1.2.1"
   },
   "plugins": [
     {
@@ -1950,6 +1950,40 @@
         "./skills/bash-defensive-patterns/SKILL.md",
         "./skills/shellcheck-configuration/SKILL.md",
         "./skills/bats-testing-patterns/SKILL.md"
+      ]
+    },
+    {
+      "name": "product-management",
+      "source": "./plugins/product-management",
+      "description": "Product strategy, market analysis, roadmap planning, and go-to-market execution. Expert guidance on feature prioritization, user research, competitive positioning, and product-market fit optimization",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "url": "https://github.com/wshobson"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "product-management",
+        "strategy",
+        "roadmap",
+        "user-research",
+        "go-to-market",
+        "market-analysis",
+        "competitive-positioning",
+        "prioritization"
+      ],
+      "category": "business",
+      "strict": false,
+      "commands": [
+        "./commands/strategy-analysis.md"
+      ],
+      "agents": [
+        "./agents/product-manager.md"
+      ],
+      "skills": [
+        "./skills/product-strategy"
       ]
     }
   ]
