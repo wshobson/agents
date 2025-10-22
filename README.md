@@ -140,6 +140,38 @@ git pull
 node sync-agents.js
 ```
 
+### Installing MCPs
+
+The repository includes an MCP installation tool that reads configuration files from the `mcps/` directory and installs them to Claude Code.
+
+```bash
+# Install all MCPs from the mcps/ directory
+node install-mcps.js
+```
+
+**MCP Configuration Format:**
+
+Create JSON files in the `mcps/` directory with the following structure:
+
+```json
+{
+  "mcp-name": {
+    "command": "npx -y package-name --arg=${ENV_VAR}",
+    "transport": "stdio",
+    "env": {
+      "ENV_VAR": "${ENV_VAR}"
+    }
+  }
+}
+```
+
+The installation script will:
+- Automatically detect environment variables in `${VAR}` format
+- Prompt you interactively for each required value
+- Construct and execute the appropriate `claude mcp add` command
+- Handle errors with retry/skip options
+- Provide a summary of installed, skipped, and failed MCPs
+
 ## Usage
 
 ### Automatic Delegation
@@ -355,12 +387,14 @@ backend-architect → security-auditor → Validated implementation
 
 ```
 agents/                      # All agent definitions from upstream
+mcps/                        # MCP configuration files
 tools/                       # Optional Claude Code tools
 workflows/                   # Example multi-agent workflows
 examples/                    # Usage examples
 
 agents-config.json           # Organization-wide agent whitelist
-sync-agents.js              # Sync script
+sync-agents.js              # Agent sync script
+install-mcps.js             # MCP installation script
 ```
 
 ## Contributing

@@ -27,6 +27,48 @@ function askQuestion(query) {
   return new Promise(resolve => rl.question(query, resolve));
 }
 
+function askSecretQuestion(query) {
+  return new Promise((resolve) => {
+    const stdin = process.stdin;
+    const stdout = process.stdout;
+
+    let input = '';
+
+    stdout.write(query);
+
+    stdin.setRawMode(true);
+    stdin.resume();
+    stdin.setEncoding('utf8');
+
+    const onData = (char) => {
+      switch (char) {
+        case '\n':
+        case '\r':
+        case '\u0004':
+          stdin.setRawMode(false);
+          stdin.pause();
+          stdin.removeListener('data', onData);
+          stdout.write('\n');
+          resolve(input);
+          break;
+        case '\u0003':
+          process.exit();
+          break;
+        case '\u007f':
+          if (input.length > 0) {
+            input = input.slice(0, -1);
+          }
+          break;
+        default:
+          input += char;
+          break;
+      }
+    };
+
+    stdin.on('data', onData);
+  });
+}
+
 function extractEnvVariables(command, envConfig) {
   const variables = new Map();
   const regex = /\$\{([^}]+)\}/g;
@@ -50,6 +92,15 @@ function replaceEnvVariables(command, envValues) {
   return result;
 }
 
+function maskEnvVariables(command, envValues) {
+  let result = command;
+  for (const [varName, value] of envValues.entries()) {
+    const masked = '*'.repeat(8);
+    result = result.replace(new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), masked);
+  }
+  return result;
+}
+
 async function installMcp(mcpName, mcpConfig) {
   console.log(`\n${colors.cyan}=== Installing MCP: ${mcpName} ===${colors.reset}`);
 
@@ -65,7 +116,7 @@ async function installMcp(mcpName, mcpConfig) {
     for (const [varName, placeholder] of envVariables.entries()) {
       const hasPlaceholder = placeholder.startsWith('${');
       if (hasPlaceholder) {
-        const answer = await askQuestion(`  ${varName}: `);
+        const answer = await askSecretQuestion(`  ${varName}: `);
         envValues.set(varName, answer.trim());
       } else {
         envValues.set(varName, placeholder);
@@ -78,8 +129,9 @@ async function installMcp(mcpName, mcpConfig) {
   const argsString = args.join(' ');
 
   const claudeCommand = `claude mcp add --transport ${transport} ${mcpName} -- ${mainCommand} ${argsString}`;
+  const maskedCommand = maskEnvVariables(claudeCommand, envValues);
 
-  console.log(`${colors.blue}Executing:${colors.reset} ${claudeCommand}\n`);
+  console.log(`${colors.blue}Executing:${colors.reset} ${maskedCommand}\n`);
 
   let retry = true;
   while (retry) {
