@@ -30,6 +30,62 @@ Expert equity market analyst specializing in stock and bond portfolio analysis, 
 - Risk assessment (beta, volatility, correlation, maximum drawdown)
 - Performance analysis (returns, attribution, benchmarking)
 
+#### Technical Analyst (`technical-analyst.md`)
+Expert technical analyst specializing in chart pattern recognition, price action analysis, and trading signal generation. Masters support/resistance identification, trend analysis, and indicator interpretation.
+
+**Model**: Haiku (fast chart analysis)
+
+**Key Capabilities**:
+- Chart pattern recognition (reversals, continuations, candlesticks)
+- Trend analysis (trendlines, support/resistance, breakouts)
+- Moving averages (SMA, EMA, crossovers, ribbons)
+- Momentum indicators (RSI, MACD, Stochastic, CCI)
+- Volatility indicators (Bollinger Bands, ATR, Keltner Channels)
+- Confluence analysis (multi-timeframe, Fibonacci, level confluence)
+- Trading signal generation (entry/exit points, risk-reward assessment)
+
+#### Fundamental Analyst (`fundamental-analyst.md`)
+Expert fundamental analyst specializing in company valuation, financial statement analysis, and investment quality assessment. Masters financial metrics, competitive positioning, and earnings analysis.
+
+**Model**: Haiku (fast financial analysis)
+
+**Key Capabilities**:
+- Financial statement analysis (income statement, balance sheet, cash flow)
+- Valuation methods (P/E, PEG, EV/EBITDA, DCF, peer comparison)
+- Company quality assessment (competitive moat, management, financial health)
+- Earnings analysis (quality, beat/miss, guidance assessment)
+- Competitive positioning (market share, competitive advantages)
+- Management evaluation (capital allocation, insider activity)
+- Investment quality scoring (quality metrics, risk assessment)
+
+#### Portfolio Analyst (`portfolio-analyst.md`)
+Expert portfolio analyst specializing in portfolio construction, optimization, and risk management. Masters asset allocation, diversification, correlation analysis, and rebalancing strategies.
+
+**Model**: Haiku (fast portfolio analysis)
+
+**Key Capabilities**:
+- Portfolio composition analysis (holdings quality, sector allocation)
+- Diversification analysis (correlation, concentration, diversification ratio)
+- Risk measurement (volatility, beta, Sharpe ratio, VaR, drawdown)
+- Asset allocation strategies (strategic, tactical, dynamic)
+- Rebalancing strategies (calendar-based, threshold-based, opportunistic)
+- Performance attribution (allocation effect, selection effect)
+- Tax optimization (tax-loss harvesting, long-term gains strategies)
+
+#### Patent Researcher (`patent-researcher.md`)
+Expert patent researcher specializing in patent landscape analysis, competitive positioning assessment, and intellectual property valuation. Masters patent quality evaluation and freedom-to-operate analysis.
+
+**Model**: Haiku (fast patent analysis)
+
+**Key Capabilities**:
+- Patent portfolio analysis (strength, trends, quality assessment)
+- Patent quality evaluation (claim breadth, citation impact, grant rates)
+- Competitive landscape mapping (competitive positioning, technology trends)
+- Freedom-to-operate (FTO) analysis (infringement risk, mitigation)
+- Patent valuation (quality metrics, licensing economics, strategic value)
+- Litigation risk assessment (patent strength, industry environment)
+- Emerging technology trends (innovation insights, market implications)
+
 ### Commands
 
 #### Portfolio Analysis (`portfolio-analysis.md`)
@@ -229,6 +285,13 @@ Covered:
 - Other international exchanges
 
 ## Version History
+
+- **1.1.0** - Added specialized agents for each analysis type
+  - Added technical-analyst agent for chart and price action analysis
+  - Added fundamental-analyst agent for valuation and company quality
+  - Added portfolio-analyst agent for portfolio optimization and risk management
+  - Added patent-researcher agent for IP analysis and competitive positioning
+  - All agents now available as separate entry points with focused expertise
 
 - **1.0.0** - Initial release with equity-analyst agent, portfolio-analysis command, and three skills
   - equity-analyst agent with 50+ capabilities

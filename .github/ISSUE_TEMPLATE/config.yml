@@ -2,11 +2,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: GitHub Discussions
-    url: https://github.com/wshobson/agents/discussions
+    url: https://github.com/lazarenkod/agents/discussions
     about: For questions, brainstorming, and general discussions about subagents
   - name: Community Guidelines
-    url: https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md
+    url: https://github.com/lazarenkod/agents/blob/main/.github/CODE_OF_CONDUCT.md
     about: Read our Code of Conduct and community standards
   - name: Contributing Guide
-    url: https://github.com/wshobson/agents/blob/main/.github/CONTRIBUTING.md
+    url: https://github.com/lazarenkod/agents/blob/main/.github/CONTRIBUTING.md
     about: Learn how to contribute effectively to this project

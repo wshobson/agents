@@ -1958,7 +1958,7 @@
       "description": "Product strategy, market analysis, roadmap planning, and go-to-market execution. Expert guidance on feature prioritization, user research, competitive positioning, and product-market fit optimization",
       "version": "1.0.0",
       "author": {
-        "name": "Seth Hobson",
+        "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
       },
       "homepage": "https://github.com/lazarenkod/agents",
@@ -1990,9 +1990,9 @@
       "name": "stock-analysis",
       "source": "./plugins/stock-analysis",
       "description": "Expert equity market analysis for NASDAQ, NYSE, FTSE and other exchanges. Technical analysis, fundamental analysis, trading signals, and portfolio optimization for stocks and bonds",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
-        "name": "Seth Hobson",
+        "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
       },
       "homepage": "https://github.com/lazarenkod/agents",
@@ -2009,7 +2009,8 @@
         "nyse",
         "ftse",
         "bonds",
-        "investment"
+        "investment",
+        "patent-research"
       ],
       "category": "finance",
       "strict": false,
@@ -2017,7 +2018,11 @@
         "./commands/portfolio-analysis.md"
       ],
       "agents": [
-        "./agents/equity-analyst.md"
+        "./agents/equity-analyst.md",
+        "./agents/technical-analyst.md",
+        "./agents/fundamental-analyst.md",
+        "./agents/portfolio-analyst.md",
+        "./agents/patent-researcher.md"
       ],
       "skills": [
         "./skills/technical-analysis",
