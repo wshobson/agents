@@ -6,8 +6,8 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 65 focused plugins, 88 specialized agents, and 45 tools - optimized for granular installation and minimal token usage",
-    "version": "1.2.1"
+    "description": "Production-ready workflow orchestration with 66 focused plugins, 89 specialized agents, and 46 tools - optimized for granular installation and minimal token usage",
+    "version": "1.2.2"
   },
   "plugins": [
     {
@@ -1984,6 +1984,45 @@
       ],
       "skills": [
         "./skills/product-strategy"
+      ]
+    },
+    {
+      "name": "stock-analysis",
+      "source": "./plugins/stock-analysis",
+      "description": "Expert equity market analysis for NASDAQ, NYSE, FTSE and other exchanges. Technical analysis, fundamental analysis, trading signals, and portfolio optimization for stocks and bonds",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "url": "https://github.com/wshobson"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "stock-analysis",
+        "equity-research",
+        "technical-analysis",
+        "fundamental-analysis",
+        "portfolio-analysis",
+        "trading-signals",
+        "nasdaq",
+        "nyse",
+        "ftse",
+        "bonds",
+        "investment"
+      ],
+      "category": "finance",
+      "strict": false,
+      "commands": [
+        "./commands/portfolio-analysis.md"
+      ],
+      "agents": [
+        "./agents/equity-analyst.md"
+      ],
+      "skills": [
+        "./skills/technical-analysis",
+        "./skills/fundamental-analysis",
+        "./skills/portfolio-analysis"
       ]
     }
   ]
