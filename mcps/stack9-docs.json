@@ -1,0 +1,9 @@
+{
+  "stack9-docs": {
+    "command": "npx -y stack9-docs-mcp-server --pinecone-api-key=${PINECONE_API_KEY}",
+    "transport": "stdio",
+    "env": {
+      "PINECONE_API_KEY": "${PINECONE_API_KEY}"
+    }
+  }
+}
