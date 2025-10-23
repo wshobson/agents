@@ -101,8 +101,89 @@ function maskEnvVariables(command, envValues) {
   return result;
 }
 
+function isUsingNvm() {
+  return process.env.NVM_DIR !== undefined;
+}
+
+function extractPackageName(packageWithVersion) {
+  if (packageWithVersion.startsWith('@')) {
+    const lastAtIndex = packageWithVersion.lastIndexOf('@');
+    return packageWithVersion.substring(0, lastAtIndex);
+  }
+  const atIndex = packageWithVersion.indexOf('@');
+  return atIndex !== -1 ? packageWithVersion.substring(0, atIndex) : packageWithVersion;
+}
+
+function checkPackageInstalled(packageName) {
+  const pkgName = extractPackageName(packageName);
+  try {
+    execSync(`npm list -g ${pkgName}`, { stdio: 'ignore' });
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+async function installPackageIfNeeded(preInstall) {
+  const packageName = preInstall.package;
+  const registry = preInstall.registry;
+
+  console.log(`${colors.blue}Checking if ${packageName} is installed...${colors.reset}`);
+
+  if (checkPackageInstalled(packageName)) {
+    log(colors.green, '✓', `${packageName} is already installed`);
+    return true;
+  }
+
+  log(colors.yellow, '!', `${packageName} is not installed`);
+  console.log(`${colors.yellow}This package needs to be installed globally before proceeding.${colors.reset}\n`);
+
+  const githubToken = await askSecretQuestion(`  Enter your GitHub token (with read:packages scope): `);
+
+  if (!githubToken || githubToken.trim() === '') {
+    log(colors.red, '✗', 'GitHub token is required to install this package');
+    return false;
+  }
+
+  const usingNvm = isUsingNvm();
+  const sudoPrefix = usingNvm ? '' : 'sudo ';
+
+  console.log(`${colors.blue}Installing ${packageName}...${colors.reset}`);
+  if (usingNvm) {
+    console.log(`${colors.cyan}Detected NVM - installing without sudo${colors.reset}`);
+  }
+
+  const installCommand = `${sudoPrefix}npm install -g ${packageName} --registry=${registry} --//${registry.replace('https://', '')}/:_authToken=${githubToken}`;
+  const maskedInstallCommand = installCommand.replace(githubToken, '********');
+
+  console.log(`${colors.blue}Running:${colors.reset} ${maskedInstallCommand}\n`);
+
+  try {
+    execSync(installCommand, { stdio: 'inherit' });
+    log(colors.green, '✓', `${packageName} installed successfully`);
+    return true;
+  } catch (err) {
+    log(colors.red, '✗', `Failed to install ${packageName}`);
+    console.log(`${colors.red}Error: ${err.message}${colors.reset}\n`);
+
+    const answer = await askQuestion(`Retry or skip this MCP? (r/s): `);
+    if (answer.toLowerCase() === 'r') {
+      return installPackageIfNeeded(preInstall);
+    }
+    return false;
+  }
+}
+
 async function installMcp(mcpName, mcpConfig) {
   console.log(`\n${colors.cyan}=== Installing MCP: ${mcpName} ===${colors.reset}`);
+
+  if (mcpConfig.preInstall) {
+    const installed = await installPackageIfNeeded(mcpConfig.preInstall);
+    if (!installed) {
+      log(colors.yellow, '○', `Skipping ${mcpName} due to failed pre-installation`);
+      return { success: false, mcpName, skipped: true };
+    }
+  }
 
   const transport = mcpConfig.transport || 'stdio';
   const command = mcpConfig.command;

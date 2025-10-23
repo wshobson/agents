@@ -156,18 +156,35 @@ Create JSON files in the `mcps/` directory with the following structure:
 ```json
 {
   "mcp-name": {
-    "command": "npx -y package-name --arg=${ENV_VAR}",
+    "command": "package-name --arg=${ENV_VAR}",
     "transport": "stdio",
     "env": {
       "ENV_VAR": "${ENV_VAR}"
+    },
+    "preInstall": {
+      "package": "@scope/package-name@version",
+      "registry": "https://npm.pkg.github.com/scope"
     }
   }
 }
 ```
 
-The installation script will:
+**Configuration Options:**
+
+- `command`: The command to run the MCP server (supports environment variable placeholders)
+- `transport`: Communication transport type (usually `stdio`)
+- `env`: Environment variables required by the command
+- `preInstall` (optional): Configuration for packages that need to be installed globally
+  - `package`: The npm package name with version
+  - `registry`: The npm registry URL (for private packages)
+
+**The installation script will:**
+
+- Check if packages specified in `preInstall` are already installed globally
+- For private packages, prompt for GitHub token (hidden input)
+- Automatically detect NVM and use appropriate installation command (with or without `sudo`)
 - Automatically detect environment variables in `${VAR}` format
-- Prompt you interactively for each required value
+- Prompt you interactively for each required value (hidden input for security)
 - Construct and execute the appropriate `claude mcp add` command
 - Handle errors with retry/skip options
 - Provide a summary of installed, skipped, and failed MCPs
