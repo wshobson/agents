@@ -209,7 +209,7 @@ async function installMcp(mcpName, mcpConfig) {
   const [mainCommand, ...args] = finalCommand.split(' ');
   const argsString = args.join(' ');
 
-  const claudeCommand = `claude mcp add --transport ${transport} ${mcpName} -- ${mainCommand} ${argsString}`;
+  const claudeCommand = `claude mcp add --transport ${transport} ${mcpName} --scope user -- ${mainCommand} ${argsString}`;
   const maskedCommand = maskEnvVariables(claudeCommand, envValues);
 
   console.log(`${colors.blue}Executing:${colors.reset} ${maskedCommand}\n`);
