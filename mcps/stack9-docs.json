@@ -1,0 +1,13 @@
+{
+  "stack9-docs": {
+    "command": "stack9-docs-mcp-server --pinecone-api-key=${PINECONE_API_KEY}",
+    "transport": "stdio",
+    "env": {
+      "PINECONE_API_KEY": "${PINECONE_API_KEY}"
+    },
+    "preInstall": {
+      "package": "@april9au/stack9-docs-mcp-server@latest",
+      "registry": "https://npm.pkg.github.com/april9au"
+    }
+  }
+}
