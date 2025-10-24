@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **47 specialized skills** across 14 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **55 specialized skills** across 15 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -37,6 +37,19 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **api-design-principles** | Master REST and GraphQL API design for intuitive, scalable, and maintainable APIs |
 | **architecture-patterns** | Implement Clean Architecture, Hexagonal Architecture, and Domain-Driven Design |
 | **microservices-patterns** | Design microservices with service boundaries, event-driven communication, and resilience |
+
+### Developer Essentials (8 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **git-advanced-workflows** | Master advanced Git workflows including rebasing, cherry-picking, bisect, worktrees, and reflog |
+| **sql-optimization-patterns** | Optimize SQL queries, indexing strategies, and EXPLAIN analysis for database performance |
+| **error-handling-patterns** | Implement robust error handling with exceptions, Result types, and graceful degradation |
+| **code-review-excellence** | Provide effective code reviews with constructive feedback and systematic analysis |
+| **e2e-testing-patterns** | Build reliable E2E test suites with Playwright and Cypress for critical user workflows |
+| **auth-implementation-patterns** | Implement authentication and authorization with JWT, OAuth2, sessions, and RBAC |
+| **debugging-strategies** | Master systematic debugging techniques, profiling tools, and root cause analysis |
+| **monorepo-management** | Manage monorepos with Turborepo, Nx, and pnpm workspaces for scalable multi-package projects |
 
 ### Blockchain & Web3 (4 skills)
 
@@ -172,7 +185,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 47 skills follow the [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md):
+All 55 skills follow the [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause

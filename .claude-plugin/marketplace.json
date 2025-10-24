@@ -1951,6 +1951,43 @@
         "./skills/shellcheck-configuration/SKILL.md",
         "./skills/bats-testing-patterns/SKILL.md"
       ]
+    },
+    {
+      "name": "developer-essentials",
+      "source": "./plugins/developer-essentials",
+      "description": "Essential developer skills including Git workflows, SQL optimization, error handling, code review, E2E testing, authentication, debugging, and monorepo management",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "url": "https://github.com/wshobson"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "git",
+        "sql",
+        "debugging",
+        "testing",
+        "authentication",
+        "code-review",
+        "monorepo",
+        "essential"
+      ],
+      "category": "development",
+      "strict": false,
+      "commands": [],
+      "agents": [],
+      "skills": [
+        "./skills/git-advanced-workflows",
+        "./skills/sql-optimization-patterns",
+        "./skills/error-handling-patterns",
+        "./skills/code-review-excellence",
+        "./skills/e2e-testing-patterns",
+        "./skills/auth-implementation-patterns",
+        "./skills/debugging-strategies",
+        "./skills/monorepo-management"
+      ]
     }
   ]
 }
