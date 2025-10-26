@@ -22,3 +22,6 @@ venv
 node_modules
 .sass-cache
 .claude
+
+# Git worktree directories
+.worktrees/
