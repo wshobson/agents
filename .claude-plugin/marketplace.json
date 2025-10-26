@@ -770,6 +770,23 @@
       ]
     },
     {
+      "name": "kotlin-koog-development",
+      "source": "./plugins/kotlin-koog-development",
+      "description": "Expert Kotlin Koog AI agents development with senior architect guidance, comprehensive skill development, and automated project scaffolding for building production-grade AI agents.",
+      "version": "1.0.0",
+      "category": "ai-development",
+      "tags": ["kotlin", "koog", "ai-agents", "agent-architecture", "jvm"],
+      "commands": [
+        "./commands/koog-agent-scaffold.md"
+      ],
+      "agents": [
+        "./agents/kotlin-koog-agent-architect.md"
+      ],
+      "skills": [
+        "./skills/kotlin-koog-agent-development"
+      ]
+    },
+    {
       "name": "cloud-infrastructure",
       "source": "./plugins/cloud-infrastructure",
       "description": "Cloud architecture design for AWS/Azure/GCP, Kubernetes cluster configuration, Terraform infrastructure-as-code, hybrid cloud networking, and multi-cloud cost optimization",
