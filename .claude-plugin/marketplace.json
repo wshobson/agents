@@ -2047,6 +2047,44 @@
         "./skills/portfolio-analysis",
         "./skills/patent-research"
       ]
+    },
+    {
+      "name": "gemini-codebase-intelligence",
+      "source": "./plugins/gemini-codebase-intelligence",
+      "description": "Intelligent Gemini CLI management for large codebase analysis and pattern detection. Provides hybrid routing between Gemini CLI and local tools, three command families (analyze, search, execute), and four specialized skills for pattern detection, search strategies, configuration, and result interpretation. Use PROACTIVELY when Claude needs to analyze extensive code patterns, architectural overviews, or search through large codebases efficiently.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Claude",
+        "url": "https://github.com/anthropics"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "codebase-analysis",
+        "pattern-detection",
+        "code-quality",
+        "architecture-analysis",
+        "gemini-cli",
+        "hybrid-routing"
+      ],
+      "category": "code-analysis",
+      "strict": false,
+      "commands": [
+        "./commands/analyze-codebase.md",
+        "./commands/search-patterns.md",
+        "./commands/execute-analysis.md"
+      ],
+      "agents": [
+        "./agents/codebase-analysis-gateway.md",
+        "./agents/gemini-cli-executor.md"
+      ],
+      "skills": [
+        "./skills/pattern-detection",
+        "./skills/codebase-search-strategies",
+        "./skills/gemini-cli-configuration",
+        "./skills/analysis-result-interpretation"
+      ]
     }
   ]
 }
