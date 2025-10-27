@@ -6,8 +6,8 @@
     "url": "https://github.com/lazarenkod"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 66 focused plugins, 89 specialized agents, 46 tools, and 47 agent skills - optimized for granular installation and minimal token usage",
-    "version": "1.2.3"
+    "description": "Production-ready workflow orchestration with 68 focused plugins, 91 specialized agents, 46 tools, and 55 agent skills - optimized for granular installation and minimal token usage",
+    "version": "1.2.5"
   },
   "plugins": [
     {
@@ -2084,6 +2084,79 @@
         "./skills/codebase-search-strategies",
         "./skills/gemini-cli-configuration",
         "./skills/analysis-result-interpretation"
+      ]
+    },
+    {
+      "name": "operations-management",
+      "source": "./plugins/operations-management",
+      "description": "Expert operational management and COO capabilities for process optimization, project management, risk mitigation, and performance metrics. Delivers strategic operational guidance with systematic process improvement, cross-functional coordination, and data-driven performance management.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "operations-management",
+        "coo",
+        "process-optimization",
+        "project-management",
+        "risk-management",
+        "performance-metrics",
+        "operational-excellence",
+        "kpi",
+        "okr"
+      ],
+      "category": "operations",
+      "strict": false,
+      "commands": [],
+      "agents": [
+        "./agents/coo-executive.md"
+      ],
+      "skills": [
+        "./skills/process-optimization",
+        "./skills/project-management",
+        "./skills/risk-management",
+        "./skills/performance-metrics"
+      ]
+    },
+    {
+      "name": "ceo-operating-system",
+      "source": "./plugins/ceo-operating-system",
+      "description": "Chief Executive Officer operating system for strategic vision, execution management, board governance, and organizational leadership. Provides comprehensive CEO guidance with proven frameworks (OKRs, EXO model) for building and scaling high-performing companies.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "ceo",
+        "ceo-operating-system",
+        "strategic-vision",
+        "execution-management",
+        "okr",
+        "board-governance",
+        "investor-relations",
+        "organizational-leadership",
+        "fundraising",
+        "company-building"
+      ],
+      "category": "executive-leadership",
+      "strict": false,
+      "commands": [],
+      "agents": [
+        "./agents/ceo-operating-system.md"
+      ],
+      "skills": [
+        "./skills/strategic-vision",
+        "./skills/execution-excellence",
+        "./skills/board-investor-relations",
+        "./skills/leadership-organization"
       ]
     }
   ]
