@@ -2006,8 +2006,8 @@
     {
       "name": "stock-analysis",
       "source": "./plugins/stock-analysis",
-      "description": "Expert equity market analysis for NASDAQ, NYSE, FTSE and other exchanges. Technical analysis, fundamental analysis, market trends, sector rotation, dividend investing, risk management, and portfolio optimization for stocks and bonds",
-      "version": "1.2.0",
+      "description": "Expert equity and cryptocurrency market analysis. Technical analysis, fundamental analysis, market trends, sector rotation, dividend investing for stocks. Cryptocurrency analysis with technical, tokenomics, and on-chain metrics. Risk management and portfolio optimization for both asset classes.",
+      "version": "1.3.0",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
@@ -2017,9 +2017,13 @@
       "license": "MIT",
       "keywords": [
         "stock-analysis",
+        "cryptocurrency-analysis",
+        "crypto-trading",
         "equity-research",
         "technical-analysis",
         "fundamental-analysis",
+        "tokenomics",
+        "on-chain-analysis",
         "portfolio-analysis",
         "trading-signals",
         "market-analysis",
@@ -2029,6 +2033,9 @@
         "nasdaq",
         "nyse",
         "ftse",
+        "bitcoin",
+        "ethereum",
+        "blockchain",
         "bonds",
         "investment",
         "patent-research",
@@ -2040,7 +2047,9 @@
         "./commands/portfolio-analysis.md",
         "./commands/ticker-analysis.md",
         "./commands/stock-comparison.md",
-        "./commands/market-analysis.md"
+        "./commands/market-analysis.md",
+        "./commands/crypto-analysis.md",
+        "./commands/crypto-comparison.md"
       ],
       "agents": [
         "./agents/equity-analyst.md",
@@ -2050,7 +2059,10 @@
         "./agents/patent-researcher.md",
         "./agents/market-analyst.md",
         "./agents/risk-management-specialist.md",
-        "./agents/dividend-analyst.md"
+        "./agents/dividend-analyst.md",
+        "./agents/crypto-technical-analyst.md",
+        "./agents/crypto-fundamental-analyst.md",
+        "./agents/crypto-portfolio-analyst.md"
       ],
       "skills": [
         "./skills/technical-analysis",
@@ -2060,7 +2072,9 @@
         "./skills/macroeconomic-analysis",
         "./skills/risk-management",
         "./skills/dividend-strategy",
-        "./skills/sector-analysis"
+        "./skills/sector-analysis",
+        "./skills/crypto-technical-analysis",
+        "./skills/crypto-tokenomics-analysis"
       ]
     },
     {
