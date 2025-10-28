@@ -2006,8 +2006,8 @@
     {
       "name": "stock-analysis",
       "source": "./plugins/stock-analysis",
-      "description": "Expert equity market analysis for NASDAQ, NYSE, FTSE and other exchanges. Technical analysis, fundamental analysis, trading signals, and portfolio optimization for stocks and bonds",
-      "version": "1.1.0",
+      "description": "Expert equity market analysis for NASDAQ, NYSE, FTSE and other exchanges. Technical analysis, fundamental analysis, market trends, sector rotation, dividend investing, risk management, and portfolio optimization for stocks and bonds",
+      "version": "1.2.0",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
@@ -2022,30 +2022,45 @@
         "fundamental-analysis",
         "portfolio-analysis",
         "trading-signals",
+        "market-analysis",
+        "sector-rotation",
+        "dividend-investing",
+        "risk-management",
         "nasdaq",
         "nyse",
         "ftse",
         "bonds",
         "investment",
-        "patent-research"
+        "patent-research",
+        "macroeconomic-analysis"
       ],
       "category": "finance",
       "strict": false,
       "commands": [
-        "./commands/portfolio-analysis.md"
+        "./commands/portfolio-analysis.md",
+        "./commands/ticker-analysis.md",
+        "./commands/stock-comparison.md",
+        "./commands/market-analysis.md"
       ],
       "agents": [
         "./agents/equity-analyst.md",
         "./agents/technical-analyst.md",
         "./agents/fundamental-analyst.md",
         "./agents/portfolio-analyst.md",
-        "./agents/patent-researcher.md"
+        "./agents/patent-researcher.md",
+        "./agents/market-analyst.md",
+        "./agents/risk-management-specialist.md",
+        "./agents/dividend-analyst.md"
       ],
       "skills": [
         "./skills/technical-analysis",
         "./skills/fundamental-analysis",
         "./skills/portfolio-analysis",
-        "./skills/patent-research"
+        "./skills/patent-research",
+        "./skills/macroeconomic-analysis",
+        "./skills/risk-management",
+        "./skills/dividend-strategy",
+        "./skills/sector-analysis"
       ]
     },
     {

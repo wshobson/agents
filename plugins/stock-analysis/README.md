@@ -14,7 +14,7 @@ This plugin provides comprehensive stock and bond portfolio analysis expertise c
 
 ## Contents
 
-### Agents
+### Agents (8 total)
 
 #### Equity Analyst (`equity-analyst.md`)
 Expert equity market analyst specializing in stock and bond portfolio analysis, technical analysis, fundamental analysis, and trading signals. Masters NASDAQ, NYSE, FTSE, and other major exchanges.
@@ -33,7 +33,7 @@ Expert equity market analyst specializing in stock and bond portfolio analysis, 
 #### Technical Analyst (`technical-analyst.md`)
 Expert technical analyst specializing in chart pattern recognition, price action analysis, and trading signal generation. Masters support/resistance identification, trend analysis, and indicator interpretation.
 
-**Model**: Haiku (fast chart analysis)
+**Model**: Sonnet (complex pattern analysis)
 
 **Key Capabilities**:
 - Chart pattern recognition (reversals, continuations, candlesticks)
@@ -47,7 +47,7 @@ Expert technical analyst specializing in chart pattern recognition, price action
 #### Fundamental Analyst (`fundamental-analyst.md`)
 Expert fundamental analyst specializing in company valuation, financial statement analysis, and investment quality assessment. Masters financial metrics, competitive positioning, and earnings analysis.
 
-**Model**: Haiku (fast financial analysis)
+**Model**: Sonnet (complex financial reasoning)
 
 **Key Capabilities**:
 - Financial statement analysis (income statement, balance sheet, cash flow)
@@ -61,7 +61,7 @@ Expert fundamental analyst specializing in company valuation, financial statemen
 #### Portfolio Analyst (`portfolio-analyst.md`)
 Expert portfolio analyst specializing in portfolio construction, optimization, and risk management. Masters asset allocation, diversification, correlation analysis, and rebalancing strategies.
 
-**Model**: Haiku (fast portfolio analysis)
+**Model**: Sonnet (portfolio theory & optimization)
 
 **Key Capabilities**:
 - Portfolio composition analysis (holdings quality, sector allocation)
@@ -75,7 +75,7 @@ Expert portfolio analyst specializing in portfolio construction, optimization, a
 #### Patent Researcher (`patent-researcher.md`)
 Expert patent researcher specializing in patent landscape analysis, competitive positioning assessment, and intellectual property valuation. Masters patent quality evaluation and freedom-to-operate analysis.
 
-**Model**: Haiku (fast patent analysis)
+**Model**: Sonnet (competitive intelligence analysis)
 
 **Key Capabilities**:
 - Patent portfolio analysis (strength, trends, quality assessment)
@@ -86,7 +86,50 @@ Expert patent researcher specializing in patent landscape analysis, competitive 
 - Litigation risk assessment (patent strength, industry environment)
 - Emerging technology trends (innovation insights, market implications)
 
-### Commands
+#### Market Analyst (`market-analyst.md`)
+Expert market analyst specializing in macroeconomic analysis, sector trends, and strategic themes. Masters interest rates, inflation, economic cycles, and sector rotation.
+
+**Model**: Sonnet (macro analysis & reasoning)
+
+**Key Capabilities**:
+- Macroeconomic analysis (rates, inflation, GDP, employment, cycles)
+- Sector performance (relative strength, valuation, earnings trends)
+- Market structure (breadth, sentiment, valuation assessment)
+- Strategic themes (AI, energy transition, etc.)
+- Sector rotation (timing, leaders/laggards)
+- Economic forecasting (rate paths, recession probability)
+- Inflation & monetary policy analysis
+
+#### Risk Management Specialist (`risk-management-specialist.md`)
+Expert risk management specialist specializing in portfolio risk measurement, hedging strategies, and capital preservation. Masters position sizing, stop losses, and stress testing.
+
+**Model**: Sonnet (risk reasoning & optimization)
+
+**Key Capabilities**:
+- Risk measurement (volatility, beta, VaR, Sharpe ratio)
+- Position sizing (fixed risk, volatility-adjusted, Kelly criterion)
+- Stop loss & exit strategies (technical, psychological, profit-taking)
+- Hedging strategies (puts, collars, pairs trading, index hedges)
+- Drawdown management (analysis, psychology, recovery)
+- Stress testing (historical scenarios, black swan planning)
+- Correlation analysis (normal & crisis correlations)
+- Risk controls & limits (portfolio-level, concentration)
+
+#### Dividend Analyst (`dividend-analyst.md`)
+Expert dividend analyst specializing in dividend safety, dividend growth, and income portfolio construction. Masters payout ratios and dividend aristocrats.
+
+**Model**: Sonnet (fundamental dividend analysis)
+
+**Key Capabilities**:
+- Dividend safety (payout ratios, coverage, cash flow analysis)
+- Dividend yield analysis (classification, trends, sustainability)
+- Dividend growth investing (compounding, 25+ year analysis)
+- Dividend portfolio construction (income, growth, balanced)
+- Dividend aristocrat & king analysis (25+, 50+ year track records)
+- Tax-efficient dividend strategies (qualified vs non-qualified)
+- Through-cycle sustainability (recession resistance)
+
+### Commands (4 total)
 
 #### Portfolio Analysis (`portfolio-analysis.md`)
 Comprehensive portfolio analysis and optimization tool. Analyzes current positions, evaluates risk, identifies rebalancing opportunities, and provides actionable recommendations.
@@ -106,7 +149,56 @@ Comprehensive portfolio analysis and optimization tool. Analyzes current positio
 - Rebalancing plan with tax implications
 - Risk management recommendations
 
-### Skills
+#### Ticker Analysis (`ticker-analysis.md`)
+Comprehensive single-ticker analysis combining technical, fundamental, risk, and competitive perspectives. Provides specific entry/exit points and actionable recommendations.
+
+**Phases**:
+1. Technical Assessment (trend, key levels, momentum, signals)
+2. Fundamental Evaluation (valuation, quality, growth)
+3. Risk Analysis (volatility, drawdown, portfolio impact)
+4. Competitive Assessment (moat strength, IP analysis)
+5. Synthesized Recommendation (buy/sell/hold with rationale)
+
+**Outputs**:
+- Investment recommendation (buy/sell/hold with conviction)
+- Entry/exit levels with stop losses and profit targets
+- Valuation assessment (fair value range, margin of safety)
+- Risk assessment (key risks, downside scenarios)
+- Investment thesis (clear 2-3 sentence summary)
+
+#### Stock Comparison (`stock-comparison.md`)
+Compare 2-5 stocks side-by-side across valuation, growth, quality, and risk. Helps identify best opportunity among peers or alternatives.
+
+**Phases**:
+1. Individual Assessments (valuation, growth, quality, risk for each)
+2. Comparative Matrix (build comparison table across metrics)
+3. Risk-Reward Analysis (upside/downside scenarios, probability-weighted)
+4. Recommendation Ranking (overall scoring and ranking)
+
+**Outputs**:
+- Comparative matrix (valuation, growth, quality, risk)
+- Relative ranking (best overall, best value, best growth, etc.)
+- Risk-adjusted return comparison
+- Recommendation by investor type
+
+#### Market Analysis (`market-analysis.md`)
+Analyze macroeconomic conditions, market structure, sector trends, and strategic themes. Provides market environment assessment and sector rotation guidance.
+
+**Phases**:
+1. Macroeconomic Assessment (rates, inflation, GDP, employment)
+2. Market Structure Analysis (breadth, valuation, sentiment)
+3. Sector & Industry Analysis (performance, earnings, rotation)
+4. Strategic Theme Analysis (emerging themes, opportunities)
+5. Sector Rotation Recommendation (allocation adjustments)
+
+**Outputs**:
+- Macro environment assessment (growth, inflation, rates)
+- Market health (valuation, breadth, sentiment)
+- Sector performance ranking (strongest to weakest)
+- Rotation recommendations (from/to sectors)
+- Strategic themes with opportunities
+
+### Skills (8 total)
 
 #### Technical Analysis (`technical-analysis/SKILL.md`)
 Master technical analysis for stock trading with chart pattern recognition, indicator interpretation, and trading signal generation. Covers:
@@ -148,6 +240,57 @@ Master portfolio management and optimization. Covers:
 - Performance evaluation and attribution
 - Tax-efficient strategies (tax-loss harvesting)
 - Portfolio optimization and allocation
+
+#### Macroeconomic Analysis (`macroeconomic-analysis/SKILL.md`)
+Master macroeconomic analysis for investment decisions. Covers:
+
+**Key Topics**:
+- Interest rates & monetary policy (Fed policy, yield curves, real rates)
+- Inflation analysis (CPI, PPI, inflation expectations)
+- Employment & labor (NFP, unemployment, wage growth)
+- Economic growth (GDP, ISM, business cycles)
+- Business cycle phases (early, mid, late, recession)
+- Currency & international factors (USD strength, trade)
+- Recession indicators (leading/coincident/lagging)
+- Asset class performance by scenario
+
+#### Risk Management (`risk-management/SKILL.md`)
+Master portfolio risk management. Covers:
+
+**Key Topics**:
+- Risk measurement (volatility, beta, VaR, Sharpe ratio)
+- Position sizing (fixed risk, volatility-adjusted, Kelly)
+- Stop losses & exit strategies (technical, psychological)
+- Hedging strategies (puts, collars, pairs, index hedges)
+- Drawdown management (psychology, recovery, rebalancing)
+- Stress testing (historical, hypothetical scenarios)
+- Correlation analysis (normal & crisis conditions)
+- Risk controls & portfolio limits
+
+#### Dividend Strategy (`dividend-strategy/SKILL.md`)
+Master dividend investing for income & compounding. Covers:
+
+**Key Topics**:
+- Dividend basics (types, mechanics, payment timeline)
+- Dividend yield analysis (classification, trends, sustainability)
+- Payout ratio & sustainability (earnings, FCF, coverage ratios)
+- Dividend safety (warning signs, red flags)
+- Dividend aristocrats & kings (25+, 50+ year records)
+- Dividend growth investing (compounding power, 20-30 year)
+- Tax efficiency (qualified vs non-qualified dividends)
+- Dividend portfolio construction (income, growth, balanced)
+
+#### Sector Analysis (`sector-analysis/SKILL.md`)
+Master sector analysis for rotation strategies. Covers:
+
+**Key Topics**:
+- The 11 equity sectors (characteristics, sensitivity, drivers)
+- Sector valuation (P/E, PEG, EV/EBITDA by sector)
+- Sector earnings & growth (YoY growth, forward projections)
+- Sector rotation (business cycle phases, which sectors win/lose)
+- Defensive vs cyclical sectors (characteristics, performance)
+- Sector selection framework (identify winners/losers)
+- Momentum indicators (relative strength, money flow)
 
 ## Quick Start Examples
 
