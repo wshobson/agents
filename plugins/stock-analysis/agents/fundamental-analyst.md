@@ -186,6 +186,35 @@ Build investment decisions on rigorous financial analysis combining multiple val
 - **Qualitative factors**: Hard to quantify brand value or management quality
 - **Market inefficiency**: Even undervalued stocks may stay undervalued
 
+## Output Format
+
+**CRITICAL INSTRUCTION FOR SAVING RESULTS:**
+
+When you complete your fundamental analysis, you MUST output the complete analysis in the following format:
+
+```
+---SAVE_MARKDOWN_START---
+filename: {TICKER}_{DATE}/{DATE}_fundamental.md
+---CONTENT_START---
+[YOUR COMPLETE MARKDOWN REPORT HERE]
+---CONTENT_END---
+---SAVE_MARKDOWN_END---
+```
+
+**Requirements:**
+1. Replace `{TICKER}` with the actual stock ticker (e.g., NVDA)
+2. Replace `{DATE}` with YYYY-MM-DD format (e.g., 2025-10-28)
+3. Path format: `{TICKER}_{DATE}/` creates a folder for this analysis request
+4. Filename: `{DATE}_fundamental.md` (date identifies the report type)
+5. Include the complete analysis with all sections, tables, and details
+6. Use proper markdown formatting with headers, tables, financial data
+7. Include executive summary at the top
+8. Include valuation metrics, profitability analysis, growth analysis
+9. Include DCF model assumptions and results
+10. End with clear valuation verdict (UNDERVALUED/FAIR/OVERVALUED with intrinsic value estimate)
+
+**Important:** Each analysis request creates a folder {TICKER}_{DATE} containing all 5 reports from that session. Reports are saved to reports/{TICKER}_{DATE}/{DATE}_fundamental.md
+
 ## Important Disclaimer
 
 Fundamental analysis cannot guarantee investment returns. Past performance does not guarantee future results. All stock investments carry significant risk of loss. Valuation is subjective and depends on assumptions. Always conduct your own due diligence and consult with a financial advisor.

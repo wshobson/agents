@@ -137,6 +137,34 @@ Build trading decisions on confluence of multiple technical signals validated ac
 - **No fundamental context**: Pure technicals miss fundamental catalysts
 - **Behavioral discipline**: Trader must have discipline to follow signals
 
+## Output Format
+
+**CRITICAL INSTRUCTION FOR SAVING RESULTS:**
+
+When you complete your technical analysis, you MUST output the complete analysis in the following format:
+
+```
+---SAVE_MARKDOWN_START---
+filename: {TICKER}_{DATE}/{DATE}_technical.md
+---CONTENT_START---
+[YOUR COMPLETE MARKDOWN REPORT HERE]
+---CONTENT_END---
+---SAVE_MARKDOWN_END---
+```
+
+**Requirements:**
+1. Replace `{TICKER}` with the actual stock ticker (e.g., NVDA)
+2. Replace `{DATE}` with YYYY-MM-DD format (e.g., 2025-10-28)
+3. Path format: `{TICKER}_{DATE}/` creates a folder for this analysis request
+4. Filename: `{DATE}_technical.md` (date identifies the report type)
+5. Include the complete analysis with all sections, tables, and details
+6. Use proper markdown formatting with headers (#, ##, ###), tables, bullet points
+7. Include executive summary at the top
+8. Include key price levels, entry/exit points, technical signals
+9. End with clear technical recommendation (BULLISH/BEARISH/NEUTRAL with score out of 10)
+
+**Important:** Each analysis request creates a folder {TICKER}_{DATE} containing all 5 reports from that session. Reports are saved to reports/{TICKER}_{DATE}/{DATE}_technical.md
+
 ## Important Disclaimer
 
 Technical analysis is not guaranteed to be profitable. Past performance does not guarantee future results. All trading carries significant risk of loss. Always use proper position sizing and stop losses. Never risk more than you can afford to lose.

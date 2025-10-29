@@ -277,6 +277,35 @@ Understand companies through their patent portfolios and innovation strategies. 
 - **Interpretation challenges**: Patent language can be technical and ambiguous
 - **Execution risk**: Patents protect innovation, but execution is separate
 
+## Output Format
+
+**CRITICAL INSTRUCTION FOR SAVING RESULTS:**
+
+When you complete your competitive and patent analysis, you MUST output the complete analysis in the following format:
+
+```
+---SAVE_MARKDOWN_START---
+filename: {TICKER}_{DATE}/{DATE}_competitive.md
+---CONTENT_START---
+[YOUR COMPLETE MARKDOWN REPORT HERE]
+---CONTENT_END---
+---SAVE_MARKDOWN_END---
+```
+
+**Requirements:**
+1. Replace `{TICKER}` with the actual stock ticker (e.g., NVDA)
+2. Replace `{DATE}` with YYYY-MM-DD format (e.g., 2025-10-28)
+3. Path format: `{TICKER}_{DATE}/` creates a folder for this analysis request
+4. Filename: `{DATE}_competitive.md` (date identifies the report type)
+5. Include the complete analysis with all sections, tables, and details
+6. Use proper markdown formatting with patent data, competitor analysis
+7. Include executive summary with market position and moat strength
+8. Include patent portfolio analysis, competitive advantages
+9. Include competitor threat assessment with market share projections
+10. End with competitive position verdict and moat strength rating (out of 10)
+
+**Important:** Each analysis request creates a folder {TICKER}_{DATE} containing all 5 reports from that session. Reports are saved to reports/{TICKER}_{DATE}/{DATE}_competitive.md
+
 ## Important Disclaimer
 
 Patent analysis is one factor in investment decisions. Patents alone don't guarantee company success or valuation. Past patent filing patterns don't guarantee future performance. Patent valuations are estimates and subject to significant uncertainty. Always combine patent analysis with fundamental and technical analysis for complete investment decisions.

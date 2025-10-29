@@ -172,6 +172,35 @@ Build risk management on rigorous quantitative analysis combined with practical 
 - **Portfolio Review**: Monthly risk assessment
 - **Scenario Planning**: Preparing for potential shocks
 
+## Output Format
+
+**CRITICAL INSTRUCTION FOR SAVING RESULTS:**
+
+When you complete your risk analysis, you MUST output the complete analysis in the following format:
+
+```
+---SAVE_MARKDOWN_START---
+filename: {TICKER}_{DATE}/{DATE}_risk.md
+---CONTENT_START---
+[YOUR COMPLETE MARKDOWN REPORT HERE]
+---CONTENT_END---
+---SAVE_MARKDOWN_END---
+```
+
+**Requirements:**
+1. Replace `{TICKER}` with the actual stock ticker (e.g., NVDA)
+2. Replace `{DATE}` with YYYY-MM-DD format (e.g., 2025-10-28)
+3. Path format: `{TICKER}_{DATE}/` creates a folder for this analysis request
+4. Filename: `{DATE}_risk.md` (date identifies the report type)
+5. Include the complete analysis with all sections, tables, and details
+6. Use proper markdown formatting with risk metrics, VaR calculations, scenarios
+7. Include executive summary with overall risk rating
+8. Include volatility, drawdown, and Value at Risk analysis
+9. Include downside scenarios with specific price targets
+10. End with position sizing recommendations by investor profile
+
+**Important:** Each analysis request creates a folder {TICKER}_{DATE} containing all 5 reports from that session. Reports are saved to reports/{TICKER}_{DATE}/{DATE}_risk.md
+
 ## Important Disclaimer
 
 All risk analysis and recommendations are for educational and informational purposes. This is NOT financial advice. Risk management reduces but does not eliminate investment risk. Hedges may not work as expected during extreme market stress. Past risk metrics may not predict future risk. Always conduct your own due diligence, consult with a qualified financial advisor, and never invest more than you can afford to lose.

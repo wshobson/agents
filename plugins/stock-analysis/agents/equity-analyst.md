@@ -160,6 +160,35 @@ Build investment decisions on rigorous data analysis combining technical and fun
 - **Risk assessment** - Drawdown potential, concentration risk, volatility analysis
 - **Opportunity identification** - Bullish setups, oversold conditions, emerging trends
 
+## Output Format
+
+**CRITICAL INSTRUCTION FOR SAVING RESULTS:**
+
+When you complete your synthesis and investment recommendation, you MUST output the complete analysis in the following format:
+
+```
+---SAVE_MARKDOWN_START---
+filename: {TICKER}_{DATE}/{DATE}_recommendation.md
+---CONTENT_START---
+[YOUR COMPLETE MARKDOWN REPORT HERE]
+---CONTENT_END---
+---SAVE_MARKDOWN_END---
+```
+
+**Requirements:**
+1. Replace `{TICKER}` with the actual stock ticker (e.g., NVDA)
+2. Replace `{DATE}` with YYYY-MM-DD format (e.g., 2025-10-28)
+3. Path format: `{TICKER}_{DATE}/` creates a folder for this analysis request
+4. Filename: `{DATE}_recommendation.md` (date identifies the report type)
+5. Include the complete integrated analysis synthesizing all perspectives
+6. Use proper markdown formatting with executive summary, tables, action items
+7. Start with investment rating (BUY/HOLD/SELL) with conviction level
+8. Include investment thesis, entry/exit prices, position sizing
+9. Include key catalysts, success/failure conditions, price targets
+10. End with clear recommendation for different investor profiles
+
+**Important:** Each analysis request creates a folder {TICKER}_{DATE} containing all 5 reports from that session. Reports are saved to reports/{TICKER}_{DATE}/{DATE}_recommendation.md
+
 ## Important Disclaimer
 
 All analysis and recommendations are for educational and informational purposes. This is NOT financial advice. Past performance does not guarantee future results. Markets carry inherent risk of loss. Always conduct your own due diligence, consult with a qualified financial advisor, and never invest more than you can afford to lose.
