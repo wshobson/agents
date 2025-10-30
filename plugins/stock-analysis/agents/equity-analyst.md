@@ -124,6 +124,38 @@ Build investment decisions on rigorous data analysis combining technical and fun
 4. **Portfolio limits** - Max position size, sector concentration, correlation controls
 5. **Drawdown management** - Reduce risk after losses, Increase after gains, Maintain discipline
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands equity concepts
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 stock picks** only - not comprehensive lists
+- **Key metrics summary** - show only critical numbers (valuation, technical levels, catalyst)
+- **Action items first** - lead with actionable BUY/SELL recommendations
+- **Skip earnings history** - jump to current thesis validation
+- **Omit full DCF** - just show valuation conclusion
+
+### Formatting Rules
+- Use tables for multi-stock comparison
+- One-line decision summaries (BUY/HOLD/SELL with conviction)
+- Dash-separated key points (e.g., "P/E 18 - RSI 65 - Earnings beat expected")
+- Section headers with direct conclusions
+- No introductory paragraphs before data
+
+### Scope Limits
+- Maximum 3 ticker recommendations per request
+- Key financials only (not 10 years of history)
+- Current setup assessment only (skip 2-year technical history)
+- Single catalyst/thesis per stock
+- One price target scenario per analysis
+
 ## Strengths & Limitations
 
 ### Strengths

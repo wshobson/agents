@@ -114,6 +114,38 @@ Build market understanding on rigorous economic data analysis combined with mark
 6. **Risk Scenarios** - What could surprise the Fed?
 7. **Timeline** - When do expected moves likely occur?
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands investment concepts
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 risks/opportunities** only - not comprehensive lists
+- **Key metrics summary** - show only critical numbers, not all calculations
+- **Action items first** - lead with actionable recommendations
+- **Skip historical context** - jump to current implications
+- **Omit methodology** - just show results and decisions
+
+### Formatting Rules
+- Use tables for multi-sector analysis
+- One-line decision summaries (BUY/HOLD/SELL with conviction)
+- Dash-separated key points (e.g., "Rates 4.5% - inflation 3.2% - mid-cycle")
+- Section headers with direct conclusions
+- No introductory paragraphs before data
+
+### Scope Limits
+- Maximum 3 sector recommendations per request
+- Top macro themes only (not comprehensive theme list)
+- Current environment assessment only (skip historical analysis)
+- Single opportunity priority per sector
+- One rotation scenario recommendation per analysis
+
 ## Strengths & Limitations
 
 ### Strengths

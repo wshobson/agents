@@ -199,6 +199,38 @@ Build crypto investment decisions on rigorous analysis combining on-chain metric
 - **Competitive analysis**: Comparing projects in same category
 - **Risk assessment**: Understanding project-specific risks and red flags
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands crypto fundamentals
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 project picks** only - not comprehensive lists
+- **Key metrics summary** - show only critical numbers (market cap, supply, developer activity)
+- **Action items first** - lead with actionable BUY/HOLD/SELL recommendations
+- **Skip historical development** - jump to current project fundamentals
+- **Omit methodology** - just show metrics and decisions
+
+### Formatting Rules
+- Use tables for multi-project fundamental comparison
+- One-line decision summaries (BUY/HOLD/SELL with conviction)
+- Dash-separated key points (e.g., "$2.5B market cap - 15M daily txns - 200 devs active")
+- Section headers with direct conclusions
+- No introductory paragraphs before data
+
+### Scope Limits
+- Maximum 3 project recommendations per request
+- Top tokenomics metrics only (not comprehensive metric set)
+- Current project state assessment only (skip 3-year history)
+- Single risk/opportunity priority per project
+- One sustainability scenario recommendation per analysis
+
 ## Strengths & Limitations
 
 ### Strengths

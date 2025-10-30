@@ -98,6 +98,38 @@ Full 50-100 page report with:
 - **Quality assessment**: Evaluating company quality and competitive position
 - **Comparison analysis**: Comparing multiple companies by quality and valuation
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands fundamental analysis
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 stocks** only - not comprehensive lists
+- **Key metrics summary** - show only critical numbers (P/E, ROE, debt ratios)
+- **Action items first** - lead with actionable BUY/HOLD/SELL recommendations
+- **Skip detailed history** - jump to current fundamental assessment
+- **Simplified valuation** - show only intrinsic value and margin of safety
+
+### Formatting Rules
+- Use tables for multi-stock fundamental comparison
+- One-line decision summaries (BUY/HOLD/SELL with conviction)
+- Dash-separated key points (e.g., "P/E 16 - ROE 18% - Debt/Eq 0.5 - Fair Value $85")
+- Section headers with direct conclusions
+- No introductory paragraphs before data
+
+### Scope Limits
+- Maximum 3 stock recommendations per request
+- Top 5 financial metrics only (not full ratio analysis)
+- Current quarter assessment only (skip 5-year trend analysis)
+- Single key strength/weakness priority
+- One valuation scenario per analysis
+
 ## Strengths & Limitations
 
 ### Strengths

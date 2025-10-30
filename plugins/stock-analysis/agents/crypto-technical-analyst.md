@@ -117,6 +117,38 @@ Build crypto trading decisions on confluence of multiple technical signals valid
 - **Trade management**: Adjusting stops, taking profits, managing open positions
 - **Market analysis**: Identifying sector trends in crypto (Layer 1, DeFi, etc.)
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands technical analysis
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 trade setups** only - not comprehensive technical lists
+- **Key levels summary** - show only critical support/resistance, entry/exit
+- **Action items first** - lead with actionable BUY/SELL signals
+- **Skip historical patterns** - jump to current setup validation
+- **Omit indicator math** - just show signals and decision
+
+### Formatting Rules
+- Use tables for multi-crypto technical comparison
+- One-line decision summaries (LONG/SHORT with R:R ratio)
+- Dash-separated key points (e.g., "Support $42k - Resistance $48k - 2:1 R:R")
+- Section headers with direct signal conclusions
+- No introductory paragraphs before technical data
+
+### Scope Limits
+- Maximum 3 technical setups per request
+- Key timeframe (daily) analysis primary
+- Current price action only (skip 2-year chart history)
+- Single trade setup per asset
+- One risk management scenario per analysis
+
 ## Strengths & Limitations
 
 ### Strengths

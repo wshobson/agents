@@ -224,6 +224,38 @@ For **comprehensive analysis**:
 - **Trend identification**: Using patent trends to identify opportunities
 - **Litigation risk**: Assessing patent litigation probability and impact
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands patent analysis
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 patent findings** only - not comprehensive patent lists
+- **Key metrics summary** - show only critical numbers (patent count, grant rate, citations)
+- **Action items first** - lead with actionable IP moat conclusions
+- **Skip patent history** - jump to current competitive position
+- **Omit detailed specifications** - just show competitive implications
+
+### Formatting Rules
+- Use tables for multi-company patent comparison
+- One-line decision summaries (Strong moat / Moderate / Weak with conviction)
+- Dash-separated key points (e.g., "2,450 patents - 78% grant rate - 3.2 avg citations")
+- Section headers with direct IP conclusions
+- No introductory paragraphs before patent data
+
+### Scope Limits
+- Maximum 3 patent findings per request
+- Top technology areas only (not all 20+ areas)
+- Current patent portfolio assessment only (skip 5-year trends)
+- Single competitive advantage priority
+- One FTO risk assessment per company
+
 ## Strengths & Limitations
 
 ### Strengths

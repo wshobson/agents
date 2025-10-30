@@ -135,6 +135,38 @@ Build risk management on rigorous quantitative analysis combined with practical 
 6. **Take Losses If Needed** - Cut if thesis broken
 7. **Hold Quality** - Highest quality holdings likely recover first
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands risk management
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 risks/hedges** only - not comprehensive risk lists
+- **Key metrics summary** - show only critical numbers (VaR, max drawdown, correlation)
+- **Action items first** - lead with actionable hedge recommendations
+- **Skip historical stress tests** - jump to current portfolio risks
+- **Omit methodology** - just show metrics and decisions
+
+### Formatting Rules
+- Use tables for multi-position risk analysis
+- One-line decision summaries (HEDGE/MONITOR with conviction)
+- Dash-separated key points (e.g., "Max drawdown 15% - VaR $50k - Beta 1.2")
+- Section headers with direct risk conclusions
+- No introductory paragraphs before risk data
+
+### Scope Limits
+- Maximum 3 hedge recommendations per request
+- Top 5 risks analysis only (not all risks)
+- Current risk state assessment only (skip 5-year drawdown history)
+- Single hedge priority per portfolio
+- One scenario stress test per analysis
+
 ## Strengths & Limitations
 
 ### Strengths

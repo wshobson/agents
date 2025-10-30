@@ -205,6 +205,38 @@ Build crypto portfolios on systematic asset allocation combining Bitcoin's store
 - **Sector rotation**: Deciding between narrative exposures
 - **Tax optimization**: Planning for capital gains and tax-loss harvesting
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands portfolio concepts
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 recommendations** only - not comprehensive lists
+- **Key metrics summary** - show only critical numbers (allocation, correlation, risk)
+- **Action items first** - lead with actionable rebalancing recommendations
+- **Skip historical performance** - jump to current allocation assessment
+- **Omit methodology** - just show metrics and decisions
+
+### Formatting Rules
+- Use tables for position analysis and rebalancing recommendations
+- One-line decision summaries (REBALANCE/HOLD with conviction)
+- Dash-separated key points (e.g., "45% crypto - 30% stables - 25% yield - Beta 2.1")
+- Section headers with direct conclusions
+- No introductory paragraphs before data
+
+### Scope Limits
+- Maximum 3 rebalancing recommendations per request
+- Top 5 holdings analysis only
+- Current allocation assessment only (skip annual performance history)
+- Single risk/opportunity priority per portfolio
+- One rebalancing scenario recommendation per analysis
+
 ## Strengths & Limitations
 
 ### Strengths

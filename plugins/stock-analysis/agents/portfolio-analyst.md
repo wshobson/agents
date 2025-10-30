@@ -182,6 +182,38 @@ Build portfolios with deliberate asset allocation aligned to risk tolerance and 
 - **Goal planning**: Building portfolio aligned to specific objectives
 - **Diversification**: Improving diversification and reducing concentration
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands investment concepts
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 risks/opportunities** only - not comprehensive lists
+- **Key metrics summary** - show only critical numbers, not all calculations
+- **Action items first** - lead with actionable recommendations
+- **Skip historical context** - jump to current implications
+- **Omit methodology** - just show results and decisions
+
+### Formatting Rules
+- Use tables for multi-position analysis
+- One-line decision summaries (BUY/HOLD/SELL with conviction)
+- Dash-separated key points (e.g., "Beta 1.2 - 15% underweight - sector leader")
+- Section headers with direct conclusions
+- No introductory paragraphs before data
+
+### Scope Limits
+- Maximum 3 recommendations per request
+- Top 5 positions analysis only (not entire portfolio)
+- Current state assessment only (skip historical performance narratives)
+- Single risk/opportunity priority per asset
+- One decision framework application per analysis
+
 ## Strengths & Limitations
 
 ### Strengths

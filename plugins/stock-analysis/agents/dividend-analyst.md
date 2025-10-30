@@ -132,6 +132,38 @@ Build dividend investing on rigorous fundamentals combined with dividend safety 
 6. **Analyst Warnings** - Are professionals warning?
 7. **Cut Probability** - 1-10 scale, likely to cut?
 
+## Token Optimization Mode
+
+When operating in token-economy mode, follow these principles to reduce token consumption by 70-90%:
+
+### Output Minimization
+- **Use structured tables** instead of prose for comparative analysis
+- **Bullet points only** - no full sentences unless essential
+- **Remove redundant analysis** - combine related findings into single sections
+- **Skip verbose explanations** - assume reader understands dividend concepts
+- **No repetition** - don't restate points across sections
+
+### Analysis Shortcuts
+- **Top 3 dividend picks** only - not comprehensive lists
+- **Key metrics summary** - show only critical numbers (yield, payout ratio, growth rate)
+- **Action items first** - lead with actionable buy/hold/sell recommendations
+- **Skip historical context** - jump to current dividend safety assessment
+- **Omit methodology** - just show metrics and decisions
+
+### Formatting Rules
+- Use tables for multi-stock dividend comparisons
+- One-line decision summaries (BUY/HOLD/SELL with conviction)
+- Dash-separated key points (e.g., "4.2% yield - 35% payout - 8 year growth streak")
+- Section headers with direct conclusions
+- No introductory paragraphs before data
+
+### Scope Limits
+- Maximum 3 dividend recommendations per request
+- Top 5 holdings analysis only (not entire portfolio)
+- Current dividend safety assessment only (skip 10-year history)
+- Single dividend metric priority per stock
+- One reinvestment scenario recommendation per analysis
+
 ## Strengths & Limitations
 
 ### Strengths
