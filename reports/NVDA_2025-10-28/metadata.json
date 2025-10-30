@@ -1,0 +1,41 @@
+{
+  "analysis_id": "NVDA_2025-10-28",
+  "ticker": "NVDA",
+  "company_name": "NVIDIA Corporation",
+  "analysis_date": "2025-10-28",
+  "analysis_time": "2025-10-28T00:00:00Z",
+  "reports": {
+    "technical": {
+      "filename": "2025-10-28_technical.md",
+      "title": "Technical Analysis Report",
+      "description": "Chart patterns, price levels, momentum signals, entry/exit points",
+      "key_metrics": ["trend", "support_resistance", "technical_signals"]
+    },
+    "fundamental": {
+      "filename": "2025-10-28_fundamental.md",
+      "title": "Fundamental Analysis Report",
+      "description": "Valuation, profitability, growth analysis, financial metrics",
+      "key_metrics": ["valuation", "revenue_growth", "profitability", "intrinsic_value"]
+    },
+    "risk": {
+      "filename": "2025-10-28_risk.md",
+      "title": "Risk Analysis Report",
+      "description": "Position sizing, VaR, drawdown scenarios, volatility assessment",
+      "key_metrics": ["volatility", "value_at_risk", "position_sizing", "concentration_risk"]
+    },
+    "competitive": {
+      "filename": "2025-10-28_competitive.md",
+      "title": "Competitive & Patent Analysis Report",
+      "description": "Market position, competitive advantages, patent portfolio, threats",
+      "key_metrics": ["market_share", "moat_strength", "competitive_threats", "patents"]
+    },
+    "synthesis": {
+      "filename": "2025-10-28_recommendation.md",
+      "title": "Investment Recommendation Report",
+      "description": "Integrated analysis, investment rating, entry/exit strategy, catalysts",
+      "key_metrics": ["rating", "price_targets", "entry_prices", "position_sizing"]
+    }
+  },
+  "status": "complete",
+  "version": "1.0"
+}

@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "created": "2025-10-28",
+  "system": "Claude Code Stock Analysis Report System",
+  "reports": {
+    "NVDA_2025-10-28": {
+      "ticker": "NVDA",
+      "date": "2025-10-28",
+      "price": 193.87,
+      "market_cap": "4.76T",
+      "files": {
+        "technical": "technical/NVDA_2025-10-28_technical.md",
+        "fundamental": "fundamental/NVDA_2025-10-28_fundamental.md",
+        "risk": "risk/NVDA_2025-10-28_risk.md",
+        "competitive": "competitive/NVDA_2025-10-28_competitive.md",
+        "synthesis": "synthesis/NVDA_2025-10-28_recommendation.md"
+      },
+      "rating": "HOLD / SELECTIVE BUY",
+      "conviction": "MEDIUM",
+      "price_target_12m": 225,
+      "expected_return": "14.8%"
+    }
+  },
+  "report_categories": {
+    "technical": {
+      "description": "Chart patterns, technical signals, entry/exit points",
+      "update_frequency": "Daily",
+      "audience": "Traders"
+    },
+    "fundamental": {
+      "description": "Valuation, financials, growth, profitability",
+      "update_frequency": "Quarterly",
+      "audience": "Long-term investors"
+    },
+    "risk": {
+      "description": "Position sizing, VaR, drawdown, concentration",
+      "update_frequency": "Monthly",
+      "audience": "Portfolio managers"
+    },
+    "competitive": {
+      "description": "Market position, patents, competitors, moat",
+      "update_frequency": "Quarterly",
+      "audience": "Strategists"
+    },
+    "synthesis": {
+      "description": "Investment recommendation, thesis, action items",
+      "update_frequency": "As needed",
+      "audience": "Decision-makers"
+    }
+  },
+  "documentation": {
+    "README.md": "How to use the reports",
+    "INDEX.md": "Report catalog and quick reference",
+    "SETUP.md": "Setup instructions and workflows"
+  }
+}
