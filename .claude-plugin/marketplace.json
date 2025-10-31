@@ -2195,6 +2195,50 @@
         "./skills/board-investor-relations",
         "./skills/leadership-organization"
       ]
+    },
+    {
+      "name": "tarantool-development",
+      "source": "./plugins/tarantool-development",
+      "description": "Expert Tarantool database development, distributed in-memory databases, Lua application development, clustering with Cartridge, and sharding with vshard. Masters architecture design, high-performance optimization, replication, and production deployments.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "tarantool",
+        "in-memory-database",
+        "distributed-database",
+        "lua-development",
+        "cartridge",
+        "vshard",
+        "database-architecture",
+        "replication",
+        "sharding",
+        "high-performance",
+        "real-time-data"
+      ],
+      "category": "database",
+      "strict": false,
+      "commands": [
+        "./commands/tarantool-data-model.md",
+        "./commands/tarantool-application-dev.md",
+        "./commands/tarantool-cluster-ops.md"
+      ],
+      "agents": [
+        "./agents/tarantool-architect.md"
+      ],
+      "skills": [
+        "./skills/tarantool-architecture",
+        "./skills/lua-development",
+        "./skills/vshard-sharding",
+        "./skills/cartridge-framework",
+        "./skills/tarantool-performance",
+        "./skills/replication-ha"
+      ]
     }
   ]
 }
