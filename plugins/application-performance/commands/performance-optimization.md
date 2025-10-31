@@ -2,6 +2,16 @@ Optimize application performance end-to-end using specialized performance and op
 
 [Extended thinking: This workflow orchestrates a comprehensive performance optimization process across the entire application stack. Starting with deep profiling and baseline establishment, the workflow progresses through targeted optimizations in each system layer, validates improvements through load testing, and establishes continuous monitoring for sustained performance. Each phase builds on insights from previous phases, creating a data-driven optimization strategy that addresses real bottlenecks rather than theoretical improvements. The workflow emphasizes modern observability practices, user-centric performance metrics, and cost-effective optimization strategies.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Phase 1: Performance Profiling & Baseline
 
 ### 1. Comprehensive Performance Profiling

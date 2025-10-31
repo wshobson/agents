@@ -7,6 +7,16 @@ description: Build end-to-end MLOps pipelines from data preparation through mode
 
 Complete end-to-end MLOps pipeline orchestration from data preparation through model deployment.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Overview
 
 This skill provides comprehensive guidance for building production ML pipelines that handle the full lifecycle: data ingestion → preparation → training → validation → deployment → monitoring.

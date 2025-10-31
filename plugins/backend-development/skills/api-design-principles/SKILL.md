@@ -7,6 +7,16 @@ description: Master REST and GraphQL API design principles to build intuitive, s
 
 Master REST and GraphQL API design principles to build intuitive, scalable, and maintainable APIs that delight developers and stand the test of time.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Designing new REST or GraphQL APIs

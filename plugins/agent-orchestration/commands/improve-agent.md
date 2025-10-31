@@ -4,6 +4,16 @@ Systematic improvement of existing agents through performance analysis, prompt e
 
 [Extended thinking: Agent optimization requires a data-driven approach combining performance metrics, user feedback analysis, and advanced prompt engineering techniques. Success depends on systematic evaluation, targeted improvements, and rigorous testing with rollback capabilities for production safety.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Phase 1: Performance Analysis and Baseline Metrics
 
 Comprehensive analysis of agent performance using context-manager for historical data collection.

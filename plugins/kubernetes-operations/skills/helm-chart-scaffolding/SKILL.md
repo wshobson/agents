@@ -7,6 +7,16 @@ description: Design, organize, and manage Helm charts for templating and packagi
 
 Comprehensive guidance for creating, organizing, and managing Helm charts for packaging and deploying Kubernetes applications.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 This skill provides step-by-step instructions for building production-ready Helm charts, including chart structure, templating patterns, values management, and validation strategies.

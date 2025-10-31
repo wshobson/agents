@@ -7,6 +7,16 @@ description: Build reusable Terraform modules for AWS, Azure, and GCP infrastruc
 
 Production-ready Terraform module patterns for AWS, Azure, and GCP infrastructure.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 Create reusable, well-tested Terraform modules for common cloud infrastructure patterns across multiple cloud providers.

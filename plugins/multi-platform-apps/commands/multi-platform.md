@@ -4,6 +4,16 @@ Build and deploy the same feature consistently across web, mobile, and desktop p
 
 [Extended thinking: This workflow orchestrates multiple specialized agents to ensure feature parity across platforms while maintaining platform-specific optimizations. The coordination strategy emphasizes shared contracts and parallel development with regular synchronization points. By establishing API contracts and data models upfront, teams can work independently while ensuring consistency. The workflow benefits include faster time-to-market, reduced integration issues, and maintainable cross-platform codebases.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Phase 1: Architecture and API Design (Sequential)
 
 ### 1. Define Feature Requirements and API Contracts

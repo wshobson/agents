@@ -7,6 +7,16 @@ description: Master the uv package manager for fast Python dependency management
 
 Comprehensive guide to using uv, an extremely fast Python package installer and resolver written in Rust, for modern Python project management and dependency workflows.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Setting up new Python projects quickly

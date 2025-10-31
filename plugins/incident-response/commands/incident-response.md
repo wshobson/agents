@@ -2,6 +2,16 @@ Orchestrate multi-agent incident response with modern SRE practices for rapid re
 
 [Extended thinking: This workflow implements a comprehensive incident command system (ICS) following modern SRE principles. Multiple specialized agents collaborate through defined phases: detection/triage, investigation/mitigation, communication/coordination, and resolution/postmortem. The workflow emphasizes speed without sacrificing accuracy, maintains clear communication channels, and ensures every incident becomes a learning opportunity through blameless postmortems and systematic improvements.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Configuration
 
 ### Severity Levels

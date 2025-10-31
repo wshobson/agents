@@ -4,6 +4,16 @@ Set up complete GitOps infrastructure with ArgoCD or Flux CD for declarative, Gi
 
 [Extended thinking: This command establishes production-grade GitOps infrastructure following OpenGitOps principles. It sets up the GitOps tool (ArgoCD or Flux), configures repository structure, implements secret management, establishes sync policies, sets up progressive delivery strategies, and configures monitoring and alerts. The workflow supports single-cluster and multi-cluster scenarios with proper RBAC, access control, and audit logging. Each phase ensures security, reliability, and operational visibility.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Configuration Options
 
 ### GitOps Platform

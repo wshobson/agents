@@ -7,6 +7,16 @@ description: Set up Prometheus for comprehensive metric collection, storage, and
 
 Complete guide to Prometheus setup, metric collection, scrape configuration, and recording rules.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 Configure Prometheus for comprehensive metric collection, alerting, and monitoring of infrastructure and applications.

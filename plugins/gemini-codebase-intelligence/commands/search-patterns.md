@@ -5,6 +5,16 @@ description: Targeted pattern detection across codebase. Searches for specific d
 
 # Search Patterns Command
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Overview
 
 Search for specific design patterns, code smells, or anti-patterns in your codebase. More focused than full analysis, allowing targeted investigation of specific pattern types.

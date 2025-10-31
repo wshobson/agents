@@ -7,6 +7,16 @@ description: Master patent research and analysis for evaluating company innovati
 
 Master patent research to evaluate company innovation, assess competitive positioning, and understand technological strengths. Patent analysis reveals competitive advantages, R&D productivity, and market positioning.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Analyzing technology company innovation pipelines

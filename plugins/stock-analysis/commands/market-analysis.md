@@ -7,6 +7,16 @@ description: Analyze macroeconomic conditions, market structure, sector trends, 
 
 Analyze broad market conditions, economic environment, sector trends, and strategic themes. Use to understand market context, identify sector rotation opportunities, and validate individual stock ideas.
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Overview
 
 Market analysis covers:

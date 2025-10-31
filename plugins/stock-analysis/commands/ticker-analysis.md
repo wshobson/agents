@@ -7,6 +7,16 @@ description: Comprehensive ticker analysis combining technical, fundamental, and
 
 Perform deep-dive analysis on a specific stock or security, combining technical, fundamental, and risk perspectives to deliver actionable investment recommendations.
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Overview
 
 This command executes a comprehensive 5-phase analysis workflow:

@@ -5,6 +5,16 @@ description: Interactive scaffolding command for creating new Koog AI agents in 
 
 # Koog Agent Scaffolding Command
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Purpose
 
 Provides an interactive workflow for creating new Koog AI agents with project structure, boilerplate code, tests, and deployment configuration automatically generated.

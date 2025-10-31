@@ -9,6 +9,16 @@ Conduct comprehensive analysis of your stock and bond portfolio covering composi
 
 [Extended thinking: This command orchestrates the equity-analyst agent to deliver thorough portfolio analysis. It guides through portfolio assessment (current holdings, allocation, concentration), risk evaluation (correlation, beta, volatility, diversification), performance analysis (returns, benchmark comparison, attribution), opportunity identification (rebalancing, sector rotation, position sizing), and actionable recommendations (buy/sell/trim decisions, allocation adjustments, risk management). The command adapts based on portfolio size, complexity, and investor objectives.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Configuration Options
 
 ### Portfolio Type

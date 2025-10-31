@@ -5,6 +5,16 @@ description: Teaches effective query formulation for large codebase searches. Co
 
 # Codebase Search Strategies Skill
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Formulating searches through Gemini CLI that find relevant code

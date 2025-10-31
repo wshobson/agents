@@ -4,6 +4,16 @@ Implement comprehensive security hardening across Kubernetes cluster, control pl
 
 [Extended thinking: This command establishes production-grade Kubernetes security following CIS benchmarks, NIST frameworks, and cloud-native security best practices. It covers control plane hardening, node security, pod security, network policies, RBAC, image security, runtime protection, compliance validation, and security monitoring. The workflow implements defense-in-depth security layers with automated enforcement, continuous scanning, and audit logging.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Configuration Options
 
 ### Security Framework

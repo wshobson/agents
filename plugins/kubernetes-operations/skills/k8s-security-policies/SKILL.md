@@ -7,6 +7,16 @@ description: Implement Kubernetes security policies including NetworkPolicy, Pod
 
 Comprehensive guide for implementing NetworkPolicy, PodSecurityPolicy, RBAC, and Pod Security Standards in Kubernetes.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 Implement defense-in-depth security for Kubernetes clusters using network policies, pod security standards, and RBAC.

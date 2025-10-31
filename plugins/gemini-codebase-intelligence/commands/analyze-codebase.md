@@ -5,6 +5,16 @@ description: Full architectural overview and codebase intelligence. Executes com
 
 # Analyze Codebase Command
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Overview
 
 This command provides a comprehensive architectural overview of your entire codebase. It detects patterns, maps dependencies, identifies code smells, and assesses overall code quality in a single execution.

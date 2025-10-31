@@ -7,6 +7,16 @@ description: Build GitLab CI/CD pipelines with multi-stage workflows, caching, a
 
 Comprehensive GitLab CI/CD pipeline patterns for automated testing, building, and deployment.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 Create efficient GitLab CI pipelines with proper stage organization, caching, and deployment strategies.

@@ -7,6 +7,16 @@ description: Compare multiple cryptocurrencies side-by-side across technical, fu
 
 Compare multiple cryptocurrencies or blockchain projects side-by-side across key metrics to identify relative value, risk-adjusted returns, and best opportunities for investment.
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Overview
 
 This command executes a comparative analysis workflow:

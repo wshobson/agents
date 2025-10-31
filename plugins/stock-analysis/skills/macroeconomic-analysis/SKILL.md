@@ -7,6 +7,16 @@ description: Master macroeconomic analysis to understand interest rates, inflati
 
 Master macroeconomic analysis to understand economic conditions, monetary policy, inflation trends, and how macro factors drive stock market performance. Use to validate investment decisions and understand market context.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Analyzing interest rate impacts on stocks and bonds

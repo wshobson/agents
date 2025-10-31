@@ -2,6 +2,16 @@ Implement minimal code to make failing tests pass in TDD green phase:
 
 [Extended thinking: This tool uses the test-automator agent to implement the minimal code necessary to make tests pass. It focuses on simplicity, avoiding over-engineering while ensuring all tests become green.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Implementation Process
 
 Use Task tool with subagent_type="unit-testing::test-automator" to implement minimal passing code.

@@ -7,6 +7,16 @@ description: Master sector analysis to understand sector cycles, relative perfor
 
 Master sector analysis to identify relative strength, understand sector dynamics, and time sector rotations. Use to optimize portfolio allocation and identify opportunities within sectors.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Comparing sector performance and momentum

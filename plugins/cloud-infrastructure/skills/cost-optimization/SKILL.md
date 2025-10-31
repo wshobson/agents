@@ -7,6 +7,16 @@ description: Optimize cloud costs through resource rightsizing, tagging strategi
 
 Strategies and patterns for optimizing cloud costs across AWS, Azure, and GCP.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 Implement systematic cost optimization strategies to reduce cloud spending while maintaining performance and reliability.

@@ -7,6 +7,16 @@ description: Master cryptocurrency tokenomics analysis, token supply dynamics, a
 
 Master the analysis of cryptocurrency token economics to evaluate project sustainability, identify value dynamics, and assess long-term viability. Combine supply analysis, holder distribution, and incentive structures to make informed decisions about cryptocurrency investments.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Analyzing token supply schedules and emission rates

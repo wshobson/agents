@@ -9,6 +9,16 @@ Conduct comprehensive CEO-level strategic planning covering company vision, quar
 
 [Extended thinking: This command orchestrates the CEO operating system agent to deliver comprehensive strategic leadership guidance. It guides through strategic foundation (5-year vision, market positioning, competitive strategy), execution excellence (quarterly planning, OKR definition, progress tracking), board & investor management (board composition, investor relations, fundraising), organizational leadership (structure design, talent strategy, culture building), and crisis management. The command adapts based on company stage and provides frameworks and templates for each phase.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Configuration Options
 
 ### Company Stage

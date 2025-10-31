@@ -7,6 +7,16 @@ description: Implement NFT standards (ERC-721, ERC-1155) with proper metadata ha
 
 Master ERC-721 and ERC-1155 NFT standards, metadata best practices, and advanced NFT features.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Creating NFT collections (art, gaming, collectibles)

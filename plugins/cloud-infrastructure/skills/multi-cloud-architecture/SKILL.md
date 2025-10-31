@@ -7,6 +7,16 @@ description: Design multi-cloud architectures using a decision framework to sele
 
 Decision framework and patterns for architecting applications across AWS, Azure, and GCP.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 Design cloud-agnostic architectures and make informed decisions about service selection across cloud providers.

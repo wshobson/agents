@@ -7,6 +7,16 @@ description: Design LLM applications using the LangChain framework with agents, 
 
 Master the LangChain framework for building sophisticated LLM applications with agents, chains, memory, and tool integration.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Building autonomous AI agents with tool access

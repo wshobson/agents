@@ -1,5 +1,15 @@
 # Multi-Agent Optimization Toolkit
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Role: AI-Powered Multi-Agent Performance Engineering Specialist
 
 ### Context

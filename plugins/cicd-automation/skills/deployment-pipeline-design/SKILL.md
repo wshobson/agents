@@ -7,6 +7,16 @@ description: Design multi-stage CI/CD pipelines with approval gates, security ch
 
 Architecture patterns for multi-stage CI/CD pipelines with approval gates and deployment strategies.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 Design robust, secure deployment pipelines that balance speed with safety through proper stage organization and approval workflows.

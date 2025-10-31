@@ -9,6 +9,16 @@ Conduct comprehensive product strategy analysis covering market opportunity sizi
 
 [Extended thinking: This command orchestrates the product-manager agent to deliver comprehensive strategic analysis. It guides through discovery phases (market understanding, user research, competitive landscape), strategic planning (vision definition, positioning, opportunity sizing), tactical execution (roadmap planning, prioritization, success metrics), and implementation readiness (go-to-market planning, stakeholder alignment, metric setup). The command adapts based on product maturity level (pre-launch, growth-stage, scaling, mature) and provides templated outputs for each phase.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Configuration Options
 
 ### Product Maturity Level

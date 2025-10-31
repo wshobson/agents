@@ -7,6 +7,16 @@ description: Master portfolio management, risk analysis, allocation strategies, 
 
 Master portfolio management to optimize asset allocation, control risk, and maximize risk-adjusted returns. Build robust portfolios that achieve your investment objectives.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Analyzing current portfolio composition and allocation

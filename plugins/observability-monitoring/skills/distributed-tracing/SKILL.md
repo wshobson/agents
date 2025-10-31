@@ -7,6 +7,16 @@ description: Implement distributed tracing with Jaeger and Tempo to track reques
 
 Implement distributed tracing with Jaeger and Tempo for request flow visibility across microservices.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## Purpose
 
 Track requests across distributed systems to understand latency, dependencies, and failure points.

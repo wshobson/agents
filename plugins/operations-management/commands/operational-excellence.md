@@ -9,6 +9,16 @@ Conduct comprehensive COO-level operational planning covering process optimizati
 
 [Extended thinking: This command orchestrates the COO executive agent to deliver comprehensive operational guidance. It guides through operational assessment (current state analysis, bottleneck identification, opportunity mapping), process optimization (workflow redesign, automation planning, quality improvement), performance management (KPI definition, dashboard creation, tracking systems), cross-functional coordination (project management framework, communication protocols, accountability structures), and risk mitigation (risk assessment, contingency planning, business continuity). The command adapts based on company maturity and provides frameworks and templates for each phase.]
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Configuration Options
 
 ### Company Stage

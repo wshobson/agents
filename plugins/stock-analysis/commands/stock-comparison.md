@@ -7,6 +7,16 @@ description: Compare multiple stocks side-by-side across valuation, growth, qual
 
 Compare 2-5 stocks side-by-side to identify the best opportunity relative to each other and the market. Useful for sector selection, peer analysis, and competitive comparisons.
 
+## Language Support
+
+All outputs adapt to the input language:
+- **Russian input** → **Russian response**
+- **English input** → **English response**
+- **Mixed input** → Response in the language of the primary content
+- **Technical terms, code, and system names** maintain their original form
+
+This command works seamlessly in both languages.
+
 ## Overview
 
 Analyze multiple stocks across common dimensions:

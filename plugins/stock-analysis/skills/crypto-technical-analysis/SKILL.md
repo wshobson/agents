@@ -7,6 +7,16 @@ description: Master technical analysis for cryptocurrency trading, chart pattern
 
 Master technical analysis to identify trading opportunities in cryptocurrency markets through chart patterns, crypto-specific technical indicators, and on-chain signal integration. Combine multiple perspectives to generate high-confidence trading signals in 24/7 markets.
 
+## Language Support
+
+This skill documentation and all guidance adapt to user language:
+- **Russian input** → **Russian explanations and examples**
+- **English input** → **English explanations and examples**
+- **Mixed input** → Language of the primary content
+- **Code samples and technical terms** maintain their original names
+
+When using this skill, specify your preferred language in your request.
+
 ## When to Use This Skill
 
 - Analyzing Bitcoin, Ethereum, and altcoin price charts
