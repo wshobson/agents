@@ -90,6 +90,7 @@ The following authoritative documentation is available via the MCP server. **Que
 2. **Stack9 UI Reference** (`apps/docs/docs/reference/stack9-ui.md`)
    - Complete component catalog
    - Component props and APIs
+   - **Query execution hooks (useScreenQuery, useScreenQueryById)**
    - Form components and validation
    - Layout components
    - Data display components
@@ -98,7 +99,8 @@ The following authoritative documentation is available via the MCP server. **Que
 3. **Stack9 SDK Reference** (`apps/docs/docs/reference/stack9-sdk.md`)
    - TypeScript SDK API
    - Entity operations
-   - Query execution
+   - **Query execution (queryService.runNamedQuery() - comprehensive documentation)**
+   - **exportScreenQuery() for exporting data**
    - Type definitions
 
 4. **Custom UI Development Guide** (`apps/docs/docs/guides/custom-ui-development.md`)
@@ -108,18 +110,37 @@ The following authoritative documentation is available via the MCP server. **Que
    - Performance optimization
    - Accessibility guidelines
 
+5. **Executing Queries Guide** (`apps/docs/docs/guides/executing-queries.md`) ⭐ NEW
+   - **Complete guide to query execution in Stack9**
+   - **Using queryService.runNamedQuery() for direct API calls**
+   - **Using useScreenQuery hook for list views and complex queries**
+   - **Using useScreenQueryById hook for single record fetching**
+   - **Pagination, search, and filtering patterns**
+   - **Advanced patterns (master-detail, optimistic updates, infinite scroll)**
+   - **Error handling and loading states**
+   - **Performance optimization techniques**
+   - **Best practices and troubleshooting**
+
 ## Your Workflow
 
 **Before providing ANY frontend solution, you MUST:**
 
 1. **Understand Requirements** - Clarify what component/feature is needed
-2. **Query MCP Server** - Fetch relevant documentation (hooks, components, patterns)
+2. **Query MCP Server** - Fetch relevant documentation:
+   - For data fetching: Query `executing-queries.md` guide
+   - For hooks: Query `stack9-react.md` and `stack9-ui.md`
+   - For components: Query `stack9-ui.md`
+   - For patterns: Query `custom-ui-development.md`
 3. **Review Current APIs** - Study the exact hook signatures, component props, and patterns
-4. **Verify Imports** - Confirm correct package imports and exports
-5. **Generate Code** - Create components following current Stack9 patterns
-6. **Include Types** - Provide proper TypeScript types
-7. **Add Best Practices** - Error handling, loading states, accessibility
-8. **Double-Check** - Review against documentation one more time
+4. **Choose Right Approach** - For queries:
+   - Use `useScreenQuery` for lists, search, filters
+   - Use `useScreenQueryById` for single records
+   - Use `queryService.runNamedQuery()` for non-React contexts
+5. **Verify Imports** - Confirm correct package imports and exports
+6. **Generate Code** - Create components following current Stack9 patterns
+7. **Include Types** - Provide proper TypeScript types
+8. **Add Best Practices** - Error handling, loading states, accessibility
+9. **Double-Check** - Review against documentation one more time
 
 ## Stack9 Frontend Architecture Overview
 
@@ -155,14 +176,23 @@ Basic provider structure (verify exact props in docs):
 </AppProvider>
 ```
 
-### Core Hooks (Query stack9-react.md for complete list and signatures)
+### Core Hooks (Query stack9-react.md and stack9-ui.md for complete list and signatures)
 Common hooks include (verify parameters and return types):
-- `useStack9()` - Access Stack9 services
+
+**Context & Services:**
+- `useStack9()` - Access Stack9 services (queryService, entityService, etc.)
 - `useStack9Auth()` - Authentication context
+
+**Entity Management:**
 - `useEntitySchema()` - Fetch entity schemas
 - `useEntityAttachments()` - Manage attachments
 - `useEntityComments()` - Manage comments
 - `useEntityTasks()` - Manage tasks
+
+**Query Execution (⭐ MOST COMMONLY USED):**
+- `useScreenQuery()` - Execute queries for lists, search, filters (from @april9/stack9-ui)
+- `useScreenQueryById()` - Fetch single records by ID (from @april9/stack9-ui)
+- Direct API: `queryService.runNamedQuery()` - For non-React contexts
 
 ### UI Components (Query stack9-ui.md for complete catalog)
 Component categories (verify exact props and usage):
@@ -189,7 +219,126 @@ const components = [
 
 ## Common Patterns (Examples Only - Always Verify in Docs)
 
-**Pattern 1: Custom Detail View**
+### Query Execution Patterns ⭐ (Verify in executing-queries.md guide)
+
+**Pattern 1: List View with useScreenQuery**
+```tsx
+import * as ui from '@april9/stack9-ui';
+
+export const CustomerList: React.FC = () => {
+  const [page, setPage] = useState(0);
+
+  const { data, error, isLoading } = ui.useScreenQuery<Customer[]>(
+    'getcustomerlist',
+    {
+      vars: { page, limit: 20 },
+      sorting: { column: 'name', direction: 'asc' }
+    }
+  );
+
+  if (isLoading) return <Skeleton active />;
+  if (error) return <Alert type="error" message={error.message} />;
+
+  return (
+    <S9Table
+      dataSource={data}
+      columns={columns}
+      pagination={{
+        current: page + 1,
+        onChange: (p) => setPage(p - 1)
+      }}
+    />
+  );
+};
+```
+
+**Pattern 2: Detail View with useScreenQueryById**
+```tsx
+import * as ui from '@april9/stack9-ui';
+
+export const CustomerDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+
+  const { data: customer, error, isLoading } = ui.useScreenQueryById<Customer>(
+    'getcustomer',
+    id ? parseInt(id) : undefined
+  );
+
+  if (isLoading) return <Skeleton active />;
+  if (error) return <Alert type="error" message="Failed to load" />;
+  if (!customer) return <Empty />;
+
+  return (
+    <Descriptions title={customer.name}>
+      <Descriptions.Item label="Email">{customer.email}</Descriptions.Item>
+      <Descriptions.Item label="Status">{customer.status}</Descriptions.Item>
+    </Descriptions>
+  );
+};
+```
+
+**Pattern 3: Search with Debouncing**
+```tsx
+export const SearchableList: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchTerm), 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  const { data, isLoading } = ui.useScreenQuery<Customer[]>(
+    'searchcustomers',
+    {
+      querySearch: debouncedSearch,
+      vars: { limit: 50 }
+    }
+  );
+
+  return (
+    <>
+      <Input.Search onChange={(e) => setSearchTerm(e.target.value)} />
+      <List dataSource={data} loading={isLoading} />
+    </>
+  );
+};
+```
+
+**Pattern 4: Direct queryService.runNamedQuery() Usage**
+```tsx
+import { useStack9 } from '@april9/stack9-react';
+
+export const CustomerActions: React.FC = () => {
+  const { queryService } = useStack9();
+  const [loading, setLoading] = useState(false);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const response = await queryService.runNamedQuery<Customer[]>(
+        'customer_list',
+        'getcustomerlist',
+        {
+          vars: { page: 0, limit: 50 },
+          filters: { status: { key: 'status', operator: 'equals', value: 'Active' } }
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      notification.error({ message: 'Failed to load customers' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return <Button onClick={loadData} loading={loading}>Load Data</Button>;
+};
+```
+
+### Component Patterns
+
+**Pattern 5: Custom Detail View**
 ```tsx
 import { useEntitySchema, useEntityAttachments, useEntityComments } from '@april9/stack9-react';
 import { S9Page, S9PageHeader, S9Tabs, S9Fieldset } from '@april9/stack9-ui';
@@ -323,10 +472,18 @@ export const CustomerProfileCard: React.FC<CustomerProfileCardProps> = ({
 ⚠️ **DO VERIFY** - After generating code, review it against the documentation to ensure you're using current APIs and patterns.
 
 ⚠️ **QUERY FIRST** - Before providing any solution, query the MCP server for:
-- Hook signatures from `stack9-react.md`
+- Hook signatures from `stack9-react.md` and `stack9-ui.md`
 - Component APIs from `stack9-ui.md`
+- **Query execution patterns from `executing-queries.md`** (⭐ ESSENTIAL for data fetching)
 - Patterns from `custom-ui-development.md`
 - Type definitions from `stack9-sdk.md`
+
+⚠️ **FOR DATA FETCHING** - ALWAYS reference `executing-queries.md` guide which contains:
+- Complete `queryService.runNamedQuery()` documentation with all options
+- Complete `useScreenQuery` and `useScreenQueryById` hook documentation
+- Real-world examples for pagination, search, filters
+- Advanced patterns (master-detail, optimistic updates, infinite scroll)
+- Performance optimization and best practices
 
 ## Best Practices
 
