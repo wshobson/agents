@@ -75,13 +75,57 @@ my-agent/
 
 ```
 
+## Build Configuration
+
+The generated `build.gradle.kts` includes:
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://repo.jetbrains.space/kotlin/p/kotlin/dev")
+    }
+}
+
+dependencies {
+    // Koog AI Agents Framework (0.5.2)
+    implementation("ai.koog:koog-agents:0.5.2")
+
+    // Kotlin standard library
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+
+    // Logging
+    implementation("ch.qos.logback:logback-classic:1.4.11")
+
+    // Optional framework integrations
+    // Uncomment as needed:
+    // implementation("org.springframework.boot:spring-boot-starter")
+    // implementation("io.ktor:ktor-server-core")
+
+    // Testing dependencies
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testImplementation("io.mockk:mockk:1.13.5")
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+```
+
+**Key Points:**
+- JetBrains Maven repository added for Koog framework
+- Koog Agents version 0.5.2 is the latest stable release
+- Java 17 JVM target for modern Kotlin features
+- MockK for testing with mocked tools
+
 ## Generated Code Examples
 
 ### Basic Agent Scaffold
 ```kotlin
 package com.example.agents
 
-import dev.koog.agent
+import ai.koog.agent
 
 fun main() {
     val result = agentFunction().run("Your input here")
@@ -249,11 +293,22 @@ agent("streaming_agent") {
 
 ## Troubleshooting
 
-**Q: Build fails with Koog dependency error**
-A: Ensure Koog repository is in your build.gradle.kts
+**Q: Build fails with "Cannot resolve symbol 'ai.koog'"**
+A: Ensure you have the JetBrains Maven repository configured in `build.gradle.kts`:
+```kotlin
+maven {
+    url = uri("https://repo.jetbrains.space/kotlin/p/kotlin/dev")
+}
+```
+
+**Q: Build fails with "Dependency not found: ai.koog:koog-agents:0.5.2"**
+A: Make sure the repository URL is correct and reachable. Verify your network connection. You can also try adding the mavenCentral() repository as a fallback.
 
 **Q: Agent doesn't recognize my tool**
-A: Verify tool is defined within agent DSL block
+A: Verify the tool is defined within the `agent()` DSL block and follows proper naming conventions.
 
 **Q: Tests fail with null pointer**
-A: Check mockk setup and @MockkBean annotations for Spring integration
+A: Check mockk setup and @MockkBean annotations for Spring integration. Ensure mocks are properly initialized before test execution.
+
+**Q: Import error: dev.koog.agent not found**
+A: Update your imports from `dev.koog.agent` to `ai.koog.agent`. The old namespace is deprecated.

@@ -40,6 +40,8 @@ The Koog framework provides three distinct agent types, each suited to different
 
 **Example pattern:**
 ```kotlin
+import ai.koog.agent
+
 agent("classifier") {
     instruction("Classify the input into one of: positive, negative, neutral")
 
@@ -94,6 +96,8 @@ agent("router") {
 
 **Example pattern:**
 ```kotlin
+import ai.koog.agent
+
 agent("researcher") {
     strategy {
         node("analyze") {
@@ -579,10 +583,49 @@ agent("configurable") {
 }
 ```
 
+## Setup & Dependencies
+
+### Gradle Configuration
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://repo.jetbrains.space/kotlin/p/kotlin/dev")
+    }
+}
+
+dependencies {
+    // Koog AI Agents Framework
+    implementation("ai.koog:koog-agents:0.5.2")
+
+    // Kotlin and Coroutines
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+
+    // Optional: Spring Boot Integration
+    implementation("org.springframework.boot:spring-boot-starter")
+
+    // Optional: Ktor Integration
+    implementation("io.ktor:ktor-server-core")
+
+    // Testing
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testImplementation("io.mockk:mockk:1.13.5")
+}
+```
+
+### Kotlin Compiler Settings
+```kotlin
+kotlin {
+    jvmToolchain(17)
+}
+```
+
 ## References
 
 - [Koog Official Documentation](https://docs.koog.ai/)
-- [Koog GitHub Repository](https://github.com/koog-dev/koog)
+- [Koog GitHub Repository](https://github.com/JetBrains/koog)
+- [Koog Maven Repository](https://repo.jetbrains.space/kotlin/p/kotlin/dev)
 - [Kotlin Coroutines Guide](https://kotlinlang.org/docs/coroutines-overview.html)
 - [Spring Boot Integration](https://spring.io/)
 - [OpenTelemetry Kotlin](https://opentelemetry.io/docs/instrumentation/kotlin/)
