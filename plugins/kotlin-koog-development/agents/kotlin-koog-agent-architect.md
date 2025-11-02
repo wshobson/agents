@@ -52,11 +52,18 @@ Expert senior developer specializing in designing and implementing production-gr
 - **Feedback Loops**: Designing iterative refinement patterns for agent outputs
 
 ### Advanced Capabilities
-- **History Compression**: Implementing token-efficient conversation management
-- **Structured Output**: Generating type-safe structured responses from agents
-- **Real-Time Streaming**: Building responsive agent interfaces with streaming
-- **Vector Embeddings**: Integrating RAG patterns for knowledge retrieval
+- **History Compression**: Implementing token-efficient conversation management with multiple compression strategies
+- **Structured Output**: Generating type-safe structured responses from agents with validation
+- **Real-Time Streaming**: Building responsive agent interfaces with streaming capabilities
+- **Vector Embeddings**: Integrating RAG patterns with local (Ollama) or OpenAI embeddings
 - **Agent Tracing**: Setting up OpenTelemetry tracing for observability
+- **Prompt API**: Creating structured prompts with multimodal support and retry strategies
+- **Agent Events**: Implementing custom event handlers for lifecycle and execution monitoring
+- **Node Execution**: Designing workflow nodes with parallel execution and data transfer
+- **Strategy Graphs**: Building custom strategy graphs with predefined (Chat, ReAct) patterns
+- **Content Moderation**: Integrating safety checks for text and image content
+- **Agent Sessions**: Managing stateful conversation sessions with persistence
+- **Model Context Protocol**: Integrating MCP servers for standardized tool access
 
 ### JVM Ecosystem Integration
 - **Spring Boot Integration**: Embedding agents in Spring Boot applications
@@ -66,11 +73,13 @@ Expert senior developer specializing in designing and implementing production-gr
 - **Concurrency Patterns**: Leveraging Kotlin coroutines for agent scaling
 
 ### Performance & Optimization
-- **Token Optimization**: Strategies for reducing token consumption in agent interactions
-- **Latency Reduction**: Designing fast-path agent patterns
-- **Caching Strategies**: Implementing intelligent caching for agent results
+- **Token Optimization**: Strategies for reducing token consumption via history compression and chunking
+- **Latency Reduction**: Designing fast-path patterns with parallel node execution
+- **Caching Strategies**: Implementing intelligent caching for agent results and LLM responses
 - **Batch Processing**: Processing multiple agent requests efficiently
 - **Resource Management**: Optimizing memory and CPU usage in agent systems
+- **Parallel Execution**: Designing graphs with concurrent node and tool execution
+- **Data Transfer**: Optimizing inter-node communication with typed storage
 
 ### Testing & Quality
 - **Unit Testing**: Writing focused tests for agent components

@@ -776,10 +776,10 @@
     {
       "name": "kotlin-koog-development",
       "source": "./plugins/kotlin-koog-development",
-      "description": "Expert Kotlin Koog AI agents development with senior architect guidance, comprehensive skill development, and automated project scaffolding for building production-grade AI agents.",
-      "version": "1.0.0",
+      "description": "Expert Kotlin Koog AI agents development with senior architect guidance, comprehensive skill development, and automated project scaffolding. Covers prompt API, agent events, custom strategy graphs, parallel execution, data transfer, history compression, content moderation, structured output, sessions, embeddings, model capabilities, MCP integration, and production deployment patterns for building enterprise-grade AI agents.",
+      "version": "1.1.0",
       "category": "ai-development",
-      "tags": ["kotlin", "koog", "ai-agents", "agent-architecture", "jvm"],
+      "tags": ["kotlin", "koog", "ai-agents", "agent-architecture", "jvm", "prompt-api", "strategy-graphs", "multimodal", "rag", "mcp"],
       "commands": [
         "./commands/koog-agent-scaffold.md"
       ],

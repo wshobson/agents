@@ -220,7 +220,7 @@ class AgentTest {
 }
 ```
 
-## Configuration Management
+## Configuration Management 
 
 Generated `application.properties`:
 
@@ -298,6 +298,232 @@ agent("streaming_agent") {
     streaming = true
 
     instruction("Stream your response incrementally")
+}
+```
+
+### Using the Prompt API with Multimodal Content
+```kotlin
+val executor = SingleProviderPromptExecutor(
+    client = OpenAiLLMClient(modelId = "gpt-4-vision"),
+    retryPolicy = RetryPolicy.PRODUCTION
+)
+
+val result = executor.executeStructured<Result> {
+    systemMessage("Analyze the provided content")
+
+    userMessage {
+        text("What's important in this image?")
+        attachment(ImageAttachment(url = "https://example.com/image.jpg"))
+        attachment(DocumentAttachment(path = "/path/to/pdf"))
+    }
+
+    timeout = 30.seconds
+}
+```
+
+### Adding Agent Event Monitoring
+```kotlin
+class ProductionEventProcessor : FeatureMessageProcessor {
+    override fun process(message: FeatureMessage) {
+        when (message) {
+            is NodeExecutionEvent -> metrics.recordNodeExecution(message.nodeId)
+            is ToolCallEvent -> log.info("Tool: ${message.toolName}")
+            is AgentErrorEvent -> alerting.sendAlert(message.error)
+        }
+    }
+}
+
+agent("monitored") {
+    addFeatureMessageProcessor(ProductionEventProcessor())
+}
+```
+
+### Implementing Parallel Node Execution
+```kotlin
+agent("parallel_analysis") {
+    strategy {
+        node("fetch_parallel") {
+            // Execute multiple tools concurrently
+            parallel(
+                listOf(
+                    nodeExecuteTool("fetch_user_data"),
+                    nodeExecuteTool("fetch_analytics"),
+                    nodeExecuteTool("fetch_recommendations")
+                ),
+                mergeStrategy = fold { results ->
+                    combineResults(results)
+                }
+            )
+        }
+    }
+}
+```
+
+### Using Typed Data Storage Between Nodes
+```kotlin
+// Define typed keys
+val sessionDataKey = createStorageKey<SessionData>("session")
+val analysisKey = createStorageKey<Analysis>("analysis_result")
+
+agent("data_flow_agent") {
+    strategy {
+        node("init") {
+            action {
+                storage.set(sessionDataKey, loadSession(input.sessionId))
+            }
+        }
+
+        node("analyze") {
+            action {
+                val session = storage.getValue(sessionDataKey)
+                val analysis = performAnalysis(session)
+                storage.set(analysisKey, analysis)
+            }
+        }
+
+        node("respond") {
+            action {
+                val analysis = storage.getValue(analysisKey)
+                format(analysis)
+            }
+        }
+    }
+}
+```
+
+### Implementing History Compression
+```kotlin
+agent("conversation_agent") {
+    strategy {
+        node("respond") {
+            nodeLLMRequest(instruction = "Respond helpfully")
+        }
+
+        // Auto-compress when context grows
+        node("compress_if_long") {
+            nodeLLMCompressHistory(
+                strategy = Chunked(chunkSize = 15),
+                onlyIf = { messages.size > 40 }
+            )
+        }
+
+        edge(node("respond") onAssistantMessage to node("compress_if_long"))
+    }
+}
+```
+
+### Adding Content Moderation
+```kotlin
+agent("safe_agent") {
+    val moderator = OpenAiModerator()
+
+    strategy {
+        node("check_input") {
+            action {
+                val modResult = moderator.moderate(input)
+                if (modResult.isHarmful) {
+                    throw SecurityException("Input rejected: ${modResult.flaggedCategories}")
+                }
+            }
+        }
+
+        node("generate") {
+            nodeLLMRequest(instruction = "Generate helpful response")
+        }
+    }
+}
+```
+
+### Creating Structured Output Requests
+```kotlin
+@Serializable
+data class ExtractionResult(
+    @LLMDescription("Extracted entities")
+    val entities: List<String>,
+
+    @LLMDescription("Sentiment: positive, neutral, negative")
+    val sentiment: String,
+
+    @LLMDescription("Confidence score 0.0-1.0")
+    val confidence: Double
+)
+
+agent("extractor") {
+    val session = agent.createWriteSession()
+
+    val result = session.requestLLMStructured<ExtractionResult>(
+        prompt = "Extract information from text",
+        retryCount = 2 // Auto-correct with LLM
+    )
+}
+```
+
+### Integrating Model Context Protocol
+```kotlin
+// Connect to MCP servers for standardized tools
+val mcpRegistry = McpToolRegistryProvider(
+    transport = StdioTransport("/path/to/mcp-server"),
+    parser = McpToolDescriptorParser()
+).createRegistry()
+
+agent("mcp_agent") {
+    tools = mcpRegistry // All MCP tools available
+}
+```
+
+### Working with Embeddings
+```kotlin
+// Local embeddings with Ollama
+val embedder = OllamaEmbeddings(model = NOMIC_EMBED_TEXT)
+
+agent("semantic_search") {
+    val codeEmbedding = embedder.embed(userCode)
+    val queryEmbedding = embedder.embed(userQuery)
+
+    val similarity = cosineSimilarity(codeEmbedding, queryEmbedding)
+    // Use similarity score for ranking
+}
+```
+
+### Multi-Provider Model Selection
+```kotlin
+// Define capabilities-based model selection
+val models = listOf(
+    LLModel(
+        provider = OpenAI,
+        modelId = "gpt-4-turbo",
+        capabilities = listOf(Vision, Tools, JsonSchema),
+        contextLength = 128000
+    ),
+    LLModel(
+        provider = Anthropic,
+        modelId = "claude-3-sonnet",
+        capabilities = listOf(Vision, Tools, CacheControl),
+        contextLength = 200000
+    )
+)
+
+// Select model dynamically
+val bestModel = models.filter { model ->
+    model.supports(Vision) && model.contextLength >= 100000
+}.maxByOrNull { it.contextLength }
+```
+
+### Adding Comprehensive Observability
+```kotlin
+agent("production_agent") {
+    // OpenTelemetry tracing
+    features.add(OpenTelemetryTracing())
+
+    // Agent memory and snapshots
+    features.add(AgentMemory(persistenceProvider = SqlPersistence()))
+    features.add(AgentSnapshots())
+
+    // Event logging
+    features.add(EventLogger())
+
+    // Debug support
+    features.add(DebuggerSupport())
 }
 ```
 

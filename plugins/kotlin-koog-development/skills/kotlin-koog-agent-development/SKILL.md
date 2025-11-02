@@ -631,11 +631,376 @@ kotlin {
 }
 ```
 
+## Advanced Topics
+
+### Prompt API & Multimodal Support
+
+The Prompt API provides type-safe prompt construction with multimodal capabilities:
+
+```kotlin
+// Multimodal prompt with retry logic
+val executor = SingleProviderPromptExecutor(
+    client = OpenAiLLMClient(modelId = "gpt-4-vision"),
+    retryPolicy = RetryPolicy.PRODUCTION // Automatic retry with backoff
+)
+
+val result = executor.executeStructured<AnalysisResult> {
+    systemMessage("Analyze images and text together")
+
+    userMessage {
+        text("What's in this image?")
+        attachment(ImageAttachment(url = "https://example.com/image.jpg"))
+    }
+
+    timeout = 30.seconds
+}
+```
+
+### Agent Events & Monitoring
+
+Monitor agent execution with custom event handlers:
+
+```kotlin
+class CustomEventProcessor : FeatureMessageProcessor {
+    override fun process(message: FeatureMessage) {
+        when (message) {
+            is AgentStartedEvent -> log.info("Agent started: ${message.agentId}")
+            is NodeExecutionEvent -> log.info("Node executed: ${message.nodeId}")
+            is ToolCallEvent -> log.info("Tool called: ${message.toolName}")
+            is AgentErrorEvent -> log.error("Agent error: ${message.error}")
+        }
+    }
+}
+
+agent("monitored") {
+    addFeatureMessageProcessor(CustomEventProcessor())
+}
+```
+
+### Custom Strategy Graphs
+
+Design complex workflows with predefined nodes and custom edges:
+
+```kotlin
+agent("complex_workflow") {
+    strategy {
+        // Start with LLM analysis
+        node("analyze") {
+            nodeLLMRequest(
+                instruction = "Analyze the input and decide next step"
+            )
+        }
+
+        // Parallel tool execution
+        node("parallel_tools") {
+            nodeExecuteMultipleTools(
+                parallel = true,
+                tools = listOf("fetch_data", "validate_input")
+            )
+        }
+
+        // Conditional compression for long contexts
+        node("compress_if_needed") {
+            nodeLLMCompressHistory(
+                strategy = HistoryCompressionStrategy.Chunked(chunkSize = 10),
+                onlyIf = { messages.size > 20 }
+            )
+        }
+
+        edge(node("analyze") onToolCall to node("parallel_tools"))
+        edge(node("parallel_tools") onAssistantMessage to node("compress_if_needed"))
+    }
+}
+```
+
+### Parallel Node Execution
+
+Execute multiple nodes concurrently with intelligent merging:
+
+```kotlin
+agent("multi_model_evaluator") {
+    strategy {
+        node("parallel_generation") {
+            // Generate from 3 different models in parallel
+            parallel(
+                listOf(
+                    nodeWithGPT4(),
+                    nodeWithClaude(),
+                    nodeWithGemini()
+                ),
+                mergeStrategy = selectByMax { response ->
+                    // Score by quality metric
+                    calculateQualityScore(response)
+                }
+            )
+        }
+    }
+}
+```
+
+### Data Transfer Between Nodes
+
+Use typed storage for inter-node communication:
+
+```kotlin
+// Define storage key with type safety
+val userDataKey = createStorageKey<UserData>("user_context")
+val analysisKey = createStorageKey<AnalysisResult>("analysis_result")
+
+agent("data_flow") {
+    strategy {
+        node("fetch_user") {
+            action {
+                val user = fetchUser(input.userId)
+                storage.set(userDataKey, user)
+            }
+        }
+
+        node("analyze_user") {
+            action {
+                val userData = storage.getValue(userDataKey)
+                val analysis = analyzeUser(userData)
+                storage.set(analysisKey, analysis)
+            }
+        }
+
+        node("respond") {
+            action {
+                val analysis = storage.getValue(analysisKey)
+                formatResponse(analysis)
+            }
+        }
+    }
+}
+```
+
+### History Compression Strategies
+
+Reduce token consumption in long conversations:
+
+```kotlin
+agent("long_conversation") {
+    strategy {
+        node("llm_request") {
+            nodeLLMRequest(instruction = "Respond conversationally")
+        }
+
+        // Compress when messages exceed threshold
+        node("auto_compress") {
+            nodeLLMCompressHistory(
+                strategy = when {
+                    // Whole conversation into summary
+                    context.messageCount > 100 -> WholeHistory()
+                    // Keep only recent messages
+                    context.messageCount > 50 -> FromLastNMessages(n = 10)
+                    // Split into chunks and compress each
+                    context.messageCount > 30 -> Chunked(chunkSize = 10)
+                    // Extract specific facts
+                    else -> RetrieveFactsFromHistory(concepts = listOf("user_id", "preferences"))
+                }
+            )
+        }
+    }
+}
+```
+
+### Content Moderation
+
+Ensure safety with built-in moderation:
+
+```kotlin
+agent("safe_content") {
+    val moderator = OpenAiModerator() // or OllamaModerator()
+
+    strategy {
+        node("moderate_input") {
+            action {
+                val moderationResult = moderator.moderate(input.text)
+                if (moderationResult.isHarmful) {
+                    throw SecurityException("Input flagged: ${moderationResult.categories}")
+                }
+            }
+        }
+
+        node("llm_response") {
+            nodeLLMRequest(instruction = "Generate helpful response")
+        }
+
+        node("moderate_output") {
+            action {
+                val result = getLastMessage()
+                val moderation = moderator.moderate(result)
+                if (moderation.isHarmful) {
+                    // Handle harmful output
+                }
+            }
+        }
+    }
+}
+```
+
+### Structured Output with Validation
+
+Generate validated structured data:
+
+```kotlin
+@Serializable
+data class UserProfile(
+    @LLMDescription("User's full name")
+    val name: String,
+
+    @LLMDescription("Age between 18 and 100")
+    val age: Int,
+
+    @LLMDescription("List of interests")
+    val interests: List<String>
+)
+
+agent("structured_extractor") {
+    val session = agent.createWriteSession()
+
+    val result = session.requestLLMStructured<UserProfile>(
+        prompt = "Extract user profile from text",
+        retryCount = 3 // Auto-fix with LLM
+    )
+}
+```
+
+### Agent Sessions & Persistence
+
+Manage conversation state:
+
+```kotlin
+agent("stateful") {
+    val session = agent.createWriteSession()
+
+    // Maintain history across requests
+    session.appendPrompt(SystemMessage("You are a helpful assistant"))
+
+    val response1 = session.requestLLM("First question")
+    // History now includes first exchange
+
+    val response2 = session.requestLLM("Follow-up question")
+    // Response2 context includes conversation history
+
+    // Compress if needed
+    if (session.prompt.messages.size > 50) {
+        session.replaceHistoryWithTLDR()
+    }
+}
+```
+
+### Model Context Protocol Integration
+
+Connect to MCP servers:
+
+```kotlin
+// Connect to MCP server (e.g., Google Maps)
+val mcpProvider = McpToolRegistryProvider(
+    transport = StdioTransport("path/to/mcp-server"),
+    parser = McpToolDescriptorParser()
+)
+
+agent("mcp_enabled") {
+    // All MCP tools automatically available
+    tools = mcpProvider.createRegistry()
+}
+```
+
+### Embeddings & Semantic Search
+
+Generate and compare embeddings:
+
+```kotlin
+val embeddings = OllamaEmbeddings(
+    model = NOMIC_EMBED_TEXT // 768-dimensional embeddings
+)
+
+// Generate embeddings for code and natural language
+val codeEmbedding = embeddings.embed("fun calculateSum(a: Int, b: Int) = a + b")
+val queryEmbedding = embeddings.embed("sum two numbers")
+
+// Find semantic similarity
+val similarity = cosineSimilarity(codeEmbedding, queryEmbedding)
+```
+
+### Model Capabilities & Provider Selection
+
+Work with multiple LLM providers:
+
+```kotlin
+// Define model capabilities
+val gpt4 = LLModel(
+    provider = OpenAI,
+    modelId = "gpt-4-turbo",
+    capabilities = listOf(
+        LLMCapability.Vision,
+        LLMCapability.Tools,
+        LLMCapability.JsonSchema
+    ),
+    contextLength = 128000
+)
+
+val claude = LLModel(
+    provider = Anthropic,
+    modelId = "claude-3-sonnet",
+    capabilities = listOf(
+        LLMCapability.Vision,
+        LLMCapability.Tools,
+        LLMCapability.CacheControl
+    ),
+    contextLength = 200000
+)
+
+// Select model based on capabilities needed
+val model = selectModel { llm ->
+    llm.supports(LLMCapability.Vision) &&
+    llm.contextLength >= 100000
+}
+```
+
+### Features & Observability
+
+Add observability and custom features:
+
+```kotlin
+agent("observable") {
+    // Tracing
+    features.add(OpenTelemetryTracing())
+
+    // Memory persistence
+    features.add(AgentMemory(persistenceProvider = SqlPersistence()))
+
+    // Custom event processing
+    features.add(EventLogger())
+
+    // Snapshots for state restoration
+    features.add(AgentSnapshots())
+
+    // Debugging support
+    features.add(DebuggerSupport())
+}
+```
+
 ## References
 
 - [Koog Official Documentation](https://docs.koog.ai/)
+- [Koog Prompt API](https://docs.koog.ai/prompt-api/)
+- [Koog Agent Events](https://docs.koog.ai/agent-events/)
+- [Koog Nodes and Components](https://docs.koog.ai/nodes-and-components/)
+- [Koog Strategy Graphs](https://docs.koog.ai/predefined-agent-strategies/)
+- [Koog Custom Graphs](https://docs.koog.ai/custom-strategy-graphs/)
+- [Koog Parallel Execution](https://docs.koog.ai/parallel-node-execution/)
+- [Koog Data Transfer](https://docs.koog.ai/data-transfer-between-nodes/)
+- [Koog History Compression](https://docs.koog.ai/history-compression/)
+- [Koog MCP Integration](https://docs.koog.ai/model-context-protocol/)
+- [Koog Model Capabilities](https://docs.koog.ai/model-capabilities/)
+- [Koog Content Moderation](https://docs.koog.ai/content-moderation/)
+- [Koog Structured Output](https://docs.koog.ai/structured-output/)
+- [Koog Sessions](https://docs.koog.ai/sessions/)
+- [Koog Embeddings](https://docs.koog.ai/embeddings/)
+- [Koog Features Overview](https://docs.koog.ai/features-overview/)
 - [Koog GitHub Repository](https://github.com/JetBrains/koog)
-- [Koog Maven Repository](https://repo.jetbrains.space/kotlin/p/kotlin/dev)
 - [Kotlin Coroutines Guide](https://kotlinlang.org/docs/coroutines-overview.html)
 - [Spring Boot Integration](https://spring.io/)
 - [OpenTelemetry Kotlin](https://opentelemetry.io/docs/instrumentation/kotlin/)
