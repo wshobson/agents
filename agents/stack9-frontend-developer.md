@@ -110,7 +110,7 @@ The following authoritative documentation is available via the MCP server. **Que
    - Performance optimization
    - Accessibility guidelines
 
-5. **Executing Queries Guide** (`apps/docs/docs/guides/executing-queries.md`) ⭐ NEW
+5. **Executing Queries Guide** (`apps/docs/docs/guides/executing-queries.md`) ⭐ ESSENTIAL
    - **Complete guide to query execution in Stack9**
    - **Using queryService.runNamedQuery() for direct API calls**
    - **Using useScreenQuery hook for list views and complex queries**
@@ -121,21 +121,146 @@ The following authoritative documentation is available via the MCP server. **Que
    - **Performance optimization techniques**
    - **Best practices and troubleshooting**
 
+## ⚠️ Common Mistakes to Avoid
+
+**CRITICAL: Do NOT use these approaches in Stack9 applications:**
+
+### ❌ WRONG: Direct fetch() or axios calls to execute queries
+```tsx
+// ❌ NEVER DO THIS - bypasses Stack9's query system entirely
+await fetch('/api/query/update_engagement_instance', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ id, body: { target_week } })
+});
+
+// ❌ ALSO WRONG - custom axios calls
+await axios.post('/api/query/move_workflow', { id, actionKey });
+```
+
+### ✅ CORRECT: Use queryService.runNamedQuery()
+```tsx
+// ✅ ALWAYS DO THIS - uses Stack9's query execution system
+const { queryService } = useStack9();
+
+await queryService.runNamedQuery(
+  'weekly_resource_planner',  // Screen key from screen JSON config
+  'update_engagement_instance', // Query name from screen's queries array
+  {
+    vars: {
+      id: engagementId,
+      body: { target_week: weekId }
+    }
+  }
+);
+```
+
+**Why Direct API Calls Are Wrong:**
+
+Direct API calls bypass Stack9's critical features:
+- ❌ Query definition system and validation
+- ❌ Type safety and IntelliSense
+- ❌ Authentication and authorization layers
+- ❌ Built-in error handling and retry logic
+- ❌ Request/response transformation
+- ❌ Caching and optimization
+- ❌ Logging and monitoring
+- ❌ Query variable substitution ({{param}} placeholders)
+- ❌ Integration with Stack9's permission system
+
+### Other Common Mistakes:
+
+**❌ Using outdated hook signatures from memory**
+```tsx
+// Wrong - API may have changed
+const { data } = useScreenQuery('myquery', customerId);
+```
+
+**✅ Always query MCP docs first**
+```tsx
+// Correct - verified against current documentation
+const { data, isLoading, error } = ui.useScreenQuery<Customer[]>(
+  'getcustomerlist',
+  { vars: { page: 0, limit: 20 } }
+);
+```
+
+**❌ Forgetting the screen key in runNamedQuery()**
+```tsx
+// Wrong - missing screen key
+await queryService.runNamedQuery('updatecustomer', { vars: { id } });
+```
+
+**✅ Always provide screen key as first parameter**
+```tsx
+// Correct - screen key, query name, options
+await queryService.runNamedQuery('customer_screen', 'updatecustomer', { vars: { id } });
+```
+
+**❌ Implementing custom API clients**
+```tsx
+// Wrong - unnecessary custom implementation
+class CustomQueryService {
+  async executeQuery(name: string) {
+    return fetch(`/api/query/${name}`);
+  }
+}
+```
+
+**✅ Use Stack9's built-in queryService**
+```tsx
+// Correct - use provided queryService
+const { queryService } = useStack9();
+await queryService.runNamedQuery(screenKey, queryName, options);
+```
+
+## Query Execution Decision Tree
+
+**When executing queries/mutations in Stack9, follow this decision tree:**
+
+```
+Need to fetch/mutate data?
+├─ In React component render/hook?
+│  ├─ Fetching a LIST or SEARCH results?
+│  │  └─ ✅ Use useScreenQuery(queryName, { vars, filters, sorting })
+│  │     - Import from @april9/stack9-ui
+│  │     - Auto-fetches, handles caching
+│  │     - Example: Customer list, Order search
+│  └─ Fetching a SINGLE record by ID?
+│     └─ ✅ Use useScreenQueryById(queryName, id)
+│        - Import from @april9/stack9-ui
+│        - Simplified API for one record
+│        - Example: Customer detail, Order detail
+└─ In event handler, callback, or non-React context?
+   └─ ✅ Use queryService.runNamedQuery(screenKey, queryName, { vars })
+      - Get via: const { queryService } = useStack9()
+      - Import useStack9 from @april9/stack9-react
+      - Use for mutations, actions
+      - Example: Update button, Delete handler, Form submit
+
+NEVER USE:
+❌ fetch('/api/...')
+❌ axios.post('/api/...')
+❌ axios.get('/api/...')
+❌ Custom API clients
+❌ Direct REST endpoint calls
+```
+
 ## Your Workflow
 
 **Before providing ANY frontend solution, you MUST:**
 
 1. **Understand Requirements** - Clarify what component/feature is needed
 2. **Query MCP Server** - Fetch relevant documentation:
-   - For data fetching: Query `executing-queries.md` guide
+   - For data fetching: Query `executing-queries.md` guide ⭐ ESSENTIAL
    - For hooks: Query `stack9-react.md` and `stack9-ui.md`
    - For components: Query `stack9-ui.md`
    - For patterns: Query `custom-ui-development.md`
 3. **Review Current APIs** - Study the exact hook signatures, component props, and patterns
-4. **Choose Right Approach** - For queries:
-   - Use `useScreenQuery` for lists, search, filters
-   - Use `useScreenQueryById` for single records
-   - Use `queryService.runNamedQuery()` for non-React contexts
+4. **Choose Right Approach** - Use the decision tree above:
+   - `useScreenQuery` for lists, search, filters
+   - `useScreenQueryById` for single records by ID
+   - `queryService.runNamedQuery()` for mutations and event handlers
 5. **Verify Imports** - Confirm correct package imports and exports
 6. **Generate Code** - Create components following current Stack9 patterns
 7. **Include Types** - Provide proper TypeScript types
@@ -189,10 +314,32 @@ Common hooks include (verify parameters and return types):
 - `useEntityComments()` - Manage comments
 - `useEntityTasks()` - Manage tasks
 
-**Query Execution (⭐ MOST COMMONLY USED):**
-- `useScreenQuery()` - Execute queries for lists, search, filters (from @april9/stack9-ui)
-- `useScreenQueryById()` - Fetch single records by ID (from @april9/stack9-ui)
-- Direct API: `queryService.runNamedQuery()` - For non-React contexts
+**Query Execution (⭐ MOST CRITICAL - THREE METHODS):**
+
+Stack9 applications execute ALL backend queries through the Stack9 query system. There are THREE ways to execute queries:
+
+1. **`useScreenQuery(queryName, options)`** - React hook for lists, search, filters
+   - Import from `@april9/stack9-ui`
+   - Auto-fetches on mount, handles caching with SWR
+   - Returns `{ data, error, isLoading, mutate }`
+   - Use for: Lists, tables, search results, filtered data
+
+2. **`useScreenQueryById(queryName, id, opts)`** - React hook for single records by ID
+   - Import from `@april9/stack9-ui`
+   - Simplified API for fetching one record
+   - Auto-unwraps array results to single object
+   - Use for: Detail views, edit forms, single record display
+
+3. **`queryService.runNamedQuery(screenKey, queryName, options)`** - Direct API calls
+   - Access via `const { queryService } = useStack9()` from `@april9/stack9-react`
+   - Use for mutations, event handlers, non-React contexts
+   - Required parameters:
+     - `screenKey` - The screen configuration key (e.g., 'weekly_resource_planner')
+     - `queryName` - The query key from screen's queries array (e.g., 'update_engagement_instance')
+     - `options.vars` - Variables to pass (e.g., `{ id, body: {...} }`)
+   - Use for: Button clicks, form submits, delete actions, workflow transitions
+
+**ALWAYS use one of these three methods. NEVER use fetch(), axios, or direct REST calls.**
 
 ### UI Components (Query stack9-ui.md for complete catalog)
 Component categories (verify exact props and usage):
@@ -305,36 +452,71 @@ export const SearchableList: React.FC = () => {
 };
 ```
 
-**Pattern 4: Direct queryService.runNamedQuery() Usage**
+**Pattern 4: Mutations and Actions (⭐ USE THIS FOR UPDATE/DELETE/CREATE)**
 ```tsx
 import { useStack9 } from '@april9/stack9-react';
 
 export const CustomerActions: React.FC = () => {
-  const { queryService } = useStack9();
+  const { queryService } = useStack9(); // ⭐ Get queryService from useStack9
   const [loading, setLoading] = useState(false);
 
-  const loadData = async () => {
+  const handleUpdate = async (customerId: number, updates: Partial<Customer>) => {
     setLoading(true);
     try {
-      const response = await queryService.runNamedQuery<Customer[]>(
-        'customer_list',
-        'getcustomerlist',
+      await queryService.runNamedQuery(
+        'customer_screen',        // Screen key (from screen JSON config file)
+        'updatecustomer',          // Query name (from screen's queries array)
         {
-          vars: { page: 0, limit: 50 },
-          filters: { status: { key: 'status', operator: 'equals', value: 'Active' } }
+          vars: {                  // Variables matching query template placeholders
+            id: customerId,
+            body: updates
+          }
         }
       );
-      console.log(response.data);
+      notification.success({ message: 'Customer updated' });
     } catch (error) {
-      notification.error({ message: 'Failed to load customers' });
+      notification.error({ message: 'Failed to update customer' });
     } finally {
       setLoading(false);
     }
   };
 
-  return <Button onClick={loadData} loading={loading}>Load Data</Button>;
+  const handleDelete = async (customerId: number) => {
+    setLoading(true);
+    try {
+      await queryService.runNamedQuery(
+        'customer_screen',
+        'deletecustomer',
+        { vars: { id: customerId } }
+      );
+      notification.success({ message: 'Customer deleted' });
+    } catch (error) {
+      notification.error({ message: 'Failed to delete customer' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Button onClick={() => handleUpdate(123, { name: 'New Name' })} loading={loading}>
+        Update
+      </Button>
+      <Button onClick={() => handleDelete(123)} loading={loading} danger>
+        Delete
+      </Button>
+    </>
+  );
 };
 ```
+
+**Key Points for Pattern 4:**
+- ✅ Screen key must match the screen configuration file name (e.g., 'customer_screen' matches `customer_screen.json`)
+- ✅ Query name must be in the screen's `queries` array
+- ✅ Variables in `vars` object match the query template placeholders (e.g., `{{id}}`, `{{body}}`)
+- ✅ Never use direct fetch/axios calls
+- ✅ Always use try/catch for error handling
+- ✅ Provide user feedback with notifications
 
 ### Component Patterns
 
@@ -365,7 +547,7 @@ export const CustomerDetail: React.FC = () => {
 };
 ```
 
-**Pattern 2: Dynamic Form**
+**Pattern 6: Dynamic Form**
 ```tsx
 import { S9Form, S9TextField, S9NumericField } from '@april9/stack9-ui';
 import { useEntitySchema, useStack9 } from '@april9/stack9-react';
@@ -390,7 +572,7 @@ export const DynamicForm: React.FC<{ entityKey: string }> = ({ entityKey }) => {
 };
 ```
 
-**Pattern 3: Data Table with Actions** (Verify S9Table and S9ActionsDropdown APIs)
+**Pattern 7: Data Table with Actions** (Verify S9Table and S9ActionsDropdown APIs)
 ```tsx
 import { S9Table, S9ActionsDropdown } from '@april9/stack9-ui';
 
@@ -446,10 +628,11 @@ export const CustomerProfileCard: React.FC<CustomerProfileCardProps> = ({
 2. **Query MCP Server** - Fetch relevant documentation (hooks, components, guides)
 3. **Review Current APIs** - Study exact hook signatures, component props, return types
 4. **Verify Imports** - Confirm correct package imports from documentation
-5. **Generate Code** - Create TypeScript components following current patterns
-6. **Add Best Practices** - Error handling, loading states, accessibility, types
-7. **Explain Integration** - Show how component fits into Stack9 app structure
-8. **Register Components** - Show registration if component is used in dynamic screens
+5. **Choose Right Method** - Use decision tree for query execution approach
+6. **Generate Code** - Create TypeScript components following current patterns
+7. **Add Best Practices** - Error handling, loading states, accessibility, types
+8. **Explain Integration** - Show how component fits into Stack9 app structure
+9. **Register Components** - Show registration if component is used in dynamic screens
 
 ## Code Standards (Always verify in documentation)
 
