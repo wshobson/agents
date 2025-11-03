@@ -2053,7 +2053,8 @@
         "./commands/stock-comparison.md",
         "./commands/market-analysis.md",
         "./commands/crypto-analysis.md",
-        "./commands/crypto-comparison.md"
+        "./commands/crypto-comparison.md",
+        "./commands/news-search.md"
       ],
       "agents": [
         "./agents/equity-analyst.md",
@@ -2064,6 +2065,7 @@
         "./agents/market-analyst.md",
         "./agents/risk-management-specialist.md",
         "./agents/dividend-analyst.md",
+        "./agents/news-researcher.md",
         "./agents/crypto-technical-analyst.md",
         "./agents/crypto-fundamental-analyst.md",
         "./agents/crypto-portfolio-analyst.md"

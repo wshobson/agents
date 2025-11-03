@@ -19,12 +19,13 @@ This command works seamlessly in both languages.
 
 ## Overview
 
-This command executes a comprehensive 5-phase analysis workflow:
+This command executes a comprehensive 6-phase analysis workflow:
 1. **Technical Assessment** - Chart setup, key levels, trend direction
 2. **Fundamental Evaluation** - Valuation, quality, growth prospects
-3. **Risk Analysis** - Risk-reward, portfolio impact, drawdown potential
-4. **Competitive Positioning** - Moat strength, IP analysis (for tech)
-5. **Synthesized Recommendation** - Buy/Sell/Hold with clear rationale
+3. **News Research** - Important company news, earnings, regulatory changes, M&A
+4. **Risk Analysis** - Risk-reward, portfolio impact, drawdown potential
+5. **Competitive Positioning** - Moat strength, IP analysis (for tech)
+6. **Synthesized Recommendation** - Buy/Sell/Hold with clear rationale
 
 ## Workflow
 
@@ -76,7 +77,33 @@ Growth Potential: [HIGH/MEDIUM/LOW]
 Main Risks: [List top 3 risks]
 ```
 
-### Phase 3: Risk Analysis
+### Phase 3: News Research
+**Led by**: News Researcher
+
+Search and analyze important company news:
+- **Recent news** - Earnings announcements, guidance updates, financial results
+- **M&A activity** - Mergers, acquisitions, divestitures, partnerships
+- **Regulatory & legal** - FDA approvals, regulatory changes, litigation, compliance
+- **Product & innovation** - Product launches, technology announcements, R&D milestones
+- **Management changes** - CEO/CFO changes, board changes, executive departures
+- **Market events** - Stock splits, dividends, buybacks, secondary offerings
+- **Sentiment analysis** - Positive/negative news impact, market reaction
+- **Materiality assessment** - News that could meaningfully impact stock price
+
+**Output**:
+```
+Most Important News (Last 30 Days):
+1. [Date] [Category] [Headline] - [Impact: POSITIVE/NEGATIVE/NEUTRAL]
+2. [Date] [Category] [Headline] - [Impact: POSITIVE/NEGATIVE/NEUTRAL]
+3. [Date] [Category] [Headline] - [Impact: POSITIVE/NEGATIVE/NEUTRAL]
+
+News Sentiment: [POSITIVE/NEGATIVE/NEUTRAL]
+Material News Count: X items
+Key Catalysts Identified: [List top 3 upcoming events]
+Recent Price Reaction: [How stock reacted to recent news]
+```
+
+### Phase 4: Risk Analysis
 **Led by**: Risk Management Specialist
 
 Assess downside risk and portfolio impact:
@@ -99,15 +126,17 @@ Suggested Position Size: X% of portfolio
 Concentration Risk: [LOW/MEDIUM/HIGH]
 ```
 
-### Phase 4: Competitive & IP Analysis
-**Led by**: Patent Researcher (for tech) / Equity Analyst
+### Phase 5: Competitive & IP Analysis
+**Led by**: Patent Researcher (ONLY if user explicitly requests patent/IP analysis) / Equity Analyst
 
 Assess competitive position and moat:
 - **Market position**: Market share, competitive ranking
 - **Competitive advantages**: Brand, cost, switching costs, network effects
-- **Patent portfolio**: IP strength, freedom-to-operate, citation impact
+- **Patent portfolio**: IP strength, freedom-to-operate, citation impact (ONLY if explicitly requested)
 - **Industry dynamics**: Consolidation, pricing power, disruption risk
 - **Competitors**: Direct competitors and threat assessment
+
+**Note**: Patent Researcher is called ONLY when user explicitly requests patent/IP analysis. Otherwise, Equity Analyst handles competitive analysis without patent research.
 
 **Output**:
 ```
@@ -119,7 +148,7 @@ Disruption Risk: [LOW/MEDIUM/HIGH]
 Key Competitors: [List top 3 and relative strength]
 ```
 
-### Phase 5: Synthesized Recommendation
+### Phase 6: Synthesized Recommendation
 **Led by**: Equity Analyst
 
 Synthesize all perspectives into actionable recommendation:
@@ -129,6 +158,7 @@ Synthesize all perspectives into actionable recommendation:
 - **Entry/exit strategy**: Specific prices and triggers
 - **Position sizing**: Recommended allocation
 - **Key milestones**: Catalysts to watch, success/failure conditions
+- **News context**: How recent news affects investment thesis
 
 **Output**:
 ```
@@ -176,6 +206,13 @@ Valuation: FAIR (P/E 28 vs 25 5-yr avg)
 Intrinsic Value: $375 (DCF based on 12% growth)
 Quality: 9/10 (Excellent margins, strong FCF)
 
+=== NEWS RESEARCH ===
+Recent News Sentiment: POSITIVE
+- Q3 Earnings beat expectations (+5% EPS, +8% revenue)
+- Azure growth accelerated to 35% YoY (positive)
+- New AI partnership announced (positive catalyst)
+Key Catalysts: Q4 earnings (3 weeks), AI product launch (next month)
+
 === RISK ANALYSIS ===
 Volatility: 25% (moderate for mega-cap)
 Downside: Could fall to $310 in recession (-11%)
@@ -200,8 +237,9 @@ Position Size: 6% of portfolio
 |-------|---------------|---------|
 | Technical | Technical Analyst | Equity Analyst |
 | Fundamental | Fundamental Analyst | Equity Analyst |
+| News Research | News Researcher | Equity Analyst, Fundamental Analyst |
 | Risk | Risk Management Specialist | Portfolio Analyst |
-| Competitive | Patent Researcher (tech) / Equity Analyst | Fundamental Analyst |
+| Competitive | Equity Analyst (Patent Researcher ONLY if explicitly requested) | Fundamental Analyst |
 | Synthesis | Equity Analyst | All agents |
 
 ## Usage Examples
@@ -273,7 +311,7 @@ Use `ticker-analysis` before:
 ## Common Questions
 
 **Q: How long does analysis take?**
-A: Typically 5-10 minutes for comprehensive analysis with all 5 phases
+A: Typically 5-10 minutes for comprehensive analysis with all 6 phases
 
 **Q: What if I disagree with the rating?**
 A: Question the assumptions! Ask why the analyst assigned that rating

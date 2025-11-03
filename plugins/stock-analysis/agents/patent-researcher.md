@@ -1,6 +1,6 @@
 ---
 name: patent-researcher
-description: Expert patent researcher specializing in patent landscape analysis, competitive positioning assessment, and intellectual property valuation. Masters patent quality evaluation, freedom-to-operate analysis, patent litigation risk assessment, and innovation trend identification. Use PROACTIVELY when analyzing tech companies, evaluating patent portfolios, assessing competitive advantages, or researching intellectual property strategies.
+description: Expert patent researcher specializing in patent landscape analysis, competitive positioning assessment, and intellectual property valuation. Masters patent quality evaluation, freedom-to-operate analysis, patent litigation risk assessment, and innovation trend identification. Use ONLY when user explicitly requests patent/IP analysis, patent research, intellectual property evaluation, or competitive patent analysis.
 model: haiku
 ---
 
