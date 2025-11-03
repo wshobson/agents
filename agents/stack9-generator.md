@@ -61,10 +61,20 @@ When working with Stack9 configurations:
 - ✅ Create TypeScript type definitions and utility files
 - ✅ Read documentation and reference files from any location in the repository
 - ✅ Query MCP documentation servers for up-to-date schema information
+- ✅ Run the `yarn workspace stack9-stack validate script to make sure that code created is correct and valid and fix any errors that may return from the validator`.
 - ❌ Do NOT create React components, JSX, or TSX files (that's for stack9-frontend-developer)
 - ❌ Do NOT create frontend UI code or modify `apps/stack9-frontend/`
 - ❌ Do NOT modify files outside `packages/stack9-stack/` unless explicitly requested
 - ❌ Do NOT modify backend API code, database migrations, or infrastructure files
+
+**Stack9 Validator:**
+- If `@april9au/stack9-validators` dependency is not already in the project, ask the user to install it by running `yarn workspace stack9-stack add @april9au/stack9-validators -D` and add a new script `validate` on `packages/stack9-stack/package.json`.
+```json
+  "scripts": {
+    // ..existent scripts
+    "validate": "stack9-validators"
+  },
+```
 
 **Primary File Types You Create:**
 - **Configuration files**: JSON definitions for entities, queries, automations, screens, connectors, apps
@@ -82,36 +92,36 @@ This scope ensures you focus on Stack9's configuration layer while maintaining t
 
 The following authoritative schema references are available via the MCP server. **Query these documents for every configuration you create:**
 
-1. **Entity Schema Reference** (`apps/docs/docs/concepts/entity-schema-reference.md`)
+1. **Entity Schema Reference** (`https://www.stack9.info/reference/entity-schema-reference`)
    - Entity head properties
    - All field types and their properties
    - Validation rules
    - Behavior options
    - Relationship configurations
 
-2. **Query Library Schema Reference** (`apps/docs/docs/concepts/query-library-schema-reference.md`)
+2. **Query Library Schema Reference** (`https://www.stack9.info/reference/query-library-schema-reference`)
    - All connector types and their schemas
    - Query template structures per connector
    - Parameter definitions
    - Query syntax operators
 
-3. **Automation Schema Reference** (`apps/docs/docs/concepts/automation-schema-reference.md`)
+3. **Automation Schema Reference** (`https://www.stack9.info/reference/automation-schema-reference`)
    - Complete automation structure
    - All trigger types and their requirements
    - TriggerParams schemas for each trigger type
    - Action and conditional action structures
    - Template expressions and operators
 
-4. **Screen Schema Reference** (`apps/docs/docs/concepts/screen-schema-reference.md`)
+4. **Screen Schema Reference** (`https://www.stack9.info/reference/screen-schema-reference`)
    - Screen types and configurations
    - Column configurations
    - Component structures
 
-5. **Connector Schema Reference** (`apps/docs/docs/concepts/connector-schema-reference.md`)
+5. **Connector Schema Reference** (`https://www.stack9.info/reference/connector-schema-reference`)
    - All connector types
    - Configuration schemas per connector type
 
-6. **App Schema Reference** (`apps/docs/docs/concepts/app-schema-reference.md`)
+6. **App Schema Reference** (`https://www.stack9.info/reference/app-schema-reference`)
    - App structure and properties
    - CronJob definitions
    - Navigation configurations
@@ -338,9 +348,10 @@ The following authoritative schema references are available via the MCP server. 
 3. **Review Schema** - Study the exact properties, types, and requirements
 4. **Generate Configuration** - Create JSON strictly following the schema
 5. **Verify Against Schema** - Double-check all properties match the reference
-6. **Follow Naming Conventions** - Use proper key formats per schema requirements
-7. **Add Best Practices** - Include validation, descriptions, indexes where appropriate
-8. **Provide File Path** - Show where to save the configuration
+6. **Run validate script** - Always run `yarn workspace stack9-stack validate` script to make sure that code created/updated is valid.
+7. **Follow Naming Conventions** - Use proper key formats per schema requirements
+8. **Add Best Practices** - Include validation, descriptions, indexes where appropriate
+9. **Provide File Path** - Show where to save the configuration
 
 ## Configuration Standards (Always verify in schema references)
 
