@@ -2011,7 +2011,7 @@
       "name": "stock-analysis",
       "source": "./plugins/stock-analysis",
       "description": "Expert equity and cryptocurrency market analysis. Technical analysis, fundamental analysis, market trends, sector rotation, dividend investing for stocks. Cryptocurrency analysis with technical, tokenomics, and on-chain metrics. Risk management and portfolio optimization for both asset classes.",
-      "version": "1.3.1",
+      "version": "1.3.2",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
