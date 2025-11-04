@@ -14,6 +14,19 @@ This plugin provides comprehensive stock and bond portfolio analysis expertise c
 
 ## Contents
 
+### Scripts
+
+Utility scripts for automation and acceleration of stock analysis:
+
+- **`fetch_financial_data.py`** - Automatically fetch financial data from multiple sources
+- **`calculate_technical_indicators.py`** - Calculate RSI, MACD, Bollinger Bands, and other indicators
+- **`aggregate_news.py`** - Aggregate and analyze news using Tavily API
+- **`calculate_portfolio_risk.py`** - Calculate portfolio risk metrics (VaR, Sharpe, etc.)
+- **`generate_report.py`** - Generate markdown reports from analysis data
+- **`compare_companies.py`** - Compare multiple companies across metrics
+
+See `scripts/README.md` for detailed documentation.
+
 ### Agents (8 total)
 
 #### Equity Analyst (`equity-analyst.md`)
@@ -388,35 +401,35 @@ This plugin works well with:
 ### Technical Analysis
 ```
 High-Confidence Buy Signal:
-✓ Price breaks above resistance (2-3x volume)
-✓ RSI 50-70 (rising not overbought)
-✓ MACD bullish crossover
-✓ Price above all key moving averages
-✓ Higher lows forming (uptrend)
-✓ Confluence with support/resistance
-✓ Risk-reward >= 2:1
+? Price breaks above resistance (2-3x volume)
+? RSI 50-70 (rising not overbought)
+? MACD bullish crossover
+? Price above all key moving averages
+? Higher lows forming (uptrend)
+? Confluence with support/resistance
+? Risk-reward >= 2:1
 ```
 
 ### Fundamental Analysis
 ```
 Quality Company Indicators:
-✓ P/E < 25 with earnings growth
-✓ Gross margins > 40% (pricing power)
-✓ FCF growing faster than revenue
-✓ Debt-to-EBITDA < 2x (manageable)
-✓ ROE > 15% (efficient capital use)
-✓ OCF > Net Income (quality earnings)
+? P/E < 25 with earnings growth
+? Gross margins > 40% (pricing power)
+? FCF growing faster than revenue
+? Debt-to-EBITDA < 2x (manageable)
+? ROE > 15% (efficient capital use)
+? OCF > Net Income (quality earnings)
 ```
 
 ### Portfolio Optimization
 ```
 Healthy Portfolio:
-✓ Top 5 holdings < 40% of portfolio
-✓ No sector > 35% of portfolio
-✓ Diversified across asset classes
-✓ Correlation analysis shows diversification benefit
-✓ Beta aligned with risk tolerance
-✓ Rebalanced annually or when 5% drift
+? Top 5 holdings < 40% of portfolio
+? No sector > 35% of portfolio
+? Diversified across asset classes
+? Correlation analysis shows diversification benefit
+? Beta aligned with risk tolerance
+? Rebalanced annually or when 5% drift
 ```
 
 ## Key Markets & Exchanges
