@@ -7,6 +7,8 @@ description: Comprehensive ticker analysis combining technical, fundamental, and
 
 Perform deep-dive analysis on a specific stock or security, combining technical, fundamental, and risk perspectives to deliver actionable investment recommendations.
 
+**Execution Method**: This command orchestrates 6 specialized agents using Task tool. Each phase delegates to a specific agent with a focused prompt.
+
 ## Language Support
 
 All outputs adapt to the input language:
@@ -29,8 +31,15 @@ This command executes a comprehensive 6-phase analysis workflow:
 
 ## Workflow
 
+**IMPORTANT**: This command uses Task tool to delegate work to specialized agents. Each phase must be executed using Task tool with the appropriate subagent_type.
+
 ### Phase 1: Technical Analysis
 **Led by**: Technical Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:technical-analyst"
+
+**Prompt for Technical Analyst**:
+"Perform technical analysis for {TICKER}. Analyze: (1) Chart patterns and trend direction (uptrend/downtrend/range), (2) Key support and resistance levels, (3) Momentum indicators (RSI, MACD, Stochastic), (4) Volume analysis and accumulation/distribution, (5) Entry/exit levels with stop losses and profit targets, (6) Risk-reward ratio and signal quality (0-10). Provide specific price levels and trading setup."
 
 Extract from charts and price action:
 - **Trend identification**: Current direction (uptrend, downtrend, range)
@@ -57,6 +66,11 @@ Signal Quality: X/10
 ### Phase 2: Fundamental Analysis
 **Led by**: Fundamental Analyst
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:fundamental-analyst"
+
+**Prompt for Fundamental Analyst**:
+"Perform fundamental analysis for {TICKER}. Analyze: (1) Valuation metrics (P/E, PEG, EV/EBITDA vs historical and peers), (2) Growth trends (revenue, EPS, FCF growth), (3) Profitability (margins, ROE, ROIC), (4) Financial health (debt levels, cash flow quality, liquidity), (5) Competitive advantages and moat strength, (6) Management quality and capital allocation, (7) Key risk factors. Provide intrinsic value estimate and quality score (1-10)."
+
 Analyze company quality and valuation:
 - **Valuation**: Current P/E, PEG, EV/EBITDA vs historical and peers
 - **Growth**: Revenue growth, EPS growth, FCF growth trends
@@ -79,6 +93,11 @@ Main Risks: [List top 3 risks]
 
 ### Phase 3: News Research
 **Led by**: News Researcher
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:news-researcher"
+
+**Prompt for News Researcher**:
+"Search and analyze important news for {TICKER} (last 30 days). Focus on: (1) Earnings announcements and guidance updates, (2) M&A activity, partnerships, strategic deals, (3) Regulatory approvals, litigation, compliance issues, (4) Product launches, technology announcements, R&D milestones, (5) Management changes (CEO/CFO/board), (6) Market events (dividends, buybacks, offerings). Assess sentiment (positive/negative/neutral) and materiality (impact on stock price). Identify top 5 most important news items and key upcoming catalysts."
 
 Search and analyze important company news:
 - **Recent news** - Earnings announcements, guidance updates, financial results
@@ -106,6 +125,11 @@ Recent Price Reaction: [How stock reacted to recent news]
 ### Phase 4: Risk Analysis
 **Led by**: Risk Management Specialist
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:risk-management-specialist"
+
+**Prompt for Risk Management Specialist**:
+"Assess risk for {TICKER}. Calculate: (1) Historical volatility and beta, (2) Maximum drawdown scenarios and recovery time, (3) Correlation with market and portfolio (if provided), (4) Downside scenarios (bear case valuation, -20%/-50% moves), (5) Negative catalysts and event risks, (6) Position sizing recommendations based on risk, (7) Concentration risk assessment. Provide Value at Risk (95% confidence) and suggested position size as % of portfolio."
+
 Assess downside risk and portfolio impact:
 - **Volatility**: Historical volatility, beta, VIX impact
 - **Drawdown risk**: Maximum drawdown scenarios, recovery time
@@ -127,7 +151,17 @@ Concentration Risk: [LOW/MEDIUM/HIGH]
 ```
 
 ### Phase 5: Competitive & IP Analysis
-**Led by**: Patent Researcher (ONLY if user explicitly requests patent/IP analysis) / Equity Analyst
+**Led by**: Equity Analyst (Patent Researcher ONLY if user explicitly requests patent/IP analysis)
+
+**How to execute**: 
+- Default: Use Task tool with subagent_type="stock-analysis:equity-analyst"
+- If user explicitly requests patent/IP analysis: Use Task tool with subagent_type="stock-analysis:patent-researcher"
+
+**Prompt for Equity Analyst** (default):
+"Assess competitive position for {TICKER}. Analyze: (1) Market position and competitive ranking, (2) Competitive advantages (brand, cost advantages, switching costs, network effects), (3) Industry dynamics (consolidation, pricing power, disruption risk), (4) Direct competitors and relative strength, (5) Moat strength (1-10 scale). Do NOT analyze patents unless user explicitly requests patent analysis."
+
+**Prompt for Patent Researcher** (only if explicitly requested):
+"Perform patent and IP analysis for {TICKER}. Analyze: (1) Patent portfolio strength and defensibility, (2) IP moat assessment, (3) Freedom-to-operate analysis, (4) Citation impact and patent quality, (5) Competitive patent landscape. Provide moat strength based on IP (1-10 scale)."
 
 Assess competitive position and moat:
 - **Market position**: Market share, competitive ranking
@@ -150,6 +184,11 @@ Key Competitors: [List top 3 and relative strength]
 
 ### Phase 6: Synthesized Recommendation
 **Led by**: Equity Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:equity-analyst"
+
+**Prompt for Equity Analyst** (synthesis):
+"Synthesize comprehensive analysis for {TICKER} based on all previous phases. Combine: (1) Technical setup from Phase 1, (2) Fundamental valuation from Phase 2, (3) News sentiment and catalysts from Phase 3, (4) Risk assessment from Phase 4, (5) Competitive position from Phase 5. Provide: Overall rating (BUY/HOLD/SELL) with conviction level, investment thesis (2-3 sentences), entry/exit strategy with specific prices, position sizing recommendation, risk-reward ratio, key catalysts to watch, success/failure conditions. Save complete analysis as markdown report."
 
 Synthesize all perspectives into actionable recommendation:
 - **Overall rating**: Buy/Sell/Hold with conviction level

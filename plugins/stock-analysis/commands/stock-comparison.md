@@ -7,6 +7,8 @@ description: Compare multiple stocks side-by-side across valuation, growth, qual
 
 Compare 2-5 stocks side-by-side to identify the best opportunity relative to each other and the market. Useful for sector selection, peer analysis, and competitive comparisons.
 
+**Execution Method**: This command orchestrates specialized agents using Task tool. Each phase delegates to a specific agent with a focused prompt.
+
 ## Language Support
 
 All outputs adapt to the input language:
@@ -29,8 +31,20 @@ Analyze multiple stocks across common dimensions:
 
 ## Workflow
 
+**IMPORTANT**: This command uses Task tool to delegate work to specialized agents. Each phase must be executed using Task tool with the appropriate subagent_type.
+
 ### Phase 1: Individual Assessments
 **Led by**: Technical & Fundamental Analysts
+
+**How to execute**: For each stock, use Task tool with:
+- Technical: subagent_type="stock-analysis:technical-analyst"
+- Fundamental: subagent_type="stock-analysis:fundamental-analyst"
+
+**Prompt for Technical Analyst** (for each stock):
+"Perform technical analysis for {TICKER}. Analyze: (1) Current price and trading range, (2) Trend direction and momentum indicators (RSI, MACD), (3) Technical setup and entry appeal, (4) Relative strength vs market. Provide technical setup summary."
+
+**Prompt for Fundamental Analyst** (for each stock):
+"Perform fundamental analysis for {TICKER}. Extract: (1) Valuation multiples (P/E, PEG, P/B, EV/EBITDA), (2) Growth rates (revenue, EPS, FCF), (3) Profitability metrics (margins, ROE, ROIC), (4) Risk metrics (beta, volatility, debt levels), (5) Quality score (1-10). Provide comprehensive metrics summary."
 
 For each stock, extract:
 - Current price and recent trading range
@@ -43,6 +57,11 @@ For each stock, extract:
 
 ### Phase 2: Comparative Matrix
 **Led by**: Equity Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:equity-analyst"
+
+**Prompt for Equity Analyst**:
+"Compare stocks {TICKER_LIST} side-by-side. Create comparison matrix for: (1) Valuation metrics (P/E, PEG, P/B, EV/EBITDA), (2) Growth metrics (revenue, EPS, FCF growth), (3) Profitability (margins, ROE, ROIC), (4) Risk metrics (beta, volatility), (5) Technical setup (trend, momentum), (6) Quality scores. For each metric, identify the winner and provide relative ranking. Create summary table showing which stock wins each category."
 
 Build comparison matrix:
 
@@ -85,6 +104,11 @@ Overall Rank        2nd        1st (Tech) 1st (Safety)
 ### Phase 3: Risk-Reward Analysis
 **Led by**: Risk Management Specialist
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:risk-management-specialist"
+
+**Prompt for Risk Management Specialist**:
+"For each stock in {TICKER_LIST}, analyze risk-reward: (1) Upside scenario (bull case valuation and price target), (2) Downside scenario (bear case valuation and downside risk), (3) Probability-weighted return (expected value accounting for risk), (4) Risk-adjusted comparison (Sharpe ratio), (5) Portfolio impact (correlation, diversification benefit). Create risk-reward comparison table showing which stock offers best return per unit of risk."
+
 For each stock, analyze:
 - **Upside scenario**: Bull case valuation and price target
 - **Downside scenario**: Bear case valuation and downside risk
@@ -105,6 +129,11 @@ Sharpe Ratio     0.77
 
 ### Phase 4: Recommendation Ranking
 **Led by**: Equity Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:equity-analyst"
+
+**Prompt for Equity Analyst**:
+"Rank stocks {TICKER_LIST} based on comprehensive comparison. Consider: (1) Valuation appeal (upside to fair value), (2) Quality (profitability and competitive position), (3) Growth (revenue and earnings growth potential), (4) Risk-adjusted return (Sharpe ratio), (5) Technical appeal (chart setup, momentum, entry timing), (6) Diversification benefit (role in portfolio context). Provide overall ranking with scores (0-100), recommendation by investor type (value/growth/balanced/risk-averse/aggressive), and clear rationale for each ranking."
 
 Rank stocks based on:
 

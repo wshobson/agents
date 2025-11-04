@@ -7,6 +7,8 @@ description: Analyze macroeconomic conditions, market structure, sector trends, 
 
 Analyze broad market conditions, economic environment, sector trends, and strategic themes. Use to understand market context, identify sector rotation opportunities, and validate individual stock ideas.
 
+**Execution Method**: This command orchestrates specialized agents using Task tool. Each phase delegates to a specific agent with a focused prompt.
+
 ## Language Support
 
 All outputs adapt to the input language:
@@ -29,8 +31,15 @@ Market analysis covers:
 
 ## Workflow
 
+**IMPORTANT**: This command uses Task tool to delegate work to specialized agents. Each phase must be executed using Task tool with the appropriate subagent_type.
+
 ### Phase 1: Macroeconomic Assessment
 **Led by**: Market Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:market-analyst"
+
+**Prompt for Market Analyst**:
+"Perform macroeconomic assessment. Analyze: (1) Economic indicators (GDP growth, PMI, ISM Manufacturing/Services), (2) Inflation trends (CPI, PPI, wage growth, inflation expectations), (3) Employment data (jobless claims, unemployment rate, wage trends), (4) Consumer indicators (consumer confidence, retail sales), (5) Monetary policy (Fed policy, interest rate path, rate expectations), (6) International context (USD strength, emerging markets, geopolitics). Provide macro environment assessment (EXPANDING/STABLE/CONTRACTING), growth outlook, inflation trajectory, rate expectations, and key risks/opportunities."
 
 Analyze current economic conditions:
 
@@ -67,6 +76,11 @@ Risk Level: [LOW/MEDIUM/HIGH]
 ### Phase 2: Market Structure Analysis
 **Led by**: Equity Analyst
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:equity-analyst"
+
+**Prompt for Equity Analyst**:
+"Assess overall market structure and health. Analyze: (1) Market breadth (% stocks above 200-day MA, advance/decline ratios), (2) Market leaders (which sectors driving, which lagging), (3) New highs/lows and divergence signals, (4) Participation (broad vs narrow gains), (5) Valuation (S&P 500 P/E vs history, median P/E), (6) Earnings revisions (improving or deteriorating), (7) Sentiment (VIX, put/call ratio, insider activity, margin debt). Provide market health assessment (STRONG/HEALTHY/WEAKENING/CONCERNING), valuation assessment, momentum, participation, sentiment, and corrective risk."
+
 Assess overall market health and sentiment:
 
 **Market Breadth**
@@ -100,6 +114,11 @@ Sustainability: [STRONG/QUESTIONABLE]
 
 ### Phase 3: Sector & Industry Analysis
 **Led by**: Market Analyst with Equity Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:market-analyst"
+
+**Prompt for Market Analyst**:
+"Analyze sector performance and relative strength. For each of 11 sectors (Technology, Healthcare, Financials, Consumer, Industrials, Energy, Utilities, Materials, Real Estate, Communications, Consumer Staples), assess: (1) YTD performance and relative strength, (2) Earnings momentum and growth, (3) Valuation appeal (cheap/expensive relative to growth), (4) Technical strength (leading/lagging market), (5) Risk/reward opportunities. Identify: strongest sectors (top 3), weakest sectors (bottom 3), best sectors to rotate into, sectors to rotate out of, sector opportunities and risks. Provide sector performance matrix and rotation recommendations."
 
 Analyze sector performance and relative strength:
 
@@ -138,6 +157,11 @@ Sector Risks: [List risks by sector]
 
 ### Phase 4: Strategic Theme Analysis
 **Led by**: Market Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:market-analyst"
+
+**Prompt for Market Analyst**:
+"Identify and analyze major investment themes. For each major theme (AI, energy transition, inflation/rates, reshoring, cybersecurity, demographics, etc.), assess: (1) Thesis (why theme is important), (2) Beneficiaries (which stocks/companies benefit most), (3) Timing (early/mid/late stage adoption), (4) Duration (how long theme will persist), (5) Competitive dynamics, (6) Risks (what could derail theme). Also identify risk themes to avoid. Provide theme analysis with leaders, exposure opportunities, and risk assessment."
 
 Identify and analyze major investment themes:
 
@@ -179,6 +203,11 @@ Risk Themes (to avoid):
 
 ### Phase 5: Sector Rotation Recommendation
 **Led by**: Equity Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:equity-analyst"
+
+**Prompt for Equity Analyst**:
+"Synthesize market analysis into sector rotation strategy. Based on: (1) Macro environment from Phase 1, (2) Market structure from Phase 2, (3) Sector analysis from Phase 3, (4) Strategic themes from Phase 4, provide: Current portfolio recommendations (which sectors to overweight/underweight), sector rotation plan (rotate into/out of), target allocations by sector, thematic exposure recommendations, risk management (sectors to avoid or hedge), and timeline for rotation. Save complete market analysis as markdown report."
 
 Synthesize into rotation strategy:
 

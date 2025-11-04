@@ -7,6 +7,8 @@ description: Compare multiple cryptocurrencies side-by-side across technical, fu
 
 Compare multiple cryptocurrencies or blockchain projects side-by-side across key metrics to identify relative value, risk-adjusted returns, and best opportunities for investment.
 
+**Execution Method**: This command orchestrates specialized crypto agents using Task tool. Each phase delegates to a specific agent with a focused prompt.
+
 ## Language Support
 
 All outputs adapt to the input language:
@@ -28,8 +30,15 @@ This command executes a comparative analysis workflow:
 
 ## Workflow
 
+**IMPORTANT**: This command uses Task tool to delegate work to specialized crypto agents. Each phase must be executed using Task tool with the appropriate subagent_type.
+
 ### Phase 1: Technical Comparison
 **Led by**: Crypto Technical Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:crypto-technical-analyst"
+
+**Prompt for Crypto Technical Analyst**:
+"Compare technical setups for cryptocurrencies {SYMBOL_LIST}. For each asset, analyze: (1) Trend direction and strength (bull/bear/neutral), (2) Momentum score (0-10), (3) Entry setup quality (0-10), (4) Risk-reward ratio, (5) Signal quality (high/medium/low/weak), (6) Optimal timeframe (4H/1D/1W). Create technical scorecard table showing which asset has best setup and worst setup. Provide relative ranking."
 
 Compare technical setups across assets:
 
@@ -52,6 +61,11 @@ Worst Setup: XRP (unclear trend, weak signals)
 ### Phase 2: Fundamental Comparison
 **Led by**: Crypto Fundamental Analyst
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:crypto-fundamental-analyst"
+
+**Prompt for Crypto Fundamental Analyst**:
+"Compare fundamental metrics for cryptocurrencies {SYMBOL_LIST}. For each asset, assess: (1) Network maturity (0-10), (2) Active development (0-10), (3) Ecosystem strength (0-10), (4) Market position (leader/strong/moderate/weak), (5) Technology risk (low/medium/high), (6) Adoption growth (mature/growing/stable/declining). Create fundamental scorecard table. Identify strongest and weakest assets with rationale."
+
 Compare project quality and adoption:
 
 **Output**:
@@ -72,6 +86,11 @@ Weakest: Avalanche (smaller ecosystem, lower adoption)
 
 ### Phase 3: Tokenomics Comparison
 **Led by**: Crypto Fundamental Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:crypto-fundamental-analyst"
+
+**Prompt for Crypto Fundamental Analyst**:
+"Compare tokenomics for cryptocurrencies {SYMBOL_LIST}. For each asset, analyze: (1) Circulating supply and max supply, (2) FDV valuation and market cap, (3) Inflation rate and sustainability, (4) Holder concentration (whale distribution), (5) Vesting schedule and unlock risks, (6) Token utility (strong/moderate/weak/none), (7) Yield sustainability (if applicable). Create tokenomics scorecard table. Identify best and worst tokenomics with rationale."
 
 Compare token economics and valuation:
 
@@ -99,6 +118,11 @@ Dilutive: SOL (8% annual inflation)
 ### Phase 4: Risk Comparison
 **Led by**: Risk Management Specialist
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:risk-management-specialist"
+
+**Prompt for Risk Management Specialist**:
+"Compare risk profiles for cryptocurrencies {SYMBOL_LIST}. For each asset, assess: (1) Historical volatility, (2) Beta to Bitcoin correlation, (3) Maximum drawdown, (4) Regulatory risk (low/medium/high), (5) Technical risk (smart contract risk, exploit potential), (6) Correlation with other assets. Create risk comparison table. Identify: safest asset, riskiest asset, best risk/return balance. Provide rationale for each assessment."
+
 Compare risk profiles across assets:
 
 **Output**:
@@ -119,7 +143,12 @@ Best Risk/Return: ETH (good balance of risk/quality)
 ```
 
 ### Phase 5: Ranking & Recommendation
-**Led by**: Crypto Technical Analyst + Fundamental Analyst
+**Led by**: Crypto Portfolio Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:crypto-portfolio-analyst"
+
+**Prompt for Crypto Portfolio Analyst**:
+"Synthesize comprehensive crypto comparison for {SYMBOL_LIST} based on all previous phases. Combine: (1) Technical comparison from Phase 1, (2) Fundamental comparison from Phase 2, (3) Tokenomics comparison from Phase 3, (4) Risk comparison from Phase 4. Provide: Overall ranking with scores (0-100), recommendation by investor type (conservative/balanced/aggressive), best risk-adjusted opportunity, worst risk-adjusted opportunity, portfolio allocation recommendations, and clear rationale. Save complete comparison as markdown report."
 
 Synthesize comparison into ranked recommendation:
 

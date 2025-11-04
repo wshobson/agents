@@ -7,6 +7,8 @@ description: Comprehensive portfolio analysis and optimization tool. Analyzes cu
 
 Conduct comprehensive analysis of your stock and bond portfolio covering composition, risk assessment, performance evaluation, and optimization recommendations.
 
+**Execution Method**: This command orchestrates specialized agents using Task tool. Each phase delegates to a specific agent with a focused prompt.
+
 [Extended thinking: This command orchestrates the equity-analyst agent to deliver thorough portfolio analysis. It guides through portfolio assessment (current holdings, allocation, concentration), risk evaluation (correlation, beta, volatility, diversification), performance analysis (returns, benchmark comparison, attribution), opportunity identification (rebalancing, sector rotation, position sizing), and actionable recommendations (buy/sell/trim decisions, allocation adjustments, risk management). The command adapts based on portfolio size, complexity, and investor objectives.]
 
 ## Language Support
@@ -39,6 +41,10 @@ This command works seamlessly in both languages.
 - **medium-term**: 1-3 years (trading + investing blend)
 - **long-term**: 3+ years (pure investing)
 - **retirement**: 30+ years (wealth building focus)
+
+## Workflow
+
+**IMPORTANT**: This command uses Task tool to delegate work to specialized agents. Each phase must be executed using Task tool with the appropriate subagent_type.
 
 ## Phase 1: Portfolio Assessment
 
@@ -100,6 +106,8 @@ This command works seamlessly in both languages.
 
 ## Phase 4: Opportunity Identification
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:portfolio-analyst" or "stock-analysis:equity-analyst"
+
 9. **Rebalancing Opportunities**
    - Identify allocation drift (sectors overweight/underweight)
    - Calculate rebalancing trades needed
@@ -114,12 +122,15 @@ This command works seamlessly in both languages.
     - Context: Quality scores, technical setups, market environment, sector trends
 
 11. **Sector Rotation Analysis**
-    - Evaluate sector allocation vs market opportunity
-    - Identify attractive sectors (good fundamentals, technical strength)
-    - Identify weak sectors (deteriorating fundamentals, technical weakness)
-    - Rotation recommendations (which to overweight, underweight)
+    - Use Task tool with subagent_type="stock-analysis:market-analyst"
+    - Prompt: "Evaluate sector rotation opportunities for portfolio: [current sector allocation]. Assess: (1) Sector allocation vs market opportunity, (2) Attractive sectors (good fundamentals, technical strength), (3) Weak sectors (deteriorating fundamentals, technical weakness), (4) Rotation recommendations (which to overweight/underweight). Provide sector rotation plan."
 
 ## Phase 5: Actionable Recommendations
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:equity-analyst" or "stock-analysis:portfolio-analyst"
+
+**Prompt for Equity/Portfolio Analyst**:
+"Synthesize portfolio analysis and provide actionable recommendations. Based on: (1) Portfolio assessment from Phase 1, (2) Risk evaluation from Phase 2, (3) Performance analysis from Phase 3, (4) Opportunities from Phase 4, provide: Trade recommendations (SELL/TRIM/ADD/HOLD for each position with rationale), rebalancing plan with tax considerations, sector rotation strategy, cash management strategy, and timeline for implementation. Save complete portfolio analysis as markdown report."
 
 12. **Trade Recommendations**
     **SELL Recommendations:**

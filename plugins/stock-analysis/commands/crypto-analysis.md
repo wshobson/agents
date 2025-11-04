@@ -7,6 +7,8 @@ description: Comprehensive cryptocurrency asset analysis combining technical, fu
 
 Perform deep-dive analysis on a specific cryptocurrency, digital asset, or blockchain project, combining technical, fundamental, tokenomics, and risk perspectives to deliver actionable investment recommendations.
 
+**Execution Method**: This command orchestrates specialized crypto agents using Task tool. Each phase delegates to a specific agent with a focused prompt.
+
 ## Language Support
 
 All outputs adapt to the input language:
@@ -28,8 +30,15 @@ This command executes a comprehensive 5-phase analysis workflow:
 
 ## Workflow
 
+**IMPORTANT**: This command uses Task tool to delegate work to specialized crypto agents. Each phase must be executed using Task tool with the appropriate subagent_type.
+
 ### Phase 1: Technical Analysis
 **Led by**: Crypto Technical Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:crypto-technical-analyst"
+
+**Prompt for Crypto Technical Analyst**:
+"Perform technical analysis for {SYMBOL} cryptocurrency. Analyze: (1) Chart patterns and trend direction (uptrend/downtrend/accumulation/distribution), (2) Key support and resistance levels (ATH/ATL, swing highs/lows), (3) Momentum indicators (RSI, MACD, Stochastic - crypto-optimized), (4) On-chain volume analysis and exchange flows, (5) Whale activity and on-chain signals, (6) Entry/exit levels with stop losses and profit targets, (7) Risk-reward ratio and signal quality (0-10). Provide specific price levels and crypto trading setup."
 
 Extract from charts and on-chain data:
 - **Trend identification**: Current direction (uptrend, downtrend, accumulation, distribution)
@@ -59,6 +68,11 @@ Bitcoin Correlation: [HIGH/MEDIUM/LOW]
 ### Phase 2: Fundamental Analysis
 **Led by**: Crypto Fundamental Analyst
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:crypto-fundamental-analyst"
+
+**Prompt for Crypto Fundamental Analyst**:
+"Perform fundamental analysis for {SYMBOL} cryptocurrency project. Analyze: (1) Project viability (technology assessment, roadmap execution, team quality), (2) Adoption metrics (active users, transaction volume, network growth), (3) Competitive position (market share, competitive advantages, threats), (4) Technology security (audit status, exploit history, development activity), (5) Ecosystem health (developer activity, community engagement, partnerships), (6) Business model (how token/protocol captures value), (7) Management quality (team track record, institutional backing). Provide project quality score (1-10), adoption status, competitive position, technology risk, growth potential, key catalysts, and main risks."
+
 Analyze project quality and adoption:
 - **Project viability**: Technology assessment, roadmap execution, team quality
 - **Adoption metrics**: Active users, transaction volume, network growth
@@ -81,6 +95,11 @@ Main Risks: [List top 3 project-specific risks]
 
 ### Phase 3: Tokenomics Analysis
 **Led by**: Crypto Fundamental Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:crypto-fundamental-analyst"
+
+**Prompt for Crypto Fundamental Analyst**:
+"Evaluate tokenomics for {SYMBOL}. Analyze: (1) Supply structure (circulating vs max supply, FDV analysis), (2) Inflation rate (annual emission percentage, sustainability), (3) Holder distribution (whale concentration, top 100 holders), (4) Vesting schedule (major unlock dates, team/investor lockups), (5) Token utility (real use cases, economic value capture), (6) Yield sustainability (if applicable, staking/farming yields), (7) Dilution risk (future supply pressure, unlock schedule impact). Provide comprehensive tokenomics assessment with sustainability analysis."
 
 Evaluate token economics and sustainability:
 - **Supply structure**: Circulating vs max supply, FDV analysis
@@ -107,6 +126,11 @@ Dilution Risk: [LOW/MEDIUM/HIGH]
 ### Phase 4: Risk Assessment
 **Led by**: Risk Management Specialist
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:risk-management-specialist"
+
+**Prompt for Risk Management Specialist**:
+"Assess crypto risk for {SYMBOL}. Calculate: (1) Historical volatility and expected ranges, (2) Beta to Bitcoin correlation, (3) Regulatory risk (regulatory environment, jurisdiction risk), (4) Technical risk (smart contract risk, exploit potential), (5) Market risk (liquidation cascades, contagion from other projects), (6) Concentration risk (centralization of project/token), (7) Downside scenarios (bear case valuation, -50%/-80% moves), (8) Position sizing recommendations based on volatility and risk profile. Provide comprehensive risk assessment with suggested position size."
+
 Assess downside risk and portfolio impact:
 - **Volatility**: Historical volatility, expected ranges
 - **Regulation risk**: Regulatory environment, jurisdiction risk
@@ -130,7 +154,12 @@ Risk Rating: X/10 [Conservative/Aggressive/Speculative]
 ```
 
 ### Phase 5: Synthesized Recommendation
-**Led by**: Crypto Technical Analyst / Fundamental Analyst
+**Led by**: Crypto Portfolio Analyst
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:crypto-portfolio-analyst"
+
+**Prompt for Crypto Portfolio Analyst**:
+"Synthesize comprehensive crypto analysis for {SYMBOL} based on all previous phases. Combine: (1) Technical setup from Phase 1, (2) Fundamental evaluation from Phase 2, (3) Tokenomics analysis from Phase 3, (4) Risk assessment from Phase 4. Provide: Overall rating (BUY/HOLD/SELL) with conviction level, investment thesis (2-3 sentences), entry/exit strategy with specific prices, position sizing recommendation, risk-reward ratio, key catalysts to watch, success/failure conditions, Bitcoin correlation impact. Save complete analysis as markdown report."
 
 Synthesize all perspectives into actionable recommendation:
 - **Overall rating**: Buy/Accumulate/Hold/Reduce/Sell with conviction

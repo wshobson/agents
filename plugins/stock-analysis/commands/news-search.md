@@ -7,6 +7,8 @@ description: Search and analyze important company news, earnings announcements, 
 
 Search for and analyze important company news, earnings announcements, regulatory changes, M&A activity, and other market-moving events. Provides comprehensive news research with sentiment analysis, materiality assessment, and timeline construction.
 
+**Execution Method**: This command uses Task tool to delegate work to News Researcher agent with a focused prompt.
+
 ## Language Support
 
 All outputs adapt to the input language:
@@ -30,8 +32,15 @@ This command performs comprehensive news research for a company:
 
 ## Workflow
 
+**IMPORTANT**: This command uses Task tool to delegate work to News Researcher agent. Execute using Task tool with subagent_type="stock-analysis:news-researcher".
+
 ### Phase 1: News Search & Aggregation
 **Led by**: News Researcher
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:news-researcher"
+
+**Prompt for News Researcher**:
+"Search and aggregate news for {TICKER} (last {DAYS} days) using Tavily API. Search for: (1) Earnings announcements and guidance updates, (2) M&A activity, partnerships, strategic deals, (3) Regulatory approvals, litigation, compliance issues, (4) Product launches, technology announcements, R&D milestones, (5) Management changes (CEO/CFO/board), (6) Market events (dividends, buybacks, offerings). Extract headlines, dates, sources, content snippets. Filter by date and source credibility. Aggregate results from multiple search queries. Provide: total news items found, material news items (price impact >5%), Tavily coverage percentage."
 
 Search for company news using **Tavily Search API** as primary method:
 
@@ -78,6 +87,11 @@ Tavily Coverage: [X]% of results from Tavily
 ### Phase 2: News Categorization & Prioritization
 **Led by**: News Researcher
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:news-researcher"
+
+**Prompt for News Researcher**:
+"Categorize and prioritize news items for {TICKER}. Organize by categories: Earnings & Financials, M&A Activity, Regulatory & Legal, Product & Innovation, Management Changes, Market Events, Competitive Dynamics, Macro Impact. Prioritize by: (1) Recency (most recent first), (2) Materiality (price impact >5%), (3) Source credibility (official filings, major outlets), (4) Confirmation (multiple sources), (5) Impact scope (company-wide). Provide: news categories found with counts, top 10 most important news items with materiality assessment."
+
 Organize and prioritize news:
 
 **News Categories**:
@@ -116,6 +130,11 @@ Top 10 Most Important News Items:
 ### Phase 3: Sentiment Analysis & Impact Assessment
 **Led by**: News Researcher
 
+**How to execute**: Use Task tool with subagent_type="stock-analysis:news-researcher"
+
+**Prompt for News Researcher**:
+"Analyze sentiment and impact for {TICKER} news. Assess: (1) Overall sentiment (positive/negative/neutral), (2) Positive signals (earnings beats, guidance raises, product launches), (3) Negative signals (earnings misses, guidance cuts, regulatory issues), (4) Fundamental impact (how news affects revenue, earnings, growth, competitive position), (5) Valuation impact (does news change intrinsic value?), (6) Timing impact (near-term vs long-term), (7) Risk impact (does news increase/decrease risk?), (8) Catalyst identification (is this a price catalyst?), (9) Market reaction (how did stock price react?). Provide: sentiment breakdown, material news impact analysis, key catalysts identified."
+
 Analyze news sentiment and impact:
 
 **Sentiment Analysis**:
@@ -152,6 +171,11 @@ Key Catalysts Identified:
 
 ### Phase 4: News Timeline & Narrative
 **Led by**: News Researcher
+
+**How to execute**: Use Task tool with subagent_type="stock-analysis:news-researcher"
+
+**Prompt for News Researcher**:
+"Build news timeline and narrative for {TICKER}. Create: (1) Chronological news timeline (most recent first), (2) Group related news into themes (earnings, M&A, products, etc.), (3) Identify patterns and trends, (4) Connect dots between different news items, (5) Highlight most material events, (6) Synthesize overall news story (2-3 paragraphs), (7) Identify what news might be missing or expected, (8) Forward-looking implications. Save complete news analysis as markdown report."
 
 Build chronological timeline and narrative:
 
