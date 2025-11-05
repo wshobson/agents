@@ -1891,6 +1891,34 @@
       ]
     },
     {
+      "name": "julia-development",
+      "source": "./plugins/julia-development",
+      "description": "Modern Julia development with Julia 1.10+, package management, scientific computing, high-performance numerical code, and production best practices",
+      "version": "1.0.0",
+      "author": {
+        "name": "Community Contribution",
+        "url": "https://github.com/exAClior"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "julia",
+        "scientific-computing",
+        "numerical",
+        "performance",
+        "data-science",
+        "multiple-dispatch"
+      ],
+      "category": "languages",
+      "strict": false,
+      "commands": [],
+      "agents": [
+        "./agents/julia-pro.md"
+      ],
+      "skills": []
+    },
+    {
       "name": "arm-cortex-microcontrollers",
       "source": "./plugins/arm-cortex-microcontrollers",
       "description": "ARM Cortex-M firmware development for Teensy, STM32, nRF52, and SAMD with peripheral drivers and memory safety patterns",
