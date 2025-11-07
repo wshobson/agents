@@ -1,0 +1,62 @@
+{
+  "name": "Serena MCP",
+  "priority": 1,
+  "description": "Preferred MCP for context-efficient code exploration and editing using symbolic/semantic tools",
+  "core_principle": "Context Frugality - Read ONLY what's needed using overview and symbolic tools first",
+  "preferred_tools": [
+    {
+      "category": "discovery",
+      "tools": ["list_dir", "find_file", "search_for_pattern", "get_symbols_overview", "find_symbol", "find_referencing_symbols"],
+      "use_case": "Code exploration and understanding with minimal context usage"
+    },
+    {
+      "category": "modification",
+      "tools": ["replace_symbol_body", "insert_after_symbol", "insert_before_symbol", "rename_symbol"],
+      "use_case": "Semantic code editing at function/class level"
+    },
+    {
+      "category": "line_editing",
+      "tools": ["replace_lines", "insert_at_line", "delete_lines"],
+      "use_case": "Small precise edits (1-5 lines)"
+    },
+    {
+      "category": "shell",
+      "tools": ["execute_shell_command"],
+      "preferred_over": ["Bash"],
+      "use_case": "All shell operations for agents/subagents"
+    },
+    {
+      "category": "memory",
+      "tools": ["write_memory", "read_memory", "list_memories", "delete_memory"],
+      "use_case": "Agent-discovered insights and patterns (not duplicating existing docs)"
+    },
+    {
+      "category": "reflection",
+      "tools": ["think_about_collected_information", "think_about_task_adherence", "think_about_whether_you_are_done", "summarize_changes"],
+      "use_case": "Quality control and task verification"
+    }
+  ],
+  "golden_rule": [
+    "1. Start with overview (get_symbols_overview)",
+    "2. Search symbolically (find_symbol with include_body=False)",
+    "3. Read bodies ONLY when necessary (include_body=True)",
+    "4. Never read the same content twice"
+  ],
+  "when_to_use_serena": {
+    "source_code": [".py", ".ts", ".js", ".java", ".go", ".rs", ".cpp", ".c", ".rb"],
+    "large_markdown": ">200 lines with sections",
+    "structured_docs": "API docs, architecture docs with multiple sections"
+  },
+  "when_to_use_traditional_tools": {
+    "config_files": [".yaml", ".yml", ".json", ".toml", ".ini"],
+    "shell_scripts": [".sh", ".bash"],
+    "small_markdown": "<100 lines",
+    "non_code": ["Dockerfile", ".gitignore", "text files"]
+  },
+  "context_savings": {
+    "typical": "90-99% token reduction vs traditional Read/Grep",
+    "understand_5_files": "Read=25000 tokens, Serena=1000 tokens (96% savings)",
+    "find_usage": "Grep+Read=50000 tokens, Serena=500 tokens (99% savings)",
+    "refactor_name": "Manual=75000 tokens, Serena=100 tokens (99.9% savings)"
+  }
+}
