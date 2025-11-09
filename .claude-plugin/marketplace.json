@@ -1993,7 +1993,12 @@
         "go-to-market",
         "market-analysis",
         "competitive-positioning",
-        "prioritization"
+        "prioritization",
+        "product-analytics",
+        "ab-testing",
+        "sdk-automation",
+        "metrics-tracking",
+        "user-behavior"
       ],
       "category": "business",
       "strict": false,
@@ -2004,14 +2009,15 @@
         "./agents/product-manager.md"
       ],
       "skills": [
-        "./skills/product-strategy"
+        "./skills/product-strategy",
+        "./skills/sdk-product-analytics"
       ]
     },
     {
       "name": "stock-analysis",
       "source": "./plugins/stock-analysis",
-      "description": "Expert equity and cryptocurrency market analysis with full Claude Agent SDK integration. Real-time market data via WebSearch, MCP financial APIs, automated SEC filing analysis, multi-ticker batch processing, on-chain crypto analytics, 24/7 monitoring, and collaborative multi-agent workflows. Comprehensive technical analysis, fundamental analysis, market trends, sector rotation, dividend investing for stocks. Cryptocurrency analysis with technical, tokenomics, and on-chain metrics. Advanced risk management and portfolio optimization for both asset classes.",
-      "version": "2.0.0",
+      "description": "Expert equity and cryptocurrency market analysis with Claude SDK automation. Technical analysis, fundamental analysis, market trends, sector rotation, dividend investing for stocks. Cryptocurrency analysis with technical, tokenomics, and on-chain metrics. Risk management and portfolio optimization. Includes SDK-powered automated trading, portfolio automation, and real-time market intelligence gathering.",
+      "version": "1.4.0",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
@@ -2043,7 +2049,14 @@
         "bonds",
         "investment",
         "patent-research",
-        "macroeconomic-analysis"
+        "macroeconomic-analysis",
+        "automated-trading",
+        "algorithmic-trading",
+        "sdk-automation",
+        "portfolio-automation",
+        "market-intelligence",
+        "news-sentiment",
+        "backtesting"
       ],
       "category": "finance",
       "strict": false,
@@ -2080,7 +2093,10 @@
         "./skills/dividend-strategy",
         "./skills/sector-analysis",
         "./skills/crypto-technical-analysis",
-        "./skills/crypto-tokenomics-analysis"
+        "./skills/crypto-tokenomics-analysis",
+        "./skills/sdk-portfolio-automation",
+        "./skills/sdk-automated-trading",
+        "./skills/sdk-market-intelligence"
       ]
     },
     {
