@@ -1,0 +1,176 @@
+apiVersion: marketplace.vk.com/v1
+kind: Application
+metadata:
+  name: postgres-ha
+  displayName: PostgreSQL High Availability
+  version: "15.3.0"
+  description: |
+    Production-ready PostgreSQL database with high availability,
+    automated backups, and monitoring. Suitable for mission-critical
+    workloads requiring 99.9% uptime SLA.
+
+    Features:
+    - PostgreSQL 15 with streaming replication
+    - Automatic failover with Patroni
+    - Point-in-time recovery (PITR)
+    - Connection pooling with PgBouncer
+    - Prometheus metrics export
+    - Grafana dashboards included
+  category: databases
+  icon: https://cdn.example.com/postgres-icon.png
+  keywords:
+    - postgresql
+    - database
+    - sql
+    - ha
+    - replication
+  vendor:
+    name: Example Corp
+    website: https://example.com
+    email: support@example.com
+
+spec:
+  # Container image configuration
+  image:
+    repository: registry.vkcloud.io/marketplace/postgres-ha
+    tag: "15.3.0"
+    pullPolicy: IfNotPresent
+
+  # Resource requirements
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+      storage: "50Gi"
+    limits:
+      cpu: "4000m"
+      memory: "8Gi"
+
+  # Networking configuration
+  networking:
+    ports:
+      - name: postgres
+        port: 5432
+        protocol: TCP
+      - name: metrics
+        port: 9187
+        protocol: TCP
+    service:
+      type: ClusterIP
+      annotations:
+        service.vkcloud.io/load-balancer-internal: "true"
+
+  # Environment configuration
+  environment:
+    - name: POSTGRES_DB
+      value: "myapp"
+    - name: POSTGRES_MAX_CONNECTIONS
+      value: "200"
+    - name: POSTGRES_SHARED_BUFFERS
+      value: "1GB"
+    - name: POSTGRES_USER
+      valueFrom:
+        secretKeyRef:
+          name: postgres-credentials
+          key: username
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: postgres-credentials
+          key: password
+
+  # Persistent storage
+  persistence:
+    enabled: true
+    size: "50Gi"
+    storageClass: "ssd"
+    mountPath: "/var/lib/postgresql/data"
+    backups:
+      enabled: true
+      schedule: "0 2 * * *"
+      retention: "7d"
+
+  # Health checks
+  healthCheck:
+    readiness:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      timeoutSeconds: 3
+      failureThreshold: 3
+    liveness:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - pg_isready -U $POSTGRES_USER
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 5
+
+  # Scaling configuration
+  scaling:
+    enabled: true
+    mode: replicas
+    minReplicas: 2
+    maxReplicas: 5
+
+  # Security configuration
+  security:
+    runAsUser: 999
+    runAsGroup: 999
+    fsGroup: 999
+    runAsNonRoot: true
+    readOnlyRootFilesystem: false
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
+# Pricing configuration
+pricing:
+  model: usage-based
+  tiers:
+    - name: Basic
+      description: Single instance with automated backups
+      resources:
+        cpu: "1000m"
+        memory: "2Gi"
+        storage: "50Gi"
+      price: 1500
+      currency: RUB
+      period: month
+
+    - name: Standard
+      description: 2 replicas with high availability
+      resources:
+        cpu: "2000m"
+        memory: "4Gi"
+        storage: "100Gi"
+      price: 3500
+      currency: RUB
+      period: month
+
+    - name: Professional
+      description: 3+ replicas with advanced monitoring
+      resources:
+        cpu: "4000m"
+        memory: "8Gi"
+        storage: "500Gi"
+      price: 8000
+      currency: RUB
+      period: month
+
+# Support and documentation
+support:
+  email: support@example.com
+  phone: "+7 (495) 123-45-67"
+  documentation: https://docs.example.com/postgres-ha
+  website: https://example.com/products/postgres-ha
+  sla: "99.9%"
+  responseTime: "4 hours"

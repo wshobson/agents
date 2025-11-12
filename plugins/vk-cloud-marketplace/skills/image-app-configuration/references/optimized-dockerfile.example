@@ -1,0 +1,83 @@
+# Multi-stage Dockerfile for VK Cloud Marketplace
+# This example demonstrates best practices for production-ready container images
+
+# ============================================================================
+# Stage 1: Build Stage
+# ============================================================================
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /build
+
+# Install build dependencies
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++
+
+# Copy dependency files first for better caching
+COPY package.json package-lock.json ./
+
+# Install all dependencies (including devDependencies)
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Build application
+RUN npm run build && \
+    npm prune --production
+
+# ============================================================================
+# Stage 2: Runtime Stage
+# ============================================================================
+FROM node:18-alpine
+
+# Add metadata
+LABEL maintainer="team@example.com" \
+      version="1.0.0" \
+      description="Production-ready application for VK Cloud Marketplace" \
+      org.opencontainers.image.source="https://github.com/example/app"
+
+# Install runtime dependencies and security updates
+RUN apk add --no-cache \
+    ca-certificates \
+    tzdata \
+    dumb-init && \
+    apk upgrade --no-cache
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Copy built application from builder
+COPY --from=builder --chown=nodejs:nodejs /build/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /build/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /build/package.json ./
+
+# Create directories for runtime data
+RUN mkdir -p /app/logs /app/tmp && \
+    chown -R nodejs:nodejs /app/logs /app/tmp
+
+# Switch to non-root user
+USER nodejs
+
+# Expose application port
+EXPOSE 8080
+
+# Set environment variables
+ENV NODE_ENV=production \
+    PORT=8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:8080/health/live', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start application
+CMD ["node", "dist/server.js"]

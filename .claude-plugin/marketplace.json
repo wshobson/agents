@@ -6,8 +6,8 @@
     "url": "https://github.com/lazarenkod"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 68 focused plugins, 91 specialized agents, 46 tools, and 55 agent skills - optimized for granular installation and minimal token usage",
-    "version": "1.2.5"
+    "description": "Production-ready workflow orchestration with 69 focused plugins, 92 specialized agents, 48 tools, and 57 agent skills - optimized for granular installation and minimal token usage",
+    "version": "1.2.6"
   },
   "plugins": [
     {
@@ -2256,6 +2256,46 @@
         "./skills/cartridge-framework",
         "./skills/tarantool-performance",
         "./skills/replication-ha"
+      ]
+    },
+    {
+      "name": "vk-cloud-marketplace",
+      "source": "./plugins/vk-cloud-marketplace",
+      "description": "VK Cloud marketplace deployment automation for image-based applications. Docker image optimization, security scanning, manifest validation, and automated marketplace submission with Claude Agent SDK integration.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "vk-cloud",
+        "marketplace",
+        "cloud-deployment",
+        "container-images",
+        "docker",
+        "kubernetes",
+        "image-optimization",
+        "security-scanning",
+        "vendor-account",
+        "application-deployment",
+        "manifest-validation",
+        "cloud-automation"
+      ],
+      "category": "cloud",
+      "strict": false,
+      "commands": [
+        "./commands/deploy-marketplace-app.md",
+        "./commands/validate-app-config.md"
+      ],
+      "agents": [
+        "./agents/vk-cloud-marketplace-specialist.md"
+      ],
+      "skills": [
+        "./skills/vk-marketplace-deployment",
+        "./skills/image-app-configuration"
       ]
     }
   ]

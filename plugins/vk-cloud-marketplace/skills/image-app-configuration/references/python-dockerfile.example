@@ -1,0 +1,87 @@
+# Multi-stage Dockerfile for Python applications
+# Optimized for VK Cloud Marketplace
+
+# ============================================================================
+# Stage 1: Build Stage
+# ============================================================================
+FROM python:3.11-slim AS builder
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /build
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --user --no-warn-script-location -r requirements.txt
+
+# ============================================================================
+# Stage 2: Runtime Stage
+# ============================================================================
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH=/home/appuser/.local/bin:$PATH
+
+# Add metadata
+LABEL maintainer="team@example.com" \
+      version="1.0.0" \
+      description="Python application for VK Cloud Marketplace"
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -r -u 1001 -m -s /bin/bash appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy Python dependencies from builder
+COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
+
+# Copy application code
+COPY --chown=appuser:appuser . .
+
+# Create directories for runtime data
+RUN mkdir -p /app/logs /app/tmp && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8080/health/live || exit 1
+
+# Start application with gunicorn
+CMD ["gunicorn", \
+     "--bind", "0.0.0.0:8080", \
+     "--workers", "4", \
+     "--worker-class", "gevent", \
+     "--timeout", "30", \
+     "--keep-alive", "5", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "app:create_app()"]

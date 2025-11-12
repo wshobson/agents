@@ -1,0 +1,64 @@
+# Multi-stage Dockerfile for Go applications
+# Optimized for VK Cloud Marketplace deployment
+
+# ============================================================================
+# Stage 1: Build Stage
+# ============================================================================
+FROM golang:1.21-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache \
+    git \
+    make \
+    ca-certificates
+
+# Set working directory
+WORKDIR /build
+
+# Copy go mod files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download && go mod verify
+
+# Copy source code
+COPY . .
+
+# Build application with optimizations
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -a \
+    -installsuffix cgo \
+    -ldflags="-w -s -X main.version=1.0.0 -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    -o app \
+    ./cmd/server
+
+# ============================================================================
+# Stage 2: Runtime Stage (Distroless)
+# ============================================================================
+FROM gcr.io/distroless/static-debian11:nonroot
+
+# Add metadata
+LABEL maintainer="team@example.com" \
+      version="1.0.0" \
+      description="Go application for VK Cloud Marketplace"
+
+# Copy CA certificates
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Copy binary
+COPY --from=builder /build/app /app
+
+# Copy configuration (if needed)
+COPY --from=builder /build/config /config
+
+# Use non-root user (distroless provides this by default)
+USER nonroot:nonroot
+
+# Expose port
+EXPOSE 8080
+
+# Health check (note: distroless doesn't have shell, so health check must be in Kubernetes)
+# HEALTHCHECK is defined in application manifest instead
+
+# Set entrypoint
+ENTRYPOINT ["/app"]
