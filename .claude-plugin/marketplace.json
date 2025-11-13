@@ -2261,8 +2261,8 @@
     {
       "name": "vk-cloud-marketplace",
       "source": "./plugins/vk-cloud-marketplace",
-      "description": "VK Cloud marketplace deployment automation for image-based applications. Docker image optimization, security scanning, manifest validation, and automated marketplace submission with Claude Agent SDK integration.",
-      "version": "1.0.0",
+      "description": "Complete VK Cloud marketplace solution for image-based and SaaS applications. Service package management, Terraform manifests (vkcs/ivkcs providers), VK Cloud Agent, tariff planning, monitoring with Telegraf/Prometheus, vendor account operations. Integrated with official VK Cloud documentation.",
+      "version": "2.0.0",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
@@ -2273,16 +2273,21 @@
       "keywords": [
         "vk-cloud",
         "marketplace",
-        "cloud-deployment",
-        "container-images",
-        "docker",
-        "kubernetes",
-        "image-optimization",
-        "security-scanning",
+        "service-package",
+        "terraform",
+        "vkcs-provider",
+        "ivkcs-provider",
+        "vk-cloud-agent",
+        "tariff-plans",
+        "image-based-apps",
+        "saas-apps",
         "vendor-account",
-        "application-deployment",
-        "manifest-validation",
-        "cloud-automation"
+        "cloud-init",
+        "monitoring",
+        "telegraf",
+        "prometheus",
+        "auto-recovery",
+        "health-checks"
       ],
       "category": "cloud",
       "strict": false,
