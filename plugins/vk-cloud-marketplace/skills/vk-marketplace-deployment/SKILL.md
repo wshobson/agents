@@ -27,146 +27,195 @@ VK Cloud marketplace supports image-based applications deployed as containerized
 - **Marketplace API**: RESTful API for programmatic management
 - **Application Catalog**: Public listing of available marketplace apps
 
-### Deployment Workflow
+### Deployment Workflow for Image-Based Applications
 
 ```
-1. Preparation Phase
-   └─ Prepare container image
-   └─ Create application manifest
-   └─ Gather required documentation
+1. Image Preparation Phase
+   └─ Create Packer configuration (.images.yaml and .pkr.hcl)
+   └─ Develop Ansible playbooks (provision.yml, start.yml)
+   └─ Organize Ansible roles (provision_roles, service_roles, common_roles)
+   └─ Build VM image with required software (Cloud-init, Qemu-guest-agent, etc.)
+   └─ Test image locally with Packer
 
-2. Validation Phase
-   └─ Validate image security
-   └─ Test deployment locally
-   └─ Verify resource requirements
+2. Service Package Creation Phase
+   └─ Create directory structure (service_name/)
+   └─ Generate version.yaml (version: 0.0.1)
+   └─ Create service.yaml with UUID4 service ID and revision
+   └─ Define parameters in parameters/ directory
+   └─ Create plan directories in plans/
+   └─ Write plan.yaml and display.yaml for each plan
+   └─ Prepare service icons (PNG/SVG, max 1MB)
+   └─ Write full_description.md with comprehensive documentation
 
-3. Submission Phase
-   └─ Submit via marketplace portal or API
-   └─ Provide metadata and documentation
-   └─ Set pricing and billing
+3. Terraform Manifest Development Phase
+   └─ Create deployment/deploy.tf in plan directory
+   └─ Define required variables (instance_uuid, email, user parameters)
+   └─ Configure vkcs provider resources (compute, network, storage)
+   └─ Configure ivkcs provider resources (agent, monitoring, scripts)
+   └─ Set up ivkcs_agent_exec to run start.yml playbook
+   └─ Define outputs for user credentials and access information
+   └─ Create deployment/settings.yaml (preset: base_v3, retry: no)
 
-4. Review Phase
-   └─ VK Cloud team reviews submission
-   └─ Address any feedback
-   └─ Make required changes
+4. Local Testing Phase
+   └─ Validate Terraform manifest syntax
+   └─ Test with valid resource IDs (flavors, subnets, availability zones)
+   └─ Use data sources to verify existing resources
+   └─ Test Ansible playbook execution locally
+   └─ Verify health check endpoints
+   └─ Validate monitoring integration
 
-5. Publication Phase
-   └─ Application approved and published
+5. Deployment System Testing Phase
+   └─ Upload service package to vendor account
+   └─ Deploy in test namespace with test bonuses
+   └─ Monitor deployment logs and agent execution
+   └─ Verify script results and outputs
+   └─ Test health checks and auto-recovery
+   └─ Validate complete user workflow
+
+6. Image Publication Phase
+   └─ Upload image to VK Cloud platform
+   └─ Publish image (makes data publicly accessible)
+   └─ Verify image accessibility for deployments
+   └─ Test deployment with published image
+
+7. Service Publication Phase
+   └─ Publish service to open marketplace namespaces
+   └─ Service becomes available to end users
    └─ Monitor initial deployments
    └─ Gather user feedback
+   └─ Track usage metrics and billing
 
-6. Maintenance Phase
-   └─ Release updates and patches
+8. Maintenance Phase
+   └─ Release updates with new revisions
+   └─ Update Terraform manifests for new features
+   └─ Rebuild images with updated software
    └─ Monitor performance and usage
    └─ Provide customer support
 ```
 
-### Application Manifest Structure
+### Service Package Structure (Image-Based Applications)
 
-The application manifest defines all aspects of the marketplace app:
+VK Cloud marketplace uses a specific service package structure for image-based applications:
 
+```
+service_name/               # Root directory (Latin letters, underscores only)
+├── version.yaml            # Generator version (0.0.1)
+├── service.yaml            # Service metadata and configuration
+├── full_description.md     # Comprehensive service documentation
+├── images/                 # Service icons
+│   └── logo.svg           # Service icon (PNG/SVG, max 1MB, min 62x62px)
+├── parameters/            # Parameter definitions
+│   ├── ds-az.yaml        # Availability zone parameter
+│   ├── ds-flavor.yaml    # VM flavor parameter
+│   ├── ds-subnet.yaml    # Subnet parameter
+│   ├── root_type.yaml    # Boot volume type parameter
+│   ├── root_size.yaml    # Boot volume size parameter
+│   └── custom-param.yaml # Service-specific parameters
+└── plans/                 # Plan configurations
+    └── basic/             # Plan directory name
+        ├── plan.yaml      # Plan metadata and billing
+        ├── display.yaml   # Configuration wizard UI
+        └── deployment/    # Terraform deployment
+            ├── deploy.tf  # Main Terraform manifest
+            └── settings.yaml  # Deployment settings
+```
+
+**version.yaml Example:**
 ```yaml
-apiVersion: marketplace.vk.com/v1
-kind: Application
-metadata:
-  name: my-application
-  displayName: My Application
-  version: "1.0.0"
-  description: |
-    Comprehensive description of the application,
-    its features, and use cases.
-  category: databases|web-apps|monitoring|security|other
-  icon: https://example.com/icon.png
+version: 0.0.1
+```
 
-spec:
-  # Container image configuration
-  image:
-    repository: registry.example.com/my-app
-    tag: "1.0.0"
-    pullPolicy: IfNotPresent
-    pullSecrets:
-      - name: registry-credentials
+**service.yaml Example:**
+```yaml
+id: 11bd457f-5006-4a5e-9aa3-e07586a487c2  # UUID4
+revision: "v1.2.0"
+name: OpenVPN
+short_description: Свободная реализация технологии VPN
+description: " "  # Leave empty, use full_description.md
+singleton: false
+auto_bind: true
+icon: logo.svg
+help: https://cloud.vk.com/docs/vendors-products/marketplace/...
+bindable: true
+plan_updateable: false  # Always false for image-based apps
+deactivatable: true
+bindings_retrievable: false
+instances_retrievable: false
+allow_context_updates: false
+delete_failed: true
 
-  # Resource requirements
-  resources:
-    requests:
-      cpu: "500m"
-      memory: "512Mi"
-      storage: "10Gi"
-    limits:
-      cpu: "2000m"
-      memory: "2Gi"
+plans:
+  - name: basic  # Must match plan directory name
 
-  # Networking configuration
-  networking:
-    ports:
-      - name: http
-        port: 8080
-        protocol: TCP
-      - name: https
-        port: 8443
-        protocol: TCP
-    ingress:
-      enabled: true
-      hostname: "{instance-id}.apps.vkcloud.com"
+preview:
+  parameters: []  # List parameter names for tariff matrix
+```
 
-  # Environment configuration
-  environment:
-    - name: APP_MODE
-      value: "production"
-    - name: DATABASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: app-secrets
-          key: database-url
+**plan.yaml Example:**
+```yaml
+id: 8e2a46c5-405b-4487-b95f-6ba282dd1a21  # UUID4 (different from service ID)
+revision: "v1.2.0"  # Match service revision
+name: basic
+description: Базовый
+free: true  # true for free plans
+short_description: Базовый
+full_description: Базовый
+billing:
+  cost: 0  # Price per billing period (0 for free)
+  refundable: false  # Return unused funds
+  billing_cycle_flat: "1 mons 0 days"  # or "30 days" (1 mons ≠ 30 days)
+```
 
-  # Persistent storage
-  persistence:
-    enabled: true
-    size: "10Gi"
-    storageClass: "standard"
-    mountPath: "/data"
+**Parameter YAML Example (ds-flavor.yaml):**
+```yaml
+actions:
+  - create
+schema:
+  description: Тип виртуальной машины
+  hint: "Тип виртуальной машины, который будет использоваться при создании"
+  type: string
+  datasource:
+    type: flavor
+    filter:
+      vcpus:
+        minimum: 1
+      ram:
+        minimum: 1024
+```
 
-  # Health checks
-  healthCheck:
-    readiness:
-      httpGet:
-        path: /health/ready
-        port: 8080
-      initialDelaySeconds: 10
-      periodSeconds: 5
-    liveness:
-      httpGet:
-        path: /health/live
-        port: 8080
-      initialDelaySeconds: 30
-      periodSeconds: 10
+**display.yaml Example:**
+```yaml
+pages:
+  - name: Настройки
+    groups:
+      - name: Виртуальная машина
+        parameters:
+          - name: ds-subnet
+          - name: ds-az
+          - name: ds-flavor
+      - name: Системный диск
+        parameters:
+          - name: root_type
+          - name: root_size
 
-  # Scaling configuration
-  scaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 10
-    targetCPUUtilization: 70
+entities:
+  - entity: vm
+    description: Виртуальные машины
+    count:
+      const: 1
+    flavor:
+      param: ds-flavor
+    disks:
+      - type:
+          param: root_type
+        size:
+          param: root_size
+```
 
-# Pricing configuration
-pricing:
-  model: subscription|usage-based|free
-  tiers:
-    - name: Basic
-      price: 500
-      currency: RUB
-      period: month
-    - name: Professional
-      price: 2000
-      currency: RUB
-      period: month
-
-# Support and documentation
-support:
-  email: support@example.com
-  documentation: https://docs.example.com
-  website: https://example.com
+**deployment/settings.yaml Example:**
+```yaml
+preset: base_v3
+retry: no
 ```
 
 ## Container Image Requirements
