@@ -2261,8 +2261,8 @@
     {
       "name": "vk-cloud-marketplace",
       "source": "./plugins/vk-cloud-marketplace",
-      "description": "Complete VK Cloud marketplace solution for image-based and SaaS applications. Service package management, Terraform manifests (vkcs/ivkcs providers), VK Cloud Agent, tariff planning, monitoring with Telegraf/Prometheus, vendor account operations. Integrated with official VK Cloud documentation.",
-      "version": "2.0.0",
+      "description": "Complete VK Cloud marketplace solution for image-based applications. Official Terraform provider (vk-cs/vkcs) integration with full resource reference, Packer image building with Ansible provisioning, service package management, VK Cloud Agent integration, tariff planning, monitoring with Telegraf/Prometheus. Includes real-world examples from production packages and official provider documentation.",
+      "version": "2.2.0",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
@@ -2277,17 +2277,26 @@
         "terraform",
         "vkcs-provider",
         "ivkcs-provider",
+        "terraform-provider-vkcs",
         "vk-cloud-agent",
         "tariff-plans",
         "image-based-apps",
-        "saas-apps",
         "vendor-account",
         "cloud-init",
         "monitoring",
         "telegraf",
         "prometheus",
         "auto-recovery",
-        "health-checks"
+        "health-checks",
+        "packer",
+        "ansible",
+        "image-build",
+        "provisioning",
+        "qemu-guest-agent",
+        "infrastructure-as-code",
+        "openstack",
+        "neutron",
+        "sprut"
       ],
       "category": "cloud",
       "strict": false,
@@ -2300,7 +2309,10 @@
       ],
       "skills": [
         "./skills/vk-marketplace-deployment",
-        "./skills/image-app-configuration"
+        "./skills/image-app-configuration",
+        "./skills/packer-image-build",
+        "./skills/ansible-marketplace-provisioning",
+        "./skills/terraform-vkcs-provider"
       ]
     }
   ]
