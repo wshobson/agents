@@ -1,0 +1,252 @@
+# Example VK Cloud Service Package Structure
+# Generator version: 0.0.1
+
+# ============================================================================
+# version.yaml - Generator version specification
+# ============================================================================
+# File: version.yaml
+# Location: <SERVICE_NAME>/version.yaml
+
+version: 0.0.1
+
+# ============================================================================
+# service.yaml - Service configuration
+# ============================================================================
+# File: service.yaml
+# Location: <SERVICE_NAME>/service.yaml
+
+id: 72b70199-1823-40c8-aa7e-f43a23ddf380  # UUID4 generated
+revision: v. 1.0  # Service revision
+name: VK Testers
+short_description: Программа крауд-тестирования с многотысячным коммьюнити бета-тестировщиков и собственной платформой для работы с данными
+singleton: false  # Multiple instances allowed per project
+auto_bind: true  # Automatically create service binding after deployment
+icon: icon.png  # Icon file in images/ directory
+help: http://vk.cc/vktesters_po_faq  # Documentation URL
+bindable: true  # Service bindings allowed
+plan_updateable: false  # MUST be false for image-based apps
+deactivatable: false  # Cannot temporarily suspend service
+bindings_retrievable: true  # Retry binding creation on failure
+instances_retrievable: true  # Retry instance creation on failure
+
+# Tariff plans - list all available plans
+plans:
+- name: free  # Must match directory name in plans/
+- name: basic
+
+# Tariff options for matrix display
+preview:
+  parameters:
+  - name: api_requests_daily_limit  # Must match YAML filename in parameters/
+  - name: groups
+  - name: products
+
+# ============================================================================
+# plan.yaml - Tariff plan configuration
+# ============================================================================
+# File: plan.yaml
+# Location: <SERVICE_NAME>/plans/<PLAN_NAME>/plan.yaml
+
+# Example 1: Prepaid plan with parameter overrides
+id: b2b42648-XXXX-b4cddbf010b2  # UUID4 for plan
+revision: v. 1.0  # Plan revision
+name: basic  # Technical name (matches directory)
+description: Базовый  # Display name in UI
+free: false  # Paid plan
+
+# Billing configuration (prepaid)
+billing:
+  cost: 2000  # Price per billing cycle (RUB)
+  refundable: true  # Return unused funds on cancel
+  billing_cycle_flat: 1 mons 0 days  # Billing period (calendar months)
+
+# Override option parameters for this plan
+parameters_patch:
+  users:
+    schema.const: 5000  # Set fixed value for users option
+  volume_data_size:
+    schema.default: 550  # Override default to 550 GB
+    schema.minimum: 550  # Override minimum to 550 GB
+
+# Example 2: Postpaid plan with usage-based billing
+id: 3aa541d8-XXXX-6dbf542b3f90
+revision: v. 1.1
+name: postpaid
+description: Постоплатный
+free: true  # Base plan is free
+
+billing:
+  cost: 0  # No fixed cost
+
+# Postpaid options (usage-based)
+resource_usages:
+  - storage  # Storage billed by actual usage
+
+# ============================================================================
+# Option YAML - Tariff option definition
+# ============================================================================
+# File: <OPTION_NAME>.yaml
+# Location: <SERVICE_NAME>/parameters/<OPTION_NAME>.yaml
+
+# Example: Volume size option with billing
+schema:
+  type: integer
+  title: Размер диска данных
+  description: Размер диска для хранения данных (ГБ)
+  default: 10
+  minimum: 10
+  maximum: 1000
+  multipleOf: 10
+
+# Option billing (prepaid)
+billing:
+  base: 10  # Base amount included in plan price
+  cost: 50  # Cost per unit above base (RUB)
+  unit:
+    size: 10  # Unit size (10 GB)
+
+# UI display configuration
+ui_control:
+  type: slider  # or input, select
+  min: 10
+  max: 1000
+  step: 10
+
+# ============================================================================
+# display.yaml - Configuration wizard for plan
+# ============================================================================
+# File: display.yaml
+# Location: <SERVICE_NAME>/plans/<PLAN_NAME>/display.yaml
+
+# Configuration wizard steps
+steps:
+  - name: infrastructure
+    title: Инфраструктура
+    parameters:
+      - name: ds-az
+        title: Зона доступности
+        type: select
+        required: true
+      - name: ds-flavor
+        title: Тип виртуальной машины
+        type: select
+        required: true
+      - name: ds-subnet
+        title: Подсеть
+        type: select
+        required: true
+
+  - name: storage
+    title: Хранилище
+    parameters:
+      - name: root_size
+        title: Размер root-диска (ГБ)
+        type: slider
+        min: 10
+        max: 500
+        default: 10
+      - name: data_size
+        title: Размер диска данных (ГБ)
+        type: slider
+        min: 10
+        max: 1000
+        default: 10
+
+  - name: networking
+    title: Сеть
+    parameters:
+      - name: placement
+        title: Размещение
+        type: radio
+        options:
+          - value: internal
+            label: Внутренний IP
+          - value: external
+            label: Внешний IP
+
+  - name: backup
+    title: Резервное копирование
+    parameters:
+      - name: backup_enabled
+        title: Включить резервное копирование
+        type: checkbox
+        default: true
+
+# ============================================================================
+# full_description.md - Service documentation
+# ============================================================================
+# File: full_description.md
+# Location: <SERVICE_NAME>/full_description.md
+
+# Service Name
+
+## Описание
+Полное описание сервиса, его возможностей и назначения.
+
+## Возможности
+- Возможность 1
+- Возможность 2
+- Возможность 3
+
+## Системные требования
+- Минимум 2 CPU
+- Минимум 4 ГБ RAM
+- Минимум 10 ГБ дискового пространства
+
+## Установка
+1. Выберите тарифный план
+2. Настройте параметры инфраструктуры
+3. Подтвердите развертывание
+
+## Использование
+### Доступ к сервису
+После развертывания вы получите:
+- URL для доступа к веб-интерфейсу
+- SSH ключ для доступа к виртуальной машине
+- Учетные данные администратора
+
+### Базовая конфигурация
+Инструкции по начальной настройке сервиса.
+
+## Обновление
+Инструкции по обновлению на новую версию.
+
+## Резервное копирование
+Информация о резервном копировании и восстановлении.
+
+## Техническая поддержка
+Email: support@example.com
+Документация: https://docs.example.com
+
+# ============================================================================
+# Directory Structure
+# ============================================================================
+
+my-service/
+├── version.yaml                    # Generator version
+├── service.yaml                    # Service configuration
+├── full_description.md             # Service documentation
+├── images/                         # Service icon
+│   └── icon.png                    # Icon file (max 1MB, min 62x62px)
+├── parameters/                     # Tariff options
+│   ├── users.yaml                  # User count option
+│   ├── volume_data_size.yaml       # Data volume size option
+│   └── backup_enabled.yaml         # Backup option
+└── plans/                          # Tariff plans
+    ├── free/                       # Free plan
+    │   ├── plan.yaml               # Plan configuration
+    │   ├── display.yaml            # Configuration wizard
+    │   └── deployment/             # Terraform manifests
+    │       ├── deploy.tf           # Main manifest
+    │       └── settings.yaml       # Execution settings (optional)
+    └── basic/                      # Basic plan
+        ├── plan.yaml
+        ├── display.yaml
+        └── deployment/
+            ├── common.tf           # Common resources
+            ├── compute.tf          # Compute resources
+            ├── network.tf          # Network resources
+            ├── output.tf           # Outputs
+            └── variables.tf        # Variables
+
+# Note: Can split deploy.tf into multiple .tf files for better organization
