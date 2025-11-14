@@ -1,0 +1,12 @@
+# Documentation files that should not be parsed as agents
+README.md
+.github/
+docs/
+
+# Reference and asset files within skills
+**/references/
+**/assets/
+
+# Contribution and community files
+**/CONTRIBUTING.md
+**/CODE_OF_CONDUCT.md

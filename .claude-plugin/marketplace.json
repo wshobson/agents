@@ -1055,6 +1055,9 @@
       "agents": [
         "./agents/database-architect.md",
         "./agents/sql-pro.md"
+      ],
+      "skills": [
+        "./skills/postgresql"
       ]
     },
     {
