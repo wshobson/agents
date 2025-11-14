@@ -1,3 +1,8 @@
+---
+name: improve-agent
+description: Command implementation - not a standalone agent
+---
+
 # Agent Performance Optimization Workflow
 
 Systematic improvement of existing agents through performance analysis, prompt engineering, and continuous iteration.

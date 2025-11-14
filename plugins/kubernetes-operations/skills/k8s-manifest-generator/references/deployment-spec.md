@@ -1,3 +1,8 @@
+---
+name: deployment-spec
+description: Skill reference material - not an agent or command
+---
+
 # Kubernetes Deployment Specification Reference
 
 Comprehensive reference for Kubernetes Deployment resources, covering all key fields, best practices, and common patterns.

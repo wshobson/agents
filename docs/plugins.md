@@ -1,3 +1,8 @@
+---
+name: plugins-docs
+description: Documentation file - not an agent or command
+---
+
 # Complete Plugin Reference
 
 Browse all **63 focused, single-purpose plugins** organized by category.

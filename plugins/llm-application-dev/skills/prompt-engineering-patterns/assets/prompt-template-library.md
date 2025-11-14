@@ -1,3 +1,8 @@
+---
+name: prompt-template-library
+description: Skill asset file - not an agent or command
+---
+
 # Prompt Template Library
 
 ## Classification Templates

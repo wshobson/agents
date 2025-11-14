@@ -1,3 +1,8 @@
+---
+name: tdd-red
+description: Command implementation - not a standalone agent
+---
+
 Write comprehensive failing tests following TDD red phase principles.
 
 [Extended thinking: Generates failing tests that properly define expected behavior using test-automator agent.]

@@ -1,3 +1,8 @@
+---
+name: architecture-docs
+description: Documentation file - not an agent or command
+---
+
 # Architecture & Design Principles
 
 This marketplace follows industry best practices with a focus on granularity, composability, and minimal token usage.

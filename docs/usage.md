@@ -1,3 +1,8 @@
+---
+name: usage-docs
+description: Documentation file - not an agent or command
+---
+
 # Usage Guide
 
 Complete guide to using agents, slash commands, and multi-agent workflows.

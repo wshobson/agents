@@ -1,3 +1,8 @@
+---
+name: data-driven-feature
+description: Command implementation - not a standalone agent
+---
+
 # Data-Driven Feature Development
 
 Build features guided by data insights, A/B testing, and continuous measurement using specialized agents for analysis, implementation, and experimentation.

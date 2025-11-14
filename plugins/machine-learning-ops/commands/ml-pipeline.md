@@ -1,3 +1,8 @@
+---
+name: ml-pipeline
+description: Command implementation - not a standalone agent
+---
+
 # Machine Learning Pipeline - Multi-Agent MLOps Orchestration
 
 Design and implement a complete ML pipeline for: $ARGUMENTS

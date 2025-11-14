@@ -1,3 +1,8 @@
+---
+name: context-save
+description: Command implementation - not a standalone agent
+---
+
 # Context Save Tool: Intelligent Context Management Specialist
 
 ## Role and Purpose

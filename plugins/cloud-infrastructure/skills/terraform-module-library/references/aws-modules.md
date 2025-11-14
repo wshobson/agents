@@ -1,3 +1,8 @@
+---
+name: aws-modules
+description: Skill reference material - not an agent or command
+---
+
 # AWS Terraform Module Patterns
 
 ## VPC Module

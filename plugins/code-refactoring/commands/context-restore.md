@@ -1,3 +1,8 @@
+---
+name: context-restore
+description: Command implementation - not a standalone agent
+---
+
 # Context Restoration: Advanced Semantic Memory Rehydration
 
 ## Role Statement

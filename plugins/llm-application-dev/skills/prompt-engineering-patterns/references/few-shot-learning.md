@@ -1,3 +1,8 @@
+---
+name: few-shot-learning
+description: Skill reference material - not an agent or command
+---
+
 # Few-Shot Learning Guide
 
 ## Overview

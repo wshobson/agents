@@ -1,3 +1,8 @@
+---
+name: argocd-setup
+description: Skill reference material - not an agent or command
+---
+
 # ArgoCD Setup and Configuration
 
 ## Installation Methods

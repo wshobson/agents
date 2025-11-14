@@ -1,3 +1,8 @@
+---
+name: git-workflow
+description: Command implementation - not a standalone agent
+---
+
 # Complete Git Workflow with Multi-Agent Orchestration
 
 Orchestrate a comprehensive git workflow from code review through PR creation, leveraging specialized agents for quality assurance, testing, and deployment readiness. This workflow implements modern git best practices including Conventional Commits, automated testing, and structured PR creation.

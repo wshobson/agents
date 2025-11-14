@@ -1,3 +1,8 @@
+---
+name: legacy-modernize
+description: Command implementation - not a standalone agent
+---
+
 # Legacy Code Modernization Workflow
 
 Orchestrate a comprehensive legacy system modernization using the strangler fig pattern, enabling gradual replacement of outdated components while maintaining continuous business operations through expert agent coordination.

@@ -1,3 +1,8 @@
+---
+name: repository-readme
+description: Repository documentation - not an agent or command
+---
+
 # Claude Code Plugins: Orchestration and Automation
 
 > **⚡ Updated for Sonnet 4.5 & Haiku 4.5** — All agents optimized for latest models with hybrid orchestration

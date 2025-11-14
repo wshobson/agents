@@ -1,3 +1,8 @@
+---
+name: service-spec
+description: Command implementation - not a standalone agent
+---
+
 # Kubernetes Service Specification Reference
 
 Comprehensive reference for Kubernetes Service resources, covering service types, networking, load balancing, and service discovery patterns.

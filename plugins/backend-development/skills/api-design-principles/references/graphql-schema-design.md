@@ -1,3 +1,8 @@
+---
+name: graphql-schema-design
+description: Skill reference material - not an agent or command
+---
+
 # GraphQL Schema Design Patterns
 
 ## Schema Organization
