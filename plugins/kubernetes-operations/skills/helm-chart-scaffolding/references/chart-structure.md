@@ -1,3 +1,8 @@
+---
+name: chart-structure
+description: Skill reference material - not an agent or command
+---
+
 # Helm Chart Structure Reference
 
 Complete guide to Helm chart organization, file conventions, and best practices.

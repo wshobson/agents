@@ -1,3 +1,8 @@
+---
+name: agents-docs
+description: Documentation file - not an agent or command
+---
+
 # Agent Reference
 
 Complete reference for all **85 specialized AI agents** organized by category with model assignments.

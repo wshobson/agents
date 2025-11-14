@@ -1,3 +1,8 @@
+---
+name: chain-of-thought
+description: Skill reference material - not an agent or command
+---
+
 # Chain-of-Thought Prompting
 
 ## Overview

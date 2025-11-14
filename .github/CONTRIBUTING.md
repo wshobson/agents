@@ -1,3 +1,8 @@
+---
+name: contributing-guide
+description: Contribution guidelines - not an agent or command
+---
+
 # Contributing to Agents
 
 Thank you for your interest in contributing to this collection of Claude Code subagents! This guide will help you contribute effectively while maintaining a positive community environment.

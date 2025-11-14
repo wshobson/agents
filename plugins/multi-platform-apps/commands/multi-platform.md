@@ -1,3 +1,8 @@
+---
+name: multi-platform
+description: Command implementation - not a standalone agent
+---
+
 # Multi-Platform Feature Development Workflow
 
 Build and deploy the same feature consistently across web, mobile, and desktop platforms using API-first architecture and parallel implementation strategies.

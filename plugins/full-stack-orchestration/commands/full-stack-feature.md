@@ -1,3 +1,8 @@
+---
+name: full-stack-feature
+description: Command implementation - not a standalone agent
+---
+
 Orchestrate full-stack feature development across backend, frontend, and infrastructure layers with modern API-first approach:
 
 [Extended thinking: This workflow coordinates multiple specialized agents to deliver a complete full-stack feature from architecture through deployment. It follows API-first development principles, ensuring contract-driven development where the API specification drives both backend implementation and frontend consumption. Each phase builds upon previous outputs, creating a cohesive system with proper separation of concerns, comprehensive testing, and production-ready deployment. The workflow emphasizes modern practices like component-driven UI development, feature flags, observability, and progressive rollout strategies.]

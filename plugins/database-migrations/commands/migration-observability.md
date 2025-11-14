@@ -1,4 +1,5 @@
 ---
+name: migration-observability
 description: Migration monitoring, CDC, and observability infrastructure
 version: "1.0.0"
 tags: [database, cdc, debezium, kafka, prometheus, grafana, monitoring]

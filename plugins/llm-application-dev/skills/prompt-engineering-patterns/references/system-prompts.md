@@ -1,3 +1,8 @@
+---
+name: system-prompts
+description: Skill reference material - not an agent or command
+---
+
 # System Prompt Design
 
 ## Core Principles

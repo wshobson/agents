@@ -1,3 +1,8 @@
+---
+name: rest-best-practices
+description: Skill reference material - not an agent or command
+---
+
 # REST API Best Practices
 
 ## URL Structure

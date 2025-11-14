@@ -1,3 +1,8 @@
+---
+name: prompt-templates
+description: Skill reference material - not an agent or command
+---
+
 # Prompt Template Systems
 
 ## Template Architecture

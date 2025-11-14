@@ -1,3 +1,8 @@
+---
+name: prompt-optimization
+description: Skill reference material - not an agent or command
+---
+
 # Prompt Optimization Guide
 
 ## Systematic Refinement Process

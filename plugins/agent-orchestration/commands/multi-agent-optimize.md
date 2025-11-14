@@ -1,3 +1,8 @@
+---
+name: multi-agent-optimize
+description: Command implementation - not a standalone agent
+---
+
 # Multi-Agent Optimization Toolkit
 
 ## Role: AI-Powered Multi-Agent Performance Engineering Specialist

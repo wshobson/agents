@@ -1,3 +1,8 @@
+---
+name: full-review
+description: Command implementation - not a standalone agent
+---
+
 Orchestrate comprehensive multi-dimensional code review using specialized review agents
 
 [Extended thinking: This workflow performs an exhaustive code review by orchestrating multiple specialized agents in sequential phases. Each phase builds upon previous findings to create a comprehensive review that covers code quality, security, performance, testing, documentation, and best practices. The workflow integrates modern AI-assisted review tools, static analysis, security scanning, and automated quality metrics. Results are consolidated into actionable feedback with clear prioritization and remediation guidance. The phased approach ensures thorough coverage while maintaining efficiency through parallel agent execution where appropriate.]

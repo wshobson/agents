@@ -1,3 +1,8 @@
+---
+name: rbac-patterns
+description: Command implementation - not a standalone agent
+---
+
 # RBAC Patterns and Best Practices
 
 ## Common RBAC Patterns

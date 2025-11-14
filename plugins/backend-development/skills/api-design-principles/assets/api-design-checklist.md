@@ -1,3 +1,8 @@
+---
+name: api-design-checklist
+description: Skill asset file - not an agent or command
+---
+
 # API Design Checklist
 
 ## Pre-Implementation Review

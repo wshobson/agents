@@ -1,3 +1,8 @@
+---
+name: tdd-cycle
+description: Command implementation - not a standalone agent
+---
+
 Execute a comprehensive Test-Driven Development (TDD) workflow with strict red-green-refactor discipline:
 
 [Extended thinking: This workflow enforces test-first development through coordinated agent orchestration. Each phase of the TDD cycle is strictly enforced with fail-first verification, incremental implementation, and continuous refactoring. The workflow supports both single test and test suite approaches with configurable coverage thresholds.]

@@ -1,3 +1,8 @@
+---
+name: code-of-conduct
+description: Community guidelines - not an agent or command
+---
+
 # Code of Conduct
 
 ## Our Pledge

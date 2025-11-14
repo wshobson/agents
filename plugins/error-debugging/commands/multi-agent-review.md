@@ -1,3 +1,8 @@
+---
+name: multi-agent-review
+description: Command implementation - not a standalone agent
+---
+
 # Multi-Agent Code Review Orchestration Tool
 
 ## Role: Expert Multi-Agent Review Orchestration Specialist
