@@ -113,7 +113,7 @@ Final Response: [Refined]
 
 ### 5. Model-Specific Optimization
 
-**GPT-4/GPT-4o**
+**GPT-5/GPT-4o**
 ```python
 gpt4_optimized = """
 ##CONTEXT##
@@ -136,7 +136,7 @@ gpt4_optimized = """
 """
 ```
 
-**Claude 3.5/4**
+**Claude 4.5/4**
 ```python
 claude_optimized = """
 <context>
@@ -566,7 +566,7 @@ testing_recommendations:
   metrics: ["accuracy", "satisfaction", "cost"]
 
 deployment_strategy:
-  model: "GPT-4 for quality, Claude for safety"
+  model: "GPT-5 for quality, Claude for safety"
   temperature: 0.7
   max_tokens: 2000
   monitoring: "Track success, latency, feedback"
