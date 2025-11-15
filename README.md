@@ -2,8 +2,9 @@
 
 > **☀️ An intelligent multi-agent architecture inspired by the solar system** — 65+ specialized plugins organized into 8 planetary domains with gravitational routing and orbital coordination.
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/wshobson/agents)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/HermeticOrmus/solar-system-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-8A2BE2.svg)](https://docs.claude.com/en/docs/claude-code/overview)
 [![Agents](https://img.shields.io/badge/agents-100+-green.svg)](docs/agents.md)
 [![Plugins](https://img.shields.io/badge/plugins-65+-orange.svg)](docs/plugins.md)
 
@@ -12,6 +13,27 @@
 **Solar System Agents** is a revolutionary multi-agent orchestration architecture for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) that organizes 100+ specialized AI agents into 8 planetary domains, each coordinated by a planet orchestrator. A central Sun orchestrator intelligently routes tasks based on domain expertise, complexity, and gravitational relationships between planets.
 
 Think of it as **the solar system, but for AI agents** — where each planet specializes in a domain (Frontend, Backend, Infrastructure, etc.), and the Sun coordinates everything.
+
+## ⚡ Quick Install
+
+Get started in 2 minutes:
+
+```bash
+# 1. Add the marketplace
+/plugin marketplace add HermeticOrmus/solar-system-agents
+
+# 2. Install the core (Sun + 8 planet orchestrators)
+/plugin install solar-core
+
+# 3. Install plugins for your domain (example: full-stack developer)
+/plugin install full-stack-orchestration
+/plugin install backend-development
+/plugin install frontend-mobile-development
+```
+
+That's it! Now just describe your task naturally and the Sun will route it to the right planets.
+
+**📖 Detailed guide:** See [INSTALL.md](INSTALL.md) for step-by-step instructions
 
 ## 🌟 Why Solar System Architecture?
 

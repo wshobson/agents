@@ -1,9 +1,9 @@
 {
-  "name": "claude-code-workflows",
+  "name": "solar-system-agents",
   "owner": {
-    "name": "Seth Hobson",
+    "name": "HermeticOrmus",
     "email": "seth@major7apps.com",
-    "url": "https://github.com/wshobson"
+    "url": "https://github.com/HermeticOrmus"
   },
   "metadata": {
     "description": "Solar System Agent Architecture - 65+ specialized plugins organized into 8 planetary domains with intelligent orchestration. Each planet coordinates agents for specific expertise areas, with the Sun orchestrator routing tasks across the solar system.",
@@ -19,8 +19,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "orchestration",
@@ -53,8 +53,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "documentation",
@@ -83,8 +83,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "debugging",
@@ -111,8 +111,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "git",
@@ -141,8 +141,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "backend",
@@ -176,8 +176,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "frontend",
@@ -205,8 +205,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "full-stack",
@@ -236,8 +236,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "testing",
@@ -265,8 +265,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "tdd",
@@ -296,8 +296,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "code-review",
@@ -323,8 +323,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "refactoring",
@@ -353,8 +353,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "dependencies",
@@ -381,8 +381,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "error-handling",
@@ -411,8 +411,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "collaboration",
@@ -439,8 +439,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "llm",
@@ -477,8 +477,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "multi-agent",
@@ -505,8 +505,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "context",
@@ -533,8 +533,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "machine-learning",
@@ -567,8 +567,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "data-engineering",
@@ -597,8 +597,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "incident-response",
@@ -626,8 +626,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "diagnostics",
@@ -656,8 +656,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "distributed-tracing",
@@ -684,8 +684,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "observability",
@@ -725,8 +725,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "deployment",
@@ -752,8 +752,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "validation",
@@ -779,8 +779,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "kubernetes",
@@ -812,8 +812,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "cloud",
@@ -851,8 +851,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "ci-cd",
@@ -889,8 +889,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "performance",
@@ -918,8 +918,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "database-optimization",
@@ -948,8 +948,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "code-review",
@@ -979,8 +979,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "performance-review",
@@ -1007,8 +1007,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "migration",
@@ -1044,8 +1044,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "technical-debt",
@@ -1074,8 +1074,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "database-design",
@@ -1103,8 +1103,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "migrations",
@@ -1133,8 +1133,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "security",
@@ -1166,8 +1166,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "compliance",
@@ -1195,8 +1195,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "api-security",
@@ -1222,8 +1222,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "frontend-security",
@@ -1252,8 +1252,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "validation",
@@ -1278,8 +1278,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "api",
@@ -1311,8 +1311,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "api-testing",
@@ -1339,8 +1339,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "seo",
@@ -1366,8 +1366,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "seo",
@@ -1395,8 +1395,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "seo",
@@ -1423,8 +1423,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "documentation",
@@ -1456,8 +1456,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "cross-platform",
@@ -1490,8 +1490,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "business",
@@ -1517,8 +1517,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "hr",
@@ -1546,8 +1546,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "customer-support",
@@ -1573,8 +1573,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "content-marketing",
@@ -1599,8 +1599,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "blockchain",
@@ -1633,8 +1633,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "fintech",
@@ -1660,8 +1660,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "payments",
@@ -1694,8 +1694,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "gaming",
@@ -1722,8 +1722,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "accessibility",
@@ -1750,8 +1750,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "python",
@@ -1787,8 +1787,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "javascript",
@@ -1822,8 +1822,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "rust",
@@ -1854,8 +1854,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "java",
@@ -1883,8 +1883,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "php",
@@ -1910,8 +1910,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "elixir",
@@ -1936,8 +1936,8 @@
         "name": "Community Contribution",
         "url": "https://github.com/exAClior"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "julia",
@@ -1964,8 +1964,8 @@
         "name": "Ryan Snodgrass",
         "url": "https://github.com/rsnodgrass"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "embedded",
@@ -1992,8 +1992,8 @@
         "name": "Ryan Snodgrass",
         "url": "https://github.com/rsnodgrass"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "bash",
@@ -2026,8 +2026,8 @@
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/HermeticOrmus/solar-system-agents",
+      "repository": "https://github.com/HermeticOrmus/solar-system-agents",
       "license": "MIT",
       "keywords": [
         "git",
