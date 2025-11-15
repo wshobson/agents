@@ -6,10 +6,44 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 64 focused plugins, 87 specialized agents, and 44 tools - optimized for granular installation and minimal token usage",
-    "version": "1.2.0"
+    "description": "Solar System Agent Architecture - 65+ specialized plugins organized into 8 planetary domains with intelligent orchestration. Each planet coordinates agents for specific expertise areas, with the Sun orchestrator routing tasks across the solar system.",
+    "version": "2.0.0"
   },
   "plugins": [
+    {
+      "name": "solar-core",
+      "source": "./plugins/solar-core",
+      "description": "☀️ Solar System orchestration core - Central Sun orchestrator and 8 planet coordinators that route tasks across the solar system based on domain expertise and complexity",
+      "version": "2.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "url": "https://github.com/wshobson"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "orchestration",
+        "solar-system",
+        "routing",
+        "coordination",
+        "multi-agent",
+        "architecture"
+      ],
+      "category": "solar-core",
+      "strict": false,
+      "agents": [
+        "./agents/solar-orchestrator.md",
+        "./agents/mercury-orchestrator.md",
+        "./agents/venus-orchestrator.md",
+        "./agents/earth-orchestrator.md",
+        "./agents/mars-orchestrator.md",
+        "./agents/jupiter-orchestrator.md",
+        "./agents/saturn-orchestrator.md",
+        "./agents/uranus-orchestrator.md",
+        "./agents/neptune-orchestrator.md"
+      ]
+    },
     {
       "name": "code-documentation",
       "source": "./plugins/code-documentation",
