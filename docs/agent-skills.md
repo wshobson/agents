@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **55 specialized skills** across 15 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **57 specialized skills** across 15 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -30,13 +30,15 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **rag-implementation** | Build Retrieval-Augmented Generation systems with vector databases and semantic search |
 | **llm-evaluation** | Implement comprehensive evaluation strategies with automated metrics and benchmarking |
 
-### Backend Development (3 skills)
+### Backend Development (5 skills)
 
 | Skill | Description |
 |-------|-------------|
 | **api-design-principles** | Master REST and GraphQL API design for intuitive, scalable, and maintainable APIs |
 | **architecture-patterns** | Implement Clean Architecture, Hexagonal Architecture, and Domain-Driven Design |
 | **microservices-patterns** | Design microservices with service boundaries, event-driven communication, and resilience |
+| **workflow-orchestration-patterns** | Design durable workflows with Temporal for distributed systems, saga patterns, and state management |
+| **temporal-python-testing** | Test Temporal workflows with pytest, time-skipping, and mocking strategies for comprehensive coverage |
 
 ### Developer Essentials (8 skills)
 

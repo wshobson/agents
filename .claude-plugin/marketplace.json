@@ -101,8 +101,8 @@
     {
       "name": "backend-development",
       "source": "./plugins/backend-development",
-      "description": "Backend API design, GraphQL architecture, and test-driven backend development",
-      "version": "1.2.2",
+      "description": "Backend API design, GraphQL architecture, workflow orchestration with Temporal, and test-driven backend development",
+      "version": "1.2.3",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -115,7 +115,10 @@
         "api-design",
         "graphql",
         "tdd",
-        "architecture"
+        "architecture",
+        "temporal",
+        "workflow-orchestration",
+        "distributed-systems"
       ],
       "category": "development",
       "strict": false,
@@ -125,12 +128,15 @@
       "agents": [
         "./agents/backend-architect.md",
         "./agents/graphql-architect.md",
-        "./agents/tdd-orchestrator.md"
+        "./agents/tdd-orchestrator.md",
+        "./agents/temporal-python-pro.md"
       ],
       "skills": [
         "./skills/api-design-principles",
         "./skills/architecture-patterns",
-        "./skills/microservices-patterns"
+        "./skills/microservices-patterns",
+        "./skills/workflow-orchestration-patterns",
+        "./skills/temporal-python-testing"
       ]
     },
     {

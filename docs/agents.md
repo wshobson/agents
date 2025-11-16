@@ -1,6 +1,6 @@
 # Agent Reference
 
-Complete reference for all **85 specialized AI agents** organized by category with model assignments.
+Complete reference for all **86 specialized AI agents** organized by category with model assignments.
 
 ## Agent Categories
 
@@ -46,6 +46,7 @@ Complete reference for all **85 specialized AI agents** organized by category wi
 | [javascript-pro](../plugins/javascript-typescript/agents/javascript-pro.md) | sonnet | Modern JavaScript with ES6+, async patterns, Node.js |
 | [typescript-pro](../plugins/javascript-typescript/agents/typescript-pro.md) | sonnet | Advanced TypeScript with type systems and generics |
 | [python-pro](../plugins/python-development/agents/python-pro.md) | sonnet | Python development with advanced features and optimization |
+| [temporal-python-pro](../plugins/backend-development/agents/temporal-python-pro.md) | sonnet | Temporal workflow orchestration with Python SDK, durable workflows, saga patterns |
 | [ruby-pro](../plugins/web-scripting/agents/ruby-pro.md) | sonnet | Ruby with metaprogramming, Rails patterns, gem development |
 | [php-pro](../plugins/web-scripting/agents/php-pro.md) | sonnet | Modern PHP with frameworks and performance optimization |
 
