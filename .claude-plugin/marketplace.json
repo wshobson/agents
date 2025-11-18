@@ -2645,6 +2645,77 @@
         "./skills/mvp-validation",
         "./skills/value-proposition-design"
       ]
+    },
+    {
+      "name": "marketing-suite",
+      "source": "./plugins/marketing-suite",
+      "description": "World-class enterprise marketing suite with 3 senior-level AI agents for Product Marketing, Growth Marketing, and Account-Based Marketing. Expertise from AWS, Microsoft, Stripe, Netflix, Salesforce, Airbnb combining positioning, growth experimentation, ABM orchestration with 12 specialized skills and 3 powerful commands for launches, growth sprints, and ABM campaigns.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "marketing",
+        "product-marketing",
+        "growth-marketing",
+        "abm",
+        "account-based-marketing",
+        "positioning",
+        "messaging",
+        "go-to-market",
+        "gtm",
+        "competitive-intelligence",
+        "battle-cards",
+        "product-launch",
+        "growth-experiments",
+        "ab-testing",
+        "funnel-optimization",
+        "retention",
+        "plg",
+        "product-led-growth",
+        "viral-loops",
+        "account-planning",
+        "buying-committee",
+        "intent-data",
+        "sales-marketing-alignment",
+        "revenue-attribution",
+        "meddic",
+        "ice-scoring",
+        "north-star-metric",
+        "aarrr-metrics",
+        "enterprise-marketing",
+        "b2b-marketing",
+        "demand-generation",
+        "lead-generation"
+      ],
+      "category": "marketing",
+      "strict": false,
+      "commands": [
+        "./commands/launch-product.md",
+        "./commands/growth-sprint.md",
+        "./commands/abm-campaign.md"
+      ],
+      "agents": [
+        "./agents/product-marketing-manager.md",
+        "./agents/growth-marketing-strategist.md",
+        "./agents/abm-architect.md"
+      ],
+      "skills": [
+        "./skills/product-positioning",
+        "./skills/competitive-intelligence",
+        "./skills/gtm-planning",
+        "./skills/growth-experimentation",
+        "./skills/funnel-optimization",
+        "./skills/retention-tactics",
+        "./skills/plg-tactics",
+        "./skills/account-planning",
+        "./skills/buying-committee",
+        "./skills/intent-orchestration"
+      ]
     }
   ]
 }
