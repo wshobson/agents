@@ -2360,7 +2360,9 @@
       "strict": false,
       "commands": [
         "./commands/design-high-load-system.md",
-        "./commands/optimize-linux-system.md"
+        "./commands/optimize-linux-system.md",
+        "./commands/analyze-cpu-steal-time.md",
+        "./commands/tune-virtualization-performance.md"
       ],
       "agents": [
         "./agents/high-load-architect.md",
