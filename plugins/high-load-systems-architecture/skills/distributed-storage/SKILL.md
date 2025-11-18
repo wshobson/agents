@@ -282,6 +282,329 @@ Keep 10-20% free space for recovery
 - 10GbE network
 - Separate journal storage
 
+## Troubleshooting Distributed Storage
+
+### Ceph Cluster Issues
+
+**Cluster Health Problems**:
+```bash
+# Check cluster status
+ceph -s
+ceph health detail
+
+# Common states:
+# HEALTH_WARN: Warning state (degraded, slow ops)
+# HEALTH_ERR: Error state (data loss risk)
+
+# Check OSD status
+ceph osd tree
+ceph osd stat
+ceph osd df  # OSD utilization
+
+# Check placement group states
+ceph pg stat
+ceph pg dump | grep -v "active+clean"
+```
+
+**Common Health Issues & Solutions**:
+
+1. **OSDs Down**
+   ```bash
+   # Identify down OSDs
+   ceph osd tree | grep down
+
+   # Check OSD logs
+   journalctl -u ceph-osd@<id> -n 100
+
+   # Restart OSD
+   systemctl restart ceph-osd@<id>
+
+   # If OSD won't start, check disk health
+   smartctl -a /dev/sdb
+   ```
+
+2. **Slow Requests / Blocked Ops**
+   ```bash
+   # Identify slow ops
+   ceph health detail | grep slow
+
+   # Check OSD performance
+   ceph osd perf
+   ceph daemon osd.<id> dump_historic_ops
+
+   # Common causes:
+   # - Disk latency (check iostat, disk queue depth)
+   # - Network latency (check network bandwidth)
+   # - CPU saturation on OSD node
+
+   # Solutions:
+   # - Add more OSDs to distribute load
+   # - Upgrade to faster disks (NVMe)
+   # - Tune BlueStore cache size
+   ceph config set osd bluestore_cache_size 4294967296  # 4GB
+   ```
+
+3. **PG Inconsistencies**
+   ```bash
+   # Identify inconsistent PGs
+   ceph pg dump | grep inconsistent
+
+   # Repair PG
+   ceph pg repair <pg-id>
+
+   # Deep scrub to verify
+   ceph pg deep-scrub <pg-id>
+
+   # Check scrub errors
+   rados list-inconsistent-obj <pg-id>
+   ```
+
+4. **Unbalanced Data Distribution**
+   ```bash
+   # Check OSD utilization variance
+   ceph osd df tree
+
+   # Rebalance data with CRUSH tuning
+   ceph osd crush reweight osd.<id> <weight>
+
+   # Enable balancer module
+   ceph balancer on
+   ceph balancer mode upmap
+
+   # Monitor rebalancing
+   ceph balancer status
+   ```
+
+### Performance Troubleshooting
+
+**Slow RBD Performance**:
+```bash
+# Test RBD performance
+rbd bench --io-type write <pool>/<image>
+rbd bench --io-type read <pool>/<image>
+
+# Check RBD cache settings
+rbd config image get <pool>/<image> rbd_cache
+
+# Optimize RBD striping
+rbd info <pool>/<image>  # Check current stripe settings
+rbd create --stripe-unit 65536 --stripe-count 16 <pool>/<new-image>
+
+# Check client-side I/O patterns
+# Ensure queue depth is appropriate
+fio --filename=/dev/rbd0 --iodepth=32 --ioengine=libaio --bs=4k --rw=randread
+```
+
+**CephFS Slow Metadata Operations**:
+```bash
+# Check MDS status
+ceph fs status
+ceph mds stat
+
+# MDS performance metrics
+ceph daemon mds.<name> perf dump
+
+# Common issues:
+# 1. MDS cache exhaustion
+ceph config set mds mds_cache_memory_limit 8589934592  # 8GB
+
+# 2. Hot metadata (single directory with millions of files)
+# Solution: Distribute files across multiple directories
+# Use hashing: /data/ab/cd/abcd1234.dat
+
+# 3. MDS failover/recovery
+ceph fs set <fs-name> max_mds 2  # Active-active MDS
+```
+
+**Object Storage (RGW) Slowness**:
+```bash
+# Check RGW logs
+journalctl -u ceph-radosgw@rgw.$(hostname) -n 100
+
+# Monitor RGW performance
+radosgw-admin usage show
+
+# Bucket index sharding (for buckets with many objects)
+radosgw-admin bucket stats --bucket=<bucket-name>
+radosgw-admin bucket reshard --bucket=<bucket-name> --num-shards=64
+
+# Check RGW cache
+# Enable RGW cache tier for frequently accessed objects
+```
+
+### Network Issues
+
+**High Latency Between OSDs**:
+```bash
+# Test network latency
+ping -c 10 <osd-host>
+iperf3 -c <osd-host> -t 30
+
+# Check for packet loss
+mtr <osd-host>
+
+# Verify network configuration
+# Ensure cluster network is separate from public network
+ceph config get osd cluster_network
+ceph config get osd public_network
+
+# Check for network saturation
+iftop -i eth1  # Monitor bandwidth usage
+```
+
+**Split Brain / Network Partition**:
+```bash
+# Identify monitor quorum issues
+ceph mon stat
+ceph quorum_status -f json-pretty
+
+# If monitors can't form quorum:
+# 1. Check network connectivity between monitors
+# 2. Verify time synchronization (NTP)
+timedatectl status
+
+# Emergency: Inject monmap to recover
+# (DANGEROUS - use only as last resort)
+ceph-mon -i <mon-id> --extract-monmap /tmp/monmap
+ceph-mon -i <mon-id> --inject-monmap /tmp/monmap
+```
+
+### Capacity and Space Issues
+
+**Near-Full OSDs**:
+```bash
+# Check OSD fullness
+ceph osd df tree
+
+# Full ratio configuration
+ceph osd dump | grep full_ratio
+
+# Temporarily increase full ratio (emergency)
+ceph osd set-full-ratio 0.90
+ceph osd set-nearfull-ratio 0.85
+
+# Permanent solutions:
+# 1. Add more OSDs
+# 2. Delete unused data
+# 3. Rebalance data across OSDs
+ceph osd reweight <osd-id> <weight>
+```
+
+**RBD Thin Provisioning Issues**:
+```bash
+# Check actual vs provisioned space
+rbd du <pool>/<image>
+
+# Reclaim deleted space
+rbd sparsify <pool>/<image>
+
+# Prevent over-provisioning
+# Implement quota management
+ceph osd pool set-quota <pool> max_bytes <bytes>
+```
+
+### Recovery and Rebalancing
+
+**Slow Recovery**:
+```bash
+# Check recovery progress
+ceph -w  # Watch cluster events
+
+# Tune recovery parameters (increase recovery speed)
+ceph config set osd osd_max_backfills 4  # Default: 1
+ceph config set osd osd_recovery_max_active 5  # Default: 3
+ceph config set osd osd_recovery_sleep_hdd 0  # Disable sleep
+
+# Throttle recovery (reduce impact on client I/O)
+ceph config set osd osd_max_backfills 1
+ceph config set osd osd_recovery_max_active 1
+ceph config set osd osd_recovery_sleep_hdd 0.1
+```
+
+**Stuck PGs**:
+```bash
+# Identify stuck PGs
+ceph pg dump_stuck stale
+ceph pg dump_stuck inactive
+ceph pg dump_stuck unclean
+
+# Query specific PG
+ceph pg <pg-id> query
+
+# Force PG creation/recovery (use carefully)
+ceph pg force_create_pg <pg-id>
+ceph osd lost <osd-id> --yes-i-really-mean-it  # Mark OSD as permanently lost
+```
+
+### MinIO Specific Issues
+
+**MinIO Performance Degradation**:
+```bash
+# Check MinIO server logs
+journalctl -u minio -n 100
+
+# MinIO metrics
+curl http://localhost:9000/minio/v2/metrics/cluster
+
+# Common issues:
+# 1. Disk I/O bottleneck
+iostat -x 1  # Check disk utilization
+
+# 2. Network bandwidth saturation
+iftop
+
+# 3. Healing in progress (after disk replacement)
+mc admin heal -r myminio
+```
+
+**MinIO Distributed Setup Issues**:
+```bash
+# Check cluster status
+mc admin info myminio
+
+# Verify erasure code configuration
+# Ensure drive count matches EC:parity ratio
+# Example: 16 drives with EC:8 (8 data + 8 parity)
+
+# Drive offline issues
+mc admin heal myminio
+
+# Rebalance after adding drives
+# MinIO automatically rebalances on new drive addition
+```
+
+### General Storage Troubleshooting
+
+**Identifying Storage Hotspots**:
+```bash
+# Ceph: Check OSD IOPS distribution
+ceph osd perf | sort -k2 -n
+
+# System-level: I/O monitoring
+iostat -x 1 5  # Extended stats, 1 sec interval, 5 iterations
+iotop -o  # Show only processes doing I/O
+
+# Identify heavy I/O processes
+pidstat -d 1
+```
+
+**Data Corruption Detection**:
+```bash
+# Ceph: Deep scrub all PGs
+ceph pg deep-scrub <pg-id>
+
+# Enable automatic scrubbing
+ceph config set osd osd_scrub_auto_repair true
+
+# Check for silent data corruption
+# Verify checksums (BlueStore does this automatically)
+ceph daemon osd.<id> dump_mempools
+
+# For critical data: periodic verification
+md5sum /path/to/file > checksums.txt
+md5sum -c checksums.txt
+```
+
 ## Advanced Storage Concepts
 
 ### LSM Tree vs B-Tree Storage Engines

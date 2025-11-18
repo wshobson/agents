@@ -377,6 +377,258 @@ Services → Log Shipper → Central Store → Search/Analysis
 - Correlation IDs for tracing
 - Tools: ELK stack, Loki, ClickHouse
 
+## Troubleshooting High-Load Systems
+
+### Performance Degradation
+
+**Symptoms**: Increased latency, reduced throughput, timeouts
+
+**Diagnosis Steps**:
+```bash
+# 1. Check system resources
+top -b -n 1 | head -20
+free -h
+df -h
+
+# 2. Check application metrics
+# CPU usage, memory consumption, thread count
+ps aux | grep java | awk '{print $3, $4, $11}'
+
+# 3. Network connectivity
+netstat -an | grep ESTABLISHED | wc -l  # Connection count
+ss -s  # Socket statistics
+
+# 4. Database connections
+# Check connection pool exhaustion
+SHOW PROCESSLIST;  # MySQL
+SELECT * FROM pg_stat_activity;  # PostgreSQL
+
+# 5. Application logs
+tail -n 1000 /var/log/app.log | grep -i error
+journalctl -u myapp.service -n 100
+```
+
+**Common Causes & Solutions**:
+
+1. **Database Connection Pool Exhaustion**
+   - Symptom: "Too many connections" errors
+   - Solution: Increase pool size, add connection pooling (PgBouncer, HikariCP)
+   - Verify: Check pool metrics, active vs idle connections
+
+2. **Memory Leak**
+   - Symptom: Gradually increasing memory usage, OOM kills
+   - Diagnosis: `jmap -heap <pid>` (Java), `pmap -x <pid>`, memory profiling
+   - Solution: Analyze heap dumps, fix memory leaks, tune GC
+
+3. **Thread Pool Exhaustion**
+   - Symptom: Requests queuing, worker threads maxed out
+   - Solution: Increase thread pool size, optimize blocking operations
+   - Verify: Thread dump analysis `jstack <pid>` or `kill -3 <pid>`
+
+4. **Network Saturation**
+   - Symptom: High packet loss, retransmissions
+   - Diagnosis: `iftop`, `nethogs`, `tcpdump`
+   - Solution: Scale out, optimize payload size, enable compression
+
+### Database Performance Issues
+
+**Slow Queries**:
+```bash
+# MySQL slow query log
+SET GLOBAL slow_query_log = 'ON';
+SET GLOBAL long_query_time = 2;  # Log queries > 2 seconds
+
+# PostgreSQL
+ALTER SYSTEM SET log_min_duration_statement = 2000;  # milliseconds
+SELECT pg_reload_conf();
+
+# Analyze query execution plan
+EXPLAIN ANALYZE SELECT ...;
+
+# Check for missing indexes
+SELECT * FROM sys.schema_unused_indexes;  # MySQL
+SELECT * FROM pg_stat_user_indexes WHERE idx_scan = 0;  # PostgreSQL
+```
+
+**Solutions**:
+- Add indexes on frequently queried columns
+- Optimize JOIN operations (use INNER JOIN over subqueries)
+- Denormalize for read-heavy workloads
+- Use read replicas for reporting queries
+- Implement query result caching
+
+**Lock Contention**:
+```bash
+# MySQL
+SHOW ENGINE INNODB STATUS;
+SELECT * FROM information_schema.INNODB_LOCKS;
+
+# PostgreSQL
+SELECT * FROM pg_locks WHERE NOT granted;
+SELECT * FROM pg_stat_activity WHERE wait_event IS NOT NULL;
+```
+
+**Solutions**:
+- Reduce transaction scope (smaller, shorter transactions)
+- Use optimistic locking where possible
+- Implement row-level locking instead of table-level
+- Consider MVCC-friendly patterns
+
+### Cache-Related Issues
+
+**Cache Stampede (Thundering Herd)**:
+- **Problem**: Multiple requests simultaneously fetch same expired cache key
+- **Solution**: Probabilistic early expiration, cache warming, locking
+
+```python
+# Probabilistic early expiration
+import random
+def get_with_early_expiration(key, ttl=3600):
+    remaining_ttl = cache.ttl(key)
+    if remaining_ttl < ttl * 0.1 * random.random():
+        # Refresh cache early with probability
+        refresh_cache(key)
+    return cache.get(key)
+
+# Lock-based approach
+def get_with_lock(key):
+    value = cache.get(key)
+    if value is None:
+        lock_key = f"lock:{key}"
+        if cache.set(lock_key, "1", nx=True, ex=10):  # 10 sec lock
+            try:
+                value = fetch_from_db(key)
+                cache.set(key, value, ex=3600)
+            finally:
+                cache.delete(lock_key)
+        else:
+            # Wait for other thread to populate
+            time.sleep(0.1)
+            return get_with_lock(key)
+    return value
+```
+
+**Cache Hotspots**:
+- **Problem**: Single key accessed very frequently, overwhelming cache node
+- **Diagnosis**: Redis `MONITOR` command, slow log
+- **Solutions**:
+  - Local in-process cache (L1 cache) + distributed cache (L2)
+  - Key replication across multiple cache nodes
+  - Request coalescing at application layer
+
+### Service Mesh / Microservices Issues
+
+**Circuit Breaker Not Triggering**:
+```bash
+# Check circuit breaker metrics
+curl http://localhost:9090/actuator/metrics/resilience4j.circuitbreaker.state
+
+# Verify configuration
+# Ensure thresholds are appropriate
+resilience4j.circuitbreaker:
+  instances:
+    backendA:
+      failure-rate-threshold: 50  # Open circuit at 50% failure rate
+      wait-duration-in-open-state: 10s
+      sliding-window-size: 100
+```
+
+**Service Discovery Stale Entries**:
+- **Problem**: Load balancer routing to dead instances
+- **Diagnosis**: Check service registry (Consul, Eureka)
+- **Solution**: Reduce TTL, implement active health checks
+
+```bash
+# Consul health check
+curl http://localhost:8500/v1/health/service/myservice
+# Remove unhealthy instances manually if needed
+curl -X PUT http://localhost:8500/v1/agent/service/deregister/myservice-1
+```
+
+**Distributed Tracing Gaps**:
+- **Problem**: Missing spans, incomplete traces
+- **Solution**: Ensure trace context propagation across all services
+
+```python
+# Propagate trace context in HTTP headers
+from opentelemetry import trace
+from opentelemetry.propagate import inject
+
+headers = {}
+inject(headers)  # Inject trace context
+response = requests.get(url, headers=headers)
+```
+
+### Load Balancing Issues
+
+**Uneven Load Distribution**:
+```bash
+# Check backend server request counts
+# NGINX
+curl http://localhost/nginx_status
+
+# HAProxy
+echo "show stat" | socat stdio /var/run/haproxy.sock
+
+# Verify consistent hashing is working
+# For cache/database sharding
+```
+
+**Solutions**:
+- Switch from round-robin to least-connections algorithm
+- Implement weighted load balancing based on server capacity
+- Use power-of-two-choices for better distribution
+- Monitor server health and adjust weights dynamically
+
+### Message Queue Backlogs
+
+**Kafka Consumer Lag**:
+```bash
+# Check consumer group lag
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
+  --group my-group --describe
+
+# Topic partition distribution
+kafka-topics.sh --describe --topic my-topic --bootstrap-server localhost:9092
+```
+
+**Solutions**:
+- Increase consumer parallelism (more partitions, more consumers)
+- Optimize message processing (reduce per-message overhead)
+- Batch message consumption
+- Scale out consumer groups
+
+**RabbitMQ Queue Buildup**:
+```bash
+# Check queue depth
+rabbitmqctl list_queues name messages consumers
+
+# Monitor memory usage
+rabbitmqctl status | grep memory
+```
+
+**Solutions**:
+- Add more consumers
+- Implement message TTL and dead-letter queues
+- Increase prefetch count for better throughput
+- Enable lazy queues for large backlogs
+
+### API Gateway Bottlenecks
+
+**Rate Limiting False Positives**:
+- **Problem**: Legitimate users getting rate limited
+- **Solution**: Implement sliding window counters, per-user quotas
+- **Better approach**: Adaptive rate limiting based on backend capacity
+
+**Authentication Overhead**:
+```bash
+# Profile JWT validation time
+# If slow, consider:
+# 1. Cache decoded tokens (with short TTL)
+# 2. Use symmetric signing (HS256) instead of RSA
+# 3. Implement token blacklist with bloom filters
+```
+
 ## Real-World Case Studies
 
 ### Netflix Architecture

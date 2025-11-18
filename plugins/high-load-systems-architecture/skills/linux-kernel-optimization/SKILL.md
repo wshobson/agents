@@ -327,6 +327,380 @@ echo always > /sys/kernel/mm/transparent_hugepage/enabled
 echo mq-deadline > /sys/block/sda/queue/scheduler
 ```
 
+## Troubleshooting Kernel Performance Issues
+
+### High CPU Usage
+
+**Diagnosis**:
+```bash
+# Identify CPU-intensive processes
+top -b -n 1 | head -20
+ps aux --sort=-%cpu | head -10
+
+# CPU usage breakdown
+mpstat -P ALL 1 5  # Per-CPU statistics
+
+# Check for CPU throttling
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
+cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq
+
+# Identify context switches
+vmstat 1 5  # Look at 'cs' column
+
+# Profile CPU usage
+perf top -g  # Real-time profiling
+perf record -ag -- sleep 30
+perf report
+```
+
+**Common Causes & Solutions**:
+
+1. **CPU Frequency Scaling**
+   ```bash
+   # Check current governor
+   cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+   # Set to performance mode
+   echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+   # Make persistent
+   cpupower frequency-set -g performance
+   ```
+
+2. **Excessive Context Switching**
+   ```bash
+   # Identify source
+   perf sched record -- sleep 10
+   perf sched latency
+
+   # Solution: CPU pinning
+   taskset -c 0-3 <command>
+   ```
+
+3. **IRQ Storm**
+   ```bash
+   # Check interrupt counts
+   cat /proc/interrupts
+   watch -n 1 "cat /proc/interrupts | head -20"
+
+   # Distribute IRQs across CPUs
+   echo 2 > /proc/irq/<irq-num>/smp_affinity
+   # Or use irqbalance
+   systemctl start irqbalance
+   ```
+
+### Memory Issues
+
+**OOM Killer Triggered**:
+```bash
+# Check OOM events
+dmesg | grep -i "out of memory"
+journalctl -k | grep -i "killed process"
+
+# Identify memory hogs
+ps aux --sort=-%mem | head -10
+
+# Check memory fragmentation
+cat /proc/buddyinfo
+cat /proc/pagetypeinfo
+
+# Trigger memory compaction
+echo 1 > /proc/sys/vm/compact_memory
+
+# Adjust OOM score
+echo -500 > /proc/<pid>/oom_score_adj  # Less likely to be killed
+```
+
+**Memory Leak Detection**:
+```bash
+# Monitor memory usage over time
+while true; do
+  ps aux | grep <process> | awk '{print $6}'
+  sleep 60
+done
+
+# Detailed memory analysis
+pmap -x <pid>
+cat /proc/<pid>/smaps
+
+# Java heap analysis
+jmap -heap <pid>
+jmap -dump:format=b,file=heap.bin <pid>
+```
+
+**Swap Thrashing**:
+```bash
+# Check swap usage
+free -h
+swapon -s
+
+# Identify processes using swap
+for pid in $(ls /proc | grep -E '^[0-9]+$'); do
+  [ -f /proc/$pid/smaps ] && \
+  awk '/Swap:/ {sum+=$2} END {print sum}' /proc/$pid/smaps | \
+  xargs -I {} echo "$pid: {} KB"
+done | sort -t: -k2 -n
+
+# Solutions:
+# 1. Reduce swappiness
+sysctl vm.swappiness=10
+
+# 2. Add more RAM
+# 3. Optimize application memory usage
+```
+
+### I/O Performance Problems
+
+**High I/O Wait**:
+```bash
+# Check I/O wait percentage
+iostat -x 1 5  # Look at %iowait
+
+# Identify I/O-heavy processes
+iotop -o
+
+# Check disk queue depth
+cat /sys/block/sda/queue/nr_requests
+
+# Monitor I/O scheduler performance
+cat /sys/block/sda/queue/scheduler
+```
+
+**Slow Disk Performance**:
+```bash
+# Test disk performance
+dd if=/dev/zero of=/tmp/test bs=1M count=1024 conv=fdatasync
+hdparm -tT /dev/sda
+
+# Check for disk errors
+smartctl -a /dev/sda
+dmesg | grep -i error
+
+# Optimize I/O scheduler
+echo mq-deadline > /sys/block/sda/queue/scheduler  # For SSD
+echo none > /sys/block/nvme0n1/queue/scheduler  # For NVMe
+
+# Tune read-ahead
+echo 256 > /sys/block/sda/queue/read_ahead_kb
+
+# Check filesystem mount options
+mount | grep sda
+# Optimize: noatime, nodiratime for performance
+mount -o remount,noatime,nodiratime /dev/sda1
+```
+
+**io_uring Issues**:
+```bash
+# Check if io_uring is available
+cat /proc/sys/kernel/io_uring_disabled  # Should be 0
+
+# Monitor io_uring usage
+# Use bpftrace to trace io_uring calls
+bpftrace -e 'kprobe:io_uring_enter { @calls = count(); }'
+
+# Common issues:
+# 1. Kernel too old (< 5.1)
+uname -r
+
+# 2. Not enough memory locked (for fixed buffers)
+ulimit -l unlimited
+```
+
+### Network Performance Issues
+
+**High Packet Loss**:
+```bash
+# Check packet loss
+netstat -s | grep -i 'packet receive errors'
+ethtool -S eth0 | grep -i drop
+
+# Check ring buffer sizes
+ethtool -g eth0
+
+# Increase ring buffer
+ethtool -G eth0 rx 4096 tx 4096
+
+# Check for buffer overruns
+netstat -i  # Look at RX-OVR and TX-OVR
+```
+
+**TCP Retransmissions**:
+```bash
+# Monitor retransmissions
+ss -ti | grep -i retrans
+netstat -s | grep -i retrans
+
+# Check TCP buffer sizes
+sysctl net.ipv4.tcp_rmem
+sysctl net.ipv4.tcp_wmem
+
+# Optimize TCP buffers
+sysctl -w net.ipv4.tcp_rmem="4096 87380 134217728"
+sysctl -w net.ipv4.tcp_wmem="4096 65536 134217728"
+sysctl -w net.core.rmem_max=134217728
+sysctl -w net.core.wmem_max=134217728
+
+# Enable TCP BBR congestion control
+modprobe tcp_bbr
+sysctl -w net.ipv4.tcp_congestion_control=bbr
+```
+
+**Network Latency Spikes**:
+```bash
+# Measure latency
+ping -c 100 <destination>
+mtr -r -c 100 <destination>
+
+# Check for network interface errors
+ethtool -S eth0 | grep -i error
+
+# Disable interrupt coalescing (reduce latency)
+ethtool -C eth0 rx-usecs 0 tx-usecs 0
+
+# Enable RPS/RFS for multi-core scaling
+echo "ff" > /sys/class/net/eth0/queues/rx-0/rps_cpus
+```
+
+### cgroups Issues
+
+**cgroup OOM Kills**:
+```bash
+# Check cgroup memory limit
+cat /sys/fs/cgroup/memory/myapp/memory.limit_in_bytes
+cat /sys/fs/cgroup/memory/myapp/memory.usage_in_bytes
+
+# Check OOM events
+cat /sys/fs/cgroup/memory/myapp/memory.oom_control
+
+# Monitor memory pressure (cgroups v2)
+cat /sys/fs/cgroup/myapp/memory.pressure
+
+# Solutions:
+# 1. Increase memory limit
+echo 4294967296 > /sys/fs/cgroup/memory/myapp/memory.limit_in_bytes
+
+# 2. Enable memory.high soft limit (cgroups v2)
+echo 3221225472 > /sys/fs/cgroup/myapp/memory.high  # 3GB warning
+```
+
+**CPU Throttling**:
+```bash
+# Check CPU usage and throttling (cgroups v2)
+cat /sys/fs/cgroup/myapp/cpu.stat
+# Look for nr_throttled and throttled_usec
+
+# Check quota vs period
+cat /sys/fs/cgroup/myapp/cpu.max
+
+# Increase CPU quota
+echo "500000 100000" > /sys/fs/cgroup/myapp/cpu.max  # 5 CPUs
+
+# Monitor with systemctl (for systemd services)
+systemctl status myapp.service
+# Look for "CPU: <usage>"
+```
+
+### eBPF Troubleshooting
+
+**eBPF Program Won't Load**:
+```bash
+# Check error message
+bpftool prog load program.o /sys/fs/bpf/myprog
+# Common errors:
+# - Kernel version mismatch (BTF CO-RE issue)
+# - Invalid instruction
+# - Stack size exceeded
+
+# Verify eBPF support
+cat /proc/sys/kernel/unprivileged_bpf_disabled
+
+# Check loaded programs
+bpftool prog list
+
+# Unload stuck programs
+bpftool prog show id <id>
+rm /sys/fs/bpf/<prog-name>
+```
+
+**XDP Performance Not Improved**:
+```bash
+# Verify XDP mode (native vs generic)
+ip link show dev eth0
+# Look for "xdpgeneric" (slow) vs "xdp" (fast)
+
+# Ensure native XDP support
+ethtool -i eth0 | grep driver
+# Check if driver supports XDP
+
+# Monitor XDP statistics
+bpftool prog show id <xdp-id>
+cat /sys/class/net/eth0/statistics/rx_xdp_drop
+```
+
+### NUMA Issues
+
+**Cross-NUMA Memory Access**:
+```bash
+# Check NUMA topology
+numactl --hardware
+lscpu | grep NUMA
+
+# Identify cross-NUMA traffic
+numastat
+numastat -p <pid>
+
+# Check NUMA misses
+perf stat -e node-loads,node-load-misses -- <command>
+
+# Solutions:
+# 1. Pin process to NUMA node
+numactl --membind=0 --cpunodebind=0 <command>
+
+# 2. Enable automatic NUMA balancing
+echo 1 > /proc/sys/kernel/numa_balancing
+
+# 3. Use NUMA-aware allocations in application
+```
+
+### Real-Time Latency Issues
+
+**High Latency Spikes**:
+```bash
+# Measure latency with cyclictest
+cyclictest -m -Sp90 -i200 -h400 -q -D 24h
+
+# Check for latency sources
+hwlatdetect --duration=60
+
+# Common causes:
+# 1. SMI interrupts
+# Check BIOS settings, disable SMI if possible
+
+# 2. Timer tick interrupts
+# Verify nohz_full is active
+cat /sys/devices/system/cpu/nohz_full
+
+# 3. RCU callbacks
+# Offload RCU to housekeeping CPUs
+# Add to kernel cmdline: rcu_nocbs=2-7
+
+# 4. TLB shootdowns
+# Use huge pages to reduce TLB misses
+```
+
+**IRQ Affinity Not Working**:
+```bash
+# Check IRQ affinity
+cat /proc/irq/<irq-num>/smp_affinity
+
+# Set IRQ affinity
+echo 2 > /proc/irq/<irq-num>/smp_affinity  # CPU 1
+
+# Disable irqbalance if manual control needed
+systemctl stop irqbalance
+systemctl disable irqbalance
+```
+
 ## Advanced Technologies
 
 ### eBPF Programming
