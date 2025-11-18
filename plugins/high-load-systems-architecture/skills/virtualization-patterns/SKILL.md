@@ -398,19 +398,250 @@ Compute Node
 - Balance network load across NICs
 - Leave 20% CPU headroom for system
 
+## Advanced Virtualization Features
+
+### SR-IOV (Single Root I/O Virtualization)
+
+**Enabling SR-IOV**
+```bash
+# Enable SR-IOV on physical function (PF)
+echo 8 > /sys/class/net/eth0/device/sriov_numvfs
+
+# Verify virtual functions (VFs) created
+lspci | grep "Virtual Function"
+
+# Bind VF to vfio-pci driver
+echo "8086 154c" > /sys/bus/pci/drivers/vfio-pci/new_id
+```
+
+**VM Configuration with SR-IOV**
+```xml
+<interface type='hostdev' managed='yes'>
+  <source>
+    <address type='pci' domain='0x0000' bus='0x03' slot='0x10' function='0x0'/>
+  </source>
+  <mac address='52:54:00:12:34:56'/>
+  <model type='virtio'/>
+</interface>
+```
+- Pros: Near-native network performance, low CPU overhead
+- Cons: Live migration not supported, VF management complexity
+- Use case: High-throughput networking, low-latency applications
+
+### GPU Passthrough & vGPU
+
+**Full GPU Passthrough**
+```bash
+# Enable IOMMU in kernel cmdline
+# intel_iommu=on iommu=pt (Intel)
+# amd_iommu=on iommu=pt (AMD)
+
+# Bind GPU to vfio-pci
+echo "10de 1b80" > /sys/bus/pci/drivers/vfio-pci/new_id
+
+# VM configuration
+<hostdev mode='subsystem' type='pci' managed='yes'>
+  <source>
+    <address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+  </source>
+</hostdev>
+```
+- Pros: Full GPU performance, native drivers
+- Cons: No sharing, live migration not supported
+- Use case: GPU-intensive workloads, ML training
+
+**vGPU (GPU Virtualization)**
+```xml
+<!-- NVIDIA vGPU configuration -->
+<hostdev mode='subsystem' type='mdev' managed='no' model='vfio-pci'>
+  <source>
+    <address uuid='b0123456-7890-abcd-ef12-3456789abcde'/>
+  </source>
+</hostdev>
+```
+- Pros: GPU sharing among VMs, live migration possible
+- Cons: Reduced performance vs passthrough, licensing costs
+- Use case: VDI, multi-tenant GPU sharing
+
+### vDPA (virtio Data Path Acceleration)
+
+**vDPA Architecture**
+```
+VM (virtio driver) → vDPA device → Hardware (NIC/vDPA capable)
+```
+- Hardware-accelerated virtio
+- Combines virtio compatibility with hardware performance
+- Use case: High-performance I/O with live migration support
+
+**vDPA Configuration**
+```bash
+# Load vdpa modules
+modprobe vdpa
+modprobe vhost_vdpa
+
+# Create vDPA device
+vdpa dev add name vdpa0 mgmtdev pci/0000:03:00.0
+
+# VM uses vhost-vdpa backend
+<interface type='vdpa'>
+  <source dev='/dev/vhost-vdpa-0'/>
+  <model type='virtio'/>
+</interface>
+```
+
+### Confidential Computing
+
+**AMD SEV (Secure Encrypted Virtualization)**
+```xml
+<domain type='kvm'>
+  <launchSecurity type='sev'>
+    <policy>0x0003</policy>
+    <cbitpos>47</cbitpos>
+    <reducedPhysBits>1</reducedPhysBits>
+  </launchSecurity>
+</domain>
+```
+- VM memory encrypted with per-VM key
+- Protects against hypervisor/physical attacks
+- Use case: Sensitive workloads, compliance
+
+**Intel TDX (Trust Domain Extensions)**
+```xml
+<domain type='kvm'>
+  <features>
+    <tdx/>
+  </features>
+</domain>
+```
+- Hardware-isolated trusted execution environment
+- Protection from compromised hypervisor
+- Use case: Confidential cloud computing
+
+### MicroVM Patterns
+
+**Firecracker (AWS Lambda)**
+```bash
+# Start Firecracker microVM
+firecracker --api-sock /tmp/firecracker.socket
+
+# Configure via API
+curl -X PUT 'http://localhost/boot-source' \
+  -H 'Content-Type: application/json' \
+  -d '{"kernel_image_path": "/path/to/kernel", "boot_args": "console=ttyS0"}'
+
+# Start VM
+curl -X PUT 'http://localhost/actions' \
+  -d '{"action_type": "InstanceStart"}'
+```
+- Minimal device model (virtio-block, virtio-net only)
+- Fast boot (<125ms)
+- Low memory overhead (<5MB)
+- Use case: Serverless, FaaS platforms
+
+**Cloud Hypervisor**
+```bash
+# Start Cloud Hypervisor VM
+cloud-hypervisor \
+  --kernel /path/to/vmlinux \
+  --disk path=/path/to/disk.raw \
+  --cpus boot=2 \
+  --memory size=1G
+```
+- Rust-based, KVM-optimized
+- Modern VMM with minimal attack surface
+- Use case: Cloud-native workloads, Kubernetes
+
+### Nested Virtualization
+
+**Enable Nested Virtualization**
+```bash
+# Intel
+echo "options kvm-intel nested=1" > /etc/modprobe.d/kvm-intel.conf
+modprobe -r kvm-intel
+modprobe kvm-intel
+
+# AMD
+echo "options kvm-amd nested=1" > /etc/modprobe.d/kvm-amd.conf
+modprobe -r kvm-amd
+modprobe kvm-amd
+
+# Verify
+cat /sys/module/kvm_intel/parameters/nested  # Y = enabled
+```
+
+**L1 VM Configuration for Nested Virtualization**
+```xml
+<cpu mode='host-passthrough'>
+  <feature policy='require' name='vmx'/>  <!-- Intel -->
+  <!-- OR -->
+  <feature policy='require' name='svm'/>  <!-- AMD -->
+</cpu>
+```
+- Use case: Development, testing, cloud provider infrastructure
+- Performance: 10-30% overhead vs native virtualization
+
+## Performance Benchmarking
+
+### Storage Benchmarking
+```bash
+# fio sequential read
+fio --name=seqread --rw=read --bs=1M --size=10G --runtime=60
+
+# fio random IOPS
+fio --name=randread --rw=randread --bs=4k --iodepth=32 --runtime=60
+
+# Compare raw vs qcow2 vs rbd
+```
+
+### Network Benchmarking
+```bash
+# iperf3 throughput test
+iperf3 -c server_ip -t 60 -P 4
+
+# netperf latency test
+netperf -H server_ip -t TCP_RR
+
+# Compare virtio-net vs SR-IOV
+```
+
+### CPU Benchmarking
+```bash
+# sysbench CPU test
+sysbench cpu --threads=4 --time=60 run
+
+# Measure vCPU overhead
+# Compare pinned vs unpinned vCPUs
+```
+
 ## References
 
 ### KVM & libvirt
 - `/references/kvm-architecture.md` - KVM deep dive
 - `/references/libvirt-xml-guide.md` - VM XML reference
 - `/references/live-migration.md` - Live migration details
+- `/references/nested-virtualization.md` - Nested virt setup
+
+### Advanced Features
+- `/references/sriov-setup.md` - SR-IOV configuration guide
+- `/references/gpu-passthrough.md` - GPU passthrough guide
+- `/references/vgpu-setup.md` - vGPU configuration
+- `/references/vdpa-guide.md` - vDPA setup and tuning
+- `/references/confidential-computing.md` - SEV/TDX setup
+
+### MicroVMs
+- `/references/firecracker-guide.md` - Firecracker setup
+- `/references/cloud-hypervisor.md` - Cloud Hypervisor guide
+- `/references/kata-containers.md` - Kata Containers integration
 
 ### Performance Tuning
 - `/references/cpu-tuning.md` - CPU configuration guide
 - `/references/memory-tuning.md` - Memory optimization
 - `/references/storage-tuning.md` - Storage optimization
+- `/references/benchmarking-vms.md` - VM benchmarking guide
 
 ### Tools & Monitoring
 - `/references/virsh-commands.md` - virsh command reference
 - `/references/vm-monitoring.md` - Monitoring VMs
+- `/references/performance-profiling.md` - VM performance analysis
 - `/assets/vm-sizing-template.md` - VM sizing worksheet
+- `/assets/benchmark-results.md` - Benchmark comparison data

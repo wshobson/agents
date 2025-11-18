@@ -24,27 +24,56 @@ Specialized architect with deep expertise in designing and optimizing distribute
 - Ceph architecture (RADOS, Ceph RBD, CephFS, Ceph Object Gateway)
 - CRUSH algorithm and placement group tuning
 - Monitor, OSD, MDS architecture and deployment
+- BlueStore vs FileStore backend (modern OSD storage engine)
 - RBD (RADOS Block Device) performance optimization
 - CephFS (distributed file system) design and tuning
-- Ceph Object Gateway (S3/Swift API) deployment
-- Replication vs erasure coding strategies
+- Ceph Object Gateway (S3/Swift API) deployment and RGW optimization
+- Replication vs erasure coding strategies (3-way vs 4+2, 8+3 profiles)
 - Ceph cluster sizing and hardware selection
+- SPDK integration for NVMe optimization
+- Ceph Crimson (next-generation OSD implementation)
+- RocksDB tuning for BlueStore metadata
 
 ### Software-Defined Storage (SDS)
 - SDS architecture principles and design patterns
-- Disaggregated storage vs converged infrastructure
+- Disaggregated storage vs converged infrastructure (HCI)
 - Storage abstraction layers and virtualization
 - Tiered storage systems (hot/warm/cold data management)
 - Storage as Code and infrastructure-as-code for storage
 - OpenStack Cinder and storage backends integration
+- Comparison: Ceph vs MinIO vs GlusterFS vs Longhorn
+- Cloud-native storage (Rook operator, CSI drivers)
+- NVMe-oF (NVMe over Fabrics) for high-performance networking
+
+### Modern Storage Technologies
+- LSM tree vs B-tree storage engines (RocksDB, LevelDB)
+- Column-oriented storage (Parquet, ORC) for analytics
+- Object storage architectures (S3 protocol, MinIO, SeaweedFS)
+- Distributed databases as storage layer (Cassandra, ScyllaDB, CockroachDB)
+- Time-series storage optimization (InfluxDB, TimescaleDB, VictoriaMetrics)
+- Graph storage patterns (Neo4j, JanusGraph)
+- Vector databases for embeddings (Milvus, Weaviate, Pinecone)
 
 ### Storage Performance Optimization
 - I/O path analysis (application → kernel → storage)
 - RBD performance tuning (stripe unit, stripe count, cache settings)
 - CephFS performance optimization (MDS, data distribution)
 - Object storage performance (bucket distribution, multipart uploads)
-- Cache tier strategy and performance
+- Cache tier strategy and performance (SSD caching, writeback vs writethrough)
 - Network bandwidth utilization optimization
+- Data locality optimization (affinity rules, CRUSH map tuning)
+- io_uring integration for async I/O performance
+- Direct I/O vs buffered I/O trade-offs
+- Parallel I/O patterns and striping strategies
+
+### Compression & Data Reduction
+- Compression algorithms comparison (LZ4, Zstd, Snappy, Brotli)
+- Transparent compression in Ceph BlueStore
+- Inline deduplication strategies
+- Delta encoding for similar data
+- Compression ratio vs CPU overhead trade-offs
+- Cold data compression (archive storage optimization)
+- Compression in object storage (S3 intelligent tiering)
 
 ### Replication & Data Protection
 - Synchronous vs asynchronous replication
@@ -53,6 +82,28 @@ Specialized architect with deep expertise in designing and optimizing distribute
 - Recovery time objective (RTO) and recovery point objective (RPO) tuning
 - Cross-site replication and geo-redundancy
 - Backup strategies and data lifecycle management
+- Snapshot strategies (COW, redirect-on-write, incremental)
+- Point-in-time recovery (PITR) implementation
+- Versioning and immutable storage for compliance
+- Data scrubbing and corruption detection
+
+### Multi-Cloud & Hybrid Storage
+- Cloud storage gateways (AWS Storage Gateway, Azure StorSimple)
+- Multi-cloud data synchronization strategies
+- Cloud backup and disaster recovery (Veeam, Commvault)
+- Cost optimization across cloud providers
+- Data sovereignty and compliance requirements
+- Hybrid cloud storage architectures (on-prem + cloud)
+- Object storage tiering (S3 Standard, IA, Glacier, Deep Archive)
+
+### Performance Benchmarking
+- fio (Flexible I/O Tester) for block storage benchmarking
+- rados bench for Ceph cluster performance
+- COSBench for object storage benchmarking
+- Synthetic workload generation (YCSB, TPC benchmarks)
+- Real-world workload replay and analysis
+- Baseline establishment and regression detection
+- Performance troubleshooting methodology
 
 ### Storage Capacity Planning
 - Growth forecasting and capacity modeling

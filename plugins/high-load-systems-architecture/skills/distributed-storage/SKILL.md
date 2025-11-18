@@ -282,19 +282,111 @@ Keep 10-20% free space for recovery
 - 10GbE network
 - Separate journal storage
 
+## Advanced Storage Concepts
+
+### LSM Tree vs B-Tree Storage Engines
+
+**B-Tree (PostgreSQL, MySQL InnoDB)**
+```
+Structure: Balanced tree with sorted keys
+Reads: O(log n) - direct lookup
+Writes: In-place updates (slower, causes fragmentation)
+```
+- Pros: Fast point reads, range scans
+- Cons: Slow writes (random I/O), write amplification
+- Use case: Read-heavy workloads, transactional databases
+
+**LSM Tree (RocksDB, Cassandra, LevelDB)**
+```
+Structure: Multiple sorted levels (memtable → SST files)
+Reads: O(log n * levels) - check multiple levels
+Writes: Sequential append to memtable (faster)
+Compaction: Background merge of levels
+```
+- Pros: Fast writes (sequential I/O), good compression
+- Cons: Read amplification, compaction overhead
+- Use case: Write-heavy workloads, time-series data
+
+**Bloom Filters**
+- Probabilistic data structure to test set membership
+- Used in LSM trees to skip checking SSTables
+- False positives possible, no false negatives
+- Space-efficient (1-2 bytes per key)
+
+### Distributed Storage Comparison
+
+**Ceph**
+- Architecture: RADOS (object storage), RBD/CephFS/RGW interfaces
+- Pros: Unified storage (block, file, object), self-healing, CRUSH placement
+- Cons: Complex setup, resource-intensive (3+ MONs, many OSDs)
+- Use case: Enterprise, multi-protocol storage
+
+**MinIO**
+- Architecture: S3-compatible object storage, erasure coding
+- Pros: Simple setup, high performance, S3 API, Kubernetes-native
+- Cons: Object storage only, less mature than Ceph
+- Use case: Cloud-native object storage, backups, data lakes
+
+**GlusterFS**
+- Architecture: Distributed file system, no metadata server
+- Pros: Easy to deploy, scales horizontally, POSIX compliant
+- Cons: Performance issues at scale, metadata bottlenecks
+- Use case: File sharing, legacy applications needing POSIX
+
+**Longhorn (Kubernetes)**
+- Architecture: Cloud-native block storage for Kubernetes
+- Pros: Kubernetes-native, snapshot support, easy management
+- Cons: Kubernetes-only, newer project
+- Use case: Persistent volumes in Kubernetes
+
+### Multi-Region Replication
+
+**Active-Active Replication**
+```
+Region A ←→ Region B
+(bidirectional sync)
+```
+- Pros: Low latency for all regions, fault tolerance
+- Cons: Conflict resolution complexity, consistency challenges
+- Use case: Global applications, disaster recovery
+
+**Active-Passive Replication**
+```
+Region A (primary) → Region B (standby)
+```
+- Pros: Simpler consistency, lower cost
+- Cons: Higher latency for passive region, RTO delay
+- Use case: Disaster recovery, compliance
+
+**Disaster Recovery Strategies**
+- RTO (Recovery Time Objective): Maximum acceptable downtime
+- RPO (Recovery Point Objective): Maximum acceptable data loss
+- Strategies: Snapshots, replication, backups (3-2-1 rule)
+- Testing: Regular DR drills to validate procedures
+
 ## References
 
 ### Ceph Documentation
 - `/references/ceph-architecture.md` - Deep dive into Ceph architecture
 - `/references/crush-tuning.md` - CRUSH algorithm and tuning
 - `/references/performance-tuning.md` - Ceph performance optimization
+- `/references/bluestore-tuning.md` - BlueStore backend optimization
+- `/references/ceph-spdk-integration.md` - SPDK integration for NVMe
 
 ### Storage Strategy
 - `/references/replication-erasure-coding.md` - Detailed comparison
 - `/references/tiered-storage.md` - Tiered storage patterns
+- `/references/lsm-vs-btree.md` - Storage engine comparison
+- `/references/multi-region-replication.md` - Cross-region patterns
 - `/assets/capacity-planning-worksheet.md` - Capacity planning template
 
+### Storage Comparison
+- `/references/ceph-vs-minio.md` - Ceph vs MinIO comparison
+- `/references/distributed-storage-comparison.md` - Full comparison matrix
+- `/references/object-storage-protocols.md` - S3 vs Swift protocols
+
 ### Tools & Benchmarking
-- `/references/benchmarking-tools.md` - Storage benchmarking tools
-- `/references/monitoring-tools.md` - Storage monitoring
+- `/references/benchmarking-tools.md` - Storage benchmarking tools (fio, rados bench, COSBench)
+- `/references/monitoring-tools.md` - Storage monitoring (Prometheus, Grafana)
 - `/assets/performance-tuning-checklist.md` - Tuning checklist
+- `/assets/disaster-recovery-playbook.md` - DR procedures

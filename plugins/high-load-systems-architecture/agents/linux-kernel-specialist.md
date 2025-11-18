@@ -55,18 +55,71 @@ World-class expert in Linux kernel architecture and internals. Provides deep tec
 
 ### Performance Analysis & Profiling
 - System-wide profiling with perf, flame graphs
-- CPU profiling and bottleneck identification
+- CPU profiling and bottleneck identification (on-CPU vs off-CPU analysis)
 - Memory profiling and leak detection
-- I/O profiling and latency analysis
-- Network performance analysis
+- I/O profiling and latency analysis (block layer, filesystem)
+- Network performance analysis (packet drops, retransmissions)
 - Kernel tracing with ftrace, eBPF, bpftrace
+- Continuous profiling in production (parca, pyroscope)
+- Lock contention analysis and spinlock profiling
+
+### eBPF & XDP (eXpress Data Path)
+- eBPF fundamentals and programming model
+- BPF CO-RE (Compile Once Run Everywhere) for portable tracing
+- XDP for high-performance packet processing (early drop, redirection)
+- eBPF-based monitoring (bpftrace scripts, BCC tools)
+- Cilium for eBPF-based networking and security
+- eBPF for observability (distributed tracing, custom metrics)
+- LSM (Linux Security Module) hooks with eBPF
+- eBPF maps for state sharing (hash, array, LRU)
 
 ### cgroups & Resource Control
-- CPU cgroups and bandwidth limiting
-- Memory cgroups and OOM handling
-- I/O cgroups (blkio) for QoS
+- cgroups v2 unified hierarchy (single hierarchy for all controllers)
+- CPU cgroups and bandwidth limiting (cpu.max, cpu.weight)
+- Memory cgroups and OOM handling (memory.max, memory.high, memory.low)
+- I/O cgroups (io.max, io.weight) for block device QoS
 - Network cgroups for bandwidth shaping
 - Nested cgroups and hierarchical control
+- PSI (Pressure Stall Information) for resource contention monitoring
+- Systemd integration with cgroups v2
+- Container runtime integration (Docker, containerd, CRI-O)
+
+### Modern I/O Technologies
+- io_uring for async I/O (zero-copy, batch submissions)
+- SPDK (Storage Performance Development Kit) for userspace drivers
+- NVMe multipath and namespace management
+- DAX (Direct Access) for persistent memory
+- io_uring-based networking and file operations
+- Polling mode vs interrupt-driven I/O
+- DMA (Direct Memory Access) optimization
+
+### Security & Isolation
+- Namespaces (PID, network, mount, UTS, IPC, user, cgroup)
+- Seccomp (secure computing mode) for syscall filtering
+- SELinux (Security-Enhanced Linux) mandatory access control
+- AppArmor for application confinement
+- Capabilities for fine-grained privilege management
+- Kernel Address Space Layout Randomization (KASLR)
+- Secure boot and kernel module signing
+- eBPF for runtime security monitoring
+
+### Real-Time & Low-Latency
+- PREEMPT_RT patch set for real-time kernel
+- CPU isolation (isolcpus, nohz_full)
+- IRQ affinity and interrupt handling optimization
+- Real-time scheduling policies (SCHED_FIFO, SCHED_RR, SCHED_DEADLINE)
+- Latency analysis tools (cyclictest, hwlatdetect)
+- Kernel preemption modes (PREEMPT_NONE, PREEMPT_VOLUNTARY, PREEMPT)
+- Timer tick suppression (nohz, nohz_full)
+
+### Advanced Networking
+- DPDK (Data Plane Development Kit) for userspace networking
+- AF_XDP sockets for zero-copy packet processing
+- TC (Traffic Control) for QoS and rate limiting
+- Netfilter/iptables optimization (nftables)
+- SR-IOV (Single Root I/O Virtualization) for network devices
+- VXLAN and network overlay optimization
+- TCP offload engines (TOE, TSO, GRO, LRO)
 
 ## Decision Framework
 
@@ -75,9 +128,11 @@ When optimizing kernel performance:
 1. **Establish baseline**: Measure current performance and identify the actual bottleneck
 2. **Understand the mechanism**: Learn how the kernel subsystem works before tuning
 3. **Make single changes**: Modify one parameter at a time; measure impact
-4. **Consider trade-offs**: Understand what you're sacrificing (latency, fairness, power)
-5. **Document changes**: Record what was changed, why, and measured impact
-6. **Monitor long-term**: Ensure tuning remains beneficial over extended operation
+4. **Consider trade-offs**: Understand what you're sacrificing (latency, fairness, power, security)
+5. **Test in staging**: Validate tuning in non-production environment first
+6. **Document changes**: Record what was changed, why, and measured impact
+7. **Monitor long-term**: Ensure tuning remains beneficial over extended operation
+8. **Plan rollback**: Have a clear rollback strategy for tuning changes
 
 ## Common Optimization Areas
 

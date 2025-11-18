@@ -181,14 +181,57 @@ APAC Shard: Users in Asia-Pacific
 
 ## Architecture Patterns
 
+### Event-Driven Architecture
+```
+Service A → Event Bus (Kafka/RabbitMQ) → Service B, Service C
+```
+- Loose coupling between services
+- Asynchronous processing
+- Event sourcing for audit trails
+- Eventual consistency trade-offs
+- Use cases: Real-time analytics, notifications, workflow orchestration
+
+### CQRS (Command Query Responsibility Segregation)
+```
+Write Side: Commands → Write Model → Event Store
+Read Side: Events → Read Model(s) → Queries
+```
+- Separate models for reads and writes
+- Optimized read models (denormalized, cached)
+- Scalable read path independent of write path
+- Event sourcing often paired with CQRS
+- Trade-off: Complexity, eventual consistency
+
+### Saga Pattern (Distributed Transactions)
+**Choreography-Based Saga**
+```
+Order Service → Payment Service → Inventory Service
+     ↓ (events)      ↓ (events)        ↓ (events)
+Compensating transactions if any step fails
+```
+- Each service listens to events and triggers next step
+- No central coordinator
+- Decentralized decision-making
+
+**Orchestration-Based Saga**
+```
+Saga Orchestrator
+  ↓ coordinates
+Order Service, Payment Service, Inventory Service
+```
+- Central coordinator manages workflow
+- Easier to reason about flow
+- Single point of failure risk
+
 ### API Gateway Pattern
 ```
 Client → API Gateway → Service1, Service2, Service3
 ```
 - Single entry point for clients
-- Rate limiting, authentication
+- Rate limiting, authentication, authorization
 - Request routing and aggregation
-- Operational visibility
+- Protocol translation (REST to gRPC)
+- Operational visibility (metrics, tracing)
 
 ### Cache Layer
 ```
@@ -228,15 +271,68 @@ If service fails N times in duration D:
 - Fast failure detection
 - Graceful degradation
 
+### Service Mesh Pattern
+```
+Service A → Sidecar Proxy (Envoy) → Sidecar Proxy → Service B
+```
+- Observability (distributed tracing, metrics)
+- Traffic management (canary deployments, A/B testing)
+- Security (mTLS, authorization policies)
+- Resilience (retries, timeouts, circuit breakers)
+- Examples: Istio, Linkerd, Consul Connect
+
+### Rate Limiting Strategies
+
+**Token Bucket Algorithm**
+```
+Bucket capacity: N tokens
+Refill rate: R tokens per second
+Request: consumes 1 token
+If bucket empty → reject request
+```
+- Burst handling: allows bursts up to bucket capacity
+- Smooth refill: gradual token replenishment
+- Use case: API rate limiting
+
+**Leaky Bucket Algorithm**
+```
+Queue capacity: N requests
+Process rate: R requests per second
+Incoming request → queue
+If queue full → reject request
+```
+- Smooths traffic: processes at constant rate
+- No bursts: strict rate enforcement
+- Use case: Traffic shaping
+
+**Sliding Window Counter**
+```
+Track requests in time windows (e.g., 1 minute)
+Window slides continuously (not fixed intervals)
+Limit: X requests per window
+```
+- Accurate rate limiting
+- Prevents window boundary gaming
+- Use case: User quotas
+
+### Backpressure Mechanisms
+- Reject requests when overloaded (fail fast)
+- Queue with bounded capacity (shed load when full)
+- Throttle upstream producers (reactive streams)
+- Exponential backoff for retries
+- Circuit breaker to prevent cascading failures
+
 ## Optimization Techniques
 
 ### Database Query Optimization
-- Add indexes on frequently filtered columns
-- Analyze query execution plans
+- Add indexes on frequently filtered columns (B-tree, hash, GiST)
+- Analyze query execution plans (EXPLAIN ANALYZE)
 - Batch operations to reduce round-trips
 - Use read replicas for read-heavy queries
-- Archive old data to separate storage
-- Use connection pooling
+- Archive old data to separate storage (partitioning, cold storage)
+- Use connection pooling (PgBouncer, HikariCP)
+- Query result caching (Redis, application-level)
+- Denormalization for read-heavy workloads
 
 ### Network Optimization
 - Minimize network round-trips (multiplexing, batching)
@@ -253,18 +349,80 @@ If service fails N times in duration D:
 - Avoid unnecessary allocations
 - Profile to find hot paths
 
+### Observability Patterns
+
+**Distributed Tracing**
+```
+Request ID propagated across services
+Service A (span) → Service B (span) → Service C (span)
+Trace: collection of all spans for a request
+```
+- Tools: OpenTelemetry, Jaeger, Zipkin
+- Visualize latency breakdown across services
+- Identify bottlenecks in request flow
+
+**Metrics Collection**
+```
+Application → Metrics Exporter → Prometheus → Grafana
+```
+- RED metrics: Rate, Errors, Duration
+- USE metrics: Utilization, Saturation, Errors
+- SLI/SLO/SLA tracking
+
+**Log Aggregation**
+```
+Services → Log Shipper → Central Store → Search/Analysis
+```
+- Structured logging (JSON format)
+- Correlation IDs for tracing
+- Tools: ELK stack, Loki, ClickHouse
+
+## Real-World Case Studies
+
+### Netflix Architecture
+- **Scale**: 220M+ subscribers, 200M+ requests/sec
+- **Patterns**: Microservices, event-driven, chaos engineering
+- **Storage**: Cassandra for distributed database, S3 for content
+- **CDN**: Open Connect for content delivery
+- **Resilience**: Hystrix circuit breakers, Chaos Monkey
+
+### Amazon Architecture
+- **Scale**: 300M+ customers, 1.6M transactions/sec (Prime Day)
+- **Patterns**: Service-oriented architecture, two-pizza teams
+- **Storage**: DynamoDB for NoSQL, Aurora for relational
+- **Caching**: ElastiCache (Redis/Memcached)
+- **Queuing**: SQS for async processing, Kinesis for streaming
+
+### LinkedIn Architecture
+- **Scale**: 900M+ members, 100K+ events/sec
+- **Patterns**: Event-driven with Kafka, microservices
+- **Storage**: Espresso (distributed database), Venice (derived data)
+- **Real-time**: Samza for stream processing
+- **Analytics**: Pinot for real-time analytics
+
+### Twitter Architecture
+- **Scale**: 400M+ users, 6K tweets/sec average (70K peak)
+- **Patterns**: Timeline fanout (push vs pull), caching
+- **Storage**: Manhattan (distributed database), sharded MySQL
+- **Caching**: Multi-tier cache (L1: in-process, L2: Redis)
+- **Real-time**: Firehose for event streaming
+
 ## References
 
 ### Design Patterns
 - `/references/scaling-patterns.md` - Detailed scaling patterns
 - `/references/consistency-models.md` - Consistency models deep-dive
 - `/references/replication-strategies.md` - Replication pattern analysis
+- `/references/event-driven-architecture.md` - Event-driven patterns
+- `/references/saga-patterns.md` - Distributed transaction patterns
 
 ### Case Studies
 - `/assets/case-study-netflix-scaling.md` - Netflix architecture
-- `/assets/case-study-facebook-infrastructure.md` - Facebook infrastructure
-- `/assets/case-study-google-storage.md` - Google storage systems
+- `/assets/case-study-amazon-infrastructure.md` - Amazon infrastructure
+- `/assets/case-study-linkedin-kafka.md` - LinkedIn event streaming
+- `/assets/case-study-twitter-timeline.md` - Twitter timeline architecture
 
 ### Tools & Frameworks
 - `/references/architecture-tools.md` - Architecture planning tools
 - `/references/benchmarking-tools.md` - Performance measurement tools
+- `/references/observability-stack.md` - Monitoring and tracing tools

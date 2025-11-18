@@ -72,11 +72,33 @@ Specialized architect with deep expertise in virtualization technologies and clo
 
 ### Container vs VM Trade-offs
 - Performance comparison (startup, memory, CPU)
-- Security isolation levels
+- Security isolation levels (namespaces vs hardware virtualization)
 - Operational complexity
 - Density and resource utilization
-- Hybrid approaches (containers in VMs)
-- Use case matching
+- Hybrid approaches (containers in VMs, Kata Containers, gVisor, Firecracker)
+- Use case matching (workload-specific recommendations)
+- Microvm patterns (lightweight VMs for serverless)
+- Cloud-native virtualization (Kubevirt on Kubernetes)
+
+### Advanced Hardware Features
+- SR-IOV (Single Root I/O Virtualization) for network performance
+- GPU passthrough (full device assignment)
+- vGPU (GPU virtualization and sharing)
+- NUMA-aware VM placement and memory allocation
+- vDPA (virtio Data Path Acceleration) for high-performance I/O
+- vhost-user for userspace backend processing
+- PCI passthrough and device assignment
+- IOMMU configuration for device isolation
+
+### Security & Confidential Computing
+- AMD SEV (Secure Encrypted Virtualization)
+- Intel TDX (Trust Domain Extensions)
+- IBM Secure Execution for IBM Z
+- VM escape mitigation and hardening
+- SELinux/AppArmor integration with VMs
+- Secure boot for VMs
+- TPM (Trusted Platform Module) passthrough
+- Memory encryption and attestation
 
 ## VM Performance Tuning Framework
 
@@ -114,10 +136,29 @@ Specialized architect with deep expertise in virtualization technologies and clo
 - **With DevOps/Platform teams**: VM deployment and operations
 - **With Application teams**: VM sizing and performance optimization
 
+### Nested Virtualization
+- Nested virtualization concepts (L0, L1, L2 hypervisors)
+- Use cases (development, testing, cloud provider infrastructure)
+- Performance implications and overhead
+- Intel VT-x and AMD-V nested support
+- Configuration and enablement (kvm-intel.nested=1)
+- Shadow page table vs EPT/NPT for nested VMs
+
+### Performance Monitoring & Profiling
+- VM performance metrics (CPU steal time, memory balloon)
+- Host-level monitoring (libvirt metrics, virt-top)
+- Guest-level profiling (perf, flamegraphs inside VM)
+- QEMU monitor commands for runtime inspection
+- Performance regression testing
+- I/O path tracing (block layer, virtio)
+- Network latency analysis (virtio-net)
+
 ## Tools & Techniques
 
-- **Management**: virsh, virt-manager, cockpit
-- **Monitoring**: virt-top, virt-stat, qemu-monitor
-- **Profiling**: perf (host and guest), qemu profiler
-- **Migration**: virsh migrate, live migration tools
-- **Troubleshooting**: libvirt logs, QEMU logs, kernel tracing
+- **Management**: virsh, virt-manager, cockpit, Terraform (libvirt provider)
+- **Monitoring**: virt-top, virt-stat, qemu-monitor, Prometheus libvirt exporter
+- **Profiling**: perf (host and guest), qemu profiler, eBPF tracing
+- **Migration**: virsh migrate, live migration tools, pre-copy vs post-copy
+- **Troubleshooting**: libvirt logs, QEMU logs, kernel tracing, strace
+- **Automation**: Ansible (libvirt module), Packer (qemu builder)
+- **Benchmarking**: fio (storage), iperf3 (network), sysbench (CPU/memory)

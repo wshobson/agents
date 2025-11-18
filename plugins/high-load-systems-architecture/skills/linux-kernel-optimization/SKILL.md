@@ -327,14 +327,170 @@ echo always > /sys/kernel/mm/transparent_hugepage/enabled
 echo mq-deadline > /sys/block/sda/queue/scheduler
 ```
 
+## Advanced Technologies
+
+### eBPF Programming
+
+**Basic eBPF Program Structure**
+```c
+// Count syscalls
+#include <linux/bpf.h>
+#include <bpf/bpf_helpers.h>
+
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __uint(max_entries, 1024);
+    __type(key, u32);
+    __type(value, u64);
+} syscall_count SEC(".maps");
+
+SEC("tracepoint/raw_syscalls/sys_enter")
+int count_syscalls(struct trace_event_raw_sys_enter *ctx) {
+    u32 key = ctx->id;
+    u64 *count = bpf_map_lookup_elem(&syscall_count, &key);
+    if (count) (*count)++;
+    else {
+        u64 init = 1;
+        bpf_map_update_elem(&syscall_count, &key, &init, BPF_ANY);
+    }
+    return 0;
+}
+```
+
+**BPF CO-RE (Compile Once Run Everywhere)**
+```bash
+# Use libbpf and BTF for portable programs
+clang -O2 -g -target bpf -c program.bpf.c -o program.bpf.o
+
+# Load with bpftool
+bpftool prog load program.bpf.o /sys/fs/bpf/myprog
+```
+
+**Common eBPF Use Cases**
+- System call tracing and filtering
+- Network packet inspection (XDP)
+- Performance monitoring (CPU, memory, I/O)
+- Security monitoring (LSM hooks)
+- Custom metrics collection
+
+### io_uring for Async I/O
+
+**Basic io_uring Setup**
+```c
+#include <liburing.h>
+
+struct io_uring ring;
+io_uring_queue_init(256, &ring, 0);
+
+// Submit read operation
+struct io_uring_sqe *sqe = io_uring_get_sqe(&ring);
+io_uring_prep_read(sqe, fd, buf, size, offset);
+io_uring_sqe_set_data(sqe, user_data);
+io_uring_submit(&ring);
+
+// Wait for completion
+struct io_uring_cqe *cqe;
+io_uring_wait_cqe(&ring, &cqe);
+// Process result: cqe->res
+io_uring_cqe_seen(&ring, cqe);
+```
+
+**io_uring Features**
+- Zero-copy operations (IORING_OP_READ_FIXED)
+- Batch submissions (reduce syscall overhead)
+- Polling mode (IORING_SETUP_IOPOLL)
+- Fixed files (IORING_REGISTER_FILES)
+- Network operations (send, recv, accept)
+
+### cgroups v2 Unified Hierarchy
+
+**Migration from v1 to v2**
+```bash
+# Enable cgroups v2
+mount -t cgroup2 none /sys/fs/cgroup
+
+# Create cgroup
+mkdir /sys/fs/cgroup/myapp
+
+# Set CPU limit (50% of one CPU)
+echo "50000 100000" > /sys/fs/cgroup/myapp/cpu.max
+
+# Set memory limit (2GB)
+echo "2147483648" > /sys/fs/cgroup/myapp/memory.max
+
+# Move process to cgroup
+echo $PID > /sys/fs/cgroup/myapp/cgroup.procs
+```
+
+**Pressure Stall Information (PSI)**
+```bash
+# Monitor resource pressure
+cat /proc/pressure/cpu
+cat /proc/pressure/memory
+cat /proc/pressure/io
+
+# Output format:
+# some avg10=2.00 avg60=1.50 avg300=1.00 total=500000
+# full avg10=0.50 avg60=0.30 avg300=0.20 total=100000
+```
+- **some**: Some processes delayed
+- **full**: All processes delayed
+- Use for load shedding decisions
+
+### Real-Time Kernel Tuning
+
+**PREEMPT_RT Kernel**
+```bash
+# Check if kernel is real-time
+uname -a | grep PREEMPT_RT
+
+# Install RT kernel (Debian/Ubuntu)
+apt-get install linux-image-rt-amd64
+
+# Verify preemption mode
+cat /sys/kernel/debug/sched/preempt
+```
+
+**Real-Time Scheduling**
+```bash
+# Set SCHED_FIFO with priority 50
+chrt -f 50 my-realtime-app
+
+# CPU isolation for real-time
+# Add to kernel cmdline: isolcpus=2-7 nohz_full=2-7
+
+# Disable timer ticks on isolated CPUs
+echo 0 > /proc/sys/kernel/timer_migration
+```
+
+**Latency Analysis**
+```bash
+# Measure latency with cyclictest
+cyclictest -m -Sp90 -i200 -h400 -q
+
+# Hardware latency detection
+hwlatdetect --duration=60
+```
+
 ## References
 
 ### Kernel Documentation
 - `/references/kernel-tuning-guide.md` - Comprehensive tuning guide
 - `/references/scheduler-tuning.md` - CFS scheduler deep dive
 - `/references/network-stack-tuning.md` - Network optimization details
+- `/references/ebpf-programming-guide.md` - eBPF development guide
+- `/references/io_uring-guide.md` - io_uring usage patterns
+- `/references/cgroups-v2-migration.md` - cgroups v2 migration
+- `/references/realtime-kernel-guide.md` - Real-time kernel setup
 
 ### Profiling Tools
 - `/references/perf-guide.md` - Perf profiling guide
 - `/references/flamegraph-guide.md` - Flame graph visualization
+- `/references/bpftrace-scripts.md` - bpftrace examples
+- `/references/ebpf-tools.md` - BCC and libbpf tools
 - `/assets/profiling-checklist.md` - Profiling checklist
+
+### Advanced Topics
+- `/references/psi-monitoring.md` - PSI-based load management
+- `/references/dpdk-setup.md` - DPDK userspace networking
+- `/references/xdp-programming.md` - XDP packet processing
