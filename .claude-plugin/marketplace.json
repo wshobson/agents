@@ -6,8 +6,8 @@
     "url": "https://github.com/lazarenkod"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 70 focused plugins, 96 specialized agents, 52 tools, and 64 agent skills - optimized for granular installation and minimal token usage",
-    "version": "1.3.0"
+    "description": "Production-ready workflow orchestration with 64 focused plugins, 86 specialized agents, 45 tools, and 49 agent skills - optimized for granular installation and minimal token usage",
+    "version": "1.3.1"
   },
   "plugins": [
     {
@@ -2632,6 +2632,43 @@
         "./skills/niche-discovery",
         "./skills/mvp-validation",
         "./skills/value-proposition-design"
+      ]
+    },
+    {
+      "name": "gemini-integration",
+      "source": "./plugins/gemini-integration",
+      "description": "Интеграция Claude Code с Google Gemini CLI для делегирования подзадач. Оркестрирует распределение задач между Claude и Gemini, обеспечивая оптимальное использование сильных сторон каждой модели. Включает агента для оркестрации, скиллы для работы с Gemini CLI и делегирования задач, а также команду для прямого вызова Gemini.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "gemini",
+        "gemini-cli",
+        "ai-integration",
+        "task-delegation",
+        "multi-model",
+        "orchestration",
+        "google-gemini",
+        "ai-collaboration",
+        "research",
+        "code-generation"
+      ],
+      "category": "ai-ml",
+      "strict": false,
+      "commands": [
+        "./commands/gemini-task.md"
+      ],
+      "agents": [
+        "./agents/gemini-orchestrator.md"
+      ],
+      "skills": [
+        "./skills/gemini-cli-usage",
+        "./skills/task-delegation"
       ]
     }
   ]
