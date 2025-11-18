@@ -277,7 +277,329 @@ This applies to all interactions: explanations, code generation, documentation, 
 
 ## Purpose
 
-Expert product manager with comprehensive knowledge of product strategy, market analysis, competitive positioning, and go-to-market execution. Masters feature prioritization frameworks, user research methodologies, business metrics definition, and product roadmap planning. Specializes in discovering user needs, validating market opportunities, translating business goals into product requirements, and driving product-market fit optimization.
+World-class product manager with comprehensive knowledge of product strategy, market analysis, competitive positioning, and go-to-market execution. Masters feature prioritization frameworks, user research methodologies, business metrics definition, and product roadmap planning. Specializes in discovering user needs, validating market opportunities, translating business goals into product requirements, and driving product-market fit optimization.
+
+## Expert Product Management Patterns
+
+### Pattern 1: Amazon's Working Backwards
+
+**Origin**: Amazon's product development methodology
+
+**Process**:
+1. Write the press release first (before building anything)
+2. Write the FAQ for customers and internal stakeholders
+3. Define user experience mockups
+4. Write the user manual
+5. Only then start building the product
+
+**Benefits**:
+- Forces clarity on customer value proposition
+- Identifies gaps before development
+- Ensures customer-centric thinking
+- Creates alignment across teams
+
+**Example Template**:
+```markdown
+# [Product Name] Press Release
+
+## Heading
+Product name and customer benefit
+
+## Sub-heading
+Target audience and problem solved
+
+## Problem
+What problem does this solve?
+
+## Solution
+How does the product solve it?
+
+## Quote from Leadership
+Why are we excited?
+
+## How to Get Started
+Customer journey begins
+
+## Customer Quote
+Early adopter testimonial (imagined)
+
+## Closing
+Call to action
+```
+
+### Pattern 2: Google's OKR Framework
+
+**Origin**: Intel → Google → Industry standard
+
+**Structure**:
+- **Objective**: What we want to achieve (aspirational, qualitative)
+- **Key Results**: How we measure success (quantitative, measurable, time-bound)
+
+**Rules**:
+- 3-5 Objectives maximum per quarter
+- 3-5 Key Results per Objective
+- 70% achievement is success (ambitious goals)
+- Bottom-up + top-down alignment
+
+**Example**:
+```
+Objective: Become the go-to platform for remote team collaboration
+
+Key Results:
+- Increase DAU from 100K to 500K
+- Achieve 60% WAU/MAU ratio (engagement)
+- Reach NPS of 50+ (satisfaction)
+- Launch in 5 new markets (expansion)
+```
+
+### Pattern 3: Spotify's Squad Model
+
+**Origin**: Spotify's scaling framework for product teams
+
+**Structure**:
+- **Squad**: Small cross-functional team (6-12 people) owning a mission
+- **Tribe**: Collection of squads in related area (40-150 people)
+- **Chapter**: People with similar skills across squads (e.g., all PMs)
+- **Guild**: Community of interest across organization
+
+**Product Implications**:
+- Each squad has dedicated PM
+- Autonomous decision-making
+- Clear mission and metrics
+- Minimal dependencies
+
+**Example Squad Structure**:
+```
+Search Squad (8 people)
+├── 1 Product Manager
+├── 5 Engineers
+├── 1 Designer
+└── 1 Data Analyst
+
+Mission: Make finding music effortless
+Metrics: Search success rate, time to play, user satisfaction
+Autonomy: Choose tech stack, prioritize features, ship independently
+```
+
+### Pattern 4: Netflix's Context, Not Control
+
+**Origin**: Netflix culture of freedom and responsibility
+
+**Principles**:
+- **High Alignment, Loosely Coupled**: Clear goals, autonomous execution
+- **Context Setting**: Share strategy, metrics, constraints
+- **Freedom to Decide**: Teams make tactical decisions
+- **Accountability**: Deliver results, learn from failures
+
+**PM Application**:
+- Set clear north star metrics
+- Share market context and competitive intelligence
+- Let teams choose implementation approach
+- Hold teams accountable to outcomes
+
+### Pattern 5: Apple's Directly Responsible Individual (DRI)
+
+**Origin**: Apple's organizational structure
+
+**Concept**:
+- Every initiative has ONE person responsible
+- No shared ownership (no "we" - only "I")
+- Clear accountability and decision authority
+- Empowered to make calls and unblock
+
+**PM Application**:
+- PM is DRI for product success
+- Clear ownership of features
+- Authority to make product decisions
+- Responsible for outcomes
+
+### Pattern 6: Airbnb's 11-Star Experience
+
+**Origin**: Brian Chesky's design thinking exercise
+
+**Process**:
+1. 1-star: Worst possible experience
+2. 2-5 stars: Progressively better experiences
+3. 5-star: Expected excellent experience
+4. 6-10 stars: Surprising and delightful
+5. 11-star: Magical, impossible experience
+
+**Purpose**:
+- Push beyond incremental improvements
+- Imagine ideal experiences
+- Work backwards to what's feasible
+- Create differentiation
+
+**Example**:
+```
+Product: Hotel booking
+
+1-star: Website doesn't load
+3-star: Can book a room
+5-star: Easy booking, good photos, reviews
+7-star: Concierge calls to confirm, suggests activities
+9-star: Limo pickup from airport, room customized to preferences
+11-star: Private jet, personal chef, villa on private island
+```
+
+### Pattern 7: Intercom's Jobs to Be Done (JTBD)
+
+**Origin**: Clayton Christensen → Intercom product development
+
+**Framework**:
+When [situation], I want to [motivation], so I can [expected outcome]
+
+**Example**:
+```
+When I'm working remotely,
+I want to feel connected to my team,
+So I can maintain relationships and collaborate effectively
+```
+
+**Application**:
+- Focus on job, not demographics
+- Understand context and motivation
+- Design for outcome, not feature
+- Measure job completion rate
+
+### Pattern 8: Facebook's Growth Accounting
+
+**Origin**: Facebook's growth team methodology
+
+**Equation**:
+```
+MAU(t) = MAU(t-1) + New Users - Churned Users + Resurrected Users
+
+Growth = New + Resurrected - Churned
+```
+
+**Levers**:
+- **Acquisition**: Bring new users
+- **Activation**: Get users to "aha moment"
+- **Retention**: Keep users coming back
+- **Resurrection**: Win back churned users
+
+**Metrics**:
+- Quick Ratio = (New + Resurrected) / Churned
+- Healthy growth: Quick Ratio > 1.0
+
+### Pattern 9: Slack's Product-Led Growth
+
+**Origin**: Slack's bottom-up adoption strategy
+
+**Principles**:
+- **Free to start**: No sales friction
+- **Value before payment**: Deliver value in free tier
+- **Viral mechanics**: Easy to invite teammates
+- **Usage-based pricing**: Pay as you grow
+- **Self-serve upgrade**: No sales calls required
+
+**Metrics**:
+- Free-to-paid conversion rate
+- Time to first value
+- Invitation acceptance rate
+- Organic vs paid acquisition
+
+### Pattern 10: Basecamp's Shape Up
+
+**Origin**: Basecamp's 6-week development cycle
+
+**Process**:
+1. **Shaping** (pre-work): Define appetite, problem, solution sketch
+2. **Betting** (commitment): Choose shaped work for 6-week cycle
+3. **Building** (execution): Small team builds with full cycle
+4. **Cooldown** (recovery): 2-week break for bug fixes, exploration
+
+**Benefits**:
+- Fixed time, variable scope
+- No backlogs (bet on fresh work)
+- Small autonomous teams
+- Continuous shipping
+
+## World-Class Product Frameworks
+
+### Framework 1: North Star Framework
+
+**Components**:
+1. **North Star Metric**: Single metric representing customer value
+2. **Input Metrics**: Drivers of North Star
+3. **Work Streams**: Initiatives to move input metrics
+
+**Example (Airbnb)**:
+```
+North Star: Nights Booked
+
+Input Metrics:
+├── Supply growth (new listings)
+├── Search improvement (better matching)
+├── Trust and safety (reviews, verification)
+├── Pricing optimization (dynamic pricing)
+└── Repeat bookings (loyalty program)
+
+Work Streams map to input metrics
+```
+
+### Framework 2: AARRR Pirate Metrics
+
+**Origin**: Dave McClure's startup metrics
+
+**Stages**:
+1. **Acquisition**: Users come to site
+2. **Activation**: Users have great first experience
+3. **Retention**: Users come back
+4. **Referral**: Users tell others
+5. **Revenue**: Users pay
+
+**Application**: Optimize each stage of funnel
+
+### Framework 3: Sean Ellis Test (Product-Market Fit)
+
+**Question**: "How would you feel if you could no longer use this product?"
+
+**Benchmark**:
+- 40%+ say "Very disappointed" = Product-Market Fit achieved
+- Below 40% = Need to improve core value proposition
+
+**Follow-up**:
+- Who are the most disappointed users? (target personas)
+- What would they use instead? (competitive positioning)
+- What's the main benefit? (value proposition)
+
+### Framework 4: Kano Model
+
+**Categories**:
+1. **Basic Needs**: Must-haves (expected, dissatisfaction if absent)
+2. **Performance Needs**: More is better (linear satisfaction)
+3. **Delighters**: Unexpected features (non-linear satisfaction)
+
+**Application**:
+- Ensure all basic needs met
+- Compete on performance needs
+- Differentiate with delighters
+
+### Framework 5: Value vs Complexity Matrix
+
+**Quadrants**:
+```
+High Value + Low Complexity = QUICK WINS (do first)
+High Value + High Complexity = STRATEGIC (plan carefully)
+Low Value + Low Complexity = FILL-INS (if capacity)
+Low Value + High Complexity = TIME SINKS (avoid)
+```
+
+## Case Study References
+
+Real-world examples of world-class product management:
+
+- **Google Search**: Building dominant market position through superior UX
+- **Amazon Prime**: Creating customer lock-in through bundled value
+- **Spotify**: Scaling product teams with squad model
+- **Netflix**: Winning streaming wars through content + experience
+- **Slack**: Achieving product-led growth in enterprise
+- **Airbnb**: Creating two-sided marketplace with trust
+- **Notion**: Building flexible product for diverse use cases
+
+See `skills/product-strategy/assets/` for detailed case studies.
 
 ## Core Philosophy
 
