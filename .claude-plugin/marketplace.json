@@ -2314,6 +2314,57 @@
         "./skills/ansible-marketplace-provisioning",
         "./skills/terraform-vkcs-provider"
       ]
+    },
+    {
+      "name": "high-load-systems-architecture",
+      "source": "./plugins/high-load-systems-architecture",
+      "description": "Expert architecture for high-load distributed systems. Specializes in Linux kernel optimization, OS internals, storage architecture (Ceph, SDS), and cloud virtualization (KVM, libvirt). Provides strategic guidance for designing, optimizing, and scaling mission-critical infrastructure.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "high-load-systems",
+        "system-architecture",
+        "linux-kernel",
+        "kernel-optimization",
+        "os-internals",
+        "distributed-storage",
+        "ceph",
+        "software-defined-storage",
+        "sds",
+        "virtualization",
+        "kvm",
+        "libvirt",
+        "cloud-platform",
+        "performance-optimization",
+        "infrastructure-design",
+        "scalability",
+        "system-tuning",
+        "storage-architecture"
+      ],
+      "category": "infrastructure",
+      "strict": false,
+      "commands": [
+        "./commands/design-high-load-system.md",
+        "./commands/optimize-linux-system.md"
+      ],
+      "agents": [
+        "./agents/high-load-architect.md",
+        "./agents/linux-kernel-specialist.md",
+        "./agents/storage-architect.md",
+        "./agents/virtualization-architect.md"
+      ],
+      "skills": [
+        "./skills/high-load-system-design",
+        "./skills/linux-kernel-optimization",
+        "./skills/distributed-storage",
+        "./skills/virtualization-patterns"
+      ]
     }
   ]
 }
