@@ -2378,6 +2378,64 @@
         "./skills/cpu-steal-time-optimization",
         "./skills/virtualization-performance-tuning"
       ]
+    },
+    {
+      "name": "startup-founder",
+      "source": "./plugins/startup-founder",
+      "description": "World-class startup founder and CEO expertise for building companies from 0 to $100M ARR. Comprehensive guidance on fundraising from top VCs (Sequoia, a16z), team building, growth strategies, product-market fit, and operational scaling. Includes expert agents for fundraising, team building, and growth, plus skills for VC fundraising, PMF validation, niche discovery, MVP development, and value proposition design.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "startup",
+        "founder",
+        "ceo",
+        "fundraising",
+        "venture-capital",
+        "sequoia",
+        "andreessen-horowitz",
+        "series-a",
+        "series-b",
+        "team-building",
+        "growth-strategy",
+        "product-market-fit",
+        "mvp",
+        "pitch-deck",
+        "value-proposition",
+        "go-to-market",
+        "scaling",
+        "unicorn",
+        "100m-arr",
+        "yc",
+        "benchmark",
+        "niche-discovery",
+        "market-analysis"
+      ],
+      "category": "business",
+      "strict": false,
+      "commands": [
+        "./commands/startup-init.md",
+        "./commands/pitch-deck-generator.md",
+        "./commands/business-model-canvas.md"
+      ],
+      "agents": [
+        "./agents/startup-founder-ceo.md",
+        "./agents/fundraising-expert.md",
+        "./agents/team-builder.md",
+        "./agents/growth-strategist.md"
+      ],
+      "skills": [
+        "./skills/venture-capital-fundraising",
+        "./skills/product-market-fit",
+        "./skills/niche-discovery",
+        "./skills/mvp-validation",
+        "./skills/value-proposition-design"
+      ]
     }
   ]
 }
