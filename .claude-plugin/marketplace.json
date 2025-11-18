@@ -1976,8 +1976,8 @@
     {
       "name": "product-management",
       "source": "./plugins/product-management",
-      "description": "Product strategy, market analysis, roadmap planning, and go-to-market execution with full Claude Agent SDK integration. Real-time competitive intelligence via WebSearch, automated user feedback analysis, market research automation, multi-product portfolio management, and collaborative cross-functional workflows. Expert guidance on feature prioritization, user research, competitive positioning, and product-market fit optimization.",
-      "version": "2.0.0",
+      "description": "World-class product management with expert patterns from Amazon, Google, Facebook, Stripe, Anthropic, AWS, and leading tech companies. Includes Growth PM (viral loops, metrics), AI PM (LLM products, responsible AI), Platform PM (APIs, ecosystems), and general Product Manager. Comprehensive frameworks: Amazon Working Backwards, Google OKRs, Spotify Squads, Growth Accounting, Constitutional AI, Platform Flywheels. Real-world case studies: Prime, Spotify, Slack, Claude, AWS. PLUS: Complete interview preparation for CPO, Head of Product, and PM roles at Google, AWS, Microsoft, OpenAI, Anthropic - includes Interview Coach agent, comprehensive frameworks (CIRCLES, GAME, STAR), 6-week prep roadmap, and interactive mock interviews. Full Claude Agent SDK integration for competitive intelligence, user research automation, and data-driven decision making.",
+      "version": "3.1.0",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
@@ -1987,6 +1987,22 @@
       "license": "MIT",
       "keywords": [
         "product-management",
+        "growth-product-manager",
+        "ai-product-manager",
+        "platform-product-manager",
+        "interview-prep",
+        "pm-interview",
+        "cpo-interview",
+        "head-of-product",
+        "google-interview",
+        "amazon-interview",
+        "microsoft-interview",
+        "openai-interview",
+        "anthropic-interview",
+        "circles-framework",
+        "game-framework",
+        "star-method",
+        "mock-interview",
         "strategy",
         "roadmap",
         "user-research",
@@ -1996,21 +2012,39 @@
         "prioritization",
         "product-analytics",
         "ab-testing",
+        "growth-hacking",
+        "viral-loops",
+        "llm-products",
+        "ai-strategy",
+        "platform-strategy",
+        "developer-experience",
+        "api-design",
         "sdk-automation",
         "metrics-tracking",
-        "user-behavior"
+        "amazon-working-backwards",
+        "google-okr",
+        "facebook-growth"
       ],
       "category": "business",
       "strict": false,
       "commands": [
-        "./commands/strategy-analysis.md"
+        "./commands/strategy-analysis.md",
+        "./commands/practice-interview.md"
       ],
       "agents": [
-        "./agents/product-manager.md"
+        "./agents/product-manager.md",
+        "./agents/growth-product-manager.md",
+        "./agents/ai-product-manager.md",
+        "./agents/platform-product-manager.md",
+        "./agents/interview-coach.md"
       ],
       "skills": [
         "./skills/product-strategy",
-        "./skills/sdk-product-analytics"
+        "./skills/growth-hacking",
+        "./skills/ai-product-strategy",
+        "./skills/platform-strategy",
+        "./skills/sdk-product-analytics",
+        "./skills/pm-interview-prep"
       ]
     },
     {
