@@ -398,6 +398,418 @@ Compute Node
 - Balance network load across NICs
 - Leave 20% CPU headroom for system
 
+## Troubleshooting Virtualization Issues
+
+### VM Performance Problems
+
+**VM Running Slow**:
+```bash
+# Check host resource usage
+top
+free -h
+iostat -x 1 5
+
+# Check VM resource allocation
+virsh dominfo <vm-name>
+virsh vcpuinfo <vm-name>
+
+# Monitor VM CPU usage from host
+virt-top
+
+# Check CPU steal time (inside VM)
+top  # Look at 'st' (steal time) column
+vmstat 1 5  # 'st' column
+
+# Solutions:
+# 1. Reduce CPU overcommit ratio
+# 2. Pin vCPUs to physical CPUs
+virsh vcpupin <vm-name> 0 0  # Pin vCPU 0 to physical CPU 0
+
+# 3. Set CPU topology
+virsh edit <vm-name>
+# Add: <topology sockets='1' cores='2' threads='2'/>
+```
+
+**High I/O Latency in VM**:
+```bash
+# Check I/O scheduler (inside VM)
+cat /sys/block/vda/queue/scheduler
+
+# Check virtio-blk vs virtio-scsi
+lsblk -o NAME,ROTA,DISC-GRAN,DISC-MAX
+virsh domblklist <vm-name>
+
+# Test I/O performance
+fio --filename=/dev/vda --direct=1 --rw=randread --bs=4k --ioengine=libaio --iodepth=32
+
+# Solutions:
+# 1. Use virtio-scsi for better performance
+<disk type='file' device='disk'>
+  <driver name='qemu' type='raw' cache='none' io='native'/>
+  <target dev='sda' bus='scsi'/>
+</disk>
+
+# 2. Enable discard/trim
+<disk type='file' device='disk'>
+  <driver name='qemu' type='raw' discard='unmap'/>
+</disk>
+
+# 3. Use raw format instead of qcow2
+qemu-img convert -f qcow2 -O raw source.qcow2 destination.raw
+```
+
+**VM Network Performance Issues**:
+```bash
+# Check network device type
+virsh dumpxml <vm-name> | grep -A 5 "interface type"
+
+# Test network throughput
+iperf3 -c <server-ip> -t 60
+
+# Check for packet drops
+ethtool -S <interface> | grep drop
+
+# Solutions:
+# 1. Use virtio-net for best performance
+<interface type='bridge'>
+  <model type='virtio'/>
+</interface>
+
+# 2. Enable multi-queue
+<interface type='bridge'>
+  <driver queues='4'/>
+  <model type='virtio'/>
+</interface>
+
+# 3. Use vhost-net kernel acceleration
+modprobe vhost_net
+# Should be enabled by default with virtio
+
+# 4. For ultimate performance: SR-IOV
+# (see SR-IOV section in Advanced Features)
+```
+
+### VM Won't Start
+
+**VM Fails to Start**:
+```bash
+# Check error messages
+virsh start <vm-name>
+journalctl -u libvirtd -n 50
+
+# Check QEMU logs
+tail -50 /var/log/libvirt/qemu/<vm-name>.log
+
+# Common issues:
+
+# 1. Missing disk image
+virsh domblklist <vm-name>
+ls -lh /var/lib/libvirt/images/<disk.img>
+
+# 2. Permission issues
+chown qemu:qemu /var/lib/libvirt/images/<disk.img>
+chmod 644 /var/lib/libvirt/images/<disk.img>
+
+# 3. Locked by another process
+virsh domblkinfo <vm-name> vda
+lsof | grep <disk.img>
+
+# 4. Insufficient resources
+free -h  # Check available RAM
+virsh dominfo <vm-name>  # Check VM memory requirement
+```
+
+**VM in Paused State**:
+```bash
+# Check VM state
+virsh domstate <vm-name>
+
+# Resume paused VM
+virsh resume <vm-name>
+
+# Common causes:
+# 1. I/O error on disk
+virsh domblkerror <vm-name>
+
+# 2. Host out of memory
+dmesg | grep -i "out of memory"
+free -h
+
+# 3. Storage backend unreachable (e.g., Ceph down)
+ceph -s  # If using Ceph
+```
+
+### Live Migration Issues
+
+**Migration Fails**:
+```bash
+# Attempt migration with verbose logging
+virsh migrate --live --verbose <vm-name> qemu+ssh://dest-host/system
+
+# Check migration progress
+virsh domjobinfo <vm-name>
+
+# Common failures:
+
+# 1. Incompatible CPU models
+# Source and destination must have compatible CPUs
+virsh domcapabilities
+# Solution: Use <cpu mode='host-model'/> or specific model
+
+# 2. Storage not accessible on destination
+# For shared storage: ensure both hosts can access
+# For non-shared: use --copy-storage-all
+virsh migrate --live --copy-storage-all <vm-name> qemu+ssh://dest/system
+
+# 3. Network connectivity issues
+ping <dest-host>
+ssh <dest-host> hostname
+
+# 4. libvirt version mismatch
+virsh version  # Run on both hosts
+```
+
+**Migration Too Slow / Never Completes**:
+```bash
+# Check memory dirtying rate
+virsh domstats <vm-name> | grep dirty
+
+# Monitor migration progress
+virsh domjobinfo <vm-name>
+# Look at "Data remaining" and "Data processed"
+
+# Solutions:
+# 1. Reduce workload during migration
+# 2. Increase migration bandwidth
+virsh migrate-setmaxdowntime <vm-name> 1000  # 1 second
+
+# 3. Use post-copy migration (higher risk)
+virsh migrate --live --postcopy <vm-name> qemu+ssh://dest/system
+
+# 4. Suspend and resume instead of live migrate
+virsh suspend <vm-name>
+virsh migrate <vm-name> qemu+ssh://dest/system
+virsh resume <vm-name>
+```
+
+### Memory Issues
+
+**VM Memory Ballooning Not Working**:
+```bash
+# Check balloon driver in VM
+lsmod | grep virtio_balloon  # Inside VM
+
+# Check balloon size from host
+virsh dommemstat <vm-name>
+
+# Set balloon target
+virsh setmem <vm-name> 2048M --live
+
+# Solutions:
+# 1. Ensure balloon driver is loaded in guest
+modprobe virtio_balloon  # Inside VM
+
+# 2. Check VM XML configuration
+virsh edit <vm-name>
+# Ensure: <memballoon model='virtio'/>
+
+# 3. Install guest agent
+apt-get install qemu-guest-agent  # Debian/Ubuntu
+yum install qemu-guest-agent      # RHEL/CentOS
+systemctl start qemu-guest-agent
+```
+
+**Huge Pages Not Working**:
+```bash
+# Check huge pages allocation on host
+cat /proc/meminfo | grep Huge
+hugeadm --pool-list
+
+# Allocate huge pages
+echo 1024 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+
+# Verify VM is using huge pages
+virsh dumpxml <vm-name> | grep hugepages
+grep -i huge /proc/<qemu-pid>/smaps
+
+# Solutions:
+# 1. Pre-allocate huge pages
+echo 1024 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+
+# 2. Make persistent
+echo "vm.nr_hugepages = 1024" >> /etc/sysctl.conf
+sysctl -p
+
+# 3. Configure VM to use huge pages
+<memoryBacking>
+  <hugepages/>
+</memoryBacking>
+```
+
+### SR-IOV Issues
+
+**VF Not Available**:
+```bash
+# Check if SR-IOV is enabled
+lspci | grep "Virtual Function"
+
+# Check VF count
+cat /sys/class/net/<pf-interface>/device/sriov_numvfs
+
+# Enable SR-IOV
+echo 8 > /sys/class/net/<pf-interface>/device/sriov_numvfs
+
+# Check for errors
+dmesg | tail -20
+
+# Common issues:
+# 1. IOMMU not enabled
+# Add to kernel cmdline: intel_iommu=on iommu=pt
+dmesg | grep -i iommu
+
+# 2. NIC driver doesn't support SR-IOV
+ethtool -i <interface> | grep driver
+# Check driver documentation for SR-IOV support
+```
+
+**VM Can't Use VF**:
+```bash
+# Verify VF is bound to vfio-pci
+lspci -k -s <vf-pci-address>
+# Should show: Kernel driver in use: vfio-pci
+
+# Bind VF to vfio-pci
+echo <vf-pci-address> > /sys/bus/pci/drivers/<current-driver>/unbind
+echo <vendor-id> <device-id> > /sys/bus/pci/drivers/vfio-pci/new_id
+
+# Check VM XML
+virsh dumpxml <vm-name> | grep -A 10 hostdev
+
+# Inside VM: verify device
+lspci | grep Ethernet
+ip link show
+```
+
+### GPU Passthrough Issues
+
+**GPU Not Accessible in VM**:
+```bash
+# Check GPU is bound to vfio-pci
+lspci -k | grep -A 3 VGA
+
+# Bind GPU to vfio-pci
+echo <gpu-pci-address> > /sys/bus/pci/drivers/nvidia/unbind
+echo <vendor-id> <device-id> > /sys/bus/pci/drivers/vfio-pci/new_id
+
+# Check IOMMU groups
+find /sys/kernel/iommu_groups/ -type l
+
+# Verify VM configuration
+virsh dumpxml <vm-name> | grep -A 10 hostdev
+
+# Inside VM: check GPU
+lspci | grep VGA
+nvidia-smi  # For NVIDIA GPUs
+```
+
+**Error 43 with NVIDIA GPU**:
+```bash
+# NVIDIA detects it's running in VM and disables
+# Solution: Hide VM from NVIDIA driver
+
+virsh edit <vm-name>
+# Add inside <features>:
+<features>
+  <hyperv>
+    <vendor_id state='on' value='1234567890ab'/>
+  </hyperv>
+  <kvm>
+    <hidden state='on'/>
+  </kvm>
+</features>
+
+# Also set CPU to host-passthrough
+<cpu mode='host-passthrough'/>
+```
+
+### Nested Virtualization Issues
+
+**Nested VMs Won't Start**:
+```bash
+# Check if nested virtualization is enabled (host)
+cat /sys/module/kvm_intel/parameters/nested  # Intel
+cat /sys/module/kvm_amd/parameters/nested    # AMD
+
+# Enable nested virtualization
+echo "options kvm-intel nested=1" > /etc/modprobe.d/kvm-intel.conf
+modprobe -r kvm-intel
+modprobe kvm-intel
+
+# Check L1 VM has VMX/SVM flag
+virsh dumpxml <vm-name> | grep cpu
+# Should have:
+<cpu mode='host-passthrough'>
+  <feature policy='require' name='vmx'/>  <!-- Intel -->
+</cpu>
+
+# Inside L1 VM: verify
+egrep -o '(vmx|svm)' /proc/cpuinfo
+```
+
+**Poor Performance in Nested VMs**:
+```bash
+# Expected: 10-30% overhead vs native
+# If worse, check:
+
+# 1. CPU mode should be host-passthrough
+virsh dumpxml <l1-vm> | grep cpu
+
+# 2. Enable EPT/NPT (should be automatic)
+cat /sys/module/kvm_intel/parameters/ept
+
+# 3. Reduce nesting depth (L3+ very slow)
+# Consider: containers in L1 VM instead of L2 VMs
+```
+
+### Monitoring and Diagnostics
+
+**Collect VM Performance Data**:
+```bash
+# CPU stats
+virsh vcpuinfo <vm-name>
+virsh cpu-stats <vm-name>
+
+# Memory stats
+virsh dommemstat <vm-name>
+
+# Disk I/O stats
+virsh domblkstat <vm-name> vda
+
+# Network stats
+virsh domifstat <vm-name> vnet0
+
+# Comprehensive monitoring
+virt-top
+```
+
+**Enable Debug Logging**:
+```bash
+# Enable libvirt debug logging
+virsh log --level 1  # 1 = debug, 4 = error
+
+# Check logs
+journalctl -u libvirtd -f
+
+# QEMU debug
+# Edit VM XML:
+<domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
+  <qemu:commandline>
+    <qemu:arg value='-d'/>
+    <qemu:arg value='cpu,exec,int'/>
+  </qemu:commandline>
+</domain>
+```
+
 ## Advanced Virtualization Features
 
 ### SR-IOV (Single Root I/O Virtualization)
