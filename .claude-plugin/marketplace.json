@@ -2212,8 +2212,8 @@
     {
       "name": "ceo-operating-system",
       "source": "./plugins/ceo-operating-system",
-      "description": "Chief Executive Officer operating system for strategic vision, execution management, board governance, and organizational leadership. Provides comprehensive CEO guidance with proven frameworks (OKRs, EXO model) for building and scaling high-performing companies.",
-      "version": "1.0.0",
+      "description": "World-class Chief Executive Officer operating system with enhanced strategic vision, execution excellence, crisis management, and innovation strategy. Provides comprehensive CEO guidance with proven frameworks (OKRs, EXO model, First Principles Thinking) and best practices from Google, Amazon, Apple, Tesla, Netflix, and Microsoft. Includes advanced decision-making frameworks, board governance, investor relations, and organizational resilience. Features Russian language support and automatic markdown output.",
+      "version": "1.1.0",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
@@ -2231,7 +2231,13 @@
         "investor-relations",
         "organizational-leadership",
         "fundraising",
-        "company-building"
+        "company-building",
+        "crisis-management",
+        "innovation-strategy",
+        "world-class-ceo",
+        "business-resilience",
+        "first-principles-thinking",
+        "russian-language-support"
       ],
       "category": "executive-leadership",
       "strict": false,
@@ -2245,7 +2251,9 @@
         "./skills/strategic-vision",
         "./skills/execution-excellence",
         "./skills/board-investor-relations",
-        "./skills/leadership-organization"
+        "./skills/leadership-organization",
+        "./skills/crisis-management",
+        "./skills/innovation-strategy"
       ]
     },
     {

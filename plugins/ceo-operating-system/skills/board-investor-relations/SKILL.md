@@ -291,10 +291,347 @@ When using this skill, specify your preferred language in your request.
 - Make adjustments to composition or process
 - Celebrate board effectiveness
 
+## World-Class Board & Investor Practices
+
+### Exceptional Board Governance
+
+**Sequoia Capital's Board Excellence**:
+- Focus on 3 key questions: People, Strategy, Cash
+- Monthly metrics dashboard (sent 1 week before)
+- Board meetings are strategic, not operational
+- "Heads up, not hands on" approach
+- Build trust through transparency
+
+**Andreessen Horowitz (a16z) Operating System**:
+- Network support (functional experts available to CEOs)
+- Talent network for hiring
+- Marketing and PR support
+- Technical resources and diligence
+- CEO peer groups and coaching
+
+**Benchmark Capital's Approach**:
+- Equal partnership model (no hierarchy)
+- Deep involvement with portfolio companies
+- Focus on company-building, not just returns
+- Long-term partnership mindset
+- Help with difficult decisions
+
+### World-Class Fundraising
+
+**Y Combinator's Fundraising Framework**:
+- Raise when you don't need to (position of strength)
+- 2-3 week fundraising sprint (intense focus)
+- Create competition among investors (multiple term sheets)
+- Focus on "founder-friendly" terms
+- Choose investors for value-add, not just valuation
+
+**First Round Capital's Investor Selection**:
+- Look for operational experience, not just capital
+- Check references on investors (founder backchannel)
+- Ensure strategic alignment beyond money
+- Consider investor's LP base and fund status
+- Value communication style and response time
+
+**Bill Gurley's Board Dynamics** (Benchmark):
+- Keep board small (5-7 members ideal)
+- Avoid observers (dilutes focus)
+- Ensure board has relevant experience
+- No more than 2-3 VCs on board
+- Independent directors add objectivity
+
+**Successful Fundraising Narratives**:
+
+**Airbnb's Story**:
+- Started with "rent air mattresses in your living room" (struggle to raise)
+- Pivoted to "belong anywhere" (inspiring mission)
+- Focused on market size and global opportunity
+- Highlighted network effects and brand
+- Raised at increasing valuations through multiple rounds
+
+**Stripe's Story**:
+- "Increase GDP of the internet"
+- Developer-first approach
+- Focus on infrastructure, not just payments
+- Global platform from day one
+- Built trust through product excellence and transparency
+
+**Uber's Story**:
+- "Everyone's private driver" (aspirational)
+- 10x better than taxis (clear value prop)
+- Network effects and winner-take-all dynamics
+- Global expansion plan
+- Aggressive growth metrics
+
+### Investor Communication Best Practices
+
+**Fred Wilson's (Union Square Ventures) Update Format**:
+- Send monthly (consistency matters)
+- Start with highlights and lowlights
+- Key metrics dashboard
+- Ask for specific help
+- Keep it concise (2-3 pages max)
+
+**Reid Hoffman's Approach** (Greylock, LinkedIn founder):
+- Share bad news immediately, don't wait
+- Board members should learn about problems from CEO first
+- Frame challenges with potential solutions
+- Use board for strategic advice, not tactical firefighting
+- Build relationships beyond board meetings
+
+**Mark Suster's Board Communication** (Upfront Ventures):
+- No surprises rule (brief board on major issues before meeting)
+- Send materials 5-7 days before board meeting
+- Executive summary at top (busy people read that first)
+- Data-driven but tell the story behind numbers
+- End with clear asks and decisions needed
+
+### Difficult Board Situations
+
+**Pivoting the Company**:
+- Present data showing current path isn't working
+- Share customer insights and market feedback
+- Propose clear alternative direction
+- Show pivot leverages existing assets/learning
+- Get board alignment before execution
+
+**Raising a Down Round**:
+- Acknowledge miss transparently
+- Focus on path forward and recovery plan
+- Protect employee morale and equity
+- Consider alternatives (bridge round, inside round)
+- Manage dilution and maintain team motivation
+
+**CEO Succession/Transition**:
+- Plan succession proactively (not in crisis)
+- Develop internal candidates when possible
+- Use search firm for external candidates
+- Ensure smooth transition (6-12 months overlap)
+- Board leads process (not outgoing CEO alone)
+
+**Founder-Board Conflicts**:
+- Address conflicts early and directly
+- Seek mediation from trusted advisor
+- Find common ground (everyone wants company success)
+- Consider bringing in outside facilitator
+- Be willing to compromise while protecting vision
+
+### Board Meeting Excellence
+
+**Best Practices from Top Companies**:
+
+**Amazon's 6-Page Memo**:
+- No PowerPoint, only written narratives
+- Everyone reads silently for 20 minutes at start
+- Forces clear thinking and complete arguments
+- Q&A is deeper and more substantive
+- Appendix has detailed data
+
+**Netflix's Context Setting**:
+- Extensive pre-reading (sent well in advance)
+- Meeting is for discussion and decisions, not presentation
+- Focus on strategic questions, not tactical updates
+- Encourage dissent and debate
+- Clear outcomes and action items
+
+**Google/Alphabet's Board Focus**:
+- Technology demos and product reviews
+- Competitive analysis and market trends
+- Strategic initiatives and big bets
+- Talent review (succession planning)
+- Risk assessment and mitigation
+
+### Venture Capital & Fundraising Ecosystem
+
+**Top-Tier VC Firms** (for reference):
+
+**Enterprise/SaaS**:
+- Bessemer Venture Partners
+- Emergence Capital
+- Battery Ventures
+- Accel
+
+**Consumer/Marketplace**:
+- Andreessen Horowitz (a16z)
+- Benchmark Capital
+- Greylock Partners
+- Sequoia Capital
+
+**Generalist/Multi-stage**:
+- Sequoia Capital
+- Index Ventures
+- Lightspeed Venture Partners
+- General Catalyst
+
+**Later Stage/Growth**:
+- Tiger Global
+- Coatue
+- Insight Partners
+- Thrive Capital
+
+**What Top VCs Look For**:
+1. **Team**: Why this team is uniquely qualified
+2. **Market**: Large and growing addressable market
+3. **Product**: Compelling product-market fit
+4. **Traction**: Real customer adoption and growth
+5. **Unit Economics**: Path to profitability
+6. **Defensibility**: What's the moat?
+7. **Vision**: Where can this go in 10 years?
+
+## Board Communication Templates
+
+### Monthly Investor Update Template
+
+```markdown
+**[Company] Investor Update - [Month Year]**
+
+**TL;DR** (Executive Summary):
+- Key Win: [Biggest achievement]
+- Key Challenge: [Biggest concern]
+- Cash runway: [X months], Next raise: [Timeline]
+- Ask: [Specific help needed]
+
+**Metrics Dashboard**:
+| Metric | Current | Last Month | Target | Status |
+|--------|---------|----------|--------|---------|
+| MRR | $X | $Y | $Z | 🟢/🟡/🔴 |
+| Customers | X | Y | Z | 🟢/🟡/🔴 |
+| Churn | X% | Y% | <5% | 🟢/🟡/🔴 |
+| Burn Rate | $X | $Y | $Z | 🟢/🟡/🔴 |
+
+**Highlights This Month**:
+- [Win 1]
+- [Win 2]
+- [Win 3]
+
+**Lowlights/Challenges**:
+- [Challenge 1 and what we're doing about it]
+- [Challenge 2 and what we're doing about it]
+
+**Key Initiatives Update**:
+- [Initiative 1]: Status and progress
+- [Initiative 2]: Status and progress
+
+**Team Updates**:
+- [New hires, departures, key achievements]
+
+**Upcoming Milestones**:
+- [Milestone 1]: [Timeline]
+- [Milestone 2]: [Timeline]
+
+**Asks** (How can investors help?):
+- [Specific ask 1: e.g., intro to potential customer]
+- [Specific ask 2: e.g., advice on pricing strategy]
+```
+
+### Board Meeting Materials Template
+
+```markdown
+**[Company] Board Meeting - [Date]**
+**Duration**: 2-3 hours
+
+**EXECUTIVE SUMMARY** (1 page)
+
+**Company Health**: 🟢 Good / 🟡 Cautionary / 🔴 Urgent attention needed
+
+**Quarter Highlights**:
+- [Key win 1]
+- [Key win 2]
+- [Key win 3]
+
+**Key Challenges**:
+- [Challenge 1]
+- [Challenge 2]
+
+**Board Decisions Needed**:
+1. [Decision 1]
+2. [Decision 2]
+
+---
+
+**SECTION 1: BUSINESS REVIEW** (5-10 pages)
+
+**Financial Performance**:
+- Revenue: [Actual vs. Plan vs. Last Quarter]
+- Expenses: [Breakdown by category]
+- Cash: [Current balance, burn rate, runway]
+- Updated forecast and scenarios
+
+**Operational Metrics**:
+- [Key metric 1]: Performance and trend
+- [Key metric 2]: Performance and trend
+- [Customer metrics]: Acquisition, retention, satisfaction
+
+**Product & Engineering**:
+- Roadmap progress
+- Key launches and outcomes
+- Technical infrastructure updates
+- Product metrics and usage
+
+**SECTION 2: STRATEGIC DISCUSSION** (3-5 pages)
+
+**Market & Competition**:
+- Market dynamics and trends
+- Competitive moves and analysis
+- Our positioning and differentiation
+
+**Strategic Priorities** (next 6-12 months):
+1. [Priority 1]: Rationale and plan
+2. [Priority 2]: Rationale and plan
+3. [Priority 3]: Rationale and plan
+
+**Strategic Options for Discussion**:
+- [Option A]: Pros, cons, implications
+- [Option B]: Pros, cons, implications
+
+**SECTION 3: PEOPLE & ORGANIZATION** (2-3 pages)
+
+**Team Updates**:
+- New hires and departures
+- Key open roles
+- Organization changes
+
+**Culture & Engagement**:
+- Employee satisfaction trends
+- Culture initiatives
+- Retention metrics
+
+**Leadership Development**:
+- Succession planning
+- Leadership gaps and plans
+
+**SECTION 4: GOVERNANCE & DECISIONS** (1-2 pages)
+
+**Decisions Needed**:
+1. [Decision 1]: Context, options, recommendation
+2. [Decision 2]: Context, options, recommendation
+
+**Board Committee Updates**:
+- Audit committee
+- Compensation committee
+
+**Action Items from Last Meeting**:
+- [Item 1]: Status
+- [Item 2]: Status
+
+**APPENDIX**: Detailed financial statements, product demos, etc.
+```
+
 ## References
 
-- The Creator's Code by Amy Wilkinson (leadership and relationships)
-- Venture Deals by Brad Feld & Jason Mendelson (fundraising and board)
-- Board of Advisors best practices by board service organizations
-- Director's Dilemma Harvard Business Review articles
-- Good to Great by Jim Collins (leadership and governance)
+### Books
+- **Venture Deals** by Brad Feld & Jason Mendelson (fundraising and board)
+- **The Secrets of Sand Hill Road** by Scott Kupor (how VCs work)
+- **High Growth Handbook** by Elad Gil (scaling with investors)
+- **The Creator's Code** by Amy Wilkinson (leadership and relationships)
+- **Blitzscaling** by Reid Hoffman (rapid growth strategies)
+- **Zero to One** by Peter Thiel (venture mindset)
+- **The Hard Thing About Hard Things** by Ben Horowitz (tough decisions)
+
+### Frameworks & Resources
+- Y Combinator's Startup School (fundraising content)
+- First Round Review (board and investor articles)
+- Fred Wilson's AVC blog (VC perspective)
+- Mark Suster's Both Sides of the Table (VC advice)
+- Sequoia Capital's resources for founders
+- a16z's podcast and content library
+- Board of Advisors best practices by NACD
