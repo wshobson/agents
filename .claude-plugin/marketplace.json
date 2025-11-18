@@ -2318,8 +2318,8 @@
     {
       "name": "high-load-systems-architecture",
       "source": "./plugins/high-load-systems-architecture",
-      "description": "Expert architecture for high-load distributed systems. Specializes in Linux kernel optimization, OS internals, storage architecture (Ceph, SDS), and cloud virtualization (KVM, libvirt). Provides strategic guidance for designing, optimizing, and scaling mission-critical infrastructure.",
-      "version": "1.0.0",
+      "description": "World-class architecture for high-load distributed systems. Specializes in Linux kernel optimization, OS internals, storage architecture (Ceph, SDS), cloud virtualization (KVM, libvirt), CPU steal time optimization, and advanced virtualization performance tuning. Provides strategic guidance for designing, optimizing, and scaling mission-critical infrastructure with expert-level performance optimization.",
+      "version": "2.0.0",
       "author": {
         "name": "Dmitry Lazarenko",
         "url": "https://github.com/lazarenkod"
@@ -2345,7 +2345,16 @@
         "infrastructure-design",
         "scalability",
         "system-tuning",
-        "storage-architecture"
+        "storage-architecture",
+        "cpu-steal-time",
+        "virtualization-performance",
+        "vm-optimization",
+        "hypervisor-tuning",
+        "vhost-optimization",
+        "sr-iov",
+        "numa-optimization",
+        "huge-pages",
+        "virtio-tuning"
       ],
       "category": "infrastructure",
       "strict": false,
@@ -2363,7 +2372,9 @@
         "./skills/high-load-system-design",
         "./skills/linux-kernel-optimization",
         "./skills/distributed-storage",
-        "./skills/virtualization-patterns"
+        "./skills/virtualization-patterns",
+        "./skills/cpu-steal-time-optimization",
+        "./skills/virtualization-performance-tuning"
       ]
     }
   ]
