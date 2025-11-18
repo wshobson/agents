@@ -6,8 +6,8 @@
     "url": "https://github.com/lazarenkod"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 69 focused plugins, 92 specialized agents, 48 tools, and 57 agent skills - optimized for granular installation and minimal token usage",
-    "version": "1.2.6"
+    "description": "Production-ready workflow orchestration with 70 focused plugins, 96 specialized agents, 52 tools, and 64 agent skills - optimized for granular installation and minimal token usage",
+    "version": "1.3.0"
   },
   "plugins": [
     {
@@ -2487,6 +2487,59 @@
         "./skills/business-value-frameworks",
         "./skills/vk-cloud-competitive-positioning",
         "./skills/deal-structuring"
+      ]
+    },
+    {
+      "name": "world-class-leadership",
+      "source": "./plugins/world-class-leadership",
+      "description": "World-class executive leadership, team building, OKRs/KPIs, culture transformation, and talent development combining expertise from AWS, Google, Microsoft, Amazon, and OpenAI senior management. Includes expert agents for executive leadership, high-performance teams, goal-setting frameworks, and organizational culture excellence.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "leadership",
+        "management",
+        "executive-leadership",
+        "team-building",
+        "okr",
+        "kpi",
+        "culture-transformation",
+        "talent-development",
+        "high-performance-teams",
+        "change-management",
+        "motivation",
+        "goal-setting",
+        "performance-management",
+        "succession-planning",
+        "employee-engagement"
+      ],
+      "category": "leadership",
+      "strict": false,
+      "commands": [
+        "./commands/team-assessment.md",
+        "./commands/okr-planning.md",
+        "./commands/leadership-development-plan.md",
+        "./commands/culture-audit.md"
+      ],
+      "agents": [
+        "./agents/senior-executive-leader.md",
+        "./agents/high-performance-team-builder.md",
+        "./agents/okr-kpi-strategist.md",
+        "./agents/culture-transformation-leader.md"
+      ],
+      "skills": [
+        "./skills/executive-leadership",
+        "./skills/team-motivation",
+        "./skills/okr-framework",
+        "./skills/high-performance-teams",
+        "./skills/change-management",
+        "./skills/culture-building",
+        "./skills/talent-development"
       ]
     }
   ]
