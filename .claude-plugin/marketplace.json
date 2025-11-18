@@ -2378,6 +2378,58 @@
         "./skills/cpu-steal-time-optimization",
         "./skills/virtualization-performance-tuning"
       ]
+    },
+    {
+      "name": "product-maturity",
+      "source": "./plugins/product-maturity",
+      "description": "Product team maturity assessment and improvement using FAANG-level best practices. Evaluate and elevate product team capabilities across technical excellence, product management, engineering practices, team culture, delivery operations, and data analytics. Comprehensive frameworks from AWS, Google, Amazon, Netflix, Meta, and Microsoft.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "product-maturity",
+        "team-assessment",
+        "faang-practices",
+        "product-excellence",
+        "technical-excellence",
+        "engineering-practices",
+        "team-culture",
+        "dora-metrics",
+        "sre-practices",
+        "ci-cd",
+        "observability",
+        "experimentation",
+        "product-development",
+        "okr",
+        "agile",
+        "organizational-maturity",
+        "aws-practices",
+        "google-practices",
+        "netflix-practices",
+        "transformation",
+        "coaching"
+      ],
+      "category": "business",
+      "strict": false,
+      "commands": [
+        "./commands/assess-product-maturity.md",
+        "./commands/improve-product-maturity.md"
+      ],
+      "agents": [
+        "./agents/product-maturity-advisor.md",
+        "./agents/product-excellence-coach.md"
+      ],
+      "skills": [
+        "./skills/product-maturity-model",
+        "./skills/tech-excellence-practices",
+        "./skills/product-development-lifecycle",
+        "./skills/team-culture-patterns"
+      ]
     }
   ]
 }
