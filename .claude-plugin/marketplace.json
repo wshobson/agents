@@ -2378,6 +2378,64 @@
         "./skills/cpu-steal-time-optimization",
         "./skills/virtualization-performance-tuning"
       ]
+    },
+    {
+      "name": "enterprise-sales",
+      "source": "./plugins/enterprise-sales",
+      "description": "World-class enterprise sales management with VK Cloud expertise. Features 5 specialized agents (Sales Director, Strategist, Negotiator, Account Executive, Solution Architect), 7 comprehensive skills (MEDDPICC, Account Planning, Executive Engagement, Negotiation, Business Value, VK Cloud Positioning, Deal Structuring), and 5 powerful commands (Account Plan, Deal Strategy, Proposal Builder, ROI Calculator, Competitive Battlecard). Built for enterprise B2B sales at AWS/Google/Azure/SAP/Oracle level.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "enterprise-sales",
+        "b2b-sales",
+        "sales-strategy",
+        "sales-director",
+        "account-management",
+        "negotiation",
+        "vk-cloud",
+        "cloud-sales",
+        "meddpicc",
+        "spin-selling",
+        "challenger-sale",
+        "strategic-account-planning",
+        "executive-engagement",
+        "business-value",
+        "roi-calculator",
+        "competitive-positioning",
+        "deal-structuring",
+        "sales-methodologies"
+      ],
+      "category": "business",
+      "strict": false,
+      "commands": [
+        "./commands/account-plan.md",
+        "./commands/deal-strategy.md",
+        "./commands/proposal-builder.md",
+        "./commands/roi-calculator.md",
+        "./commands/competitive-battlecard.md"
+      ],
+      "agents": [
+        "./agents/enterprise-sales-director.md",
+        "./agents/enterprise-sales-strategist.md",
+        "./agents/enterprise-negotiator.md",
+        "./agents/strategic-account-executive.md",
+        "./agents/solution-architect-seller.md"
+      ],
+      "skills": [
+        "./skills/enterprise-sales-methodology",
+        "./skills/strategic-account-planning",
+        "./skills/executive-engagement",
+        "./skills/negotiation-frameworks",
+        "./skills/business-value-frameworks",
+        "./skills/vk-cloud-competitive-positioning",
+        "./skills/deal-structuring"
+      ]
     }
   ]
 }
