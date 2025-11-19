@@ -2690,6 +2690,62 @@
         "./skills/gemini-cli-usage",
         "./skills/task-delegation"
       ]
+    },
+    {
+      "name": "cloud-enterprise-roles",
+      "source": "./plugins/cloud-enterprise-roles",
+      "description": "Senior-level enterprise roles for cloud-native projects: Systems Analyst (requirements engineering, data modeling, business process analysis), Systems Architect (cloud architecture, distributed systems, security patterns), Technical Writer (API documentation, docs-as-code, developer experience). Expertise equivalent to AWS, Azure, Google Cloud, Microsoft, SAP, Oracle, Stripe, MongoDB senior professionals.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "systems-analyst",
+        "systems-architect",
+        "technical-writer",
+        "enterprise-architecture",
+        "requirements-engineering",
+        "cloud-architecture",
+        "api-documentation",
+        "distributed-systems",
+        "security-architecture",
+        "data-modeling",
+        "business-process-analysis",
+        "docs-as-code",
+        "developer-experience",
+        "aws",
+        "azure",
+        "gcp",
+        "enterprise",
+        "cloud-native"
+      ],
+      "category": "enterprise",
+      "strict": false,
+      "commands": [
+        "./commands/analyze-requirements.md",
+        "./commands/design-architecture.md",
+        "./commands/create-api-docs.md"
+      ],
+      "agents": [
+        "./agents/systems-analyst.md",
+        "./agents/systems-architect.md",
+        "./agents/technical-writer.md"
+      ],
+      "skills": [
+        "./skills/requirements-engineering",
+        "./skills/enterprise-data-modeling",
+        "./skills/business-process-analysis",
+        "./skills/cloud-architecture-patterns",
+        "./skills/distributed-systems-design",
+        "./skills/security-architecture",
+        "./skills/api-documentation-excellence",
+        "./skills/docs-as-code-workflows",
+        "./skills/developer-experience-optimization"
+      ]
     }
   ]
 }
