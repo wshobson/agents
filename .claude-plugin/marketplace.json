@@ -2817,6 +2817,83 @@
         "./skills/buying-committee",
         "./skills/intent-orchestration"
       ]
+    },
+    {
+      "name": "vk-cloud-presale",
+      "source": "./plugins/vk-cloud-presale",
+      "description": "World-class VK Cloud pre-sale solution architect expertise for Public Cloud, Private Cloud, VK S3, VK Kubernetes, VK Data Platform, VK Dev Platform, Bare Metal, and DBaaS. Features 5 specialized agents (presale-solution-architect, cloud-economics-specialist, technical-discovery-specialist, competitive-strategist, proposal-engineer) with senior-level capabilities from AWS, Azure, Google Cloud, Microsoft, Stripe, Netflix, NVIDIA, Oracle, and SAP. Comprehensive skills covering VK Cloud products, reference architectures, competitive battlecards (vs AWS/Azure/GCP/Yandex/Cloud.ru/all Russian providers), pre-sale methodology, ROI/TCO modeling. All outputs saved in Russian markdown. Built with Claude Agent SDK for competitive intelligence, technical discovery automation, and data-driven proposals.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "vk-cloud",
+        "presale",
+        "solution-architect",
+        "pre-sale-architect",
+        "cloud-architecture",
+        "public-cloud",
+        "private-cloud",
+        "vk-s3",
+        "vk-kubernetes",
+        "vk-data-platform",
+        "vk-dev-platform",
+        "bare-metal",
+        "dbaas",
+        "competitive-positioning",
+        "aws-competitor",
+        "azure-competitor",
+        "gcp-competitor",
+        "yandex-cloud-competitor",
+        "cloud-ru-competitor",
+        "selectel-competitor",
+        "technical-discovery",
+        "tco-analysis",
+        "roi-calculator",
+        "proposal-engineering",
+        "rfp-response",
+        "cloud-migration",
+        "data-sovereignty",
+        "152-fz-compliance",
+        "clickhouse",
+        "kubernetes",
+        "s3-storage",
+        "postgresql",
+        "mongodb",
+        "redis",
+        "kafka",
+        "gitlab",
+        "reference-architectures",
+        "competitive-battlecards",
+        "enterprise-sales",
+        "b2b-sales",
+        "russian-output",
+        "markdown-saving"
+      ],
+      "category": "business",
+      "strict": false,
+      "commands": [
+        "./commands/discovery-session.md",
+        "./commands/solution-design.md",
+        "./commands/tco-calculator.md"
+      ],
+      "agents": [
+        "./agents/presale-solution-architect.md",
+        "./agents/cloud-economics-specialist.md",
+        "./agents/technical-discovery-specialist.md",
+        "./agents/competitive-strategist.md",
+        "./agents/proposal-engineer.md"
+      ],
+      "skills": [
+        "./skills/vk-cloud-products",
+        "./skills/presale-methodology",
+        "./skills/reference-architectures",
+        "./skills/competitive-battlecards"
+      ]
     }
   ]
 }
