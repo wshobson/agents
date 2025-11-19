@@ -6,10 +6,51 @@
     "url": "https://github.com/lazarenkod"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 64 focused plugins, 86 specialized agents, 45 tools, and 49 agent skills - optimized for granular installation and minimal token usage",
-    "version": "1.3.1"
+    "description": "Production-ready workflow orchestration with 65 focused plugins, 89 specialized agents, 46 tools, and 54 agent skills - optimized for granular installation and minimal token usage",
+    "version": "1.4.0"
   },
   "plugins": [
+    {
+      "name": "genai-architect",
+      "source": "./plugins/genai-architect",
+      "description": "GenAI/LLM системный архитектор - проектирование enterprise GenAI платформ, LLM Inference as a Service, multi-cloud AI (AWS Bedrock, Azure OpenAI, GCP Vertex AI, Nebius, NVIDIA). Production RAG, cost optimization, MLOps, security.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dmitry Lazarenko",
+        "url": "https://github.com/lazarenkod"
+      },
+      "homepage": "https://github.com/lazarenkod/agents",
+      "repository": "https://github.com/lazarenkod/agents",
+      "license": "MIT",
+      "keywords": [
+        "genai",
+        "llm",
+        "ai-architecture",
+        "bedrock",
+        "azure-openai",
+        "vertex-ai",
+        "rag",
+        "mlops",
+        "cost-optimization"
+      ],
+      "category": "ai-architecture",
+      "strict": false,
+      "commands": [
+        "./commands/design-genai-architecture.md"
+      ],
+      "agents": [
+        "./agents/genai-system-architect.md",
+        "./agents/llm-inference-optimizer.md",
+        "./agents/genai-mlops-engineer.md"
+      ],
+      "skills": [
+        "./skills/llm-inference-infrastructure",
+        "./skills/genai-cost-optimization",
+        "./skills/production-rag-systems",
+        "./skills/aws-bedrock-deployment",
+        "./skills/llm-security-governance"
+      ]
+    },
     {
       "name": "code-documentation",
       "source": "./plugins/code-documentation",
@@ -779,7 +820,18 @@
       "description": "Expert Kotlin Koog AI agents development with senior architect guidance, comprehensive skill development, and automated project scaffolding. Covers prompt API, agent events, custom strategy graphs, parallel execution, data transfer, history compression, content moderation, structured output, sessions, embeddings, model capabilities, MCP integration, and production deployment patterns for building enterprise-grade AI agents.",
       "version": "1.1.0",
       "category": "ai-development",
-      "tags": ["kotlin", "koog", "ai-agents", "agent-architecture", "jvm", "prompt-api", "strategy-graphs", "multimodal", "rag", "mcp"],
+      "tags": [
+        "kotlin",
+        "koog",
+        "ai-agents",
+        "agent-architecture",
+        "jvm",
+        "prompt-api",
+        "strategy-graphs",
+        "multimodal",
+        "rag",
+        "mcp"
+      ],
       "commands": [
         "./commands/koog-agent-scaffold.md"
       ],
