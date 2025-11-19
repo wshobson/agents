@@ -226,10 +226,167 @@ Annual strategy should be built on 3-5 strategic pillars:
 - Capital and resource requirements
 - Success metrics and milestones
 
+## World-Class Strategy Examples
+
+### Case Studies from Leading Companies
+
+**Netflix: From DVDs to Streaming**
+- **Original Vision**: Convenient DVD rentals by mail
+- **Strategic Pivot**: Anticipate streaming technology shift
+- **Bold Bet**: Invest billions in original content
+- **Outcome**: Market leader with 200M+ subscribers globally
+- **Key Lesson**: Willingness to disrupt your own business
+
+**Amazon: Everything Store**
+- **Long-term Vision**: Earth's most customer-centric company
+- **Strategic Pillars**:
+  - Customer obsession (not competitor focus)
+  - Long-term thinking (willing to be misunderstood)
+  - Invention and experimentation (AWS, Alexa, etc.)
+  - Operational excellence (logistics and fulfillment)
+- **Key Lesson**: Day 1 mentality, always remain a startup
+
+**Apple: Integrated Experience**
+- **Strategic Focus**: Few products done exceptionally well
+- **Differentiation**: Design + hardware + software + services integration
+- **Positioning**: Premium brand with aspirational appeal
+- **Key Lesson**: Focus and saying no to 1000 good ideas
+
+**Tesla: Sustainable Energy**
+- **Long-term Vision**: Accelerate world's transition to sustainable energy
+- **Strategic Approach**: Vertical integration, first principles thinking
+- **Competitive Moat**: Technology lead, manufacturing innovation
+- **Key Lesson**: Mission-driven strategy attracts talent and customers
+
+**Microsoft: Cloud First, Mobile First**
+- **Strategic Transformation**: Windows-centric → cloud-centric
+- **Culture Shift**: Know-it-all → learn-it-all (growth mindset)
+- **Ecosystem Strategy**: Developer platform, not just products
+- **Key Lesson**: Legacy companies can reinvent themselves
+
+### Advanced Strategic Frameworks
+
+**Blue Ocean Strategy** (Create Uncontested Market Space):
+- **Red Ocean**: Compete in existing market (bloody competition)
+- **Blue Ocean**: Create new market space (no competition)
+- **Framework**:
+  - Eliminate: What can we remove?
+  - Reduce: What can we reduce below industry standard?
+  - Raise: What can we raise above industry standard?
+  - Create: What can we create that industry never offered?
+
+**7 Powers Framework** (Hamilton Helmer):
+1. **Scale Economies**: Unit costs decline with scale
+2. **Network Effects**: Value increases with more users
+3. **Counter-Positioning**: New model that incumbents can't copy
+4. **Switching Costs**: Pain to switch to competitor
+5. **Branding**: Emotional connection and trust
+6. **Cornered Resource**: Exclusive access to asset
+7. **Process Power**: Embedded company processes hard to copy
+
+**Platform Strategy** (Multi-sided Markets):
+- **Core Interaction**: What value exchange happens?
+- **Network Effects**: How does value grow with users?
+- **Chicken-and-Egg**: How to bootstrap both sides?
+- **Governance**: How to ensure quality and trust?
+- **Monetization**: Which side pays, how much?
+
+**Wardley Mapping** (Strategic Situational Awareness):
+- Map your value chain components
+- Plot evolution from genesis → custom → product → commodity
+- Identify strategic opportunities and threats
+- Plan moves based on landscape position
+
+**Jobs-to-be-Done** (JTBD):
+- What job is customer hiring your product to do?
+- Functional job (task to complete)
+- Emotional job (how they want to feel)
+- Social job (how they want to be perceived)
+- Focus on progress, not product features
+
+## Strategic Planning Templates
+
+### 5-Year Vision Statement Template
+
+```markdown
+**Company Vision (5 Years)**
+
+**Mission**: [Why we exist]
+
+**Target Customer**: [Who we serve at scale]
+
+**Problem Solved**: [What major pain point we address]
+
+**Solution**: [How we uniquely solve it]
+
+**Market Position**: [Where we'll be - #1/2/3 in what market]
+
+**Scale**: [Key metrics - revenue, users, market share]
+
+**Competitive Advantage**: [What makes us defensible]
+
+**Culture**: [How we work and what we value]
+```
+
+### Annual Strategy One-Pager Template
+
+```markdown
+**[Company] Annual Strategy - [Year]**
+
+**Where We're Going** (5-year destination):
+[One sentence vision reminder]
+
+**Where We Are** (current state):
+- Key metrics: [Current performance]
+- What's working: [Strengths to build on]
+- What needs work: [Gaps to address]
+
+**Strategic Priorities** (3-5 key focus areas):
+
+1. **[Priority 1 Name]**
+   - Why it matters: [Impact]
+   - What success looks like: [Outcomes]
+   - Key initiatives: [How we'll do it]
+
+2. **[Priority 2 Name]**
+   - Why it matters:
+   - What success looks like:
+   - Key initiatives:
+
+[Repeat for 3-5 priorities]
+
+**What We're NOT Doing**:
+- [Explicit list of things we'll say no to]
+
+**Resource Allocation**:
+- Budget: [How capital is allocated]
+- Headcount: [Where we're hiring]
+- Leadership focus: [Who owns what]
+
+**Key Risks & Mitigation**:
+- [Risk 1]: [How we'll address it]
+- [Risk 2]: [How we'll address it]
+
+**Success Metrics**:
+- [Metric 1]: Target [X], currently [Y]
+- [Metric 2]: Target [X], currently [Y]
+```
+
 ## References
 
+### Books
+- **Good Strategy/Bad Strategy** by Richard Rumelt (strategy fundamentals)
+- **Playing to Win** by A.G. Lafley & Roger Martin (strategy frameworks)
+- **Blue Ocean Strategy** by W. Chan Kim & Renée Mauborgne (uncontested markets)
+- **7 Powers** by Hamilton Helmer (competitive advantage)
+- **The Lean Startup** by Eric Ries (pivoting and iteration)
+- **Zero to One** by Peter Thiel (creating new markets)
+- **Crossing the Chasm** by Geoffrey Moore (technology adoption)
+- **The Innovator's Dilemma** by Clayton Christensen (disruption)
+
+### Frameworks & Tools
 - Peter Drucker on strategy and management
-- Good Strategy/Bad Strategy by Richard Rumelt
-- Blue Ocean Strategy by W. Chan Kim & Renée Mauborgne
-- Playing to Win by A.G. Lafley & Roger Martin
-- The Lean Startup by Eric Ries (pivoting and iteration)
+- Porter's Five Forces (competitive analysis)
+- BCG Growth-Share Matrix (portfolio strategy)
+- Ansoff Matrix (growth strategies)
+- McKinsey 7S Framework (organizational alignment)

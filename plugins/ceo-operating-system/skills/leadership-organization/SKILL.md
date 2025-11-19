@@ -358,11 +358,274 @@ For each value, what does it look like in practice?
 - Investors: Based on funding round
 - Employees pool: 10-20% allocated over time
 
+## World-Class Leadership Practices
+
+### Hiring Excellence
+
+**Google's Hiring Formula**:
+- **Cognitive Ability**: Can they solve complex problems?
+- **Leadership**: Can they step up when needed?
+- **Role-Related Knowledge**: Do they have the skills?
+- **Googleyness**: Will they add to culture?
+- **Committee Decision**: No single person decides (reduces bias)
+
+**Netflix's Keeper Test**:
+- Ask: "If this person resigned, would I fight to keep them?"
+- If answer is no, give them generous severance now
+- Better to have smaller team of rock stars than large team of average
+- Pay top of market for top talent
+
+**Amazon's Bar Raiser Program**:
+- Trained interviewers who ensure high hiring standards
+- Not on hiring team but have veto power
+- Look for candidates who raise the bar for the role
+- Focus on Amazon's Leadership Principles
+
+**Stripe's Work Trial Projects**:
+- Pay candidates to do real work for 1-2 days
+- See how they actually perform in realistic scenarios
+- Reduces interview bias, focuses on output
+- Candidate gets to evaluate company too
+
+### Leadership Development
+
+**McKinsey's Leadership Model**:
+- **Think**: Strategic thinking and problem-solving
+- **Lead**: Inspire and develop people
+- **Do**: Execute with excellence and drive results
+- Develop all three dimensions systematically
+
+**GE's 9-Box Talent Review**:
+```
+           Low Performance  Medium Performance  High Performance
+High       Question Mark   High Potential      Star
+Potential
+
+Medium     Train/Move      Core Player         High Professional
+Potential
+
+Low        Exit            Inconsistent        Solid Professional
+Potential
+```
+
+**Facebook/Meta's Bootcamp**:
+- All engineers (even senior) go through bootcamp
+- Learn codebase, culture, and ways of working
+- Choose team after 6 weeks (not assigned)
+- Ensures cultural fit and team placement
+
+**Apple's University**:
+- Internal leadership development program
+- Case studies of Apple's key decisions
+- Teach the "Apple way" of thinking
+- Preserve culture as company scales
+
+### High-Performance Team Building
+
+**Patrick Lencioni's 5 Dysfunctions**:
+1. **Absence of Trust**: Team members don't open up
+2. **Fear of Conflict**: Avoid healthy debate
+3. **Lack of Commitment**: No buy-in to decisions
+4. **Avoidance of Accountability**: Don't call out poor behavior
+5. **Inattention to Results**: Focus on individual over team
+
+**Fix**: Build trust → encourage conflict → achieve commitment → hold accountable → focus on results
+
+**Amazon's Two-Pizza Teams**:
+- Teams should be small enough to feed with two pizzas (6-10 people)
+- Small teams move faster and communicate better
+- Clear ownership and accountability
+- Minimize dependencies and coordination overhead
+
+**Spotify's Squad Model**:
+- **Squad**: Cross-functional team (product/design/eng)
+- **Tribe**: Collection of squads in related area
+- **Chapter**: People with same skill across squads
+- **Guild**: Interest communities across company
+- Balance autonomy with alignment
+
+### Diversity, Equity, & Inclusion (DEI)
+
+**Salesforce's Equality Framework**:
+- Equal pay audits and corrections
+- Diverse interview panels (no all-male/all-white panels)
+- Inclusive benefits (family leave, gender transition support)
+- Public commitment and transparency on progress
+- ERGs (Employee Resource Groups) supported and funded
+
+**Intel's Retention Focus**:
+- Hiring diverse talent is not enough
+- Focus on retention and advancement
+- Measure inclusion through surveys
+- Manager training on inclusive leadership
+- Consequences for failing to build diverse teams
+
+**Best Practices**:
+- Diverse candidate slates (Rooney Rule)
+- Structured interviews reduce bias
+- Inclusive language in job descriptions
+- Mentorship and sponsorship programs
+- Pay equity audits and corrections
+- Psychological safety in teams
+
+### Feedback & Performance Management
+
+**Ray Dalio's Radical Transparency** (Bridgewater):
+- All meetings recorded and available to everyone
+- Real-time feedback through "dots" system
+- Issue logs that track problems and resolutions
+- Culture of challenging ideas, not people
+- Baseball card ratings showing strengths/weaknesses
+
+**Kim Scott's Radical Candor**:
+```
+              CARE PERSONALLY
+                    |
+    Ruinous      ✓  |  Radical
+    Empathy         |  Candor
+                    |
+  ------------------|------------------
+                    |
+    Manipulative    |  Obnoxious
+    Insincerity     |  Aggression
+                    |
+           CHALLENGE DIRECTLY
+```
+
+- **Radical Candor**: Care + Challenge (best)
+- **Ruinous Empathy**: Care without challenge (harmful)
+- **Obnoxious Aggression**: Challenge without care (jerk)
+- **Manipulative Insincerity**: Neither care nor challenge (worst)
+
+**Adobe's Check-In System** (replaced annual reviews):
+- Continuous feedback, not annual event
+- Regular 1-on-1s with clear expectations
+- Focus on future development, not past judgment
+- Immediate course correction vs. waiting for review
+
+### Remote & Distributed Teams
+
+**GitLab's All-Remote Playbook**:
+- Handbook-first culture (document everything)
+- Async communication default
+- Transparency by default (public handbook)
+- Results-based performance (not hours worked)
+- Regular virtual coffee chats and social time
+
+**Automattic's Distributed Culture**:
+- Work from anywhere in the world
+- Unlimited vacation (actually encouraged to use)
+- Annual company meetups for connection
+- Strong written communication culture
+- Time zone awareness and respect
+
+**Best Practices for Hybrid/Remote**:
+- Equal experience for remote and in-office
+- Avoid hybrid meetings (all remote or all in-person)
+- Document decisions and discussions
+- Intentional social connection opportunities
+- Clear communication norms and expectations
+
+## Leadership Development Templates
+
+### 90-Day Onboarding Plan Template
+
+```markdown
+**New Leader Onboarding: [Name] - [Role]**
+
+**Week 1-2: Learn**
+- Meet with direct reports (1-on-1s)
+- Meet with key cross-functional partners
+- Review current strategy and priorities
+- Understand key metrics and performance
+- Learn tools and systems
+
+**Week 3-4: Assess**
+- Observe team meetings and dynamics
+- Review org structure and roles
+- Identify quick wins and urgent issues
+- Understand team strengths and gaps
+- Get customer/stakeholder input
+
+**Week 5-8: Plan**
+- Develop 90-day priorities
+- Set expectations with team
+- Align with manager on goals
+- Build relationships across organization
+- Start making small improvements
+
+**Week 9-12: Execute**
+- Launch key initiatives
+- Drive quick wins
+- Build team confidence
+- Establish operating rhythm
+- Prepare for performance reviews
+
+**Success Metrics**:
+- Relationships built: [Target number]
+- Quick wins delivered: [List]
+- Team alignment: [Survey score]
+- 90-day goals: [Achievement %]
+```
+
+### Leadership Assessment Template
+
+```markdown
+**Leadership Assessment: [Name]**
+
+**Strategic Thinking** (1-5): [Score]
+- Sets clear vision and direction
+- Makes sound strategic decisions
+- Anticipates future challenges
+- Evidence: [Examples]
+
+**Execution Excellence** (1-5): [Score]
+- Delivers results consistently
+- Drives team performance
+- Removes blockers effectively
+- Evidence: [Examples]
+
+**People Development** (1-5): [Score]
+- Builds high-performing team
+- Develops talent effectively
+- Provides coaching and feedback
+- Evidence: [Examples]
+
+**Communication** (1-5): [Score]
+- Communicates clearly and persuasively
+- Listens actively and empathetically
+- Influences across organization
+- Evidence: [Examples]
+
+**Culture & Values** (1-5): [Score]
+- Embodies company values
+- Builds inclusive environment
+- Acts with integrity
+- Evidence: [Examples]
+
+**Overall Rating**: [Score/5]
+**Potential**: [High/Medium/Low]
+**Recommendation**: [Promote/Develop/Manage out]
+**Development Plan**: [Key areas to develop]
+```
+
 ## References
 
-- Good to Great by Jim Collins (leadership and culture)
-- The Advantage by Patrick Lencioni (organizational health)
-- Radical Candor by Kim Scott (feedback and management)
-- The Five Dysfunctions of a Team by Patrick Lencioni
-- Scaling Up by Verne Harnish (building high-performance orgs)
-- The Lean Startup by Eric Ries (building teams and culture)
+### Books
+- **Good to Great** by Jim Collins (leadership and culture)
+- **The Advantage** by Patrick Lencioni (organizational health)
+- **Radical Candor** by Kim Scott (feedback and management)
+- **The Five Dysfunctions of a Team** by Patrick Lencioni
+- **Scaling Up** by Verne Harnish (building high-performance orgs)
+- **Principles** by Ray Dalio (radical transparency)
+- **No Rules Rules** by Reed Hastings (Netflix culture)
+- **Measure What Matters** by John Doerr (OKRs and talent)
+- **The Culture Code** by Daniel Coyle (building great teams)
+- **High Output Management** by Andy Grove (Intel, management)
+
+### Frameworks & Resources
+- Google's re:Work (hiring and development resources)
+- First Round Review (startup leadership articles)
+- Netflix Culture Deck
+- Amazon Leadership Principles
+- Stripe's remote work guides
