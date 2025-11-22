@@ -270,6 +270,17 @@ Use semantic color mapping from `palettes.json`:
 - `success` (#b2f2bb): Success/complete
 - `error` (#ffc9c9): Error/failed
 
+### Uniform Coloring for Similar Elements
+
+When multiple elements of the same category appear together, use **uniform coloring** to maintain visual consistency and avoid color overload:
+
+| Category | Fill | Stroke | Examples |
+|----------|------|--------|----------|
+| External targets | `#ffec99` | `#f08c00` | Cloud providers, migration targets, third-party services |
+| External boundary | `#fff4e6` | `#e8590c` | Grouping for external systems |
+
+**Rule:** Elements serving the same architectural role should share the same color, even if they represent different vendors or implementations.
+
 ## Technical Writing Rules
 
 ### Label Guidelines
