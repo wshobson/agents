@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **63 focused, single-purpose plugins** organized by category.
+Browse all **65 focused, single-purpose plugins** organized by category.
 
 ## Quick Start - Essential Plugins
 
@@ -125,12 +125,13 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **frontend-mobile-development** | Frontend UI and mobile development | `/plugin install frontend-mobile-development` |
 | **multi-platform-apps** | Cross-platform app coordination (web/iOS/Android) | `/plugin install multi-platform-apps` |
 
-### 📚 Documentation (2 plugins)
+### 📚 Documentation (3 plugins)
 
 | Plugin | Description | Install |
 |--------|-------------|---------|
 | **code-documentation** | Documentation generation and code explanation | `/plugin install code-documentation` |
 | **documentation-generation** | OpenAPI specs, Mermaid diagrams, tutorials | `/plugin install documentation-generation` |
+| **c4-architecture** | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture` |
 
 ### 🔄 Workflows (3 plugins)
 
@@ -328,7 +329,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 63 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 65 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
