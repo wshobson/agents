@@ -2132,6 +2132,34 @@
         "./skills/bazel-build-optimization",
         "./skills/monorepo-dependency-management"
       ]
+    },
+    {
+      "name": "diagram-generation",
+      "source": "./plugins/diagram-generation",
+      "description": "Professional Excalidraw diagram generation, correction, and refinement for architecture documentation with 5 diagram types, configurable palettes, and presentation-ready 16:9 frames",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kiran E",
+        "url": "https://github.com/kiriz"
+      },
+      "homepage": "https://github.com/kiriz/agents",
+      "repository": "https://github.com/kiriz/agents",
+      "license": "MIT",
+      "keywords": [
+        "excalidraw",
+        "diagrams",
+        "architecture",
+        "visualization",
+        "system-design",
+        "documentation"
+      ],
+      "category": "documentation",
+      "strict": false,
+      "commands": [],
+      "agents": [],
+      "skills": [
+        "./skills/excalidraw-diagram"
+      ]
     }
   ]
 }
