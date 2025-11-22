@@ -209,6 +209,48 @@ Detect type from keywords:
 }
 ```
 
+### Arrow Connections (MANDATORY)
+
+All arrows MUST be properly bound to source and target elements. Unbound arrows will not stay connected when elements are moved.
+
+**1. Arrow element requires bindings:**
+```json
+{
+  "id": "arrow-a-to-b",
+  "type": "arrow",
+  "startBinding": {"elementId": "source-rect", "focus": 0, "gap": 8},
+  "endBinding": {"elementId": "target-rect", "focus": 0, "gap": 8},
+  "points": [[0, 0], [dx, dy]]
+}
+```
+
+**2. Source element must reference the arrow:**
+```json
+{
+  "id": "source-rect",
+  "type": "rectangle",
+  "boundElements": [{"id": "arrow-a-to-b", "type": "arrow"}]
+}
+```
+
+**3. Target element must reference the arrow:**
+```json
+{
+  "id": "target-rect",
+  "type": "rectangle",
+  "boundElements": [{"id": "arrow-a-to-b", "type": "arrow"}]
+}
+```
+
+**Binding Parameters:**
+| Parameter | Description | Values |
+|-----------|-------------|--------|
+| `elementId` | ID of the connected element | Must match existing element ID |
+| `focus` | Position along the element's edge | -1 to 1 (0 = center) |
+| `gap` | Distance from arrow tip to element | 8-12px typical |
+
+**NEVER create arrows with `startBinding: null` or `endBinding: null`** - these arrows will not stay connected when diagram is edited.
+
 ### Frame (16:9 Wrapper)
 ```json
 {
@@ -414,6 +456,8 @@ Before writing file, verify:
 6. Valid JSON structure
 7. **No standalone ellipses/ovals representing users** - must use "Clients" library component
 8. **All actors/users use grouped "Clients" component** with proper groupIds
+9. **All arrows have non-null `startBinding` and `endBinding`** - no unbound arrows
+10. **All connected elements have `boundElements` arrays** referencing their arrows
 
 ## Examples
 
