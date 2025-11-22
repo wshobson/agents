@@ -67,8 +67,10 @@ Detect type from keywords:
 4. COMPOSE DIAGRAM
    a. Start with pattern skeleton
    b. Replace/add components:
+      - **MANDATORY: Use "Clients" component for ALL user/actor representations**
       - Use library components when available (Temporal, Kafka, etc.)
-      - Create from primitives otherwise
+      - Check library BEFORE creating from primitives
+      - Create from primitives ONLY if no library match exists
    c. Apply labels following technical writing rules
    d. Create arrows with proper bindings
    e. Apply palette colors based on semantic roles
@@ -350,8 +352,45 @@ Pre-built components from `components/library.json`:
 - API Gateway, Load Balancers, CDN
 - Relational DB, Graph DB, Column DB
 - Object Storage, Customer Service, etc.
+- **Clients** - Multi-user icon for actors/users
 
-When generating, check if requested component exists in library before creating from primitives.
+**CRITICAL: Library components MUST be used over primitives when available.**
+
+### Actor/User Representation (MANDATORY)
+
+When representing users, actors, or people in diagrams, **ALWAYS use the "Clients" library component**:
+
+| Diagram Concept | Library Component | DO NOT Use |
+|-----------------|-------------------|------------|
+| Users | `clients` | ellipse/oval |
+| Admins | `clients` | ellipse/oval |
+| Customers | `clients` | ellipse/oval |
+| Actors | `clients` | ellipse/oval |
+| Operators | `clients` | ellipse/oval |
+| Personas | `clients` | ellipse/oval |
+
+**The "Clients" component contains:**
+- 3 head ellipses (representing multiple people)
+- 3 body/torso line shapes
+- Orange color scheme (#d9480f stroke, #fd7e14 fill)
+- Text label "Clients"
+- Size: ~77 x 99 pixels
+- Grouped elements with shared groupId
+
+**Usage workflow:**
+1. Detect user/actor/person keywords in request
+2. Load "clients" component from `components/library.json`
+3. Clone and position the component
+4. Update the text label to match the context (e.g., "Admins", "End Users")
+
+### Component Selection Priority
+
+When generating diagrams, follow this priority order:
+1. **Library components** (always preferred when available)
+2. **Pattern templates** (from patterns/ directory)
+3. **Primitives** (only as last resort)
+
+**Never create ellipses/ovals for user representation - always use the Clients library component.**
 
 ## Output Validation
 
@@ -362,6 +401,8 @@ Before writing file, verify:
 4. No duplicate IDs
 5. Frame contains all elements (if frame enabled)
 6. Valid JSON structure
+7. **No standalone ellipses/ovals representing users** - must use "Clients" library component
+8. **All actors/users use grouped "Clients" component** with proper groupIds
 
 ## Examples
 
