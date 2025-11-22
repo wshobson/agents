@@ -6,8 +6,8 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 64 focused plugins, 87 specialized agents, and 44 tools - optimized for granular installation and minimal token usage",
-    "version": "1.2.0"
+    "description": "Production-ready workflow orchestration with 65 focused plugins, 91 specialized agents, and 45 tools - optimized for granular installation and minimal token usage",
+    "version": "1.3.0"
   },
   "plugins": [
     {
@@ -1417,6 +1417,40 @@
         "./agents/mermaid-expert.md",
         "./agents/tutorial-engineer.md",
         "./agents/reference-builder.md"
+      ]
+    },
+    {
+      "name": "c4-architecture",
+      "source": "./plugins/c4-architecture",
+      "description": "Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagram generation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "url": "https://github.com/wshobson"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "c4",
+        "architecture",
+        "documentation",
+        "diagrams",
+        "system-design",
+        "component",
+        "container",
+        "context"
+      ],
+      "category": "documentation",
+      "strict": false,
+      "commands": [
+        "./commands/c4-architecture.md"
+      ],
+      "agents": [
+        "./agents/c4-code.md",
+        "./agents/c4-component.md",
+        "./agents/c4-container.md",
+        "./agents/c4-context.md"
       ]
     },
     {
