@@ -1,0 +1,127 @@
+{
+  "name": "Entity Relationship",
+  "description": "Data model / ERD diagram with entities and relationships",
+  "type": "er",
+  "layout": {
+    "direction": "grid",
+    "cellWidth": 250,
+    "cellHeight": 200,
+    "entityWidth": 180,
+    "entityHeight": 120,
+    "padding": 40
+  },
+  "style": {
+    "entity": {
+      "type": "rectangle",
+      "width": 180,
+      "height": 120,
+      "fillStyle": "hachure",
+      "roughness": 1,
+      "opacity": 60,
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    "entityHeader": {
+      "type": "rectangle",
+      "height": 35,
+      "fillStyle": "solid",
+      "roughness": 0,
+      "opacity": 100
+    },
+    "relationship": {
+      "type": "line",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 80
+    },
+    "relationshipLabel": {
+      "fontSize": 12,
+      "fontFamily": 1
+    }
+  },
+  "cardinality": {
+    "one": "1",
+    "many": "*",
+    "zero-or-one": "0..1",
+    "zero-or-many": "0..*",
+    "one-or-many": "1..*"
+  },
+  "skeleton": {
+    "description": "4-entity data model template",
+    "frame": {
+      "width": 1920,
+      "height": 1080,
+      "title": "Data Model"
+    },
+    "elements": [
+      {
+        "id": "entity-1",
+        "type": "rectangle",
+        "x": 200,
+        "y": 150,
+        "label": "User",
+        "role": "entity",
+        "semantic": "primary",
+        "attributes": ["id: UUID", "name: String", "email: String"]
+      },
+      {
+        "id": "entity-2",
+        "type": "rectangle",
+        "x": 500,
+        "y": 150,
+        "label": "Order",
+        "role": "entity",
+        "semantic": "control",
+        "attributes": ["id: UUID", "user_id: FK", "status: Enum"]
+      },
+      {
+        "id": "entity-3",
+        "type": "rectangle",
+        "x": 800,
+        "y": 150,
+        "label": "Product",
+        "role": "entity",
+        "semantic": "data",
+        "attributes": ["id: UUID", "name: String", "price: Decimal"]
+      },
+      {
+        "id": "entity-4",
+        "type": "rectangle",
+        "x": 500,
+        "y": 400,
+        "label": "OrderItem",
+        "role": "entity",
+        "semantic": "workflow",
+        "attributes": ["order_id: FK", "product_id: FK", "quantity: Int"]
+      },
+      {
+        "id": "rel-1-2",
+        "type": "line",
+        "from": "entity-1",
+        "to": "entity-2",
+        "label": "places",
+        "cardinality": { "from": "1", "to": "*" },
+        "role": "relationship"
+      },
+      {
+        "id": "rel-2-4",
+        "type": "line",
+        "from": "entity-2",
+        "to": "entity-4",
+        "label": "contains",
+        "cardinality": { "from": "1", "to": "*" },
+        "role": "relationship"
+      },
+      {
+        "id": "rel-3-4",
+        "type": "line",
+        "from": "entity-3",
+        "to": "entity-4",
+        "label": "included in",
+        "cardinality": { "from": "1", "to": "*" },
+        "role": "relationship"
+      }
+    ]
+  }
+}

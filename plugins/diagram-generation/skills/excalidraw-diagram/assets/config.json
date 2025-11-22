@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "description": "Default configuration for excalidraw-diagram skill",
+  "defaults": {
+    "frame": {
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "padding": 40,
+      "ratio": "16:9"
+    },
+    "style": "hand-drawn",
+    "palette": "architecture",
+    "grid": {
+      "size": 20,
+      "snap": true
+    }
+  },
+  "styles": {
+    "hand-drawn": {
+      "description": "Organic, sketchy appearance ideal for presentations",
+      "roughness": 1,
+      "fillStyle": "hachure",
+      "opacity": 60,
+      "strokeWidth": 2
+    },
+    "clean": {
+      "description": "Precise, technical appearance for formal documentation",
+      "roughness": 0,
+      "fillStyle": "solid",
+      "opacity": 100,
+      "strokeWidth": 2
+    }
+  },
+  "layout": {
+    "componentSpacing": 200,
+    "stateSpacing": 200,
+    "rowSpacing": 150,
+    "erCellSpacing": 250,
+    "arrowGap": 8,
+    "labelPadding": 10
+  },
+  "text": {
+    "fontFamily": 1,
+    "fontSize": {
+      "title": 28,
+      "component": 18,
+      "label": 16,
+      "annotation": 14
+    },
+    "limits": {
+      "component": 25,
+      "arrowLabel": 15,
+      "containerTitle": 30,
+      "frameTitle": 50
+    }
+  },
+  "diagramTypes": {
+    "system": {
+      "keywords": ["architecture", "services", "components", "system", "overview"],
+      "pattern": "system-arch",
+      "layout": "hierarchical"
+    },
+    "workflow": {
+      "keywords": ["flow", "workflow", "state", "process", "stages", "pipeline"],
+      "pattern": "state-machine",
+      "layout": "sequential"
+    },
+    "sequence": {
+      "keywords": ["sequence", "request", "response", "timeline", "interaction"],
+      "pattern": "sequence",
+      "layout": "timeline"
+    },
+    "er": {
+      "keywords": ["data model", "entities", "relationships", "ERD", "schema"],
+      "pattern": "entity-relationship",
+      "layout": "grid"
+    },
+    "deployment": {
+      "keywords": ["deployment", "k8s", "kubernetes", "infrastructure", "cloud", "docker"],
+      "pattern": "deployment",
+      "layout": "nested"
+    }
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "name": "Sequence Diagram",
+  "description": "Timeline-based interaction sequence diagram",
+  "type": "sequence",
+  "layout": {
+    "direction": "top-to-bottom",
+    "participantSpacing": 250,
+    "messageSpacing": 60,
+    "lifelineExtension": 50
+  },
+  "style": {
+    "participant": {
+      "type": "rectangle",
+      "width": 150,
+      "height": 60,
+      "fillStyle": "hachure",
+      "roughness": 1,
+      "opacity": 60,
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    "lifeline": {
+      "type": "line",
+      "strokeWidth": 1,
+      "strokeStyle": "dashed",
+      "roughness": 0,
+      "opacity": 40
+    },
+    "message": {
+      "type": "arrow",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "endArrowhead": "triangle"
+    },
+    "response": {
+      "type": "arrow",
+      "strokeWidth": 1,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "endArrowhead": "triangle"
+    },
+    "activation": {
+      "type": "rectangle",
+      "width": 20,
+      "fillStyle": "solid",
+      "roughness": 0,
+      "opacity": 30
+    }
+  },
+  "skeleton": {
+    "description": "3-participant sequence template",
+    "frame": {
+      "width": 1920,
+      "height": 1080,
+      "title": "Sequence Diagram"
+    },
+    "elements": [
+      {
+        "id": "participant-1",
+        "type": "rectangle",
+        "x": 200,
+        "y": 80,
+        "label": "Client",
+        "role": "participant",
+        "semantic": "primary"
+      },
+      {
+        "id": "participant-2",
+        "type": "rectangle",
+        "x": 500,
+        "y": 80,
+        "label": "Service",
+        "role": "participant",
+        "semantic": "control"
+      },
+      {
+        "id": "participant-3",
+        "type": "rectangle",
+        "x": 800,
+        "y": 80,
+        "label": "Database",
+        "role": "participant",
+        "semantic": "data"
+      },
+      {
+        "id": "lifeline-1",
+        "type": "line",
+        "from": { "x": 275, "y": 140 },
+        "to": { "x": 275, "y": 600 },
+        "role": "lifeline"
+      },
+      {
+        "id": "lifeline-2",
+        "type": "line",
+        "from": { "x": 575, "y": 140 },
+        "to": { "x": 575, "y": 600 },
+        "role": "lifeline"
+      },
+      {
+        "id": "lifeline-3",
+        "type": "line",
+        "from": { "x": 875, "y": 140 },
+        "to": { "x": 875, "y": 600 },
+        "role": "lifeline"
+      },
+      {
+        "id": "msg-1",
+        "type": "arrow",
+        "from": { "x": 275, "y": 200 },
+        "to": { "x": 575, "y": 200 },
+        "label": "request",
+        "role": "message"
+      },
+      {
+        "id": "msg-2",
+        "type": "arrow",
+        "from": { "x": 575, "y": 280 },
+        "to": { "x": 875, "y": 280 },
+        "label": "query",
+        "role": "message"
+      },
+      {
+        "id": "resp-2",
+        "type": "arrow",
+        "from": { "x": 875, "y": 340 },
+        "to": { "x": 575, "y": 340 },
+        "label": "data",
+        "role": "response"
+      },
+      {
+        "id": "resp-1",
+        "type": "arrow",
+        "from": { "x": 575, "y": 420 },
+        "to": { "x": 275, "y": 420 },
+        "label": "response",
+        "role": "response"
+      }
+    ]
+  }
+}

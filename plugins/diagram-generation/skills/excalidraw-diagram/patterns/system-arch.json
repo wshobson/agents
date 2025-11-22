@@ -1,0 +1,160 @@
+{
+  "name": "System Architecture",
+  "description": "Hierarchical system/service architecture diagram",
+  "type": "system",
+  "layout": {
+    "direction": "top-to-bottom",
+    "tierSpacing": 150,
+    "componentSpacing": 200,
+    "alignment": "center"
+  },
+  "tiers": {
+    "description": "Standard architecture tiers",
+    "layers": [
+      { "name": "presentation", "label": "Presentation Layer", "semantic": "primary" },
+      { "name": "api", "label": "API Layer", "semantic": "control" },
+      { "name": "service", "label": "Service Layer", "semantic": "workflow" },
+      { "name": "data", "label": "Data Layer", "semantic": "data" }
+    ]
+  },
+  "style": {
+    "component": {
+      "type": "rectangle",
+      "width": 200,
+      "height": 80,
+      "fillStyle": "hachure",
+      "roughness": 1,
+      "opacity": 60,
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    "boundary": {
+      "type": "rectangle",
+      "fillStyle": "solid",
+      "strokeStyle": "dashed",
+      "strokeWidth": 1,
+      "roughness": 0,
+      "opacity": 100,
+      "backgroundColor": "transparent"
+    },
+    "connector": {
+      "type": "arrow",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "endArrowhead": "triangle"
+    }
+  },
+  "skeleton": {
+    "description": "3-tier architecture template",
+    "frame": {
+      "width": 1920,
+      "height": 1080,
+      "title": "System Architecture"
+    },
+    "elements": [
+      {
+        "id": "ui-layer",
+        "type": "rectangle",
+        "x": 400,
+        "y": 100,
+        "width": 400,
+        "height": 80,
+        "label": "Web UI / Client",
+        "role": "component",
+        "tier": "presentation"
+      },
+      {
+        "id": "api-layer",
+        "type": "rectangle",
+        "x": 300,
+        "y": 250,
+        "width": 600,
+        "height": 100,
+        "label": "API Gateway / Orchestrator",
+        "role": "component",
+        "tier": "api"
+      },
+      {
+        "id": "service-1",
+        "type": "rectangle",
+        "x": 100,
+        "y": 450,
+        "width": 200,
+        "height": 80,
+        "label": "Service A",
+        "role": "component",
+        "tier": "service"
+      },
+      {
+        "id": "service-2",
+        "type": "rectangle",
+        "x": 400,
+        "y": 450,
+        "width": 200,
+        "height": 80,
+        "label": "Service B",
+        "role": "component",
+        "tier": "service"
+      },
+      {
+        "id": "service-3",
+        "type": "rectangle",
+        "x": 700,
+        "y": 450,
+        "width": 200,
+        "height": 80,
+        "label": "Service C",
+        "role": "component",
+        "tier": "service"
+      },
+      {
+        "id": "database",
+        "type": "rectangle",
+        "x": 400,
+        "y": 630,
+        "width": 200,
+        "height": 80,
+        "label": "Database",
+        "role": "component",
+        "tier": "data"
+      },
+      {
+        "id": "arrow-ui-api",
+        "type": "arrow",
+        "from": "ui-layer",
+        "to": "api-layer",
+        "label": "REST",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-api-s1",
+        "type": "arrow",
+        "from": "api-layer",
+        "to": "service-1",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-api-s2",
+        "type": "arrow",
+        "from": "api-layer",
+        "to": "service-2",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-api-s3",
+        "type": "arrow",
+        "from": "api-layer",
+        "to": "service-3",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-s2-db",
+        "type": "arrow",
+        "from": "service-2",
+        "to": "database",
+        "role": "connector"
+      }
+    ]
+  }
+}
