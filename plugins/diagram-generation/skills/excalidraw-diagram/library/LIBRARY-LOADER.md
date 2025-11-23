@@ -42,8 +42,9 @@ INPUT: "Create architecture with API Gateway, Temporal, MongoDB, Redis, Users"
 ```
 1. LOAD COMPONENTS
    For each matched component:
-   → Read from category file (e.g., networking.json)
-   → Extract normalized elements (already at origin 0,0)
+   → Read from category file (e.g., networking.excalidraw)
+   → Filter elements by groupId (e.g., "networking-api-gateway")
+   → Elements already normalized at origin 0,0
 
 2. CALCULATE LAYOUT
    Using config.json layout settings:
@@ -75,33 +76,49 @@ INPUT: "Create architecture with API Gateway, Temporal, MongoDB, Redis, Users"
 
 ```python
 def find_component(keyword: str, index: dict) -> dict | None:
+    """Find component by keyword, returns category, groupId, and metadata."""
     keyword_lower = keyword.lower().replace(" ", "-")
 
     # 1. Exact name match
     for category, data in index["categories"].items():
         for comp in data["components"]:
             if comp["name"] == keyword_lower:
-                return {"category": category, **comp}
+                return {
+                    "category": category,
+                    "file": data["file"],  # e.g., "networking.excalidraw"
+                    "groupId": comp["groupId"],  # e.g., "networking-api-gateway"
+                    **comp
+                }
 
     # 2. Alias match
     for category, data in index["categories"].items():
         for comp in data["components"]:
             if keyword_lower in [a.lower() for a in comp.get("aliases", [])]:
-                return {"category": category, **comp}
+                return {"category": category, "file": data["file"], "groupId": comp["groupId"], **comp}
 
     # 3. Tag match
     for category, data in index["categories"].items():
         for comp in data["components"]:
             if keyword_lower in [t.lower() for t in comp.get("tags", [])]:
-                return {"category": category, **comp}
+                return {"category": category, "file": data["file"], "groupId": comp["groupId"], **comp}
 
     # 4. Partial match
     for category, data in index["categories"].items():
         for comp in data["components"]:
             if keyword_lower in comp["name"]:
-                return {"category": category, **comp}
+                return {"category": category, "file": data["file"], "groupId": comp["groupId"], **comp}
 
     return None
+
+
+def load_component_elements(file_path: str, group_id: str) -> list:
+    """Load elements for a specific component by groupId."""
+    import json
+    with open(file_path) as f:
+        data = json.load(f)
+
+    # Filter elements belonging to this component
+    return [el for el in data["elements"] if group_id in el.get("groupIds", [])]
 ```
 
 ## Grid Layout Algorithm
@@ -239,22 +256,29 @@ Pass 2 Output:
   Total elements: ~60 (vs ~150 from scratch)
 ```
 
-## File Structure
+## File Structure (v4 - Consolidated)
 
 ```
 library/
-  index.json           # Master index with all categories
-  actors.json          # People and external systems
-  devices.json         # End-user devices
-  services.json        # Application services
-  workflow.json        # Orchestration (Temporal)
-  data-stores.json     # Databases and storage
-  search.json          # Search engines
-  messaging.json       # Event streaming
-  networking.json      # Network infrastructure
-  security.json        # Security controls
-  compute.json         # Container/K8s
-  cloud.json           # Cloud providers
-  vmware.json          # VMware infrastructure
-  primitives.json      # Building blocks
+  index.json           # Master index with all categories and metadata
+  {category}.excalidraw  # Consolidated component files per category
+
+Example files:
+  actors.excalidraw      # People and external systems (groupIds: actors-clients, actors-user)
+  services.excalidraw    # Application services
+  workflow.excalidraw    # Orchestration (Temporal)
+  data-stores.excalidraw # Databases and storage
+  messaging.excalidraw   # Event streaming
+  networking.excalidraw  # Network infrastructure
+  security.excalidraw    # Security controls
+  containers.excalidraw  # Container/K8s
+  cloud.excalidraw       # Cloud providers
+  vmware.excalidraw      # VMware infrastructure
+  primitives.excalidraw  # Building blocks
 ```
+
+## Naming Convention
+
+- **Element IDs**: `{category}-{component}-{element}` (e.g., `actors-clients-label`)
+- **Group IDs**: `{category}-{component}` (e.g., `actors-clients`)
+- **File references**: `index.json` contains `groupId` for each component

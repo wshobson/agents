@@ -1,0 +1,2950 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "excalidraw-diagram-skill",
+  "elements": [
+    {
+      "type": "line",
+      "version": 396,
+      "versionNonce": 205175592,
+      "isDeleted": false,
+      "id": "productivity-jira-connector",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 62.02,
+      "y": 0.0,
+      "strokeColor": "#2684ff",
+      "backgroundColor": "#2684ff",
+      "width": 68.23856214388582,
+      "height": 67.8402146774508,
+      "seed": 42722600,
+      "groupIds": [
+        "productivity-jira"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144142784,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          -210.2268931315624,
+          -3.268496584496461e-13
+        ],
+        [
+          -273.01830031104464,
+          -1.9895196601282805e-13
+        ],
+        [
+          -273.01830031104464,
+          -1.9895196601282805e-13
+        ],
+        [
+          -272.87195721769365,
+          2.8981136061899235
+        ],
+        [
+          -272.44243114072583,
+          5.712510188398483
+        ],
+        [
+          -271.7439632475368,
+          8.428941760613014
+        ],
+        [
+          -270.7908102909301,
+          11.033161310910629
+        ],
+        [
+          -269.5972095419502,
+          13.510919879190993
+        ],
+        [
+          -268.1774177533994,
+          15.847970453530976
+        ],
+        [
+          -266.54567219632145,
+          18.030064073830786
+        ],
+        [
+          -264.7162335198729,
+          20.042956650430938
+        ],
+        [
+          -262.70334678780074,
+          21.87239532687957
+        ],
+        [
+          -260.5212492711488,
+          23.504135039428874
+        ],
+        [
+          -258.1842016190732,
+          24.923928776155577
+        ],
+        [
+          -255.7064411026164,
+          26.1175275769603
+        ],
+        [
+          -253.1022205782313,
+          27.070684429918813
+        ],
+        [
+          -250.38579290236896,
+          27.769150374931698
+        ],
+        [
+          -247.57139534607256,
+          28.198678400075835
+        ],
+        [
+          -244.67328076579406,
+          28.34501954525051
+        ],
+        [
+          -233.10637472259532,
+          28.345019545250224
+        ],
+        [
+          -233.1063747225952,
+          39.513067699872465
+        ],
+        [
+          -233.1063747225952,
+          39.513067699872465
+        ],
+        [
+          -232.9583990576603,
+          42.40851717522628
+        ],
+        [
+          -232.52778200206893,
+          45.220296382825026
+        ],
+        [
+          -231.8287218633411,
+          47.93419142973889
+        ],
+        [
+          -230.87544032711116,
+          50.535984526686164
+        ],
+        [
+          -229.68215128630862,
+          53.01146567708902
+        ],
+        [
+          -228.26306084115924,
+          55.34642488437028
+        ],
+        [
+          -226.63238288459178,
+          57.52664435924821
+        ],
+        [
+          -224.80433130953708,
+          59.53791020879295
+        ],
+        [
+          -222.79311221621867,
+          61.36601243642707
+        ],
+        [
+          -220.61293949756754,
+          62.99673714922132
+        ],
+        [
+          -218.27802704651313,
+          64.41587045424522
+        ],
+        [
+          -215.80258096327975,
+          65.60920235492183
+        ],
+        [
+          -213.20081514079857,
+          66.56250726926513
+        ],
+        [
+          -210.48695126470278,
+          67.26159078610637
+        ],
+        [
+          -207.67518764251258,
+          67.69223121981146
+        ],
+        [
+          -204.77973816715883,
+          67.84021467745043
+        ],
+        [
+          -204.77973816715888,
+          5.447154964403424
+        ],
+        [
+          -204.77973816715888,
+          5.447154964403424
+        ],
+        [
+          -204.8903789850399,
+          4.349608064648535
+        ],
+        [
+          -205.20771349593934,
+          3.327235923658165
+        ],
+        [
+          -205.70985199303817,
+          2.401973299825599
+        ],
+        [
+          -206.37492035492397,
+          1.595754342737706
+        ],
+        [
+          -207.1810444601873,
+          0.9305132628629877
+        ],
+        [
+          -208.10632680930317,
+          0.4281843011091695
+        ],
+        [
+          -209.12890886626963,
+          0.11070178970520317
+        ],
+        [
+          -210.2268931315624,
+          -3.268496584496461e-13
+        ],
+        [
+          -210.2268931315624,
+          -3.268496584496461e-13
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 398,
+      "versionNonce": 1983900504,
+      "isDeleted": false,
+      "id": "productivity-jira-connector-2",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 30.63,
+      "y": 31.64,
+      "strokeColor": "#2684ff",
+      "backgroundColor": "#2684ff",
+      "width": 68.2385582475337,
+      "height": 67.83918993681462,
+      "seed": 623181864,
+      "groupIds": [
+        "productivity-jira"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144142784,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          -210.22518422797344,
+          -1.8474111129762605e-13
+        ],
+        [
+          -273.0160809853139,
+          -1.7053025658242404e-13
+        ],
+        [
+          -273.0160809853139,
+          -1.7053025658242404e-13
+        ],
+        [
+          -272.86819688465675,
+          2.8954494753536437
+        ],
+        [
+          -272.43765191158144,
+          5.707228682952774
+        ],
+        [
+          -271.73866190719343,
+          8.421123729866508
+        ],
+        [
+          -270.7854349198947,
+          11.022916826813884
+        ],
+        [
+          -269.5921887389669,
+          13.498401873568767
+        ],
+        [
+          -268.1731255682829,
+          15.833357184497771
+        ],
+        [
+          -266.5424670934766,
+          18.01357665937546
+        ],
+        [
+          -264.71441941477394,
+          20.0248425089205
+        ],
+        [
+          -262.7031925287515,
+          21.852944736554747
+        ],
+        [
+          -260.5230042246916,
+          23.483669449348213
+        ],
+        [
+          -258.18806060281935,
+          24.902802754372473
+        ],
+        [
+          -255.71257165971198,
+          26.096130758696987
+        ],
+        [
+          -253.11075908100386,
+          27.049443465744858
+        ],
+        [
+          -250.3968250705673,
+          27.748526982585958
+        ],
+        [
+          -247.58498352133307,
+          28.17916351993894
+        ],
+        [
+          -244.68944832623032,
+          28.327143081226055
+        ],
+        [
+          -233.12254228303118,
+          28.3271430812258
+        ],
+        [
+          -233.1225422830311,
+          39.53094416389689
+        ],
+        [
+          -233.1225422830311,
+          39.53094416389689
+        ],
+        [
+          -232.97275871066205,
+          42.42629233409281
+        ],
+        [
+          -232.54037271115868,
+          45.2377754189222
+        ],
+        [
+          -231.83959038474586,
+          47.95119511086433
+        ],
+        [
+          -230.88464120976192,
+          50.55234530969375
+        ],
+        [
+          -229.68975466454606,
+          53.02701991518538
+        ],
+        [
+          -228.26914464202753,
+          55.36101282711377
+        ],
+        [
+          -226.6370406205445,
+          57.54013353066321
+        ],
+        [
+          -224.80766428573156,
+          59.55016813290351
+        ],
+        [
+          -222.79523732322278,
+          61.37691832631451
+        ],
+        [
+          -220.6139736259479,
+          63.00618580337513
+        ],
+        [
+          -218.27811046494952,
+          64.42375667115567
+        ],
+        [
+          -215.8018695258619,
+          65.61544041483972
+        ],
+        [
+          -213.19946470161491,
+          66.56702314149783
+        ],
+        [
+          -210.4851254705471,
+          67.26431433631402
+        ],
+        [
+          -207.67306572558766,
+          67.69310789906292
+        ],
+        [
+          -204.77752273778037,
+          67.83918993681445
+        ],
+        [
+          -204.77752273778026,
+          5.448175808687097
+        ],
+        [
+          -204.77752273778026,
+          5.448175808687097
+        ],
+        [
+          -204.88820251918372,
+          4.350312330313699
+        ],
+        [
+          -205.20564612794567,
+          3.3277458587558186
+        ],
+        [
+          -205.70792489372434,
+          2.4023855825955565
+        ],
+        [
+          -206.37314910969985,
+          1.5961367940610813
+        ],
+        [
+          -207.17939789823413,
+          0.9309164744378933
+        ],
+        [
+          -208.10475817439476,
+          0.4286299159551987
+        ],
+        [
+          -209.12732464595192,
+          0.11119215172108454
+        ],
+        [
+          -210.2251842279733,
+          0.0005104221417724375
+        ],
+        [
+          -210.22518422797344,
+          -1.8474111129762605e-13
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 399,
+      "versionNonce": 2122913320,
+      "isDeleted": false,
+      "id": "productivity-jira-connector-3",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 0.0,
+      "y": 62.75,
+      "strokeColor": "#2684ff",
+      "backgroundColor": "#2684ff",
+      "width": 68.23906866967549,
+      "height": 67.83919383316687,
+      "seed": 1810021160,
+      "groupIds": [
+        "productivity-jira"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144142784,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          -210.22688008649808,
+          -2.2737367544323206e-13
+        ],
+        [
+          -273.0182833696279,
+          -3.126388037344441e-13
+        ],
+        [
+          -273.0182833696279,
+          -3.126388037344441e-13
+        ],
+        [
+          -272.8719361364029,
+          2.898122372982698
+        ],
+        [
+          -272.44239429138474,
+          5.712527721983605
+        ],
+        [
+          -271.74390758612003,
+          8.428963190550121
+        ],
+        [
+          -270.79072589391575,
+          11.033183714935802
+        ],
+        [
+          -269.5970990880799,
+          13.510944231392429
+        ],
+        [
+          -268.1772766157551,
+          15.847991883467856
+        ],
+        [
+          -266.54550914169596,
+          18.03008160741534
+        ],
+        [
+          -264.716045138958,
+          20.042976132191825
+        ],
+        [
+          -262.70313600286084,
+          21.872414808640116
+        ],
+        [
+          -260.5210297194166,
+          23.50415257301337
+        ],
+        [
+          -258.1839771969004,
+          24.923936568859887
+        ],
+        [
+          -255.70622934358863,
+          26.117537317840615
+        ],
+        [
+          -253.10203219731665,
+          27.070686378094535
+        ],
+        [
+          -250.3856395886242,
+          27.769154271283952
+        ],
+        [
+          -247.5713004776112,
+          28.1986803482514
+        ],
+        [
+          -244.67326382437764,
+          28.345019545250352
+        ],
+        [
+          -233.07009832734025,
+          28.345019545250395
+        ],
+        [
+          -233.0700983273402,
+          39.51255727772981
+        ],
+        [
+          -233.0700983273402,
+          39.51255727772981
+        ],
+        [
+          -232.92237202894805,
+          42.40543516061312
+        ],
+        [
+          -232.49247190216647,
+          45.21486097146598
+        ],
+        [
+          -231.79456118734595,
+          47.92665978088077
+        ],
+        [
+          -230.8428109175419,
+          50.52663328133747
+        ],
+        [
+          -229.65138822945704,
+          53.000590958019046
+        ],
+        [
+          -228.23446025979428,
+          55.33435008881381
+        ],
+        [
+          -226.6061941452563,
+          57.513720158905656
+        ],
+        [
+          -224.78075702254642,
+          59.524502860773936
+        ],
+        [
+          -222.77231602836767,
+          61.35252326501116
+        ],
+        [
+          -220.59503829942219,
+          62.98357527139251
+        ],
+        [
+          -218.26309486876607,
+          64.40349174321486
+        ],
+        [
+          -215.79064897674925,
+          65.59805878754779
+        ],
+        [
+          -213.1918716564267,
+          66.55310926768962
+        ],
+        [
+          -210.48092614814988,
+          67.25443708341444
+        ],
+        [
+          -207.67198348497334,
+          67.68785951261077
+        ],
+        [
+          -204.77921469995238,
+          67.83919383316655
+        ],
+        [
+          -204.77921469995297,
+          5.447669282897351
+        ],
+        [
+          -204.77921469995297,
+          5.447669282897351
+        ],
+        [
+          -204.88989448135607,
+          4.349801908171457
+        ],
+        [
+          -205.20733029741365,
+          3.3272354366139183
+        ],
+        [
+          -205.70961685589657,
+          2.4018751604535
+        ],
+        [
+          -206.37484107187225,
+          1.5956263719192947
+        ],
+        [
+          -207.18108986040662,
+          0.9304060522960498
+        ],
+        [
+          -208.10645013656693,
+          0.4281194938129005
+        ],
+        [
+          -209.12901660812454,
+          0.11068367775523313
+        ],
+        [
+          -210.22688008649808,
+          -2.2737367544323206e-13
+        ],
+        [
+          -210.22688008649808,
+          -2.2737367544323206e-13
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 160,
+      "versionNonce": 1616255528,
+      "isDeleted": false,
+      "id": "productivity-trello-connector",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 200.0,
+      "y": 0.0,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#6d41ff",
+      "width": 178.65670320077103,
+      "height": 178.65985102211414,
+      "seed": 646927656,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -4.263256414560601e-14,
+          178.65985102211403
+        ],
+        [
+          126.53487888516077,
+          178.6598510221141
+        ],
+        [
+          126.53487888516077,
+          178.6598510221141
+        ],
+        [
+          129.2170960027667,
+          178.5918568840221
+        ],
+        [
+          131.86409502983287,
+          178.39041227912588
+        ],
+        [
+          134.47261192850917,
+          178.05878922580766
+        ],
+        [
+          137.03937468041343,
+          177.60027570351502
+        ],
+        [
+          139.5610793450332,
+          177.01812776956518
+        ],
+        [
+          142.0344698650509,
+          176.31561744234034
+        ],
+        [
+          144.45629018314932,
+          175.49604866235356
+        ],
+        [
+          146.8232363588162,
+          174.56266152585664
+        ],
+        [
+          149.13203637366885,
+          173.51874401229725
+        ],
+        [
+          151.37943417038963,
+          172.36758410112316
+        ],
+        [
+          153.56212580846656,
+          171.11243784965058
+        ],
+        [
+          155.67687119164748,
+          169.75657727626276
+        ],
+        [
+          157.7203823404846,
+          168.30330632147232
+        ],
+        [
+          159.68937127553005,
+          166.7558650815312
+        ],
+        [
+          161.58058193946755,
+          165.11755749695237
+        ],
+        [
+          163.3907263528487,
+          163.3916396250526
+        ],
+        [
+          165.1165484583569,
+          161.58138348421457
+        ],
+        [
+          166.75474431547858,
+          159.6900770538854
+        ],
+        [
+          168.30205786689748,
+          157.72099235244804
+        ],
+        [
+          169.75521709423074,
+          155.6774013982846
+        ],
+        [
+          171.11094997909638,
+          153.5625762097772
+        ],
+        [
+          172.36596854204652,
+          151.3798047663744
+        ],
+        [
+          173.51698480363333,
+          149.1323431253918
+        ],
+        [
+          174.5607586676054,
+          146.82347926627816
+        ],
+        [
+          175.49400215451485,
+          144.45646924635054
+        ],
+        [
+          176.3134432459795,
+          142.03461700612132
+        ],
+        [
+          177.0157939625514,
+          139.56117860290792
+        ],
+        [
+          177.5977822858484,
+          137.0394420161576
+        ],
+        [
+          178.05615215855352,
+          134.47266330318794
+        ],
+        [
+          178.38759964015355,
+          131.86413044344607
+        ],
+        [
+          178.58888463439703,
+          129.21709949424957
+        ],
+        [
+          178.65670320077098,
+          126.53488237664375
+        ],
+        [
+          178.65670320077098,
+          -5.684341886080802e-14
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 189660248,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-2",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 339.26,
+      "y": 112.62,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 6.668596918158221,
+      "height": 6.668501151766545,
+      "seed": 1285157208,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          6.668580957092942,
+          0
+        ],
+        [
+          6.668580957092942,
+          6.668501151766545
+        ],
+        [
+          -1.5961065279792007e-05,
+          6.668501151766545
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 153,
+      "versionNonce": 367039784,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-3",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 337.15999999999997,
+      "y": 83.91,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 10.834371111922822,
+      "height": 10.837499480717659,
+      "seed": 1463447592,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          10.834355150857542,
+          0
+        ],
+        [
+          10.834355150857542,
+          10.837499480717659
+        ],
+        [
+          -1.5961065279792028e-05,
+          10.837499480717659
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 155,
+      "versionNonce": 637317464,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-4",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 335.5,
+      "y": 55.61,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 14.17020183326879,
+      "height": 14.182675405784945,
+      "seed": 604112472,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          14.17015395007295,
+          0
+        ],
+        [
+          14.17015395007295,
+          14.182675405784945
+        ],
+        [
+          -4.788319583937605e-05,
+          14.182675405784945
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 1248047144,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-5",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 312.62,
+      "y": 139.25,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 6.6684931712339015,
+      "height": 6.668501151766545,
+      "seed": 432679720,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          6.662180569915742,
+          0
+        ],
+        [
+          6.662180569915742,
+          6.668501151766545
+        ],
+        [
+          -0.0063126013181577355,
+          6.668501151766545
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 1124910680,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-6",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 310.53,
+      "y": 110.2,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 10.837491500185017,
+      "height": 10.846820742841055,
+      "seed": 1604287320,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          10.837491500185017,
+          0
+        ],
+        [
+          10.837491500185017,
+          10.846820742841055
+        ],
+        [
+          0,
+          10.846820742841055
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 152,
+      "versionNonce": 1439394600,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-7",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 308.87,
+      "y": 82.24,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 14.18588357990618,
+      "height": 14.170161930605586,
+      "seed": 145393192,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          14.18588357990618,
+          0
+        ],
+        [
+          14.18588357990618,
+          14.170161930605586
+        ],
+        [
+          0.015713668767955234,
+          14.170161930605586
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 1330789208,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-8",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 310.53,
+      "y": 68.12,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 10.837491500185017,
+      "height": 10.834343180058582,
+      "seed": 298209368,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -10.834343180058584
+        ],
+        [
+          10.837491500185017,
+          -10.834343180058584
+        ],
+        [
+          10.837491500185017,
+          -7.980532640949889e-06
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 847496744,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-9",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 259.37,
+      "y": 139.25,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 6.6685131225655025,
+      "height": 6.668501151766545,
+      "seed": 281510184,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          6.6685131225655025,
+          0
+        ],
+        [
+          6.6685131225655025,
+          6.668501151766545
+        ],
+        [
+          0,
+          6.668501151766545
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 2099318872,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-10",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 257.28,
+      "y": 110.54,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 10.837495490451339,
+      "height": 10.821753889819147,
+      "seed": 1649050968,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          10.837495490451339,
+          0
+        ],
+        [
+          10.837495490451339,
+          10.821753889819147
+        ],
+        [
+          3.591239687953204e-05,
+          10.821753889819147
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 153,
+      "versionNonce": 762888488,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-11",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 259.37,
+      "y": 92.66,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 6.6685131225655025,
+      "height": 6.668501151766545,
+      "seed": 562895912,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -6.668501151766543
+        ],
+        [
+          6.6685131225655025,
+          -6.668501151766543
+        ],
+        [
+          6.6685131225655025,
+          -7.980532639173532e-06
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 340608344,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-12",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 257.28,
+      "y": 57.29,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 10.837495490451339,
+      "height": 10.83433519952594,
+      "seed": 1585453656,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          10.837495490451339,
+          0
+        ],
+        [
+          10.837495490451339,
+          10.83433519952594
+        ],
+        [
+          3.591239687953204e-05,
+          10.83433519952594
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 370564136,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-13",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 232.74,
+      "y": 139.25,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 6.681058519875418,
+      "height": 6.668501151766545,
+      "seed": 1558665000,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          6.681058519875418,
+          0
+        ],
+        [
+          6.681058519875418,
+          6.668501151766545
+        ],
+        [
+          0,
+          6.668501151766545
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 154,
+      "versionNonce": 1110104664,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-14",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 232.74,
+      "y": 112.62,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 6.681058519875418,
+      "height": 6.668501151766545,
+      "seed": 1228607320,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          6.681058519875418,
+          0
+        ],
+        [
+          6.681058519875418,
+          6.668501151766545
+        ],
+        [
+          0,
+          6.668501151766545
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 153,
+      "versionNonce": 1850251048,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-15",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 230.66,
+      "y": 83.91,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 10.83435515085754,
+      "height": 10.837499480717659,
+      "seed": 1195520552,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          10.83435515085754,
+          0
+        ],
+        [
+          10.83435515085754,
+          10.837499480717659
+        ],
+        [
+          0,
+          10.837499480717659
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 153,
+      "versionNonce": 1770901336,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-16",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 228.99,
+      "y": 55.61,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 14.173310250732019,
+      "height": 14.182671415518628,
+      "seed": 1791976536,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          14.173310250732019,
+          0
+        ],
+        [
+          14.173310250732019,
+          14.182671415518628
+        ],
+        [
+          0,
+          14.182671415518628
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 153,
+      "versionNonce": 444297768,
+      "isDeleted": false,
+      "id": "productivity-trello-connector-17",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 222.76,
+      "y": 22.77,
+      "strokeColor": "#6d41ff",
+      "backgroundColor": "#FFFFFF",
+      "width": 133.12474735004315,
+      "height": 133.12789367503643,
+      "seed": 2005511464,
+      "groupIds": [
+        "productivity-trello"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144173670,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          133.12474735004315,
+          0
+        ],
+        [
+          133.12474735004315,
+          26.626823698099116
+        ],
+        [
+          79.88050102129469,
+          26.626823698099116
+        ],
+        [
+          79.88050102129469,
+          133.12789367503643
+        ],
+        [
+          53.256837614121,
+          133.12789367503643
+        ],
+        [
+          53.256837614121,
+          26.626823698099116
+        ],
+        [
+          0,
+          26.626823698099116
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "ellipse",
+      "version": 617,
+      "versionNonce": 1108131672,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-shape",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 460.51,
+      "y": 0.0,
+      "strokeColor": "#7b83eb",
+      "backgroundColor": "#7b83eb",
+      "width": 51.32958381634847,
+      "height": 51.32958381634847,
+      "seed": 792062248,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null
+    },
+    {
+      "type": "line",
+      "version": 620,
+      "versionNonce": 1101234728,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 0.1,
+      "angle": 0,
+      "x": 485.11,
+      "y": 32.94,
+      "strokeColor": "#000000",
+      "backgroundColor": "black",
+      "width": 30.575585896160483,
+      "height": 19.78670609290632,
+      "seed": 904823848,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -23.245143715915354,
+          3.552713678800501e-15
+        ],
+        [
+          -23.129655655622038,
+          0.511425771747847
+        ],
+        [
+          -23.118658041415756,
+          0.5554188507983326
+        ],
+        [
+          -22.997679040696056,
+          1.028350350598787
+        ],
+        [
+          -22.997679040696056,
+          1.028350350598787
+        ],
+        [
+          -18.669061093627448,
+          9.953617035410655
+        ],
+        [
+          -11.559347376287157,
+          16.393546154220097
+        ],
+        [
+          -2.5867626303519877,
+          19.78670609290632
+        ],
+        [
+          7.33044218024512,
+          19.571673104025386
+        ],
+        [
+          7.3304421802451305,
+          7.330442180245143
+        ],
+        [
+          7.3304421802451305,
+          7.330442180245143
+        ],
+        [
+          6.748580806400665,
+          4.480916810468132
+        ],
+        [
+          5.176997087410913,
+          2.15344771505981
+        ],
+        [
+          2.849530614228236,
+          0.5818639960700418
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 622,
+      "versionNonce": 1038816344,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-2",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 0.2,
+      "angle": 0,
+      "x": 479.0,
+      "y": 38.03,
+      "strokeColor": "#000000",
+      "backgroundColor": "black",
+      "width": 23.19015040043302,
+      "height": 14.666380545367781,
+      "seed": 819707688,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -15.85970822018789,
+          -3.4638958368304884e-14
+        ],
+        [
+          -15.85970822018789,
+          -3.4638958368304884e-14
+        ],
+        [
+          -11.838042758515499,
+          6.070667308480415
+        ],
+        [
+          -6.3891785643633305,
+          10.692497278751567
+        ],
+        [
+          0.12196495754878622,
+          13.634676368214485
+        ],
+        [
+          7.330442180245135,
+          14.666380545367748
+        ],
+        [
+          7.330442180245114,
+          7.33044218024512
+        ],
+        [
+          7.330442180245114,
+          7.33044218024512
+        ],
+        [
+          6.748580806400681,
+          4.480916810468087
+        ],
+        [
+          5.17699708741093,
+          2.1534450928341617
+        ],
+        [
+          2.8495306142282484,
+          0.5818613738444351
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "ellipse",
+      "version": 617,
+      "versionNonce": 960560424,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-shape-2",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 524.67,
+      "y": 14.67,
+      "strokeColor": "#5059c9",
+      "backgroundColor": "#5059c9",
+      "width": 38.49443976982263,
+      "height": 38.49443976982263,
+      "seed": 1885968936,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null
+    },
+    {
+      "type": "line",
+      "version": 621,
+      "versionNonce": 892782936,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-3",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 561.13,
+      "y": 60.51,
+      "strokeColor": "#5059c9",
+      "backgroundColor": "#5059c9",
+      "width": 54.9975529989098,
+      "height": 76.665737433336,
+      "seed": 1468273960,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -43.22925619715561,
+          5.684341886080802e-14
+        ],
+        [
+          -43.22925619715561,
+          5.684341886080802e-14
+        ],
+        [
+          -45.71791612300525,
+          1.030833598250922
+        ],
+        [
+          -46.74874447680493,
+          3.519493524100639
+        ],
+        [
+          -46.74874447680485,
+          48.11804971227812
+        ],
+        [
+          -46.74874447680485,
+          48.11804971227812
+        ],
+        [
+          -45.26663109561115,
+          57.677194860350106
+        ],
+        [
+          -40.79433091849576,
+          65.96201178452445
+        ],
+        [
+          -33.84540158662742,
+          72.31434283462323
+        ],
+        [
+          -24.933400741173905,
+          76.07600938266302
+        ],
+        [
+          -18.598984736439252,
+          76.665737433336
+        ],
+        [
+          -12.536944550214116,
+          75.83948463268649
+        ],
+        [
+          -6.923472765651503,
+          73.7401937431398
+        ],
+        [
+          -1.9347514770021945,
+          70.51083899382735
+        ],
+        [
+          2.2530267325804054,
+          66.29436314717435
+        ],
+        [
+          5.463669279943513,
+          61.233750921215275
+        ],
+        [
+          7.520994070835908,
+          55.471945078374574
+        ],
+        [
+          8.248808522104735,
+          49.15189886998019
+        ],
+        [
+          8.248808522104875,
+          8.248808522104852
+        ],
+        [
+          8.248808522104875,
+          8.248808522104852
+        ],
+        [
+          7.600573373632869,
+          5.0379981523029
+        ],
+        [
+          5.832784245638351,
+          2.4160190320153476
+        ],
+        [
+          3.210810369802047,
+          0.6482299040207948
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 621,
+      "versionNonce": 1970739240,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-4",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 530.2,
+      "y": 68.59,
+      "strokeColor": "#7b83eb",
+      "backgroundColor": "#7b83eb",
+      "width": 87.9872909024517,
+      "height": 104.54052010738738,
+      "seed": 194457640,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2.1316282072803006e-14,
+          52.242453973330555
+        ],
+        [
+          2.1316282072803006e-14,
+          52.242453973330555
+        ],
+        [
+          -1.624846365569912,
+          64.29078349237378
+        ],
+        [
+          -6.170138814751041,
+          74.85340193668715
+        ],
+        [
+          -13.120830282229122,
+          83.63256083276349
+        ],
+        [
+          -21.961852724884572,
+          90.3305012181936
+        ],
+        [
+          -32.17814858850058,
+          94.6494641305681
+        ],
+        [
+          -43.2546393410554,
+          96.2917115852825
+        ],
+        [
+          -54.67627791723456,
+          94.95947413102503
+        ],
+        [
+          -65.92800151836894,
+          90.35499280538625
+        ],
+        [
+          -75.05063001367981,
+          83.35998572510789
+        ],
+        [
+          -82.04814918609236,
+          74.23927669894351
+        ],
+        [
+          -84.7977520267936,
+          68.74007101754037
+        ],
+        [
+          -86.61248948210093,
+          63.240865336136906
+        ],
+        [
+          -87.98729090245169,
+          52.2424539733306
+        ],
+        [
+          -87.98729090245169,
+          -1.4921397450962104e-13
+        ],
+        [
+          -87.98729090245169,
+          -1.4921397450962104e-13
+        ],
+        [
+          -87.34198215776021,
+          -3.212729838948256
+        ],
+        [
+          -85.57449720793605,
+          -5.83601482758948
+        ],
+        [
+          -82.9512122192948,
+          -7.60349977741317
+        ],
+        [
+          -79.73848238034688,
+          -8.248808522104888
+        ],
+        [
+          -8.248808522104838,
+          -8.248808522104788
+        ],
+        [
+          -8.248808522104838,
+          -8.248808522104788
+        ],
+        [
+          -5.036078683156697,
+          -7.603499777413173
+        ],
+        [
+          -2.4127936945154884,
+          -5.836014827589198
+        ],
+        [
+          -0.6453087446917465,
+          -3.2127298389482526
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 622,
+      "versionNonce": 323214936,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-5",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 0.2,
+      "angle": 0,
+      "x": 479.3,
+      "y": 38.2,
+      "strokeColor": "#000000",
+      "backgroundColor": "black",
+      "width": 23.19015040043302,
+      "height": 14.666380545367781,
+      "seed": 613346088,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -15.85970822018789,
+          -3.4638958368304884e-14
+        ],
+        [
+          -15.85970822018789,
+          -3.4638958368304884e-14
+        ],
+        [
+          -11.838042758515499,
+          6.070667308480415
+        ],
+        [
+          -6.3891785643633305,
+          10.692497278751567
+        ],
+        [
+          0.12196495754878622,
+          13.634676368214485
+        ],
+        [
+          7.330442180245135,
+          14.666380545367748
+        ],
+        [
+          7.330442180245114,
+          7.33044218024512
+        ],
+        [
+          7.330442180245114,
+          7.33044218024512
+        ],
+        [
+          6.748580806400681,
+          4.480916810468087
+        ],
+        [
+          5.17699708741093,
+          2.1534450928341617
+        ],
+        [
+          2.8495306142282484,
+          0.5818613738444351
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 621,
+      "versionNonce": 439472936,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-6",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 0.1,
+      "angle": 0,
+      "x": 492.04,
+      "y": 59.68,
+      "strokeColor": "#000000",
+      "backgroundColor": "black",
+      "width": 49.49285113262905,
+      "height": 76.98887953964525,
+      "seed": 1557612072,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          5.684341886080802e-14,
+          69.67493640293496
+        ],
+        [
+          5.684341886080802e-14,
+          69.67493640293496
+        ],
+        [
+          -1.607801899108054,
+          74.23111633284677
+        ],
+        [
+          -5.71917894333253,
+          76.76890627771593
+        ],
+        [
+          -7.313943136710257,
+          76.98887953964518
+        ],
+        [
+          -46.303312256971196,
+          76.98887953964507
+        ],
+        [
+          -46.303312256971196,
+          76.98887953964507
+        ],
+        [
+          -48.11804971227831,
+          71.48967385824204
+        ],
+        [
+          -49.492851132629006,
+          60.49126249543601
+        ],
+        [
+          -49.49285113262896,
+          8.248808522104842
+        ],
+        [
+          -49.49285113262896,
+          8.248808522104842
+        ],
+        [
+          -48.84754238793716,
+          5.036078683156699
+        ],
+        [
+          -47.08005743811328,
+          2.412793694515596
+        ],
+        [
+          -44.45677244947227,
+          0.6453087446917571
+        ],
+        [
+          -41.24404261052408,
+          -6.750155989720952e-14
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 620,
+      "versionNonce": 954618712,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-7",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 0.2,
+      "angle": 0,
+      "x": 486.24,
+      "y": 59.33,
+      "strokeColor": "#000000",
+      "backgroundColor": "black",
+      "width": 43.99364545122585,
+      "height": 82.4880852210485,
+      "seed": 1096565032,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          6.394884621840902e-14,
+          75.17414208433804
+        ],
+        [
+          6.394884621840902e-14,
+          75.17414208433804
+        ],
+        [
+          -0.2199732619292334,
+          76.76890627771581
+        ],
+        [
+          -2.7577841846031887,
+          80.88022038852571
+        ],
+        [
+          -7.3139431367103285,
+          82.48808522104845
+        ],
+        [
+          -38.05450373486633,
+          82.48808522104852
+        ],
+        [
+          -38.05450373486633,
+          82.48808522104852
+        ],
+        [
+          -40.80410657556814,
+          76.98887953964497
+        ],
+        [
+          -42.61884403087493,
+          71.4896738582418
+        ],
+        [
+          -43.993645451225774,
+          60.49126249543549
+        ],
+        [
+          -43.993645451225646,
+          8.24880852210482
+        ],
+        [
+          -43.993645451225646,
+          8.24880852210482
+        ],
+        [
+          -43.34833670653394,
+          5.036078683156717
+        ],
+        [
+          -41.58085175671009,
+          2.412793694515699
+        ],
+        [
+          -38.95756676806913,
+          0.6453087446917962
+        ],
+        [
+          -35.74483692912091,
+          4.973799150320701e-14
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 620,
+      "versionNonce": 1843211816,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-8",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 0.2,
+      "angle": 0,
+      "x": 485.9,
+      "y": 59.39,
+      "strokeColor": "#000000",
+      "backgroundColor": "black",
+      "width": 43.99364545122585,
+      "height": 71.489673858242,
+      "seed": 1636424744,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2.4158453015843406e-13,
+          64.17573072153169
+        ],
+        [
+          2.4158453015843406e-13,
+          64.17573072153169
+        ],
+        [
+          -0.5834451981125142,
+          67.01694363612675
+        ],
+        [
+          -2.151798335151369,
+          69.3378755230906
+        ],
+        [
+          -4.472730222115082,
+          70.90622866012944
+        ],
+        [
+          -7.313943136710201,
+          71.489673858242
+        ],
+        [
+          -42.61884403087484,
+          71.48967385824196
+        ],
+        [
+          -42.61884403087484,
+          71.48967385824196
+        ],
+        [
+          -43.99364545122546,
+          60.4912624954359
+        ],
+        [
+          -43.9936454512256,
+          8.2488085221047
+        ],
+        [
+          -43.9936454512256,
+          8.2488085221047
+        ],
+        [
+          -43.348336706533814,
+          5.03607868315672
+        ],
+        [
+          -41.58085175670999,
+          2.412793694515617
+        ],
+        [
+          -38.95756676806902,
+          0.6453087446918566
+        ],
+        [
+          -35.744836929120865,
+          7.815970093361102e-14
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 620,
+      "versionNonce": 1282549848,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-9",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 0.2,
+      "angle": 0,
+      "x": 451.64,
+      "y": 58.57,
+      "strokeColor": "#000000",
+      "backgroundColor": "black",
+      "width": 38.49443976982263,
+      "height": 71.489673858242,
+      "seed": 2135693096,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          -3.2127298389481584,
+          0.6453087446918016
+        ],
+        [
+          -5.836014827589171,
+          2.412793694515665
+        ],
+        [
+          -7.603499777413053,
+          5.036078683156715
+        ],
+        [
+          -8.248808522104852,
+          8.248808522104818
+        ],
+        [
+          -8.24880852210476,
+          60.49126249543565
+        ],
+        [
+          -8.24880852210476,
+          60.49126249543565
+        ],
+        [
+          -6.874007101754064,
+          71.48967385824199
+        ],
+        [
+          22.931688111007517,
+          71.48967385824201
+        ],
+        [
+          22.931688111007517,
+          71.48967385824201
+        ],
+        [
+          25.772895781151366,
+          70.90622866012944
+        ],
+        [
+          28.09383815701766,
+          69.33787552309053
+        ],
+        [
+          29.66218604960521,
+          67.0169436361268
+        ],
+        [
+          30.245631247717778,
+          64.17573072153178
+        ],
+        [
+          30.245631247717725,
+          2.3092638912203256e-14
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 624,
+      "versionNonce": 157624616,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-10",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 400.0,
+      "y": 36.87,
+      "strokeColor": "#4b53bc",
+      "backgroundColor": "#4b53bc",
+      "width": 87.9872909024517,
+      "height": 87.9872909024517,
+      "seed": 1057944104,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          73.32640785307409,
+          7.815970093361102e-14
+        ],
+        [
+          73.32640785307409,
+          7.815970093361102e-14
+        ],
+        [
+          76.17974593888725,
+          0.576061010796252
+        ],
+        [
+          78.50981365987458,
+          2.147036373444628
+        ],
+        [
+          80.08078902252294,
+          4.477104094431965
+        ],
+        [
+          80.65685003331916,
+          7.3304421802451145
+        ],
+        [
+          80.65685003331939,
+          80.65684872220689
+        ],
+        [
+          80.65685003331939,
+          80.65684872220689
+        ],
+        [
+          80.08078902252306,
+          83.51018680801963
+        ],
+        [
+          78.5098136598747,
+          85.84025452900727
+        ],
+        [
+          76.17974593888712,
+          87.41122989165531
+        ],
+        [
+          73.32640785307429,
+          87.9872909024517
+        ],
+        [
+          1.7763568394002505e-13,
+          87.98729090245169
+        ],
+        [
+          1.7763568394002505e-13,
+          87.98729090245169
+        ],
+        [
+          -2.8533380858132134,
+          87.41122989165544
+        ],
+        [
+          -5.183404331798535,
+          85.84025452900713
+        ],
+        [
+          -6.754378465278734,
+          83.51018680801991
+        ],
+        [
+          -7.330440869132218,
+          80.65684872220633
+        ],
+        [
+          -7.330440869132324,
+          7.33044218024517
+        ],
+        [
+          -7.330440869132324,
+          7.33044218024517
+        ],
+        [
+          -6.754378465278703,
+          4.477104094431912
+        ],
+        [
+          -5.183404331798642,
+          2.1470363734445916
+        ],
+        [
+          -2.8533380858132267,
+          0.5760610107962587
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "line",
+      "version": 621,
+      "versionNonce": 163274072,
+      "isDeleted": false,
+      "id": "productivity-microsoft-teams-connector-11",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 459.67,
+      "y": 64.82,
+      "strokeColor": "#4b53bc",
+      "backgroundColor": "#fff",
+      "width": 43.77367481152217,
+      "height": 54.93706874300117,
+      "seed": 1472097576,
+      "groupIds": [
+        "productivity-microsoft-teams"
+      ],
+      "strokeSharpness": "sharp",
+      "boundElements": [],
+      "updated": 1648144211549,
+      "link": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -16.442623728727376,
+          -9.769962616701378e-15
+        ],
+        [
+          -16.442623728727376,
+          44.103632082190444
+        ],
+        [
+          -27.232064688261964,
+          44.103632082190444
+        ],
+        [
+          -27.232064688261964,
+          -1.509903313490213e-14
+        ],
+        [
+          -43.77367481152217,
+          -9.769962616701378e-15
+        ],
+        [
+          -43.77367481152217,
+          -10.833436660810726
+        ],
+        [
+          0,
+          -10.833436660810712
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    }
+  ],
+  "appState": {
+    "gridSize": 20,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

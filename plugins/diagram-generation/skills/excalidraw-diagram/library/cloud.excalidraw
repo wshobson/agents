@@ -1,0 +1,1185 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "excalidraw-diagram-skill",
+  "elements": [
+    {
+      "type": "ellipse",
+      "version": 1041,
+      "versionNonce": 1250912872,
+      "isDeleted": false,
+      "id": "cloud-cloud-shape",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 0.0,
+      "y": 54.446102520904844,
+      "strokeColor": "#000000",
+      "backgroundColor": "#000000",
+      "width": 46.75379381154427,
+      "height": 44.24218831508102,
+      "seed": 878592439,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a0",
+      "frameId": null
+    },
+    {
+      "type": "ellipse",
+      "version": 1244,
+      "versionNonce": 2017513496,
+      "isDeleted": false,
+      "id": "cloud-cloud-shape-2",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 22.29319801215206,
+      "y": 28.973456736770174,
+      "strokeColor": "#000000",
+      "backgroundColor": "#000000",
+      "width": 63.91780562000876,
+      "height": 64.94486170984197,
+      "seed": 2028542265,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a1",
+      "frameId": null
+    },
+    {
+      "type": "ellipse",
+      "version": 1355,
+      "versionNonce": 1158012264,
+      "isDeleted": false,
+      "id": "cloud-cloud-shape-3",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 63.40746078258303,
+      "y": 65.50183881469786,
+      "strokeColor": "#000000",
+      "backgroundColor": "#000000",
+      "width": 36.41236004237836,
+      "height": 33.18645202128793,
+      "seed": 951775959,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a2",
+      "frameId": null
+    },
+    {
+      "type": "rectangle",
+      "version": 1107,
+      "versionNonce": 1558121752,
+      "isDeleted": false,
+      "id": "cloud-cloud-box",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 18.88361384294376,
+      "y": 78.57225187554712,
+      "strokeColor": "#000000",
+      "backgroundColor": "#000000",
+      "width": 67.50368478014705,
+      "height": 20.116038960438686,
+      "seed": 2059635225,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a3",
+      "frameId": null
+    },
+    {
+      "type": "ellipse",
+      "version": 1202,
+      "versionNonce": 775286888,
+      "isDeleted": false,
+      "id": "cloud-cloud-shape-4",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 6.490394130189088,
+      "y": 61.05077997057333,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "#ffffff",
+      "width": 35.23313651464933,
+      "height": 31.39768445454403,
+      "seed": 162832409,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a4",
+      "frameId": null
+    },
+    {
+      "type": "ellipse",
+      "version": 1401,
+      "versionNonce": 1823320600,
+      "isDeleted": false,
+      "id": "cloud-cloud-shape-5",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 28.590765908677668,
+      "y": 35.524917796888246,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "#ffffff",
+      "width": 51.603745633635,
+      "height": 53.03692992985033,
+      "seed": 293063159,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a5",
+      "frameId": null
+    },
+    {
+      "type": "ellipse",
+      "version": 1562,
+      "versionNonce": 1038852968,
+      "isDeleted": false,
+      "id": "cloud-cloud-shape-6",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 73.5037474202718,
+      "y": 71.25170882218976,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "#ffffff",
+      "width": 20.008854185188095,
+      "height": 21.196755602927652,
+      "seed": 976958713,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a6",
+      "frameId": null
+    },
+    {
+      "type": "rectangle",
+      "version": 1302,
+      "versionNonce": 580953880,
+      "isDeleted": false,
+      "id": "cloud-cloud-box-2",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 21.876933694071568,
+      "y": 71.30529184183422,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "#ffffff",
+      "width": 62.57218492833531,
+      "height": 21.05763701383531,
+      "seed": 33125143,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a7",
+      "frameId": null
+    },
+    {
+      "type": "rectangle",
+      "version": 1559,
+      "versionNonce": 1383265896,
+      "isDeleted": false,
+      "id": "cloud-cloud-box-3",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 22.631966751353048,
+      "y": 62.18426719046096,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "#ffffff",
+      "width": 56.568680898328566,
+      "height": 20.069339350263448,
+      "seed": 429883065,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "index": "a8",
+      "frameId": null
+    },
+    {
+      "type": "text",
+      "version": 578,
+      "versionNonce": 2066482200,
+      "isDeleted": false,
+      "id": "cloud-cloud-label",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 23.929937573125244,
+      "y": 0.0,
+      "strokeColor": "#000000",
+      "backgroundColor": "#ffffff",
+      "width": 51.95994567871094,
+      "height": 25,
+      "seed": 115133913,
+      "groupIds": [
+        "cloud-cloud"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "fontSize": 20,
+      "fontFamily": 1,
+      "text": "Cloud",
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Cloud",
+      "lineHeight": 1.25,
+      "index": "a9",
+      "frameId": null,
+      "autoResize": true
+    },
+    {
+      "type": "line",
+      "version": 822,
+      "versionNonce": 1642538088,
+      "isDeleted": false,
+      "id": "cloud-azure-short-connector",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 6.269769377881223,
+      "x": 165.23803149948617,
+      "y": 0.0,
+      "strokeColor": "#34bef0",
+      "backgroundColor": "#34bef0",
+      "width": 49.176206421267125,
+      "height": 90.42711430568875,
+      "seed": 1402326381,
+      "groupIds": [
+        "cloud-azure-short"
+      ],
+      "boundElements": [],
+      "updated": 1763422650756,
+      "link": null,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          31.34307662014818,
+          0.2731936988087166
+        ],
+        [
+          49.176206421267125,
+          90.42711430568875
+        ],
+        [
+          16.482135119215883,
+          89.88072690807131
+        ],
+        [
+          1.3509946819028331,
+          6.8298424702182015
+        ]
+      ],
+      "index": "a0",
+      "frameId": null,
+      "roundness": null,
+      "locked": false,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 1030,
+      "versionNonce": 1859761688,
+      "isDeleted": false,
+      "id": "cloud-azure-short-connector-2",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 6.269769377881223,
+      "x": 164.2946210104733,
+      "y": 1.640227018221367,
+      "strokeColor": "#065097",
+      "backgroundColor": "#065097",
+      "width": 41.355932203389784,
+      "height": 88.30508474576271,
+      "seed": 864668643,
+      "groupIds": [
+        "cloud-azure-short"
+      ],
+      "boundElements": [],
+      "updated": 1763422650756,
+      "link": null,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -33.89830508474574,
+          87.62711864406782
+        ],
+        [
+          -10.169491525423837,
+          88.30508474576271
+        ],
+        [
+          7.457627118644041,
+          37.796610169491544
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "index": "a1",
+      "frameId": null,
+      "roundness": null,
+      "locked": false,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 658,
+      "versionNonce": 1297504104,
+      "isDeleted": false,
+      "id": "cloud-azure-short-connector-3",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 177.0297494058393,
+      "y": 65.32446181198634,
+      "strokeColor": "#0079d5",
+      "backgroundColor": "#0079d5",
+      "width": 26.060606060606005,
+      "height": 24.54545454545456,
+      "seed": 2075367373,
+      "groupIds": [
+        "cloud-azure-short"
+      ],
+      "boundElements": [],
+      "updated": 1763422650756,
+      "link": null,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -21.212121212121247,
+          0
+        ],
+        [
+          4.848484848484759,
+          24.54545454545456
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "index": "a2",
+      "frameId": null,
+      "roundness": null,
+      "locked": false,
+      "polygon": false
+    },
+    {
+      "type": "text",
+      "version": 463,
+      "versionNonce": 460010264,
+      "isDeleted": false,
+      "id": "cloud-azure-short-label",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 149.0,
+      "y": 91.8898997665699,
+      "strokeColor": "#000000",
+      "backgroundColor": "#9cebff",
+      "width": 45,
+      "height": 20,
+      "seed": 2093766531,
+      "groupIds": [
+        "cloud-azure-short"
+      ],
+      "boundElements": [],
+      "updated": 1763422650756,
+      "link": null,
+      "fontSize": 16,
+      "fontFamily": 1,
+      "text": "Azure",
+      "baseline": 14,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Azure",
+      "index": "a3",
+      "frameId": null,
+      "roundness": null,
+      "locked": false,
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "type": "line",
+      "version": 1175,
+      "versionNonce": 1755841048,
+      "isDeleted": false,
+      "id": "cloud-azure-long-connector",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 6.269769377881223,
+      "x": 264.84,
+      "y": 0.0,
+      "strokeColor": "#34bef0",
+      "backgroundColor": "#34bef0",
+      "width": 43.990748282745166,
+      "height": 80.89189290608313,
+      "seed": 818050152,
+      "groupIds": [
+        "cloud-azure-long"
+      ],
+      "boundElements": [],
+      "updated": 1763845917979,
+      "link": null,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          28.038059345046285,
+          0.2443863834020542
+        ],
+        [
+          43.990748282745166,
+          80.89189290608313
+        ],
+        [
+          14.74415189696402,
+          80.40312013927901
+        ],
+        [
+          1.208537040734659,
+          6.109659585051612
+        ]
+      ],
+      "index": "bSEG",
+      "frameId": null,
+      "roundness": null,
+      "locked": false,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 1383,
+      "versionNonce": 1569718040,
+      "isDeleted": false,
+      "id": "cloud-azure-long-connector-2",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 6.269769377881223,
+      "x": 264.0,
+      "y": 1.47,
+      "strokeColor": "#065097",
+      "backgroundColor": "#065097",
+      "width": 36.99509449697639,
+      "height": 78.99362390542919,
+      "seed": 1145546600,
+      "groupIds": [
+        "cloud-azure-long"
+      ],
+      "boundElements": [],
+      "updated": 1763845917979,
+      "link": null,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -30.32384794834132,
+          78.38714694646238
+        ],
+        [
+          -9.097154384502497,
+          78.99362390542919
+        ],
+        [
+          6.67124654863507,
+          33.81109046240061
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "index": "bSEV",
+      "frameId": null,
+      "roundness": null,
+      "locked": false,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 1011,
+      "versionNonce": 1315986456,
+      "isDeleted": false,
+      "id": "cloud-azure-long-connector-3",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 275.39,
+      "y": 58.44,
+      "strokeColor": "#0079d5",
+      "backgroundColor": "#0079d5",
+      "width": 23.31260674089146,
+      "height": 21.957222628048996,
+      "seed": 917404264,
+      "groupIds": [
+        "cloud-azure-long"
+      ],
+      "boundElements": [],
+      "updated": 1763845917979,
+      "link": null,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -18.975377579795445,
+          0
+        ],
+        [
+          4.3372291610960145,
+          21.957222628048996
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "index": "bSF",
+      "frameId": null,
+      "roundness": null,
+      "locked": false,
+      "polygon": false
+    },
+    {
+      "type": "text",
+      "version": 942,
+      "versionNonce": 1564285208,
+      "isDeleted": false,
+      "id": "cloud-azure-long-label",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 80,
+      "angle": 0,
+      "x": 317.63,
+      "y": 33.26,
+      "strokeColor": "#000000",
+      "backgroundColor": "#9cebff",
+      "width": 220.9759063720703,
+      "height": 35,
+      "seed": 2059595112,
+      "groupIds": [
+        "cloud-azure-long"
+      ],
+      "boundElements": [],
+      "updated": 1763845917979,
+      "link": null,
+      "fontSize": 28,
+      "fontFamily": 1,
+      "text": "Microsoft Azure",
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Microsoft Azure",
+      "index": "bSG",
+      "frameId": null,
+      "roundness": null,
+      "locked": false,
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "type": "line",
+      "version": 411,
+      "versionNonce": 1701668968,
+      "isDeleted": false,
+      "id": "cloud-tanzu-connector",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 626.4433050754556,
+      "y": 39.874407519463205,
+      "strokeColor": "#228be6",
+      "backgroundColor": "transparent",
+      "width": 57.5579047055215,
+      "height": 56.50866443788828,
+      "seed": 1518581604,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -22.633428515931424,
+          11.016938757576911
+        ],
+        [
+          -29.07872385064611,
+          35.748855813781724
+        ],
+        [
+          -13.190338152294114,
+          56.35876267893182
+        ],
+        [
+          12.44090940758064,
+          56.50866443788828
+        ],
+        [
+          28.47918085487539,
+          36.723129191923015
+        ],
+        [
+          22.78333027488795,
+          11.991232148235376
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "index": "a0",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 289,
+      "versionNonce": 13218328,
+      "isDeleted": false,
+      "id": "cloud-tanzu-connector-2",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 594.7541985720118,
+      "y": 47.246531163884754,
+      "strokeColor": "#1864ab",
+      "backgroundColor": "transparent",
+      "width": 6.400723693086985,
+      "height": 26.960627911995342,
+      "seed": 1472075108,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -6.400723693086985,
+          26.960627911995342
+        ]
+      ],
+      "index": "a1",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 279,
+      "versionNonce": 259267432,
+      "isDeleted": false,
+      "id": "cloud-tanzu-connector-3",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 657.6623338195527,
+      "y": 46.85860297027608,
+      "strokeColor": "#1864ab",
+      "backgroundColor": "transparent",
+      "width": 6.46538932615813,
+      "height": 27.54251847596586,
+      "seed": 1799547868,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          6.46538932615813,
+          27.54251847596586
+        ]
+      ],
+      "index": "a2",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 299,
+      "versionNonce": 1710993176,
+      "isDeleted": false,
+      "id": "cloud-tanzu-connector-4",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 598.2455212385235,
+      "y": 42.97937628035163,
+      "strokeColor": "#22bbe6",
+      "backgroundColor": "transparent",
+      "width": 25.473577317746425,
+      "height": 12.542833194281734,
+      "seed": 1957838436,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          25.473577317746425,
+          -12.542833194281734
+        ]
+      ],
+      "index": "a3",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 264,
+      "versionNonce": 1277980264,
+      "isDeleted": false,
+      "id": "cloud-tanzu-connector-5",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 628.8914031114259,
+      "y": 30.436537906742103,
+      "strokeColor": "#22bbe6",
+      "backgroundColor": "transparent",
+      "width": 25.732226038490293,
+      "height": 12.995414935863518,
+      "seed": 1321086948,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          25.732226038490293,
+          12.995414935863518
+        ]
+      ],
+      "index": "a4",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 324,
+      "versionNonce": 770051096,
+      "isDeleted": false,
+      "id": "cloud-tanzu-connector-6",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 589.0,
+      "y": 79.78760156142181,
+      "strokeColor": "#5cb40d",
+      "backgroundColor": "transparent",
+      "width": 18.10308320747244,
+      "height": 22.82277667152313,
+      "seed": 1098420572,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          18.10308320747244,
+          22.82277667152313
+        ]
+      ],
+      "index": "a5",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 267,
+      "versionNonce": 341991784,
+      "isDeleted": false,
+      "id": "cloud-tanzu-connector-7",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 645.0548695210514,
+      "y": 102.28709840798166,
+      "strokeColor": "#5cb40d",
+      "backgroundColor": "transparent",
+      "width": 18.297004143212405,
+      "height": 22.434845025029194,
+      "seed": 1906266204,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          18.297004143212405,
+          -22.434845025029194
+        ]
+      ],
+      "index": "a6",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 270,
+      "versionNonce": 578603288,
+      "isDeleted": false,
+      "id": "cloud-tanzu-connector-8",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 611.8874423045941,
+      "y": 104.74396430692451,
+      "strokeColor": "#22bbe6",
+      "backgroundColor": "transparent",
+      "width": 28.124412492821353,
+      "height": 0.1293174546015766,
+      "seed": 1420384612,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          28.124412492821353,
+          -0.1293174546015766
+        ]
+      ],
+      "index": "a7",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "text",
+      "version": 347,
+      "versionNonce": 1734472808,
+      "isDeleted": false,
+      "id": "cloud-tanzu-label",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 594.7015143263795,
+      "y": 0.0,
+      "strokeColor": "#000000",
+      "backgroundColor": "#fa5252",
+      "width": 61.55995178222656,
+      "height": 25,
+      "seed": 2137726044,
+      "groupIds": [
+        "cloud-tanzu"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581581,
+      "link": null,
+      "locked": false,
+      "fontSize": 20,
+      "fontFamily": 1,
+      "text": "Tanzu",
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Tanzu",
+      "lineHeight": 1.25,
+      "index": "a8",
+      "frameId": null,
+      "autoResize": true
+    }
+  ],
+  "appState": {
+    "gridSize": 20,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

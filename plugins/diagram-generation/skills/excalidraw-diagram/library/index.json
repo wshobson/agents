@@ -1,8 +1,10 @@
 {
-  "version": 3,
-  "description": "Architecture diagram component library - Folder-based organization",
-  "naming_convention": "kebab-case with individual component files",
-  "structure": "library/{category}/{component}.excalidraw",
+  "version": 4,
+  "description": "Architecture diagram component library - Consolidated category files",
+  "naming_convention": "kebab-case with consolidated category files",
+  "structure": "library/{category}.excalidraw",
+  "id_convention": "{category}-{component}-{element}",
+  "groupId_convention": "{category}-{component}",
   "categories": {
     "actors": {
       "description": "People and external systems",
@@ -10,11 +12,9 @@
         "fill": "#fde7b4",
         "stroke": "#f08c00"
       },
-      "folder": "actors",
       "components": [
         {
           "name": "clients",
-          "file": "clients.excalidraw",
           "tags": [
             "user",
             "people",
@@ -28,11 +28,11 @@
           ],
           "width": 76,
           "height": 99,
-          "element_count": 7
+          "element_count": 7,
+          "groupId": "actors-clients"
         },
         {
           "name": "user",
-          "file": "user.excalidraw",
           "tags": [
             "person",
             "actor",
@@ -44,9 +44,11 @@
           ],
           "width": 50,
           "height": 111,
-          "element_count": 3
+          "element_count": 3,
+          "groupId": "actors-user"
         }
-      ]
+      ],
+      "file": "actors.excalidraw"
     },
     "devices": {
       "description": "End-user devices and hardware",
@@ -54,11 +56,9 @@
         "fill": "#ffd8a8",
         "stroke": "#f08c00"
       },
-      "folder": "devices",
       "components": [
         {
           "name": "desktop",
-          "file": "desktop.excalidraw",
           "tags": [
             "device",
             "computer",
@@ -70,9 +70,11 @@
           ],
           "width": 111,
           "height": 109,
-          "element_count": 7
+          "element_count": 7,
+          "groupId": "devices-desktop"
         }
-      ]
+      ],
+      "file": "devices.excalidraw"
     },
     "services": {
       "description": "Application layer services",
@@ -80,11 +82,9 @@
         "fill": "#a5d8ff",
         "stroke": "#1971c2"
       },
-      "folder": "services",
       "components": [
         {
           "name": "service",
-          "file": "service.excalidraw",
           "tags": [
             "microservice",
             "api",
@@ -97,11 +97,11 @@
           ],
           "width": 133,
           "height": 130,
-          "element_count": 2
+          "element_count": 2,
+          "groupId": "services-service"
         },
         {
           "name": "scalable-service",
-          "file": "scalable-service.excalidraw",
           "tags": [
             "distributed",
             "multi-node",
@@ -114,9 +114,11 @@
           ],
           "width": 150,
           "height": 148,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "services-scalable-service"
         }
-      ]
+      ],
+      "file": "services.excalidraw"
     },
     "workflow": {
       "description": "Orchestration and workflow engines",
@@ -124,11 +126,9 @@
         "fill": "#b2f2bb",
         "stroke": "#2f9e44"
       },
-      "folder": "workflow",
       "components": [
         {
           "name": "temporal-sketchy",
-          "file": "temporal-sketchy.excalidraw",
           "tags": [
             "workflow",
             "orchestration",
@@ -139,11 +139,11 @@
           ],
           "width": 143,
           "height": 178,
-          "element_count": 6
+          "element_count": 6,
+          "groupId": "workflow-temporal-sketchy"
         },
         {
           "name": "temporal-clean",
-          "file": "temporal-clean.excalidraw",
           "tags": [
             "workflow",
             "orchestration",
@@ -154,9 +154,11 @@
           ],
           "width": 146,
           "height": 176,
-          "element_count": 6
+          "element_count": 6,
+          "groupId": "workflow-temporal-clean"
         }
-      ]
+      ],
+      "file": "workflow.excalidraw"
     },
     "data-stores": {
       "description": "All data persistence systems",
@@ -164,11 +166,9 @@
         "fill": "#96f2d7",
         "stroke": "#087f5b"
       },
-      "folder": "data-stores",
       "components": [
         {
           "name": "relational-db",
-          "file": "relational-db.excalidraw",
           "tags": [
             "database",
             "sql",
@@ -182,11 +182,11 @@
           ],
           "width": 120,
           "height": 131,
-          "element_count": 8
+          "element_count": 8,
+          "groupId": "data-stores-relational-db"
         },
         {
           "name": "document-db",
-          "file": "document-db.excalidraw",
           "tags": [
             "database",
             "nosql",
@@ -199,11 +199,11 @@
           ],
           "width": 119,
           "height": 136,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "data-stores-document-db"
         },
         {
           "name": "column-db",
-          "file": "column-db.excalidraw",
           "tags": [
             "database",
             "nosql",
@@ -216,11 +216,11 @@
           ],
           "width": 104,
           "height": 134,
-          "element_count": 8
+          "element_count": 8,
+          "groupId": "data-stores-column-db"
         },
         {
           "name": "graph-db",
-          "file": "graph-db.excalidraw",
           "tags": [
             "database",
             "nosql",
@@ -233,11 +233,11 @@
           ],
           "width": 99,
           "height": 136,
-          "element_count": 16
+          "element_count": 16,
+          "groupId": "data-stores-graph-db"
         },
         {
           "name": "object-storage",
-          "file": "object-storage.excalidraw",
           "tags": [
             "storage",
             "blob",
@@ -250,11 +250,11 @@
           ],
           "width": 122,
           "height": 145,
-          "element_count": 6
+          "element_count": 6,
+          "groupId": "data-stores-object-storage"
         },
         {
           "name": "database-cluster",
-          "file": "database-cluster.excalidraw",
           "tags": [
             "database",
             "replica",
@@ -267,9 +267,11 @@
           ],
           "width": 371,
           "height": 296,
-          "element_count": 12
+          "element_count": 12,
+          "groupId": "data-stores-database-cluster"
         }
-      ]
+      ],
+      "file": "data-stores.excalidraw"
     },
     "messaging": {
       "description": "Event streaming and messaging",
@@ -277,11 +279,9 @@
         "fill": "#ffc9c9",
         "stroke": "#c92a2a"
       },
-      "folder": "messaging",
       "components": [
         {
           "name": "kafka",
-          "file": "kafka.excalidraw",
           "tags": [
             "streaming",
             "events",
@@ -293,11 +293,11 @@
           ],
           "width": 250,
           "height": 157,
-          "element_count": 17
+          "element_count": 17,
+          "groupId": "messaging-kafka"
         },
         {
           "name": "fcm",
-          "file": "fcm.excalidraw",
           "tags": [
             "push",
             "mobile",
@@ -309,11 +309,11 @@
           ],
           "width": 109,
           "height": 108,
-          "element_count": 2
+          "element_count": 2,
+          "groupId": "messaging-fcm"
         },
         {
           "name": "notification-service",
-          "file": "notification-service.excalidraw",
           "tags": [
             "alerts",
             "notifications",
@@ -324,9 +324,11 @@
           ],
           "width": 150,
           "height": 148,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "messaging-notification-service"
         }
-      ]
+      ],
+      "file": "messaging.excalidraw"
     },
     "networking": {
       "description": "Network infrastructure components",
@@ -334,11 +336,9 @@
         "fill": "#dee2e6",
         "stroke": "#495057"
       },
-      "folder": "networking",
       "components": [
         {
           "name": "api-gateway",
-          "file": "api-gateway.excalidraw",
           "tags": [
             "gateway",
             "api",
@@ -351,11 +351,11 @@
           ],
           "width": 232,
           "height": 457,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "networking-api-gateway"
         },
         {
           "name": "load-balancer",
-          "file": "load-balancer.excalidraw",
           "tags": [
             "lb",
             "balancing",
@@ -368,11 +368,11 @@
           ],
           "width": 77,
           "height": 201,
-          "element_count": 9
+          "element_count": 9,
+          "groupId": "networking-load-balancer"
         },
         {
           "name": "reverse-proxy",
-          "file": "reverse-proxy.excalidraw",
           "tags": [
             "proxy",
             "nginx",
@@ -384,11 +384,11 @@
           ],
           "width": 174,
           "height": 173,
-          "element_count": 2
+          "element_count": 2,
+          "groupId": "networking-reverse-proxy"
         },
         {
           "name": "cdn",
-          "file": "cdn.excalidraw",
           "tags": [
             "content",
             "edge",
@@ -401,11 +401,11 @@
           ],
           "width": 156,
           "height": 182,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "networking-cdn"
         },
         {
           "name": "router",
-          "file": "router.excalidraw",
           "tags": [
             "network",
             "routing",
@@ -416,11 +416,11 @@
           ],
           "width": 93,
           "height": 131,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "networking-router"
         },
         {
           "name": "nat-rules",
-          "file": "nat-rules.excalidraw",
           "tags": [
             "nat",
             "network",
@@ -431,11 +431,11 @@
           ],
           "width": 260,
           "height": 147,
-          "element_count": 10
+          "element_count": 10,
+          "groupId": "networking-nat-rules"
         },
         {
           "name": "dns",
-          "file": "dns.excalidraw",
           "tags": [
             "domain",
             "resolution",
@@ -447,11 +447,11 @@
           ],
           "width": 73,
           "height": 108,
-          "element_count": 3
+          "element_count": 3,
+          "groupId": "networking-dns"
         },
         {
           "name": "vpn",
-          "file": "vpn.excalidraw",
           "tags": [
             "tunnel",
             "secure",
@@ -463,9 +463,11 @@
           ],
           "width": 73,
           "height": 107,
-          "element_count": 3
+          "element_count": 3,
+          "groupId": "networking-vpn"
         }
-      ]
+      ],
+      "file": "networking.excalidraw"
     },
     "security": {
       "description": "Security controls and boundaries",
@@ -473,11 +475,9 @@
         "fill": "#ff8787",
         "stroke": "#c92a2a"
       },
-      "folder": "security",
       "components": [
         {
           "name": "shield",
-          "file": "shield.excalidraw",
           "tags": [
             "protection",
             "defense",
@@ -489,11 +489,11 @@
           ],
           "width": 75,
           "height": 148,
-          "element_count": 10
+          "element_count": 10,
+          "groupId": "security-shield"
         },
         {
           "name": "key",
-          "file": "key.excalidraw",
           "tags": [
             "encryption",
             "secrets",
@@ -505,11 +505,11 @@
           ],
           "width": 73,
           "height": 109,
-          "element_count": 8
+          "element_count": 8,
+          "groupId": "security-key"
         },
         {
           "name": "lock",
-          "file": "lock.excalidraw",
           "tags": [
             "access",
             "auth",
@@ -521,11 +521,11 @@
           ],
           "width": 73,
           "height": 109,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "security-lock"
         },
         {
           "name": "firewall",
-          "file": "firewall.excalidraw",
           "tags": [
             "network",
             "rules",
@@ -537,9 +537,11 @@
           ],
           "width": 159,
           "height": 83,
-          "element_count": 9
+          "element_count": 9,
+          "groupId": "security-firewall"
         }
-      ]
+      ],
+      "file": "security.excalidraw"
     },
     "databricks": {
       "description": "Databricks platform components and services",
@@ -547,225 +549,364 @@
         "fill": "#ffe3e3",
         "stroke": "#ff5f45"
       },
-      "folder": "databricks",
       "components": [
         {
           "name": "databricks",
-          "file": "databricks.excalidraw",
-          "tags": ["databricks", "platform", "logo"],
-          "aliases": ["databricks-logo"],
+          "tags": [
+            "databricks",
+            "platform",
+            "logo"
+          ],
+          "aliases": [
+            "databricks-logo"
+          ],
           "width": 388,
           "height": 420,
-          "element_count": 14
+          "element_count": 14,
+          "groupId": "databricks-databricks"
         },
         {
           "name": "lakehouse",
-          "file": "lakehouse.excalidraw",
-          "tags": ["databricks", "data", "architecture"],
-          "aliases": ["data-lakehouse"],
+          "tags": [
+            "databricks",
+            "data",
+            "architecture"
+          ],
+          "aliases": [
+            "data-lakehouse"
+          ],
           "width": 390,
           "height": 323,
-          "element_count": 6
+          "element_count": 6,
+          "groupId": "databricks-lakehouse"
         },
         {
           "name": "unity-catalog",
-          "file": "unity-catalog.excalidraw",
-          "tags": ["databricks", "governance", "catalog"],
-          "aliases": ["catalog"],
+          "tags": [
+            "databricks",
+            "governance",
+            "catalog"
+          ],
+          "aliases": [
+            "catalog"
+          ],
           "width": 418,
           "height": 467,
-          "element_count": 15
+          "element_count": 15,
+          "groupId": "databricks-unity-catalog"
         },
         {
           "name": "lakeflow",
-          "file": "lakeflow.excalidraw",
-          "tags": ["databricks", "lakeflow", "orchestration"],
+          "tags": [
+            "databricks",
+            "lakeflow",
+            "orchestration"
+          ],
           "aliases": [],
           "width": 385,
           "height": 457,
-          "element_count": 3
+          "element_count": 3,
+          "groupId": "databricks-lakeflow"
         },
         {
           "name": "lakeflow-jobs",
-          "file": "lakeflow-jobs.excalidraw",
-          "tags": ["databricks", "lakeflow", "jobs"],
-          "aliases": ["jobs"],
+          "tags": [
+            "databricks",
+            "lakeflow",
+            "jobs"
+          ],
+          "aliases": [
+            "jobs"
+          ],
           "width": 381,
           "height": 464,
-          "element_count": 3
+          "element_count": 3,
+          "groupId": "databricks-lakeflow-jobs"
         },
         {
           "name": "lakeflow-connect",
-          "file": "lakeflow-connect.excalidraw",
-          "tags": ["databricks", "lakeflow", "connect"],
-          "aliases": ["connect"],
+          "tags": [
+            "databricks",
+            "lakeflow",
+            "connect"
+          ],
+          "aliases": [
+            "connect"
+          ],
           "width": 427,
           "height": 463,
-          "element_count": 7
+          "element_count": 7,
+          "groupId": "databricks-lakeflow-connect"
         },
         {
           "name": "lakeflow-designer",
-          "file": "lakeflow-designer.excalidraw",
-          "tags": ["databricks", "lakeflow", "designer"],
-          "aliases": ["designer"],
+          "tags": [
+            "databricks",
+            "lakeflow",
+            "designer"
+          ],
+          "aliases": [
+            "designer"
+          ],
           "width": 440,
           "height": 461,
-          "element_count": 6
+          "element_count": 6,
+          "groupId": "databricks-lakeflow-designer"
         },
         {
           "name": "lakeflow-declarative-pipelines",
-          "file": "lakeflow-declarative-pipelines.excalidraw",
-          "tags": ["databricks", "lakeflow", "pipelines", "dlt"],
-          "aliases": ["dlt", "declarative-pipelines"],
+          "tags": [
+            "databricks",
+            "lakeflow",
+            "pipelines",
+            "dlt"
+          ],
+          "aliases": [
+            "dlt",
+            "declarative-pipelines"
+          ],
           "width": 715,
           "height": 500,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "databricks-lakeflow-declarative-pipelines"
         },
         {
           "name": "mosaic-ai",
-          "file": "mosaic-ai.excalidraw",
-          "tags": ["databricks", "ai", "mosaic"],
-          "aliases": ["ai"],
+          "tags": [
+            "databricks",
+            "ai",
+            "mosaic"
+          ],
+          "aliases": [
+            "ai"
+          ],
           "width": 387,
           "height": 456,
-          "element_count": 6
+          "element_count": 6,
+          "groupId": "databricks-mosaic-ai"
         },
         {
           "name": "agent-bricks",
-          "file": "agent-bricks.excalidraw",
-          "tags": ["databricks", "ai", "agents"],
-          "aliases": ["agents"],
+          "tags": [
+            "databricks",
+            "ai",
+            "agents"
+          ],
+          "aliases": [
+            "agents"
+          ],
           "width": 374,
           "height": 459,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "databricks-agent-bricks"
         },
         {
           "name": "genie",
-          "file": "genie.excalidraw",
-          "tags": ["databricks", "ai", "assistant"],
-          "aliases": ["databricks-genie"],
+          "tags": [
+            "databricks",
+            "ai",
+            "assistant"
+          ],
+          "aliases": [
+            "databricks-genie"
+          ],
           "width": 548,
           "height": 457,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "databricks-genie"
         },
         {
           "name": "ai-bi",
-          "file": "ai-bi.excalidraw",
-          "tags": ["databricks", "ai", "analytics"],
-          "aliases": ["business-intelligence"],
+          "tags": [
+            "databricks",
+            "ai",
+            "analytics"
+          ],
+          "aliases": [
+            "business-intelligence"
+          ],
           "width": 377,
           "height": 486,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "databricks-ai-bi"
         },
         {
           "name": "databricks-sql",
-          "file": "databricks-sql.excalidraw",
-          "tags": ["databricks", "data", "sql", "warehouse"],
-          "aliases": ["sql-warehouse"],
+          "tags": [
+            "databricks",
+            "data",
+            "sql",
+            "warehouse"
+          ],
+          "aliases": [
+            "sql-warehouse"
+          ],
           "width": 757,
           "height": 456,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "databricks-databricks-sql"
         },
         {
           "name": "notebooks",
-          "file": "notebooks.excalidraw",
-          "tags": ["databricks", "development", "notebooks"],
-          "aliases": ["databricks-notebooks"],
+          "tags": [
+            "databricks",
+            "development",
+            "notebooks"
+          ],
+          "aliases": [
+            "databricks-notebooks"
+          ],
           "width": 387,
           "height": 459,
-          "element_count": 7
+          "element_count": 7,
+          "groupId": "databricks-notebooks"
         },
         {
           "name": "dashboards",
-          "file": "dashboards.excalidraw",
-          "tags": ["databricks", "visualization", "dashboards"],
-          "aliases": ["databricks-dashboards"],
+          "tags": [
+            "databricks",
+            "visualization",
+            "dashboards"
+          ],
+          "aliases": [
+            "databricks-dashboards"
+          ],
           "width": 383,
           "height": 467,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "databricks-dashboards"
         },
         {
           "name": "apps",
-          "file": "apps.excalidraw",
-          "tags": ["databricks", "applications"],
-          "aliases": ["databricks-apps"],
+          "tags": [
+            "databricks",
+            "applications"
+          ],
+          "aliases": [
+            "databricks-apps"
+          ],
           "width": 387,
           "height": 533,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "databricks-apps"
         },
         {
           "name": "marketplace",
-          "file": "marketplace.excalidraw",
-          "tags": ["databricks", "marketplace", "sharing"],
-          "aliases": ["databricks-marketplace"],
+          "tags": [
+            "databricks",
+            "marketplace",
+            "sharing"
+          ],
+          "aliases": [
+            "databricks-marketplace"
+          ],
           "width": 385,
           "height": 394,
-          "element_count": 10
+          "element_count": 10,
+          "groupId": "databricks-marketplace"
         },
         {
           "name": "delta-sharing",
-          "file": "delta-sharing.excalidraw",
-          "tags": ["databricks", "sharing", "delta"],
-          "aliases": ["sharing"],
+          "tags": [
+            "databricks",
+            "sharing",
+            "delta"
+          ],
+          "aliases": [
+            "sharing"
+          ],
           "width": 431,
           "height": 407,
-          "element_count": 8
+          "element_count": 8,
+          "groupId": "databricks-delta-sharing"
         },
         {
           "name": "clean-rooms",
-          "file": "clean-rooms.excalidraw",
-          "tags": ["databricks", "privacy", "collaboration"],
-          "aliases": ["cleanrooms"],
+          "tags": [
+            "databricks",
+            "privacy",
+            "collaboration"
+          ],
+          "aliases": [
+            "cleanrooms"
+          ],
           "width": 380,
           "height": 461,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "databricks-clean-rooms"
         },
         {
           "name": "photon",
-          "file": "photon.excalidraw",
-          "tags": ["databricks", "engine", "performance"],
-          "aliases": ["photon-engine"],
+          "tags": [
+            "databricks",
+            "engine",
+            "performance"
+          ],
+          "aliases": [
+            "photon-engine"
+          ],
           "width": 474,
           "height": 302,
-          "element_count": 3
+          "element_count": 3,
+          "groupId": "databricks-photon"
         },
         {
           "name": "streaming",
-          "file": "streaming.excalidraw",
-          "tags": ["databricks", "streaming", "realtime"],
-          "aliases": ["databricks-streaming"],
+          "tags": [
+            "databricks",
+            "streaming",
+            "realtime"
+          ],
+          "aliases": [
+            "databricks-streaming"
+          ],
           "width": 412,
           "height": 263,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "databricks-streaming"
         },
         {
           "name": "lakebase",
-          "file": "lakebase.excalidraw",
-          "tags": ["databricks", "lakeflow", "database"],
+          "tags": [
+            "databricks",
+            "lakeflow",
+            "database"
+          ],
           "aliases": [],
           "width": 383,
           "height": 458,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "databricks-lakebase"
         },
         {
           "name": "lakebridge",
-          "file": "lakebridge.excalidraw",
-          "tags": ["databricks", "lakeflow", "integration"],
+          "tags": [
+            "databricks",
+            "lakeflow",
+            "integration"
+          ],
           "aliases": [],
           "width": 381,
           "height": 455,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "databricks-lakebridge"
         },
         {
           "name": "databricks-one",
-          "file": "databricks-one.excalidraw",
-          "tags": ["databricks", "platform"],
-          "aliases": ["one"],
+          "tags": [
+            "databricks",
+            "platform"
+          ],
+          "aliases": [
+            "one"
+          ],
           "width": 383,
           "height": 433,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "databricks-databricks-one"
         }
-      ]
+      ],
+      "file": "databricks.excalidraw"
     },
     "cloud": {
       "description": "Cloud provider specific",
@@ -773,11 +914,9 @@
         "fill": "#eebefa",
         "stroke": "#9c36b5"
       },
-      "folder": "cloud",
       "components": [
         {
           "name": "cloud",
-          "file": "cloud.excalidraw",
           "tags": [
             "generic",
             "provider"
@@ -787,11 +926,11 @@
           ],
           "width": 99,
           "height": 98,
-          "element_count": 10
+          "element_count": 10,
+          "groupId": "cloud-cloud"
         },
         {
           "name": "azure-short",
-          "file": "azure-short.excalidraw",
           "tags": [
             "microsoft",
             "cloud",
@@ -803,11 +942,11 @@
           ],
           "width": 65,
           "height": 111,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "cloud-azure-short"
         },
         {
           "name": "azure-long",
-          "file": "azure-long.excalidraw",
           "tags": [
             "microsoft",
             "cloud",
@@ -820,11 +959,11 @@
           ],
           "width": 275,
           "height": 81,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "cloud-azure-long"
         },
         {
           "name": "tanzu",
-          "file": "tanzu.excalidraw",
           "tags": [
             "vmware",
             "platform",
@@ -835,9 +974,11 @@
           ],
           "width": 95,
           "height": 124,
-          "element_count": 9
+          "element_count": 9,
+          "groupId": "cloud-tanzu"
         }
-      ]
+      ],
+      "file": "cloud.excalidraw"
     },
     "vmware": {
       "description": "VMware infrastructure",
@@ -845,11 +986,9 @@
         "fill": "#74c0fc",
         "stroke": "#1864ab"
       },
-      "folder": "vmware",
       "components": [
         {
           "name": "datacenter",
-          "file": "datacenter.excalidraw",
           "tags": [
             "dc",
             "facility",
@@ -861,11 +1000,11 @@
           ],
           "width": 114,
           "height": 110,
-          "element_count": 27
+          "element_count": 27,
+          "groupId": "vmware-datacenter"
         },
         {
           "name": "cluster",
-          "file": "cluster.excalidraw",
           "tags": [
             "ha",
             "group",
@@ -876,11 +1015,11 @@
           ],
           "width": 89,
           "height": 110,
-          "element_count": 13
+          "element_count": 13,
+          "groupId": "vmware-cluster"
         },
         {
           "name": "host",
-          "file": "host.excalidraw",
           "tags": [
             "esxi",
             "hypervisor",
@@ -891,11 +1030,11 @@
           ],
           "width": 45,
           "height": 110,
-          "element_count": 6
+          "element_count": 6,
+          "groupId": "vmware-host"
         },
         {
           "name": "rack-server",
-          "file": "rack-server.excalidraw",
           "tags": [
             "hardware",
             "server",
@@ -907,11 +1046,11 @@
           ],
           "width": 116,
           "height": 122,
-          "element_count": 13
+          "element_count": 13,
+          "groupId": "vmware-rack-server"
         },
         {
           "name": "baremetal",
-          "file": "baremetal.excalidraw",
           "tags": [
             "physical",
             "dedicated",
@@ -923,11 +1062,11 @@
           ],
           "width": 100,
           "height": 61,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "vmware-baremetal"
         },
         {
           "name": "vcenter",
-          "file": "vcenter.excalidraw",
           "tags": [
             "management",
             "vmware",
@@ -938,11 +1077,11 @@
           ],
           "width": 80,
           "height": 135,
-          "element_count": 10
+          "element_count": 10,
+          "groupId": "vmware-vcenter"
         },
         {
           "name": "cloud-director",
-          "file": "cloud-director.excalidraw",
           "tags": [
             "vcd",
             "multi-tenant",
@@ -953,11 +1092,11 @@
           ],
           "width": 142,
           "height": 180,
-          "element_count": 12
+          "element_count": 12,
+          "groupId": "vmware-cloud-director"
         },
         {
           "name": "esxi",
-          "file": "esxi.excalidraw",
           "tags": [
             "hypervisor",
             "vmware",
@@ -968,9 +1107,11 @@
           ],
           "width": 76,
           "height": 103,
-          "element_count": 10
+          "element_count": 10,
+          "groupId": "vmware-esxi"
         }
-      ]
+      ],
+      "file": "vmware.excalidraw"
     },
     "primitives": {
       "description": "Building blocks for custom components",
@@ -978,27 +1119,42 @@
         "fill": "#ffffff",
         "stroke": "#495057"
       },
-      "folder": "primitives",
       "components": [
         {
           "name": "cache",
-          "file": "cache.excalidraw",
-          "tags": ["cache", "diamond", "shape", "simple"],
-          "aliases": ["simple-cache"],
+          "tags": [
+            "cache",
+            "diamond",
+            "shape",
+            "simple"
+          ],
+          "aliases": [
+            "simple-cache"
+          ],
           "width": 128,
           "height": 42,
-          "element_count": 1
+          "element_count": 1,
+          "groupId": "primitives-cache"
         },
         {
           "name": "distributed-cache",
-          "file": "distributed-cache.excalidraw",
-          "tags": ["cache", "distributed", "diamond", "stack"],
-          "aliases": ["cache-cluster", "multi-cache"],
+          "tags": [
+            "cache",
+            "distributed",
+            "diamond",
+            "stack"
+          ],
+          "aliases": [
+            "cache-cluster",
+            "multi-cache"
+          ],
           "width": 128,
           "height": 80,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "primitives-distributed-cache"
         }
-      ]
+      ],
+      "file": "primitives.excalidraw"
     },
     "containers": {
       "description": "Container runtimes and orchestration platforms",
@@ -1006,45 +1162,74 @@
         "fill": "#a5d8ff",
         "stroke": "#1971c2"
       },
-      "folder": "containers",
       "components": [
         {
           "name": "docker",
-          "file": "docker.excalidraw",
-          "tags": ["container", "runtime", "docker"],
-          "aliases": ["container-runtime"],
+          "tags": [
+            "container",
+            "runtime",
+            "docker"
+          ],
+          "aliases": [
+            "container-runtime"
+          ],
           "width": 262,
           "height": 97,
-          "element_count": 12
+          "element_count": 12,
+          "groupId": "containers-docker"
         },
         {
           "name": "docker-whale",
-          "file": "docker-whale.excalidraw",
-          "tags": ["container", "docker", "whale", "logo"],
-          "aliases": ["moby"],
+          "tags": [
+            "container",
+            "docker",
+            "whale",
+            "logo"
+          ],
+          "aliases": [
+            "moby"
+          ],
           "width": 200,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "containers-docker-whale"
         },
         {
           "name": "kubernetes",
-          "file": "kubernetes.excalidraw",
-          "tags": ["k8s", "orchestration", "container"],
-          "aliases": ["k8s", "eks", "aks", "gke"],
+          "tags": [
+            "k8s",
+            "orchestration",
+            "container"
+          ],
+          "aliases": [
+            "k8s",
+            "eks",
+            "aks",
+            "gke"
+          ],
           "width": 106,
           "height": 98,
-          "element_count": 18
+          "element_count": 18,
+          "groupId": "containers-kubernetes"
         },
         {
           "name": "openshift",
-          "file": "openshift.excalidraw",
-          "tags": ["redhat", "kubernetes", "platform"],
-          "aliases": ["red-hat-openshift", "ocp"],
+          "tags": [
+            "redhat",
+            "kubernetes",
+            "platform"
+          ],
+          "aliases": [
+            "red-hat-openshift",
+            "ocp"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "containers-openshift"
         }
-      ]
+      ],
+      "file": "containers.excalidraw"
     },
     "hashicorp": {
       "description": "HashiCorp infrastructure tools",
@@ -1052,54 +1237,86 @@
         "fill": "#d0bfff",
         "stroke": "#7048e8"
       },
-      "folder": "hashicorp",
       "components": [
         {
           "name": "terraform",
-          "file": "terraform.excalidraw",
-          "tags": ["iac", "infrastructure", "provisioning"],
-          "aliases": ["tf", "opentofu"],
+          "tags": [
+            "iac",
+            "infrastructure",
+            "provisioning"
+          ],
+          "aliases": [
+            "tf",
+            "opentofu"
+          ],
           "width": 97,
           "height": 85,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "hashicorp-terraform"
         },
         {
           "name": "packer",
-          "file": "packer.excalidraw",
-          "tags": ["image", "build", "ami"],
-          "aliases": ["image-builder"],
+          "tags": [
+            "image",
+            "build",
+            "ami"
+          ],
+          "aliases": [
+            "image-builder"
+          ],
           "width": 108,
           "height": 137,
-          "element_count": 2
+          "element_count": 2,
+          "groupId": "hashicorp-packer"
         },
         {
           "name": "consul",
-          "file": "consul.excalidraw",
-          "tags": ["service-discovery", "mesh", "networking"],
-          "aliases": ["service-mesh"],
+          "tags": [
+            "service-discovery",
+            "mesh",
+            "networking"
+          ],
+          "aliases": [
+            "service-mesh"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 10
+          "element_count": 10,
+          "groupId": "hashicorp-consul"
         },
         {
           "name": "hashicorp-vault",
-          "file": "hashicorp-vault.excalidraw",
-          "tags": ["secrets", "security", "encryption"],
-          "aliases": ["vault", "secrets-manager"],
+          "tags": [
+            "secrets",
+            "security",
+            "encryption"
+          ],
+          "aliases": [
+            "vault",
+            "secrets-manager"
+          ],
           "width": 138,
           "height": 137,
-          "element_count": 11
+          "element_count": 11,
+          "groupId": "hashicorp-hashicorp-vault"
         },
         {
           "name": "hashicorp-nomad",
-          "file": "hashicorp-nomad.excalidraw",
-          "tags": ["orchestration", "scheduler", "workload"],
-          "aliases": ["nomad"],
+          "tags": [
+            "orchestration",
+            "scheduler",
+            "workload"
+          ],
+          "aliases": [
+            "nomad"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "hashicorp-hashicorp-nomad"
         }
-      ]
+      ],
+      "file": "hashicorp.excalidraw"
     },
     "version-control": {
       "description": "Version control and CI/CD platforms",
@@ -1107,45 +1324,70 @@
         "fill": "#ffc9c9",
         "stroke": "#e03131"
       },
-      "folder": "version-control",
       "components": [
         {
           "name": "git",
-          "file": "git.excalidraw",
-          "tags": ["vcs", "source-control", "scm"],
-          "aliases": ["source-control"],
+          "tags": [
+            "vcs",
+            "source-control",
+            "scm"
+          ],
+          "aliases": [
+            "source-control"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "version-control-git"
         },
         {
           "name": "gitlab",
-          "file": "gitlab.excalidraw",
-          "tags": ["vcs", "cicd", "devops"],
-          "aliases": ["gitlab-ci"],
+          "tags": [
+            "vcs",
+            "cicd",
+            "devops"
+          ],
+          "aliases": [
+            "gitlab-ci"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "version-control-gitlab"
         },
         {
           "name": "gitea",
-          "file": "gitea.excalidraw",
-          "tags": ["vcs", "self-hosted", "git"],
-          "aliases": ["git-server"],
+          "tags": [
+            "vcs",
+            "self-hosted",
+            "git"
+          ],
+          "aliases": [
+            "git-server"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "version-control-gitea"
         },
         {
           "name": "github-actions",
-          "file": "github-actions.excalidraw",
-          "tags": ["cicd", "automation", "workflows"],
-          "aliases": ["gha", "github-ci"],
+          "tags": [
+            "cicd",
+            "automation",
+            "workflows"
+          ],
+          "aliases": [
+            "gha",
+            "github-ci"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "version-control-github-actions"
         }
-      ]
+      ],
+      "file": "version-control.excalidraw"
     },
     "monitoring": {
       "description": "Observability and monitoring tools",
@@ -1153,36 +1395,55 @@
         "fill": "#b2f2bb",
         "stroke": "#2f9e44"
       },
-      "folder": "monitoring",
       "components": [
         {
           "name": "grafana-loki",
-          "file": "grafana-loki.excalidraw",
-          "tags": ["logging", "grafana", "observability"],
-          "aliases": ["loki"],
+          "tags": [
+            "logging",
+            "grafana",
+            "observability"
+          ],
+          "aliases": [
+            "loki"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "monitoring-grafana-loki"
         },
         {
           "name": "elasticsearch",
-          "file": "elasticsearch.excalidraw",
-          "tags": ["search", "logging", "elk"],
-          "aliases": ["elastic", "opensearch"],
+          "tags": [
+            "search",
+            "logging",
+            "elk"
+          ],
+          "aliases": [
+            "elastic",
+            "opensearch"
+          ],
           "width": 250,
           "height": 157,
-          "element_count": 10
+          "element_count": 10,
+          "groupId": "monitoring-elasticsearch"
         },
         {
           "name": "traefik",
-          "file": "traefik.excalidraw",
-          "tags": ["proxy", "ingress", "load-balancer"],
-          "aliases": ["reverse-proxy"],
+          "tags": [
+            "proxy",
+            "ingress",
+            "load-balancer"
+          ],
+          "aliases": [
+            "reverse-proxy"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "monitoring-traefik"
         }
-      ]
+      ],
+      "file": "monitoring.excalidraw"
     },
     "productivity": {
       "description": "Project management and collaboration tools",
@@ -1190,36 +1451,55 @@
         "fill": "#a5d8ff",
         "stroke": "#1971c2"
       },
-      "folder": "productivity",
       "components": [
         {
           "name": "jira",
-          "file": "jira.excalidraw",
-          "tags": ["project-management", "atlassian", "issues"],
-          "aliases": ["atlassian-jira"],
+          "tags": [
+            "project-management",
+            "atlassian",
+            "issues"
+          ],
+          "aliases": [
+            "atlassian-jira"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "productivity-jira"
         },
         {
           "name": "trello",
-          "file": "trello.excalidraw",
-          "tags": ["kanban", "boards", "atlassian"],
-          "aliases": ["atlassian-trello"],
+          "tags": [
+            "kanban",
+            "boards",
+            "atlassian"
+          ],
+          "aliases": [
+            "atlassian-trello"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "productivity-trello"
         },
         {
           "name": "microsoft-teams",
-          "file": "microsoft-teams.excalidraw",
-          "tags": ["communication", "chat", "microsoft"],
-          "aliases": ["teams", "ms-teams"],
+          "tags": [
+            "communication",
+            "chat",
+            "microsoft"
+          ],
+          "aliases": [
+            "teams",
+            "ms-teams"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "productivity-microsoft-teams"
         }
-      ]
+      ],
+      "file": "productivity.excalidraw"
     },
     "development": {
       "description": "Development tools and frameworks",
@@ -1227,27 +1507,40 @@
         "fill": "#a5d8ff",
         "stroke": "#1971c2"
       },
-      "folder": "development",
       "components": [
         {
           "name": "vscode",
-          "file": "vscode.excalidraw",
-          "tags": ["ide", "editor", "microsoft"],
-          "aliases": ["visual-studio-code", "code"],
+          "tags": [
+            "ide",
+            "editor",
+            "microsoft"
+          ],
+          "aliases": [
+            "visual-studio-code",
+            "code"
+          ],
           "width": 183,
           "height": 297,
-          "element_count": 4
+          "element_count": 4,
+          "groupId": "development-vscode"
         },
         {
           "name": "python",
-          "file": "python.excalidraw",
-          "tags": ["language", "programming", "scripting"],
-          "aliases": ["py"],
+          "tags": [
+            "language",
+            "programming",
+            "scripting"
+          ],
+          "aliases": [
+            "py"
+          ],
           "width": 155,
           "height": 252,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "development-python"
         }
-      ]
+      ],
+      "file": "development.excalidraw"
     },
     "infrastructure": {
       "description": "Operating systems and infrastructure platforms",
@@ -1255,27 +1548,39 @@
         "fill": "#ffd8a8",
         "stroke": "#f08c00"
       },
-      "folder": "infrastructure",
       "components": [
         {
           "name": "ubuntu",
-          "file": "ubuntu.excalidraw",
-          "tags": ["linux", "os", "debian"],
-          "aliases": ["ubuntu-linux"],
+          "tags": [
+            "linux",
+            "os",
+            "debian"
+          ],
+          "aliases": [
+            "ubuntu-linux"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "infrastructure-ubuntu"
         },
         {
           "name": "starlingx",
-          "file": "starlingx.excalidraw",
-          "tags": ["edge", "cloud", "openstack"],
-          "aliases": ["edge-cloud"],
+          "tags": [
+            "edge",
+            "cloud",
+            "openstack"
+          ],
+          "aliases": [
+            "edge-cloud"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "infrastructure-starlingx"
         }
-      ]
+      ],
+      "file": "infrastructure.excalidraw"
     },
     "integration": {
       "description": "Integration and automation tools",
@@ -1283,18 +1588,25 @@
         "fill": "#ffc9c9",
         "stroke": "#e03131"
       },
-      "folder": "integration",
       "components": [
         {
           "name": "webhooks",
-          "file": "webhooks.excalidraw",
-          "tags": ["automation", "events", "http"],
-          "aliases": ["http-callback", "web-hooks"],
+          "tags": [
+            "automation",
+            "events",
+            "http"
+          ],
+          "aliases": [
+            "http-callback",
+            "web-hooks"
+          ],
           "width": 150,
           "height": 150,
-          "element_count": 5
+          "element_count": 5,
+          "groupId": "integration-webhooks"
         }
-      ]
+      ],
+      "file": "integration.excalidraw"
     }
   }
 }

@@ -1,0 +1,315 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "excalidraw-diagram-skill",
+  "elements": [
+    {
+      "type": "text",
+      "version": 955,
+      "versionNonce": 1131652712,
+      "isDeleted": false,
+      "id": "devices-desktop-label",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 0.0,
+      "y": 0.0,
+      "strokeColor": "#000000",
+      "backgroundColor": "#fab005",
+      "width": 111.13194274902344,
+      "height": 35,
+      "seed": 1599379902,
+      "groupIds": [
+        "devices-desktop"
+      ],
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1763423581580,
+      "link": null,
+      "locked": false,
+      "fontSize": 28,
+      "fontFamily": 1,
+      "text": "Desktop",
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Desktop",
+      "lineHeight": 1.25,
+      "index": "a0",
+      "frameId": null,
+      "autoResize": true
+    },
+    {
+      "type": "ellipse",
+      "version": 2131,
+      "versionNonce": 466506776,
+      "isDeleted": false,
+      "id": "devices-desktop-shape",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 18.967646750150834,
+      "y": 37.35920817171689,
+      "strokeColor": "#228be6",
+      "backgroundColor": "#228be6",
+      "width": 73.19664924872156,
+      "height": 70.29189670381018,
+      "seed": 2023499518,
+      "groupIds": [
+        "devices-desktop"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581580,
+      "link": null,
+      "locked": false,
+      "index": "a1",
+      "frameId": null
+    },
+    {
+      "type": "rectangle",
+      "version": 1175,
+      "versionNonce": 235051368,
+      "isDeleted": false,
+      "id": "devices-desktop-box",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 31.181245733636956,
+      "y": 51.92997049692974,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "transparent",
+      "width": 48.626625125814186,
+      "height": 30.47269846752073,
+      "seed": 198987746,
+      "groupIds": [
+        "devices-desktop"
+      ],
+      "roundness": {
+        "type": 3
+      },
+      "boundElements": [],
+      "updated": 1763423581580,
+      "link": null,
+      "locked": false,
+      "index": "a2",
+      "frameId": null
+    },
+    {
+      "type": "line",
+      "version": 1153,
+      "versionNonce": 1008472344,
+      "isDeleted": false,
+      "id": "devices-desktop-connector",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 39.46830317533215,
+      "y": 78.12584489459016,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "transparent",
+      "width": 31.588448519832696,
+      "height": 0.17896591020672759,
+      "seed": 1790613310,
+      "groupIds": [
+        "devices-desktop"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581580,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          31.588448519832696,
+          0.17896591020672759
+        ]
+      ],
+      "index": "a3",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 1138,
+      "versionNonce": 809184360,
+      "isDeleted": false,
+      "id": "devices-desktop-connector-2",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 46.17968729582583,
+      "y": 96.5599071320288,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "#ffffff",
+      "width": 19.149935436367997,
+      "height": 0,
+      "seed": 625738658,
+      "groupIds": [
+        "devices-desktop"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581580,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          19.149935436367997,
+          0
+        ]
+      ],
+      "index": "a4",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 1195,
+      "versionNonce": 1705651736,
+      "isDeleted": false,
+      "id": "devices-desktop-connector-3",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 50.296056160219564,
+      "y": 83.6739505987399,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "#ffffff",
+      "width": 4.11632107388138,
+      "height": 12.885937417083994,
+      "seed": 673251198,
+      "groupIds": [
+        "devices-desktop"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581580,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -0.8053657121350852,
+          8.948563137204417
+        ],
+        [
+          -4.11632107388138,
+          12.885937417083994
+        ]
+      ],
+      "index": "a5",
+      "frameId": null,
+      "polygon": false
+    },
+    {
+      "type": "line",
+      "version": 1124,
+      "versionNonce": 1139367784,
+      "isDeleted": false,
+      "id": "devices-desktop-connector-4",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "angle": 0,
+      "x": 65.68759278501705,
+      "y": 96.47040506072051,
+      "strokeColor": "#ffffff",
+      "backgroundColor": "#ffffff",
+      "width": 4.832222947118083,
+      "height": 12.617469435569035,
+      "seed": 638533474,
+      "groupIds": [
+        "devices-desktop"
+      ],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1763423581580,
+      "link": null,
+      "locked": false,
+      "startBinding": null,
+      "endBinding": null,
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": null,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -4.026838118778045,
+          -4.474272010499817
+        ],
+        [
+          -4.832222947118083,
+          -12.617469435569035
+        ]
+      ],
+      "index": "a6",
+      "frameId": null,
+      "polygon": false
+    }
+  ],
+  "appState": {
+    "gridSize": 20,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}
