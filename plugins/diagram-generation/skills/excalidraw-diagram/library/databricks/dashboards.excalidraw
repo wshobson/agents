@@ -1,0 +1,179 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "QBBB5f2ah4fCeBkYwUyUI",
+      "type": "rectangle",
+      "x": 0.0,
+      "y": 0.0,
+      "width": 168.87847559640926,
+      "height": 235.61435198151653,
+      "angle": 0,
+      "strokeColor": "#ff5f45",
+      "backgroundColor": "#ff5f45",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 2,
+      "opacity": 100,
+      "groupIds": [
+        "Wcd7bszS8ZHCDc7Hi4OjK"
+      ],
+      "frameId": null,
+      "index": "axG",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 822935765,
+      "version": 867,
+      "versionNonce": 1917079797,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1758551593439,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "DOeWSPLQVLZ9jjL4CYL9i",
+      "type": "rectangle",
+      "x": 214.19,
+      "y": 169.78,
+      "width": 168.87847559640926,
+      "height": 219.84528167637305,
+      "angle": 0,
+      "strokeColor": "#ff5f45",
+      "backgroundColor": "#ff5f45",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 2,
+      "opacity": 100,
+      "groupIds": [
+        "Wcd7bszS8ZHCDc7Hi4OjK"
+      ],
+      "frameId": null,
+      "index": "axV",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 922612827,
+      "version": 970,
+      "versionNonce": 2141005019,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1758551593439,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "AE4EpJoz7Ms-VEUiSPO4G",
+      "type": "rectangle",
+      "x": 1.11,
+      "y": 276.44,
+      "width": 178.13406901252444,
+      "height": 104.40050241706972,
+      "angle": 0,
+      "strokeColor": "#fabfba",
+      "backgroundColor": "#fabfba",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 2,
+      "opacity": 100,
+      "groupIds": [
+        "Wcd7bszS8ZHCDc7Hi4OjK"
+      ],
+      "frameId": null,
+      "index": "ay",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 284355765,
+      "version": 943,
+      "versionNonce": 802712149,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1758551593439,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "0mRlBandzjBGSTSvBBkAp",
+      "type": "rectangle",
+      "x": 217.85,
+      "y": 4.07,
+      "width": 162.26788357078283,
+      "height": 134.89465530892522,
+      "angle": 0,
+      "strokeColor": "#fabfba",
+      "backgroundColor": "#fabfba",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 2,
+      "opacity": 100,
+      "groupIds": [
+        "Wcd7bszS8ZHCDc7Hi4OjK"
+      ],
+      "frameId": null,
+      "index": "ayV",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1203515867,
+      "version": 1026,
+      "versionNonce": 670683515,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1758551593439,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "fesP8k-M4V09M0lHyTC18",
+      "type": "text",
+      "x": 47.06,
+      "y": 404.03,
+      "width": 290.1527404785156,
+      "height": 63.01108457968563,
+      "angle": 0,
+      "strokeColor": "#ff5f45",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "groupIds": [
+        "Wcd7bszS8ZHCDc7Hi4OjK"
+      ],
+      "frameId": null,
+      "index": "az",
+      "roundness": null,
+      "seed": 497009333,
+      "version": 1047,
+      "versionNonce": 1247958965,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1758551593439,
+      "link": null,
+      "locked": false,
+      "text": "Dashboards",
+      "fontSize": 50.4088676637485,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Dashboards",
+      "autoResize": true,
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "gridSize": null,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

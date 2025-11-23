@@ -1,0 +1,166 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "type": "rectangle",
+      "version": 4503,
+      "versionNonce": 1724788615,
+      "isDeleted": false,
+      "id": "5h5jxE7qLEJQEdJyLrk4g",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 30,
+      "angle": 0,
+      "x": 18.29630087361511,
+      "y": 18.0283634131265,
+      "strokeColor": "#5c940d",
+      "backgroundColor": "#82c91e",
+      "width": 132.6928375771679,
+      "height": 130.1410522391453,
+      "seed": 1047876472,
+      "groupIds": [
+        "I_hnLP8GabzMNbdOzTbBW",
+        "mt7Am4Q-2SO5Q8L1wRFLq"
+      ],
+      "boundElements": [],
+      "updated": 1763306970742,
+      "link": null,
+      "locked": false,
+      "index": "b2C",
+      "frameId": null,
+      "roundness": {
+        "type": 1
+      }
+    },
+    {
+      "type": "rectangle",
+      "version": 4661,
+      "versionNonce": 680306343,
+      "isDeleted": false,
+      "id": "92agSo8eW8y1k37Zvq4eX",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 30,
+      "angle": 0,
+      "x": 9.632989651034222,
+      "y": 9.518159310822739,
+      "strokeColor": "#5c940d",
+      "backgroundColor": "#82c91e",
+      "width": 132.6928375771679,
+      "height": 130.1410522391453,
+      "seed": 215334920,
+      "groupIds": [
+        "I_hnLP8GabzMNbdOzTbBW",
+        "mt7Am4Q-2SO5Q8L1wRFLq"
+      ],
+      "boundElements": [],
+      "updated": 1763306970742,
+      "link": null,
+      "locked": false,
+      "index": "b2D",
+      "frameId": null,
+      "roundness": {
+        "type": 1
+      }
+    },
+    {
+      "type": "rectangle",
+      "version": 4700,
+      "versionNonce": 363805127,
+      "isDeleted": false,
+      "id": "ugBLBkZNFRAZxHPlcZFGd",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 30,
+      "angle": 0,
+      "x": 0.0,
+      "y": 0.0,
+      "strokeColor": "#5c940d",
+      "backgroundColor": "#82c91e",
+      "width": 132.6928375771679,
+      "height": 130.1410522391453,
+      "seed": 611067000,
+      "groupIds": [
+        "I_hnLP8GabzMNbdOzTbBW",
+        "mt7Am4Q-2SO5Q8L1wRFLq"
+      ],
+      "boundElements": [
+        {
+          "id": "N7gEx3UAkIVIplESbQBAs",
+          "type": "arrow"
+        },
+        {
+          "id": "rHXCh8dbRV2Y7Qx0R9Ljg",
+          "type": "arrow"
+        },
+        {
+          "id": "kbRf0K6d1IcPAyOsCp4mv",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1763306970742,
+      "link": null,
+      "locked": false,
+      "index": "b2E",
+      "frameId": null,
+      "roundness": {
+        "type": 1
+      }
+    },
+    {
+      "type": "text",
+      "version": 4518,
+      "versionNonce": 1827446343,
+      "isDeleted": false,
+      "id": "huIS74B4_cQv6frOqnwdx",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 29.745930175182366,
+      "y": 52.96731403004378,
+      "strokeColor": "#000000",
+      "backgroundColor": "#12b886",
+      "width": 90.57594299316406,
+      "height": 40,
+      "seed": 1127251720,
+      "groupIds": [
+        "mt7Am4Q-2SO5Q8L1wRFLq"
+      ],
+      "boundElements": [],
+      "updated": 1763306970743,
+      "link": null,
+      "locked": false,
+      "fontSize": 16,
+      "fontFamily": 1,
+      "text": "Notification\nService",
+      "baseline": 34,
+      "textAlign": "center",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Notification\nService",
+      "index": "b2F",
+      "frameId": null,
+      "roundness": {
+        "type": 2
+      },
+      "autoResize": true,
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "gridSize": null,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

@@ -1,101 +1,68 @@
 # Excalidraw Diagram Skill
 
-Generate, correct, and refine professional Excalidraw diagrams for architecture and design documentation.
+Generate, correct, and refine professional Excalidraw diagrams for architecture
+and design documentation.
+
+<!-- MAINTAINER NOTE: Keep this file under 500 lines per Anthropic best practices.
+     Use reference/ directory for detailed templates and examples. -->
 
 ## Activation
 
 Use this skill when asked to:
-- Create/draw/generate architecture, system, workflow, sequence, or deployment diagrams
+- Create/draw/generate architecture, system, workflow, sequence, or deployment
+  diagrams
 - Fix/correct layout, colors, or spacing in existing `.excalidraw` files
 - Refine/improve labels and terminology in diagrams
 
 ## Modes
 
-### Generate Mode
-**Triggers:** "create", "draw", "generate", "diagram for", "make a diagram"
-
-Create new diagrams from descriptions. Output: `[name].excalidraw`
-
-### Correct Mode
-**Triggers:** "fix", "correct", "repair", "adjust layout", "fix colors"
-
-Analyze and fix existing diagrams. Output: `[name]-corrected.excalidraw` (preserves original)
-
-### Refine Mode
-**Triggers:** "refine", "improve labels", "better terminology", "clean up text"
-
-Focus on label/text improvements. Output: `[name]-refined.excalidraw` (preserves original)
+| Mode | Triggers | Output |
+|------|----------|--------|
+| Generate | "create", "draw", "generate", "diagram for" | `[name].excalidraw` |
+| Correct | "fix", "correct", "repair", "adjust layout" | `[name]-corrected.excalidraw` |
+| Refine | "refine", "improve labels", "better terminology" | `[name]-refined.excalidraw` |
 
 ## Configuration Files
 
-Load these from `.claude/skills/excalidraw/`:
-- `config.json` - Default settings (frame size, style, palette)
-- `palettes.json` - Color presets (architecture, workflow, aws, k8s, minimal)
+Load from skill directory:
+- `assets/config.json` - Default settings (frame size, style, palette)
+- `assets/palettes.json` - Color presets (architecture, workflow, aws, k8s)
 - `primitives/` - Shapes, connectors, labels templates
 - `patterns/` - Diagram type skeletons
-- `components/library.json` - Pre-built components (Temporal, Kafka, databases, etc.)
+- `library/` - **Categorized component library (PRIMARY - 67% faster)**
+  - `index.json` - Master index with tags, aliases, semantic colors
+  - Category folders: `actors/`, `services/`, `data-stores/`, `networking/`, etc.
+- `reference/` - Detailed templates and guides (load as needed)
 
 ## Diagram Type Detection
 
-Detect type from keywords:
-
 | Type | Keywords | Pattern |
 |------|----------|---------|
-| System/Component | architecture, services, components, system, overview | `system-arch.json` |
-| Workflow/State | flow, workflow, state, process, stages, pipeline | `state-machine.json` |
-| Sequence | sequence, request, response, timeline, interaction | `sequence.json` |
-| Entity Relationship | data model, entities, relationships, ERD, schema | `entity-relationship.json` |
-| Deployment | deployment, k8s, kubernetes, infrastructure, cloud | `deployment.json` |
+| System/Component | architecture, services, components, system | `system-arch.json` |
+| Workflow/State | flow, workflow, state, process, pipeline | `state-machine.json` |
+| Sequence | sequence, request, response, timeline | `sequence.json` |
+| Entity Relationship | data model, entities, ERD, schema | `entity-relationship.json` |
+| Deployment | deployment, k8s, kubernetes, cloud | `deployment.json` |
 
-## Generation Workflow
+## Generation Workflow (Library-First Two-Pass)
 
-```
-1. PARSE REQUEST
-   - Extract: diagram type, components, relationships
-   - Identify: style preference (hand-drawn/clean), palette
+**Performance**: ~10K tokens (vs ~30K from scratch) - 67% reduction
 
-2. DETECT DIAGRAM TYPE
-   - Match keywords against diagramTypes in config.json
-   - Select appropriate pattern template
+### Pass 1: Inventory Phase (~2K tokens)
+1. Parse request - extract diagram type, component keywords, relationships
+2. Search `library/index.json` - exact name, alias, tag, or category match
+3. Generate inventory - matched components, missing items, total elements
+4. Resolve missing - suggest alternatives or fall back to primitives
 
-3. LOAD RESOURCES
-   - Pattern: Load skeleton from patterns/
-   - Components: Match from components/library.json
-   - Palette: Load from palettes.json
-   - Primitives: Load shapes, connectors, labels
+### Pass 2: Compose Phase (~8K tokens)
+1. Load matched components from category folders
+2. Calculate grid layout (4-column, 200px spacing, 150px row spacing)
+3. Clone, position, generate unique IDs, apply semantic colors
+4. Create connectors with proper bindings
+5. Wrap in frame (1920x1080, 16:9)
+6. Output valid JSON
 
-4. COMPOSE DIAGRAM
-   a. Start with pattern skeleton
-   b. Replace/add components:
-      - **MANDATORY: Use "Clients" component for ALL user/actor representations**
-      - Use library components when available (Temporal, Kafka, etc.)
-      - Check library BEFORE creating from primitives
-      - Create from primitives ONLY if no library match exists
-   c. Apply labels following technical writing rules
-   d. Create arrows with proper bindings
-   e. Apply palette colors based on semantic roles
-
-5. WRAP IN FRAME
-   - Add frame element (1920x1080, 16:9)
-   - Set frame title
-
-6. GENERATE ELEMENT IDs
-   - Use format: [type]-[name]-[random4]
-   - Ensure uniqueness
-
-7. ADD REQUIRED PROPERTIES
-   For each element, ensure:
-   - id, type, version (1), versionNonce (random)
-   - x, y, width, height, angle (0)
-   - strokeColor, backgroundColor
-   - fillStyle, strokeWidth, roughness, opacity
-   - seed (random), groupIds ([]), boundElements
-   - updated (timestamp), link (null), locked (false)
-
-8. OUTPUT
-   - Write valid JSON to [name].excalidraw
-   - Validate structure before writing
-```
+**Component Priority**: library/index.json > patterns/ > primitives/
 
 ## Excalidraw File Structure
 
@@ -105,394 +72,197 @@ Detect type from keywords:
   "version": 2,
   "source": "excalidraw-diagram-skill",
   "elements": [...],
-  "appState": {
-    "viewBackgroundColor": "#ffffff",
-    "gridSize": 20
-  }
+  "appState": {"viewBackgroundColor": "#ffffff", "gridSize": 20}
 }
 ```
 
-## Element Templates
+## CRITICAL: Binding Rules
 
-### Rectangle (Component/State)
+### Text-Container Binding (MANDATORY)
+
+All text inside containers MUST be bidirectionally bound:
+
+**Container references text:**
 ```json
-{
-  "id": "unique-id",
-  "type": "rectangle",
-  "version": 1,
-  "versionNonce": <random>,
-  "x": 100,
-  "y": 100,
-  "width": 200,
-  "height": 80,
-  "angle": 0,
-  "strokeColor": "#1971c2",
-  "backgroundColor": "#a5d8ff",
-  "fillStyle": "hachure",
-  "strokeWidth": 2,
-  "roughness": 1,
-  "opacity": 60,
-  "seed": <random>,
-  "groupIds": [],
-  "boundElements": [{"id": "text-id", "type": "text"}],
-  "updated": <timestamp>,
-  "link": null,
-  "locked": false,
-  "roundness": {"type": 3}
-}
+{"id": "rect-1", "boundElements": [{"type": "text", "id": "label-1"}]}
 ```
 
-### Text (Bound to Container)
+**Text references container:**
 ```json
-{
-  "id": "text-id",
-  "type": "text",
-  "version": 1,
-  "versionNonce": <random>,
-  "x": 105,
-  "y": 130,
-  "width": 190,
-  "height": 20,
-  "angle": 0,
-  "strokeColor": "#1e1e1e",
-  "backgroundColor": "transparent",
-  "fillStyle": "solid",
-  "strokeWidth": 1,
-  "roughness": 0,
-  "opacity": 100,
-  "seed": <random>,
-  "groupIds": [],
-  "boundElements": [],
-  "updated": <timestamp>,
-  "link": null,
-  "locked": false,
-  "text": "Component Name",
-  "fontSize": 18,
-  "fontFamily": 1,
-  "textAlign": "center",
-  "verticalAlign": "middle",
-  "containerId": "unique-id",
-  "originalText": "Component Name"
-}
+{"id": "label-1", "containerId": "rect-1", "textAlign": "center", "verticalAlign": "middle"}
 ```
 
-### Arrow (With Bindings)
+**Rule**: Never create text with `containerId: null` when it belongs inside a container.
+
+### Arrow Binding Rules
+
+**Internal arrows** (both endpoints in diagram) - MUST have both bindings:
 ```json
 {
-  "id": "arrow-id",
-  "type": "arrow",
-  "version": 1,
-  "versionNonce": <random>,
-  "x": 300,
-  "y": 140,
-  "width": 100,
-  "height": 0,
-  "angle": 0,
-  "strokeColor": "#1e1e1e",
-  "backgroundColor": "transparent",
-  "fillStyle": "solid",
-  "strokeWidth": 2,
-  "strokeStyle": "solid",
-  "roughness": 1,
-  "opacity": 100,
-  "seed": <random>,
-  "groupIds": [],
-  "boundElements": [],
-  "updated": <timestamp>,
-  "link": null,
-  "locked": false,
   "startBinding": {"elementId": "source-id", "focus": 0, "gap": 8},
-  "endBinding": {"elementId": "target-id", "focus": 0, "gap": 8},
-  "startArrowhead": null,
-  "endArrowhead": "triangle",
-  "points": [[0, 0], [100, 0]]
+  "endBinding": {"elementId": "target-id", "focus": 0, "gap": 8}
 }
 ```
 
-### Arrow Connections (MANDATORY)
-
-All arrows MUST be properly bound to source and target elements. Unbound arrows will not stay connected when elements are moved.
-
-**1. Arrow element requires bindings:**
+**External arrows** (to/from off-canvas) - MAY have one null binding:
 ```json
-{
-  "id": "arrow-a-to-b",
-  "type": "arrow",
-  "startBinding": {"elementId": "source-rect", "focus": 0, "gap": 8},
-  "endBinding": {"elementId": "target-rect", "focus": 0, "gap": 8},
-  "points": [[0, 0], [dx, dy]]
-}
+{"startBinding": {"elementId": "internal-service", ...}, "endBinding": null}
 ```
 
-**2. Source element must reference the arrow:**
-```json
-{
-  "id": "source-rect",
-  "type": "rectangle",
-  "boundElements": [{"id": "arrow-a-to-b", "type": "arrow"}]
-}
-```
+**Connected elements must reference arrows in `boundElements`.**
 
-**3. Target element must reference the arrow:**
-```json
-{
-  "id": "target-rect",
-  "type": "rectangle",
-  "boundElements": [{"id": "arrow-a-to-b", "type": "arrow"}]
-}
-```
+### Title + Subtitle Pattern
 
-**Binding Parameters:**
-| Parameter | Description | Values |
-|-----------|-------------|--------|
-| `elementId` | ID of the connected element | Must match existing element ID |
-| `focus` | Position along the element's edge | -1 to 1 (0 = center) |
-| `gap` | Distance from arrow tip to element | 8-12px typical |
+Only ONE text can bind per container. For title + subtitle:
+1. **Title** - bound to container (`containerId` set)
+2. **Subtitle** - NOT bound (`containerId: null`) but same `groupIds`
 
-**NEVER create arrows with `startBinding: null` or `endBinding: null`** - these arrows will not stay connected when diagram is edited.
-
-### Frame (16:9 Wrapper)
-```json
-{
-  "id": "frame-id",
-  "type": "frame",
-  "version": 1,
-  "versionNonce": <random>,
-  "x": 0,
-  "y": 0,
-  "width": 1920,
-  "height": 1080,
-  "angle": 0,
-  "strokeColor": "#1e1e1e",
-  "backgroundColor": "transparent",
-  "fillStyle": "solid",
-  "strokeWidth": 1,
-  "roughness": 0,
-  "opacity": 100,
-  "seed": <random>,
-  "groupIds": [],
-  "boundElements": [],
-  "updated": <timestamp>,
-  "link": null,
-  "locked": false,
-  "name": "Diagram Title"
-}
-```
+See `reference/element-templates.md` for detailed JSON examples.
 
 ## Visual Styles
 
-### Hand-drawn (Default)
-- `roughness`: 1
-- `fillStyle`: "hachure"
-- `opacity`: 60
-- Organic, sketchy appearance for presentations
-
-### Clean
-- `roughness`: 0
-- `fillStyle`: "solid"
-- `opacity`: 100
-- Precise, technical appearance for documentation
+| Style | roughness | fillStyle | opacity | Use |
+|-------|-----------|-----------|---------|-----|
+| Hand-drawn | 1 | hachure | 60 | Presentations |
+| Clean | 0 | solid | 100 | Documentation |
 
 ## Color Palettes
 
-Use semantic color mapping from `palettes.json`:
+Use semantic color mapping from `assets/palettes.json`:
 
 ### Architecture Palette (Default)
-- `primary` (#a5d8ff): UI, presentation layer
-- `control` (#b2f2bb): Control plane, orchestrators
-- `agent` (#ffd8a8): Agents, external systems
-- `workflow` (#ffc9c9): Workflows, processes
-- `ai` (#eebefa): AI/ML services
-- `data` (#96f2d7): Data stores
-- `infra` (#dee2e6): Infrastructure
+| Role | Color | Usage |
+|------|-------|-------|
+| primary | #a5d8ff | UI, presentation layer |
+| control | #b2f2bb | Control plane, orchestrators |
+| agent | #ffd8a8 | Agents, external systems |
+| workflow | #ffc9c9 | Workflows, processes |
+| ai | #eebefa | AI/ML services |
+| data | #96f2d7 | Data stores |
+| infra | #dee2e6 | Infrastructure |
 
-### Workflow Palette
-- `pending` (#ffec99): Waiting states
-- `in_progress` (#ffd8a8): Active states
-- `success` (#b2f2bb): Success/complete
-- `error` (#ffc9c9): Error/failed
+### Uniform Coloring Rule
+Elements of the same category should share the same color even if representing
+different vendors (e.g., all cloud targets use `#ffec99` fill, `#f08c00` stroke).
 
-### Uniform Coloring for Similar Elements
+## Boundary Styling
 
-When multiple elements of the same category appear together, use **uniform coloring** to maintain visual consistency and avoid color overload:
+| Boundary Type | backgroundColor | strokeStyle | Example |
+|---------------|-----------------|-------------|---------|
+| External/Source | `transparent` | `dashed` | On-premises, source environment |
+| Cloud/Target | Solid fill | `solid` | AWS, Azure, target environment |
 
-| Category | Fill | Stroke | Examples |
-|----------|------|--------|----------|
-| External targets | `#ffec99` | `#f08c00` | Cloud providers, migration targets, third-party services |
-| External boundary | `#fff4e6` | `#e8590c` | Grouping for external systems |
-
-**Rule:** Elements serving the same architectural role should share the same color, even if they represent different vendors or implementations.
+**Rule**: External environments use transparent background with dashed border to
+visually distinguish from managed cloud environments.
 
 ## Technical Writing Rules
 
 ### Label Guidelines
-1. **Concise**: "Auth Service" not "Authentication Service Module"
-2. **Standard terms**: "API Gateway" not "API Entry Point"
-3. **Action verbs for flows**: "Validate", "Process", "Store"
-4. **No redundancy**: "Database" not "Database Storage"
-5. **Title Case** for components, lowercase for arrow labels
+- **Concise**: "Auth Service" not "Authentication Service Module"
+- **Standard terms**: "API Gateway" not "API Entry Point"
+- **Action verbs for flows**: "Validate", "Process", "Store"
+- **Title Case** for components, lowercase for arrow labels
 
 ### Label Limits
-- Component: 25 chars, 2 lines max
-- Arrow label: 15 chars, single line
-- Container title: 30 chars
-- Frame title: 50 chars
+| Element | Max Chars | Max Lines |
+|---------|-----------|-----------|
+| Component | 25 | 2 |
+| Arrow label | 15 | 1 |
+| Container title | 30 | 1 |
+| Frame title | 50 | 1 |
 
-### Abbreviations (Allowed)
-API, DB, UI, K8s, AWS, GCP, ML, AI, Auth, Config
+## Component Library
 
-### Technical Writer Escalation
-Chain to technical-writer persona when:
-- Label exceeds limit and needs intelligent shortening
-- Domain jargon detected needing standardization
-- Inconsistent terminology across diagram
+### Categories (library/)
+
+| Category | Components | Semantic Color |
+|----------|------------|----------------|
+| actors | clients, user | #ffd8a8 |
+| services | service, scalable-service | #a5d8ff |
+| workflow | temporal-sketchy, temporal-clean | #b2f2bb |
+| data-stores | relational-db, document-db, cache | #96f2d7 |
+| messaging | kafka, fcm, notification-service | #ffc9c9 |
+| networking | api-gateway, load-balancer, cdn | #dee2e6 |
+| security | shield, key, lock, firewall | #ff8787 |
+| compute | docker, kubernetes | #eebefa |
+| cloud | cloud, azure, tanzu | #eebefa |
+| databricks | 24 icons | #ffe3e3 |
+| vmware | datacenter, cluster, host | #74c0fc |
+
+**Total: 70+ components across 16 categories**
+
+### Actor/User Representation (MANDATORY)
+
+Always use `library/actors/clients.excalidraw` for users/actors/people.
+**Never use plain ellipses/ovals** for user representation.
+
+### Component Selection Priority
+1. `library/index.json` - Categorized components (PREFERRED)
+2. `patterns/` - Pattern templates
+3. `primitives/` - Last resort only
 
 ## Correction Workflow
 
 ```
-1. READ ORIGINAL
-   - Parse existing .excalidraw file
-   - Build element index
-
-2. ANALYZE ISSUES
-   Layout:
+1. READ - Parse existing .excalidraw, build element index
+2. ANALYZE - Check for:
    - Overlapping elements (bounding box intersection)
    - Misaligned elements (Y variance > 10px in rows)
-   - Uneven spacing (>50px variance between similar gaps)
-
-   Colors:
-   - Non-palette colors used
-   - Inconsistent semantic coloring
-
-   Labels:
-   - Exceeds length limits
-   - Inconsistent terminology
-   - Casing violations
-
-   Structure:
-   - Missing frame
-   - Unbound text elements
-   - Broken arrow bindings
-
-3. APPLY FIXES
-   - Snap elements to 20px grid
-   - Align rows/columns
-   - Normalize colors to nearest palette color
-   - Re-route overlapping arrows
-   - Add missing frame
-   - Bind orphan text elements
-
-4. OUTPUT
-   - Write [name]-corrected.excalidraw
-   - Preserve original file
+   - Non-palette colors, broken bindings, missing frame
+3. APPLY FIXES - Snap to 20px grid, align, normalize colors, re-route arrows
+4. OUTPUT - Write [name]-corrected.excalidraw (preserve original)
 ```
 
 ## Layout Helpers
 
-When correcting diagrams, apply:
-
 - **align-horizontal**: Set same Y for row elements
 - **align-vertical**: Set same X for column elements
-- **distribute-horizontal**: Even X spacing
-- **distribute-vertical**: Even Y spacing
+- **distribute-horizontal/vertical**: Even spacing
 - **snap-to-grid**: Round to nearest 20px
-- **auto-route-arrows**: Recalculate points to avoid overlaps
+- **auto-route-arrows**: Recalculate to avoid overlaps
 
-## Component Library
-
-Pre-built components from `components/library.json`:
-- Temporal, Kafka, Elasticsearch
-- API Gateway, Load Balancers, CDN
-- Relational DB, Graph DB, Column DB
-- Object Storage, Customer Service, etc.
-- **Clients** - Multi-user icon for actors/users
-
-**CRITICAL: Library components MUST be used over primitives when available.**
-
-### Actor/User Representation (MANDATORY)
-
-When representing users, actors, or people in diagrams, **ALWAYS use the "Clients" library component**:
-
-| Diagram Concept | Library Component | DO NOT Use |
-|-----------------|-------------------|------------|
-| Users | `clients` | ellipse/oval |
-| Admins | `clients` | ellipse/oval |
-| Customers | `clients` | ellipse/oval |
-| Actors | `clients` | ellipse/oval |
-| Operators | `clients` | ellipse/oval |
-| Personas | `clients` | ellipse/oval |
-
-**The "Clients" component contains:**
-- 3 head ellipses (representing multiple people)
-- 3 body/torso line shapes
-- Orange color scheme (#d9480f stroke, #fd7e14 fill)
-- Text label "Clients"
-- Size: ~77 x 99 pixels
-- Grouped elements with shared groupId
-
-**Usage workflow:**
-1. Detect user/actor/person keywords in request
-2. Load "clients" component from `components/library.json`
-3. Clone and position the component
-4. Update the text label to match the context (e.g., "Admins", "End Users")
-
-### Component Selection Priority
-
-When generating diagrams, follow this priority order:
-1. **Library components** (always preferred when available)
-2. **Pattern templates** (from patterns/ directory)
-3. **Primitives** (only as last resort)
-
-**Never create ellipses/ovals for user representation - always use the Clients library component.**
-
-## Output Validation
+## Output Validation Checklist
 
 Before writing file, verify:
 1. All elements have required properties
 2. All `containerId` references exist
-3. All arrow bindings reference valid elements
-4. No duplicate IDs
-5. Frame contains all elements (if frame enabled)
-6. Valid JSON structure
-7. **No standalone ellipses/ovals representing users** - must use "Clients" library component
-8. **All actors/users use grouped "Clients" component** with proper groupIds
-9. **All arrows have non-null `startBinding` and `endBinding`** - no unbound arrows
-10. **All connected elements have `boundElements` arrays** referencing their arrows
+3. All internal arrow bindings reference valid elements
+4. Connected elements have `boundElements` arrays
+5. No duplicate IDs
+6. Frame contains all elements (if enabled)
+7. Valid JSON structure
+8. No plain ellipses for users - use "Clients" component
+9. Only ONE text bound per container
+10. Title+subtitle components use grouping pattern
+11. Text-container bindings are bidirectional
+12. Boundary styling matches type (external=transparent+dashed)
 
-## Examples
+## Reference Files
+
+Load these for detailed information:
+- `reference/element-templates.md` - Full JSON templates for all element types
+- `reference/icon-generation.md` - Guide for creating new library icons
+- `library/LIBRARY-LOADER.md` - Component lookup algorithms
+
+## Quick Examples
 
 ### Generate System Architecture
 ```
-User: Create an architecture diagram for a migration platform with orchestrator, discovery agent, and Temporal workers
+User: Create architecture diagram for migration platform with orchestrator and workers
 
-Action:
-1. Detect type: "architecture" → system-arch pattern
-2. Load architecture palette
-3. Components: Orchestrator (control), Discovery Agent (agent), Temporal Workers (workflow)
-4. Apply hierarchical layout
-5. Wrap in frame: "Migration Platform Architecture"
-6. Output: migration-platform-architecture.excalidraw
+1. Type: "architecture" -> system-arch pattern
+2. Components: Orchestrator (control), Workers (workflow)
+3. Layout: hierarchical grid
+4. Frame: "Migration Platform Architecture"
+5. Output: migration-platform-architecture.excalidraw
 ```
 
 ### Correct Existing Diagram
 ```
-User: Fix the layout in 01-high-level-system-architecture.excalidraw
+User: Fix layout in 01-high-level.excalidraw
 
-Action:
-1. Read and parse file
-2. Analyze: Find misaligned elements, non-standard colors
-3. Apply fixes: Snap to grid, align rows, normalize colors
-4. Output: 01-high-level-system-architecture-corrected.excalidraw
-```
-
-### Refine Labels
-```
-User: Improve the labels in 06-migration-workflow-architecture.excalidraw
-
-Action:
-1. Read and parse file
-2. Extract all text elements
-3. Check against technical writing rules
-4. Fix: "Validation Stage" → "Validate", truncate long labels
-5. Output: 06-migration-workflow-architecture-refined.excalidraw
+1. Read and parse
+2. Analyze: misaligned elements, broken bindings
+3. Fix: snap to grid, align rows, fix bindings
+4. Output: 01-high-level-corrected.excalidraw
 ```
