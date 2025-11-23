@@ -30,8 +30,9 @@ Load from skill directory:
 - `primitives/` - Shapes, connectors, labels templates
 - `patterns/` - Diagram type skeletons
 - `library/` - **Categorized component library (PRIMARY - 67% faster)**
-  - `index.json` - Master index with tags, aliases, semantic colors
-  - Category folders: `actors/`, `services/`, `data-stores/`, `networking/`, etc.
+  - `index.json` - Master index with groupIds, tags, aliases, semantic colors
+  - Category files: `actors.excalidraw`, `services.excalidraw`, `data-stores.excalidraw`, etc.
+  - Naming: Element IDs use `{category}-{component}-{element}`, groupIds use `{category}-{component}`
 - `reference/` - Detailed templates and guides (load as needed)
 
 ## Diagram Type Detection
@@ -55,7 +56,7 @@ Load from skill directory:
 4. Resolve missing - suggest alternatives or fall back to primitives
 
 ### Pass 2: Compose Phase (~8K tokens)
-1. Load matched components from category folders
+1. Load matched components from category files (filter by groupId)
 2. Calculate grid layout (4-column, 200px spacing, 150px row spacing)
 3. Clone, position, generate unique IDs, apply semantic colors
 4. Create connectors with proper bindings
@@ -193,11 +194,11 @@ visually distinguish from managed cloud environments.
 
 ### Actor/User Representation (MANDATORY)
 
-Always use `library/actors/clients.excalidraw` for users/actors/people.
+Always use the "Clients" component from `library/actors.excalidraw` (groupId: `actors-clients`).
 **Never use plain ellipses/ovals** for user representation.
 
 ### Component Selection Priority
-1. `library/index.json` - Categorized components (PREFERRED)
+1. `library/index.json` → `{category}.excalidraw` (filter by groupId) - PREFERRED
 2. `patterns/` - Pattern templates
 3. `primitives/` - Last resort only
 
