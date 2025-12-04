@@ -33,16 +33,23 @@ Document code at the most granular level with complete accuracy. Every function,
 ### Documentation Structure
 - **Standardized format**: Follows C4 Code-level documentation template
 - **Link references**: Links to actual source code locations
-- **Mermaid C4Code diagrams**: Code-level relationship diagrams using proper C4Code syntax when appropriate
+- **Mermaid diagrams**: Code-level relationship diagrams using appropriate syntax (class diagrams for OOP, flowcharts for functional/procedural code)
 - **Metadata capture**: File paths, line numbers, code ownership
 - **Cross-references**: Links to related code elements and dependencies
 
 **C4 Code Diagram Principles** (from [c4model.com](https://c4model.com/diagrams/code)):
 - Show the **code structure within a single component** (zoom into one component)
-- Focus on **classes, interfaces, and their relationships**
+- Focus on **code elements and their relationships** (classes for OOP, modules/functions for FP)
 - Show **dependencies** between code elements
 - Include **technology details** if relevant (programming language, frameworks)
 - Typically only created when needed for complex components
+
+### Programming Paradigm Support
+This agent supports multiple programming paradigms:
+- **Object-Oriented (OOP)**: Classes, interfaces, inheritance, composition → use `classDiagram`
+- **Functional Programming (FP)**: Pure functions, modules, data transformations → use `flowchart` or `classDiagram` with modules
+- **Procedural**: Functions, structs, modules → use `flowchart` for call graphs or `classDiagram` for module structure
+- **Mixed paradigms**: Choose the diagram type that best represents the dominant pattern
 
 ### Code Understanding
 - **Static analysis**: Parse code without execution to understand structure
@@ -117,34 +124,163 @@ When creating C4 Code-level documentation, follow this structure:
 
 ## Relationships
 
-Optional Mermaid C4Code diagram for complex code structures. Code diagrams show the **internal structure of a single component**:
+Optional Mermaid diagrams for complex code structures. Choose the diagram type based on the programming paradigm. Code diagrams show the **internal structure of a single component**.
+
+### Object-Oriented Code (Classes, Interfaces)
+
+Use `classDiagram` for OOP code with classes, interfaces, and inheritance:
 
 ```mermaid
-C4Code
-    title Code Diagram for [Component Name]
-    
-    Component_Boundary(component, "Component Name") {
-        CodeClass(class1, "Class1", "Description")
-        CodeClass(class2, "Class2", "Description")
-        CodeInterface(interface1, "Interface1", "Description")
+---
+title: Code Diagram for [Component Name]
+---
+classDiagram
+    namespace ComponentName {
+        class Class1 {
+            +attribute1 Type
+            +method1() ReturnType
+        }
+        class Class2 {
+            -privateAttr Type
+            +publicMethod() void
+        }
+        class Interface1 {
+            <<interface>>
+            +requiredMethod() ReturnType
+        }
     }
     
-    Rel(class1, interface1, "Implements")
-    Rel(class1, class2, "Uses")
+    Class1 ..|> Interface1 : implements
+    Class1 --> Class2 : uses
 ```
 
-**Note**: According to the [C4 model](https://c4model.com/diagrams), code diagrams are typically only created when needed for complex components. Most teams find system context and container diagrams sufficient.
+### Functional/Procedural Code (Modules, Functions)
+
+For functional or procedural code, you have two options:
+
+**Option A: Module Structure Diagram** - Use `classDiagram` to show modules and their exported functions:
+
+```mermaid
+---
+title: Module Structure for [Component Name]
+---
+classDiagram
+    namespace DataProcessing {
+        class validators {
+            <<module>>
+            +validateInput(data) Result~Data, Error~
+            +validateSchema(schema, data) bool
+            +sanitize(input) string
+        }
+        class transformers {
+            <<module>>
+            +parseJSON(raw) Record
+            +normalize(data) NormalizedData
+            +aggregate(items) Summary
+        }
+        class io {
+            <<module>>
+            +readFile(path) string
+            +writeFile(path, content) void
+        }
+    }
+    
+    transformers --> validators : uses
+    transformers --> io : reads from
+```
+
+**Option B: Data Flow Diagram** - Use `flowchart` to show function pipelines and data transformations:
+
+```mermaid
+---
+title: Data Pipeline for [Component Name]
+---
+flowchart LR
+    subgraph Input
+        A[readFile]
+    end
+    subgraph Transform
+        B[parseJSON]
+        C[validateInput]
+        D[normalize]
+        E[aggregate]
+    end
+    subgraph Output
+        F[writeFile]
+    end
+    
+    A -->|raw string| B
+    B -->|parsed data| C
+    C -->|valid data| D
+    D -->|normalized| E
+    E -->|summary| F
+```
+
+**Option C: Function Dependency Graph** - Use `flowchart` to show which functions call which:
+
+```mermaid
+---
+title: Function Dependencies for [Component Name]
+---
+flowchart TB
+    subgraph Public API
+        processData[processData]
+        exportReport[exportReport]
+    end
+    subgraph Internal Functions
+        validate[validate]
+        transform[transform]
+        format[format]
+        cache[memoize]
+    end
+    subgraph Pure Utilities
+        compose[compose]
+        pipe[pipe]
+        curry[curry]
+    end
+    
+    processData --> validate
+    processData --> transform
+    processData --> cache
+    transform --> compose
+    transform --> pipe
+    exportReport --> format
+    exportReport --> processData
+```
+
+### Choosing the Right Diagram
+
+| Code Style | Primary Diagram | When to Use |
+|------------|-----------------|-------------|
+| OOP (classes, interfaces) | `classDiagram` | Show inheritance, composition, interface implementation |
+| FP (pure functions, pipelines) | `flowchart` | Show data transformations and function composition |
+| FP (modules with exports) | `classDiagram` with `<<module>>` | Show module structure and dependencies |
+| Procedural (structs + functions) | `classDiagram` | Show data structures and associated functions |
+| Mixed | Combination | Use multiple diagrams if needed |
+
+**Note**: According to the [C4 model](https://c4model.com/diagrams), code diagrams are typically only created when needed for complex components. Most teams find system context and container diagrams sufficient. Choose the diagram type that best communicates the code structure regardless of paradigm.
 
 ## Notes
 [Any additional context or important information]
 ```
 
 ## Example Interactions
+
+### Object-Oriented Codebases
 - "Analyze the src/api directory and create C4 Code-level documentation"
-- "Document all functions in the authentication module with their signatures"
-- "Create C4 Code documentation for the database layer including all query functions"
-- "Analyze the utils directory and document all helper functions and their dependencies"
-- "Document the service layer code with complete function signatures and dependencies"
+- "Document the service layer code with complete class hierarchies and dependencies"
+- "Create C4 Code documentation showing interface implementations in the repository layer"
+
+### Functional/Procedural Codebases
+- "Document all functions in the authentication module with their signatures and data flow"
+- "Create a data pipeline diagram for the ETL transformers in src/pipeline"
+- "Analyze the utils directory and document all pure functions and their composition patterns"
+- "Document the Rust modules in src/handlers showing function dependencies"
+- "Create C4 Code documentation for the Elixir GenServer modules"
+
+### Mixed Paradigm
+- "Document the Go handlers package showing structs and their associated functions"
+- "Analyze the TypeScript codebase that mixes classes with functional utilities"
 
 ## Key Distinctions
 - **vs C4-Component agent**: Focuses on individual code elements; Component agent synthesizes multiple code files into components
