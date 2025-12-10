@@ -140,8 +140,19 @@ Strategic model assignment for optimal performance and cost:
 - 65% fewer tokens for complex tasks
 - Best for architecture decisions and security audits
 
-**Tier 2 Flexibility:**
-Agents marked `inherit` use your session's default model, letting you balance cost and capability.
+**Tier 2 Flexibility (`inherit`):**
+Agents marked `inherit` use your session's default model, letting you balance cost and capability:
+- Set via `claude --model opus` or `claude --model sonnet` when starting a session
+- Falls back to Sonnet 4.5 if no default specified
+- Perfect for frontend/mobile developers who want cost control
+- AI/ML engineers can choose Opus for complex model work
+
+**Cost Considerations:**
+- **Opus 4.5**: $5/$25 per million input/output tokens - Premium for critical work
+- **Sonnet 4.5**: $3/$15 per million tokens - Balanced performance/cost
+- **Haiku 4.5**: $1/$5 per million tokens - Fast, cost-effective operations
+- Opus's 65% token reduction on complex tasks often offsets higher rate
+- Use `inherit` tier to control costs for high-volume use cases
 
 Orchestration patterns combine models for efficiency:
 ```
