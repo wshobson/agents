@@ -1,6 +1,6 @@
 # Claude Code Plugins: Orchestration and Automation
 
-> **⚡ Updated for Sonnet 4.5 & Haiku 4.5** — All agents optimized for latest models with hybrid orchestration
+> **⚡ Updated for Opus 4.5, Sonnet 4.5 & Haiku 4.5** — Three-tier model strategy for optimal performance
 >
 > **🎯 Agent Skills Enabled** — 47 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
@@ -122,15 +122,28 @@ Specialized knowledge packages following Anthropic's progressive disclosure arch
 
 [→ View complete skills documentation](docs/agent-skills.md)
 
-### Hybrid Model Orchestration
+### Three-Tier Model Strategy
 
 Strategic model assignment for optimal performance and cost:
-- **47 Haiku agents** - Fast execution for deterministic tasks
-- **97 Sonnet agents** - Complex reasoning and architecture
+
+| Tier | Model | Agents | Use Case |
+|------|-------|--------|----------|
+| **Tier 1** | Opus 4.5 | 17 | Critical architecture, security audits, code review |
+| **Tier 2** | Inherit | 21 | Complex tasks - user chooses model (AI/ML, performance, backend) |
+| **Tier 3** | Sonnet | 63 | Routine development (language-specific, framework, frontend) |
+| **Tier 4** | Haiku | 47 | Fast operational tasks (deployment, debugging, content) |
+
+**Why Opus 4.5 for Critical Agents?**
+- 80.9% on SWE-bench (industry-leading)
+- 65% fewer tokens for complex tasks
+- Best for architecture decisions and security audits
+
+**Tier 2 Flexibility:**
+Agents marked `inherit` use your session's default model, letting you balance cost and capability.
 
 Orchestration patterns combine models for efficiency:
 ```
-Sonnet (planning) → Haiku (execution) → Sonnet (review)
+Opus (architecture) → Sonnet (development) → Haiku (deployment)
 ```
 
 [→ View model configuration details](docs/agents.md#model-configuration)
