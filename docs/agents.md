@@ -65,6 +65,7 @@ Complete reference for all **86 specialized AI agents** organized by category wi
 | [elixir-pro](../plugins/functional-programming/agents/elixir-pro.md) | sonnet | Elixir with OTP patterns and Phoenix frameworks |
 | [django-pro](../plugins/api-scaffolding/agents/django-pro.md) | sonnet | Django development with ORM and async views |
 | [fastapi-pro](../plugins/api-scaffolding/agents/fastapi-pro.md) | sonnet | FastAPI with async patterns and Pydantic |
+| [haskell-pro](../plugins/functional-programming/agents/haskell-pro.md) | sonnet | Strongly typed functional programming with purity, advanced type systems, and concurrency |
 | [unity-developer](../plugins/game-development/agents/unity-developer.md) | sonnet | Unity game development and optimization |
 | [minecraft-bukkit-pro](../plugins/game-development/agents/minecraft-bukkit-pro.md) | sonnet | Minecraft server plugin development |
 | [sql-pro](../plugins/database-design/agents/sql-pro.md) | sonnet | Complex SQL queries and database optimization |
