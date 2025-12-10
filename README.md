@@ -130,10 +130,10 @@ Strategic model assignment for optimal performance and cost:
 
 | Tier | Model | Agents | Use Case |
 |------|-------|--------|----------|
-| **Tier 1** | Opus 4.5 | 17 | Critical architecture, security audits, code review |
-| **Tier 2** | Inherit | 21 | Complex tasks - user chooses model (AI/ML, performance, backend) |
-| **Tier 3** | Sonnet | 63 | Routine development (language-specific, framework, frontend) |
-| **Tier 4** | Haiku | 47 | Fast operational tasks (deployment, debugging, content) |
+| **Tier 1** | Opus 4.5 | 42 | Critical architecture, security, ALL code review, production coding (language pros, frameworks) |
+| **Tier 2** | Inherit | 42 | Complex tasks - user chooses model (AI/ML, backend, frontend/mobile, specialized) |
+| **Tier 3** | Sonnet | 38 | Support tasks needing intelligence (docs, testing, DX optimization, legacy modernization) |
+| **Tier 4** | Haiku | 31 | Simple operational tasks (deployment, debugging, SEO, content) |
 
 **Why Opus 4.5 for Critical Agents?**
 - 80.9% on SWE-bench (industry-leading)
