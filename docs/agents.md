@@ -1,6 +1,6 @@
 # Agent Reference
 
-Complete reference for all **86 specialized AI agents** organized by category with model assignments.
+Complete reference for all **91 specialized AI agents** organized by category with model assignments.
 
 ## Agent Categories
 
@@ -152,6 +152,10 @@ Complete reference for all **86 specialized AI agents** organized by category wi
 | [reference-builder](../plugins/documentation-generation/agents/reference-builder.md) | haiku | Technical references and API documentation |
 | [tutorial-engineer](../plugins/code-documentation/agents/tutorial-engineer.md) | sonnet | Step-by-step tutorials and educational content |
 | [mermaid-expert](../plugins/documentation-generation/agents/mermaid-expert.md) | sonnet | Diagram creation (flowcharts, sequences, ERDs) |
+| [c4-code](../plugins/c4-architecture/agents/c4-code.md) | haiku | C4 Code-level documentation with function signatures and dependencies |
+| [c4-component](../plugins/c4-architecture/agents/c4-component.md) | sonnet | C4 Component-level architecture synthesis and documentation |
+| [c4-container](../plugins/c4-architecture/agents/c4-container.md) | sonnet | C4 Container-level architecture with API documentation |
+| [c4-context](../plugins/c4-architecture/agents/c4-context.md) | sonnet | C4 Context-level system documentation with personas and user journeys |
 
 ### Business & Operations
 
@@ -211,8 +215,8 @@ Agents are assigned to specific Claude models based on task complexity and compu
 
 | Model | Agent Count | Use Case |
 |-------|-------------|----------|
-| Haiku | 47 | Fast execution tasks: testing, documentation, ops, database optimization, business |
-| Sonnet | 97 | Complex reasoning, architecture, language expertise, orchestration, security |
+| Haiku | 48 | Fast execution tasks: testing, documentation, ops, database optimization, business |
+| Sonnet | 100 | Complex reasoning, architecture, language expertise, orchestration, security |
 
 ### Model Selection Criteria
 
