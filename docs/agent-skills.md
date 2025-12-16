@@ -21,7 +21,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **gitops-workflow** | Implement GitOps workflows with ArgoCD and Flux for automated, declarative deployments |
 | **k8s-security-policies** | Implement Kubernetes security policies including NetworkPolicy, PodSecurityPolicy, and RBAC |
 
-### LLM Application Development (4 skills)
+### LLM Application Development (8 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -29,8 +29,12 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **prompt-engineering-patterns** | Master advanced prompt engineering techniques for LLM performance and reliability |
 | **rag-implementation** | Build Retrieval-Augmented Generation systems with vector databases and semantic search |
 | **llm-evaluation** | Implement comprehensive evaluation strategies with automated metrics and benchmarking |
+| **embedding-strategies** | Design embedding pipelines for text, images, and multimodal content with optimal chunking |
+| **similarity-search-patterns** | Implement efficient similarity search with ANN algorithms and distance metrics |
+| **vector-index-tuning** | Optimize vector index performance with HNSW, IVF, and hybrid configurations |
+| **hybrid-search-implementation** | Combine vector and keyword search for improved retrieval accuracy |
 
-### Backend Development (5 skills)
+### Backend Development (9 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -39,8 +43,12 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **microservices-patterns** | Design microservices with service boundaries, event-driven communication, and resilience |
 | **workflow-orchestration-patterns** | Design durable workflows with Temporal for distributed systems, saga patterns, and state management |
 | **temporal-python-testing** | Test Temporal workflows with pytest, time-skipping, and mocking strategies for comprehensive coverage |
+| **event-store-design** | Design event stores with optimized schemas, snapshots, and stream partitioning |
+| **cqrs-implementation** | Implement CQRS with separate read/write models and eventual consistency patterns |
+| **projection-patterns** | Build efficient projections from event streams for read-optimized views |
+| **saga-orchestration** | Design distributed sagas with compensation logic and failure handling |
 
-### Developer Essentials (8 skills)
+### Developer Essentials (11 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -52,6 +60,9 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **auth-implementation-patterns** | Implement authentication and authorization with JWT, OAuth2, sessions, and RBAC |
 | **debugging-strategies** | Master systematic debugging techniques, profiling tools, and root cause analysis |
 | **monorepo-management** | Manage monorepos with Turborepo, Nx, and pnpm workspaces for scalable multi-package projects |
+| **nx-workspace-patterns** | Configure Nx workspaces with computation caching and affected commands |
+| **turborepo-caching** | Optimize Turborepo builds with remote caching and pipeline configuration |
+| **bazel-build-optimization** | Design Bazel builds with hermetic actions and remote execution |
 
 ### Blockchain & Web3 (4 skills)
 
@@ -71,7 +82,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **gitlab-ci-patterns** | Build GitLab CI/CD pipelines with multi-stage workflows and distributed runners |
 | **secrets-management** | Implement secure secrets management using Vault, AWS Secrets Manager, or native solutions |
 
-### Cloud Infrastructure (4 skills)
+### Cloud Infrastructure (8 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -79,6 +90,10 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **multi-cloud-architecture** | Design multi-cloud architectures avoiding vendor lock-in |
 | **hybrid-cloud-networking** | Configure secure connectivity between on-premises and cloud platforms |
 | **cost-optimization** | Optimize cloud costs through rightsizing, tagging, and reserved instances |
+| **istio-traffic-management** | Configure Istio traffic routing, load balancing, and canary deployments |
+| **linkerd-patterns** | Implement Linkerd service mesh with automatic mTLS and traffic splitting |
+| **mtls-configuration** | Design zero-trust mTLS architectures with certificate management |
+| **service-mesh-observability** | Build comprehensive observability with distributed tracing and metrics |
 
 ### Framework Migration (4 skills)
 
@@ -138,11 +153,92 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 |-------|-------------|
 | **ml-pipeline-workflow** | Build end-to-end MLOps pipelines from data preparation through deployment |
 
-### Security Scanning (1 skill)
+### Security Scanning (5 skills)
 
 | Skill | Description |
 |-------|-------------|
 | **sast-configuration** | Configure Static Application Security Testing tools for vulnerability detection |
+| **stride-analysis-patterns** | Apply STRIDE methodology to identify spoofing, tampering, and other threats |
+| **attack-tree-construction** | Build attack trees mapping threat scenarios to vulnerabilities |
+| **security-requirement-extraction** | Derive security requirements from threat models with acceptance criteria |
+| **threat-mitigation-mapping** | Map threats to mitigations with prioritized remediation plans |
+
+### Accessibility Compliance (2 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **wcag-audit-patterns** | Conduct WCAG 2.2 accessibility audits with automated and manual testing |
+| **screen-reader-testing** | Test screen reader compatibility across NVDA, JAWS, and VoiceOver |
+
+### Business Analytics (2 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **kpi-dashboard-design** | Design executive dashboards with actionable KPIs and drill-down capabilities |
+| **data-storytelling** | Transform data insights into compelling narratives for stakeholders |
+
+### Data Engineering (4 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **spark-optimization** | Optimize Apache Spark jobs with partitioning, caching, and broadcast joins |
+| **dbt-transformation-patterns** | Build dbt models with incremental strategies and testing |
+| **airflow-dag-patterns** | Design Airflow DAGs with proper dependencies and error handling |
+| **data-quality-frameworks** | Implement data quality checks with Great Expectations and custom validators |
+
+### Documentation Generation (3 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **openapi-spec-generation** | Generate OpenAPI 3.1 specifications from code with complete schemas |
+| **changelog-automation** | Automate changelog generation from conventional commits |
+| **architecture-decision-records** | Write ADRs documenting architectural decisions and trade-offs |
+
+### Frontend Mobile Development (4 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **react-state-management** | Implement state management with Zustand, Jotai, and React Query |
+| **nextjs-app-router-patterns** | Build Next.js 14+ apps with App Router, RSC, and streaming |
+| **tailwind-design-system** | Create design systems with Tailwind CSS and component libraries |
+| **react-native-architecture** | Architect React Native apps with navigation and native modules |
+
+### Game Development (2 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **unity-ecs-patterns** | Implement Unity ECS for high-performance game systems |
+| **godot-gdscript-patterns** | Build Godot games with GDScript best practices and scene composition |
+
+### HR Legal Compliance (2 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **gdpr-data-handling** | Implement GDPR-compliant data processing with consent management |
+| **employment-contract-templates** | Generate employment contracts with jurisdiction-specific clauses |
+
+### Incident Response (3 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **postmortem-writing** | Write blameless postmortems with root cause analysis and action items |
+| **incident-runbook-templates** | Create runbooks for common incident scenarios with escalation paths |
+| **on-call-handoff-patterns** | Design on-call handoffs with context preservation and alert routing |
+
+### Quantitative Trading (2 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **backtesting-frameworks** | Build backtesting systems with realistic slippage and transaction costs |
+| **risk-metrics-calculation** | Calculate VaR, Sharpe ratio, and drawdown metrics for portfolios |
+
+### Systems Programming (3 skills)
+
+| Skill | Description |
+|-------|-------------|
+| **rust-async-patterns** | Implement async Rust with Tokio, futures, and proper error handling |
+| **go-concurrency-patterns** | Design Go concurrency with channels, worker pools, and context cancellation |
+| **memory-safety-patterns** | Write memory-safe code with ownership, bounds checking, and sanitizers |
 
 ## How Skills Work
 

@@ -17,6 +17,9 @@ Complete reference for all **99 specialized AI agents** organized by category wi
 | [cloud-architect](../plugins/cloud-infrastructure/agents/cloud-architect.md) | opus | AWS/Azure/GCP infrastructure design and cost optimization |
 | [hybrid-cloud-architect](../plugins/cloud-infrastructure/agents/hybrid-cloud-architect.md) | opus | Multi-cloud strategies across cloud and on-premises environments |
 | [kubernetes-architect](../plugins/kubernetes-operations/agents/kubernetes-architect.md) | opus | Cloud-native infrastructure with Kubernetes and GitOps |
+| [service-mesh-expert](../plugins/cloud-infrastructure/agents/service-mesh-expert.md) | opus | Istio/Linkerd service mesh architecture, mTLS, and traffic management |
+| [event-sourcing-architect](../plugins/backend-development/agents/event-sourcing-architect.md) | opus | Event sourcing, CQRS patterns, event stores, and saga orchestration |
+| [monorepo-architect](../plugins/developer-essentials/agents/monorepo-architect.md) | opus | Monorepo tooling with Nx, Turborepo, Bazel, and workspace optimization |
 
 #### UI/UX & Mobile
 
@@ -107,6 +110,7 @@ Complete reference for all **99 specialized AI agents** organized by category wi
 | [backend-security-coder](../plugins/data-validation-suite/agents/backend-security-coder.md) | opus | Secure backend coding practices, API security implementation |
 | [frontend-security-coder](../plugins/frontend-mobile-security/agents/frontend-security-coder.md) | opus | XSS prevention, CSP implementation, client-side security |
 | [mobile-security-coder](../plugins/frontend-mobile-security/agents/mobile-security-coder.md) | opus | Mobile security patterns, WebView security, biometric auth |
+| [threat-modeling-expert](../plugins/security-scanning/agents/threat-modeling-expert.md) | opus | STRIDE threat modeling, attack trees, and security requirements |
 
 #### Testing & Debugging
 
@@ -142,6 +146,7 @@ Complete reference for all **99 specialized AI agents** organized by category wi
 | [ml-engineer](../plugins/machine-learning-ops/agents/ml-engineer.md) | opus | ML pipelines, model serving, feature engineering |
 | [mlops-engineer](../plugins/machine-learning-ops/agents/mlops-engineer.md) | opus | ML infrastructure, experiment tracking, model registries |
 | [prompt-engineer](../plugins/llm-application-dev/agents/prompt-engineer.md) | opus | LLM prompt optimization and engineering |
+| [vector-database-engineer](../plugins/llm-application-dev/agents/vector-database-engineer.md) | opus | Vector databases, embeddings, similarity search, and hybrid retrieval |
 
 ### Documentation & Technical Writing
 
@@ -215,8 +220,9 @@ Agents are assigned to specific Claude models based on task complexity and compu
 
 | Model | Agent Count | Use Case |
 |-------|-------------|----------|
-| Haiku | 48 | Fast execution tasks: testing, documentation, ops, database optimization, business |
-| Sonnet | 100 | Complex reasoning, architecture, language expertise, orchestration, security |
+| Opus | 42 | Critical architecture, security, code review, production coding |
+| Sonnet | 39 | Complex tasks, support with intelligence |
+| Haiku | 18 | Fast operational tasks |
 
 ### Model Selection Criteria
 
