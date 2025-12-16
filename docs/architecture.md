@@ -36,7 +36,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **65 focused plugins** optimized for specific use cases
+- **67 focused plugins** optimized for specific use cases
 - **23 clear categories** with 1-6 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 4 plugins (debugging, backend, frontend, multi-platform)
@@ -48,17 +48,17 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Component Breakdown
 
-**91 Specialized Agents**
+**99 Specialized Agents**
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
-- Model-optimized (48 Haiku, 100 Sonnet) for performance and cost
+- Model-optimized with three-tier strategy (Opus, Sonnet, Haiku) for performance and cost
 
 **15 Workflow Orchestrators**
 - Multi-agent coordination systems
 - Complex operations like full-stack development, security hardening, ML pipelines, incident response
 - Pre-configured agent workflows
 
-**44 Development Tools**
+**71 Development Tools**
 - Optimized utilities including:
   - Project scaffolding (Python, TypeScript, Rust)
   - Security scanning (SAST, dependency audit, XSS)
@@ -66,10 +66,10 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**47 Agent Skills**
+**107 Agent Skills**
 - Modular knowledge packages
 - Progressive disclosure architecture
-- Domain-specific expertise across 14 plugins
+- Domain-specific expertise across 18 plugins
 - Spec-compliant (Anthropic Agent Skills Specification)
 
 ## Repository Structure
@@ -77,7 +77,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (65 plugins)
+│   └── marketplace.json          # Marketplace catalog (67 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -120,7 +120,7 @@ claude-agents/
 │   │   │   └── c4-context.md
 │   │   └── commands/
 │   │       └── c4-architecture.md
-│   └── ... (60 more isolated plugins)
+│   └── ... (62 more isolated plugins)
 ├── docs/                          # Documentation
 │   ├── agent-skills.md           # Agent Skills guide
 │   ├── agents.md                 # Agent reference
@@ -191,7 +191,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 47 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 107 skills.
 
 ## Model Configuration Strategy
 
@@ -201,8 +201,9 @@ The system uses Claude Opus and Sonnet models strategically:
 
 | Model | Count | Use Case |
 |-------|-------|----------|
-| Haiku | 48 agents | Fast execution, deterministic tasks |
-| Sonnet | 100 agents | Complex reasoning, architecture decisions |
+| Opus | 42 agents | Critical architecture, security, code review |
+| Sonnet | 39 agents | Complex tasks, support with intelligence |
+| Haiku | 18 agents | Fast operational tasks |
 
 ### Selection Criteria
 
@@ -255,7 +256,7 @@ code-reviewer (Sonnet) validates architecture
 ### Component Coverage
 
 - **100% agent coverage** - all plugins include at least one agent
-- **100% component availability** - all 91 agents accessible across plugins
+- **100% component availability** - all 99 agents accessible across plugins
 - **Efficient distribution** - 3.4 components per plugin average
 
 ### Discoverability
@@ -383,5 +384,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 65 plugins
+- [Plugin Reference](./plugins.md) - All 67 plugins
 - [Usage Guide](./usage.md) - Commands and workflows

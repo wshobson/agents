@@ -4,26 +4,26 @@
 
 [![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
 
-> **🎯 Agent Skills Enabled** — 47 specialized skills extend Claude's capabilities across plugins with progressive disclosure
+> **🎯 Agent Skills Enabled** — 107 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **91 specialized AI agents**, **15 multi-agent workflow orchestrators**, **47 agent skills**, and **45 development tools** organized into **65 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **99 specialized AI agents**, **15 multi-agent workflow orchestrators**, **107 agent skills**, and **71 development tools** organized into **67 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **65 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
-- **91 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
-- **47 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
+- **67 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
+- **99 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
+- **107 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **15 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
-- **45 Development Tools** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
+- **71 Development Tools** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 65 focused plugins optimized for minimal token usage
-- **Comprehensive Tooling**: 45 development tools including test generation, scaffolding, and security scanning
+- **Granular Plugin Architecture**: 67 focused plugins optimized for minimal token usage
+- **Comprehensive Tooling**: 71 development tools including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
-- **Agent Skills**: 47 specialized skills following for progressive disclosure and token efficiency
+- **Agent Skills**: 107 specialized skills following for progressive disclosure and token efficiency
 - **Clear Organization**: 23 categories with 1-6 plugins each for easy discovery
 - **Efficient Design**: Average 3.4 components per plugin (follows Anthropic's 2-8 pattern)
 
@@ -49,7 +49,7 @@ Add this marketplace to Claude Code:
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 65 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 67 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Plugins
 
@@ -85,9 +85,9 @@ Each installed plugin loads **only its specific agents, commands, and skills** i
 
 ### Core Guides
 
-- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 65 plugins
-- **[Agent Reference](docs/agents.md)** - All 91 agents organized by category
-- **[Agent Skills](docs/agent-skills.md)** - 47 specialized skills with progressive disclosure
+- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 67 plugins
+- **[Agent Reference](docs/agents.md)** - All 99 agents organized by category
+- **[Agent Skills](docs/agent-skills.md)** - 107 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
 - **[Architecture](docs/architecture.md)** - Design principles and patterns
 
@@ -101,7 +101,7 @@ Each installed plugin loads **only its specific agents, commands, and skills** i
 
 ## What's New
 
-### Agent Skills (47 skills across 14 plugins)
+### Agent Skills (107 skills across 18 plugins)
 
 Specialized knowledge packages following Anthropic's progressive disclosure architecture:
 
@@ -205,7 +205,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 ## Plugin Categories
 
-**23 categories, 65 plugins:**
+**23 categories, 67 plugins:**
 
 - 🎨 **Development** (4) - debugging, backend, frontend, multi-platform
 - 📚 **Documentation** (3) - code docs, API specs, diagrams, C4 architecture
@@ -237,7 +237,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 - **Single responsibility** - Each plugin does one thing well
 - **Minimal token usage** - Average 3.4 components per plugin
 - **Composable** - Mix and match for complex workflows
-- **100% coverage** - All 91 agents accessible across plugins
+- **100% coverage** - All 99 agents accessible across plugins
 
 ### Progressive Disclosure (Skills)
 
@@ -251,7 +251,7 @@ Three-tier architecture for token efficiency:
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # 65 plugins
+│   └── marketplace.json          # 67 plugins
 ├── plugins/
 │   ├── python-development/
 │   │   ├── agents/               # 3 Python experts
@@ -261,7 +261,7 @@ claude-agents/
 │   │   ├── agents/               # K8s architect
 │   │   ├── commands/             # Deployment tools
 │   │   └── skills/               # 4 K8s skills
-│   └── ... (63 more plugins)
+│   └── ... (65 more plugins)
 ├── docs/                          # Comprehensive documentation
 └── README.md                      # This file
 ```

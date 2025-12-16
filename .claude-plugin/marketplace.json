@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 65 focused plugins, 91 specialized agents, and 45 tools - optimized for granular installation and minimal token usage",
+    "description": "Production-ready workflow orchestration with 67 focused plugins, 99 specialized agents, and 107 skills - optimized for granular installation and minimal token usage",
     "version": "1.3.0"
   },
   "plugins": [
@@ -129,14 +129,19 @@
         "./agents/backend-architect.md",
         "./agents/graphql-architect.md",
         "./agents/tdd-orchestrator.md",
-        "./agents/temporal-python-pro.md"
+        "./agents/temporal-python-pro.md",
+        "./agents/event-sourcing-architect.md"
       ],
       "skills": [
         "./skills/api-design-principles",
         "./skills/architecture-patterns",
         "./skills/microservices-patterns",
         "./skills/workflow-orchestration-patterns",
-        "./skills/temporal-python-testing"
+        "./skills/temporal-python-testing",
+        "./skills/event-store-design",
+        "./skills/projection-patterns",
+        "./skills/saga-orchestration",
+        "./skills/cqrs-implementation"
       ]
     },
     {
@@ -166,6 +171,12 @@
       "agents": [
         "./agents/frontend-developer.md",
         "./agents/mobile-developer.md"
+      ],
+      "skills": [
+        "./skills/react-state-management",
+        "./skills/nextjs-app-router-patterns",
+        "./skills/react-native-architecture",
+        "./skills/tailwind-design-system"
       ]
     },
     {
@@ -431,13 +442,18 @@
       ],
       "agents": [
         "./agents/ai-engineer.md",
-        "./agents/prompt-engineer.md"
+        "./agents/prompt-engineer.md",
+        "./agents/vector-database-engineer.md"
       ],
       "skills": [
         "./skills/langchain-architecture",
         "./skills/llm-evaluation",
         "./skills/prompt-engineering-patterns",
-        "./skills/rag-implementation"
+        "./skills/rag-implementation",
+        "./skills/embedding-strategies",
+        "./skills/similarity-search-patterns",
+        "./skills/vector-index-tuning",
+        "./skills/hybrid-search-implementation"
       ]
     },
     {
@@ -558,6 +574,12 @@
       "agents": [
         "./agents/data-engineer.md",
         "./agents/backend-architect.md"
+      ],
+      "skills": [
+        "./skills/dbt-transformation-patterns",
+        "./skills/airflow-dag-patterns",
+        "./skills/spark-optimization",
+        "./skills/data-quality-frameworks"
       ]
     },
     {
@@ -587,6 +609,11 @@
       "agents": [
         "./agents/incident-responder.md",
         "./agents/devops-troubleshooter.md"
+      ],
+      "skills": [
+        "./skills/incident-runbook-templates",
+        "./skills/postmortem-writing",
+        "./skills/on-call-handoff-patterns"
       ]
     },
     {
@@ -805,13 +832,18 @@
         "./agents/hybrid-cloud-architect.md",
         "./agents/terraform-specialist.md",
         "./agents/network-engineer.md",
-        "./agents/deployment-engineer.md"
+        "./agents/deployment-engineer.md",
+        "./agents/service-mesh-expert.md"
       ],
       "skills": [
         "./skills/cost-optimization",
         "./skills/hybrid-cloud-networking",
         "./skills/multi-cloud-architecture",
-        "./skills/terraform-module-library"
+        "./skills/terraform-module-library",
+        "./skills/istio-traffic-management",
+        "./skills/linkerd-patterns",
+        "./skills/mtls-configuration",
+        "./skills/service-mesh-observability"
       ]
     },
     {
@@ -1123,10 +1155,15 @@
         "./commands/security-dependencies.md"
       ],
       "agents": [
-        "./agents/security-auditor.md"
+        "./agents/security-auditor.md",
+        "./agents/threat-modeling-expert.md"
       ],
       "skills": [
-        "./skills/sast-configuration"
+        "./skills/sast-configuration",
+        "./skills/stride-analysis-patterns",
+        "./skills/attack-tree-construction",
+        "./skills/security-requirement-extraction",
+        "./skills/threat-mitigation-mapping"
       ]
     },
     {
@@ -1417,6 +1454,11 @@
         "./agents/mermaid-expert.md",
         "./agents/tutorial-engineer.md",
         "./agents/reference-builder.md"
+      ],
+      "skills": [
+        "./skills/openapi-spec-generation",
+        "./skills/architecture-decision-records",
+        "./skills/changelog-automation"
       ]
     },
     {
@@ -1512,6 +1554,10 @@
       "commands": [],
       "agents": [
         "./agents/business-analyst.md"
+      ],
+      "skills": [
+        "./skills/kpi-dashboard-design",
+        "./skills/data-storytelling"
       ]
     },
     {
@@ -1541,6 +1587,10 @@
       "agents": [
         "./agents/hr-pro.md",
         "./agents/legal-advisor.md"
+      ],
+      "skills": [
+        "./skills/gdpr-data-handling",
+        "./skills/employment-contract-templates"
       ]
     },
     {
@@ -1655,6 +1705,10 @@
       "agents": [
         "./agents/quant-analyst.md",
         "./agents/risk-manager.md"
+      ],
+      "skills": [
+        "./skills/backtesting-frameworks",
+        "./skills/risk-metrics-calculation"
       ]
     },
     {
@@ -1717,6 +1771,10 @@
       "agents": [
         "./agents/unity-developer.md",
         "./agents/minecraft-bukkit-pro.md"
+      ],
+      "skills": [
+        "./skills/unity-ecs-patterns",
+        "./skills/godot-gdscript-patterns"
       ]
     },
     {
@@ -1745,6 +1803,10 @@
       ],
       "agents": [
         "./agents/ui-visual-validator.md"
+      ],
+      "skills": [
+        "./skills/wcag-audit-patterns",
+        "./skills/screen-reader-testing"
       ]
     },
     {
@@ -1849,6 +1911,11 @@
         "./agents/golang-pro.md",
         "./agents/c-pro.md",
         "./agents/cpp-pro.md"
+      ],
+      "skills": [
+        "./skills/rust-async-patterns",
+        "./skills/go-concurrency-patterns",
+        "./skills/memory-safety-patterns"
       ]
     },
     {
@@ -2048,7 +2115,9 @@
       "category": "development",
       "strict": false,
       "commands": [],
-      "agents": [],
+      "agents": [
+        "./agents/monorepo-architect.md"
+      ],
       "skills": [
         "./skills/git-advanced-workflows",
         "./skills/sql-optimization-patterns",
@@ -2057,7 +2126,11 @@
         "./skills/e2e-testing-patterns",
         "./skills/auth-implementation-patterns",
         "./skills/debugging-strategies",
-        "./skills/monorepo-management"
+        "./skills/monorepo-management",
+        "./skills/nx-workspace-patterns",
+        "./skills/turborepo-caching",
+        "./skills/bazel-build-optimization",
+        "./skills/monorepo-dependency-management"
       ]
     }
   ]

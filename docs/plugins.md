@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **65 focused, single-purpose plugins** organized by category.
+Browse all **67 focused, single-purpose plugins** organized by category.
 
 ## Quick Start - Essential Plugins
 
@@ -329,7 +329,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 65 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 67 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -369,7 +369,7 @@ Each installed plugin loads **only its specific agents and commands** into Claud
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 47 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 107 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles
