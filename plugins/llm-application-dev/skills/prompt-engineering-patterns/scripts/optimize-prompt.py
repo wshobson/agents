@@ -9,6 +9,7 @@ import json
 import time
 from typing import List, Dict, Any
 from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 
 
@@ -26,7 +27,7 @@ class PromptOptimizer:
         self.results_history = []
 
     def evaluate_prompt(self, prompt_template: str, test_cases: List[TestCase] = None) -> Dict[str, float]:
-        """Evaluate a prompt template against test cases."""
+        """Evaluate a prompt template against test cases in parallel."""
         if test_cases is None:
             test_cases = self.test_suite
 
@@ -37,7 +38,7 @@ class PromptOptimizer:
             'success_rate': []
         }
 
-        for test_case in test_cases:
+        def process_test_case(test_case):
             start_time = time.time()
 
             # Render prompt with test case inputs
@@ -49,16 +50,29 @@ class PromptOptimizer:
             # Measure latency
             latency = time.time() - start_time
 
-            # Calculate metrics
-            metrics['latency'].append(latency)
-            metrics['token_count'].append(len(prompt.split()) + len(response.split()))
-            metrics['success_rate'].append(1 if response else 0)
-
-            # Check accuracy
+            # Calculate individual metrics
+            token_count = len(prompt.split()) + len(response.split())
+            success = 1 if response else 0
             accuracy = self.calculate_accuracy(response, test_case.expected_output)
-            metrics['accuracy'].append(accuracy)
+
+            return {
+                'latency': latency,
+                'token_count': token_count,
+                'success_rate': success,
+                'accuracy': accuracy
+            }
+
+        # Run test cases in parallel
+        with ThreadPoolExecutor() as executor:
+            results = list(executor.map(process_test_case, test_cases))
 
         # Aggregate metrics
+        for result in results:
+            metrics['latency'].append(result['latency'])
+            metrics['token_count'].append(result['token_count'])
+            metrics['success_rate'].append(result['success_rate'])
+            metrics['accuracy'].append(result['accuracy'])
+
         return {
             'avg_accuracy': np.mean(metrics['accuracy']),
             'avg_latency': np.mean(metrics['latency']),
