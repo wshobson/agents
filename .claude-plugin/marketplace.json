@@ -1843,7 +1843,8 @@
         "./skills/python-testing-patterns",
         "./skills/python-packaging",
         "./skills/python-performance-optimization",
-        "./skills/uv-package-manager"
+        "./skills/uv-package-manager",
+        "./skills/fastapi"
       ]
     },
     {

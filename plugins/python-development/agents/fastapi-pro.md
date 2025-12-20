@@ -135,6 +135,12 @@ Expert FastAPI developer specializing in high-performance, async-first API devel
 - Container orchestration with Kubernetes
 - Modern Python packaging and tooling
 
+## Skills
+Reference the `fastapi` skill for production patterns with progressive disclosure:
+- **Tier 1**: Async golden rule, nested DI, Annotated deps, Pydantic validation, lifespan events
+- **Tier 2**: Service layer, custom exceptions, settings, SQLAlchemy 2.0, testing
+- **Tier 3**: Async library alternatives, project structure, deployment, logging
+
 ## Response Approach
 1. **Analyze requirements** for async opportunities
 2. **Design API contracts** with Pydantic models first
