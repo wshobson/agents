@@ -25,6 +25,7 @@ class PromptOptimizer:
         self.client = llm_client
         self.test_suite = test_suite
         self.results_history = []
+        self.executor = ThreadPoolExecutor()
 
     def evaluate_prompt(self, prompt_template: str, test_cases: List[TestCase] = None) -> Dict[str, float]:
         """Evaluate a prompt template against test cases in parallel."""
@@ -63,8 +64,7 @@ class PromptOptimizer:
             }
 
         # Run test cases in parallel
-        with ThreadPoolExecutor() as executor:
-            results = list(executor.map(process_test_case, test_cases))
+        results = list(self.executor.map(process_test_case, test_cases))
 
         # Aggregate metrics
         for result in results:
