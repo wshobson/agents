@@ -251,17 +251,19 @@ def main():
 
     optimizer = PromptOptimizer(MockLLMClient(), test_suite)
 
-    base_prompt = "Classify the sentiment of: {text}\nSentiment:"
+    try:
+        base_prompt = "Classify the sentiment of: {text}\nSentiment:"
 
-    results = optimizer.optimize(base_prompt)
+        results = optimizer.optimize(base_prompt)
 
-    print("\n" + "="*50)
-    print("Optimization Complete!")
-    print(f"Best Accuracy: {results['best_score']:.2f}")
-    print(f"Best Prompt:\n{results['best_prompt']}")
+        print("\n" + "="*50)
+        print("Optimization Complete!")
+        print(f"Best Accuracy: {results['best_score']:.2f}")
+        print(f"Best Prompt:\n{results['best_prompt']}")
 
-    optimizer.export_results('optimization_results.json')
-    optimizer.shutdown()
+        optimizer.export_results('optimization_results.json')
+    finally:
+        optimizer.shutdown()
 
 
 if __name__ == '__main__':
