@@ -27,6 +27,10 @@ class PromptOptimizer:
         self.results_history = []
         self.executor = ThreadPoolExecutor()
 
+    def shutdown(self):
+        """Shutdown the thread pool executor."""
+        self.executor.shutdown(wait=True)
+
     def evaluate_prompt(self, prompt_template: str, test_cases: List[TestCase] = None) -> Dict[str, float]:
         """Evaluate a prompt template against test cases in parallel."""
         if test_cases is None:
@@ -257,6 +261,7 @@ def main():
     print(f"Best Prompt:\n{results['best_prompt']}")
 
     optimizer.export_results('optimization_results.json')
+    optimizer.shutdown()
 
 
 if __name__ == '__main__':
