@@ -2155,8 +2155,13 @@
       ],
       "category": "documentation",
       "strict": false,
-      "commands": [],
-      "agents": [],
+      "commands": [
+        "./commands/diagram-generate.md",
+        "./commands/diagram-fix.md"
+      ],
+      "agents": [
+        "./agents/diagram-pro.md"
+      ],
       "skills": [
         "./skills/excalidraw-diagram"
       ]
