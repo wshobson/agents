@@ -4,6 +4,7 @@ Includes pagination, filtering, error handling, and best practices.
 """
 
 from fastapi import FastAPI, HTTPException, Query, Path, Depends, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, EmailStr
 from typing import Optional, List, Any
@@ -14,6 +15,16 @@ app = FastAPI(
     title="API Template",
     version="1.0.0",
     docs_url="/api/docs"
+)
+
+# Security: CORS Middleware
+# Configure this appropriately for your environment
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Add your frontend origins here
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Models
@@ -112,6 +123,9 @@ async def list_users(
 async def create_user(user: UserCreate):
     """Create a new user."""
     # Mock implementation
+    # SECURITY: In a real application, you must hash the password before storage!
+    # e.g., hashed_password = hash_password(user.password)
+
     return User(
         id="123",
         email=user.email,
