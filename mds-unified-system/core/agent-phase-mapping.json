@@ -1,0 +1,168 @@
+{
+  "version": "1.0.0",
+  "description": "Maps all 99 agents to their primary and secondary BMAD phases",
+  "01-analysis": {
+    "primary": [
+      "business-analyst",
+      "data-scientist",
+      "search-specialist",
+      "quant-analyst"
+    ],
+    "support": [
+      "backend-architect",
+      "architect-review",
+      "security-auditor",
+      "legal-advisor",
+      "docs-architect"
+    ]
+  },
+  "02-planning": {
+    "primary": [
+      "backend-architect",
+      "frontend-developer",
+      "database-architect",
+      "graphql-architect",
+      "docs-architect",
+      "cloud-architect",
+      "kubernetes-architect"
+    ],
+    "support": [
+      "architect-review",
+      "ui-ux-designer",
+      "security-auditor",
+      "test-automator",
+      "performance-engineer"
+    ]
+  },
+  "03-solutioning": {
+    "primary": [
+      "architect-review",
+      "backend-architect",
+      "frontend-developer",
+      "database-architect",
+      "graphql-architect",
+      "ui-ux-designer",
+      "cloud-architect",
+      "kubernetes-architect",
+      "hybrid-cloud-architect",
+      "service-mesh-expert",
+      "event-sourcing-architect",
+      "monorepo-architect"
+    ],
+    "support": [
+      "security-auditor",
+      "threat-modeling-expert",
+      "performance-engineer",
+      "observability-engineer",
+      "test-automator",
+      "deployment-engineer"
+    ]
+  },
+  "04-implementation": {
+    "primary": [
+      "python-pro",
+      "javascript-pro",
+      "typescript-pro",
+      "rust-pro",
+      "golang-pro",
+      "java-pro",
+      "scala-pro",
+      "csharp-pro",
+      "elixir-pro",
+      "ruby-pro",
+      "php-pro",
+      "c-pro",
+      "cpp-pro",
+      "haskell-pro",
+      "julia-pro",
+      "bash-pro",
+      "posix-shell-pro",
+      "fastapi-pro",
+      "django-pro",
+      "mobile-developer",
+      "flutter-expert",
+      "ios-developer",
+      "unity-developer",
+      "minecraft-bukkit-pro",
+      "arm-cortex-expert",
+      "blockchain-developer"
+    ],
+    "support": [
+      "test-automator",
+      "tdd-orchestrator",
+      "code-reviewer",
+      "debugger",
+      "error-detective",
+      "deployment-engineer",
+      "devops-troubleshooter",
+      "terraform-specialist",
+      "security-auditor",
+      "backend-security-coder",
+      "frontend-security-coder",
+      "mobile-security-coder"
+    ]
+  },
+  "cross-phase": {
+    "documentation": [
+      "docs-architect",
+      "tutorial-engineer",
+      "reference-builder",
+      "api-documenter",
+      "mermaid-expert",
+      "c4-code",
+      "c4-component",
+      "c4-container",
+      "c4-context"
+    ],
+    "quality": [
+      "code-reviewer",
+      "test-automator",
+      "security-auditor",
+      "performance-engineer",
+      "observability-engineer"
+    ],
+    "operations": [
+      "deployment-engineer",
+      "devops-troubleshooter",
+      "incident-responder",
+      "network-engineer",
+      "database-optimizer",
+      "database-admin"
+    ],
+    "business": [
+      "business-analyst",
+      "hr-pro",
+      "legal-advisor",
+      "customer-support",
+      "sales-automator",
+      "content-marketer",
+      "risk-manager"
+    ],
+    "seo": [
+      "seo-content-writer",
+      "seo-content-planner",
+      "seo-content-auditor",
+      "seo-content-refresher",
+      "seo-meta-optimizer",
+      "seo-keyword-strategist",
+      "seo-structure-architect",
+      "seo-snippet-hunter",
+      "seo-cannibalization-detector",
+      "seo-authority-builder"
+    ],
+    "ai-ml": [
+      "ai-engineer",
+      "ml-engineer",
+      "mlops-engineer",
+      "prompt-engineer",
+      "vector-database-engineer",
+      "data-engineer"
+    ],
+    "data": [
+      "data-scientist",
+      "data-engineer",
+      "sql-pro",
+      "database-architect"
+    ]
+  }
+}

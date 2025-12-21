@@ -1,0 +1,59 @@
+{
+  "id": "03-solutioning",
+  "name": "Solutioning Phase",
+  "description": "Detailed design and architecture phase. Create comprehensive technical designs, database schemas, API specifications, and UX designs.",
+  "objectives": [
+    "Design detailed system architecture",
+    "Create database schema designs",
+    "Define API contracts and specifications",
+    "Design user experience flows",
+    "Establish security architecture"
+  ],
+  "deliverables": [
+    "System Architecture Document",
+    "Database Schema Design",
+    "API Specification (OpenAPI)",
+    "UX/UI Wireframes and Flows",
+    "Security Architecture",
+    "Infrastructure Design"
+  ],
+  "primaryAgents": [
+    "architect-review",
+    "backend-architect",
+    "database-architect",
+    "graphql-architect",
+    "ui-ux-designer",
+    "cloud-architect",
+    "kubernetes-architect"
+  ],
+  "supportAgents": [
+    "security-auditor",
+    "performance-engineer",
+    "observability-engineer",
+    "test-automator"
+  ],
+  "workflows": [
+    "architecture-design",
+    "database-design",
+    "api-design",
+    "ux-design",
+    "infrastructure-design"
+  ],
+  "entryGates": [
+    "Planning phase completed",
+    "PRD and tech spec approved",
+    "Architecture approach selected"
+  ],
+  "exitGates": [
+    "Architecture reviewed and approved",
+    "All designs peer-reviewed",
+    "Security audit passed",
+    "Performance requirements validated"
+  ],
+  "estimatedDuration": {
+    "quickFlow": "skipped or minimal",
+    "standard": "2-4 hours",
+    "enterprise": "4-8 hours"
+  },
+  "modelRecommendation": "opus"
+}

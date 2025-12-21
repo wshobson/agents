@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "mds-pattern-library",
+  "title": "MDS Pattern Library Schema",
+  "description": "Schema for storing successful and failed patterns for learning",
+  "type": "object",
+  "required": ["patternId", "category", "name", "outcome"],
+  "properties": {
+    "patternId": {
+      "type": "string",
+      "description": "Unique pattern identifier",
+      "pattern": "^pat_[a-z0-9]{12}$"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "architecture",
+        "code",
+        "testing",
+        "deployment",
+        "security",
+        "performance",
+        "documentation",
+        "workflow",
+        "communication",
+        "error-handling"
+      ]
+    },
+    "subcategory": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable pattern name",
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the pattern",
+      "maxLength": 500
+    },
+    "context": {
+      "type": "object",
+      "description": "When this pattern applies",
+      "properties": {
+        "projectTypes": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "techStacks": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "phases": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "triggers": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "problem": {
+      "type": "string",
+      "description": "The problem this pattern addresses"
+    },
+    "solution": {
+      "type": "string",
+      "description": "The solution approach"
+    },
+    "implementation": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "codeExamples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "language": {"type": "string"},
+              "code": {"type": "string"},
+              "description": {"type": "string"}
+            }
+          }
+        },
+        "agentsInvolved": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["success", "failure", "partial", "deprecated"]
+    },
+    "outcomeDetails": {
+      "type": "string",
+      "description": "Details about the outcome"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "timeSaved": {"type": "string"},
+        "errorReduction": {"type": "number"},
+        "qualityImprovement": {"type": "number"},
+        "adoptionRate": {"type": "number"}
+      }
+    },
+    "confidenceScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Confidence in pattern effectiveness (0-100)"
+    },
+    "applicableWhen": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Conditions when this pattern should be applied"
+    },
+    "avoidWhen": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Conditions when this pattern should NOT be applied"
+    },
+    "relatedPatterns": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "IDs of related patterns"
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Alternative patterns to consider"
+    },
+    "learnedFrom": {
+      "type": "object",
+      "properties": {
+        "projectId": {"type": "string"},
+        "date": {"type": "string", "format": "date-time"},
+        "agent": {"type": "string"}
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "usageCount": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

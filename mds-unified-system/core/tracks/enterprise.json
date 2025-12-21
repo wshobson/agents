@@ -1,0 +1,97 @@
+{
+  "id": "enterprise",
+  "name": "Enterprise Track",
+  "description": "Comprehensive track for compliance-critical, high-scale, governance-required projects. Full process with mandatory gates.",
+  "useCase": "Compliance-critical systems, enterprise platforms, regulatory projects, high-security applications",
+  "timeToStart": "<30 minutes",
+  "requiredPhases": ["01-analysis", "02-planning", "03-solutioning", "04-implementation"],
+  "optionalPhases": [],
+  "planningDepth": "full governance suite",
+  "agents": {
+    "analysis": [
+      "business-analyst",
+      "data-scientist",
+      "search-specialist",
+      "security-auditor",
+      "legal-advisor"
+    ],
+    "planning": [
+      "backend-architect",
+      "frontend-developer",
+      "database-architect",
+      "cloud-architect",
+      "docs-architect",
+      "hr-pro"
+    ],
+    "solutioning": [
+      "architect-review",
+      "kubernetes-architect",
+      "security-auditor",
+      "threat-modeling-expert",
+      "observability-engineer",
+      "performance-engineer"
+    ],
+    "implementation": [
+      "python-pro",
+      "javascript-pro",
+      "typescript-pro",
+      "java-pro",
+      "rust-pro",
+      "test-automator",
+      "code-reviewer",
+      "deployment-engineer",
+      "devops-troubleshooter",
+      "incident-responder"
+    ]
+  },
+  "mandatoryGates": [
+    "security-review",
+    "compliance-check",
+    "architecture-review",
+    "legal-review",
+    "performance-review",
+    "disaster-recovery-plan"
+  ],
+  "triggerConditions": [
+    "Handles PII or sensitive data",
+    "Financial transactions",
+    "Healthcare/HIPAA systems",
+    "SOC2/GDPR compliance required",
+    "Enterprise customer requirement",
+    "Public-facing critical system",
+    "Multi-region deployment"
+  ],
+  "triggerPatterns": [
+    "enterprise",
+    "compliance",
+    "SOC2",
+    "HIPAA",
+    "GDPR",
+    "PCI",
+    "audit",
+    "regulated"
+  ],
+  "qualityGates": {
+    "codeReview": "mandatory-senior-review",
+    "architectureReview": "mandatory",
+    "securityScan": "mandatory-comprehensive",
+    "penetrationTest": "required",
+    "complianceAudit": "required",
+    "testing": "full-suite-required",
+    "documentationReview": "mandatory"
+  },
+  "modelStrategy": {
+    "analysis": "opus",
+    "planning": "opus",
+    "solutioning": "opus",
+    "development": "sonnet",
+    "review": "opus",
+    "security": "opus"
+  },
+  "estimatedCompletion": "Days to weeks depending on scope",
+  "governanceRequirements": {
+    "signoff": ["Technical Lead", "Security Team", "Compliance Officer", "Product Owner"],
+    "documentation": ["ADRs", "Security Assessment", "Compliance Checklist", "Runbooks"],
+    "auditing": ["All actions logged", "Change tracking enabled", "Rollback plans documented"]
+  }
+}

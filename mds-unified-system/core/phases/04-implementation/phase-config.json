@@ -1,0 +1,63 @@
+{
+  "id": "04-implementation",
+  "name": "Implementation Phase",
+  "description": "Development, testing, and deployment phase. Build the solution according to designs, with comprehensive testing and deployment automation.",
+  "objectives": [
+    "Implement features according to specifications",
+    "Write comprehensive tests (unit, integration, e2e)",
+    "Perform code reviews",
+    "Deploy to staging and production",
+    "Monitor and iterate"
+  ],
+  "deliverables": [
+    "Working Code",
+    "Test Suite",
+    "Documentation",
+    "Deployment Pipelines",
+    "Monitoring Dashboards"
+  ],
+  "primaryAgents": [
+    "python-pro",
+    "javascript-pro",
+    "typescript-pro",
+    "rust-pro",
+    "golang-pro",
+    "java-pro",
+    "frontend-developer",
+    "mobile-developer",
+    "test-automator",
+    "code-reviewer"
+  ],
+  "supportAgents": [
+    "deployment-engineer",
+    "devops-troubleshooter",
+    "observability-engineer",
+    "security-auditor",
+    "docs-architect"
+  ],
+  "workflows": [
+    "story-development",
+    "code-review",
+    "testing",
+    "deployment",
+    "monitoring-setup"
+  ],
+  "entryGates": [
+    "Solutioning phase completed",
+    "Designs approved",
+    "Development environment ready"
+  ],
+  "exitGates": [
+    "All tests passing",
+    "Code review approved",
+    "Security scan passed",
+    "Deployed to production",
+    "Monitoring active"
+  ],
+  "estimatedDuration": {
+    "quickFlow": "Variable based on scope",
+    "standard": "Variable based on scope",
+    "enterprise": "Variable based on scope"
+  },
+  "modelRecommendation": "sonnet for development, opus for reviews"
+}

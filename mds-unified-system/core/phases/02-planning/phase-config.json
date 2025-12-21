@@ -1,0 +1,53 @@
+{
+  "id": "02-planning",
+  "name": "Planning Phase",
+  "description": "Strategic planning and specification phase. Create detailed product requirements, technical specifications, and project scope.",
+  "objectives": [
+    "Define detailed product requirements",
+    "Create technical specifications",
+    "Establish project scope and boundaries",
+    "Design high-level architecture",
+    "Plan resource allocation"
+  ],
+  "deliverables": [
+    "Product Requirements Document (PRD)",
+    "Technical Specification",
+    "Architecture Overview",
+    "Scope Definition",
+    "Resource Plan"
+  ],
+  "primaryAgents": [
+    "backend-architect",
+    "frontend-developer",
+    "database-architect",
+    "docs-architect"
+  ],
+  "supportAgents": [
+    "ui-ux-designer",
+    "security-auditor",
+    "test-automator",
+    "performance-engineer"
+  ],
+  "workflows": [
+    "prd-creation",
+    "tech-spec",
+    "scope-definition",
+    "architecture-overview"
+  ],
+  "entryGates": [
+    "Analysis phase completed",
+    "Requirements approved",
+    "Feasibility confirmed"
+  ],
+  "exitGates": [
+    "PRD approved by stakeholders",
+    "Technical spec reviewed by architects",
+    "Scope locked and agreed"
+  ],
+  "estimatedDuration": {
+    "quickFlow": "30 minutes (tech-spec only)",
+    "standard": "1-2 hours",
+    "enterprise": "2-4 hours"
+  },
+  "modelRecommendation": "opus"
+}

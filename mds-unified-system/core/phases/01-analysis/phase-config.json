@@ -1,0 +1,50 @@
+{
+  "id": "01-analysis",
+  "name": "Analysis Phase",
+  "description": "Research, discovery, and feasibility assessment phase. Focus on understanding the problem space, gathering requirements, and evaluating technical feasibility.",
+  "objectives": [
+    "Understand business requirements and constraints",
+    "Research existing solutions and competitors",
+    "Assess technical feasibility",
+    "Identify risks and dependencies",
+    "Define success criteria"
+  ],
+  "deliverables": [
+    "Requirements document",
+    "Competitive analysis",
+    "Technical feasibility assessment",
+    "Risk assessment",
+    "Stakeholder map"
+  ],
+  "primaryAgents": [
+    "business-analyst",
+    "architect-review",
+    "data-scientist"
+  ],
+  "supportAgents": [
+    "search-specialist",
+    "docs-architect",
+    "security-auditor"
+  ],
+  "workflows": [
+    "brainstorm",
+    "research",
+    "competitive-analysis",
+    "feasibility-assessment"
+  ],
+  "entryGates": [
+    "Clear problem statement provided",
+    "Stakeholders identified"
+  ],
+  "exitGates": [
+    "Requirements documented and approved",
+    "Technical feasibility confirmed",
+    "Risks identified and mitigated"
+  ],
+  "estimatedDuration": {
+    "quickFlow": "skipped",
+    "standard": "1-2 hours",
+    "enterprise": "2-4 hours"
+  },
+  "modelRecommendation": "opus"
+}

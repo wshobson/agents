@@ -1,0 +1,359 @@
+{
+  "tools": [
+    {
+      "id": "accessibility_compliance_accessibility_audit",
+      "name": "Accessibility Audit and Testing",
+      "command": "/accessibility-compliance:accessibility-audit"
+    },
+    {
+      "id": "agent_orchestration_multi_agent_optimize",
+      "name": "Multi-Agent Optimization Toolkit",
+      "command": "/agent-orchestration:multi-agent-optimize"
+    },
+    {
+      "id": "agent_orchestration_improve_agent",
+      "name": "Agent Performance Optimization Workflow",
+      "command": "/agent-orchestration:improve-agent"
+    },
+    {
+      "id": "api_testing_observability_api_mock",
+      "name": "API Mocking Framework",
+      "command": "/api-testing-observability:api-mock"
+    },
+    {
+      "id": "application_performance_performance_optimization",
+      "name": "performance-optimization",
+      "command": "/application-performance:performance-optimization"
+    },
+    {
+      "id": "backend_development_feature_development",
+      "name": "feature-development",
+      "command": "/backend-development:feature-development"
+    },
+    {
+      "id": "c4_architecture_c4_architecture",
+      "name": "C4 Architecture Documentation Workflow",
+      "command": "/c4-architecture:c4-architecture"
+    },
+    {
+      "id": "cicd_automation_workflow_automate",
+      "name": "Workflow Automation",
+      "command": "/cicd-automation:workflow-automate"
+    },
+    {
+      "id": "code_documentation_doc_generate",
+      "name": "Automated Documentation Generation",
+      "command": "/code-documentation:doc-generate"
+    },
+    {
+      "id": "code_documentation_code_explain",
+      "name": "Code Explanation and Analysis",
+      "command": "/code-documentation:code-explain"
+    },
+    {
+      "id": "code_refactoring_context_restore",
+      "name": "Context Restoration: Advanced Semantic Memory Rehydration",
+      "command": "/code-refactoring:context-restore"
+    },
+    {
+      "id": "code_refactoring_tech_debt",
+      "name": "Technical Debt Analysis and Remediation",
+      "command": "/code-refactoring:tech-debt"
+    },
+    {
+      "id": "code_refactoring_refactor_clean",
+      "name": "Refactor and Clean Code",
+      "command": "/code-refactoring:refactor-clean"
+    },
+    {
+      "id": "code_review_ai_ai_review",
+      "name": "AI-Powered Code Review Specialist",
+      "command": "/code-review-ai:ai-review"
+    },
+    {
+      "id": "codebase_cleanup_deps_audit",
+      "name": "Dependency Audit and Security Analysis",
+      "command": "/codebase-cleanup:deps-audit"
+    },
+    {
+      "id": "codebase_cleanup_tech_debt",
+      "name": "Technical Debt Analysis and Remediation",
+      "command": "/codebase-cleanup:tech-debt"
+    },
+    {
+      "id": "codebase_cleanup_refactor_clean",
+      "name": "Refactor and Clean Code",
+      "command": "/codebase-cleanup:refactor-clean"
+    },
+    {
+      "id": "comprehensive_review_pr_enhance",
+      "name": "Pull Request Enhancement",
+      "command": "/comprehensive-review:pr-enhance"
+    },
+    {
+      "id": "comprehensive_review_full_review",
+      "name": "full-review",
+      "command": "/comprehensive-review:full-review"
+    },
+    {
+      "id": "context_management_context_restore",
+      "name": "Context Restoration: Advanced Semantic Memory Rehydration",
+      "command": "/context-management:context-restore"
+    },
+    {
+      "id": "context_management_context_save",
+      "name": "Context Save Tool: Intelligent Context Management Specialist",
+      "command": "/context-management:context-save"
+    },
+    {
+      "id": "data_engineering_data_pipeline",
+      "name": "Data Pipeline Architecture",
+      "command": "/data-engineering:data-pipeline"
+    },
+    {
+      "id": "data_engineering_data_driven_feature",
+      "name": "Data-Driven Feature Development",
+      "command": "/data-engineering:data-driven-feature"
+    },
+    {
+      "id": "database_cloud_optimization_cost_optimize",
+      "name": "Cloud Cost Optimization",
+      "command": "/database-cloud-optimization:cost-optimize"
+    },
+    {
+      "id": "database_migrations_sql_migrations",
+      "name": "SQL Database Migration Strategy and Implementation",
+      "command": "/database-migrations:sql-migrations"
+    },
+    {
+      "id": "database_migrations_migration_observability",
+      "name": "Migration Observability and Real-time Monitoring",
+      "command": "/database-migrations:migration-observability"
+    },
+    {
+      "id": "debugging_toolkit_smart_debug",
+      "name": "smart-debug",
+      "command": "/debugging-toolkit:smart-debug"
+    },
+    {
+      "id": "dependency_management_deps_audit",
+      "name": "Dependency Audit and Security Analysis",
+      "command": "/dependency-management:deps-audit"
+    },
+    {
+      "id": "deployment_validation_config_validate",
+      "name": "Configuration Validation",
+      "command": "/deployment-validation:config-validate"
+    },
+    {
+      "id": "distributed_debugging_debug_trace",
+      "name": "Debug and Trace Configuration",
+      "command": "/distributed-debugging:debug-trace"
+    },
+    {
+      "id": "documentation_generation_doc_generate",
+      "name": "Automated Documentation Generation",
+      "command": "/documentation-generation:doc-generate"
+    },
+    {
+      "id": "error_debugging_error_analysis",
+      "name": "Error Analysis and Resolution",
+      "command": "/error-debugging:error-analysis"
+    },
+    {
+      "id": "error_debugging_multi_agent_review",
+      "name": "Multi-Agent Code Review Orchestration Tool",
+      "command": "/error-debugging:multi-agent-review"
+    },
+    {
+      "id": "error_debugging_error_trace",
+      "name": "Error Tracking and Monitoring",
+      "command": "/error-debugging:error-trace"
+    },
+    {
+      "id": "error_diagnostics_smart_debug",
+      "name": "smart-debug",
+      "command": "/error-diagnostics:smart-debug"
+    },
+    {
+      "id": "error_diagnostics_error_analysis",
+      "name": "Error Analysis and Resolution",
+      "command": "/error-diagnostics:error-analysis"
+    },
+    {
+      "id": "error_diagnostics_error_trace",
+      "name": "Error Tracking and Monitoring",
+      "command": "/error-diagnostics:error-trace"
+    },
+    {
+      "id": "framework_migration_legacy_modernize",
+      "name": "Legacy Code Modernization Workflow",
+      "command": "/framework-migration:legacy-modernize"
+    },
+    {
+      "id": "framework_migration_code_migrate",
+      "name": "Code Migration Assistant",
+      "command": "/framework-migration:code-migrate"
+    },
+    {
+      "id": "framework_migration_deps_upgrade",
+      "name": "Dependency Upgrade Strategy",
+      "command": "/framework-migration:deps-upgrade"
+    },
+    {
+      "id": "frontend_mobile_development_component_scaffold",
+      "name": "React/React Native Component Scaffolding",
+      "command": "/frontend-mobile-development:component-scaffold"
+    },
+    {
+      "id": "frontend_mobile_security_xss_scan",
+      "name": "XSS Vulnerability Scanner for Frontend Code",
+      "command": "/frontend-mobile-security:xss-scan"
+    },
+    {
+      "id": "full_stack_orchestration_full_stack_feature",
+      "name": "full-stack-feature",
+      "command": "/full-stack-orchestration:full-stack-feature"
+    },
+    {
+      "id": "git_pr_workflows_pr_enhance",
+      "name": "Pull Request Enhancement",
+      "command": "/git-pr-workflows:pr-enhance"
+    },
+    {
+      "id": "git_pr_workflows_onboard",
+      "name": "Onboard",
+      "command": "/git-pr-workflows:onboard"
+    },
+    {
+      "id": "git_pr_workflows_git_workflow",
+      "name": "Complete Git Workflow with Multi-Agent Orchestration",
+      "command": "/git-pr-workflows:git-workflow"
+    },
+    {
+      "id": "incident_response_smart_fix",
+      "name": "Intelligent Issue Resolution with Multi-Agent Orchestration",
+      "command": "/incident-response:smart-fix"
+    },
+    {
+      "id": "incident_response_incident_response",
+      "name": "incident-response",
+      "command": "/incident-response:incident-response"
+    },
+    {
+      "id": "javascript_typescript_typescript_scaffold",
+      "name": "TypeScript Project Scaffolding",
+      "command": "/javascript-typescript:typescript-scaffold"
+    },
+    {
+      "id": "llm_application_dev_langchain_agent",
+      "name": "LangChain/LangGraph Agent Development Expert",
+      "command": "/llm-application-dev:langchain-agent"
+    },
+    {
+      "id": "llm_application_dev_ai_assistant",
+      "name": "AI Assistant Development",
+      "command": "/llm-application-dev:ai-assistant"
+    },
+    {
+      "id": "llm_application_dev_prompt_optimize",
+      "name": "Prompt Optimization",
+      "command": "/llm-application-dev:prompt-optimize"
+    },
+    {
+      "id": "machine_learning_ops_ml_pipeline",
+      "name": "Machine Learning Pipeline - Multi-Agent MLOps Orchestration",
+      "command": "/machine-learning-ops:ml-pipeline"
+    },
+    {
+      "id": "multi_platform_apps_multi_platform",
+      "name": "Multi-Platform Feature Development Workflow",
+      "command": "/multi-platform-apps:multi-platform"
+    },
+    {
+      "id": "observability_monitoring_slo_implement",
+      "name": "SLO Implementation Guide",
+      "command": "/observability-monitoring:slo-implement"
+    },
+    {
+      "id": "observability_monitoring_monitor_setup",
+      "name": "Monitoring and Observability Setup",
+      "command": "/observability-monitoring:monitor-setup"
+    },
+    {
+      "id": "performance_testing_review_multi_agent_review",
+      "name": "Multi-Agent Code Review Orchestration Tool",
+      "command": "/performance-testing-review:multi-agent-review"
+    },
+    {
+      "id": "performance_testing_review_ai_review",
+      "name": "AI-Powered Code Review Specialist",
+      "command": "/performance-testing-review:ai-review"
+    },
+    {
+      "id": "python_development_python_scaffold",
+      "name": "Python Project Scaffolding",
+      "command": "/python-development:python-scaffold"
+    },
+    {
+      "id": "security_compliance_compliance_check",
+      "name": "Regulatory Compliance Check",
+      "command": "/security-compliance:compliance-check"
+    },
+    {
+      "id": "security_scanning_security_hardening",
+      "name": "security-hardening",
+      "command": "/security-scanning:security-hardening"
+    },
+    {
+      "id": "security_scanning_security_dependencies",
+      "name": "Dependency Vulnerability Scanning",
+      "command": "/security-scanning:security-dependencies"
+    },
+    {
+      "id": "security_scanning_security_sast",
+      "name": "SAST Security Plugin",
+      "command": "/security-scanning:security-sast"
+    },
+    {
+      "id": "systems_programming_rust_project",
+      "name": "Rust Project Scaffolding",
+      "command": "/systems-programming:rust-project"
+    },
+    {
+      "id": "tdd_workflows_tdd_red",
+      "name": "tdd-red",
+      "command": "/tdd-workflows:tdd-red"
+    },
+    {
+      "id": "tdd_workflows_tdd_refactor",
+      "name": "tdd-refactor",
+      "command": "/tdd-workflows:tdd-refactor"
+    },
+    {
+      "id": "tdd_workflows_tdd_green",
+      "name": "Green Phase: Simple function",
+      "command": "/tdd-workflows:tdd-green"
+    },
+    {
+      "id": "tdd_workflows_tdd_cycle",
+      "name": "tdd-cycle",
+      "command": "/tdd-workflows:tdd-cycle"
+    },
+    {
+      "id": "team_collaboration_issue",
+      "name": "GitHub Issue Resolution Expert",
+      "command": "/team-collaboration:issue"
+    },
+    {
+      "id": "team_collaboration_standup_notes",
+      "name": "Standup Notes Generator",
+      "command": "/team-collaboration:standup-notes"
+    },
+    {
+      "id": "unit_testing_test_generate",
+      "name": "Automated Unit Test Generation",
+      "command": "/unit-testing:test-generate"
+    }
+  ]
+}

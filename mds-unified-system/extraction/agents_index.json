@@ -1,0 +1,598 @@
+{
+  "agents": [
+    {
+      "id": "accessibility_compliance_ui_visual_validator",
+      "name": "ui-visual-validator",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "agent_orchestration_context_manager",
+      "name": "context-manager",
+      "model": "inherit",
+      "category": "general"
+    },
+    {
+      "id": "api_scaffolding_graphql_architect",
+      "name": "graphql-architect",
+      "model": "opus",
+      "category": "architecture"
+    },
+    {
+      "id": "api_scaffolding_backend_architect",
+      "name": "backend-architect",
+      "model": "inherit",
+      "category": "architecture"
+    },
+    {
+      "id": "api_scaffolding_fastapi_pro",
+      "name": "fastapi-pro",
+      "model": "opus",
+      "category": "general"
+    },
+    {
+      "id": "api_scaffolding_django_pro",
+      "name": "django-pro",
+      "model": "opus",
+      "category": "general"
+    },
+    {
+      "id": "api_testing_observability_api_documenter",
+      "name": "api-documenter",
+      "model": "sonnet",
+      "category": "quality"
+    },
+    {
+      "id": "application_performance_observability_engineer",
+      "name": "observability-engineer",
+      "model": "inherit",
+      "category": "quality"
+    },
+    {
+      "id": "application_performance_frontend_developer",
+      "name": "frontend-developer",
+      "model": "inherit",
+      "category": "architecture"
+    },
+    {
+      "id": "application_performance_performance_engineer",
+      "name": "performance-engineer",
+      "model": "inherit",
+      "category": "quality"
+    },
+    {
+      "id": "arm_cortex_microcontrollers_arm_cortex_expert",
+      "name": "arm-cortex-expert",
+      "model": "inherit",
+      "category": "general"
+    },
+    {
+      "id": "backend_api_security_backend_security_coder",
+      "name": "backend-security-coder",
+      "model": "sonnet",
+      "category": "architecture"
+    },
+    {
+      "id": "backend_development_event_sourcing_architect",
+      "name": "event-sourcing-architect",
+      "model": "inherit",
+      "category": "architecture"
+    },
+    {
+      "id": "backend_development_temporal_python_pro",
+      "name": "temporal-python-pro",
+      "model": "inherit",
+      "category": "architecture"
+    },
+    {
+      "id": "backend_development_tdd_orchestrator",
+      "name": "tdd-orchestrator",
+      "model": "opus",
+      "category": "architecture"
+    },
+    {
+      "id": "blockchain_web3_blockchain_developer",
+      "name": "blockchain-developer",
+      "model": "opus",
+      "category": "data-ai"
+    },
+    {
+      "id": "business_analytics_business_analyst",
+      "name": "business-analyst",
+      "model": "sonnet",
+      "category": "business"
+    },
+    {
+      "id": "c4_architecture_c4_component",
+      "name": "c4-component",
+      "model": "sonnet",
+      "category": "architecture"
+    },
+    {
+      "id": "c4_architecture_c4_context",
+      "name": "c4-context",
+      "model": "sonnet",
+      "category": "architecture"
+    },
+    {
+      "id": "c4_architecture_c4_code",
+      "name": "c4-code",
+      "model": "haiku",
+      "category": "architecture"
+    },
+    {
+      "id": "c4_architecture_c4_container",
+      "name": "c4-container",
+      "model": "sonnet",
+      "category": "architecture"
+    },
+    {
+      "id": "cicd_automation_kubernetes_architect",
+      "name": "kubernetes-architect",
+      "model": "opus",
+      "category": "architecture"
+    },
+    {
+      "id": "cicd_automation_devops_troubleshooter",
+      "name": "devops-troubleshooter",
+      "model": "sonnet",
+      "category": "infrastructure"
+    },
+    {
+      "id": "cicd_automation_terraform_specialist",
+      "name": "terraform-specialist",
+      "model": "opus",
+      "category": "infrastructure"
+    },
+    {
+      "id": "cicd_automation_deployment_engineer",
+      "name": "deployment-engineer",
+      "model": "haiku",
+      "category": "infrastructure"
+    },
+    {
+      "id": "cicd_automation_cloud_architect",
+      "name": "cloud-architect",
+      "model": "opus",
+      "category": "architecture"
+    },
+    {
+      "id": "cloud_infrastructure_network_engineer",
+      "name": "network-engineer",
+      "model": "sonnet",
+      "category": "infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_service_mesh_expert",
+      "name": "service-mesh-expert",
+      "model": "inherit",
+      "category": "infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_hybrid_cloud_architect",
+      "name": "hybrid-cloud-architect",
+      "model": "opus",
+      "category": "architecture"
+    },
+    {
+      "id": "code_documentation_docs_architect",
+      "name": "docs-architect",
+      "model": "sonnet",
+      "category": "architecture"
+    },
+    {
+      "id": "code_documentation_tutorial_engineer",
+      "name": "tutorial-engineer",
+      "model": "sonnet",
+      "category": "docs"
+    },
+    {
+      "id": "code_documentation_code_reviewer",
+      "name": "code-reviewer",
+      "model": "opus",
+      "category": "quality"
+    },
+    {
+      "id": "code_refactoring_legacy_modernizer",
+      "name": "legacy-modernizer",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "code_review_ai_architect_review",
+      "name": "architect-review",
+      "model": "opus",
+      "category": "architecture"
+    },
+    {
+      "id": "codebase_cleanup_test_automator",
+      "name": "test-automator",
+      "model": "sonnet",
+      "category": "quality"
+    },
+    {
+      "id": "comprehensive_review_security_auditor",
+      "name": "security-auditor",
+      "model": "opus",
+      "category": "quality"
+    },
+    {
+      "id": "content_marketing_search_specialist",
+      "name": "search-specialist",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "content_marketing_content_marketer",
+      "name": "content-marketer",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "customer_sales_automation_customer_support",
+      "name": "customer-support",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "customer_sales_automation_sales_automator",
+      "name": "sales-automator",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "data_engineering_data_engineer",
+      "name": "data-engineer",
+      "model": "opus",
+      "category": "data-ai"
+    },
+    {
+      "id": "database_cloud_optimization_database_architect",
+      "name": "database-architect",
+      "model": "inherit",
+      "category": "architecture"
+    },
+    {
+      "id": "database_cloud_optimization_database_optimizer",
+      "name": "database-optimizer",
+      "model": "inherit",
+      "category": "infrastructure"
+    },
+    {
+      "id": "database_design_sql_pro",
+      "name": "sql-pro",
+      "model": "inherit",
+      "category": "data-ai"
+    },
+    {
+      "id": "database_migrations_database_admin",
+      "name": "database-admin",
+      "model": "sonnet",
+      "category": "data-ai"
+    },
+    {
+      "id": "debugging_toolkit_dx_optimizer",
+      "name": "dx-optimizer",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "debugging_toolkit_debugger",
+      "name": "debugger",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "developer_essentials_monorepo_architect",
+      "name": "monorepo-architect",
+      "model": "inherit",
+      "category": "architecture"
+    },
+    {
+      "id": "distributed_debugging_error_detective",
+      "name": "error-detective",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "documentation_generation_reference_builder",
+      "name": "reference-builder",
+      "model": "haiku",
+      "category": "docs"
+    },
+    {
+      "id": "documentation_generation_mermaid_expert",
+      "name": "mermaid-expert",
+      "model": "haiku",
+      "category": "data-ai"
+    },
+    {
+      "id": "frontend_mobile_development_mobile_developer",
+      "name": "mobile-developer",
+      "model": "inherit",
+      "category": "architecture"
+    },
+    {
+      "id": "frontend_mobile_security_mobile_security_coder",
+      "name": "mobile-security-coder",
+      "model": "sonnet",
+      "category": "architecture"
+    },
+    {
+      "id": "frontend_mobile_security_frontend_security_coder",
+      "name": "frontend-security-coder",
+      "model": "sonnet",
+      "category": "architecture"
+    },
+    {
+      "id": "functional_programming_haskell_pro",
+      "name": "haskell-pro",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "functional_programming_elixir_pro",
+      "name": "elixir-pro",
+      "model": "inherit",
+      "category": "languages"
+    },
+    {
+      "id": "game_development_minecraft_bukkit_pro",
+      "name": "minecraft-bukkit-pro",
+      "model": "opus",
+      "category": "general"
+    },
+    {
+      "id": "game_development_unity_developer",
+      "name": "unity-developer",
+      "model": "opus",
+      "category": "general"
+    },
+    {
+      "id": "hr_legal_compliance_legal_advisor",
+      "name": "legal-advisor",
+      "model": "sonnet",
+      "category": "business"
+    },
+    {
+      "id": "hr_legal_compliance_hr_pro",
+      "name": "hr-pro",
+      "model": "sonnet",
+      "category": "business"
+    },
+    {
+      "id": "incident_response_incident_responder",
+      "name": "incident-responder",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "javascript_typescript_typescript_pro",
+      "name": "typescript-pro",
+      "model": "opus",
+      "category": "languages"
+    },
+    {
+      "id": "javascript_typescript_javascript_pro",
+      "name": "javascript-pro",
+      "model": "inherit",
+      "category": "languages"
+    },
+    {
+      "id": "julia_development_julia_pro",
+      "name": "julia-pro",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "jvm_languages_csharp_pro",
+      "name": "csharp-pro",
+      "model": "inherit",
+      "category": "languages"
+    },
+    {
+      "id": "jvm_languages_scala_pro",
+      "name": "scala-pro",
+      "model": "inherit",
+      "category": "languages"
+    },
+    {
+      "id": "jvm_languages_java_pro",
+      "name": "java-pro",
+      "model": "opus",
+      "category": "languages"
+    },
+    {
+      "id": "llm_application_dev_ai_engineer",
+      "name": "ai-engineer",
+      "model": "inherit",
+      "category": "data-ai"
+    },
+    {
+      "id": "llm_application_dev_vector_database_engineer",
+      "name": "vector-database-engineer",
+      "model": "inherit",
+      "category": "data-ai"
+    },
+    {
+      "id": "llm_application_dev_prompt_engineer",
+      "name": "prompt-engineer",
+      "model": "inherit",
+      "category": "data-ai"
+    },
+    {
+      "id": "machine_learning_ops_data_scientist",
+      "name": "data-scientist",
+      "model": "inherit",
+      "category": "data-ai"
+    },
+    {
+      "id": "machine_learning_ops_mlops_engineer",
+      "name": "mlops-engineer",
+      "model": "inherit",
+      "category": "data-ai"
+    },
+    {
+      "id": "machine_learning_ops_ml_engineer",
+      "name": "ml-engineer",
+      "model": "inherit",
+      "category": "data-ai"
+    },
+    {
+      "id": "multi_platform_apps_ui_ux_designer",
+      "name": "ui-ux-designer",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "multi_platform_apps_flutter_expert",
+      "name": "flutter-expert",
+      "model": "inherit",
+      "category": "general"
+    },
+    {
+      "id": "multi_platform_apps_ios_developer",
+      "name": "ios-developer",
+      "model": "inherit",
+      "category": "general"
+    },
+    {
+      "id": "payment_processing_payment_integration",
+      "name": "payment-integration",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "python_development_python_pro",
+      "name": "python-pro",
+      "model": "opus",
+      "category": "languages"
+    },
+    {
+      "id": "quantitative_trading_risk_manager",
+      "name": "risk-manager",
+      "model": "inherit",
+      "category": "general"
+    },
+    {
+      "id": "quantitative_trading_quant_analyst",
+      "name": "quant-analyst",
+      "model": "inherit",
+      "category": "general"
+    },
+    {
+      "id": "security_scanning_threat_modeling_expert",
+      "name": "threat-modeling-expert",
+      "model": "inherit",
+      "category": "quality"
+    },
+    {
+      "id": "seo_analysis_monitoring_seo_cannibalization_detector",
+      "name": "seo-cannibalization-detector",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "seo_analysis_monitoring_seo_content_refresher",
+      "name": "seo-content-refresher",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "seo_analysis_monitoring_seo_authority_builder",
+      "name": "seo-authority-builder",
+      "model": "sonnet",
+      "category": "business"
+    },
+    {
+      "id": "seo_content_creation_seo_content_planner",
+      "name": "seo-content-planner",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "seo_content_creation_seo_content_writer",
+      "name": "seo-content-writer",
+      "model": "sonnet",
+      "category": "business"
+    },
+    {
+      "id": "seo_content_creation_seo_content_auditor",
+      "name": "seo-content-auditor",
+      "model": "sonnet",
+      "category": "business"
+    },
+    {
+      "id": "seo_technical_optimization_seo_keyword_strategist",
+      "name": "seo-keyword-strategist",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "seo_technical_optimization_seo_structure_architect",
+      "name": "seo-structure-architect",
+      "model": "haiku",
+      "category": "architecture"
+    },
+    {
+      "id": "seo_technical_optimization_seo_snippet_hunter",
+      "name": "seo-snippet-hunter",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "seo_technical_optimization_seo_meta_optimizer",
+      "name": "seo-meta-optimizer",
+      "model": "haiku",
+      "category": "business"
+    },
+    {
+      "id": "shell_scripting_bash_pro",
+      "name": "bash-pro",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "shell_scripting_posix_shell_pro",
+      "name": "posix-shell-pro",
+      "model": "sonnet",
+      "category": "general"
+    },
+    {
+      "id": "systems_programming_cpp_pro",
+      "name": "cpp-pro",
+      "model": "opus",
+      "category": "languages"
+    },
+    {
+      "id": "systems_programming_rust_pro",
+      "name": "rust-pro",
+      "model": "opus",
+      "category": "languages"
+    },
+    {
+      "id": "systems_programming_golang_pro",
+      "name": "golang-pro",
+      "model": "opus",
+      "category": "languages"
+    },
+    {
+      "id": "systems_programming_c_pro",
+      "name": "c-pro",
+      "model": "opus",
+      "category": "languages"
+    },
+    {
+      "id": "web_scripting_php_pro",
+      "name": "php-pro",
+      "model": "inherit",
+      "category": "languages"
+    },
+    {
+      "id": "web_scripting_ruby_pro",
+      "name": "ruby-pro",
+      "model": "inherit",
+      "category": "languages"
+    }
+  ]
+}

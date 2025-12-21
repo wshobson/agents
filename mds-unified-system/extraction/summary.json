@@ -1,0 +1,448 @@
+{
+  "extractionDate": "2025-12-21T00:43:19.869236",
+  "totalPlugins": 67,
+  "totalAgents": 99,
+  "totalSkills": 107,
+  "totalTools": 71,
+  "agentsByCategory": {
+    "general": 22,
+    "architecture": 22,
+    "quality": 7,
+    "data-ai": 11,
+    "business": 16,
+    "infrastructure": 6,
+    "docs": 2,
+    "languages": 13
+  },
+  "agentsByCategoryDetail": {
+    "general": [
+      "ui-visual-validator",
+      "context-manager",
+      "fastapi-pro",
+      "django-pro",
+      "arm-cortex-expert",
+      "legacy-modernizer",
+      "dx-optimizer",
+      "debugger",
+      "error-detective",
+      "haskell-pro",
+      "minecraft-bukkit-pro",
+      "unity-developer",
+      "incident-responder",
+      "julia-pro",
+      "ui-ux-designer",
+      "flutter-expert",
+      "ios-developer",
+      "payment-integration",
+      "risk-manager",
+      "quant-analyst",
+      "bash-pro",
+      "posix-shell-pro"
+    ],
+    "architecture": [
+      "graphql-architect",
+      "backend-architect",
+      "frontend-developer",
+      "backend-security-coder",
+      "event-sourcing-architect",
+      "temporal-python-pro",
+      "tdd-orchestrator",
+      "c4-component",
+      "c4-context",
+      "c4-code",
+      "c4-container",
+      "kubernetes-architect",
+      "cloud-architect",
+      "hybrid-cloud-architect",
+      "docs-architect",
+      "architect-review",
+      "database-architect",
+      "monorepo-architect",
+      "mobile-developer",
+      "mobile-security-coder",
+      "frontend-security-coder",
+      "seo-structure-architect"
+    ],
+    "quality": [
+      "api-documenter",
+      "observability-engineer",
+      "performance-engineer",
+      "code-reviewer",
+      "test-automator",
+      "security-auditor",
+      "threat-modeling-expert"
+    ],
+    "data-ai": [
+      "blockchain-developer",
+      "data-engineer",
+      "sql-pro",
+      "database-admin",
+      "mermaid-expert",
+      "ai-engineer",
+      "vector-database-engineer",
+      "prompt-engineer",
+      "data-scientist",
+      "mlops-engineer",
+      "ml-engineer"
+    ],
+    "business": [
+      "business-analyst",
+      "search-specialist",
+      "content-marketer",
+      "customer-support",
+      "sales-automator",
+      "legal-advisor",
+      "hr-pro",
+      "seo-cannibalization-detector",
+      "seo-content-refresher",
+      "seo-authority-builder",
+      "seo-content-planner",
+      "seo-content-writer",
+      "seo-content-auditor",
+      "seo-keyword-strategist",
+      "seo-snippet-hunter",
+      "seo-meta-optimizer"
+    ],
+    "infrastructure": [
+      "devops-troubleshooter",
+      "terraform-specialist",
+      "deployment-engineer",
+      "network-engineer",
+      "service-mesh-expert",
+      "database-optimizer"
+    ],
+    "docs": [
+      "tutorial-engineer",
+      "reference-builder"
+    ],
+    "languages": [
+      "elixir-pro",
+      "typescript-pro",
+      "javascript-pro",
+      "csharp-pro",
+      "scala-pro",
+      "java-pro",
+      "python-pro",
+      "cpp-pro",
+      "rust-pro",
+      "golang-pro",
+      "c-pro",
+      "php-pro",
+      "ruby-pro"
+    ]
+  },
+  "agentsByModelTier": {
+    "opus": 22,
+    "sonnet": 31,
+    "haiku": 15,
+    "inherit": 31
+  },
+  "agentsByModelTierDetail": {
+    "opus": [
+      "graphql-architect",
+      "fastapi-pro",
+      "django-pro",
+      "tdd-orchestrator",
+      "blockchain-developer",
+      "kubernetes-architect",
+      "terraform-specialist",
+      "cloud-architect",
+      "hybrid-cloud-architect",
+      "code-reviewer",
+      "architect-review",
+      "security-auditor",
+      "data-engineer",
+      "minecraft-bukkit-pro",
+      "unity-developer",
+      "typescript-pro",
+      "java-pro",
+      "python-pro",
+      "cpp-pro",
+      "rust-pro",
+      "golang-pro",
+      "c-pro"
+    ],
+    "sonnet": [
+      "ui-visual-validator",
+      "api-documenter",
+      "backend-security-coder",
+      "business-analyst",
+      "c4-component",
+      "c4-context",
+      "c4-container",
+      "devops-troubleshooter",
+      "network-engineer",
+      "docs-architect",
+      "tutorial-engineer",
+      "legacy-modernizer",
+      "test-automator",
+      "database-admin",
+      "dx-optimizer",
+      "debugger",
+      "error-detective",
+      "mobile-security-coder",
+      "frontend-security-coder",
+      "haskell-pro",
+      "legal-advisor",
+      "hr-pro",
+      "incident-responder",
+      "julia-pro",
+      "ui-ux-designer",
+      "payment-integration",
+      "seo-authority-builder",
+      "seo-content-writer",
+      "seo-content-auditor",
+      "bash-pro",
+      "posix-shell-pro"
+    ],
+    "haiku": [
+      "c4-code",
+      "deployment-engineer",
+      "search-specialist",
+      "content-marketer",
+      "customer-support",
+      "sales-automator",
+      "reference-builder",
+      "mermaid-expert",
+      "seo-cannibalization-detector",
+      "seo-content-refresher",
+      "seo-content-planner",
+      "seo-keyword-strategist",
+      "seo-structure-architect",
+      "seo-snippet-hunter",
+      "seo-meta-optimizer"
+    ],
+    "inherit": [
+      "context-manager",
+      "backend-architect",
+      "observability-engineer",
+      "frontend-developer",
+      "performance-engineer",
+      "arm-cortex-expert",
+      "event-sourcing-architect",
+      "temporal-python-pro",
+      "service-mesh-expert",
+      "database-architect",
+      "database-optimizer",
+      "sql-pro",
+      "monorepo-architect",
+      "mobile-developer",
+      "elixir-pro",
+      "javascript-pro",
+      "csharp-pro",
+      "scala-pro",
+      "ai-engineer",
+      "vector-database-engineer",
+      "prompt-engineer",
+      "data-scientist",
+      "mlops-engineer",
+      "ml-engineer",
+      "flutter-expert",
+      "ios-developer",
+      "risk-manager",
+      "quant-analyst",
+      "threat-modeling-expert",
+      "php-pro",
+      "ruby-pro"
+    ]
+  },
+  "skillsByPlugin": {
+    "accessibility-compliance": 2,
+    "api-scaffolding": 1,
+    "backend-development": 9,
+    "blockchain-web3": 4,
+    "business-analytics": 2,
+    "cicd-automation": 4,
+    "cloud-infrastructure": 8,
+    "data-engineering": 4,
+    "database-design": 1,
+    "developer-essentials": 11,
+    "documentation-generation": 3,
+    "framework-migration": 4,
+    "frontend-mobile-development": 4,
+    "game-development": 2,
+    "hr-legal-compliance": 2,
+    "incident-response": 3,
+    "javascript-typescript": 4,
+    "kubernetes-operations": 4,
+    "llm-application-dev": 8,
+    "machine-learning-ops": 1,
+    "observability-monitoring": 4,
+    "payment-processing": 4,
+    "python-development": 5,
+    "quantitative-trading": 2,
+    "security-scanning": 5,
+    "shell-scripting": 3,
+    "systems-programming": 3
+  },
+  "skillsByPluginDetail": {
+    "accessibility-compliance": [
+      "wcag-audit-patterns",
+      "screen-reader-testing"
+    ],
+    "api-scaffolding": [
+      "fastapi-templates"
+    ],
+    "backend-development": [
+      "api-design-principles",
+      "saga-orchestration",
+      "workflow-orchestration-patterns",
+      "event-store-design",
+      "cqrs-implementation",
+      "microservices-patterns",
+      "architecture-patterns",
+      "temporal-python-testing",
+      "projection-patterns"
+    ],
+    "blockchain-web3": [
+      "web3-testing",
+      "defi-protocol-templates",
+      "solidity-security",
+      "nft-standards"
+    ],
+    "business-analytics": [
+      "data-storytelling",
+      "kpi-dashboard-design"
+    ],
+    "cicd-automation": [
+      "deployment-pipeline-design",
+      "secrets-management",
+      "gitlab-ci-patterns",
+      "github-actions-templates"
+    ],
+    "cloud-infrastructure": [
+      "multi-cloud-architecture",
+      "cost-optimization",
+      "hybrid-cloud-networking",
+      "mtls-configuration",
+      "istio-traffic-management",
+      "service-mesh-observability",
+      "linkerd-patterns",
+      "terraform-module-library"
+    ],
+    "data-engineering": [
+      "data-quality-frameworks",
+      "spark-optimization",
+      "dbt-transformation-patterns",
+      "airflow-dag-patterns"
+    ],
+    "database-design": [
+      "postgresql-table-design"
+    ],
+    "developer-essentials": [
+      "monorepo-management",
+      "code-review-excellence",
+      "git-advanced-workflows",
+      "error-handling-patterns",
+      "bazel-build-optimization",
+      "debugging-strategies",
+      "nx-workspace-patterns",
+      "turborepo-caching",
+      "auth-implementation-patterns",
+      "sql-optimization-patterns",
+      "e2e-testing-patterns"
+    ],
+    "documentation-generation": [
+      "architecture-decision-records",
+      "openapi-spec-generation",
+      "changelog-automation"
+    ],
+    "framework-migration": [
+      "angular-migration",
+      "react-modernization",
+      "database-migration",
+      "dependency-upgrade"
+    ],
+    "frontend-mobile-development": [
+      "nextjs-app-router-patterns",
+      "react-state-management",
+      "tailwind-design-system",
+      "react-native-architecture"
+    ],
+    "game-development": [
+      "unity-ecs-patterns",
+      "godot-gdscript-patterns"
+    ],
+    "hr-legal-compliance": [
+      "employment-contract-templates",
+      "gdpr-data-handling"
+    ],
+    "incident-response": [
+      "on-call-handoff-patterns",
+      "incident-runbook-templates",
+      "postmortem-writing"
+    ],
+    "javascript-typescript": [
+      "javascript-testing-patterns",
+      "typescript-advanced-types",
+      "modern-javascript-patterns",
+      "nodejs-backend-patterns"
+    ],
+    "kubernetes-operations": [
+      "gitops-workflow",
+      "k8s-security-policies",
+      "k8s-manifest-generator",
+      "helm-chart-scaffolding"
+    ],
+    "llm-application-dev": [
+      "llm-evaluation",
+      "embedding-strategies",
+      "langchain-architecture",
+      "rag-implementation",
+      "vector-index-tuning",
+      "hybrid-search-implementation",
+      "similarity-search-patterns",
+      "prompt-engineering-patterns"
+    ],
+    "machine-learning-ops": [
+      "ml-pipeline-workflow"
+    ],
+    "observability-monitoring": [
+      "grafana-dashboards",
+      "slo-implementation",
+      "prometheus-configuration",
+      "distributed-tracing"
+    ],
+    "payment-processing": [
+      "stripe-integration",
+      "pci-compliance",
+      "billing-automation",
+      "paypal-integration"
+    ],
+    "python-development": [
+      "python-testing-patterns",
+      "uv-package-manager",
+      "python-packaging",
+      "python-performance-optimization",
+      "async-python-patterns"
+    ],
+    "quantitative-trading": [
+      "risk-metrics-calculation",
+      "backtesting-frameworks"
+    ],
+    "security-scanning": [
+      "stride-analysis-patterns",
+      "security-requirement-extraction",
+      "threat-mitigation-mapping",
+      "attack-tree-construction",
+      "sast-configuration"
+    ],
+    "shell-scripting": [
+      "bats-testing-patterns",
+      "shellcheck-configuration",
+      "bash-defensive-patterns"
+    ],
+    "systems-programming": [
+      "rust-async-patterns",
+      "go-concurrency-patterns",
+      "memory-safety-patterns"
+    ]
+  },
+  "extractionComplete": true,
+  "validation": {
+    "allAgentsHaveDefinitions": true,
+    "allSkillsHaveContent": true,
+    "allToolsHaveCommands": true,
+    "noPlaceholderContent": true
+  }
+}

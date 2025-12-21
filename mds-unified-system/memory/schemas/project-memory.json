@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "mds-project-memory",
+  "title": "MDS Project Memory Schema",
+  "description": "Schema for storing project context, decisions, and artifacts",
+  "type": "object",
+  "required": ["projectId", "projectName", "createdAt", "status"],
+  "properties": {
+    "projectId": {
+      "type": "string",
+      "description": "Unique identifier for the project",
+      "pattern": "^proj_[a-z0-9]{12}$"
+    },
+    "clientId": {
+      "type": "string",
+      "description": "Optional client identifier"
+    },
+    "projectName": {
+      "type": "string",
+      "description": "Human-readable project name",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "projectType": {
+      "type": "string",
+      "enum": ["web-app", "mobile-app", "api", "library", "infrastructure", "data-pipeline", "ml-model", "documentation", "other"]
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planning", "in-progress", "review", "completed", "on-hold", "cancelled"]
+    },
+    "techStack": {
+      "type": "object",
+      "properties": {
+        "languages": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "frameworks": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "databases": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "infrastructure": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "tools": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {"type": "string", "enum": ["technical", "business", "regulatory", "timeline", "budget"]},
+          "description": {"type": "string"},
+          "priority": {"type": "string", "enum": ["critical", "high", "medium", "low"]}
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "timestamp", "decision", "madeBy"],
+        "properties": {
+          "id": {"type": "string"},
+          "timestamp": {"type": "string", "format": "date-time"},
+          "decision": {"type": "string"},
+          "rationale": {"type": "string"},
+          "alternatives": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "madeBy": {"type": "string"},
+          "approvedBy": {"type": "string"},
+          "reversible": {"type": "boolean"},
+          "tags": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string", "enum": ["document", "diagram", "code", "config", "data", "other"]},
+          "name": {"type": "string"},
+          "path": {"type": "string"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "createdBy": {"type": "string"},
+          "version": {"type": "string"}
+        }
+      }
+    },
+    "currentPhase": {
+      "type": "string",
+      "enum": ["01-analysis", "02-planning", "03-solutioning", "04-implementation"]
+    },
+    "currentTrack": {
+      "type": "string",
+      "enum": ["quick-flow", "standard", "enterprise"]
+    },
+    "agentsInvolved": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "agentId": {"type": "string"},
+          "role": {"type": "string"},
+          "tasksCompleted": {"type": "integer"},
+          "lastActive": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "status": {"type": "string", "enum": ["pending", "in-progress", "completed", "blocked"]},
+          "targetDate": {"type": "string", "format": "date-time"},
+          "completedDate": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

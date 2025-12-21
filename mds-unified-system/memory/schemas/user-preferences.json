@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "mds-user-preferences",
+  "title": "MDS User Preferences Schema",
+  "description": "Schema for storing user preferences and customizations",
+  "type": "object",
+  "required": ["userId"],
+  "properties": {
+    "userId": {
+      "type": "string",
+      "description": "Unique user identifier"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "communication": {
+      "type": "object",
+      "properties": {
+        "style": {
+          "type": "string",
+          "enum": ["concise", "detailed", "technical", "casual"],
+          "default": "concise"
+        },
+        "includeCodeExamples": {
+          "type": "boolean",
+          "default": true
+        },
+        "includeDiagrams": {
+          "type": "boolean",
+          "default": true
+        },
+        "preferredLanguages": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "verbosityLevel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "default": 3
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "properties": {
+        "defaultTrack": {
+          "type": "string",
+          "enum": ["quick-flow", "standard", "enterprise"],
+          "default": "standard"
+        },
+        "autoReview": {
+          "type": "boolean",
+          "default": true
+        },
+        "requireConfirmation": {
+          "type": "array",
+          "items": {"type": "string"},
+          "default": ["file-deletion", "deployment", "external-api"]
+        },
+        "skipPhases": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "development": {
+      "type": "object",
+      "properties": {
+        "preferredLanguages": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "preferredFrameworks": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "codingStyle": {
+          "type": "object",
+          "properties": {
+            "indentation": {"type": "string", "enum": ["tabs", "spaces-2", "spaces-4"]},
+            "quoteStyle": {"type": "string", "enum": ["single", "double"]},
+            "semicolons": {"type": "boolean"},
+            "trailingComma": {"type": "string", "enum": ["none", "es5", "all"]}
+          }
+        },
+        "testingPreferences": {
+          "type": "object",
+          "properties": {
+            "framework": {"type": "string"},
+            "coverage": {"type": "integer"},
+            "tdd": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "modelPreferences": {
+      "type": "object",
+      "properties": {
+        "defaultModel": {
+          "type": "string",
+          "enum": ["opus", "sonnet", "haiku"],
+          "default": "sonnet"
+        },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        }
+      }
+    },
+    "notifications": {
+      "type": "object",
+      "properties": {
+        "onCompletion": {"type": "boolean", "default": true},
+        "onError": {"type": "boolean", "default": true},
+        "onEscalation": {"type": "boolean", "default": true}
+      }
+    },
+    "history": {
+      "type": "object",
+      "properties": {
+        "recentProjects": {
+          "type": "array",
+          "items": {"type": "string"},
+          "maxItems": 10
+        },
+        "recentAgents": {
+          "type": "array",
+          "items": {"type": "string"},
+          "maxItems": 20
+        },
+        "recentCommands": {
+          "type": "array",
+          "items": {"type": "string"},
+          "maxItems": 50
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

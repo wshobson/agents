@@ -1,0 +1,539 @@
+{
+  "skills": [
+    {
+      "id": "accessibility_compliance_wcag_audit_patterns",
+      "name": "wcag-audit-patterns",
+      "source": "accessibility-compliance"
+    },
+    {
+      "id": "accessibility_compliance_screen_reader_testing",
+      "name": "screen-reader-testing",
+      "source": "accessibility-compliance"
+    },
+    {
+      "id": "api_scaffolding_fastapi_templates",
+      "name": "fastapi-templates",
+      "source": "api-scaffolding"
+    },
+    {
+      "id": "backend_development_api_design_principles",
+      "name": "api-design-principles",
+      "source": "backend-development"
+    },
+    {
+      "id": "backend_development_saga_orchestration",
+      "name": "saga-orchestration",
+      "source": "backend-development"
+    },
+    {
+      "id": "backend_development_workflow_orchestration_patterns",
+      "name": "workflow-orchestration-patterns",
+      "source": "backend-development"
+    },
+    {
+      "id": "backend_development_event_store_design",
+      "name": "event-store-design",
+      "source": "backend-development"
+    },
+    {
+      "id": "backend_development_cqrs_implementation",
+      "name": "cqrs-implementation",
+      "source": "backend-development"
+    },
+    {
+      "id": "backend_development_microservices_patterns",
+      "name": "microservices-patterns",
+      "source": "backend-development"
+    },
+    {
+      "id": "backend_development_architecture_patterns",
+      "name": "architecture-patterns",
+      "source": "backend-development"
+    },
+    {
+      "id": "backend_development_temporal_python_testing",
+      "name": "temporal-python-testing",
+      "source": "backend-development"
+    },
+    {
+      "id": "backend_development_projection_patterns",
+      "name": "projection-patterns",
+      "source": "backend-development"
+    },
+    {
+      "id": "blockchain_web3_web3_testing",
+      "name": "web3-testing",
+      "source": "blockchain-web3"
+    },
+    {
+      "id": "blockchain_web3_defi_protocol_templates",
+      "name": "defi-protocol-templates",
+      "source": "blockchain-web3"
+    },
+    {
+      "id": "blockchain_web3_solidity_security",
+      "name": "solidity-security",
+      "source": "blockchain-web3"
+    },
+    {
+      "id": "blockchain_web3_nft_standards",
+      "name": "nft-standards",
+      "source": "blockchain-web3"
+    },
+    {
+      "id": "business_analytics_data_storytelling",
+      "name": "data-storytelling",
+      "source": "business-analytics"
+    },
+    {
+      "id": "business_analytics_kpi_dashboard_design",
+      "name": "kpi-dashboard-design",
+      "source": "business-analytics"
+    },
+    {
+      "id": "cicd_automation_deployment_pipeline_design",
+      "name": "deployment-pipeline-design",
+      "source": "cicd-automation"
+    },
+    {
+      "id": "cicd_automation_secrets_management",
+      "name": "secrets-management",
+      "source": "cicd-automation"
+    },
+    {
+      "id": "cicd_automation_gitlab_ci_patterns",
+      "name": "gitlab-ci-patterns",
+      "source": "cicd-automation"
+    },
+    {
+      "id": "cicd_automation_github_actions_templates",
+      "name": "github-actions-templates",
+      "source": "cicd-automation"
+    },
+    {
+      "id": "cloud_infrastructure_multi_cloud_architecture",
+      "name": "multi-cloud-architecture",
+      "source": "cloud-infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_cost_optimization",
+      "name": "cost-optimization",
+      "source": "cloud-infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_hybrid_cloud_networking",
+      "name": "hybrid-cloud-networking",
+      "source": "cloud-infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_mtls_configuration",
+      "name": "mtls-configuration",
+      "source": "cloud-infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_istio_traffic_management",
+      "name": "istio-traffic-management",
+      "source": "cloud-infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_service_mesh_observability",
+      "name": "service-mesh-observability",
+      "source": "cloud-infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_linkerd_patterns",
+      "name": "linkerd-patterns",
+      "source": "cloud-infrastructure"
+    },
+    {
+      "id": "cloud_infrastructure_terraform_module_library",
+      "name": "terraform-module-library",
+      "source": "cloud-infrastructure"
+    },
+    {
+      "id": "data_engineering_data_quality_frameworks",
+      "name": "data-quality-frameworks",
+      "source": "data-engineering"
+    },
+    {
+      "id": "data_engineering_spark_optimization",
+      "name": "spark-optimization",
+      "source": "data-engineering"
+    },
+    {
+      "id": "data_engineering_dbt_transformation_patterns",
+      "name": "dbt-transformation-patterns",
+      "source": "data-engineering"
+    },
+    {
+      "id": "data_engineering_airflow_dag_patterns",
+      "name": "airflow-dag-patterns",
+      "source": "data-engineering"
+    },
+    {
+      "id": "database_design_postgresql_table_design",
+      "name": "postgresql-table-design",
+      "source": "database-design"
+    },
+    {
+      "id": "developer_essentials_monorepo_management",
+      "name": "monorepo-management",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_code_review_excellence",
+      "name": "code-review-excellence",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_git_advanced_workflows",
+      "name": "git-advanced-workflows",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_error_handling_patterns",
+      "name": "error-handling-patterns",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_bazel_build_optimization",
+      "name": "bazel-build-optimization",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_debugging_strategies",
+      "name": "debugging-strategies",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_nx_workspace_patterns",
+      "name": "nx-workspace-patterns",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_turborepo_caching",
+      "name": "turborepo-caching",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_auth_implementation_patterns",
+      "name": "auth-implementation-patterns",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_sql_optimization_patterns",
+      "name": "sql-optimization-patterns",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "developer_essentials_e2e_testing_patterns",
+      "name": "e2e-testing-patterns",
+      "source": "developer-essentials"
+    },
+    {
+      "id": "documentation_generation_architecture_decision_records",
+      "name": "architecture-decision-records",
+      "source": "documentation-generation"
+    },
+    {
+      "id": "documentation_generation_openapi_spec_generation",
+      "name": "openapi-spec-generation",
+      "source": "documentation-generation"
+    },
+    {
+      "id": "documentation_generation_changelog_automation",
+      "name": "changelog-automation",
+      "source": "documentation-generation"
+    },
+    {
+      "id": "framework_migration_angular_migration",
+      "name": "angular-migration",
+      "source": "framework-migration"
+    },
+    {
+      "id": "framework_migration_react_modernization",
+      "name": "react-modernization",
+      "source": "framework-migration"
+    },
+    {
+      "id": "framework_migration_database_migration",
+      "name": "database-migration",
+      "source": "framework-migration"
+    },
+    {
+      "id": "framework_migration_dependency_upgrade",
+      "name": "dependency-upgrade",
+      "source": "framework-migration"
+    },
+    {
+      "id": "frontend_mobile_development_nextjs_app_router_patterns",
+      "name": "nextjs-app-router-patterns",
+      "source": "frontend-mobile-development"
+    },
+    {
+      "id": "frontend_mobile_development_react_state_management",
+      "name": "react-state-management",
+      "source": "frontend-mobile-development"
+    },
+    {
+      "id": "frontend_mobile_development_tailwind_design_system",
+      "name": "tailwind-design-system",
+      "source": "frontend-mobile-development"
+    },
+    {
+      "id": "frontend_mobile_development_react_native_architecture",
+      "name": "react-native-architecture",
+      "source": "frontend-mobile-development"
+    },
+    {
+      "id": "game_development_unity_ecs_patterns",
+      "name": "unity-ecs-patterns",
+      "source": "game-development"
+    },
+    {
+      "id": "game_development_godot_gdscript_patterns",
+      "name": "godot-gdscript-patterns",
+      "source": "game-development"
+    },
+    {
+      "id": "hr_legal_compliance_employment_contract_templates",
+      "name": "employment-contract-templates",
+      "source": "hr-legal-compliance"
+    },
+    {
+      "id": "hr_legal_compliance_gdpr_data_handling",
+      "name": "gdpr-data-handling",
+      "source": "hr-legal-compliance"
+    },
+    {
+      "id": "incident_response_on_call_handoff_patterns",
+      "name": "on-call-handoff-patterns",
+      "source": "incident-response"
+    },
+    {
+      "id": "incident_response_incident_runbook_templates",
+      "name": "incident-runbook-templates",
+      "source": "incident-response"
+    },
+    {
+      "id": "incident_response_postmortem_writing",
+      "name": "postmortem-writing",
+      "source": "incident-response"
+    },
+    {
+      "id": "javascript_typescript_javascript_testing_patterns",
+      "name": "javascript-testing-patterns",
+      "source": "javascript-typescript"
+    },
+    {
+      "id": "javascript_typescript_typescript_advanced_types",
+      "name": "typescript-advanced-types",
+      "source": "javascript-typescript"
+    },
+    {
+      "id": "javascript_typescript_modern_javascript_patterns",
+      "name": "modern-javascript-patterns",
+      "source": "javascript-typescript"
+    },
+    {
+      "id": "javascript_typescript_nodejs_backend_patterns",
+      "name": "nodejs-backend-patterns",
+      "source": "javascript-typescript"
+    },
+    {
+      "id": "kubernetes_operations_gitops_workflow",
+      "name": "gitops-workflow",
+      "source": "kubernetes-operations"
+    },
+    {
+      "id": "kubernetes_operations_k8s_security_policies",
+      "name": "k8s-security-policies",
+      "source": "kubernetes-operations"
+    },
+    {
+      "id": "kubernetes_operations_k8s_manifest_generator",
+      "name": "k8s-manifest-generator",
+      "source": "kubernetes-operations"
+    },
+    {
+      "id": "kubernetes_operations_helm_chart_scaffolding",
+      "name": "helm-chart-scaffolding",
+      "source": "kubernetes-operations"
+    },
+    {
+      "id": "llm_application_dev_llm_evaluation",
+      "name": "llm-evaluation",
+      "source": "llm-application-dev"
+    },
+    {
+      "id": "llm_application_dev_embedding_strategies",
+      "name": "embedding-strategies",
+      "source": "llm-application-dev"
+    },
+    {
+      "id": "llm_application_dev_langchain_architecture",
+      "name": "langchain-architecture",
+      "source": "llm-application-dev"
+    },
+    {
+      "id": "llm_application_dev_rag_implementation",
+      "name": "rag-implementation",
+      "source": "llm-application-dev"
+    },
+    {
+      "id": "llm_application_dev_vector_index_tuning",
+      "name": "vector-index-tuning",
+      "source": "llm-application-dev"
+    },
+    {
+      "id": "llm_application_dev_hybrid_search_implementation",
+      "name": "hybrid-search-implementation",
+      "source": "llm-application-dev"
+    },
+    {
+      "id": "llm_application_dev_similarity_search_patterns",
+      "name": "similarity-search-patterns",
+      "source": "llm-application-dev"
+    },
+    {
+      "id": "llm_application_dev_prompt_engineering_patterns",
+      "name": "prompt-engineering-patterns",
+      "source": "llm-application-dev"
+    },
+    {
+      "id": "machine_learning_ops_ml_pipeline_workflow",
+      "name": "ml-pipeline-workflow",
+      "source": "machine-learning-ops"
+    },
+    {
+      "id": "observability_monitoring_grafana_dashboards",
+      "name": "grafana-dashboards",
+      "source": "observability-monitoring"
+    },
+    {
+      "id": "observability_monitoring_slo_implementation",
+      "name": "slo-implementation",
+      "source": "observability-monitoring"
+    },
+    {
+      "id": "observability_monitoring_prometheus_configuration",
+      "name": "prometheus-configuration",
+      "source": "observability-monitoring"
+    },
+    {
+      "id": "observability_monitoring_distributed_tracing",
+      "name": "distributed-tracing",
+      "source": "observability-monitoring"
+    },
+    {
+      "id": "payment_processing_stripe_integration",
+      "name": "stripe-integration",
+      "source": "payment-processing"
+    },
+    {
+      "id": "payment_processing_pci_compliance",
+      "name": "pci-compliance",
+      "source": "payment-processing"
+    },
+    {
+      "id": "payment_processing_billing_automation",
+      "name": "billing-automation",
+      "source": "payment-processing"
+    },
+    {
+      "id": "payment_processing_paypal_integration",
+      "name": "paypal-integration",
+      "source": "payment-processing"
+    },
+    {
+      "id": "python_development_python_testing_patterns",
+      "name": "python-testing-patterns",
+      "source": "python-development"
+    },
+    {
+      "id": "python_development_uv_package_manager",
+      "name": "uv-package-manager",
+      "source": "python-development"
+    },
+    {
+      "id": "python_development_python_packaging",
+      "name": "python-packaging",
+      "source": "python-development"
+    },
+    {
+      "id": "python_development_python_performance_optimization",
+      "name": "python-performance-optimization",
+      "source": "python-development"
+    },
+    {
+      "id": "python_development_async_python_patterns",
+      "name": "async-python-patterns",
+      "source": "python-development"
+    },
+    {
+      "id": "quantitative_trading_risk_metrics_calculation",
+      "name": "risk-metrics-calculation",
+      "source": "quantitative-trading"
+    },
+    {
+      "id": "quantitative_trading_backtesting_frameworks",
+      "name": "backtesting-frameworks",
+      "source": "quantitative-trading"
+    },
+    {
+      "id": "security_scanning_stride_analysis_patterns",
+      "name": "stride-analysis-patterns",
+      "source": "security-scanning"
+    },
+    {
+      "id": "security_scanning_security_requirement_extraction",
+      "name": "security-requirement-extraction",
+      "source": "security-scanning"
+    },
+    {
+      "id": "security_scanning_threat_mitigation_mapping",
+      "name": "threat-mitigation-mapping",
+      "source": "security-scanning"
+    },
+    {
+      "id": "security_scanning_attack_tree_construction",
+      "name": "attack-tree-construction",
+      "source": "security-scanning"
+    },
+    {
+      "id": "security_scanning_sast_configuration",
+      "name": "sast-configuration",
+      "source": "security-scanning"
+    },
+    {
+      "id": "shell_scripting_bats_testing_patterns",
+      "name": "bats-testing-patterns",
+      "source": "shell-scripting"
+    },
+    {
+      "id": "shell_scripting_shellcheck_configuration",
+      "name": "shellcheck-configuration",
+      "source": "shell-scripting"
+    },
+    {
+      "id": "shell_scripting_bash_defensive_patterns",
+      "name": "bash-defensive-patterns",
+      "source": "shell-scripting"
+    },
+    {
+      "id": "systems_programming_rust_async_patterns",
+      "name": "rust-async-patterns",
+      "source": "systems-programming"
+    },
+    {
+      "id": "systems_programming_go_concurrency_patterns",
+      "name": "go-concurrency-patterns",
+      "source": "systems-programming"
+    },
+    {
+      "id": "systems_programming_memory_safety_patterns",
+      "name": "memory-safety-patterns",
+      "source": "systems-programming"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "standard",
+  "name": "BMad Method Standard",
+  "description": "Standard track for products, features, and platforms. Balanced approach with proper planning and architecture.",
+  "useCase": "New features, product development, major refactoring, new integrations",
+  "timeToStart": "<15 minutes",
+  "requiredPhases": ["02-planning", "03-solutioning", "04-implementation"],
+  "optionalPhases": ["01-analysis"],
+  "planningDepth": "prd + architecture + ux",
+  "agents": {
+    "analysis": [
+      "business-analyst",
+      "search-specialist"
+    ],
+    "planning": [
+      "backend-architect",
+      "frontend-developer",
+      "docs-architect"
+    ],
+    "solutioning": [
+      "architect-review",
+      "database-architect",
+      "ui-ux-designer",
+      "security-auditor"
+    ],
+    "implementation": [
+      "python-pro",
+      "javascript-pro",
+      "typescript-pro",
+      "test-automator",
+      "code-reviewer",
+      "deployment-engineer"
+    ]
+  },
+  "triggerConditions": [
+    "New feature request",
+    "New product development",
+    "Major refactoring (>500 lines)",
+    "New API endpoint",
+    "New integration",
+    "Database schema change"
+  ],
+  "triggerPatterns": [
+    "build feature",
+    "implement",
+    "create new",
+    "add functionality",
+    "integrate with"
+  ],
+  "qualityGates": {
+    "codeReview": "required",
+    "architectureReview": "required-for-new-patterns",
+    "securityScan": "required",
+    "testing": "unit + integration required"
+  },
+  "modelStrategy": {
+    "planning": "opus",
+    "solutioning": "opus",
+    "development": "sonnet",
+    "review": "opus"
+  },
+  "estimatedCompletion": "2-8 hours depending on scope"
+}

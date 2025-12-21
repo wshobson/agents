@@ -1,0 +1,138 @@
+{
+  "version": "1.0.0",
+  "description": "MDS Workflow Index - All available orchestration workflows",
+  "workflows": [
+    {
+      "id": "wf_client_onboarding",
+      "name": "Client Onboarding",
+      "category": "business",
+      "phases": 4,
+      "estimatedDuration": "3-5 hours",
+      "primaryAgents": ["business-analyst", "architect-review", "docs-architect"],
+      "trigger": ["new_client", "contract_signed"],
+      "outputs": ["client_profile", "assessment_report", "proposal", "sow"]
+    },
+    {
+      "id": "wf_ai_systems_audit",
+      "name": "AI Systems Audit",
+      "category": "ai-ml",
+      "phases": 4,
+      "estimatedDuration": "6-12 hours",
+      "primaryAgents": ["ai-engineer", "architect-review", "data-scientist"],
+      "trigger": ["ai_initiative", "performance_issue", "compliance"],
+      "outputs": ["inventory", "gap_analysis", "recommendations", "roadmap"]
+    },
+    {
+      "id": "wf_process_sprint",
+      "name": "Process Sprint",
+      "category": "automation",
+      "phases": 3,
+      "estimatedDuration": "2-4 hours",
+      "description": "Layer 1: Single process automation",
+      "primaryAgents": ["backend-architect", "python-pro", "test-automator"],
+      "trigger": ["automation_request", "efficiency_initiative"],
+      "outputs": ["automated_process", "documentation", "tests"]
+    },
+    {
+      "id": "wf_systems_build",
+      "name": "Systems Build",
+      "category": "development",
+      "phases": 4,
+      "estimatedDuration": "Days to weeks",
+      "description": "Layer 2: Department-level systems",
+      "primaryAgents": ["architect-review", "backend-architect", "frontend-developer", "database-architect"],
+      "trigger": ["new_system", "major_feature"],
+      "outputs": ["system_architecture", "implementation", "tests", "documentation"]
+    },
+    {
+      "id": "wf_infrastructure_partnership",
+      "name": "Infrastructure Partnership",
+      "category": "infrastructure",
+      "phases": 5,
+      "estimatedDuration": "Weeks to months",
+      "description": "Layer 3: Full AI infrastructure transformation",
+      "primaryAgents": ["cloud-architect", "kubernetes-architect", "security-auditor", "mlops-engineer"],
+      "trigger": ["enterprise_engagement", "digital_transformation"],
+      "outputs": ["infrastructure_design", "security_framework", "deployment_pipelines", "monitoring"]
+    },
+    {
+      "id": "wf_full_stack_feature",
+      "name": "Full-Stack Feature Development",
+      "category": "development",
+      "phases": 4,
+      "estimatedDuration": "4-8 hours",
+      "primaryAgents": ["backend-architect", "frontend-developer", "database-architect", "test-automator"],
+      "trigger": ["feature_request", "product_requirement"],
+      "outputs": ["feature_implementation", "tests", "documentation", "deployment"]
+    },
+    {
+      "id": "wf_security_hardening",
+      "name": "Security Hardening",
+      "category": "security",
+      "phases": 4,
+      "estimatedDuration": "4-8 hours",
+      "primaryAgents": ["security-auditor", "threat-modeling-expert", "backend-security-coder"],
+      "trigger": ["security_audit", "compliance_requirement", "vulnerability_found"],
+      "outputs": ["security_assessment", "remediation_plan", "implementation", "verification"]
+    },
+    {
+      "id": "wf_incident_response",
+      "name": "Incident Response",
+      "category": "operations",
+      "phases": 5,
+      "estimatedDuration": "Variable",
+      "primaryAgents": ["incident-responder", "devops-troubleshooter", "observability-engineer"],
+      "trigger": ["production_incident", "alert_triggered"],
+      "outputs": ["incident_resolution", "root_cause_analysis", "postmortem", "preventive_measures"]
+    },
+    {
+      "id": "wf_documentation_refresh",
+      "name": "Documentation Refresh",
+      "category": "documentation",
+      "phases": 3,
+      "estimatedDuration": "2-4 hours",
+      "primaryAgents": ["docs-architect", "api-documenter", "tutorial-engineer"],
+      "trigger": ["major_release", "documentation_review"],
+      "outputs": ["updated_docs", "api_reference", "tutorials", "diagrams"]
+    },
+    {
+      "id": "wf_seo_content_campaign",
+      "name": "SEO Content Campaign",
+      "category": "growth",
+      "phases": 4,
+      "estimatedDuration": "4-8 hours",
+      "primaryAgents": ["seo-content-planner", "seo-content-writer", "seo-keyword-strategist"],
+      "trigger": ["content_initiative", "seo_audit"],
+      "outputs": ["content_plan", "optimized_content", "meta_optimization", "performance_tracking"]
+    }
+  ],
+  "verticalWorkflows": [
+    {
+      "vertical": "legal",
+      "workflows": ["contract_review", "compliance_audit", "policy_generation"]
+    },
+    {
+      "vertical": "finance",
+      "workflows": ["risk_assessment", "trading_strategy", "portfolio_analysis"]
+    },
+    {
+      "vertical": "healthcare",
+      "workflows": ["hipaa_compliance", "clinical_documentation", "data_governance"]
+    },
+    {
+      "vertical": "education",
+      "workflows": ["curriculum_development", "learning_assessment", "content_creation"]
+    }
+  ],
+  "workflowCategories": {
+    "business": ["wf_client_onboarding"],
+    "ai-ml": ["wf_ai_systems_audit"],
+    "automation": ["wf_process_sprint"],
+    "development": ["wf_systems_build", "wf_full_stack_feature"],
+    "infrastructure": ["wf_infrastructure_partnership"],
+    "security": ["wf_security_hardening"],
+    "operations": ["wf_incident_response"],
+    "documentation": ["wf_documentation_refresh"],
+    "growth": ["wf_seo_content_campaign"]
+  }
+}

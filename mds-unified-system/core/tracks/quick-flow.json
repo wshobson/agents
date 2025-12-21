@@ -1,0 +1,49 @@
+{
+  "id": "quick-flow",
+  "name": "Quick Flow",
+  "description": "Streamlined track for bug fixes, small features, and hotfixes. Minimal planning overhead, focus on rapid delivery.",
+  "useCase": "Bug fixes, small features, hotfixes, simple refactoring",
+  "timeToStart": "<5 minutes",
+  "requiredPhases": ["04-implementation"],
+  "optionalPhases": [],
+  "skipPhases": ["01-analysis", "02-planning", "03-solutioning"],
+  "planningDepth": "tech-spec-only",
+  "agents": {
+    "primary": [
+      "python-pro",
+      "javascript-pro",
+      "typescript-pro",
+      "test-automator",
+      "debugger"
+    ],
+    "support": [
+      "code-reviewer",
+      "deployment-engineer"
+    ]
+  },
+  "skipConditions": [
+    "Less than 100 lines of code changed",
+    "Single file modification",
+    "Bug fix with known root cause",
+    "Documentation update only",
+    "Configuration change only"
+  ],
+  "triggerPatterns": [
+    "fix bug",
+    "hotfix",
+    "quick fix",
+    "small change",
+    "typo",
+    "update config"
+  ],
+  "qualityGates": {
+    "codeReview": "optional",
+    "securityScan": "automated-only",
+    "testing": "unit-tests-required"
+  },
+  "modelStrategy": {
+    "development": "sonnet",
+    "review": "sonnet"
+  },
+  "estimatedCompletion": "15-60 minutes"
+}

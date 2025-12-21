@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "totalDepartments": 7,
+  "totalAgents": 99,
+  "departments": [
+    {
+      "id": "engineering",
+      "name": "Engineering Department",
+      "chief": "chief-cto",
+      "chiefModel": "opus",
+      "specialistCount": 22,
+      "focus": "Software development, programming, implementation",
+      "specialists": [
+        "python-pro", "javascript-pro", "typescript-pro", "rust-pro",
+        "golang-pro", "java-pro", "scala-pro", "csharp-pro", "elixir-pro",
+        "ruby-pro", "php-pro", "c-pro", "cpp-pro", "haskell-pro",
+        "julia-pro", "bash-pro", "posix-shell-pro", "fastapi-pro",
+        "django-pro", "unity-developer", "minecraft-bukkit-pro", "arm-cortex-expert"
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "Operations Department",
+      "chief": "chief-coo",
+      "chiefModel": "opus",
+      "specialistCount": 11,
+      "focus": "Infrastructure, deployment, DevOps, reliability",
+      "specialists": [
+        "cloud-architect", "kubernetes-architect", "hybrid-cloud-architect",
+        "terraform-specialist", "service-mesh-expert", "deployment-engineer",
+        "devops-troubleshooter", "incident-responder", "network-engineer",
+        "database-optimizer", "database-admin"
+      ]
+    },
+    {
+      "id": "quality",
+      "name": "Quality Department",
+      "chief": "chief-cqo",
+      "chiefModel": "opus",
+      "specialistCount": 7,
+      "focus": "Testing, code review, security, performance",
+      "specialists": [
+        "code-reviewer", "test-automator", "tdd-orchestrator",
+        "security-auditor", "threat-modeling-expert",
+        "performance-engineer", "observability-engineer"
+      ]
+    },
+    {
+      "id": "data-intelligence",
+      "name": "Data & Intelligence Department",
+      "chief": "chief-cdo",
+      "chiefModel": "opus",
+      "specialistCount": 11,
+      "focus": "Data engineering, AI/ML, analytics, blockchain",
+      "specialists": [
+        "data-engineer", "data-scientist", "sql-pro", "ai-engineer",
+        "ml-engineer", "mlops-engineer", "prompt-engineer",
+        "vector-database-engineer", "blockchain-developer", "mermaid-expert"
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security Department",
+      "chief": "chief-cso",
+      "chiefModel": "opus",
+      "specialistCount": 5,
+      "focus": "Application security, compliance, threat modeling",
+      "specialists": [
+        "security-auditor", "threat-modeling-expert",
+        "backend-security-coder", "frontend-security-coder",
+        "mobile-security-coder"
+      ]
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation Department",
+      "chief": "chief-docs",
+      "chiefModel": "opus",
+      "specialistCount": 9,
+      "focus": "Technical docs, API docs, tutorials, diagrams",
+      "specialists": [
+        "docs-architect", "tutorial-engineer", "reference-builder",
+        "api-documenter", "mermaid-expert", "c4-code", "c4-component",
+        "c4-container", "c4-context"
+      ]
+    },
+    {
+      "id": "growth",
+      "name": "Growth Department",
+      "chief": "chief-cmo",
+      "chiefModel": "opus",
+      "specialistCount": 19,
+      "focus": "SEO, marketing, sales, business operations",
+      "specialists": [
+        "seo-content-writer", "seo-content-planner", "seo-content-auditor",
+        "seo-content-refresher", "seo-meta-optimizer", "seo-keyword-strategist",
+        "seo-structure-architect", "seo-snippet-hunter", "seo-cannibalization-detector",
+        "seo-authority-builder", "content-marketer", "search-specialist",
+        "sales-automator", "customer-support", "business-analyst",
+        "hr-pro", "legal-advisor", "risk-manager", "quant-analyst"
+      ]
+    }
+  ],
+  "crossDepartmentAgents": [
+    {
+      "agent": "architect-review",
+      "departments": ["engineering", "quality"],
+      "role": "Architecture review across departments"
+    },
+    {
+      "agent": "backend-architect",
+      "departments": ["engineering", "data-intelligence"],
+      "role": "Backend and data architecture"
+    },
+    {
+      "agent": "frontend-developer",
+      "departments": ["engineering", "documentation"],
+      "role": "Frontend development and UX"
+    }
+  ],
+  "orchestrationFlow": {
+    "entry": "ceo-agent",
+    "routing": "department-chiefs",
+    "execution": "specialists",
+    "synthesis": "ceo-agent"
+  }
+}
