@@ -25,6 +25,11 @@ class PromptOptimizer:
         self.client = llm_client
         self.test_suite = test_suite
         self.results_history = []
+        self.executor = ThreadPoolExecutor()
+
+    def shutdown(self):
+        """Shutdown the thread pool executor."""
+        self.executor.shutdown(wait=True)
 
     def evaluate_prompt(self, prompt_template: str, test_cases: List[TestCase] = None) -> Dict[str, float]:
         """Evaluate a prompt template against test cases in parallel."""
@@ -63,8 +68,7 @@ class PromptOptimizer:
             }
 
         # Run test cases in parallel
-        with ThreadPoolExecutor() as executor:
-            results = list(executor.map(process_test_case, test_cases))
+        results = list(self.executor.map(process_test_case, test_cases))
 
         # Aggregate metrics
         for result in results:
@@ -247,16 +251,19 @@ def main():
 
     optimizer = PromptOptimizer(MockLLMClient(), test_suite)
 
-    base_prompt = "Classify the sentiment of: {text}\nSentiment:"
+    try:
+        base_prompt = "Classify the sentiment of: {text}\nSentiment:"
 
-    results = optimizer.optimize(base_prompt)
+        results = optimizer.optimize(base_prompt)
 
-    print("\n" + "="*50)
-    print("Optimization Complete!")
-    print(f"Best Accuracy: {results['best_score']:.2f}")
-    print(f"Best Prompt:\n{results['best_prompt']}")
+        print("\n" + "="*50)
+        print("Optimization Complete!")
+        print(f"Best Accuracy: {results['best_score']:.2f}")
+        print(f"Best Prompt:\n{results['best_prompt']}")
 
-    optimizer.export_results('optimization_results.json')
+        optimizer.export_results('optimization_results.json')
+    finally:
+        optimizer.shutdown()
 
 
 if __name__ == '__main__':
