@@ -1,3 +1,14 @@
+---
+name: excalidraw-diagram
+description: Generate, correct, and refine professional Excalidraw diagrams. Use when creating architecture, system, workflow, sequence, or deployment diagrams with hand-drawn aesthetic.
+triggers:
+  - excalidraw
+  - diagram
+  - architecture diagram
+  - system diagram
+  - workflow diagram
+---
+
 # Excalidraw Diagram Skill
 
 Generate, correct, and refine professional Excalidraw diagrams for architecture

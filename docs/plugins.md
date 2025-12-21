@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **67 focused, single-purpose plugins** organized by category.
+Browse all **68 focused, single-purpose plugins** organized by category.
 
 ## Quick Start - Essential Plugins
 
@@ -125,13 +125,14 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **frontend-mobile-development** | Frontend UI and mobile development | `/plugin install frontend-mobile-development` |
 | **multi-platform-apps** | Cross-platform app coordination (web/iOS/Android) | `/plugin install multi-platform-apps` |
 
-### 📚 Documentation (3 plugins)
+### 📚 Documentation (4 plugins)
 
 | Plugin | Description | Install |
 |--------|-------------|---------|
 | **code-documentation** | Documentation generation and code explanation | `/plugin install code-documentation` |
 | **documentation-generation** | OpenAPI specs, Mermaid diagrams, tutorials | `/plugin install documentation-generation` |
 | **c4-architecture** | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture` |
+| **diagram-generation** | Professional Excalidraw diagrams for architecture, workflows, sequences, and deployments | `/plugin install diagram-generation` |
 
 ### 🔄 Workflows (3 plugins)
 

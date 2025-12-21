@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **107 specialized skills** across 18 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **108 specialized skills** across 19 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -185,6 +185,12 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **dbt-transformation-patterns** | Build dbt models with incremental strategies and testing |
 | **airflow-dag-patterns** | Design Airflow DAGs with proper dependencies and error handling |
 | **data-quality-frameworks** | Implement data quality checks with Great Expectations and custom validators |
+
+### Diagram Generation (1 skill)
+
+| Skill | Description |
+|-------|-------------|
+| **excalidraw-diagram** | Generate, correct, and refine professional Excalidraw diagrams for architecture, workflows, and system design |
 
 ### Documentation Generation (3 skills)
 
