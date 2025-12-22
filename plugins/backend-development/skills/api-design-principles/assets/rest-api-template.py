@@ -4,6 +4,8 @@ Includes pagination, filtering, error handling, and best practices.
 """
 
 from fastapi import FastAPI, HTTPException, Query, Path, Depends, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, EmailStr
 from typing import Optional, List, Any
@@ -14,6 +16,22 @@ app = FastAPI(
     title="API Template",
     version="1.0.0",
     docs_url="/api/docs"
+)
+
+# Security Middleware
+# Trusted Host: Prevents HTTP Host Header attacks
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["*"] # TODO: Configure this in production, e.g. ["api.example.com"]
+)
+
+# CORS: Configures Cross-Origin Resource Sharing
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # TODO: Update this with specific origins in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Models
