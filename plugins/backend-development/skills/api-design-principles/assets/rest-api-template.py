@@ -6,7 +6,7 @@ Includes pagination, filtering, error handling, and best practices.
 from fastapi import FastAPI, HTTPException, Query, Path, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from typing import Optional, List, Any
 from datetime import datetime
 from enum import Enum
@@ -51,8 +51,7 @@ class User(UserBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # Pagination
 class PaginationParams(BaseModel):
