@@ -7,10 +7,10 @@ Automatically test and optimize prompts using A/B testing and metrics tracking.
 
 import json
 import time
+import math
 from typing import List, Dict, Any
 from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor
-import numpy as np
 
 
 @dataclass
@@ -30,6 +30,26 @@ class PromptOptimizer:
     def shutdown(self):
         """Shutdown the thread pool executor."""
         self.executor.shutdown(wait=True)
+
+    def _mean(self, data: List[float]) -> float:
+        """Calculate mean of a list of numbers."""
+        if not data:
+            return 0.0
+        return sum(data) / len(data)
+
+    def _percentile(self, data: List[float], p: float) -> float:
+        """Calculate percentile of a list of numbers."""
+        if not data:
+            return 0.0
+        data_sorted = sorted(data)
+        k = (len(data_sorted) - 1) * (p / 100.0)
+        f = math.floor(k)
+        c = math.ceil(k)
+        if f == c:
+            return data_sorted[int(k)]
+        d0 = data_sorted[int(f)] * (c - k)
+        d1 = data_sorted[int(c)] * (k - f)
+        return d0 + d1
 
     def evaluate_prompt(self, prompt_template: str, test_cases: List[TestCase] = None) -> Dict[str, float]:
         """Evaluate a prompt template against test cases in parallel."""
@@ -78,11 +98,11 @@ class PromptOptimizer:
             metrics['accuracy'].append(result['accuracy'])
 
         return {
-            'avg_accuracy': np.mean(metrics['accuracy']),
-            'avg_latency': np.mean(metrics['latency']),
-            'p95_latency': np.percentile(metrics['latency'], 95),
-            'avg_tokens': np.mean(metrics['token_count']),
-            'success_rate': np.mean(metrics['success_rate'])
+            'avg_accuracy': self._mean(metrics['accuracy']),
+            'avg_latency': self._mean(metrics['latency']),
+            'p95_latency': self._percentile(metrics['latency'], 95),
+            'avg_tokens': self._mean(metrics['token_count']),
+            'success_rate': self._mean(metrics['success_rate'])
         }
 
     def calculate_accuracy(self, response: str, expected: str) -> float:
