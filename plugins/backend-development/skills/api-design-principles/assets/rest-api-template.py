@@ -4,8 +4,10 @@ Includes pagination, filtering, error handling, and best practices.
 """
 
 from fastapi import FastAPI, HTTPException, Query, Path, Depends, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from typing import Optional, List, Any
 from datetime import datetime
 from enum import Enum
@@ -14,6 +16,22 @@ app = FastAPI(
     title="API Template",
     version="1.0.0",
     docs_url="/api/docs"
+)
+
+# Security Middleware
+# Trusted Host: Prevents HTTP Host Header attacks
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["*"] # TODO: Configure this in production, e.g. ["api.example.com"]
+)
+
+# CORS: Configures Cross-Origin Resource Sharing
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # TODO: Update this with specific origins in production
+    allow_credentials=False, # TODO: Set to True if you need cookies/auth headers, but restrict origins
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Models
@@ -40,8 +58,7 @@ class User(UserBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # Pagination
 class PaginationParams(BaseModel):
@@ -74,7 +91,7 @@ async def http_exception_handler(request, exc):
             error=exc.__class__.__name__,
             message=exc.detail if isinstance(exc.detail, str) else exc.detail.get("message", "Error"),
             details=exc.detail.get("details") if isinstance(exc.detail, dict) else None
-        ).dict()
+        ).model_dump()
     )
 
 # Endpoints
@@ -96,7 +113,7 @@ async def list_users(
             status=UserStatus.ACTIVE,
             created_at=datetime.now(),
             updated_at=datetime.now()
-        ).dict()
+        ).model_dump()
         for i in range((page-1)*page_size, min(page*page_size, total))
     ]
 
@@ -147,7 +164,7 @@ async def update_user(user_id: str, update: UserUpdate):
     existing = await get_user(user_id)
 
     # Apply updates
-    update_data = update.dict(exclude_unset=True)
+    update_data = update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(existing, field, value)
 
