@@ -5,8 +5,6 @@ Includes pagination, filtering, error handling, and best practices.
 
 from fastapi import FastAPI, HTTPException, Query, Path, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
-
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from typing import Optional, List, Any
@@ -19,12 +17,12 @@ app = FastAPI(
     docs_url="/api/docs"
 )
 
-# Security Middleware
-# CORS: Configures Cross-Origin Resource Sharing
+# Security: CORS Middleware
+# Configure this appropriately for your environment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # TODO: Update this with specific origins in production
-    allow_credentials=False, # TODO: Set to True if you need cookies/auth headers, but restrict origins
+    allow_origins=["http://localhost:3000"],  # Add your frontend origins here
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -86,20 +84,22 @@ async def http_exception_handler(request, exc):
             error=exc.__class__.__name__,
             message=exc.detail if isinstance(exc.detail, str) else exc.detail.get("message", "Error"),
             details=exc.detail.get("details") if isinstance(exc.detail, dict) else None
-        ).model_dump()
+        ).dict()
     )
 
 # Endpoints
 @app.get("/api/users", response_model=PaginatedResponse, tags=["Users"])
 async def list_users(
-    page: int = Query(1, ge=1),
-    page_size: int = Query(20, ge=1, le=100),
+    pagination: PaginationParams = Depends(),
     status: Optional[UserStatus] = Query(None),
     search: Optional[str] = Query(None)
 ):
     """List users with pagination and filtering."""
     # Mock implementation
     total = 100
+    page = pagination.page
+    page_size = pagination.page_size
+
     items = [
         User(
             id=str(i),
@@ -108,7 +108,7 @@ async def list_users(
             status=UserStatus.ACTIVE,
             created_at=datetime.now(),
             updated_at=datetime.now()
-        ).model_dump()
+        ).dict()
         for i in range((page-1)*page_size, min(page*page_size, total))
     ]
 
@@ -162,7 +162,7 @@ async def update_user(user_id: str, update: UserUpdate):
     existing = await get_user(user_id)
 
     # Apply updates
-    update_data = update.model_dump(exclude_unset=True)
+    update_data = update.dict(exclude_unset=True)
     for field, value in update_data.items():
         setattr(existing, field, value)
 

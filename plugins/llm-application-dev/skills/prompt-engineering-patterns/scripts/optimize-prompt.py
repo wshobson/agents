@@ -106,18 +106,12 @@ class PromptOptimizer:
         current_prompt = base_prompt
         best_prompt = base_prompt
         best_score = 0
-        current_metrics = None
 
         for iteration in range(max_iterations):
             print(f"\nIteration {iteration + 1}/{max_iterations}")
 
             # Evaluate current prompt
-            # Bolt Optimization: Avoid re-evaluating if we already have metrics from previous iteration
-            if current_metrics:
-                metrics = current_metrics
-            else:
-                metrics = self.evaluate_prompt(current_prompt)
-
+            metrics = self.evaluate_prompt(current_prompt)
             print(f"Accuracy: {metrics['avg_accuracy']:.2f}, Latency: {metrics['avg_latency']:.2f}s")
 
             # Track results
@@ -143,17 +137,14 @@ class PromptOptimizer:
             # Test variations and pick best
             best_variation = current_prompt
             best_variation_score = metrics['avg_accuracy']
-            best_variation_metrics = metrics
 
             for variation in variations:
                 var_metrics = self.evaluate_prompt(variation)
                 if var_metrics['avg_accuracy'] > best_variation_score:
                     best_variation_score = var_metrics['avg_accuracy']
                     best_variation = variation
-                    best_variation_metrics = var_metrics
 
             current_prompt = best_variation
-            current_metrics = best_variation_metrics
 
         return {
             'best_prompt': best_prompt,
