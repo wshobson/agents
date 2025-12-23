@@ -1,0 +1,122 @@
+{
+  "name": "State Machine",
+  "description": "Workflow/state machine diagram with states and transitions",
+  "type": "workflow",
+  "layout": {
+    "direction": "left-to-right",
+    "stateSpacing": 200,
+    "rowSpacing": 150
+  },
+  "style": {
+    "state": {
+      "type": "rectangle",
+      "width": 150,
+      "height": 80,
+      "fillStyle": "hachure",
+      "roughness": 1,
+      "opacity": 60,
+      "strokeWidth": 1,
+      "roundness": { "type": 3 }
+    },
+    "initialState": {
+      "type": "ellipse",
+      "width": 40,
+      "height": 40,
+      "fillStyle": "solid",
+      "backgroundColor": "#1e1e1e",
+      "strokeColor": "#1e1e1e"
+    },
+    "finalState": {
+      "type": "ellipse",
+      "width": 50,
+      "height": 50,
+      "fillStyle": "solid",
+      "backgroundColor": "#b2f2bb",
+      "strokeColor": "#2f9e44",
+      "strokeWidth": 3
+    },
+    "transition": {
+      "type": "arrow",
+      "strokeStyle": "solid",
+      "strokeWidth": 1,
+      "opacity": 40,
+      "endArrowhead": "triangle",
+      "startArrowhead": null
+    },
+    "optionalTransition": {
+      "type": "arrow",
+      "strokeStyle": "dashed",
+      "strokeWidth": 1,
+      "opacity": 40,
+      "endArrowhead": "triangle"
+    }
+  },
+  "colorMapping": {
+    "default": { "background": "#a5d8ff", "stroke": "#1971c2" },
+    "pending": { "background": "#ffec99", "stroke": "#f08c00" },
+    "active": { "background": "#ffd8a8", "stroke": "#e8590c" },
+    "success": { "background": "#b2f2bb", "stroke": "#2f9e44" },
+    "error": { "background": "#ffc9c9", "stroke": "#e03131" },
+    "warning": { "background": "#ffec99", "stroke": "#e67700" }
+  },
+  "skeleton": {
+    "description": "3-state linear flow template",
+    "elements": [
+      {
+        "id": "initial",
+        "type": "ellipse",
+        "x": 50,
+        "y": 100,
+        "role": "initialState"
+      },
+      {
+        "id": "state-1",
+        "type": "rectangle",
+        "x": 150,
+        "y": 80,
+        "label": "State 1",
+        "role": "state",
+        "semantic": "pending"
+      },
+      {
+        "id": "state-2",
+        "type": "rectangle",
+        "x": 350,
+        "y": 80,
+        "label": "State 2",
+        "role": "state",
+        "semantic": "active"
+      },
+      {
+        "id": "state-3",
+        "type": "rectangle",
+        "x": 550,
+        "y": 80,
+        "label": "State 3",
+        "role": "state",
+        "semantic": "success"
+      },
+      {
+        "id": "arrow-init",
+        "type": "arrow",
+        "from": "initial",
+        "to": "state-1",
+        "role": "transition"
+      },
+      {
+        "id": "arrow-1-2",
+        "type": "arrow",
+        "from": "state-1",
+        "to": "state-2",
+        "role": "transition"
+      },
+      {
+        "id": "arrow-2-3",
+        "type": "arrow",
+        "from": "state-2",
+        "to": "state-3",
+        "role": "transition"
+      }
+    ]
+  }
+}
