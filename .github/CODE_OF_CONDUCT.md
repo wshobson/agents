@@ -27,6 +27,8 @@ The following behaviors are considered harassment and are unacceptable:
 - **Harassment**: Deliberate intimidation, stalking, following, or threatening
 - **Doxxing**: Publishing private information without consent
 - **Spam**: Excessive off-topic content, promotional material, or repetitive posts
+- **Automated abuse**: Using scripts, bots, or AI tools to bulk-create issues, PRs, or comments
+- **LLM-generated spam**: Submitting AI-generated content en masse without meaningful human curation or relevance
 - **Trolling**: Deliberately inflammatory or disruptive behavior
 - **Sexual harassment**: Unwelcome sexual attention or advances
 
@@ -50,6 +52,7 @@ Community leaders will follow these guidelines in determining consequences:
 ### Enforcement Actions
 
 - **Immediate removal**: Hate speech, threats, or doxxing will result in immediate content removal and user blocking
+- **Automated spam**: Bulk automated submissions will result in immediate content removal and permanent account blocking without warning
 - **Issue/PR closure**: Inappropriate content will be closed and locked
 - **Account blocking**: Repeat offenders will be blocked from the repository
 
