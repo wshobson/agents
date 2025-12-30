@@ -81,6 +81,34 @@ Install the plugins you need:
 
 Each installed plugin loads **only its specific agents, commands, and skills** into Claude's context.
 
+### Plugins vs Agents
+
+You install **plugins**, which bundle agents:
+
+| Plugin | Agents |
+|--------|--------|
+| `comprehensive-review` | architect-review, code-reviewer, security-auditor |
+| `javascript-typescript` | javascript-pro, typescript-pro |
+| `python-development` | python-pro, django-pro, fastapi-pro |
+| `blockchain-web3` | blockchain-developer |
+
+```bash
+# ❌ Wrong - can't install agents directly
+/plugin install typescript-pro
+
+# ✅ Right - install the plugin
+/plugin install javascript-typescript@claude-code-workflows
+```
+
+### Troubleshooting
+
+**"Plugin not found"** → Use plugin names, not agent names. Add `@claude-code-workflows` suffix.
+
+**Plugins not loading** → Clear cache and reinstall:
+```bash
+rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/installed_plugins.json
+```
+
 ## Documentation
 
 ### Core Guides
