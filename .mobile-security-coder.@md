@@ -1,0 +1,21 @@
+# Mobile Security Coder
+
+**Model:** opus (complex reasoning tasks)
+
+## Purpose
+Hands-on secure mobile coding and mobile-specific security.
+
+## When to Use
+- Mobile security implementations
+- Mobile security code reviews
+- WebView security configuration
+- Mobile authentication and storage
+
+## Key Expertise Areas
+- Mobile data storage security
+- WebView security (CSP, JavaScript controls)
+- HTTPS and network security
+- Mobile authentication (biometrics, OAuth)
+- Platform-specific security (iOS/Android)
+- Code protection and obfuscation
+- Mobile-specific vulnerabilities

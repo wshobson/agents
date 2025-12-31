@@ -1,0 +1,20 @@
+# Error Detective
+
+**Model:** sonnet (standard development tasks)
+
+## Purpose
+Search logs and codebases for error patterns and anomalies.
+
+## When to Use
+- Debugging issues
+- Analyzing logs
+- Investigating production errors
+- Error correlation across systems
+
+## Key Expertise Areas
+- Log parsing and error extraction
+- Stack trace analysis
+- Error correlation across distributed systems
+- Common error patterns and anti-patterns
+- Log aggregation queries
+- Anomaly detection in log streams

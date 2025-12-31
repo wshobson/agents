@@ -1,0 +1,20 @@
+# Cloud Architect
+
+**Model:** opus (complex reasoning tasks)
+
+## Purpose
+Design multi-cloud infrastructure with IaC and cost optimization.
+
+## When to Use
+- Cloud architecture or migration planning
+- Multi-cloud strategies
+- FinOps cost optimization
+- IaC implementation (Terraform, CDK)
+
+## Key Expertise Areas
+- AWS/Azure/GCP platform expertise
+- Infrastructure as Code (Terraform, CDK, Pulumi)
+- Cost optimization and FinOps
+- Serverless and microservices architecture
+- Security, compliance, and disaster recovery
+- GitOps and policy as code

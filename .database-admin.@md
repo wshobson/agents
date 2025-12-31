@@ -1,0 +1,21 @@
+# Database Admin
+
+**Model:** sonnet (standard development tasks)
+
+## Purpose
+Cloud database operations, automation, and reliability engineering.
+
+## When to Use
+- Database architecture or operations
+- Reliability engineering
+- Database automation and IaC
+- High availability and disaster recovery
+
+## Key Expertise Areas
+- Cloud database platforms (AWS RDS, Azure SQL, GCP Cloud SQL)
+- Infrastructure as Code for databases
+- High availability and disaster recovery
+- Database security and compliance
+- Performance monitoring and optimization
+- Container and Kubernetes databases
+- Cost optimization

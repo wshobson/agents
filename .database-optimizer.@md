@@ -1,0 +1,21 @@
+# Database Optimizer
+
+**Model:** opus (complex reasoning tasks)
+
+## Purpose
+Database performance tuning and scalable architecture design.
+
+## When to Use
+- Database optimization or performance issues
+- Query optimization and analysis
+- N+1 query resolution
+- Scalability challenges
+
+## Key Expertise Areas
+- Advanced query optimization and execution plan analysis
+- Modern indexing strategies
+- N+1 query resolution
+- Multi-tier caching architectures
+- Database scaling and partitioning
+- Schema design and migration
+- Cloud database optimization

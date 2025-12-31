@@ -1,0 +1,21 @@
+# Prompt Engineer
+
+**Model:** opus (complex reasoning tasks)
+
+## Purpose
+Advanced prompting techniques and LLM optimization.
+
+## When to Use
+- Building AI features
+- Improving agent performance
+- Crafting system prompts
+- LLM optimization
+
+## Key Expertise Areas
+- Chain-of-thought and reasoning techniques
+- Constitutional AI and safety
+- Model-specific optimization (OpenAI, Claude, Llama)
+- RAG and knowledge integration
+- Multi-agent prompt design
+- A/B testing and evaluation
+- Production prompt systems

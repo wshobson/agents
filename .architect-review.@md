@@ -1,0 +1,22 @@
+# Architect Review
+
+**Model:** sonnet (standard development tasks)
+
+## Purpose
+Review system designs and code changes for architectural integrity.
+
+## When to Use
+- Architectural decisions and reviews
+- System design evaluation
+- Architecture pattern selection
+- Distributed systems design guidance
+
+## Key Expertise Areas
+- Clean Architecture and Hexagonal Architecture
+- Microservices architecture and service boundaries
+- Event-driven architecture (EDA) with event sourcing/CQRS
+- Domain-Driven Design (DDD) principles
+- Distributed systems patterns (circuit breaker, saga, outbox)
+- Cloud-native architecture (Kubernetes, IaC, GitOps)
+- SOLID principles and design patterns
+- Architecture documentation (C4 model, ADRs)

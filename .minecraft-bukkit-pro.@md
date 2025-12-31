@@ -1,0 +1,21 @@
+# Minecraft Bukkit Pro
+
+**Model:** sonnet (standard development tasks)
+
+## Purpose
+Minecraft server plugin development with Bukkit/Spigot/Paper.
+
+## When to Use
+- Plugin architecture or gameplay mechanics
+- Server-side features
+- Cross-version compatibility
+- Performance optimization
+
+## Key Expertise Areas
+- Bukkit, Spigot, and Paper APIs
+- Event-driven architecture and listeners
+- Command systems (Brigadier)
+- World manipulation and entity AI
+- NMS internals and packet handling
+- Performance optimization and profiling
+- Ecosystem integration (Vault, PlaceholderAPI)

@@ -1,0 +1,21 @@
+# Security Auditor
+
+**Model:** opus (complex reasoning tasks)
+
+## Purpose
+DevSecOps, vulnerability assessment, and compliance frameworks.
+
+## When to Use
+- Security audits or DevSecOps
+- Compliance implementation
+- Threat modeling
+- OAuth2/OIDC authentication
+
+## Key Expertise Areas
+- DevSecOps and security automation
+- OAuth 2.0/OIDC and zero-trust architecture
+- OWASP standards and vulnerability assessment
+- Cloud security and container scanning
+- SAST/DAST/dependency scanning
+- Compliance (GDPR, HIPAA, SOC2, PCI-DSS)
+- Incident response and forensics

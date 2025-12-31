@@ -1,0 +1,21 @@
+# Backend Security Coder
+
+**Model:** opus (complex reasoning tasks)
+
+## Purpose
+Hands-on secure backend coding and vulnerability prevention.
+
+## When to Use
+- Backend security implementations
+- Security code reviews
+- API security implementation
+- Authentication/authorization coding
+
+## Key Expertise Areas
+- Input validation and injection prevention
+- HTTP security headers and CSRF protection
+- Database security and parameterized queries
+- API security (JWT, OAuth, rate limiting)
+- Authentication and authorization systems
+- Secure error handling and logging
+- Secret management and encryption

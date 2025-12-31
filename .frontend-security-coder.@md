@@ -1,0 +1,21 @@
+# Frontend Security Coder
+
+**Model:** opus (complex reasoning tasks)
+
+## Purpose
+Hands-on secure frontend coding and XSS prevention.
+
+## When to Use
+- Frontend security implementations
+- Client-side security code reviews
+- XSS prevention and CSP configuration
+- Secure DOM manipulation
+
+## Key Expertise Areas
+- Output handling and XSS prevention
+- Content Security Policy (CSP) configuration
+- Input validation and sanitization
+- Clickjacking protection
+- Secure redirects and navigation
+- Authentication and session management
+- Browser security features (SRI, Trusted Types)

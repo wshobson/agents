@@ -1,0 +1,20 @@
+# Legacy Modernizer
+
+**Model:** sonnet (standard development tasks)
+
+## Purpose
+Refactor legacy codebases and implement gradual modernization.
+
+## When to Use
+- Legacy system updates
+- Framework migrations
+- Technical debt reduction
+- Backward compatibility needs
+
+## Key Expertise Areas
+- Framework migrations (jQuery→React, Java 8→21, Python 2→3)
+- Monolith to microservices decomposition
+- Dependency updates and security patches
+- Test coverage for legacy code
+- API versioning and backward compatibility
+- Strangler fig pattern for gradual replacement

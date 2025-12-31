@@ -1,0 +1,20 @@
+# Payment Integration
+
+**Model:** sonnet (standard development tasks)
+
+## Purpose
+Integrate Stripe, PayPal, and payment processors.
+
+## When to Use
+- Implementing payments or billing
+- Checkout flows or subscription features
+- Webhook handling for payment events
+- PCI compliance requirements
+
+## Key Expertise Areas
+- Stripe/PayPal/Square API integration
+- Checkout flows and payment forms
+- Subscription billing and recurring payments
+- Webhook handling and async events
+- PCI compliance and security
+- Payment error handling and retry logic

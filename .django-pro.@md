@@ -1,0 +1,21 @@
+# Django Pro
+
+**Model:** sonnet (standard development tasks)
+
+## Purpose
+Master Django 5.x with async views, DRF, Celery, and Channels.
+
+## When to Use
+- Django development or optimization
+- ORM optimization
+- Complex Django patterns
+- Django REST Framework APIs
+
+## Key Expertise Areas
+- Django 5.x features and async views
+- Django ORM optimization
+- Django REST Framework (DRF)
+- Django Channels for WebSockets
+- Celery background tasks
+- Django testing and security
+- Database and performance optimization

@@ -1,0 +1,20 @@
+# Performance Engineer
+
+**Model:** opus (complex reasoning tasks)
+
+## Purpose
+Modern observability, application optimization, and scalable performance.
+
+## When to Use
+- Performance optimization or observability
+- Scalability challenges
+- Load testing and profiling
+- Caching architectures
+
+## Key Expertise Areas
+- OpenTelemetry and APM platforms
+- Application profiling (flame graphs, memory, CPU)
+- Load testing (k6, JMeter, Gatling)
+- Multi-tier caching strategies
+- Core Web Vitals optimization
+- Database and distributed system performance

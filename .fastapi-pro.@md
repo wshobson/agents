@@ -1,0 +1,21 @@
+# FastAPI Pro
+
+**Model:** sonnet (standard development tasks)
+
+## Purpose
+Build high-performance async APIs with FastAPI.
+
+## When to Use
+- FastAPI development or optimization
+- Async optimization
+- API architecture design
+- Microservices with Python
+
+## Key Expertise Areas
+- FastAPI with async/await patterns
+- SQLAlchemy 2.0 async and Pydantic V2
+- Microservices architecture
+- WebSockets and real-time features
+- Authentication (OAuth2, JWT)
+- Testing and observability
+- Performance optimization
