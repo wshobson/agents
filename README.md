@@ -1,6 +1,6 @@
 # Claude Code Subagents Collection
 
-A comprehensive collection of 82 specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), providing domain-specific expertise across software development, infrastructure, and business operations.
+A comprehensive collection of 92 specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), providing domain-specific expertise across software development, infrastructure, and business operations.
 
 ## Overview
 
@@ -86,6 +86,11 @@ This repository provides production-ready subagents that extend Claude Code's ca
 | [deployment-engineer](deployment-engineer.md) | sonnet | CI/CD pipelines, containerization, cloud deployments |
 | [terraform-specialist](terraform-specialist.md) | opus | Infrastructure as Code with Terraform modules and state management |
 | [dx-optimizer](dx-optimizer.md) | sonnet | Developer experience optimization and tooling improvements |
+| [sre-engineer](sre-engineer.md) | opus | SLO/SLA management, error budgets, reliability engineering |
+| [platform-engineer](platform-engineer.md) | opus | Internal Developer Platforms, self-service infrastructure |
+| [chaos-engineer](chaos-engineer.md) | sonnet | Fault injection, resilience testing, failure scenarios |
+| [gitops-specialist](gitops-specialist.md) | sonnet | ArgoCD, Flux, GitOps workflows, progressive delivery |
+| [release-manager](release-manager.md) | sonnet | Release orchestration, version control, rollback procedures |
 
 #### Database Management
 
@@ -138,6 +143,8 @@ This repository provides production-ready subagents that extend Claude Code's ca
 |-------|-------|-------------|
 | [data-scientist](data-scientist.md) | opus | Data analysis, SQL queries, BigQuery operations |
 | [data-engineer](data-engineer.md) | sonnet | ETL pipelines, data warehouses, streaming architectures |
+| [bi-developer](bi-developer.md) | sonnet | Power BI, Tableau, data visualization, dashboards |
+| [data-platform-architect](data-platform-architect.md) | opus | Data mesh, data fabric, end-to-end data architecture |
 
 #### Machine Learning & AI
 
@@ -147,6 +154,9 @@ This repository provides production-ready subagents that extend Claude Code's ca
 | [ml-engineer](ml-engineer.md) | opus | ML pipelines, model serving, feature engineering |
 | [mlops-engineer](mlops-engineer.md) | opus | ML infrastructure, experiment tracking, model registries |
 | [prompt-engineer](prompt-engineer.md) | opus | LLM prompt optimization and engineering |
+| [computer-vision-engineer](computer-vision-engineer.md) | opus | OpenCV, object detection, image processing, vision AI |
+| [nlp-llm-engineer](nlp-llm-engineer.md) | opus | Text processing, transformers, BERT, GPT fine-tuning |
+| [deep-learning-engineer](deep-learning-engineer.md) | opus | Neural networks, model architecture design, PyTorch/TF |
 
 ### Documentation & Technical Writing
 
@@ -216,8 +226,8 @@ Agents are assigned to specific Claude models based on task complexity and compu
 | Model | Agent Count | Use Case |
 |-------|-------------|----------|
 | Haiku | 11 | Quick, focused tasks with minimal computational overhead |
-| Sonnet | 46 | Standard development and specialized engineering tasks |
-| Opus | 21 | Complex reasoning, architecture, and critical analysis |
+| Sonnet | 50 | Standard development and specialized engineering tasks |
+| Opus | 31 | Complex reasoning, architecture, and critical analysis |
 
 ### Haiku Model Agents
 
@@ -232,7 +242,7 @@ Agents are assigned to specific Claude models based on task complexity and compu
 |----------|-------|--------|
 | Programming Languages | 18 | All language-specific agents (JavaScript, Python, Java, C++, etc.) |
 | Frontend & UI | 5 | `frontend-developer`, `ui-ux-designer`, `ui-visual-validator`, `mobile-developer`, `ios-developer` |
-| Infrastructure | 8 | `devops-troubleshooter`, `deployment-engineer`, `dx-optimizer`, `database-admin`, `network-engineer`, `flutter-expert`, `api-documenter`, `tutorial-engineer` |
+| Infrastructure | 12 | `devops-troubleshooter`, `deployment-engineer`, `dx-optimizer`, `database-admin`, `network-engineer`, `flutter-expert`, `api-documenter`, `tutorial-engineer`, `chaos-engineer`, `gitops-specialist`, `release-manager`, `bi-developer` |
 | Quality & Testing | 4 | `test-automator`, `tdd-orchestrator`, `debugger`, `error-detective` |
 | Business & Support | 6 | `business-analyst`, `risk-manager`, `content-marketer`, `customer-support`, `mermaid-expert`, `legacy-modernizer` |
 | Data & Content | 5 | `data-engineer`, `payment-integration`, `seo-content-auditor`, `seo-authority-builder`, `seo-content-writer` |
@@ -243,8 +253,9 @@ Agents are assigned to specific Claude models based on task complexity and compu
 |----------|-------|--------|
 | Architecture & Design | 7 | `architect-reviewer`, `backend-architect`, `cloud-architect`, `hybrid-cloud-architect`, `kubernetes-architect`, `graphql-architect`, `terraform-specialist` |
 | Critical Analysis | 5 | `code-reviewer`, `security-auditor`, `performance-engineer`, `incident-responder`, `database-optimizer` |
-| AI/ML Complex | 5 | `ai-engineer`, `ml-engineer`, `mlops-engineer`, `data-scientist`, `prompt-engineer` |
-| Business Critical | 4 | `docs-architect`, `hr-pro`, `legal-advisor`, `quant-analyst` |
+| AI/ML Complex | 8 | `ai-engineer`, `ml-engineer`, `mlops-engineer`, `data-scientist`, `prompt-engineer`, `computer-vision-engineer`, `nlp-llm-engineer`, `deep-learning-engineer` |
+| Business Critical | 5 | `docs-architect`, `hr-pro`, `legal-advisor`, `quant-analyst`, `data-platform-architect` |
+| DevOps/Platform | 2 | `sre-engineer`, `platform-engineer` |
 
 ## Installation
 
