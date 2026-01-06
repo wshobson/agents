@@ -45,7 +45,7 @@ x64dbg           - Windows debugger with plugin ecosystem
 
 ### Supporting Tools
 ```
-binwalk          - Firmware extraction and analysis
+binwalk v3       - Firmware extraction and analysis (Rust rewrite, faster with fewer false positives)
 strings/FLOSS    - String extraction (including obfuscated)
 file/TrID        - File type identification
 objdump/readelf  - ELF analysis utilities

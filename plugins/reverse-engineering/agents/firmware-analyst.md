@@ -69,10 +69,13 @@ file firmware.bin
 binwalk firmware.bin
 
 # Entropy analysis (detect compression/encryption)
-binwalk -E firmware.bin
+# Binwalk v3: generates entropy PNG graph
+binwalk --entropy firmware.bin
+binwalk -E firmware.bin  # Short form
 
-# Identify embedded file systems
-binwalk -e firmware.bin  # Auto-extract
+# Identify embedded file systems and auto-extract
+binwalk --extract firmware.bin
+binwalk -e firmware.bin  # Short form
 
 # String analysis
 strings -a firmware.bin | grep -i "password\|key\|secret"
@@ -80,8 +83,15 @@ strings -a firmware.bin | grep -i "password\|key\|secret"
 
 ### Phase 2: Extraction
 ```bash
-# Binwalk extraction
-binwalk -Me firmware.bin
+# Binwalk v3 recursive extraction (matryoshka mode)
+binwalk --extract --matryoshka firmware.bin
+binwalk -eM firmware.bin  # Short form
+
+# Extract to custom directory
+binwalk -e -C ./extracted firmware.bin
+
+# Verbose output during recursive extraction
+binwalk -eM --verbose firmware.bin
 
 # Manual extraction for specific formats
 # SquashFS
@@ -182,7 +192,7 @@ Firmware updates        - Unencrypted downloads
 
 ### Extraction Tools
 ```
-binwalk              - Firmware extraction and analysis
+binwalk v3           - Firmware extraction and analysis (Rust rewrite, faster, fewer false positives)
 firmware-mod-kit     - Firmware modification toolkit
 jefferson            - JFFS2 extraction
 ubi_reader           - UBIFS extraction
