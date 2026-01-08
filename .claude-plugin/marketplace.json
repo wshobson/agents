@@ -2138,7 +2138,7 @@
       "description": "Binary reverse engineering, malware analysis, firmware security, and software protection research for authorized security research, CTF competitions, and defensive security",
       "version": "1.0.0",
       "author": {
-        "name": "Community Contribution",
+        "name": "Dávid Balatoni",
         "url": "https://github.com/balcsida"
       },
       "homepage": "https://github.com/wshobson/agents",
