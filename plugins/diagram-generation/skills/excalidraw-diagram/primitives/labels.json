@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "description": "Text and label templates for Excalidraw diagrams",
+  "labels": {
+    "title": {
+      "description": "Diagram title (frame title)",
+      "fontSize": 28,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "template": {
+        "type": "text",
+        "fontSize": 28,
+        "fontFamily": 1,
+        "textAlign": "center",
+        "verticalAlign": "top",
+        "strokeColor": "#1e1e1e",
+        "backgroundColor": "transparent"
+      },
+      "maxLength": 50
+    },
+    "component": {
+      "description": "Component/box label",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "template": {
+        "type": "text",
+        "fontSize": 18,
+        "fontFamily": 1,
+        "textAlign": "center",
+        "verticalAlign": "middle",
+        "strokeColor": "#1e1e1e",
+        "backgroundColor": "transparent"
+      },
+      "maxLength": 25,
+      "maxLines": 2,
+      "binding": {
+        "note": "Bind to container using containerId"
+      }
+    },
+    "state": {
+      "description": "State/workflow label",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "template": {
+        "type": "text",
+        "fontSize": 16,
+        "fontFamily": 1,
+        "textAlign": "center",
+        "verticalAlign": "middle",
+        "strokeColor": "#000000",
+        "backgroundColor": "transparent"
+      },
+      "maxLength": 20,
+      "maxLines": 2
+    },
+    "arrow-label": {
+      "description": "Label on arrow/connector",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "template": {
+        "type": "text",
+        "fontSize": 14,
+        "fontFamily": 1,
+        "textAlign": "center",
+        "verticalAlign": "middle",
+        "strokeColor": "#868e96",
+        "backgroundColor": "transparent"
+      },
+      "maxLength": 15,
+      "maxLines": 1
+    },
+    "container-title": {
+      "description": "Container/boundary title",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "template": {
+        "type": "text",
+        "fontSize": 14,
+        "fontFamily": 1,
+        "textAlign": "left",
+        "verticalAlign": "top",
+        "strokeColor": "#868e96",
+        "backgroundColor": "transparent"
+      },
+      "maxLength": 30,
+      "placement": "bottom-left"
+    },
+    "annotation": {
+      "description": "Annotation/note text",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "template": {
+        "type": "text",
+        "fontSize": 14,
+        "fontFamily": 1,
+        "textAlign": "left",
+        "verticalAlign": "top",
+        "strokeColor": "#868e96",
+        "backgroundColor": "transparent"
+      },
+      "maxLength": 100
+    },
+    "legend-item": {
+      "description": "Legend entry text",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "textAlign": "left",
+      "template": {
+        "type": "text",
+        "fontSize": 12,
+        "fontFamily": 1,
+        "textAlign": "left",
+        "verticalAlign": "middle",
+        "strokeColor": "#495057",
+        "backgroundColor": "transparent"
+      }
+    }
+  },
+  "technicalWritingRules": {
+    "description": "Rules for concise, accurate technical labels",
+    "rules": [
+      {
+        "name": "concise",
+        "description": "Use short, direct labels",
+        "examples": {
+          "good": ["Auth Service", "API Gateway", "User DB"],
+          "bad": ["Authentication Service Module", "API Entry Point Gateway", "User Database Storage"]
+        }
+      },
+      {
+        "name": "standard-terminology",
+        "description": "Use industry-standard terms",
+        "examples": {
+          "good": ["API Gateway", "Load Balancer", "Message Queue"],
+          "bad": ["API Entry", "Traffic Distributor", "Event Pipe"]
+        }
+      },
+      {
+        "name": "action-verbs",
+        "description": "Use action verbs for flow labels",
+        "examples": {
+          "good": ["Validate", "Process", "Store", "Notify"],
+          "bad": ["Validation", "Processing", "Storage", "Notification"]
+        }
+      },
+      {
+        "name": "no-redundancy",
+        "description": "Avoid redundant words",
+        "examples": {
+          "good": ["Database", "Service", "Queue"],
+          "bad": ["Database Storage", "Service Module", "Message Queue System"]
+        }
+      },
+      {
+        "name": "consistent-casing",
+        "description": "Title Case for components, lowercase for arrow labels",
+        "examples": {
+          "components": ["Auth Service", "Order API", "User DB"],
+          "arrows": ["validates", "sends request", "stores"]
+        }
+      },
+      {
+        "name": "abbreviations",
+        "description": "Standard abbreviations only",
+        "allowed": ["API", "DB", "UI", "K8s", "AWS", "GCP", "ML", "AI", "Auth", "Config"],
+        "avoid": ["Svc", "Msg", "Req", "Resp"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "name": "Deployment Architecture",
+  "description": "Infrastructure/Kubernetes deployment diagram with nested containers",
+  "type": "deployment",
+  "layout": {
+    "direction": "nested",
+    "clusterPadding": 40,
+    "namespacePadding": 30,
+    "podSpacing": 150,
+    "serviceSpacing": 100
+  },
+  "style": {
+    "cluster": {
+      "type": "rectangle",
+      "fillStyle": "solid",
+      "strokeStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 20,
+      "roundness": { "type": 3, "value": 20 }
+    },
+    "namespace": {
+      "type": "rectangle",
+      "fillStyle": "solid",
+      "strokeStyle": "dashed",
+      "strokeWidth": 1,
+      "roughness": 0,
+      "opacity": 100,
+      "backgroundColor": "transparent"
+    },
+    "pod": {
+      "type": "rectangle",
+      "width": 120,
+      "height": 80,
+      "fillStyle": "hachure",
+      "roughness": 1,
+      "opacity": 60,
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    "service": {
+      "type": "ellipse",
+      "width": 100,
+      "height": 50,
+      "fillStyle": "hachure",
+      "roughness": 1,
+      "opacity": 60,
+      "strokeWidth": 2
+    },
+    "ingress": {
+      "type": "rectangle",
+      "width": 200,
+      "height": 50,
+      "fillStyle": "hachure",
+      "roughness": 1,
+      "opacity": 60,
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    "storage": {
+      "type": "rectangle",
+      "width": 100,
+      "height": 80,
+      "fillStyle": "hachure",
+      "roughness": 1,
+      "opacity": 60,
+      "strokeWidth": 2
+    },
+    "external": {
+      "type": "rectangle",
+      "fillStyle": "solid",
+      "strokeStyle": "dashed",
+      "strokeWidth": 2,
+      "roughness": 0,
+      "opacity": 30
+    }
+  },
+  "colorMapping": {
+    "cluster": { "background": "#e7f5ff", "stroke": "#1864ab" },
+    "namespace": { "background": "transparent", "stroke": "#495057" },
+    "pod": { "background": "#a5d8ff", "stroke": "#1971c2" },
+    "service": { "background": "#b2f2bb", "stroke": "#2f9e44" },
+    "ingress": { "background": "#eebefa", "stroke": "#9c36b5" },
+    "storage": { "background": "#ffd8a8", "stroke": "#e8590c" },
+    "configmap": { "background": "#ffec99", "stroke": "#e67700" },
+    "external": { "background": "#dee2e6", "stroke": "#495057" }
+  },
+  "skeleton": {
+    "description": "K8s cluster with namespace and pods",
+    "frame": {
+      "width": 1920,
+      "height": 1080,
+      "title": "Deployment Architecture"
+    },
+    "elements": [
+      {
+        "id": "external-users",
+        "type": "rectangle",
+        "x": 100,
+        "y": 100,
+        "width": 150,
+        "height": 60,
+        "label": "Users",
+        "role": "external"
+      },
+      {
+        "id": "cluster",
+        "type": "rectangle",
+        "x": 350,
+        "y": 50,
+        "width": 800,
+        "height": 600,
+        "label": "Kubernetes Cluster",
+        "role": "cluster"
+      },
+      {
+        "id": "ingress",
+        "type": "rectangle",
+        "x": 500,
+        "y": 100,
+        "label": "Ingress Controller",
+        "role": "ingress"
+      },
+      {
+        "id": "namespace-app",
+        "type": "rectangle",
+        "x": 400,
+        "y": 200,
+        "width": 700,
+        "height": 400,
+        "label": "namespace: app",
+        "role": "namespace"
+      },
+      {
+        "id": "svc-api",
+        "type": "ellipse",
+        "x": 450,
+        "y": 280,
+        "label": "api-svc",
+        "role": "service"
+      },
+      {
+        "id": "pod-api-1",
+        "type": "rectangle",
+        "x": 450,
+        "y": 380,
+        "label": "api-pod-1",
+        "role": "pod"
+      },
+      {
+        "id": "pod-api-2",
+        "type": "rectangle",
+        "x": 600,
+        "y": 380,
+        "label": "api-pod-2",
+        "role": "pod"
+      },
+      {
+        "id": "svc-db",
+        "type": "ellipse",
+        "x": 800,
+        "y": 280,
+        "label": "db-svc",
+        "role": "service"
+      },
+      {
+        "id": "pod-db",
+        "type": "rectangle",
+        "x": 800,
+        "y": 380,
+        "label": "db-pod",
+        "role": "pod"
+      },
+      {
+        "id": "pvc",
+        "type": "rectangle",
+        "x": 950,
+        "y": 380,
+        "label": "PVC",
+        "role": "storage"
+      },
+      {
+        "id": "arrow-users-ingress",
+        "type": "arrow",
+        "from": "external-users",
+        "to": "ingress",
+        "label": "HTTPS",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-ingress-svc",
+        "type": "arrow",
+        "from": "ingress",
+        "to": "svc-api",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-svc-pod1",
+        "type": "arrow",
+        "from": "svc-api",
+        "to": "pod-api-1",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-svc-pod2",
+        "type": "arrow",
+        "from": "svc-api",
+        "to": "pod-api-2",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-api-db",
+        "type": "arrow",
+        "from": "pod-api-1",
+        "to": "svc-db",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-dbsvc-pod",
+        "type": "arrow",
+        "from": "svc-db",
+        "to": "pod-db",
+        "role": "connector"
+      },
+      {
+        "id": "arrow-db-pvc",
+        "type": "arrow",
+        "from": "pod-db",
+        "to": "pvc",
+        "role": "connector"
+      }
+    ]
+  }
+}
