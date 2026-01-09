@@ -2131,6 +2131,44 @@
         "./skills/turborepo-caching",
         "./skills/bazel-build-optimization"
       ]
+    },
+    {
+      "name": "reverse-engineering",
+      "source": "./plugins/reverse-engineering",
+      "description": "Binary reverse engineering, malware analysis, firmware security, and software protection research for authorized security research, CTF competitions, and defensive security",
+      "version": "1.0.0",
+      "author": {
+        "name": "Dávid Balatoni",
+        "url": "https://github.com/balcsida"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "reverse-engineering",
+        "binary-analysis",
+        "malware-analysis",
+        "firmware",
+        "disassembly",
+        "ghidra",
+        "ida-pro",
+        "security-research",
+        "ctf"
+      ],
+      "category": "security",
+      "strict": false,
+      "commands": [],
+      "agents": [
+        "./agents/reverse-engineer.md",
+        "./agents/malware-analyst.md",
+        "./agents/firmware-analyst.md"
+      ],
+      "skills": [
+        "./skills/binary-analysis-patterns",
+        "./skills/memory-forensics",
+        "./skills/protocol-reverse-engineering",
+        "./skills/anti-reversing-techniques"
+      ]
     }
   ]
 }
