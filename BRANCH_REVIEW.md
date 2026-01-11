@@ -9,6 +9,28 @@
 
 ---
 
+## Consistency Analysis
+
+Compared `crewai-architecture` with existing skills:
+
+| Feature | prompt-engineering-patterns | langchain-architecture | crewai-architecture |
+|---------|---------------------------|----------------------|---------------------|
+| Frontmatter (`name`, `description`) | ✅ | ✅ | ✅ |
+| Quick Start section | ✅ | ✅ | ✅ |
+| When to Use section | ✅ | ✅ | ✅ |
+| Core Concepts | ✅ | ✅ | ✅ |
+| Architecture Patterns | N/A | ✅ | ✅ |
+| Common Pitfalls | ✅ | ✅ | ✅ |
+| Resources section | ✅ | ✅ | ✅ |
+| Production Checklist | N/A | ✅ | ✅ |
+| Testing Strategies | N/A | ✅ | ✅ |
+| `references/` populated | ✅ (5 files) | ❌ | ✅ (4 files) |
+| `assets/` populated | ✅ (2 files) | ❌ | ✅ (2 files) |
+
+**Conclusion**: `crewai-architecture` follows the same structure as `prompt-engineering-patterns` (the most complete skill) and is **more complete** than `langchain-architecture` which references files that don't exist.
+
+---
+
 ## Summary of Changes
 
 This branch adds comprehensive CrewAI support to the agents repository with:
