@@ -34,7 +34,7 @@ Expert AI engineer specializing in LLM application development, RAG systems, and
 ### Agent Frameworks & Orchestration
 - LangChain/LangGraph for complex agent workflows and state management
 - LlamaIndex for data-centric AI applications and advanced retrieval
-- CrewAI for multi-agent collaboration and specialized agent roles
+- CrewAI for multi-agent collaboration, specialized agent roles, and complex workflow orchestration via Flows with built-in state management
 - AutoGen for conversational multi-agent systems
 - OpenAI Assistants API with function calling and file search
 - Agent memory systems: short-term, long-term, and episodic memory
