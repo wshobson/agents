@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "description": "Connector templates for Excalidraw diagrams",
+  "connectors": {
+    "arrow": {
+      "description": "Standard directional arrow",
+      "type": "arrow",
+      "template": {
+        "type": "arrow",
+        "strokeWidth": 2,
+        "strokeStyle": "solid",
+        "roughness": 1,
+        "opacity": 100,
+        "startArrowhead": null,
+        "endArrowhead": "triangle"
+      }
+    },
+    "arrow-light": {
+      "description": "Light arrow for secondary flows (from uber.excalidraw)",
+      "type": "arrow",
+      "template": {
+        "type": "arrow",
+        "strokeWidth": 1,
+        "strokeStyle": "solid",
+        "roughness": 1,
+        "opacity": 40,
+        "startArrowhead": null,
+        "endArrowhead": "triangle"
+      }
+    },
+    "arrow-dashed": {
+      "description": "Dashed arrow for optional/async flows",
+      "type": "arrow",
+      "template": {
+        "type": "arrow",
+        "strokeWidth": 1,
+        "strokeStyle": "dashed",
+        "roughness": 1,
+        "opacity": 40,
+        "startArrowhead": null,
+        "endArrowhead": "triangle"
+      }
+    },
+    "arrow-bidirectional": {
+      "description": "Bidirectional arrow",
+      "type": "arrow",
+      "template": {
+        "type": "arrow",
+        "strokeWidth": 2,
+        "strokeStyle": "solid",
+        "roughness": 1,
+        "opacity": 100,
+        "startArrowhead": "triangle",
+        "endArrowhead": "triangle"
+      }
+    },
+    "line": {
+      "description": "Simple line (no arrowheads)",
+      "type": "line",
+      "template": {
+        "type": "line",
+        "strokeWidth": 2,
+        "strokeStyle": "solid",
+        "roughness": 1,
+        "opacity": 100
+      }
+    },
+    "line-dashed": {
+      "description": "Dashed line for boundaries",
+      "type": "line",
+      "template": {
+        "type": "line",
+        "strokeWidth": 1,
+        "strokeStyle": "dashed",
+        "roughness": 0,
+        "opacity": 60
+      }
+    },
+    "elbow-arrow": {
+      "description": "Right-angle arrow (uses points array)",
+      "type": "arrow",
+      "note": "Use points array with 3+ points for right angles",
+      "template": {
+        "type": "arrow",
+        "strokeWidth": 2,
+        "strokeStyle": "solid",
+        "roughness": 1,
+        "opacity": 100,
+        "startArrowhead": null,
+        "endArrowhead": "triangle"
+      }
+    },
+    "dependency": {
+      "description": "Dependency arrow (dashed with open head)",
+      "type": "arrow",
+      "template": {
+        "type": "arrow",
+        "strokeWidth": 1,
+        "strokeStyle": "dashed",
+        "roughness": 1,
+        "opacity": 80,
+        "startArrowhead": null,
+        "endArrowhead": "arrow"
+      }
+    },
+    "data-flow": {
+      "description": "Data flow arrow (thicker, solid)",
+      "type": "arrow",
+      "template": {
+        "type": "arrow",
+        "strokeWidth": 3,
+        "strokeStyle": "solid",
+        "roughness": 1,
+        "opacity": 100,
+        "startArrowhead": null,
+        "endArrowhead": "triangle"
+      }
+    }
+  },
+  "binding": {
+    "description": "Arrow binding configuration",
+    "defaultGap": 8,
+    "defaultFocus": 0,
+    "template": {
+      "startBinding": {
+        "elementId": null,
+        "focus": 0,
+        "gap": 8
+      },
+      "endBinding": {
+        "elementId": null,
+        "focus": 0,
+        "gap": 8
+      }
+    }
+  }
+}
