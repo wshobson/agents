@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "description": "Primitive shape templates for Excalidraw diagrams",
+  "shapes": {
+    "box": {
+      "description": "Standard component box",
+      "type": "rectangle",
+      "width": 200,
+      "height": 80,
+      "roundness": { "type": 3 },
+      "template": {
+        "type": "rectangle",
+        "fillStyle": "hachure",
+        "strokeWidth": 2,
+        "roughness": 1,
+        "opacity": 60,
+        "roundness": { "type": 3 }
+      }
+    },
+    "box-large": {
+      "description": "Large component box for main services",
+      "type": "rectangle",
+      "width": 250,
+      "height": 100,
+      "roundness": { "type": 3 },
+      "template": {
+        "type": "rectangle",
+        "fillStyle": "hachure",
+        "strokeWidth": 2,
+        "roughness": 1,
+        "opacity": 60,
+        "roundness": { "type": 3 }
+      }
+    },
+    "box-small": {
+      "description": "Small component box for sub-components",
+      "type": "rectangle",
+      "width": 150,
+      "height": 60,
+      "roundness": { "type": 3 },
+      "template": {
+        "type": "rectangle",
+        "fillStyle": "hachure",
+        "strokeWidth": 2,
+        "roughness": 1,
+        "opacity": 60,
+        "roundness": { "type": 3 }
+      }
+    },
+    "state": {
+      "description": "State/workflow box (from uber.excalidraw)",
+      "type": "rectangle",
+      "width": 150,
+      "height": 80,
+      "roundness": { "type": 3 },
+      "template": {
+        "type": "rectangle",
+        "fillStyle": "hachure",
+        "strokeWidth": 1,
+        "roughness": 1,
+        "opacity": 60,
+        "roundness": { "type": 3 }
+      }
+    },
+    "diamond": {
+      "description": "Decision point",
+      "type": "diamond",
+      "width": 100,
+      "height": 100,
+      "template": {
+        "type": "diamond",
+        "fillStyle": "hachure",
+        "strokeWidth": 2,
+        "roughness": 1,
+        "opacity": 60
+      }
+    },
+    "ellipse": {
+      "description": "Start/end point or actor",
+      "type": "ellipse",
+      "width": 80,
+      "height": 80,
+      "template": {
+        "type": "ellipse",
+        "fillStyle": "hachure",
+        "strokeWidth": 2,
+        "roughness": 1,
+        "opacity": 60
+      }
+    },
+    "initial-state": {
+      "description": "Initial state marker (filled circle)",
+      "type": "ellipse",
+      "width": 40,
+      "height": 40,
+      "template": {
+        "type": "ellipse",
+        "fillStyle": "solid",
+        "strokeWidth": 2,
+        "roughness": 0,
+        "opacity": 100,
+        "backgroundColor": "#1e1e1e",
+        "strokeColor": "#1e1e1e"
+      }
+    },
+    "final-state": {
+      "description": "Final/success state marker",
+      "type": "ellipse",
+      "width": 50,
+      "height": 50,
+      "template": {
+        "type": "ellipse",
+        "fillStyle": "solid",
+        "strokeWidth": 3,
+        "roughness": 0,
+        "opacity": 100,
+        "backgroundColor": "#b2f2bb",
+        "strokeColor": "#2f9e44"
+      }
+    },
+    "cylinder": {
+      "description": "Database/storage (use ellipse + rectangle)",
+      "type": "compound",
+      "width": 100,
+      "height": 120,
+      "note": "Composed of ellipse top + rectangle body + ellipse bottom"
+    },
+    "container": {
+      "description": "Grouping container with dashed border",
+      "type": "rectangle",
+      "width": 400,
+      "height": 300,
+      "template": {
+        "type": "rectangle",
+        "fillStyle": "solid",
+        "strokeWidth": 1,
+        "strokeStyle": "dashed",
+        "roughness": 0,
+        "opacity": 100,
+        "backgroundColor": "transparent"
+      }
+    },
+    "cloud": {
+      "description": "Cloud boundary marker",
+      "type": "rectangle",
+      "width": 500,
+      "height": 400,
+      "template": {
+        "type": "rectangle",
+        "fillStyle": "solid",
+        "strokeWidth": 2,
+        "strokeStyle": "dashed",
+        "roughness": 1,
+        "opacity": 30,
+        "roundness": { "type": 3, "value": 50 }
+      }
+    },
+    "actor": {
+      "description": "User/actor icon placeholder",
+      "type": "ellipse",
+      "width": 60,
+      "height": 60,
+      "template": {
+        "type": "ellipse",
+        "fillStyle": "hachure",
+        "strokeWidth": 2,
+        "roughness": 1,
+        "opacity": 80
+      }
+    }
+  }
+}
