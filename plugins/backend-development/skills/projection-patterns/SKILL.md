@@ -33,12 +33,12 @@ Comprehensive guide to building projections and read models for event-sourced sy
 
 ### 2. Projection Types
 
-| Type | Description | Use Case |
-|------|-------------|----------|
-| **Live** | Real-time from subscription | Current state queries |
-| **Catchup** | Process historical events | Rebuilding read models |
-| **Persistent** | Stores checkpoint | Resume after restart |
-| **Inline** | Same transaction as write | Strong consistency |
+| Type           | Description                 | Use Case               |
+| -------------- | --------------------------- | ---------------------- |
+| **Live**       | Real-time from subscription | Current state queries  |
+| **Catchup**    | Process historical events   | Rebuilding read models |
+| **Persistent** | Stores checkpoint           | Resume after restart   |
+| **Inline**     | Same transaction as write   | Strong consistency     |
 
 ## Templates
 
@@ -470,6 +470,7 @@ class CustomerActivityProjection(Projection):
 ## Best Practices
 
 ### Do's
+
 - **Make projections idempotent** - Safe to replay
 - **Use transactions** - For multi-table updates
 - **Store checkpoints** - Resume after failures
@@ -477,6 +478,7 @@ class CustomerActivityProjection(Projection):
 - **Plan for rebuilds** - Design for reconstruction
 
 ### Don'ts
+
 - **Don't couple projections** - Each is independent
 - **Don't skip error handling** - Log and alert on failures
 - **Don't ignore ordering** - Events must be processed in order

@@ -22,12 +22,14 @@ Master REST and GraphQL API design principles to build intuitive, scalable, and 
 ### 1. RESTful Design Principles
 
 **Resource-Oriented Architecture**
+
 - Resources are nouns (users, orders, products), not verbs
 - Use HTTP methods for actions (GET, POST, PUT, PATCH, DELETE)
 - URLs represent resource hierarchies
 - Consistent naming conventions
 
 **HTTP Methods Semantics:**
+
 - `GET`: Retrieve resources (idempotent, safe)
 - `POST`: Create new resources
 - `PUT`: Replace entire resource (idempotent)
@@ -37,12 +39,14 @@ Master REST and GraphQL API design principles to build intuitive, scalable, and 
 ### 2. GraphQL Design Principles
 
 **Schema-First Development**
+
 - Types define your domain model
 - Queries for reading data
 - Mutations for modifying data
 - Subscriptions for real-time updates
 
 **Query Structure:**
+
 - Clients request exactly what they need
 - Single endpoint, multiple operations
 - Strongly typed schema
@@ -51,17 +55,20 @@ Master REST and GraphQL API design principles to build intuitive, scalable, and 
 ### 3. API Versioning Strategies
 
 **URL Versioning:**
+
 ```
 /api/v1/users
 /api/v2/users
 ```
 
 **Header Versioning:**
+
 ```
 Accept: application/vnd.api+json; version=1
 ```
 
 **Query Parameter Versioning:**
+
 ```
 /api/users?version=1
 ```
@@ -256,11 +263,7 @@ type User {
   createdAt: DateTime!
 
   # Relationships
-  orders(
-    first: Int = 20
-    after: String
-    status: OrderStatus
-  ): OrderConnection!
+  orders(first: Int = 20, after: String, status: OrderStatus): OrderConnection!
 
   profile: UserProfile
 }
@@ -311,11 +314,7 @@ scalar Money
 # Query root
 type Query {
   user(id: ID!): User
-  users(
-    first: Int = 20
-    after: String
-    search: String
-  ): UserConnection!
+  users(first: Int = 20, after: String, search: String): UserConnection!
 
   order(id: ID!): Order
 }
@@ -489,6 +488,7 @@ def create_context():
 ## Best Practices
 
 ### REST APIs
+
 1. **Consistent Naming**: Use plural nouns for collections (`/users`, not `/user`)
 2. **Stateless**: Each request contains all necessary information
 3. **Use HTTP Status Codes Correctly**: 2xx success, 4xx client errors, 5xx server errors
@@ -498,6 +498,7 @@ def create_context():
 7. **Documentation**: Use OpenAPI/Swagger for interactive docs
 
 ### GraphQL APIs
+
 1. **Schema First**: Design schema before writing resolvers
 2. **Avoid N+1**: Use DataLoaders for efficient data fetching
 3. **Input Validation**: Validate at schema and resolver levels

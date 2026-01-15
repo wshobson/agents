@@ -9,12 +9,14 @@ Systematic improvement of existing agents through performance analysis, prompt e
 Comprehensive analysis of agent performance using context-manager for historical data collection.
 
 ### 1.1 Gather Performance Data
+
 ```
 Use: context-manager
 Command: analyze-agent-performance $ARGUMENTS --days 30
 ```
 
 Collect metrics including:
+
 - Task completion rate (successful vs failed tasks)
 - Response accuracy and factual correctness
 - Tool usage efficiency (correct tools, call frequency)
@@ -25,6 +27,7 @@ Collect metrics including:
 ### 1.2 User Feedback Pattern Analysis
 
 Identify recurring patterns in user interactions:
+
 - **Correction patterns**: Where users consistently modify outputs
 - **Clarification requests**: Common areas of ambiguity
 - **Task abandonment**: Points where users give up
@@ -34,6 +37,7 @@ Identify recurring patterns in user interactions:
 ### 1.3 Failure Mode Classification
 
 Categorize failures by root cause:
+
 - **Instruction misunderstanding**: Role or task confusion
 - **Output format errors**: Structure or formatting issues
 - **Context loss**: Long conversation degradation
@@ -44,6 +48,7 @@ Categorize failures by root cause:
 ### 1.4 Baseline Performance Report
 
 Generate quantitative baseline metrics:
+
 ```
 Performance Baseline:
 - Task Success Rate: [X%]
@@ -61,6 +66,7 @@ Apply advanced prompt optimization techniques using prompt-engineer agent.
 ### 2.1 Chain-of-Thought Enhancement
 
 Implement structured reasoning patterns:
+
 ```
 Use: prompt-engineer
 Technique: chain-of-thought-optimization
@@ -74,6 +80,7 @@ Technique: chain-of-thought-optimization
 ### 2.2 Few-Shot Example Optimization
 
 Curate high-quality examples from successful interactions:
+
 - **Select diverse examples** covering common use cases
 - **Include edge cases** that previously failed
 - **Show both positive and negative examples** with explanations
@@ -81,6 +88,7 @@ Curate high-quality examples from successful interactions:
 - **Annotate examples** with key decision points
 
 Example structure:
+
 ```
 Good Example:
 Input: [User request]
@@ -98,6 +106,7 @@ Correct approach: [Fixed version]
 ### 2.3 Role Definition Refinement
 
 Strengthen agent identity and capabilities:
+
 - **Core purpose**: Clear, single-sentence mission
 - **Expertise domains**: Specific knowledge areas
 - **Behavioral traits**: Personality and interaction style
@@ -108,6 +117,7 @@ Strengthen agent identity and capabilities:
 ### 2.4 Constitutional AI Integration
 
 Implement self-correction mechanisms:
+
 ```
 Constitutional Principles:
 1. Verify factual accuracy before responding
@@ -118,6 +128,7 @@ Constitutional Principles:
 ```
 
 Add critique-and-revise loops:
+
 - Initial response generation
 - Self-critique against principles
 - Automatic revision if issues detected
@@ -126,6 +137,7 @@ Add critique-and-revise loops:
 ### 2.5 Output Format Tuning
 
 Optimize response structure:
+
 - **Structured templates** for common tasks
 - **Dynamic formatting** based on complexity
 - **Progressive disclosure** for detailed information
@@ -140,6 +152,7 @@ Comprehensive testing framework with A/B comparison.
 ### 3.1 Test Suite Development
 
 Create representative test scenarios:
+
 ```
 Test Categories:
 1. Golden path scenarios (common successful cases)
@@ -153,6 +166,7 @@ Test Categories:
 ### 3.2 A/B Testing Framework
 
 Compare original vs improved agent:
+
 ```
 Use: parallel-test-runner
 Config:
@@ -164,6 +178,7 @@ Config:
 ```
 
 Statistical significance testing:
+
 - Minimum sample size: 100 tasks per variant
 - Confidence level: 95% (p < 0.05)
 - Effect size calculation (Cohen's d)
@@ -174,6 +189,7 @@ Statistical significance testing:
 Comprehensive scoring framework:
 
 **Task-Level Metrics:**
+
 - Completion rate (binary success/failure)
 - Correctness score (0-100% accuracy)
 - Efficiency score (steps taken vs optimal)
@@ -181,6 +197,7 @@ Comprehensive scoring framework:
 - Response relevance and completeness
 
 **Quality Metrics:**
+
 - Hallucination rate (factual errors per response)
 - Consistency score (alignment with previous responses)
 - Format compliance (matches specified structure)
@@ -188,6 +205,7 @@ Comprehensive scoring framework:
 - User satisfaction prediction
 
 **Performance Metrics:**
+
 - Response latency (time to first token)
 - Total generation time
 - Token consumption (input + output)
@@ -197,6 +215,7 @@ Comprehensive scoring framework:
 ### 3.4 Human Evaluation Protocol
 
 Structured human review process:
+
 - Blind evaluation (evaluators don't know version)
 - Standardized rubric with clear criteria
 - Multiple evaluators per sample (inter-rater reliability)
@@ -210,6 +229,7 @@ Safe rollout with monitoring and rollback capabilities.
 ### 4.1 Version Management
 
 Systematic versioning strategy:
+
 ```
 Version Format: agent-name-v[MAJOR].[MINOR].[PATCH]
 Example: customer-support-v2.3.1
@@ -220,6 +240,7 @@ PATCH: Bug fixes, minor adjustments
 ```
 
 Maintain version history:
+
 - Git-based prompt storage
 - Changelog with improvement details
 - Performance metrics per version
@@ -228,6 +249,7 @@ Maintain version history:
 ### 4.2 Staged Rollout
 
 Progressive deployment strategy:
+
 1. **Alpha testing**: Internal team validation (5% traffic)
 2. **Beta testing**: Selected users (20% traffic)
 3. **Canary release**: Gradual increase (20% → 50% → 100%)
@@ -237,6 +259,7 @@ Progressive deployment strategy:
 ### 4.3 Rollback Procedures
 
 Quick recovery mechanism:
+
 ```
 Rollback Triggers:
 - Success rate drops >10% from baseline
@@ -256,6 +279,7 @@ Rollback Process:
 ### 4.4 Continuous Monitoring
 
 Real-time performance tracking:
+
 - Dashboard with key metrics
 - Anomaly detection alerts
 - User feedback collection
@@ -265,6 +289,7 @@ Real-time performance tracking:
 ## Success Criteria
 
 Agent improvement is successful when:
+
 - Task success rate improves by ≥15%
 - User corrections decrease by ≥25%
 - No increase in safety violations
@@ -275,6 +300,7 @@ Agent improvement is successful when:
 ## Post-Deployment Review
 
 After 30 days of production use:
+
 1. Analyze accumulated performance data
 2. Compare against baseline and targets
 3. Identify new improvement opportunities
@@ -284,6 +310,7 @@ After 30 days of production use:
 ## Continuous Improvement Cycle
 
 Establish regular improvement cadence:
+
 - **Weekly**: Monitor metrics and collect feedback
 - **Monthly**: Analyze patterns and plan improvements
 - **Quarterly**: Major version updates with new capabilities

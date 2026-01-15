@@ -37,6 +37,7 @@ The following behaviors are considered harassment and are unacceptable:
 ### Reporting
 
 If you experience or witness unacceptable behavior, please report it by:
+
 - Creating an issue with the `moderation` label
 - Contacting the repository maintainers directly
 - Using GitHub's built-in reporting mechanisms
@@ -59,6 +60,7 @@ Community leaders will follow these guidelines in determining consequences:
 ## Scope
 
 This Code of Conduct applies within all community spaces, including:
+
 - Issues and pull requests
 - Discussions and comments
 - Wiki and documentation

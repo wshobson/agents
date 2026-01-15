@@ -4,26 +4,26 @@
 
 [![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
 
-> **🎯 Agent Skills Enabled** — 107 specialized skills extend Claude's capabilities across plugins with progressive disclosure
+> **🎯 Agent Skills Enabled** — 110 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **99 specialized AI agents**, **15 multi-agent workflow orchestrators**, **107 agent skills**, and **71 development tools** organized into **67 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **100 specialized AI agents**, **15 multi-agent workflow orchestrators**, **110 agent skills**, and **76 development tools** organized into **68 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **67 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
-- **99 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
-- **107 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
+- **68 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
+- **100 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
+- **110 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **15 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
-- **71 Development Tools** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
+- **76 Development Tools** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 67 focused plugins optimized for minimal token usage
-- **Comprehensive Tooling**: 71 development tools including test generation, scaffolding, and security scanning
+- **Granular Plugin Architecture**: 68 focused plugins optimized for minimal token usage
+- **Comprehensive Tooling**: 76 development tools including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
-- **Agent Skills**: 107 specialized skills following for progressive disclosure and token efficiency
+- **Agent Skills**: 110 specialized skills following for progressive disclosure and token efficiency
 - **Clear Organization**: 23 categories with 1-6 plugins each for easy discovery
 - **Efficient Design**: Average 3.4 components per plugin (follows Anthropic's 2-8 pattern)
 
@@ -49,7 +49,7 @@ Add this marketplace to Claude Code:
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 67 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 68 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Plugins
 
@@ -113,9 +113,9 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ### Core Guides
 
-- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 67 plugins
-- **[Agent Reference](docs/agents.md)** - All 99 agents organized by category
-- **[Agent Skills](docs/agent-skills.md)** - 107 specialized skills with progressive disclosure
+- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 68 plugins
+- **[Agent Reference](docs/agents.md)** - All 100 agents organized by category
+- **[Agent Skills](docs/agent-skills.md)** - 110 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
 - **[Architecture](docs/architecture.md)** - Design principles and patterns
 
@@ -129,7 +129,7 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ## What's New
 
-### Agent Skills (107 skills across 18 plugins)
+### Agent Skills (110 skills across 19 plugins)
 
 Specialized knowledge packages following Anthropic's progressive disclosure architecture:
 
@@ -147,6 +147,9 @@ Specialized knowledge packages following Anthropic's progressive disclosure arch
 - **LLM Applications** (4 skills): LangChain, prompt engineering, RAG, evaluation
 
 **Blockchain & Web3** (4 skills): DeFi protocols, NFT standards, Solidity security, Web3 testing
+
+**Project Management:**
+- **Conductor** (3 skills): context-driven development, track management, workflow patterns
 
 **And more:** Framework migration, observability, payment processing, ML operations, security scanning
 
@@ -233,11 +236,11 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 ## Plugin Categories
 
-**23 categories, 67 plugins:**
+**23 categories, 68 plugins:**
 
 - 🎨 **Development** (4) - debugging, backend, frontend, multi-platform
 - 📚 **Documentation** (3) - code docs, API specs, diagrams, C4 architecture
-- 🔄 **Workflows** (3) - git, full-stack, TDD
+- 🔄 **Workflows** (4) - git, full-stack, TDD, **Conductor** (context-driven development)
 - ✅ **Testing** (2) - unit testing, TDD workflows
 - 🔍 **Quality** (3) - code review, comprehensive review, performance
 - 🤖 **AI & ML** (4) - LLM apps, agent orchestration, context, MLOps
@@ -265,7 +268,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 - **Single responsibility** - Each plugin does one thing well
 - **Minimal token usage** - Average 3.4 components per plugin
 - **Composable** - Mix and match for complex workflows
-- **100% coverage** - All 99 agents accessible across plugins
+- **100% coverage** - All 100 agents accessible across plugins
 
 ### Progressive Disclosure (Skills)
 
@@ -279,7 +282,7 @@ Three-tier architecture for token efficiency:
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # 67 plugins
+│   └── marketplace.json          # 68 plugins
 ├── plugins/
 │   ├── python-development/
 │   │   ├── agents/               # 3 Python experts

@@ -20,13 +20,13 @@ Practical guide to testing web applications with screen readers for comprehensiv
 
 ### 1. Major Screen Readers
 
-| Screen Reader | Platform | Browser | Usage |
-|---------------|----------|---------|-------|
-| **VoiceOver** | macOS/iOS | Safari | ~15% |
-| **NVDA** | Windows | Firefox/Chrome | ~31% |
-| **JAWS** | Windows | Chrome/IE | ~40% |
-| **TalkBack** | Android | Chrome | ~10% |
-| **Narrator** | Windows | Edge | ~4% |
+| Screen Reader | Platform  | Browser        | Usage |
+| ------------- | --------- | -------------- | ----- |
+| **VoiceOver** | macOS/iOS | Safari         | ~15%  |
+| **NVDA**      | Windows   | Firefox/Chrome | ~31%  |
+| **JAWS**      | Windows   | Chrome/IE      | ~40%  |
+| **TalkBack**  | Android   | Chrome         | ~10%  |
+| **Narrator**  | Windows   | Edge           | ~4%   |
 
 ### 2. Testing Priority
 
@@ -44,11 +44,11 @@ Comprehensive Coverage:
 
 ### 3. Screen Reader Modes
 
-| Mode | Purpose | When Used |
-|------|---------|-----------|
-| **Browse/Virtual** | Read content | Default reading |
-| **Focus/Forms** | Interact with controls | Filling forms |
-| **Application** | Custom widgets | ARIA applications |
+| Mode               | Purpose                | When Used         |
+| ------------------ | ---------------------- | ----------------- |
+| **Browse/Virtual** | Read content           | Default reading   |
+| **Focus/Forms**    | Interact with controls | Filling forms     |
+| **Application**    | Custom widgets         | ARIA applications |
 
 ## VoiceOver (macOS)
 
@@ -101,22 +101,26 @@ VO + Cmd + T       Next table
 ## VoiceOver Testing Checklist
 
 ### Page Load
+
 - [ ] Page title announced
 - [ ] Main landmark found
 - [ ] Skip link works
 
 ### Navigation
+
 - [ ] All headings discoverable via rotor
 - [ ] Heading levels logical (H1 → H2 → H3)
 - [ ] Landmarks properly labeled
 - [ ] Skip links functional
 
 ### Links & Buttons
+
 - [ ] Link purpose clear
 - [ ] Button actions described
 - [ ] New window/tab announced
 
 ### Forms
+
 - [ ] All labels read with inputs
 - [ ] Required fields announced
 - [ ] Error messages read
@@ -124,12 +128,14 @@ VO + Cmd + T       Next table
 - [ ] Focus moves to errors
 
 ### Dynamic Content
+
 - [ ] Alerts announced immediately
 - [ ] Loading states communicated
 - [ ] Content updates announced
 - [ ] Modals trap focus correctly
 
 ### Tables
+
 - [ ] Headers associated with cells
 - [ ] Table navigation works
 - [ ] Complex tables have captions
@@ -151,11 +157,11 @@ VO + Cmd + T       Next table
 <div id="results" role="status" aria-live="polite">New results loaded</div>
 
 <!-- Issue: Form error not read -->
-<input type="email">
+<input type="email" />
 <span class="error">Invalid email</span>
 
 <!-- Fix -->
-<input type="email" aria-invalid="true" aria-describedby="email-error">
+<input type="email" aria-invalid="true" aria-describedby="email-error" />
 <span id="email-error" role="alert">Invalid email</span>
 ```
 
@@ -235,23 +241,27 @@ Watch for:
 ## NVDA Test Script
 
 ### Initial Load
+
 1. Navigate to page
 2. Let page finish loading
 3. Press Insert + Down to read all
 4. Note: Page title, main content identified?
 
 ### Landmark Navigation
+
 1. Press D repeatedly
 2. Check: All main areas reachable?
 3. Check: Landmarks properly labeled?
 
 ### Heading Navigation
+
 1. Press Insert + F7 → Headings
 2. Check: Logical heading structure?
 3. Press H to navigate headings
 4. Check: All sections discoverable?
 
 ### Form Testing
+
 1. Press F to find first form field
 2. Check: Label read?
 3. Fill in invalid data
@@ -260,12 +270,14 @@ Watch for:
 6. Check: Focus moved to error?
 
 ### Interactive Elements
+
 1. Tab through all interactive elements
 2. Check: Each announces role and state
 3. Activate buttons with Enter/Space
 4. Check: Result announced?
 
 ### Dynamic Content
+
 1. Trigger content update
 2. Check: Change announced?
 3. Open modal
@@ -345,10 +357,12 @@ Reading Controls (swipe up then right):
 
 ```html
 <!-- Accessible modal structure -->
-<div role="dialog"
-     aria-modal="true"
-     aria-labelledby="dialog-title"
-     aria-describedby="dialog-desc">
+<div
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-desc"
+>
   <h2 id="dialog-title">Confirm Delete</h2>
   <p id="dialog-desc">This action cannot be undone.</p>
   <button>Cancel</button>
@@ -363,10 +377,10 @@ function openModal(modal) {
   lastFocus = document.activeElement;
 
   // Move focus to modal
-  modal.querySelector('h2').focus();
+  modal.querySelector("h2").focus();
 
   // Trap focus
-  modal.addEventListener('keydown', trapFocus);
+  modal.addEventListener("keydown", trapFocus);
 }
 
 function closeModal(modal) {
@@ -375,9 +389,9 @@ function closeModal(modal) {
 }
 
 function trapFocus(e) {
-  if (e.key === 'Tab') {
+  if (e.key === "Tab") {
     const focusable = modal.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -391,7 +405,7 @@ function trapFocus(e) {
     }
   }
 
-  if (e.key === 'Escape') {
+  if (e.key === "Escape") {
     closeModal(modal);
   }
 }
@@ -411,12 +425,13 @@ function trapFocus(e) {
 </div>
 
 <!-- Progress updates -->
-<div role="progressbar"
-     aria-valuenow="75"
-     aria-valuemin="0"
-     aria-valuemax="100"
-     aria-label="Upload progress">
-</div>
+<div
+  role="progressbar"
+  aria-valuenow="75"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  aria-label="Upload progress"
+></div>
 
 <!-- Log (additions only) -->
 <div role="log" aria-live="polite" aria-relevant="additions">
@@ -428,53 +443,47 @@ function trapFocus(e) {
 
 ```html
 <div role="tablist" aria-label="Product information">
-  <button role="tab"
-          id="tab-1"
-          aria-selected="true"
-          aria-controls="panel-1">
+  <button role="tab" id="tab-1" aria-selected="true" aria-controls="panel-1">
     Description
   </button>
-  <button role="tab"
-          id="tab-2"
-          aria-selected="false"
-          aria-controls="panel-2"
-          tabindex="-1">
+  <button
+    role="tab"
+    id="tab-2"
+    aria-selected="false"
+    aria-controls="panel-2"
+    tabindex="-1"
+  >
     Reviews
   </button>
 </div>
 
-<div role="tabpanel"
-     id="panel-1"
-     aria-labelledby="tab-1">
+<div role="tabpanel" id="panel-1" aria-labelledby="tab-1">
   Product description content...
 </div>
 
-<div role="tabpanel"
-     id="panel-2"
-     aria-labelledby="tab-2"
-     hidden>
+<div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>
   Reviews content...
 </div>
 ```
 
 ```javascript
 // Tab keyboard navigation
-tablist.addEventListener('keydown', (e) => {
+tablist.addEventListener("keydown", (e) => {
   const tabs = [...tablist.querySelectorAll('[role="tab"]')];
   const index = tabs.indexOf(document.activeElement);
 
   let newIndex;
   switch (e.key) {
-    case 'ArrowRight':
+    case "ArrowRight":
       newIndex = (index + 1) % tabs.length;
       break;
-    case 'ArrowLeft':
+    case "ArrowLeft":
       newIndex = (index - 1 + tabs.length) % tabs.length;
       break;
-    case 'Home':
+    case "Home":
       newIndex = 0;
       break;
-    case 'End':
+    case "End":
       newIndex = tabs.length - 1;
       break;
     default:
@@ -494,17 +503,18 @@ tablist.addEventListener('keydown', (e) => {
 function logAccessibleName(element) {
   const computed = window.getComputedStyle(element);
   console.log({
-    role: element.getAttribute('role') || element.tagName,
-    name: element.getAttribute('aria-label') ||
-          element.getAttribute('aria-labelledby') ||
-          element.textContent,
+    role: element.getAttribute("role") || element.tagName,
+    name:
+      element.getAttribute("aria-label") ||
+      element.getAttribute("aria-labelledby") ||
+      element.textContent,
     state: {
-      expanded: element.getAttribute('aria-expanded'),
-      selected: element.getAttribute('aria-selected'),
-      checked: element.getAttribute('aria-checked'),
-      disabled: element.disabled
+      expanded: element.getAttribute("aria-expanded"),
+      selected: element.getAttribute("aria-selected"),
+      checked: element.getAttribute("aria-checked"),
+      disabled: element.disabled,
     },
-    visible: computed.display !== 'none' && computed.visibility !== 'hidden'
+    visible: computed.display !== "none" && computed.visibility !== "hidden",
   });
 }
 ```
@@ -512,6 +522,7 @@ function logAccessibleName(element) {
 ## Best Practices
 
 ### Do's
+
 - **Test with actual screen readers** - Not just simulators
 - **Use semantic HTML first** - ARIA is supplemental
 - **Test in browse and focus modes** - Different experiences
@@ -519,6 +530,7 @@ function logAccessibleName(element) {
 - **Test keyboard only first** - Foundation for SR testing
 
 ### Don'ts
+
 - **Don't assume one SR is enough** - Test multiple
 - **Don't ignore mobile** - Growing user base
 - **Don't test only happy path** - Test error states

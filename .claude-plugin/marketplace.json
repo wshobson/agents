@@ -30,10 +30,7 @@
       ],
       "category": "documentation",
       "strict": false,
-      "commands": [
-        "./commands/doc-generate.md",
-        "./commands/code-explain.md"
-      ],
+      "commands": ["./commands/doc-generate.md", "./commands/code-explain.md"],
       "agents": [
         "./agents/docs-architect.md",
         "./agents/tutorial-engineer.md",
@@ -60,13 +57,8 @@
       ],
       "category": "development",
       "strict": false,
-      "commands": [
-        "./commands/smart-debug.md"
-      ],
-      "agents": [
-        "./agents/debugger.md",
-        "./agents/dx-optimizer.md"
-      ]
+      "commands": ["./commands/smart-debug.md"],
+      "agents": ["./agents/debugger.md", "./agents/dx-optimizer.md"]
     },
     {
       "name": "git-pr-workflows",
@@ -94,9 +86,7 @@
         "./commands/onboard.md",
         "./commands/git-workflow.md"
       ],
-      "agents": [
-        "./agents/code-reviewer.md"
-      ]
+      "agents": ["./agents/code-reviewer.md"]
     },
     {
       "name": "backend-development",
@@ -122,9 +112,7 @@
       ],
       "category": "development",
       "strict": false,
-      "commands": [
-        "./commands/feature-development.md"
-      ],
+      "commands": ["./commands/feature-development.md"],
       "agents": [
         "./agents/backend-architect.md",
         "./agents/graphql-architect.md",
@@ -156,18 +144,10 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "frontend",
-        "mobile",
-        "react",
-        "ui",
-        "cross-platform"
-      ],
+      "keywords": ["frontend", "mobile", "react", "ui", "cross-platform"],
       "category": "development",
       "strict": false,
-      "commands": [
-        "./commands/component-scaffold.md"
-      ],
+      "commands": ["./commands/component-scaffold.md"],
       "agents": [
         "./agents/frontend-developer.md",
         "./agents/mobile-developer.md"
@@ -200,9 +180,7 @@
       ],
       "category": "workflows",
       "strict": false,
-      "commands": [
-        "./commands/full-stack-feature.md"
-      ],
+      "commands": ["./commands/full-stack-feature.md"],
       "agents": [
         "./agents/test-automator.md",
         "./agents/security-auditor.md",
@@ -231,13 +209,8 @@
       ],
       "category": "testing",
       "strict": false,
-      "commands": [
-        "./commands/test-generate.md"
-      ],
-      "agents": [
-        "./agents/test-automator.md",
-        "./agents/debugger.md"
-      ]
+      "commands": ["./commands/test-generate.md"],
+      "agents": ["./agents/test-automator.md", "./agents/debugger.md"]
     },
     {
       "name": "tdd-workflows",
@@ -251,12 +224,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "tdd",
-        "test-driven",
-        "workflow",
-        "red-green-refactor"
-      ],
+      "keywords": ["tdd", "test-driven", "workflow", "red-green-refactor"],
       "category": "workflows",
       "strict": false,
       "commands": [
@@ -265,10 +233,7 @@
         "./commands/tdd-green.md",
         "./commands/tdd-refactor.md"
       ],
-      "agents": [
-        "./agents/tdd-orchestrator.md",
-        "./agents/code-reviewer.md"
-      ]
+      "agents": ["./agents/tdd-orchestrator.md", "./agents/code-reviewer.md"]
     },
     {
       "name": "code-review-ai",
@@ -282,20 +247,11 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "code-review",
-        "architecture",
-        "ai-analysis",
-        "quality"
-      ],
+      "keywords": ["code-review", "architecture", "ai-analysis", "quality"],
       "category": "quality",
       "strict": false,
-      "commands": [
-        "./commands/ai-review.md"
-      ],
-      "agents": [
-        "./agents/architect-review.md"
-      ]
+      "commands": ["./commands/ai-review.md"],
+      "agents": ["./agents/architect-review.md"]
     },
     {
       "name": "code-refactoring",
@@ -309,12 +265,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "refactoring",
-        "code-quality",
-        "technical-debt",
-        "cleanup"
-      ],
+      "keywords": ["refactoring", "code-quality", "technical-debt", "cleanup"],
       "category": "utilities",
       "strict": false,
       "commands": [
@@ -322,10 +273,7 @@
         "./commands/tech-debt.md",
         "./commands/context-restore.md"
       ],
-      "agents": [
-        "./agents/legacy-modernizer.md",
-        "./agents/code-reviewer.md"
-      ]
+      "agents": ["./agents/legacy-modernizer.md", "./agents/code-reviewer.md"]
     },
     {
       "name": "dependency-management",
@@ -339,21 +287,11 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "dependencies",
-        "npm",
-        "security",
-        "auditing",
-        "upgrades"
-      ],
+      "keywords": ["dependencies", "npm", "security", "auditing", "upgrades"],
       "category": "utilities",
       "strict": false,
-      "commands": [
-        "./commands/deps-audit.md"
-      ],
-      "agents": [
-        "./agents/legacy-modernizer.md"
-      ]
+      "commands": ["./commands/deps-audit.md"],
+      "agents": ["./agents/legacy-modernizer.md"]
     },
     {
       "name": "error-debugging",
@@ -380,10 +318,7 @@
         "./commands/error-trace.md",
         "./commands/multi-agent-review.md"
       ],
-      "agents": [
-        "./agents/debugger.md",
-        "./agents/error-detective.md"
-      ]
+      "agents": ["./agents/debugger.md", "./agents/error-detective.md"]
     },
     {
       "name": "team-collaboration",
@@ -397,21 +332,11 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "collaboration",
-        "team",
-        "standup",
-        "issue-management"
-      ],
+      "keywords": ["collaboration", "team", "standup", "issue-management"],
       "category": "utilities",
       "strict": false,
-      "commands": [
-        "./commands/issue.md",
-        "./commands/standup-notes.md"
-      ],
-      "agents": [
-        "./agents/dx-optimizer.md"
-      ]
+      "commands": ["./commands/issue.md", "./commands/standup-notes.md"],
+      "agents": ["./agents/dx-optimizer.md"]
     },
     {
       "name": "llm-application-dev",
@@ -468,21 +393,14 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "multi-agent",
-        "orchestration",
-        "ai-agents",
-        "optimization"
-      ],
+      "keywords": ["multi-agent", "orchestration", "ai-agents", "optimization"],
       "category": "ai-ml",
       "strict": false,
       "commands": [
         "./commands/multi-agent-optimize.md",
         "./commands/improve-agent.md"
       ],
-      "agents": [
-        "./agents/context-manager.md"
-      ]
+      "agents": ["./agents/context-manager.md"]
     },
     {
       "name": "context-management",
@@ -496,21 +414,14 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "context",
-        "persistence",
-        "conversation",
-        "memory"
-      ],
+      "keywords": ["context", "persistence", "conversation", "memory"],
       "category": "ai-ml",
       "strict": false,
       "commands": [
         "./commands/context-save.md",
         "./commands/context-restore.md"
       ],
-      "agents": [
-        "./agents/context-manager.md"
-      ]
+      "agents": ["./agents/context-manager.md"]
     },
     {
       "name": "machine-learning-ops",
@@ -534,17 +445,13 @@
       ],
       "category": "ai-ml",
       "strict": false,
-      "commands": [
-        "./commands/ml-pipeline.md"
-      ],
+      "commands": ["./commands/ml-pipeline.md"],
       "agents": [
         "./agents/data-scientist.md",
         "./agents/ml-engineer.md",
         "./agents/mlops-engineer.md"
       ],
-      "skills": [
-        "./skills/ml-pipeline-workflow"
-      ]
+      "skills": ["./skills/ml-pipeline-workflow"]
     },
     {
       "name": "data-engineering",
@@ -571,10 +478,7 @@
         "./commands/data-driven-feature.md",
         "./commands/data-pipeline.md"
       ],
-      "agents": [
-        "./agents/data-engineer.md",
-        "./agents/backend-architect.md"
-      ],
+      "agents": ["./agents/data-engineer.md", "./agents/backend-architect.md"],
       "skills": [
         "./skills/dbt-transformation-patterns",
         "./skills/airflow-dag-patterns",
@@ -594,12 +498,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "incident-response",
-        "production",
-        "sre",
-        "troubleshooting"
-      ],
+      "keywords": ["incident-response", "production", "sre", "troubleshooting"],
       "category": "operations",
       "strict": false,
       "commands": [
@@ -628,12 +527,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "diagnostics",
-        "error-tracing",
-        "root-cause",
-        "debugging"
-      ],
+      "keywords": ["diagnostics", "error-tracing", "root-cause", "debugging"],
       "category": "operations",
       "strict": false,
       "commands": [
@@ -641,10 +535,7 @@
         "./commands/error-analysis.md",
         "./commands/smart-debug.md"
       ],
-      "agents": [
-        "./agents/debugger.md",
-        "./agents/error-detective.md"
-      ]
+      "agents": ["./agents/debugger.md", "./agents/error-detective.md"]
     },
     {
       "name": "distributed-debugging",
@@ -666,9 +557,7 @@
       ],
       "category": "operations",
       "strict": false,
-      "commands": [
-        "./commands/debug-trace.md"
-      ],
+      "commands": ["./commands/debug-trace.md"],
       "agents": [
         "./agents/error-detective.md",
         "./agents/devops-troubleshooter.md"
@@ -727,13 +616,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "deployment",
-        "rollout",
-        "rollback",
-        "canary",
-        "blue-green"
-      ],
+      "keywords": ["deployment", "rollout", "rollback", "canary", "blue-green"],
       "category": "infrastructure",
       "strict": false,
       "commands": [],
@@ -762,12 +645,8 @@
       ],
       "category": "infrastructure",
       "strict": false,
-      "commands": [
-        "./commands/config-validate.md"
-      ],
-      "agents": [
-        "./agents/cloud-architect.md"
-      ]
+      "commands": ["./commands/config-validate.md"],
+      "agents": ["./agents/cloud-architect.md"]
     },
     {
       "name": "kubernetes-operations",
@@ -792,9 +671,7 @@
       "category": "infrastructure",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/kubernetes-architect.md"
-      ],
+      "agents": ["./agents/kubernetes-architect.md"],
       "skills": [
         "./skills/gitops-workflow",
         "./skills/helm-chart-scaffolding",
@@ -867,9 +744,7 @@
       ],
       "category": "infrastructure",
       "strict": false,
-      "commands": [
-        "./commands/workflow-automate.md"
-      ],
+      "commands": ["./commands/workflow-automate.md"],
       "agents": [
         "./agents/deployment-engineer.md",
         "./agents/devops-troubleshooter.md",
@@ -904,9 +779,7 @@
       ],
       "category": "performance",
       "strict": false,
-      "commands": [
-        "./commands/performance-optimization.md"
-      ],
+      "commands": ["./commands/performance-optimization.md"],
       "agents": [
         "./agents/performance-engineer.md",
         "./agents/frontend-developer.md",
@@ -933,9 +806,7 @@
       ],
       "category": "performance",
       "strict": false,
-      "commands": [
-        "./commands/cost-optimize.md"
-      ],
+      "commands": ["./commands/cost-optimize.md"],
       "agents": [
         "./agents/database-optimizer.md",
         "./agents/database-architect.md",
@@ -964,10 +835,7 @@
       ],
       "category": "quality",
       "strict": false,
-      "commands": [
-        "./commands/full-review.md",
-        "./commands/pr-enhance.md"
-      ],
+      "commands": ["./commands/full-review.md", "./commands/pr-enhance.md"],
       "agents": [
         "./agents/code-reviewer.md",
         "./agents/architect-review.md",
@@ -986,11 +854,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "performance-review",
-        "test-coverage",
-        "quality-analysis"
-      ],
+      "keywords": ["performance-review", "test-coverage", "quality-analysis"],
       "category": "quality",
       "strict": false,
       "commands": [
@@ -1051,12 +915,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "technical-debt",
-        "cleanup",
-        "refactoring",
-        "dependencies"
-      ],
+      "keywords": ["technical-debt", "cleanup", "refactoring", "dependencies"],
       "category": "modernization",
       "strict": false,
       "commands": [
@@ -1064,10 +923,7 @@
         "./commands/tech-debt.md",
         "./commands/refactor-clean.md"
       ],
-      "agents": [
-        "./agents/test-automator.md",
-        "./agents/code-reviewer.md"
-      ]
+      "agents": ["./agents/test-automator.md", "./agents/code-reviewer.md"]
     },
     {
       "name": "database-design",
@@ -1081,22 +937,12 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "database-design",
-        "schema",
-        "sql",
-        "data-modeling"
-      ],
+      "keywords": ["database-design", "schema", "sql", "data-modeling"],
       "category": "database",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/database-architect.md",
-        "./agents/sql-pro.md"
-      ],
-      "skills": [
-        "./skills/postgresql"
-      ]
+      "agents": ["./agents/database-architect.md", "./agents/sql-pro.md"],
+      "skills": ["./skills/postgresql"]
     },
     {
       "name": "database-migrations",
@@ -1123,10 +969,7 @@
         "./commands/sql-migrations.md",
         "./commands/migration-observability.md"
       ],
-      "agents": [
-        "./agents/database-optimizer.md",
-        "./agents/database-admin.md"
-      ]
+      "agents": ["./agents/database-optimizer.md", "./agents/database-admin.md"]
     },
     {
       "name": "security-scanning",
@@ -1188,12 +1031,8 @@
       ],
       "category": "security",
       "strict": false,
-      "commands": [
-        "./commands/compliance-check.md"
-      ],
-      "agents": [
-        "./agents/security-auditor.md"
-      ]
+      "commands": ["./commands/compliance-check.md"],
+      "agents": ["./agents/security-auditor.md"]
     },
     {
       "name": "backend-api-security",
@@ -1243,9 +1082,7 @@
       ],
       "category": "security",
       "strict": false,
-      "commands": [
-        "./commands/xss-scan.md"
-      ],
+      "commands": ["./commands/xss-scan.md"],
       "agents": [
         "./agents/frontend-security-coder.md",
         "./agents/mobile-security-coder.md",
@@ -1274,9 +1111,7 @@
       "category": "data",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/backend-security-coder.md"
-      ]
+      "agents": ["./agents/backend-security-coder.md"]
     },
     {
       "name": "api-scaffolding",
@@ -1290,14 +1125,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "api",
-        "rest",
-        "graphql",
-        "fastapi",
-        "django",
-        "express"
-      ],
+      "keywords": ["api", "rest", "graphql", "fastapi", "django", "express"],
       "category": "api",
       "strict": false,
       "commands": [],
@@ -1307,9 +1135,7 @@
         "./agents/fastapi-pro.md",
         "./agents/django-pro.md"
       ],
-      "skills": [
-        "./skills/fastapi-templates"
-      ]
+      "skills": ["./skills/fastapi-templates"]
     },
     {
       "name": "api-testing-observability",
@@ -1332,12 +1158,8 @@
       ],
       "category": "api",
       "strict": false,
-      "commands": [
-        "./commands/api-mock.md"
-      ],
-      "agents": [
-        "./agents/api-documenter.md"
-      ]
+      "commands": ["./commands/api-mock.md"],
+      "agents": ["./agents/api-documenter.md"]
     },
     {
       "name": "seo-content-creation",
@@ -1445,9 +1267,7 @@
       ],
       "category": "documentation",
       "strict": false,
-      "commands": [
-        "./commands/doc-generate.md"
-      ],
+      "commands": ["./commands/doc-generate.md"],
       "agents": [
         "./agents/docs-architect.md",
         "./agents/api-documenter.md",
@@ -1485,9 +1305,7 @@
       ],
       "category": "documentation",
       "strict": false,
-      "commands": [
-        "./commands/c4-architecture.md"
-      ],
+      "commands": ["./commands/c4-architecture.md"],
       "agents": [
         "./agents/c4-code.md",
         "./agents/c4-component.md",
@@ -1517,9 +1335,7 @@
       ],
       "category": "development",
       "strict": false,
-      "commands": [
-        "./commands/multi-platform.md"
-      ],
+      "commands": ["./commands/multi-platform.md"],
       "agents": [
         "./agents/mobile-developer.md",
         "./agents/flutter-expert.md",
@@ -1552,13 +1368,8 @@
       "category": "business",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/business-analyst.md"
-      ],
-      "skills": [
-        "./skills/kpi-dashboard-design",
-        "./skills/data-storytelling"
-      ]
+      "agents": ["./agents/business-analyst.md"],
+      "skills": ["./skills/kpi-dashboard-design", "./skills/data-storytelling"]
     },
     {
       "name": "startup-business-analyst",
@@ -1588,9 +1399,7 @@
         "./commands/financial-projections.md",
         "./commands/business-case.md"
       ],
-      "agents": [
-        "./agents/startup-analyst.md"
-      ],
+      "agents": ["./agents/startup-analyst.md"],
       "skills": [
         "./skills/market-sizing-analysis",
         "./skills/startup-financial-modeling",
@@ -1623,10 +1432,7 @@
       "category": "business",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/hr-pro.md",
-        "./agents/legal-advisor.md"
-      ],
+      "agents": ["./agents/hr-pro.md", "./agents/legal-advisor.md"],
       "skills": [
         "./skills/gdpr-data-handling",
         "./skills/employment-contract-templates"
@@ -1654,10 +1460,7 @@
       "category": "business",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/customer-support.md",
-        "./agents/sales-automator.md"
-      ]
+      "agents": ["./agents/customer-support.md", "./agents/sales-automator.md"]
     },
     {
       "name": "content-marketing",
@@ -1709,9 +1512,7 @@
       "category": "blockchain",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/blockchain-developer.md"
-      ],
+      "agents": ["./agents/blockchain-developer.md"],
       "skills": [
         "./skills/defi-protocol-templates",
         "./skills/nft-standards",
@@ -1741,10 +1542,7 @@
       "category": "finance",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/quant-analyst.md",
-        "./agents/risk-manager.md"
-      ],
+      "agents": ["./agents/quant-analyst.md", "./agents/risk-manager.md"],
       "skills": [
         "./skills/backtesting-frameworks",
         "./skills/risk-metrics-calculation"
@@ -1774,9 +1572,7 @@
       "category": "payments",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/payment-integration.md"
-      ],
+      "agents": ["./agents/payment-integration.md"],
       "skills": [
         "./skills/billing-automation",
         "./skills/paypal-integration",
@@ -1837,12 +1633,8 @@
       ],
       "category": "accessibility",
       "strict": false,
-      "commands": [
-        "./commands/accessibility-audit.md"
-      ],
-      "agents": [
-        "./agents/ui-visual-validator.md"
-      ],
+      "commands": ["./commands/accessibility-audit.md"],
+      "agents": ["./agents/ui-visual-validator.md"],
       "skills": [
         "./skills/wcag-audit-patterns",
         "./skills/screen-reader-testing"
@@ -1860,18 +1652,10 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "python",
-        "django",
-        "fastapi",
-        "async",
-        "backend"
-      ],
+      "keywords": ["python", "django", "fastapi", "async", "backend"],
       "category": "languages",
       "strict": false,
-      "commands": [
-        "./commands/python-scaffold.md"
-      ],
+      "commands": ["./commands/python-scaffold.md"],
       "agents": [
         "./agents/python-pro.md",
         "./agents/django-pro.md",
@@ -1897,22 +1681,11 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "javascript",
-        "typescript",
-        "es6",
-        "nodejs",
-        "react"
-      ],
+      "keywords": ["javascript", "typescript", "es6", "nodejs", "react"],
       "category": "languages",
       "strict": false,
-      "commands": [
-        "./commands/typescript-scaffold.md"
-      ],
-      "agents": [
-        "./agents/javascript-pro.md",
-        "./agents/typescript-pro.md"
-      ],
+      "commands": ["./commands/typescript-scaffold.md"],
+      "agents": ["./agents/javascript-pro.md", "./agents/typescript-pro.md"],
       "skills": [
         "./skills/typescript-advanced-types",
         "./skills/nodejs-backend-patterns",
@@ -1942,9 +1715,7 @@
       ],
       "category": "languages",
       "strict": false,
-      "commands": [
-        "./commands/rust-project.md"
-      ],
+      "commands": ["./commands/rust-project.md"],
       "agents": [
         "./agents/rust-pro.md",
         "./agents/golang-pro.md",
@@ -1969,14 +1740,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "java",
-        "scala",
-        "csharp",
-        "jvm",
-        "enterprise",
-        "dotnet"
-      ],
+      "keywords": ["java", "scala", "csharp", "jvm", "enterprise", "dotnet"],
       "category": "languages",
       "strict": false,
       "commands": [],
@@ -1998,20 +1762,11 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "php",
-        "ruby",
-        "rails",
-        "wordpress",
-        "web-scripting"
-      ],
+      "keywords": ["php", "ruby", "rails", "wordpress", "web-scripting"],
       "category": "languages",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/php-pro.md",
-        "./agents/ruby-pro.md"
-      ]
+      "agents": ["./agents/php-pro.md", "./agents/ruby-pro.md"]
     },
     {
       "name": "functional-programming",
@@ -2025,19 +1780,11 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": [
-        "elixir",
-        "functional",
-        "phoenix",
-        "otp",
-        "distributed"
-      ],
+      "keywords": ["elixir", "functional", "phoenix", "otp", "distributed"],
       "category": "languages",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/elixir-pro.md"
-      ]
+      "agents": ["./agents/elixir-pro.md"]
     },
     {
       "name": "julia-development",
@@ -2062,9 +1809,7 @@
       "category": "languages",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/julia-pro.md"
-      ],
+      "agents": ["./agents/julia-pro.md"],
       "skills": []
     },
     {
@@ -2091,9 +1836,7 @@
       "category": "languages",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/arm-cortex-expert.md"
-      ]
+      "agents": ["./agents/arm-cortex-expert.md"]
     },
     {
       "name": "shell-scripting",
@@ -2119,10 +1862,7 @@
       "category": "languages",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/bash-pro.md",
-        "./agents/posix-shell-pro.md"
-      ],
+      "agents": ["./agents/bash-pro.md", "./agents/posix-shell-pro.md"],
       "skills": [
         "./skills/bash-defensive-patterns/SKILL.md",
         "./skills/shellcheck-configuration/SKILL.md",
@@ -2154,9 +1894,7 @@
       "category": "development",
       "strict": false,
       "commands": [],
-      "agents": [
-        "./agents/monorepo-architect.md"
-      ],
+      "agents": ["./agents/monorepo-architect.md"],
       "skills": [
         "./skills/git-advanced-workflows",
         "./skills/sql-optimization-patterns",
@@ -2207,6 +1945,44 @@
         "./skills/memory-forensics",
         "./skills/protocol-reverse-engineering",
         "./skills/anti-reversing-techniques"
+      ]
+    },
+    {
+      "name": "conductor",
+      "source": "./conductor",
+      "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool. Implements structured workflow: Context → Spec & Plan → Implement with full TDD support, track-based work units, semantic git reversion, and resumable sessions",
+      "version": "0.1.0",
+      "author": {
+        "name": "Seth Hobson",
+        "url": "https://github.com/wshobson"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "project-management",
+        "context-driven-development",
+        "tdd",
+        "planning",
+        "specifications",
+        "workflow",
+        "tracks",
+        "git-integration"
+      ],
+      "category": "workflows",
+      "strict": false,
+      "commands": [
+        "./commands/setup.md",
+        "./commands/new-track.md",
+        "./commands/implement.md",
+        "./commands/status.md",
+        "./commands/revert.md"
+      ],
+      "agents": ["./agents/conductor-validator.md"],
+      "skills": [
+        "./skills/context-driven-development",
+        "./skills/track-management",
+        "./skills/workflow-patterns"
       ]
     }
   ]

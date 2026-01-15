@@ -30,12 +30,14 @@ Master workflow orchestration architecture with Temporal, covering fundamental d
 ## Critical Design Decision: Workflows vs Activities
 
 **The Fundamental Rule** (Source: temporal.io/blog/workflow-engine-principles):
+
 - **Workflows** = Orchestration logic and decision-making
 - **Activities** = External interactions (APIs, databases, network calls)
 
 ### Workflows (Orchestration)
 
 **Characteristics:**
+
 - Contain business logic and coordination
 - **MUST be deterministic** (same inputs → same outputs)
 - **Cannot** perform direct external calls
@@ -43,6 +45,7 @@ Master workflow orchestration architecture with Temporal, covering fundamental d
 - Can run for years despite infrastructure failures
 
 **Example workflow tasks:**
+
 - Decide which steps to execute
 - Handle compensation logic
 - Manage timeouts and retries
@@ -51,6 +54,7 @@ Master workflow orchestration architecture with Temporal, covering fundamental d
 ### Activities (External Interactions)
 
 **Characteristics:**
+
 - Handle all external system interactions
 - Can be non-deterministic (API calls, DB writes)
 - Include built-in timeouts and retry logic
@@ -58,6 +62,7 @@ Master workflow orchestration architecture with Temporal, covering fundamental d
 - Short-lived (seconds to minutes typically)
 
 **Example activity tasks:**
+
 - Call payment gateway API
 - Write to database
 - Send emails or notifications
@@ -86,11 +91,13 @@ For each step:
 ```
 
 **Example: Payment Workflow**
+
 1. Reserve inventory (compensation: release inventory)
 2. Charge payment (compensation: refund payment)
 3. Fulfill order (compensation: cancel fulfillment)
 
 **Critical Requirements:**
+
 - Compensations must be idempotent
 - Register compensation BEFORE executing step
 - Run compensations in reverse order
@@ -101,17 +108,20 @@ For each step:
 **Purpose**: Long-lived workflow representing single entity instance
 
 **Pattern** (Source: docs.temporal.io/evaluate/use-cases-design-patterns):
+
 - One workflow execution = one entity (cart, account, inventory item)
 - Workflow persists for entity lifetime
 - Receives signals for state changes
 - Supports queries for current state
 
 **Example Use Cases:**
+
 - Shopping cart (add items, checkout, expiration)
 - Bank account (deposits, withdrawals, balance checks)
 - Product inventory (stock updates, reservations)
 
 **Benefits:**
+
 - Encapsulates entity behavior
 - Guarantees consistency per entity
 - Natural event sourcing
@@ -121,12 +131,14 @@ For each step:
 **Purpose**: Execute multiple tasks in parallel, aggregate results
 
 **Pattern:**
+
 - Spawn child workflows or parallel activities
 - Wait for all to complete
 - Aggregate results
 - Handle partial failures
 
 **Scaling Rule** (Source: temporal.io/blog/workflow-engine-principles):
+
 - Don't scale individual workflows
 - For 1M tasks: spawn 1K child workflows × 1K tasks each
 - Keep each workflow bounded
@@ -136,12 +148,14 @@ For each step:
 **Purpose**: Wait for external event or human approval
 
 **Pattern:**
+
 - Workflow sends request and waits for signal
 - External system processes asynchronously
 - Sends signal to resume workflow
 - Workflow continues with response
 
 **Use Cases:**
+
 - Human approval workflows
 - Webhook callbacks
 - Long-running external processes
@@ -151,6 +165,7 @@ For each step:
 ### Automatic State Preservation
 
 **How Temporal Works** (Source: docs.temporal.io/workflows):
+
 - Complete program state preserved automatically
 - Event History records every command and event
 - Seamless recovery from crashes
@@ -159,10 +174,12 @@ For each step:
 ### Determinism Constraints
 
 **Workflows Execute as State Machines**:
+
 - Replay behavior must be consistent
 - Same inputs → identical outputs every time
 
 **Prohibited in Workflows** (Source: docs.temporal.io/workflows):
+
 - ❌ Threading, locks, synchronization primitives
 - ❌ Random number generation (`random()`)
 - ❌ Global state or static variables
@@ -171,6 +188,7 @@ For each step:
 - ❌ Non-deterministic libraries
 
 **Allowed in Workflows**:
+
 - ✅ `workflow.now()` (deterministic time)
 - ✅ `workflow.random()` (deterministic random)
 - ✅ Pure functions and calculations
@@ -181,6 +199,7 @@ For each step:
 **Challenge**: Changing workflow code while old executions still running
 
 **Solutions**:
+
 1. **Versioning API**: Use `workflow.get_version()` for safe changes
 2. **New Workflow Type**: Create new workflow, route new executions to it
 3. **Backward Compatibility**: Ensure old events replay correctly
@@ -192,12 +211,14 @@ For each step:
 **Default Behavior**: Temporal retries activities forever
 
 **Configure Retry**:
+
 - Initial retry interval
 - Backoff coefficient (exponential backoff)
 - Maximum interval (cap retry delay)
 - Maximum attempts (eventually fail)
 
 **Non-Retryable Errors**:
+
 - Invalid input (validation failures)
 - Business rule violations
 - Permanent failures (resource not found)
@@ -205,11 +226,13 @@ For each step:
 ### Idempotency Requirements
 
 **Why Critical** (Source: docs.temporal.io/activities):
+
 - Activities may execute multiple times
 - Network failures trigger retries
 - Duplicate execution must be safe
 
 **Implementation Strategies**:
+
 - Idempotency keys (deduplication)
 - Check-then-act with unique constraints
 - Upsert operations instead of insert
@@ -220,6 +243,7 @@ For each step:
 **Purpose**: Detect stalled long-running activities
 
 **Pattern**:
+
 - Activity sends periodic heartbeat
 - Includes progress information
 - Timeout if no heartbeat received
@@ -245,12 +269,14 @@ For each step:
 ### Common Pitfalls
 
 **Workflow Violations**:
+
 - Using `datetime.now()` instead of `workflow.now()`
 - Threading or async operations in workflow code
 - Calling external APIs directly from workflow
 - Non-deterministic logic in workflows
 
 **Activity Mistakes**:
+
 - Non-idempotent operations (can't handle retries)
 - Missing timeouts (activities run forever)
 - No error classification (retry validation errors)
@@ -259,12 +285,14 @@ For each step:
 ### Operational Considerations
 
 **Monitoring**:
+
 - Workflow execution duration
 - Activity failure rates
 - Retry attempts and backoff
 - Pending workflow counts
 
 **Scalability**:
+
 - Horizontal scaling with workers
 - Task queue partitioning
 - Child workflow decomposition
@@ -273,12 +301,14 @@ For each step:
 ## Additional Resources
 
 **Official Documentation**:
+
 - Temporal Core Concepts: docs.temporal.io/workflows
 - Workflow Patterns: docs.temporal.io/evaluate/use-cases-design-patterns
 - Best Practices: docs.temporal.io/develop/best-practices
 - Saga Pattern: temporal.io/blog/saga-pattern-made-easy
 
 **Key Principles**:
+
 1. Workflows = orchestration, Activities = external calls
 2. Determinism is non-negotiable for workflows
 3. Idempotency is critical for activities

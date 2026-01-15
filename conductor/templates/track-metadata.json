@@ -1,0 +1,10 @@
+{
+  "id": "",
+  "type": "feature|bug|chore|refactor",
+  "status": "pending|in_progress|completed",
+  "created_at": "",
+  "updated_at": "",
+  "description": "",
+  "spec_path": "",
+  "plan_path": ""
+}
