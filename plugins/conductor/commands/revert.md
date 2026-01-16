@@ -1,6 +1,7 @@
 ---
 description: "Git-aware undo by logical work unit (track, phase, or task)"
 argument-hint: "[track-id | track-id:phase | track-id:task]"
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "AskUserQuestion"]
 ---
 
 # Revert Track

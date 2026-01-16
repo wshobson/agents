@@ -1,6 +1,7 @@
 ---
 description: "Initialize project with Conductor artifacts (product definition, tech stack, workflow, style guides)"
 argument-hint: "[--resume]"
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "AskUserQuestion"]
 ---
 
 # Conductor Setup

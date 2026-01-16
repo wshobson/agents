@@ -1,6 +1,7 @@
 ---
 description: "Create a new track with specification and phased implementation plan"
 argument-hint: "<feature|bug|chore|refactor> <name>"
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "AskUserQuestion"]
 ---
 
 # New Track

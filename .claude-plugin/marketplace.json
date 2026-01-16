@@ -1949,41 +1949,15 @@
     },
     {
       "name": "conductor",
-      "source": "./plugins/conductor",
-      "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool. Implements structured workflow: Context → Spec & Plan → Implement with full TDD support, track-based work units, semantic git reversion, and resumable sessions",
-      "version": "1.0.5",
+      "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context → Spec & Plan → Implement",
+      "version": "1.0.6",
       "author": {
         "name": "Seth Hobson",
-        "url": "https://github.com/wshobson"
+        "email": "seth@major7apps.com"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
-      "license": "MIT",
-      "keywords": [
-        "project-management",
-        "context-driven-development",
-        "tdd",
-        "planning",
-        "specifications",
-        "workflow",
-        "tracks",
-        "git-integration"
-      ],
+      "source": "./plugins/conductor",
       "category": "workflows",
-      "strict": false,
-      "commands": [
-        "./commands/setup.md",
-        "./commands/new-track.md",
-        "./commands/implement.md",
-        "./commands/status.md",
-        "./commands/revert.md"
-      ],
-      "agents": ["./agents/conductor-validator.md"],
-      "skills": [
-        "./skills/context-driven-development",
-        "./skills/track-management",
-        "./skills/workflow-patterns"
-      ]
+      "homepage": "https://github.com/wshobson/agents"
     }
   ]
 }
