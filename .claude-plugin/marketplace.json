@@ -1949,7 +1949,7 @@
     },
     {
       "name": "conductor",
-      "source": "./conductor",
+      "source": "./plugins/conductor",
       "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool. Implements structured workflow: Context → Spec & Plan → Implement with full TDD support, track-based work units, semantic git reversion, and resumable sessions",
       "version": "1.0.1",
       "author": {
