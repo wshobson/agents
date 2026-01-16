@@ -1933,8 +1933,7 @@
       "source": "./plugins/conductor",
       "category": "workflows",
       "homepage": "https://github.com/wshobson/agents",
-      "license": "Apache-2.0",
-      "attribution": "Based on gemini-cli-extensions/conductor by Google"
+      "license": "Apache-2.0"
     }
   ]
 }
