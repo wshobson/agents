@@ -1,17 +1,4 @@
----
-name: revert
-description: Git-aware undo by logical work unit (track, phase, or task)
-model: opus
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Glob
-  - Grep
-  - AskUserQuestion
-argument-hint: "[track-id | track-id:phase | track-id:task]"
----
+# Revert Track
 
 Revert changes by logical work unit with full git awareness. Supports reverting entire tracks, specific phases, or individual tasks.
 

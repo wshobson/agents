@@ -1,9 +1,4 @@
----
-name: implement
-description: Execute tasks from a track's implementation plan following workflow rules
-model: opus
-argument-hint: "[track-id]"
----
+# Implement Track
 
 Execute tasks from a track's implementation plan, following the workflow rules defined in `conductor/workflow.md`.
 

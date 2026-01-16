@@ -1,32 +1,7 @@
 ---
 name: conductor-validator
-description: |
-  Validates Conductor project artifacts for completeness, consistency, and correctness. Use after setup, when diagnosing issues, or before implementation to verify project context.
-
-  <example>
-  Context: User just ran /conductor:setup
-  User: "Can you verify conductor is set up correctly?"
-  Assistant: Uses conductor-validator agent to check the setup
-  </example>
-
-  <example>
-  Context: User getting errors with conductor commands
-  User: "Why isn't /conductor:new-track working?"
-  Assistant: Uses conductor-validator agent to diagnose the issue
-  </example>
-
-  <example>
-  Context: Before starting implementation
-  User: "Is my project ready for /conductor:implement?"
-  Assistant: Uses conductor-validator agent to verify prerequisites
-  </example>
+description: Validates Conductor project artifacts for completeness, consistency, and correctness. Use after setup, when diagnosing issues, or before implementation to verify project context.
 model: opus
-color: cyan
-tools:
-  - Read
-  - Glob
-  - Grep
-  - Bash
 ---
 
 You are an expert validator for Conductor project artifacts. Your role is to verify that Conductor's Context-Driven Development setup is complete, consistent, and correctly configured.

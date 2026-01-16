@@ -1,13 +1,4 @@
----
-name: status
-description: Display project progress overview including tracks, phases, and tasks
-model: opus
-allowed-tools:
-  - Read
-  - Glob
-  - Grep
-argument-hint: "[track-id]"
----
+# Conductor Status
 
 Display the current status of the Conductor project, including overall progress, active tracks, and next actions.
 

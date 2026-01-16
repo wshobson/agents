@@ -1,9 +1,4 @@
----
-name: setup
-description: Initialize project with Conductor artifacts (product definition, tech stack, workflow, style guides)
-model: opus
-argument-hint: "[--resume]"
----
+# Conductor Setup
 
 Initialize or resume Conductor project setup. This command creates foundational project documentation through interactive Q&A.
 

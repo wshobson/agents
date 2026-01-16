@@ -1,9 +1,4 @@
----
-name: new-track
-description: Create a new feature or bug track with specification and phased implementation plan
-model: opus
-argument-hint: "[track description]"
----
+# New Track
 
 Create a new track (feature, bug fix, chore, or refactor) with a detailed specification and phased implementation plan.
 
