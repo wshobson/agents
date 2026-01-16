@@ -1,8 +1,4 @@
----
-name: market-opportunity
-description: Generate comprehensive market opportunity analysis with TAM/SAM/SOM calculations
-allowed-tools: [Read, Write, Grep, Glob, WebSearch, WebFetch, Bash]
----
+# Market Opportunity Analysis
 
 Generate a comprehensive market opportunity analysis for a startup, including Total Addressable Market (TAM), Serviceable Available Market (SAM), and Serviceable Obtainable Market (SOM) calculations using both bottom-up and top-down methodologies.
 

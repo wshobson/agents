@@ -1,8 +1,4 @@
----
-name: business-case
-description: Generate comprehensive investor-ready business case document with market, solution, financials, and strategy
-allowed-tools: [Read, Write, Grep, Glob, WebSearch, WebFetch, Bash]
----
+# Business Case Generator
 
 Generate a comprehensive, investor-ready business case document covering market opportunity, solution, competitive landscape, financial projections, team, risks, and funding ask for startup fundraising and strategic planning.
 
