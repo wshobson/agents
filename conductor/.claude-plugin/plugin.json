@@ -1,6 +1,6 @@
 {
   "name": "conductor",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool. Implements structured workflow: Context → Spec & Plan → Implement with full TDD support, track-based work units, and semantic git reversion.",
   "author": {
     "name": "Seth Hobson",
