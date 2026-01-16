@@ -1375,7 +1375,7 @@
       "name": "startup-business-analyst",
       "source": "./plugins/startup-business-analyst",
       "description": "Comprehensive startup business analysis with market sizing (TAM/SAM/SOM), financial modeling, team planning, and strategic research for early-stage companies",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -1951,7 +1951,7 @@
       "name": "conductor",
       "source": "./plugins/conductor",
       "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool. Implements structured workflow: Context → Spec & Plan → Implement with full TDD support, track-based work units, semantic git reversion, and resumable sessions",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"

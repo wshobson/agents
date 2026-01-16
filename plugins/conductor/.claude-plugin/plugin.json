@@ -1,0 +1,8 @@
+{
+  "name": "conductor",
+  "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context → Spec & Plan → Implement",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  }
+}
