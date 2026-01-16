@@ -1,3 +1,8 @@
+---
+description: "Execute tasks from a track's implementation plan following TDD workflow"
+argument-hint: "[track-id] [--task X.Y] [--phase N]"
+---
+
 # Implement Track
 
 Execute tasks from a track's implementation plan, following the workflow rules defined in `conductor/workflow.md`.

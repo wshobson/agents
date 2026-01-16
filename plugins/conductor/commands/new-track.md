@@ -1,3 +1,8 @@
+---
+description: "Create a new track with specification and phased implementation plan"
+argument-hint: "<feature|bug|chore|refactor> <name>"
+---
+
 # New Track
 
 Create a new track (feature, bug fix, chore, or refactor) with a detailed specification and phased implementation plan.
