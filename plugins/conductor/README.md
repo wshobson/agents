@@ -104,6 +104,12 @@ claude --plugin-dir /path/to/conductor
 
 Or copy to your project's `.claude-plugin/` directory.
 
+## Acknowledgments
+
+This plugin is based on [Conductor](https://github.com/gemini-cli-extensions/conductor) by Google, originally developed for Gemini CLI.
+
+Adapted for Claude Code by [@wshobson](https://github.com/wshobson).
+
 ## License
 
-MIT
+Apache License 2.0 - See the [original project](https://github.com/gemini-cli-extensions/conductor) for license details.
