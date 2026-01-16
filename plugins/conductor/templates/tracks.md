@@ -34,6 +34,15 @@ This file maintains the registry of all development tracks for the project. Each
 
 ---
 
+## Archived Tracks
+
+<!-- Archived tracks are moved here with reason and date -->
+
+| Track ID | Type | Reason | Archived | Folder |
+| -------- | ---- | ------ | -------- | ------ |
+
+---
+
 ## Track Creation Checklist
 
 When creating a new track:

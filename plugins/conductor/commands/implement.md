@@ -1,7 +1,17 @@
 ---
 description: "Execute tasks from a track's implementation plan following TDD workflow"
 argument-hint: "[track-id] [--task X.Y] [--phase N]"
-allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "AskUserQuestion", "TodoWrite"]
+allowed-tools:
+  [
+    "Read",
+    "Write",
+    "Edit",
+    "Glob",
+    "Grep",
+    "Bash",
+    "AskUserQuestion",
+    "TodoWrite",
+  ]
 ---
 
 # Implement Track

@@ -30,6 +30,7 @@ By treating context as a managed artifact alongside code, teams establish a pers
 | `/conductor:implement` | Execute tasks from the plan following workflow rules                               |
 | `/conductor:status`    | Display project progress overview                                                  |
 | `/conductor:revert`    | Git-aware undo by track, phase, or task                                            |
+| `/conductor:manage`    | Manage track lifecycle: archive, restore, delete, rename, and cleanup              |
 
 ## Generated Artifacts
 
@@ -44,6 +45,7 @@ conductor/
 ├── setup_state.json      # Resumable setup state
 ├── code_styleguides/     # Language-specific conventions
 └── tracks/
+    ├── _archive/         # Archived tracks
     └── <track-id>/
         ├── spec.md       # Requirements specification
         ├── plan.md       # Phased task breakdown
@@ -95,6 +97,16 @@ Undo work by logical unit:
 - Select track, phase, or task to revert
 - Git-aware: finds all associated commits
 - Requires confirmation before execution
+
+### 6. Manage (`/conductor:manage`)
+
+Manage track lifecycle:
+
+- Archive completed tracks with reason tracking
+- Restore archived tracks to active state
+- Delete tracks permanently (with safeguards)
+- Rename track IDs with reference updates
+- Cleanup orphaned artifacts and stale tracks
 
 ## Installation
 
