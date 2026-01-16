@@ -1925,14 +1925,16 @@
     {
       "name": "conductor",
       "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context → Spec & Plan → Implement",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
       },
       "source": "./plugins/conductor",
       "category": "workflows",
-      "homepage": "https://github.com/wshobson/agents"
+      "homepage": "https://github.com/wshobson/agents",
+      "license": "Apache-2.0",
+      "attribution": "Based on gemini-cli-extensions/conductor by Google"
     }
   ]
 }

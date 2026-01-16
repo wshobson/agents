@@ -4,5 +4,7 @@
   "author": {
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
-  }
+  },
+  "license": "Apache-2.0",
+  "attribution": "Based on gemini-cli-extensions/conductor by Google"
 }
