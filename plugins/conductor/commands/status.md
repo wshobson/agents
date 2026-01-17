@@ -1,7 +1,6 @@
 ---
 description: "Display project status, active tracks, and next actions"
 argument-hint: "[track-id] [--detailed]"
-allowed-tools: ["Read", "Glob", "Grep", "Bash"]
 ---
 
 # Conductor Status

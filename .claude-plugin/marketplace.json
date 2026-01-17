@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "Production-ready workflow orchestration with 67 focused plugins, 99 specialized agents, and 107 skills - optimized for granular installation and minimal token usage",
-    "version": "1.3.1"
+    "version": "1.3.2"
   },
   "plugins": [
     {
@@ -1925,7 +1925,7 @@
     {
       "name": "conductor",
       "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context → Spec & Plan → Implement",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"

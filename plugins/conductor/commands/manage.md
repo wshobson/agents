@@ -1,8 +1,6 @@
 ---
 description: "Manage track lifecycle: archive, restore, delete, rename, and cleanup"
 argument-hint: "[--archive | --restore | --delete | --rename | --list | --cleanup]"
-allowed-tools:
-  ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "AskUserQuestion"]
 ---
 
 # Track Manager
