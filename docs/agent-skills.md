@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **110 specialized skills** across 19 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **129 specialized skills** across 27 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -202,6 +202,20 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **nextjs-app-router-patterns** | Build Next.js 14+ apps with App Router, RSC, and streaming      |
 | **tailwind-design-system**     | Create design systems with Tailwind CSS and component libraries |
 | **react-native-architecture**  | Architect React Native apps with navigation and native modules  |
+
+### UI Design (9 skills)
+
+| Skill                          | Description                                                            |
+| ------------------------------ | ---------------------------------------------------------------------- |
+| **design-system-patterns**     | Build scalable design systems with tokens, components, and theming     |
+| **accessibility-compliance**   | Implement WCAG 2.1/2.2 compliance with proper ARIA and keyboard nav    |
+| **responsive-design**          | Create fluid layouts with CSS Grid, Flexbox, and container queries     |
+| **mobile-ios-design**          | Design iOS apps following Human Interface Guidelines                   |
+| **mobile-android-design**      | Design Android apps following Material Design 3 guidelines             |
+| **react-native-design**        | Cross-platform design patterns for React Native applications           |
+| **web-component-design**       | Build accessible, reusable web components with Shadow DOM              |
+| **interaction-design**         | Create micro-interactions, animations, and gesture-based interfaces    |
+| **visual-design-foundations**  | Apply typography, color theory, spacing, and visual hierarchy          |
 
 ### Game Development (2 skills)
 
