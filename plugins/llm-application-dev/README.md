@@ -57,10 +57,8 @@ Build production-ready LLM applications, advanced RAG systems, and intelligent a
 ## Installation
 
 ```bash
-claude --plugin-dir /path/to/llm-application-dev
+/plugin install llm-application-dev
 ```
-
-Or copy to your project's `.claude-plugin/` directory.
 
 ## Requirements
 

@@ -111,10 +111,8 @@ Manage track lifecycle:
 ## Installation
 
 ```bash
-claude --plugin-dir /path/to/conductor
+/plugin install conductor
 ```
-
-Or copy to your project's `.claude-plugin/` directory.
 
 ## Acknowledgments
 
