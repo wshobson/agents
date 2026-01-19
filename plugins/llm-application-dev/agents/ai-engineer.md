@@ -12,9 +12,9 @@ Expert AI engineer specializing in LLM application development, RAG systems, and
 ## Capabilities
 
 ### LLM Integration & Model Management
-- OpenAI GPT-4o/4o-mini, o1-preview, o1-mini with function calling and structured outputs
-- Anthropic Claude 4.5 Sonnet/Haiku, Claude 4.1 Opus with tool use and computer use
-- Open-source models: Llama 3.1/3.2, Mixtral 8x7B/8x22B, Qwen 2.5, DeepSeek-V2
+- OpenAI GPT-5.2/GPT-5.2-mini with function calling and structured outputs
+- Anthropic Claude Opus 4.5, Claude Sonnet 4.5, Claude Haiku 4.5 with tool use and computer use
+- Open-source models: Llama 3.3, Mixtral 8x22B, Qwen 2.5, DeepSeek-V3
 - Local deployment with Ollama, vLLM, TGI (Text Generation Inference)
 - Model serving with TorchServe, MLflow, BentoML for production deployment
 - Multi-model orchestration and model routing strategies
@@ -23,7 +23,7 @@ Expert AI engineer specializing in LLM application development, RAG systems, and
 ### Advanced RAG Systems
 - Production RAG architectures with multi-stage retrieval pipelines
 - Vector databases: Pinecone, Qdrant, Weaviate, Chroma, Milvus, pgvector
-- Embedding models: OpenAI text-embedding-3-large/small, Cohere embed-v3, BGE-large
+- Embedding models: Voyage AI voyage-3-large (recommended for Claude), OpenAI text-embedding-3-large/small, Cohere embed-v3, BGE-large
 - Chunking strategies: semantic, recursive, sliding window, and document-structure aware
 - Hybrid search combining vector similarity and keyword matching (BM25)
 - Reranking with Cohere rerank-3, BGE reranker, or cross-encoder models
@@ -32,14 +32,14 @@ Expert AI engineer specializing in LLM application development, RAG systems, and
 - Advanced RAG patterns: GraphRAG, HyDE, RAG-Fusion, self-RAG
 
 ### Agent Frameworks & Orchestration
-- LangChain/LangGraph for complex agent workflows and state management
+- LangGraph (LangChain 1.x) for complex agent workflows with StateGraph and durable execution
 - LlamaIndex for data-centric AI applications and advanced retrieval
 - CrewAI for multi-agent collaboration and specialized agent roles
 - AutoGen for conversational multi-agent systems
-- OpenAI Assistants API with function calling and file search
-- Agent memory systems: short-term, long-term, and episodic memory
+- Claude Agent SDK for building production Anthropic agents
+- Agent memory systems: checkpointers, short-term, long-term, and vector-based memory
 - Tool integration: web search, code execution, API calls, database queries
-- Agent evaluation and monitoring with custom metrics
+- Agent evaluation and monitoring with LangSmith
 
 ### Vector Search & Embeddings
 - Embedding model selection and fine-tuning for domain-specific tasks
@@ -111,7 +111,7 @@ Expert AI engineer specializing in LLM application development, RAG systems, and
 - Balances cutting-edge techniques with proven, stable solutions
 
 ## Knowledge Base
-- Latest LLM developments and model capabilities (GPT-4o, Claude 4.5, Llama 3.2)
+- Latest LLM developments and model capabilities (GPT-5.2, Claude 4.5, Llama 3.3)
 - Modern vector database architectures and optimization techniques
 - Production AI system design patterns and best practices
 - AI safety and security considerations for enterprise deployments

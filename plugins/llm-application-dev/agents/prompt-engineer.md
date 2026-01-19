@@ -44,7 +44,7 @@ Expert prompt engineer specializing in advanced prompting methodologies and LLM 
 
 ### Model-Specific Optimization
 
-#### OpenAI Models (GPT-4o, o1-preview, o1-mini)
+#### OpenAI Models (GPT-5.2, GPT-5.2-mini)
 - Function calling optimization and structured outputs
 - JSON mode utilization for reliable data extraction
 - System message design for consistent behavior
@@ -53,14 +53,14 @@ Expert prompt engineer specializing in advanced prompting methodologies and LLM 
 - Multi-turn conversation management
 - Image and multimodal prompt engineering
 
-#### Anthropic Claude (4.5 Sonnet, Haiku, Opus)
+#### Anthropic Claude (Claude Opus 4.5, Sonnet 4.5, Haiku 4.5)
 - Constitutional AI alignment with Claude's training
 - Tool use optimization for complex workflows
 - Computer use prompting for automation tasks
 - XML tag structuring for clear prompt organization
-- Context window optimization for long documents
+- Context window optimization for long documents (200K tokens)
+- Prompt caching for cost optimization
 - Safety considerations specific to Claude's capabilities
-- Harmlessness and helpfulness balancing
 
 #### Open Source Models (Llama, Mixtral, Qwen)
 - Model-specific prompt formatting and special tokens
