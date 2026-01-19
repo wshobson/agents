@@ -15,6 +15,7 @@ $ARGUMENTS
 ### 1. Analyze Project Type
 
 Determine the project type from user requirements:
+
 - **Next.js**: Full-stack React applications, SSR/SSG, API routes
 - **React + Vite**: SPA applications, component libraries
 - **Node.js API**: Express/Fastify backends, microservices
@@ -82,6 +83,7 @@ nextjs-project/
 ```
 
 **package.json**:
+
 ```json
 {
   "name": "nextjs-project",
@@ -112,6 +114,7 @@ nextjs-project/
 ```
 
 **tsconfig.json**:
+
 ```json
 {
   "compilerOptions": {
@@ -131,7 +134,7 @@ nextjs-project/
     "paths": {
       "@/*": ["./src/*"]
     },
-    "plugins": [{"name": "next"}]
+    "plugins": [{ "name": "next" }]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
@@ -146,16 +149,17 @@ pnpm create vite . --template react-ts
 ```
 
 **vite.config.ts**:
+
 ```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   server: {
@@ -163,10 +167,10 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: './tests/setup.ts',
+    environment: "jsdom",
+    setupFiles: "./tests/setup.ts",
   },
-})
+});
 ```
 
 ### 5. Generate Node.js API Project Structure
@@ -202,6 +206,7 @@ nodejs-api/
 ```
 
 **package.json for Node.js API**:
+
 ```json
 {
   "name": "nodejs-api",
@@ -233,21 +238,22 @@ nodejs-api/
 ```
 
 **src/app.ts**:
+
 ```typescript
-import express, { Express } from 'express'
-import { healthRouter } from './routes/health.js'
-import { userRouter } from './routes/users.js'
-import { errorHandler } from './middleware/errorHandler.js'
+import express, { Express } from "express";
+import { healthRouter } from "./routes/health.js";
+import { userRouter } from "./routes/users.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 export function createApp(): Express {
-  const app = express()
+  const app = express();
 
-  app.use(express.json())
-  app.use('/health', healthRouter)
-  app.use('/api/users', userRouter)
-  app.use(errorHandler)
+  app.use(express.json());
+  app.use("/health", healthRouter);
+  app.use("/api/users", userRouter);
+  app.use(errorHandler);
 
-  return app
+  return app;
 }
 ```
 
@@ -267,6 +273,7 @@ library-name/
 ```
 
 **package.json for Library**:
+
 ```json
 {
   "name": "@scope/library-name",
@@ -296,6 +303,7 @@ library-name/
 ### 7. Configure Development Tools
 
 **.env.example**:
+
 ```env
 NODE_ENV=development
 PORT=3000
@@ -304,29 +312,28 @@ JWT_SECRET=your-secret-key
 ```
 
 **vitest.config.ts**:
+
 ```typescript
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
+    environment: "node",
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
     },
   },
-})
+});
 ```
 
 **.eslintrc.json**:
+
 ```json
 {
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unused-vars": "error"

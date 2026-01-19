@@ -25,6 +25,7 @@ Initialize a design system with design tokens, component patterns, and documenta
    - Detect TypeScript usage
 
 4. If existing design system detected:
+
    ```
    I detected an existing design system configuration:
 
@@ -385,27 +386,27 @@ Create `.ui-design/tokens/tokens.css`:
 
 :root {
   /* Colors - Primary */
-  --color-primary-50: #EFF6FF;
-  --color-primary-100: #DBEAFE;
-  --color-primary-500: #3B82F6;
-  --color-primary-600: #2563EB;
-  --color-primary-700: #1D4ED8;
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
 
   /* Colors - Neutral */
-  --color-neutral-50: #F9FAFB;
-  --color-neutral-100: #F3F4F6;
-  --color-neutral-500: #6B7280;
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-500: #6b7280;
   --color-neutral-900: #111827;
 
   /* Colors - Semantic */
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
-  --color-info: #3B82F6;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
 
   /* Typography */
   --font-family-sans: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-family-mono: ui-monospace, 'Fira Code', monospace;
+  --font-family-mono: ui-monospace, "Fira Code", monospace;
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -442,17 +443,17 @@ Create `.ui-design/tokens/tokens.css`:
 @media (prefers-color-scheme: dark) {
   :root {
     --color-neutral-50: #111827;
-    --color-neutral-100: #1F2937;
-    --color-neutral-500: #9CA3AF;
-    --color-neutral-900: #F9FAFB;
+    --color-neutral-100: #1f2937;
+    --color-neutral-500: #9ca3af;
+    --color-neutral-900: #f9fafb;
   }
 }
 
 [data-theme="dark"] {
   --color-neutral-50: #111827;
-  --color-neutral-100: #1F2937;
-  --color-neutral-500: #9CA3AF;
-  --color-neutral-900: #F9FAFB;
+  --color-neutral-100: #1f2937;
+  --color-neutral-500: #9ca3af;
+  --color-neutral-900: #f9fafb;
 }
 ```
 
@@ -470,23 +471,23 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: '#EFF6FF',
-          100: '#DBEAFE',
-          200: '#BFDBFE',
-          300: '#93C5FD',
-          400: '#60A5FA',
-          500: '#3B82F6',
-          600: '#2563EB',
-          700: '#1D4ED8',
-          800: '#1E40AF',
-          900: '#1E3A8A',
-          950: '#172554',
+          50: "#EFF6FF",
+          100: "#DBEAFE",
+          200: "#BFDBFE",
+          300: "#93C5FD",
+          400: "#60A5FA",
+          500: "#3B82F6",
+          600: "#2563EB",
+          700: "#1D4ED8",
+          800: "#1E40AF",
+          900: "#1E3A8A",
+          950: "#172554",
         },
         // ... other colors
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        mono: ['ui-monospace', 'Fira Code', 'monospace'],
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        mono: ["ui-monospace", "Fira Code", "monospace"],
       },
       // ... other tokens
     },
@@ -504,7 +505,7 @@ Create `.ui-design/tokens/tokens.ts`:
 
 export const colors = {
   primary: {
-    50: '#EFF6FF',
+    50: "#EFF6FF",
     // ... full palette
   },
   // ... other color groups
@@ -512,17 +513,17 @@ export const colors = {
 
 export const typography = {
   fontFamily: {
-    sans: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+    sans: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
     mono: "ui-monospace, 'Fira Code', monospace",
   },
   fontSize: {
-    xs: '0.75rem',
+    xs: "0.75rem",
     // ... full scale
   },
 } as const;
 
 export const spacing = {
-  1: '0.25rem',
+  1: "0.25rem",
   // ... full scale
 } as const;
 
@@ -535,7 +536,7 @@ export type SpacingToken = keyof typeof spacing;
 
 Create `.ui-design/docs/design-system.md`:
 
-```markdown
+````markdown
 # Design System Documentation
 
 ## Overview
@@ -545,33 +546,37 @@ This design system provides the foundation for consistent UI development.
 ## Colors
 
 ### Primary Palette
-| Token | Value | Usage |
-|-------|-------|-------|
+
+| Token       | Value   | Usage                  |
+| ----------- | ------- | ---------------------- |
 | primary-500 | #3B82F6 | Primary actions, links |
-| primary-600 | #2563EB | Hover state |
-| primary-700 | #1D4ED8 | Active state |
+| primary-600 | #2563EB | Hover state            |
+| primary-700 | #1D4ED8 | Active state           |
 
 ### Semantic Colors
-| Token | Value | Usage |
-|-------|-------|-------|
-| success | #22C55E | Success messages, positive actions |
-| warning | #F59E0B | Warning messages, caution |
-| error | #EF4444 | Error messages, destructive actions |
+
+| Token   | Value   | Usage                               |
+| ------- | ------- | ----------------------------------- |
+| success | #22C55E | Success messages, positive actions  |
+| warning | #F59E0B | Warning messages, caution           |
+| error   | #EF4444 | Error messages, destructive actions |
 
 ## Typography
 
 ### Scale
-| Name | Size | Usage |
-|------|------|-------|
-| xs | 0.75rem | Captions, labels |
-| sm | 0.875rem | Secondary text |
-| base | 1rem | Body text |
-| lg | 1.125rem | Emphasized body |
-| xl | 1.25rem | Subheadings |
+
+| Name | Size     | Usage            |
+| ---- | -------- | ---------------- |
+| xs   | 0.75rem  | Captions, labels |
+| sm   | 0.875rem | Secondary text   |
+| base | 1rem     | Body text        |
+| lg   | 1.125rem | Emphasized body  |
+| xl   | 1.25rem  | Subheadings      |
 
 ## Spacing
 
 Use spacing tokens for consistent margins and padding:
+
 - `spacing-1` (4px): Tight spacing
 - `spacing-2` (8px): Compact spacing
 - `spacing-4` (16px): Default spacing
@@ -581,6 +586,7 @@ Use spacing tokens for consistent margins and padding:
 ## Usage
 
 ### CSS Custom Properties
+
 ```css
 .button {
   background: var(--color-primary-500);
@@ -588,13 +594,14 @@ Use spacing tokens for consistent margins and padding:
   border-radius: var(--radius-md);
 }
 ```
+````
 
 ### Tailwind
+
 ```html
-<button class="bg-primary-500 px-4 py-2 rounded-md">
-  Click me
-</button>
+<button class="bg-primary-500 px-4 py-2 rounded-md">Click me</button>
 ```
+
 ```
 
 ## Completion
@@ -602,26 +609,31 @@ Use spacing tokens for consistent margins and padding:
 Update state and display summary:
 
 ```
+
 Design System Setup Complete!
 
 Created files:
-- .ui-design/design-system.json  (master configuration)
-- .ui-design/tokens/tokens.css   (CSS custom properties)
-- .ui-design/tokens/tailwind.config.js  (Tailwind extension)
-- .ui-design/tokens/tokens.ts    (TypeScript module)
-- .ui-design/docs/design-system.md  (documentation)
+
+- .ui-design/design-system.json (master configuration)
+- .ui-design/tokens/tokens.css (CSS custom properties)
+- .ui-design/tokens/tailwind.config.js (Tailwind extension)
+- .ui-design/tokens/tokens.ts (TypeScript module)
+- .ui-design/docs/design-system.md (documentation)
 
 Quick start:
+
 1. CSS: @import '.ui-design/tokens/tokens.css';
 2. Tailwind: Spread in your tailwind.config.js
 3. TypeScript: import { colors } from '.ui-design/tokens/tokens';
 
 Next steps:
+
 1. Review and customize tokens as needed
 2. Run /ui-design:create-component to build with your design system
 3. Run /ui-design:design-review to validate existing UI against tokens
 
 Need to modify tokens? Run /ui-design:design-system-setup --preset {preset}
+
 ```
 
 ## Error Handling
@@ -630,3 +642,4 @@ Need to modify tokens? Run /ui-design:design-system-setup --preset {preset}
 - If file write fails: Report error, suggest manual creation
 - If color generation fails: Provide manual palette input option
 - If tailwind not detected: Skip tailwind output, inform user
+```

@@ -299,6 +299,7 @@ Type 'YES' to proceed, or anything else to cancel:
 4. Update `conductor/tracks.md`:
    - Remove entry from Active Tracks or Completed Tracks section
    - Add entry to Archived Tracks section with format:
+
      ```markdown
      ### {track-id}: {title}
 

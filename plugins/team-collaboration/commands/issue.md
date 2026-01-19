@@ -15,6 +15,7 @@ GitHub Issue ID or URL: $ARGUMENTS
 ### 1. Issue Analysis and Triage
 
 **Initial Investigation**
+
 ```bash
 # Get complete issue details
 gh issue view $ISSUE_NUMBER --comments
@@ -27,6 +28,7 @@ gh issue view $ISSUE_NUMBER --json linkedBranches,closedByPullRequests
 ```
 
 **Triage Assessment Framework**
+
 - **Priority Classification**:
   - P0/Critical: Production breaking, security vulnerability, data loss
   - P1/High: Major feature broken, significant user impact
@@ -34,6 +36,7 @@ gh issue view $ISSUE_NUMBER --json linkedBranches,closedByPullRequests
   - P3/Low: Cosmetic issue, enhancement request
 
 **Context Gathering**
+
 ```bash
 # Search for similar resolved issues
 gh issue list --search "similar keywords" --state closed --limit 10
@@ -48,6 +51,7 @@ gh pr list --search "related_component" --state merged --limit 5
 ### 2. Investigation and Root Cause Analysis
 
 **Code Archaeology**
+
 ```bash
 # Find when the issue was introduced
 git bisect start
@@ -62,6 +66,7 @@ git blame -L <start>,<end> path/to/file.js
 ```
 
 **Codebase Investigation**
+
 ```bash
 # Search for all occurrences of problematic function
 rg "functionName" --type js -A 3 -B 3
@@ -74,18 +79,21 @@ grep -r "methodName(" . --include="*.py" | head -20
 ```
 
 **Dependency Analysis**
+
 ```javascript
 // Check for version conflicts
 const checkDependencies = () => {
-  const package = require('./package.json');
-  const lockfile = require('./package-lock.json');
+  const package = require("./package.json");
+  const lockfile = require("./package-lock.json");
 
-  Object.keys(package.dependencies).forEach(dep => {
+  Object.keys(package.dependencies).forEach((dep) => {
     const specVersion = package.dependencies[dep];
     const lockVersion = lockfile.dependencies[dep]?.version;
 
     if (lockVersion && !satisfies(lockVersion, specVersion)) {
-      console.warn(`Version mismatch: ${dep} - spec: ${specVersion}, lock: ${lockVersion}`);
+      console.warn(
+        `Version mismatch: ${dep} - spec: ${specVersion}, lock: ${lockVersion}`,
+      );
     }
   });
 };
@@ -94,6 +102,7 @@ const checkDependencies = () => {
 ### 3. Branch Strategy and Setup
 
 **Branch Naming Conventions**
+
 ```bash
 # Feature branches
 git checkout -b feature/issue-${ISSUE_NUMBER}-short-description
@@ -109,6 +118,7 @@ git checkout -b spike/issue-${ISSUE_NUMBER}-investigation
 ```
 
 **Branch Configuration**
+
 ```bash
 # Set upstream tracking
 git push -u origin feature/issue-${ISSUE_NUMBER}-feature-name
@@ -123,28 +133,33 @@ gh issue develop ${ISSUE_NUMBER} --checkout
 ### 4. Implementation Planning and Task Breakdown
 
 **Task Decomposition Framework**
+
 ```markdown
 ## Implementation Plan for Issue #${ISSUE_NUMBER}
 
 ### Phase 1: Foundation (Day 1)
+
 - [ ] Set up development environment
 - [ ] Create failing test cases
 - [ ] Implement data models/schemas
 - [ ] Add necessary migrations
 
 ### Phase 2: Core Logic (Day 2)
+
 - [ ] Implement business logic
 - [ ] Add validation layers
 - [ ] Handle edge cases
 - [ ] Add logging and monitoring
 
 ### Phase 3: Integration (Day 3)
+
 - [ ] Wire up API endpoints
 - [ ] Update frontend components
 - [ ] Add error handling
 - [ ] Implement retry logic
 
 ### Phase 4: Testing & Polish (Day 4)
+
 - [ ] Complete unit test coverage
 - [ ] Add integration tests
 - [ ] Performance optimization
@@ -152,6 +167,7 @@ gh issue develop ${ISSUE_NUMBER} --checkout
 ```
 
 **Incremental Commit Strategy**
+
 ```bash
 # After each subtask completion
 git add -p  # Partial staging for atomic commits
@@ -163,9 +179,10 @@ git commit -m "docs(auth): update API documentation (#${ISSUE_NUMBER})"
 ### 5. Test-Driven Development
 
 **Unit Test Implementation**
+
 ```javascript
 // Jest example for bug fix
-describe('Issue #123: User authentication', () => {
+describe("Issue #123: User authentication", () => {
   let authService;
 
   beforeEach(() => {
@@ -173,7 +190,7 @@ describe('Issue #123: User authentication', () => {
     jest.clearAllMocks();
   });
 
-  test('should handle expired tokens gracefully', async () => {
+  test("should handle expired tokens gracefully", async () => {
     // Arrange
     const expiredToken = generateExpiredToken();
 
@@ -182,20 +199,21 @@ describe('Issue #123: User authentication', () => {
 
     // Assert
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('TOKEN_EXPIRED');
-    expect(mockLogger.warn).toHaveBeenCalledWith('Token validation failed', {
-      reason: 'expired',
-      tokenId: expect.any(String)
+    expect(result.error).toBe("TOKEN_EXPIRED");
+    expect(mockLogger.warn).toHaveBeenCalledWith("Token validation failed", {
+      reason: "expired",
+      tokenId: expect.any(String),
     });
   });
 
-  test('should refresh token automatically when near expiry', async () => {
+  test("should refresh token automatically when near expiry", async () => {
     // Test implementation
   });
 });
 ```
 
 **Integration Test Pattern**
+
 ```python
 # Pytest integration test
 import pytest
@@ -235,27 +253,28 @@ class TestIssue123Integration:
 ```
 
 **End-to-End Testing**
+
 ```typescript
 // Playwright E2E test
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Issue #123: Authentication Flow', () => {
-  test('user can complete full authentication cycle', async ({ page }) => {
+test.describe("Issue #123: Authentication Flow", () => {
+  test("user can complete full authentication cycle", async ({ page }) => {
     // Navigate to login
-    await page.goto('/login');
+    await page.goto("/login");
 
     // Fill credentials
-    await page.fill('[data-testid="email-input"]', 'user@example.com');
-    await page.fill('[data-testid="password-input"]', 'password123');
+    await page.fill('[data-testid="email-input"]', "user@example.com");
+    await page.fill('[data-testid="password-input"]', "password123");
 
     // Submit and wait for navigation
     await Promise.all([
       page.waitForNavigation(),
-      page.click('[data-testid="login-button"]')
+      page.click('[data-testid="login-button"]'),
     ]);
 
     // Verify successful login
-    await expect(page).toHaveURL('/dashboard');
+    await expect(page).toHaveURL("/dashboard");
     await expect(page.locator('[data-testid="user-menu"]')).toBeVisible();
   });
 });
@@ -264,6 +283,7 @@ test.describe('Issue #123: Authentication Flow', () => {
 ### 6. Code Implementation Patterns
 
 **Bug Fix Pattern**
+
 ```javascript
 // Before (buggy code)
 function calculateDiscount(price, discountPercent) {
@@ -273,14 +293,16 @@ function calculateDiscount(price, discountPercent) {
 // After (fixed code with validation)
 function calculateDiscount(price, discountPercent) {
   // Validate inputs
-  if (typeof price !== 'number' || price < 0) {
-    throw new Error('Invalid price');
+  if (typeof price !== "number" || price < 0) {
+    throw new Error("Invalid price");
   }
 
-  if (typeof discountPercent !== 'number' ||
-      discountPercent < 0 ||
-      discountPercent > 100) {
-    throw new Error('Invalid discount percentage');
+  if (
+    typeof discountPercent !== "number" ||
+    discountPercent < 0 ||
+    discountPercent > 100
+  ) {
+    throw new Error("Invalid discount percentage");
   }
 
   // Fix: Properly calculate discount
@@ -292,6 +314,7 @@ function calculateDiscount(price, discountPercent) {
 ```
 
 **Feature Implementation Pattern**
+
 ```python
 # Implementing new feature with proper architecture
 from typing import Optional, List
@@ -348,6 +371,7 @@ class IssueFeatureService:
 ### 7. Pull Request Creation
 
 **PR Preparation Checklist**
+
 ```bash
 # Run all tests locally
 npm test -- --coverage
@@ -365,6 +389,7 @@ npm run docs:generate
 ```
 
 **PR Creation with GitHub CLI**
+
 ```bash
 # Create PR with comprehensive description
 gh pr create \
@@ -408,6 +433,7 @@ EOF
 ```
 
 **Link PR to Issue Automatically**
+
 ```yaml
 # .github/pull_request_template.md
 ---
@@ -440,6 +466,7 @@ Closes #___
 ### 8. Post-Implementation Verification
 
 **Deployment Verification**
+
 ```bash
 # Check deployment status
 gh run list --workflow=deploy
@@ -456,6 +483,7 @@ gh api /repos/org/repo/issues/${ISSUE_NUMBER}/comments \
 ```
 
 **Issue Closure Protocol**
+
 ```bash
 # Add resolution comment
 gh issue comment ${ISSUE_NUMBER} \
@@ -473,6 +501,7 @@ gh issue close ${ISSUE_NUMBER} \
 **Purpose**: Fix authentication failure affecting all users
 
 **Investigation and Implementation**:
+
 ```bash
 # 1. Immediate triage
 gh issue view 456 --comments
@@ -509,6 +538,7 @@ gh pr create --title "Hotfix #456: Fix token validation logic" \
 **Purpose**: Implement user profile customization feature
 
 **Complete Implementation**:
+
 ```python
 # Task breakdown in issue comment
 """
@@ -564,6 +594,7 @@ def test_profile_update():
 **Purpose**: Resolve slow query performance issue
 
 **Investigation Workflow**:
+
 ```sql
 -- 1. Identify slow query from issue report
 EXPLAIN ANALYZE
@@ -598,16 +629,19 @@ class UserService {
     // }
 
     // New: Single optimized query
-    const result = await sequelize.query(`
+    const result = await sequelize.query(
+      `
       SELECT u.*, COUNT(o.id) as order_count
       FROM users u
       LEFT JOIN orders o ON u.id = o.user_id
       WHERE u.created_at > :since
       GROUP BY u.id
-    `, {
-      replacements: { since },
-      type: QueryTypes.SELECT
-    });
+    `,
+      {
+        replacements: { since },
+        type: QueryTypes.SELECT,
+      },
+    );
 
     return result;
   }
@@ -628,6 +662,7 @@ Upon successful issue resolution, deliver:
 8. **Rollback Plan**: Steps to revert if issues arise post-deployment
 
 Success Criteria:
+
 - Issue thoroughly investigated with root cause identified
 - Fix implemented with comprehensive test coverage
 - Pull request created following team standards

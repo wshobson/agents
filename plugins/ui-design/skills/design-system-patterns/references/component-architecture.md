@@ -10,20 +10,22 @@ Compound components share implicit state through React context, allowing flexibl
 
 ```tsx
 // Compound component pattern
-import * as React from 'react';
+import * as React from "react";
 
 interface AccordionContextValue {
   openItems: Set<string>;
   toggle: (id: string) => void;
-  type: 'single' | 'multiple';
+  type: "single" | "multiple";
 }
 
-const AccordionContext = React.createContext<AccordionContextValue | null>(null);
+const AccordionContext = React.createContext<AccordionContextValue | null>(
+  null,
+);
 
 function useAccordionContext() {
   const context = React.useContext(AccordionContext);
   if (!context) {
-    throw new Error('Accordion components must be used within an Accordion');
+    throw new Error("Accordion components must be used within an Accordion");
   }
   return context;
 }
@@ -31,13 +33,17 @@ function useAccordionContext() {
 // Root component
 interface AccordionProps {
   children: React.ReactNode;
-  type?: 'single' | 'multiple';
+  type?: "single" | "multiple";
   defaultOpen?: string[];
 }
 
-function Accordion({ children, type = 'single', defaultOpen = [] }: AccordionProps) {
+function Accordion({
+  children,
+  type = "single",
+  defaultOpen = [],
+}: AccordionProps) {
   const [openItems, setOpenItems] = React.useState<Set<string>>(
-    new Set(defaultOpen)
+    new Set(defaultOpen),
   );
 
   const toggle = React.useCallback(
@@ -47,7 +53,7 @@ function Accordion({ children, type = 'single', defaultOpen = [] }: AccordionPro
         if (next.has(id)) {
           next.delete(id);
         } else {
-          if (type === 'single') {
+          if (type === "single") {
             next.clear();
           }
           next.add(id);
@@ -55,7 +61,7 @@ function Accordion({ children, type = 'single', defaultOpen = [] }: AccordionPro
         return next;
       });
     },
-    [type]
+    [type],
   );
 
   return (
@@ -93,7 +99,7 @@ function AccordionTrigger({ children }: { children: React.ReactNode }) {
     >
       {children}
       <ChevronDown
-        className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
       />
     </button>
   );
@@ -120,7 +126,7 @@ export const AccordionCompound = Object.assign(Accordion, {
 // Usage
 function Example() {
   return (
-    <AccordionCompound type="single" defaultOpen={['item-1']}>
+    <AccordionCompound type="single" defaultOpen={["item-1"]}>
       <AccordionCompound.Item id="item-1">
         <AccordionCompound.Trigger>Is it accessible?</AccordionCompound.Trigger>
         <AccordionCompound.Content>
@@ -144,7 +150,7 @@ Polymorphic components can render as different HTML elements or other components
 
 ```tsx
 // Polymorphic component with proper TypeScript support
-import * as React from 'react';
+import * as React from "react";
 
 type AsProp<C extends React.ElementType> = {
   as?: C;
@@ -154,64 +160,71 @@ type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P);
 
 type PolymorphicComponentProp<
   C extends React.ElementType,
-  Props = {}
+  Props = {},
 > = React.PropsWithChildren<Props & AsProp<C>> &
   Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>;
 
 type PolymorphicRef<C extends React.ElementType> =
-  React.ComponentPropsWithRef<C>['ref'];
+  React.ComponentPropsWithRef<C>["ref"];
 
 type PolymorphicComponentPropWithRef<
   C extends React.ElementType,
-  Props = {}
+  Props = {},
 > = PolymorphicComponentProp<C, Props> & { ref?: PolymorphicRef<C> };
 
 // Button component
 interface ButtonOwnProps {
-  variant?: 'default' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "default" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg";
 }
 
-type ButtonProps<C extends React.ElementType = 'button'> =
+type ButtonProps<C extends React.ElementType = "button"> =
   PolymorphicComponentPropWithRef<C, ButtonOwnProps>;
 
 const Button = React.forwardRef(
-  <C extends React.ElementType = 'button'>(
-    { as, variant = 'default', size = 'md', className, children, ...props }: ButtonProps<C>,
-    ref?: PolymorphicRef<C>
+  <C extends React.ElementType = "button">(
+    {
+      as,
+      variant = "default",
+      size = "md",
+      className,
+      children,
+      ...props
+    }: ButtonProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
-    const Component = as || 'button';
+    const Component = as || "button";
 
     const variantClasses = {
-      default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-      outline: 'border border-input bg-background hover:bg-accent',
-      ghost: 'hover:bg-accent hover:text-accent-foreground',
+      default: "bg-primary text-primary-foreground hover:bg-primary/90",
+      outline: "border border-input bg-background hover:bg-accent",
+      ghost: "hover:bg-accent hover:text-accent-foreground",
     };
 
     const sizeClasses = {
-      sm: 'h-8 px-3 text-sm',
-      md: 'h-10 px-4 text-sm',
-      lg: 'h-12 px-6 text-base',
+      sm: "h-8 px-3 text-sm",
+      md: "h-10 px-4 text-sm",
+      lg: "h-12 px-6 text-base",
     };
 
     return (
       <Component
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+          "inline-flex items-center justify-center rounded-md font-medium transition-colors",
           variantClasses[variant],
           sizeClasses[size],
-          className
+          className,
         )}
         {...props}
       >
         {children}
       </Component>
     );
-  }
+  },
 );
 
-Button.displayName = 'Button';
+Button.displayName = "Button";
 
 // Usage
 function Example() {
@@ -242,31 +255,31 @@ Slots allow users to replace default elements with custom implementations.
 
 ```tsx
 // Slot pattern for customizable components
-import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
-  variant?: 'default' | 'outline';
+  variant?: "default" | "outline";
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ asChild = false, variant = 'default', className, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button';
+  ({ asChild = false, variant = "default", className, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
 
     return (
       <Comp
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-md font-medium',
-          variant === 'default' && 'bg-primary text-primary-foreground',
-          variant === 'outline' && 'border border-input bg-background',
-          className
+          "inline-flex items-center justify-center rounded-md font-medium",
+          variant === "default" && "bg-primary text-primary-foreground",
+          variant === "outline" && "border border-input bg-background",
+          className,
         )}
         {...props}
       />
     );
-  }
+  },
 );
 
 // Usage - Button styles applied to child element
@@ -285,7 +298,7 @@ Headless components provide behavior without styling, enabling complete visual c
 
 ```tsx
 // Headless toggle hook
-import * as React from 'react';
+import * as React from "react";
 
 interface UseToggleProps {
   defaultPressed?: boolean;
@@ -315,8 +328,8 @@ function useToggle({
     pressed,
     toggle,
     buttonProps: {
-      role: 'switch' as const,
-      'aria-checked': pressed,
+      role: "switch" as const,
+      "aria-checked": pressed,
       onClick: toggle,
     },
   };
@@ -334,7 +347,8 @@ function useListbox<T>({
   defaultSelectedIndex = -1,
   onSelect,
 }: UseListboxProps<T>) {
-  const [selectedIndex, setSelectedIndex] = React.useState(defaultSelectedIndex);
+  const [selectedIndex, setSelectedIndex] =
+    React.useState(defaultSelectedIndex);
   const [highlightedIndex, setHighlightedIndex] = React.useState(-1);
 
   const select = React.useCallback(
@@ -342,40 +356,40 @@ function useListbox<T>({
       setSelectedIndex(index);
       onSelect?.(items[index], index);
     },
-    [items, onSelect]
+    [items, onSelect],
   );
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent) => {
       switch (event.key) {
-        case 'ArrowDown':
+        case "ArrowDown":
           event.preventDefault();
           setHighlightedIndex((prev) =>
-            prev < items.length - 1 ? prev + 1 : prev
+            prev < items.length - 1 ? prev + 1 : prev,
           );
           break;
-        case 'ArrowUp':
+        case "ArrowUp":
           event.preventDefault();
           setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : prev));
           break;
-        case 'Enter':
-        case ' ':
+        case "Enter":
+        case " ":
           event.preventDefault();
           if (highlightedIndex >= 0) {
             select(highlightedIndex);
           }
           break;
-        case 'Home':
+        case "Home":
           event.preventDefault();
           setHighlightedIndex(0);
           break;
-        case 'End':
+        case "End":
           event.preventDefault();
           setHighlightedIndex(items.length - 1);
           break;
       }
     },
-    [items.length, highlightedIndex, select]
+    [items.length, highlightedIndex, select],
   );
 
   return {
@@ -384,13 +398,13 @@ function useListbox<T>({
     select,
     setHighlightedIndex,
     listboxProps: {
-      role: 'listbox' as const,
+      role: "listbox" as const,
       tabIndex: 0,
       onKeyDown: handleKeyDown,
     },
     getOptionProps: (index: number) => ({
-      role: 'option' as const,
-      'aria-selected': index === selectedIndex,
+      role: "option" as const,
+      "aria-selected": index === selectedIndex,
       onClick: () => select(index),
       onMouseEnter: () => setHighlightedIndex(index),
     }),
@@ -461,28 +475,28 @@ function Badge({ className, variant, size, ...props }: BadgeProps) {
 ## Responsive Variants
 
 ```tsx
-import { cva } from 'class-variance-authority';
+import { cva } from "class-variance-authority";
 
 // Responsive variant configuration
-const containerVariants = cva('mx-auto w-full px-4', {
+const containerVariants = cva("mx-auto w-full px-4", {
   variants: {
     size: {
-      sm: 'max-w-screen-sm',
-      md: 'max-w-screen-md',
-      lg: 'max-w-screen-lg',
-      xl: 'max-w-screen-xl',
-      full: 'max-w-full',
+      sm: "max-w-screen-sm",
+      md: "max-w-screen-md",
+      lg: "max-w-screen-lg",
+      xl: "max-w-screen-xl",
+      full: "max-w-full",
     },
     padding: {
-      none: 'px-0',
-      sm: 'px-4 md:px-6',
-      md: 'px-4 md:px-8 lg:px-12',
-      lg: 'px-6 md:px-12 lg:px-20',
+      none: "px-0",
+      sm: "px-4 md:px-6",
+      md: "px-4 md:px-8 lg:px-12",
+      lg: "px-6 md:px-12 lg:px-20",
     },
   },
   defaultVariants: {
-    size: 'lg',
-    padding: 'md',
+    size: "lg",
+    padding: "md",
   },
 });
 
@@ -498,23 +512,23 @@ interface ResponsiveValue<T> {
 function getResponsiveClasses<T extends string>(
   prop: T | ResponsiveValue<T> | undefined,
   classMap: Record<T, string>,
-  responsiveClassMap: Record<string, Record<T, string>>
+  responsiveClassMap: Record<string, Record<T, string>>,
 ): string {
-  if (!prop) return '';
+  if (!prop) return "";
 
-  if (typeof prop === 'string') {
+  if (typeof prop === "string") {
     return classMap[prop];
   }
 
   return Object.entries(prop)
     .map(([breakpoint, value]) => {
-      if (breakpoint === 'base') {
+      if (breakpoint === "base") {
         return classMap[value as T];
       }
       return responsiveClassMap[breakpoint]?.[value as T];
     })
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 }
 ```
 
@@ -555,7 +569,7 @@ function DataList<T>({
   keyExtractor={(user) => user.id}
   renderItem={(user) => <UserCard user={user} />}
   renderEmpty={() => <EmptyState message="No users found" />}
-/>
+/>;
 ```
 
 ### Children as Function
@@ -577,11 +591,11 @@ function Disclosure({ children, defaultOpen = false }: DisclosureProps) {
 <Disclosure>
   {({ isOpen, toggle }) => (
     <>
-      <button onClick={toggle}>{isOpen ? 'Close' : 'Open'}</button>
+      <button onClick={toggle}>{isOpen ? "Close" : "Open"}</button>
       {isOpen && <div>Content</div>}
     </>
   )}
-</Disclosure>
+</Disclosure>;
 ```
 
 ## Best Practices

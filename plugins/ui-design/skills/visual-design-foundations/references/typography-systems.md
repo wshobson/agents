@@ -9,17 +9,21 @@ A modular scale creates harmonious relationships between font sizes using a math
 ```tsx
 // Common ratios
 const RATIOS = {
-  minorSecond: 1.067,    // 16:15
-  majorSecond: 1.125,    // 9:8
-  minorThird: 1.2,       // 6:5
-  majorThird: 1.25,      // 5:4
-  perfectFourth: 1.333,  // 4:3
+  minorSecond: 1.067, // 16:15
+  majorSecond: 1.125, // 9:8
+  minorThird: 1.2, // 6:5
+  majorThird: 1.25, // 5:4
+  perfectFourth: 1.333, // 4:3
   augmentedFourth: 1.414, // √2
-  perfectFifth: 1.5,     // 3:2
-  goldenRatio: 1.618,    // φ
+  perfectFifth: 1.5, // 3:2
+  goldenRatio: 1.618, // φ
 };
 
-function generateScale(baseSize: number, ratio: number, steps: number): number[] {
+function generateScale(
+  baseSize: number,
+  ratio: number,
+  steps: number,
+): number[] {
   const scale: number[] = [];
   for (let i = -2; i <= steps; i++) {
     scale.push(Math.round(baseSize * Math.pow(ratio, i) * 100) / 100);
@@ -37,17 +41,17 @@ const typeScale = generateScale(16, RATIOS.perfectFourth, 6);
 ```css
 :root {
   /* Base scale using perfect fourth (1.333) */
-  --font-size-2xs: 0.563rem;  /* ~9px */
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-md: 1.125rem;   /* 18px */
-  --font-size-lg: 1.333rem;   /* ~21px */
-  --font-size-xl: 1.5rem;     /* 24px */
-  --font-size-2xl: 1.777rem;  /* ~28px */
-  --font-size-3xl: 2.369rem;  /* ~38px */
-  --font-size-4xl: 3.157rem;  /* ~50px */
-  --font-size-5xl: 4.209rem;  /* ~67px */
+  --font-size-2xs: 0.563rem; /* ~9px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-md: 1.125rem; /* 18px */
+  --font-size-lg: 1.333rem; /* ~21px */
+  --font-size-xl: 1.5rem; /* 24px */
+  --font-size-2xl: 1.777rem; /* ~28px */
+  --font-size-3xl: 2.369rem; /* ~38px */
+  --font-size-4xl: 3.157rem; /* ~50px */
+  --font-size-5xl: 4.209rem; /* ~67px */
 
   /* Font weights */
   --font-weight-normal: 400;
@@ -79,8 +83,8 @@ const typeScale = generateScale(16, RATIOS.perfectFourth, 6);
 ```css
 /* Use font-display to control loading behavior */
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
+  font-family: "Inter";
+  src: url("/fonts/Inter-Variable.woff2") format("woff2-variations");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap; /* Show fallback immediately, swap when loaded */
@@ -88,8 +92,8 @@ const typeScale = generateScale(16, RATIOS.perfectFourth, 6);
 
 /* Optional: size-adjust for better fallback matching */
 @font-face {
-  font-family: 'Inter Fallback';
-  src: local('Arial');
+  font-family: "Inter Fallback";
+  src: local("Arial");
   size-adjust: 107%; /* Adjust to match Inter metrics */
   ascent-override: 90%;
   descent-override: 22%;
@@ -97,7 +101,7 @@ const typeScale = generateScale(16, RATIOS.perfectFourth, 6);
 }
 
 body {
-  font-family: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+  font-family: "Inter", "Inter Fallback", system-ui, sans-serif;
 }
 ```
 
@@ -121,15 +125,17 @@ body {
 ```css
 /* Variable font with weight and width axes */
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter-Variable.woff2') format('woff2');
+  font-family: "Inter";
+  src: url("/fonts/Inter-Variable.woff2") format("woff2");
   font-weight: 100 900;
   font-stretch: 75% 125%;
 }
 
 /* Use font-variation-settings for fine control */
 .custom-weight {
-  font-variation-settings: 'wght' 450, 'wdth' 95;
+  font-variation-settings:
+    "wght" 450,
+    "wdth" 95;
 }
 
 /* Or use standard properties */
@@ -169,9 +175,8 @@ p {
   --max-vw: 1200;
 
   line-height: calc(
-    var(--min-line-height) +
-    (var(--max-line-height) - var(--min-line-height)) *
-    ((100vw - var(--min-vw) * 1px) / (var(--max-vw) - var(--min-vw)))
+    var(--min-line-height) + (var(--max-line-height) - var(--min-line-height)) *
+      ((100vw - var(--min-vw) * 1px) / (var(--max-vw) - var(--min-vw)))
   );
 }
 ```
@@ -183,15 +188,15 @@ p {
 module.exports = {
   theme: {
     fontSize: {
-      xs: ['0.75rem', { lineHeight: '1rem' }],
-      sm: ['0.875rem', { lineHeight: '1.25rem' }],
-      base: ['1rem', { lineHeight: '1.5rem' }],
-      lg: ['1.125rem', { lineHeight: '1.75rem' }],
-      xl: ['1.25rem', { lineHeight: '1.75rem' }],
-      '2xl': ['1.5rem', { lineHeight: '2rem' }],
-      '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-      '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-      '5xl': ['3rem', { lineHeight: '1' }],
+      xs: ["0.75rem", { lineHeight: "1rem" }],
+      sm: ["0.875rem", { lineHeight: "1.25rem" }],
+      base: ["1rem", { lineHeight: "1.5rem" }],
+      lg: ["1.125rem", { lineHeight: "1.75rem" }],
+      xl: ["1.25rem", { lineHeight: "1.75rem" }],
+      "2xl": ["1.5rem", { lineHeight: "2rem" }],
+      "3xl": ["1.875rem", { lineHeight: "2.25rem" }],
+      "4xl": ["2.25rem", { lineHeight: "2.5rem" }],
+      "5xl": ["3rem", { lineHeight: "1" }],
     },
   },
 };
@@ -268,7 +273,9 @@ p {
 }
 
 /* Balance headings */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   text-wrap: balance;
 }
 
@@ -292,20 +299,20 @@ h1, h2, h3 {
 ```css
 /* Serif heading + Sans body */
 :root {
-  --font-heading: 'Playfair Display', Georgia, serif;
-  --font-body: 'Source Sans Pro', -apple-system, sans-serif;
+  --font-heading: "Playfair Display", Georgia, serif;
+  --font-body: "Source Sans Pro", -apple-system, sans-serif;
 }
 
 /* Geometric heading + Humanist body */
 :root {
-  --font-heading: 'Space Grotesk', sans-serif;
-  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
 }
 
 /* Modern sans heading + Classic serif body */
 :root {
-  --font-heading: 'Inter', system-ui, sans-serif;
-  --font-body: 'Georgia', Times, serif;
+  --font-heading: "Inter", system-ui, sans-serif;
+  --font-body: "Georgia", Times, serif;
 }
 ```
 
@@ -314,7 +321,7 @@ h1, h2, h3 {
 ```css
 /* Single variable font family for all uses */
 :root {
-  --font-family: 'Inter', system-ui, sans-serif;
+  --font-family: "Inter", system-ui, sans-serif;
 }
 
 h1 {
@@ -405,7 +412,7 @@ p {
   font-variant-numeric: tabular-nums lining-nums;
 
   /* Fractions */
-  font-feature-settings: 'frac' 1;
+  font-feature-settings: "frac" 1;
 }
 
 /* Tabular numbers for aligned columns */

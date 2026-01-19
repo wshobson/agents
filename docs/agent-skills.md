@@ -205,17 +205,17 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 
 ### UI Design (9 skills)
 
-| Skill                          | Description                                                            |
-| ------------------------------ | ---------------------------------------------------------------------- |
-| **design-system-patterns**     | Build scalable design systems with tokens, components, and theming     |
-| **accessibility-compliance**   | Implement WCAG 2.1/2.2 compliance with proper ARIA and keyboard nav    |
-| **responsive-design**          | Create fluid layouts with CSS Grid, Flexbox, and container queries     |
-| **mobile-ios-design**          | Design iOS apps following Human Interface Guidelines                   |
-| **mobile-android-design**      | Design Android apps following Material Design 3 guidelines             |
-| **react-native-design**        | Cross-platform design patterns for React Native applications           |
-| **web-component-design**       | Build accessible, reusable web components with Shadow DOM              |
-| **interaction-design**         | Create micro-interactions, animations, and gesture-based interfaces    |
-| **visual-design-foundations**  | Apply typography, color theory, spacing, and visual hierarchy          |
+| Skill                         | Description                                                         |
+| ----------------------------- | ------------------------------------------------------------------- |
+| **design-system-patterns**    | Build scalable design systems with tokens, components, and theming  |
+| **accessibility-compliance**  | Implement WCAG 2.1/2.2 compliance with proper ARIA and keyboard nav |
+| **responsive-design**         | Create fluid layouts with CSS Grid, Flexbox, and container queries  |
+| **mobile-ios-design**         | Design iOS apps following Human Interface Guidelines                |
+| **mobile-android-design**     | Design Android apps following Material Design 3 guidelines          |
+| **react-native-design**       | Cross-platform design patterns for React Native applications        |
+| **web-component-design**      | Build accessible, reusable web components with Shadow DOM           |
+| **interaction-design**        | Create micro-interactions, animations, and gesture-based interfaces |
+| **visual-design-foundations** | Apply typography, color theory, spacing, and visual hierarchy       |
 
 ### Game Development (2 skills)
 

@@ -15,6 +15,7 @@ Specializes in designing and implementing production-grade vector search systems
 ## Capabilities
 
 ### Vector Database Selection & Architecture
+
 - **Pinecone**: Managed serverless, auto-scaling, metadata filtering
 - **Qdrant**: High-performance, Rust-based, complex filtering
 - **Weaviate**: GraphQL API, hybrid search, multi-tenancy
@@ -23,6 +24,7 @@ Specializes in designing and implementing production-grade vector search systems
 - **Chroma**: Lightweight, local development, embeddings built-in
 
 ### Embedding Model Selection
+
 - **Voyage AI**: voyage-3-large (recommended for Claude apps), voyage-code-3, voyage-finance-2, voyage-law-2
 - **OpenAI**: text-embedding-3-large (3072 dims), text-embedding-3-small (1536 dims)
 - **Open Source**: BGE-large-en-v1.5, E5-large-v2, multilingual-e5-large
@@ -30,6 +32,7 @@ Specializes in designing and implementing production-grade vector search systems
 - Domain-specific fine-tuning strategies
 
 ### Index Configuration & Optimization
+
 - **HNSW**: High recall, adjustable M and efConstruction parameters
 - **IVF**: Large-scale datasets, nlist/nprobe tuning
 - **Product Quantization (PQ)**: Memory optimization for billions of vectors
@@ -37,6 +40,7 @@ Specializes in designing and implementing production-grade vector search systems
 - Index selection based on recall/latency/memory tradeoffs
 
 ### Hybrid Search Implementation
+
 - Vector + BM25 keyword search fusion
 - Reciprocal Rank Fusion (RRF) scoring
 - Weighted combination strategies
@@ -44,6 +48,7 @@ Specializes in designing and implementing production-grade vector search systems
 - Reranking with cross-encoders
 
 ### Document Processing Pipeline
+
 - Chunking strategies: recursive, semantic, token-based
 - Metadata extraction and enrichment
 - Embedding batching and async processing
@@ -51,6 +56,7 @@ Specializes in designing and implementing production-grade vector search systems
 - Document versioning and deduplication
 
 ### Production Operations
+
 - Monitoring: latency percentiles, recall metrics
 - Scaling: sharding, replication, auto-scaling
 - Backup and disaster recovery
@@ -71,24 +77,28 @@ Specializes in designing and implementing production-grade vector search systems
 ## Best Practices
 
 ### Embedding Selection
+
 - Use Voyage AI for Claude-based applications (officially recommended by Anthropic)
 - Match embedding dimensions to use case (512-1024 for most, 3072 for maximum quality)
 - Consider domain-specific models for code, legal, finance
 - Test embedding quality on representative queries
 
 ### Chunking
+
 - Chunk size 500-1000 tokens for most use cases
 - 10-20% overlap to preserve context boundaries
 - Use semantic chunking for complex documents
 - Include metadata for filtering and debugging
 
 ### Index Tuning
+
 - Start with HNSW for most use cases (good recall/latency balance)
 - Use IVF+PQ for >10M vectors with memory constraints
 - Benchmark recall@10 vs latency for your specific queries
 - Monitor and re-tune as data grows
 
 ### Production
+
 - Implement metadata filtering to reduce search space
 - Cache frequent queries and embeddings
 - Plan for index rebuilding (blue-green deployments)

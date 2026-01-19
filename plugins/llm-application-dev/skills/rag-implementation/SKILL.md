@@ -20,9 +20,11 @@ Master Retrieval-Augmented Generation (RAG) to build LLM applications that provi
 ## Core Components
 
 ### 1. Vector Databases
+
 **Purpose**: Store and retrieve document embeddings efficiently
 
 **Options:**
+
 - **Pinecone**: Managed, scalable, serverless
 - **Weaviate**: Open-source, hybrid search, GraphQL
 - **Milvus**: High performance, on-premise
@@ -31,6 +33,7 @@ Master Retrieval-Augmented Generation (RAG) to build LLM applications that provi
 - **pgvector**: PostgreSQL extension, SQL integration
 
 ### 2. Embeddings
+
 **Purpose**: Convert text to numerical vectors for similarity search
 
 **Models (2026):**
@@ -44,7 +47,9 @@ Master Retrieval-Augmented Generation (RAG) to build LLM applications that provi
 | **multilingual-e5-large** | 1024 | Multi-language support |
 
 ### 3. Retrieval Strategies
+
 **Approaches:**
+
 - **Dense Retrieval**: Semantic similarity via embeddings
 - **Sparse Retrieval**: Keyword matching (BM25, TF-IDF)
 - **Hybrid Search**: Combine dense + sparse with weighted fusion
@@ -52,9 +57,11 @@ Master Retrieval-Augmented Generation (RAG) to build LLM applications that provi
 - **HyDE**: Generate hypothetical documents for better retrieval
 
 ### 4. Reranking
+
 **Purpose**: Improve retrieval quality by reordering results
 
 **Methods:**
+
 - **Cross-Encoders**: BERT-based reranking (ms-marco-MiniLM)
 - **Cohere Rerank**: API-based reranking
 - **Maximal Marginal Relevance (MMR)**: Diversity + relevance
@@ -255,6 +262,7 @@ hyde_rag = builder.compile()
 ## Document Chunking Strategies
 
 ### Recursive Character Text Splitter
+
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -269,6 +277,7 @@ chunks = splitter.split_documents(documents)
 ```
 
 ### Token-Based Splitting
+
 ```python
 from langchain_text_splitters import TokenTextSplitter
 
@@ -280,6 +289,7 @@ splitter = TokenTextSplitter(
 ```
 
 ### Semantic Chunking
+
 ```python
 from langchain_experimental.text_splitter import SemanticChunker
 
@@ -291,6 +301,7 @@ splitter = SemanticChunker(
 ```
 
 ### Markdown Header Splitter
+
 ```python
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 
@@ -309,6 +320,7 @@ splitter = MarkdownHeaderTextSplitter(
 ## Vector Store Configurations
 
 ### Pinecone (Serverless)
+
 ```python
 from pinecone import Pinecone, ServerlessSpec
 from langchain_pinecone import PineconeVectorStore
@@ -331,6 +343,7 @@ vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
 ```
 
 ### Weaviate
+
 ```python
 import weaviate
 from langchain_weaviate import WeaviateVectorStore
@@ -346,6 +359,7 @@ vectorstore = WeaviateVectorStore(
 ```
 
 ### Chroma (Local Development)
+
 ```python
 from langchain_chroma import Chroma
 
@@ -357,6 +371,7 @@ vectorstore = Chroma(
 ```
 
 ### pgvector (PostgreSQL)
+
 ```python
 from langchain_postgres.vectorstores import PGVector
 
@@ -372,6 +387,7 @@ vectorstore = PGVector(
 ## Retrieval Optimization
 
 ### 1. Metadata Filtering
+
 ```python
 from langchain_core.documents import Document
 
@@ -394,6 +410,7 @@ results = await vectorstore.asimilarity_search(
 ```
 
 ### 2. Maximal Marginal Relevance (MMR)
+
 ```python
 # Balance relevance with diversity
 results = await vectorstore.amax_marginal_relevance_search(
@@ -405,6 +422,7 @@ results = await vectorstore.amax_marginal_relevance_search(
 ```
 
 ### 3. Reranking with Cross-Encoder
+
 ```python
 from sentence_transformers import CrossEncoder
 
@@ -424,6 +442,7 @@ async def retrieve_and_rerank(query: str, k: int = 5) -> list[Document]:
 ```
 
 ### 4. Cohere Rerank
+
 ```python
 from langchain.retrievers import CohereRerank
 from langchain_cohere import CohereRerank
@@ -440,6 +459,7 @@ reranked_retriever = ContextualCompressionRetriever(
 ## Prompt Engineering for RAG
 
 ### Contextual Prompt with Citations
+
 ```python
 rag_prompt = ChatPromptTemplate.from_template(
     """Answer the question based on the context below. Include citations using [1], [2], etc.
@@ -461,6 +481,7 @@ rag_prompt = ChatPromptTemplate.from_template(
 ```
 
 ### Structured Output for RAG
+
 ```python
 from pydantic import BaseModel, Field
 

@@ -3,6 +3,7 @@
 ## Template Architecture
 
 ### Basic Template Structure
+
 ```python
 class PromptTemplate:
     def __init__(self, template_string, variables=None):
@@ -30,6 +31,7 @@ prompt = template.render(
 ```
 
 ### Conditional Templates
+
 ```python
 class ConditionalTemplate(PromptTemplate):
     def render(self, **kwargs):
@@ -84,6 +86,7 @@ Reference examples:
 ```
 
 ### Modular Template Composition
+
 ```python
 class ModularTemplate:
     def __init__(self):
@@ -133,6 +136,7 @@ advanced_prompt = builder.render(
 ## Common Template Patterns
 
 ### Classification Template
+
 ```python
 CLASSIFICATION_TEMPLATE = """
 Classify the following {content_type} into one of these categories: {categories}
@@ -153,6 +157,7 @@ Category:"""
 ```
 
 ### Extraction Template
+
 ```python
 EXTRACTION_TEMPLATE = """
 Extract structured information from the {content_type}.
@@ -171,6 +176,7 @@ Extracted information (JSON):"""
 ```
 
 ### Generation Template
+
 ```python
 GENERATION_TEMPLATE = """
 Generate {output_type} based on the following {input_type}.
@@ -198,6 +204,7 @@ Examples:
 ```
 
 ### Transformation Template
+
 ```python
 TRANSFORMATION_TEMPLATE = """
 Transform the input {source_format} to {target_format}.
@@ -219,6 +226,7 @@ Output {target_format}:"""
 ## Advanced Features
 
 ### Template Inheritance
+
 ```python
 class TemplateRegistry:
     def __init__(self):
@@ -251,6 +259,7 @@ registry.register('sentiment_analysis', {
 ```
 
 ### Variable Validation
+
 ```python
 class ValidatedTemplate:
     def __init__(self, template, schema):
@@ -294,6 +303,7 @@ template = ValidatedTemplate(
 ```
 
 ### Template Caching
+
 ```python
 class CachedTemplate:
     def __init__(self, template):
@@ -323,6 +333,7 @@ class CachedTemplate:
 ## Multi-Turn Templates
 
 ### Conversation Template
+
 ```python
 class ConversationTemplate:
     def __init__(self, system_prompt):
@@ -349,6 +360,7 @@ class ConversationTemplate:
 ```
 
 ### State-Based Templates
+
 ```python
 class StatefulTemplate:
     def __init__(self):
@@ -406,6 +418,7 @@ Here's the result: {result}
 ## Template Libraries
 
 ### Question Answering
+
 ```python
 QA_TEMPLATES = {
     'factual': """Answer the question based on the context.
@@ -432,6 +445,7 @@ Assistant:"""
 ```
 
 ### Content Generation
+
 ```python
 GENERATION_TEMPLATES = {
     'blog_post': """Write a blog post about {topic}.

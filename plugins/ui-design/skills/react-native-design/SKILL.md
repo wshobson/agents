@@ -23,6 +23,7 @@ Master React Native styling patterns, React Navigation, and Reanimated 3 to buil
 ### 1. StyleSheet and Styling
 
 **Basic StyleSheet:**
+
 ```typescript
 import { StyleSheet, View, Text } from 'react-native';
 
@@ -56,6 +57,7 @@ function Card() {
 ```
 
 **Dynamic Styles:**
+
 ```typescript
 interface CardProps {
   variant: 'primary' | 'secondary';
@@ -99,30 +101,31 @@ const styles = StyleSheet.create({
 ### 2. Flexbox Layout
 
 **Row and Column Layouts:**
+
 ```typescript
 const styles = StyleSheet.create({
   // Vertical stack (column)
   column: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 12,
   },
   // Horizontal stack (row)
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   // Space between items
   spaceBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   // Centered content
   centered: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   // Fill remaining space
   fill: {
@@ -134,6 +137,7 @@ const styles = StyleSheet.create({
 ### 3. React Navigation Setup
 
 **Stack Navigator:**
+
 ```typescript
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -177,6 +181,7 @@ function AppNavigator() {
 ```
 
 **Tab Navigator:**
+
 ```typescript
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -216,6 +221,7 @@ function TabNavigator() {
 ### 4. Reanimated 3 Basics
 
 **Animated Values:**
+
 ```typescript
 import Animated, {
   useSharedValue,
@@ -248,6 +254,7 @@ function AnimatedBox() {
 ```
 
 **Gesture Handler Integration:**
+
 ```typescript
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -290,14 +297,14 @@ function DraggableCard() {
 ### 5. Platform-Specific Styling
 
 ```typescript
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
     padding: 16,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -308,14 +315,14 @@ const styles = StyleSheet.create({
     }),
   },
   text: {
-    fontFamily: Platform.OS === 'ios' ? 'SF Pro Text' : 'Roboto',
+    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "Roboto",
     fontSize: 16,
   },
 });
 
 // Platform-specific components
-import { Platform } from 'react-native';
-const StatusBarHeight = Platform.OS === 'ios' ? 44 : 0;
+import { Platform } from "react-native";
+const StatusBarHeight = Platform.OS === "ios" ? 44 : 0;
 ```
 
 ## Quick Start Component

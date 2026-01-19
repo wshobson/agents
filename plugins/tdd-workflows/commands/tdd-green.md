@@ -86,6 +86,7 @@ Prompt: "Implement MINIMAL code to make these failing tests pass: $ARGUMENTS. Fo
     - Prepare notes for refactoring phase
 
 Output should include:
+
 - Complete implementation code
 - Test execution results showing all green
 - List of shortcuts taken for later refactoring
@@ -96,6 +97,7 @@ Output should include:
 ## Post-Implementation Checks
 
 After implementation:
+
 1. Run full test suite to confirm all tests pass
 2. Verify no existing tests were broken
 3. Document areas needing refactoring
@@ -105,6 +107,7 @@ After implementation:
 ## Recovery Process
 
 If tests still fail:
+
 - Review test requirements carefully
 - Check for misunderstood assertions
 - Add minimal code to address specific failures
@@ -133,37 +136,44 @@ If tests still fail:
 ### Example 1: Minimal → Production-Ready (User Service)
 
 **Test Requirements:**
+
 ```typescript
-describe('UserService', () => {
-  it('should create a new user', async () => {
-    const user = await userService.create({ email: 'test@example.com', name: 'Test' });
+describe("UserService", () => {
+  it("should create a new user", async () => {
+    const user = await userService.create({
+      email: "test@example.com",
+      name: "Test",
+    });
     expect(user.id).toBeDefined();
-    expect(user.email).toBe('test@example.com');
+    expect(user.email).toBe("test@example.com");
   });
 
-  it('should find user by email', async () => {
-    await userService.create({ email: 'test@example.com', name: 'Test' });
-    const user = await userService.findByEmail('test@example.com');
+  it("should find user by email", async () => {
+    await userService.create({ email: "test@example.com", name: "Test" });
+    const user = await userService.findByEmail("test@example.com");
     expect(user).toBeDefined();
   });
 });
 ```
 
 **Stage 1: Fake It (Minimal)**
+
 ```typescript
 class UserService {
   create(data: { email: string; name: string }) {
-    return { id: '123', email: data.email, name: data.name };
+    return { id: "123", email: data.email, name: data.name };
   }
 
   findByEmail(email: string) {
-    return { id: '123', email: email, name: 'Test' };
+    return { id: "123", email: email, name: "Test" };
   }
 }
 ```
-*Tests pass. Implementation is obviously fake but validates test structure.*
+
+_Tests pass. Implementation is obviously fake but validates test structure._
 
 **Stage 2: Simple Real Implementation**
+
 ```typescript
 class UserService {
   private users: Map<string, User> = new Map();
@@ -180,67 +190,79 @@ class UserService {
   }
 }
 ```
-*In-memory storage. Tests pass. Good enough for green phase.*
+
+_In-memory storage. Tests pass. Good enough for green phase._
 
 **Stage 3: Production-Ready (Refactor Phase)**
+
 ```typescript
 class UserService {
   constructor(private db: Database) {}
 
   async create(data: { email: string; name: string }) {
-    const existing = await this.db.query('SELECT * FROM users WHERE email = ?', [data.email]);
-    if (existing) throw new Error('User exists');
+    const existing = await this.db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [data.email],
+    );
+    if (existing) throw new Error("User exists");
 
-    const id = await this.db.insert('users', data);
+    const id = await this.db.insert("users", data);
     return { id, ...data };
   }
 
   async findByEmail(email: string) {
-    return this.db.queryOne('SELECT * FROM users WHERE email = ?', [email]);
+    return this.db.queryOne("SELECT * FROM users WHERE email = ?", [email]);
   }
 }
 ```
-*Database integration, error handling, validation - saved for refactor phase.*
+
+_Database integration, error handling, validation - saved for refactor phase._
 
 ### Example 2: API-First Implementation (Express)
 
 **Test Requirements:**
+
 ```javascript
-describe('POST /api/tasks', () => {
-  it('should create task and return 201', async () => {
+describe("POST /api/tasks", () => {
+  it("should create task and return 201", async () => {
     const res = await request(app)
-      .post('/api/tasks')
-      .send({ title: 'Test Task' });
+      .post("/api/tasks")
+      .send({ title: "Test Task" });
 
     expect(res.status).toBe(201);
     expect(res.body.id).toBeDefined();
-    expect(res.body.title).toBe('Test Task');
+    expect(res.body.title).toBe("Test Task");
   });
 });
 ```
 
 **Stage 1: Hardcoded Response**
+
 ```javascript
-app.post('/api/tasks', (req, res) => {
-  res.status(201).json({ id: '1', title: req.body.title });
+app.post("/api/tasks", (req, res) => {
+  res.status(201).json({ id: "1", title: req.body.title });
 });
 ```
-*Tests pass immediately. No logic needed yet.*
+
+_Tests pass immediately. No logic needed yet._
 
 **Stage 2: Simple Logic**
+
 ```javascript
 let tasks = [];
 let nextId = 1;
 
-app.post('/api/tasks', (req, res) => {
+app.post("/api/tasks", (req, res) => {
   const task = { id: String(nextId++), title: req.body.title };
   tasks.push(task);
   res.status(201).json(task);
 });
 ```
-*Minimal state management. Ready for more tests.*
+
+_Minimal state management. Ready for more tests._
 
 **Stage 3: Layered Architecture (Refactor)**
+
 ```javascript
 // Controller
 app.post('/api/tasks', async (req, res) => {
@@ -262,11 +284,13 @@ class TaskService {
   }
 }
 ```
-*Proper separation of concerns added during refactor phase.*
+
+_Proper separation of concerns added during refactor phase._
 
 ### Example 3: Database Integration (Django)
 
 **Test Requirements:**
+
 ```python
 def test_product_creation():
     product = Product.objects.create(name="Widget", price=9.99)
@@ -279,14 +303,17 @@ def test_product_price_validation():
 ```
 
 **Stage 1: Model Only**
+
 ```python
 class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 ```
-*First test passes. Second test fails - validation not implemented.*
+
+_First test passes. Second test fails - validation not implemented._
 
 **Stage 2: Add Validation**
+
 ```python
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -300,9 +327,11 @@ class Product(models.Model):
         self.clean()
         super().save(*args, **kwargs)
 ```
-*All tests pass. Minimal validation logic added.*
+
+_All tests pass. Minimal validation logic added._
 
 **Stage 3: Rich Domain Model (Refactor)**
+
 ```python
 class Product(models.Model):
     name = models.CharField(max_length=200)
@@ -323,11 +352,13 @@ class Product(models.Model):
     def apply_discount(self, percentage: float) -> Decimal:
         return self.price * (1 - percentage / 100)
 ```
-*Additional features, indexes, business logic added when needed.*
+
+_Additional features, indexes, business logic added when needed._
 
 ### Example 4: React Component Implementation
 
 **Test Requirements:**
+
 ```typescript
 describe('UserProfile', () => {
   it('should display user name', () => {
@@ -343,6 +374,7 @@ describe('UserProfile', () => {
 ```
 
 **Stage 1: Minimal JSX**
+
 ```typescript
 interface UserProfileProps {
   user: { name: string; email: string };
@@ -355,9 +387,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => (
   </div>
 );
 ```
-*Tests pass. No styling, no structure.*
+
+_Tests pass. No styling, no structure._
 
 **Stage 2: Basic Structure**
+
 ```typescript
 const UserProfile: React.FC<UserProfileProps> = ({ user }) => (
   <div className="user-profile">
@@ -366,9 +400,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => (
   </div>
 );
 ```
-*Added semantic HTML, className for styling hook.*
+
+_Added semantic HTML, className for styling hook._
 
 **Stage 3: Production Component (Refactor)**
+
 ```typescript
 const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -389,13 +425,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   );
 };
 ```
-*Accessibility, interaction, additional features added incrementally.*
+
+_Accessibility, interaction, additional features added incrementally._
 
 ## Decision Frameworks
 
 ### Framework 1: Fake vs. Real Implementation
 
 **When to Fake It:**
+
 - First test for a new feature
 - Complex external dependencies (payment gateways, APIs)
 - Implementation approach is still uncertain
@@ -403,6 +441,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
 - Time pressure to see all tests green
 
 **When to Go Real:**
+
 - Second or third test reveals pattern
 - Implementation is obvious and simple
 - Faking would be more complex than real code
@@ -410,6 +449,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
 - Tests explicitly require real behavior
 
 **Decision Matrix:**
+
 ```
 Complexity Low     | High
          ↓         | ↓
@@ -420,6 +460,7 @@ Complex  → REAL    | FAKE, evaluate alternatives
 ### Framework 2: Complexity Trade-off Analysis
 
 **Simplicity Score Calculation:**
+
 ```
 Score = (Lines of Code) + (Cyclomatic Complexity × 2) + (Dependencies × 3)
 
@@ -429,9 +470,14 @@ Score = (Lines of Code) + (Cyclomatic Complexity × 2) + (Dependencies × 3)
 ```
 
 **Example Evaluation:**
+
 ```typescript
 // Option A: Direct implementation (Score: 45)
-function calculateShipping(weight: number, distance: number, express: boolean): number {
+function calculateShipping(
+  weight: number,
+  distance: number,
+  express: boolean,
+): number {
   let base = weight * 0.5 + distance * 0.1;
   if (express) base *= 2;
   if (weight > 50) base += 10;
@@ -440,15 +486,21 @@ function calculateShipping(weight: number, distance: number, express: boolean): 
 }
 
 // Option B: Simplest for green phase (Score: 15)
-function calculateShipping(weight: number, distance: number, express: boolean): number {
+function calculateShipping(
+  weight: number,
+  distance: number,
+  express: boolean,
+): number {
   return express ? 50 : 25; // Fake it until more tests drive real logic
 }
 ```
-*Choose Option B for green phase, evolve to Option A as tests require.*
+
+_Choose Option B for green phase, evolve to Option A as tests require._
 
 ### Framework 3: Performance Consideration Timing
 
 **Green Phase: Focus on Correctness**
+
 ```
 ❌ Avoid:
 - Caching strategies
@@ -464,16 +516,18 @@ function calculateShipping(weight: number, distance: number, express: boolean): 
 ```
 
 **When Performance Matters in Green Phase:**
+
 1. Performance is explicit test requirement
 2. Implementation would cause timeout in test suite
 3. Memory leak would crash tests
 4. Resource exhaustion prevents testing
 
 **Performance Testing Integration:**
+
 ```typescript
 // Add performance test AFTER functional tests pass
-describe('Performance', () => {
-  it('should handle 1000 users within 100ms', () => {
+describe("Performance", () => {
+  it("should handle 1000 users within 100ms", () => {
     const start = Date.now();
     for (let i = 0; i < 1000; i++) {
       userService.create({ email: `user${i}@test.com`, name: `User ${i}` });
@@ -488,6 +542,7 @@ describe('Performance', () => {
 ### React Patterns
 
 **Simple Component → Hooks → Context:**
+
 ```typescript
 // Green Phase: Props only
 const Counter = ({ count, onIncrement }) => (
@@ -510,6 +565,7 @@ const Counter = () => {
 ### Django Patterns
 
 **Function View → Class View → Generic View:**
+
 ```python
 # Green Phase: Simple function
 def product_list(request):
@@ -531,25 +587,23 @@ class ProductListView(ListView):
 ### Express Patterns
 
 **Inline → Middleware → Service Layer:**
+
 ```javascript
 // Green Phase: Inline logic
-app.post('/api/users', (req, res) => {
+app.post("/api/users", (req, res) => {
   const user = { id: Date.now(), ...req.body };
   users.push(user);
   res.json(user);
 });
 
 // Refactor: Extract middleware
-app.post('/api/users', validateUser, (req, res) => {
+app.post("/api/users", validateUser, (req, res) => {
   const user = userService.create(req.body);
   res.json(user);
 });
 
 // Refactor: Full layering
-app.post('/api/users',
-  validateUser,
-  asyncHandler(userController.create)
-);
+app.post("/api/users", validateUser, asyncHandler(userController.create));
 ```
 
 ## Refactoring Resistance Patterns
@@ -636,11 +690,11 @@ class DatabaseUserRepository implements UserRepository {
   constructor(private db: Database) {}
 
   async findById(id: string) {
-    return this.db.query('SELECT * FROM users WHERE id = ?', [id]);
+    return this.db.query("SELECT * FROM users WHERE id = ?", [id]);
   }
 
   async save(user: User) {
-    await this.db.insert('users', user);
+    await this.db.insert("users", user);
   }
 }
 ```
@@ -651,25 +705,25 @@ class DatabaseUserRepository implements UserRepository {
 // Define contract
 const userServiceContract = {
   create: {
-    input: { email: 'string', name: 'string' },
-    output: { id: 'string', email: 'string', name: 'string' }
-  }
+    input: { email: "string", name: "string" },
+    output: { id: "string", email: "string", name: "string" },
+  },
 };
 
 // Green phase: Implementation matches contract
 class UserService {
   create(data: { email: string; name: string }) {
-    return { id: '123', ...data }; // Minimal but contract-compliant
+    return { id: "123", ...data }; // Minimal but contract-compliant
   }
 }
 
 // Contract test ensures compliance
-describe('UserService Contract', () => {
-  it('should match create contract', () => {
-    const result = userService.create({ email: 'test@test.com', name: 'Test' });
-    expect(typeof result.id).toBe('string');
-    expect(typeof result.email).toBe('string');
-    expect(typeof result.name).toBe('string');
+describe("UserService Contract", () => {
+  it("should match create contract", () => {
+    const result = userService.create({ email: "test@test.com", name: "Test" });
+    expect(typeof result.id).toBe("string");
+    expect(typeof result.email).toBe("string");
+    expect(typeof result.name).toBe("string");
   });
 });
 ```
@@ -697,6 +751,7 @@ def calculate_discount(price, customer_type):
 ```
 
 **Safe Refactoring Checklist:**
+
 - ✓ Tests green before refactoring
 - ✓ Change one thing at a time
 - ✓ Run tests after each change
@@ -708,6 +763,7 @@ def calculate_discount(price, customer_type):
 ### Type-Driven Development
 
 **Python Type Hints:**
+
 ```python
 from typing import Optional, List
 from dataclasses import dataclass
@@ -727,6 +783,7 @@ class UserService:
 ```
 
 **TypeScript Strict Mode:**
+
 ```typescript
 // Enable strict mode in tsconfig.json
 {
@@ -754,6 +811,7 @@ class UserService {
 ### AI-Assisted Green Phase
 
 **Using Copilot/AI Tools:**
+
 1. Write test first (human-driven)
 2. Let AI suggest minimal implementation
 3. Verify suggestion passes tests
@@ -761,6 +819,7 @@ class UserService {
 5. Iterate with AI for refactoring phase
 
 **AI Prompt Pattern:**
+
 ```
 Given these failing tests:
 [paste tests]
@@ -773,6 +832,7 @@ Focus on simplicity over completeness.
 ### Cloud-Native Patterns
 
 **Local → Container → Cloud:**
+
 ```javascript
 // Green Phase: Local implementation
 class CacheService {
@@ -807,14 +867,15 @@ class CacheService {
 ### Observability-Driven Development
 
 **Add observability hooks during green phase:**
+
 ```typescript
 class OrderService {
   async createOrder(data: CreateOrderDto): Promise<Order> {
-    console.log('[OrderService] Creating order', { data }); // Simple logging
+    console.log("[OrderService] Creating order", { data }); // Simple logging
 
-    const order = { id: '123', ...data };
+    const order = { id: "123", ...data };
 
-    console.log('[OrderService] Order created', { orderId: order.id }); // Success log
+    console.log("[OrderService] Order created", { orderId: order.id }); // Success log
 
     return order;
   }
@@ -825,13 +886,13 @@ class OrderService {
   constructor(private logger: Logger) {}
 
   async createOrder(data: CreateOrderDto): Promise<Order> {
-    this.logger.info('order.create.start', { data });
+    this.logger.info("order.create.start", { data });
 
     const order = await this.repository.save(data);
 
-    this.logger.info('order.create.success', {
+    this.logger.info("order.create.success", {
       orderId: order.id,
-      duration: Date.now() - start
+      duration: Date.now() - start,
     });
 
     return order;

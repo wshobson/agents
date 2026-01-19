@@ -23,16 +23,16 @@ Complete reference for all **100 specialized AI agents** organized by category w
 
 #### UI/UX & Mobile
 
-| Agent                                                                                          | Model  | Description                                             |
-| ---------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------- |
-| [ui-designer](../plugins/ui-design/agents/ui-designer.md)                                      | opus   | UI/UX design for mobile and web with modern patterns    |
-| [accessibility-expert](../plugins/ui-design/agents/accessibility-expert.md)                    | opus   | WCAG compliance, accessibility audits, inclusive design |
-| [design-system-architect](../plugins/ui-design/agents/design-system-architect.md)              | opus   | Design tokens, component libraries, theming systems     |
-| [ui-ux-designer](../plugins/multi-platform-apps/agents/ui-ux-designer.md)                      | sonnet | Interface design, wireframes, design systems            |
-| [ui-visual-validator](../plugins/accessibility-compliance/agents/ui-visual-validator.md)       | sonnet | Visual regression testing and UI verification           |
-| [mobile-developer](../plugins/multi-platform-apps/agents/mobile-developer.md)                  | sonnet | React Native and Flutter application development        |
-| [ios-developer](../plugins/multi-platform-apps/agents/ios-developer.md)                        | sonnet | Native iOS development with Swift/SwiftUI               |
-| [flutter-expert](../plugins/multi-platform-apps/agents/flutter-expert.md)                      | sonnet | Advanced Flutter development with state management      |
+| Agent                                                                                    | Model  | Description                                             |
+| ---------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------- |
+| [ui-designer](../plugins/ui-design/agents/ui-designer.md)                                | opus   | UI/UX design for mobile and web with modern patterns    |
+| [accessibility-expert](../plugins/ui-design/agents/accessibility-expert.md)              | opus   | WCAG compliance, accessibility audits, inclusive design |
+| [design-system-architect](../plugins/ui-design/agents/design-system-architect.md)        | opus   | Design tokens, component libraries, theming systems     |
+| [ui-ux-designer](../plugins/multi-platform-apps/agents/ui-ux-designer.md)                | sonnet | Interface design, wireframes, design systems            |
+| [ui-visual-validator](../plugins/accessibility-compliance/agents/ui-visual-validator.md) | sonnet | Visual regression testing and UI verification           |
+| [mobile-developer](../plugins/multi-platform-apps/agents/mobile-developer.md)            | sonnet | React Native and Flutter application development        |
+| [ios-developer](../plugins/multi-platform-apps/agents/ios-developer.md)                  | sonnet | Native iOS development with Swift/SwiftUI               |
+| [flutter-expert](../plugins/multi-platform-apps/agents/flutter-expert.md)                | sonnet | Advanced Flutter development with state management      |
 
 ### Programming Languages
 

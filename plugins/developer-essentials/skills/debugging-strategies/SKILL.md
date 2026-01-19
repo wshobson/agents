@@ -31,11 +31,13 @@ Transform debugging from frustrating guesswork into systematic problem-solving w
 ### 2. Debugging Mindset
 
 **Don't Assume:**
+
 - "It can't be X" - Yes it can
 - "I didn't change Y" - Check anyway
 - "It works on my machine" - Find out why
 
 **Do:**
+
 - Reproduce consistently
 - Isolate the problem
 - Keep detailed notes
@@ -153,58 +155,60 @@ Based on gathered info, ask:
 ```typescript
 // Chrome DevTools Debugger
 function processOrder(order: Order) {
-    debugger;  // Execution pauses here
+  debugger; // Execution pauses here
 
-    const total = calculateTotal(order);
-    console.log('Total:', total);
+  const total = calculateTotal(order);
+  console.log("Total:", total);
 
-    // Conditional breakpoint
-    if (order.items.length > 10) {
-        debugger;  // Only breaks if condition true
-    }
+  // Conditional breakpoint
+  if (order.items.length > 10) {
+    debugger; // Only breaks if condition true
+  }
 
-    return total;
+  return total;
 }
 
 // Console debugging techniques
-console.log('Value:', value);                    // Basic
-console.table(arrayOfObjects);                   // Table format
-console.time('operation'); /* code */ console.timeEnd('operation');  // Timing
-console.trace();                                 // Stack trace
-console.assert(value > 0, 'Value must be positive');  // Assertion
+console.log("Value:", value); // Basic
+console.table(arrayOfObjects); // Table format
+console.time("operation");
+/* code */ console.timeEnd("operation"); // Timing
+console.trace(); // Stack trace
+console.assert(value > 0, "Value must be positive"); // Assertion
 
 // Performance profiling
-performance.mark('start-operation');
+performance.mark("start-operation");
 // ... operation code
-performance.mark('end-operation');
-performance.measure('operation', 'start-operation', 'end-operation');
-console.log(performance.getEntriesByType('measure'));
+performance.mark("end-operation");
+performance.measure("operation", "start-operation", "end-operation");
+console.log(performance.getEntriesByType("measure"));
 ```
 
 **VS Code Debugger Configuration:**
+
 ```json
 // .vscode/launch.json
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug Program",
-            "program": "${workspaceFolder}/src/index.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-            "skipFiles": ["<node_internals>/**"]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug Tests",
-            "program": "${workspaceFolder}/node_modules/jest/bin/jest",
-            "args": ["--runInBand", "--no-cache"],
-            "console": "integratedTerminal"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Program",
+      "program": "${workspaceFolder}/src/index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Tests",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      "args": ["--runInBand", "--no-cache"],
+      "console": "integratedTerminal"
+    }
+  ]
 }
 ```
 
@@ -332,14 +336,14 @@ Compare working vs broken:
 ```markdown
 ## What's Different?
 
-| Aspect       | Working         | Broken          |
-|--------------|-----------------|-----------------|
-| Environment  | Development     | Production      |
-| Node version | 18.16.0         | 18.15.0         |
-| Data         | Empty DB        | 1M records      |
-| User         | Admin           | Regular user    |
-| Browser      | Chrome          | Safari          |
-| Time         | During day      | After midnight  |
+| Aspect       | Working     | Broken         |
+| ------------ | ----------- | -------------- |
+| Environment  | Development | Production     |
+| Node version | 18.16.0     | 18.15.0        |
+| Data         | Empty DB    | 1M records     |
+| User         | Admin       | Regular user   |
+| Browser      | Chrome      | Safari         |
+| Time         | During day  | After midnight |
 
 Hypothesis: Time-based issue? Check timezone handling.
 ```
@@ -348,24 +352,28 @@ Hypothesis: Time-based issue? Check timezone handling.
 
 ```typescript
 // Function call tracing
-function trace(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
+function trace(
+  target: any,
+  propertyKey: string,
+  descriptor: PropertyDescriptor,
+) {
+  const originalMethod = descriptor.value;
 
-    descriptor.value = function(...args: any[]) {
-        console.log(`Calling ${propertyKey} with args:`, args);
-        const result = originalMethod.apply(this, args);
-        console.log(`${propertyKey} returned:`, result);
-        return result;
-    };
+  descriptor.value = function (...args: any[]) {
+    console.log(`Calling ${propertyKey} with args:`, args);
+    const result = originalMethod.apply(this, args);
+    console.log(`${propertyKey} returned:`, result);
+    return result;
+  };
 
-    return descriptor;
+  return descriptor;
 }
 
 class OrderService {
-    @trace
-    calculateTotal(items: Item[]): number {
-        return items.reduce((sum, item) => sum + item.price, 0);
-    }
+  @trace
+  calculateTotal(items: Item[]): number {
+    return items.reduce((sum, item) => sum + item.price, 0);
+  }
 }
 ```
 
@@ -380,26 +388,27 @@ class OrderService {
 
 // Node.js memory debugging
 if (process.memoryUsage().heapUsed > 500 * 1024 * 1024) {
-    console.warn('High memory usage:', process.memoryUsage());
+  console.warn("High memory usage:", process.memoryUsage());
 
-    // Generate heap dump
-    require('v8').writeHeapSnapshot();
+  // Generate heap dump
+  require("v8").writeHeapSnapshot();
 }
 
 // Find memory leaks in tests
 let beforeMemory: number;
 
 beforeEach(() => {
-    beforeMemory = process.memoryUsage().heapUsed;
+  beforeMemory = process.memoryUsage().heapUsed;
 });
 
 afterEach(() => {
-    const afterMemory = process.memoryUsage().heapUsed;
-    const diff = afterMemory - beforeMemory;
+  const afterMemory = process.memoryUsage().heapUsed;
+  const diff = afterMemory - beforeMemory;
 
-    if (diff > 10 * 1024 * 1024) {  // 10MB threshold
-        console.warn(`Possible memory leak: ${diff / 1024 / 1024}MB`);
-    }
+  if (diff > 10 * 1024 * 1024) {
+    // 10MB threshold
+    console.warn(`Possible memory leak: ${diff / 1024 / 1024}MB`);
+  }
 });
 ```
 

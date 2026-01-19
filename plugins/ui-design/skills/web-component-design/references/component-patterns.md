@@ -15,7 +15,7 @@ import {
   type ReactNode,
   type Dispatch,
   type SetStateAction,
-} from 'react';
+} from "react";
 
 // Types
 interface TabsContextValue {
@@ -51,7 +51,7 @@ const TabsContext = createContext<TabsContextValue | null>(null);
 function useTabs() {
   const context = useContext(TabsContext);
   if (!context) {
-    throw new Error('Tabs components must be used within <Tabs>');
+    throw new Error("Tabs components must be used within <Tabs>");
   }
   return context;
 }
@@ -62,11 +62,11 @@ export function Tabs({ defaultValue, children, onChange }: TabsProps) {
 
   const handleChange: Dispatch<SetStateAction<string>> = useCallback(
     (value) => {
-      const newValue = typeof value === 'function' ? value(activeTab) : value;
+      const newValue = typeof value === "function" ? value(activeTab) : value;
       setActiveTab(newValue);
       onChange?.(newValue);
     },
-    [activeTab, onChange]
+    [activeTab, onChange],
   );
 
   return (
@@ -100,10 +100,12 @@ Tabs.Tab = function Tab({ value, children, disabled }: TabProps) {
       onClick={() => setActiveTab(value)}
       className={`
         px-4 py-2 font-medium transition-colors
-        ${isActive
-          ? 'border-b-2 border-blue-600 text-blue-600'
-          : 'text-gray-600 hover:text-gray-900'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+        ${
+          isActive
+            ? "border-b-2 border-blue-600 text-blue-600"
+            : "text-gray-600 hover:text-gray-900"
+        }
+        ${disabled ? "opacity-50 cursor-not-allowed" : ""}
       `}
     >
       {children}
@@ -138,7 +140,9 @@ Tabs.Panel = function TabPanel({ value, children }: TabPanelProps) {
   <Tabs.List>
     <Tabs.Tab value="overview">Overview</Tabs.Tab>
     <Tabs.Tab value="features">Features</Tabs.Tab>
-    <Tabs.Tab value="pricing" disabled>Pricing</Tabs.Tab>
+    <Tabs.Tab value="pricing" disabled>
+      Pricing
+    </Tabs.Tab>
   </Tabs.List>
   <Tabs.Panel value="overview">
     <h2>Product Overview</h2>
@@ -180,14 +184,14 @@ function DataLoader<T>({ url, children }: DataLoaderProps<T>) {
   });
 
   const fetchData = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+    setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const response = await fetch(url);
-      if (!response.ok) throw new Error('Fetch failed');
+      if (!response.ok) throw new Error("Fetch failed");
       const data = await response.json();
       setState({ data, loading: false, error: null });
     } catch (error) {
-      setState(prev => ({ ...prev, loading: false, error: error as Error }));
+      setState((prev) => ({ ...prev, loading: false, error: error as Error }));
     }
   }, [url]);
 
@@ -205,7 +209,7 @@ function DataLoader<T>({ url, children }: DataLoaderProps<T>) {
     if (error) return <ErrorMessage error={error} onRetry={refetch} />;
     return <UserList users={data!} />;
   }}
-</DataLoader>
+</DataLoader>;
 ```
 
 ## Polymorphic Components
@@ -343,18 +347,10 @@ function Card({ children, header, footer, media }: CardProps) {
   return (
     <article className="rounded-lg border bg-white shadow-sm">
       {media && (
-        <div className="aspect-video overflow-hidden rounded-t-lg">
-          {media}
-        </div>
+        <div className="aspect-video overflow-hidden rounded-t-lg">{media}</div>
       )}
-      {header && (
-        <header className="border-b px-4 py-3">
-          {header}
-        </header>
-      )}
-      <div className="px-4 py-4">
-        {children}
-      </div>
+      {header && <header className="border-b px-4 py-3">{header}</header>}
+      <div className="px-4 py-4">{children}</div>
       {footer && (
         <footer className="border-t px-4 py-3 bg-gray-50 rounded-b-lg">
           {footer}
@@ -371,7 +367,7 @@ function Card({ children, header, footer, media }: CardProps) {
   footer={<Button>Action</Button>}
 >
   <p>Card content goes here.</p>
-</Card>
+</Card>;
 ```
 
 ## Forward Ref Pattern
@@ -379,7 +375,7 @@ function Card({ children, header, footer, media }: CardProps) {
 Allow parent components to access the underlying DOM node.
 
 ```tsx
-import { forwardRef, useRef, useImperativeHandle } from 'react';
+import { forwardRef, useRef, useImperativeHandle } from "react";
 
 interface InputHandle {
   focus: () => void;
@@ -399,9 +395,9 @@ const FancyInput = forwardRef<InputHandle, FancyInputProps>(
     useImperativeHandle(ref, () => ({
       focus: () => inputRef.current?.focus(),
       clear: () => {
-        if (inputRef.current) inputRef.current.value = '';
+        if (inputRef.current) inputRef.current.value = "";
       },
-      getValue: () => inputRef.current?.value ?? '',
+      getValue: () => inputRef.current?.value ?? "",
     }));
 
     return (
@@ -415,10 +411,10 @@ const FancyInput = forwardRef<InputHandle, FancyInputProps>(
         />
       </div>
     );
-  }
+  },
 );
 
-FancyInput.displayName = 'FancyInput';
+FancyInput.displayName = "FancyInput";
 
 // Usage
 function Form() {

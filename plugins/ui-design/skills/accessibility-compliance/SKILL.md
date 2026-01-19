@@ -21,30 +21,35 @@ Master accessibility implementation to create inclusive experiences that work fo
 ## Core Capabilities
 
 ### 1. WCAG 2.2 Guidelines
+
 - Perceivable: Content must be presentable in different ways
 - Operable: Interface must be navigable with keyboard and assistive tech
 - Understandable: Content and operation must be clear
 - Robust: Content must work with current and future assistive technologies
 
 ### 2. ARIA Patterns
+
 - Roles: Define element purpose (button, dialog, navigation)
 - States: Indicate current condition (expanded, selected, disabled)
 - Properties: Describe relationships and additional info (labelledby, describedby)
 - Live regions: Announce dynamic content changes
 
 ### 3. Keyboard Navigation
+
 - Focus order and tab sequence
 - Focus indicators and visible focus states
 - Keyboard shortcuts and hotkeys
 - Focus trapping for modals and dialogs
 
 ### 4. Screen Reader Support
+
 - Semantic HTML structure
 - Alternative text for images
 - Proper heading hierarchy
 - Skip links and landmarks
 
 ### 5. Mobile Accessibility
+
 - Touch target sizing (44x44dp minimum)
 - VoiceOver and TalkBack compatibility
 - Gesture alternatives
@@ -54,18 +59,18 @@ Master accessibility implementation to create inclusive experiences that work fo
 
 ### WCAG 2.2 Success Criteria Checklist
 
-| Level | Criterion | Description |
-|-------|-----------|-------------|
-| A | 1.1.1 | Non-text content has text alternatives |
-| A | 1.3.1 | Info and relationships programmatically determinable |
-| A | 2.1.1 | All functionality keyboard accessible |
-| A | 2.4.1 | Skip to main content mechanism |
-| AA | 1.4.3 | Contrast ratio 4.5:1 (text), 3:1 (large text) |
-| AA | 1.4.11 | Non-text contrast 3:1 |
-| AA | 2.4.7 | Focus visible |
-| AA | 2.5.8 | Target size minimum 24x24px (NEW in 2.2) |
-| AAA | 1.4.6 | Enhanced contrast 7:1 |
-| AAA | 2.5.5 | Target size minimum 44x44px |
+| Level | Criterion | Description                                          |
+| ----- | --------- | ---------------------------------------------------- |
+| A     | 1.1.1     | Non-text content has text alternatives               |
+| A     | 1.3.1     | Info and relationships programmatically determinable |
+| A     | 2.1.1     | All functionality keyboard accessible                |
+| A     | 2.4.1     | Skip to main content mechanism                       |
+| AA    | 1.4.3     | Contrast ratio 4.5:1 (text), 3:1 (large text)        |
+| AA    | 1.4.11    | Non-text contrast 3:1                                |
+| AA    | 2.4.7     | Focus visible                                        |
+| AA    | 2.5.8     | Target size minimum 24x24px (NEW in 2.2)             |
+| AAA   | 1.4.6     | Enhanced contrast 7:1                                |
+| AAA   | 2.5.5     | Target size minimum 44x44px                          |
 
 ## Key Patterns
 
@@ -73,13 +78,13 @@ Master accessibility implementation to create inclusive experiences that work fo
 
 ```tsx
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
   isLoading?: boolean;
 }
 
 function AccessibleButton({
   children,
-  variant = 'primary',
+  variant = "primary",
   isLoading = false,
   disabled,
   ...props
@@ -94,11 +99,11 @@ function AccessibleButton({
       aria-disabled={disabled || isLoading}
       className={cn(
         // Visible focus ring
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
         // Minimum touch target size (44x44px)
-        'min-h-[44px] min-w-[44px]',
-        variant === 'primary' && 'bg-primary text-primary-foreground',
-        (disabled || isLoading) && 'opacity-50 cursor-not-allowed'
+        "min-h-[44px] min-w-[44px]",
+        variant === "primary" && "bg-primary text-primary-foreground",
+        (disabled || isLoading) && "opacity-50 cursor-not-allowed",
       )}
       {...props}
     >
@@ -118,8 +123,8 @@ function AccessibleButton({
 ### Pattern 2: Accessible Modal Dialog
 
 ```tsx
-import * as React from 'react';
-import { FocusTrap } from '@headlessui/react';
+import * as React from "react";
+import { FocusTrap } from "@headlessui/react";
 
 interface DialogProps {
   isOpen: boolean;
@@ -135,21 +140,21 @@ function AccessibleDialog({ isOpen, onClose, title, children }: DialogProps) {
   // Close on Escape key
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         onClose();
       }
     };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
   // Prevent body scroll when open
   React.useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -227,7 +232,9 @@ function AccessibleForm() {
       <div className="space-y-2">
         <label htmlFor="email" className="block font-medium">
           Email address
-          <span aria-hidden="true" className="text-destructive ml-1">*</span>
+          <span aria-hidden="true" className="text-destructive ml-1">
+            *
+          </span>
           <span className="sr-only">(required)</span>
         </label>
         <input
@@ -237,10 +244,10 @@ function AccessibleForm() {
           required
           aria-required="true"
           aria-invalid={!!errors.email}
-          aria-describedby={errors.email ? 'email-error' : 'email-hint'}
+          aria-describedby={errors.email ? "email-error" : "email-hint"}
           className={cn(
-            'w-full px-3 py-2 border rounded-md',
-            errors.email && 'border-destructive'
+            "w-full px-3 py-2 border rounded-md",
+            errors.email && "border-destructive",
           )}
         />
         {errors.email ? (
@@ -271,10 +278,10 @@ function SkipLink() {
       href="#main-content"
       className={cn(
         // Hidden by default, visible on focus
-        'sr-only focus:not-sr-only',
-        'focus:absolute focus:top-4 focus:left-4 focus:z-50',
-        'focus:bg-background focus:px-4 focus:py-2 focus:rounded-md',
-        'focus:ring-2 focus:ring-primary'
+        "sr-only focus:not-sr-only",
+        "focus:absolute focus:top-4 focus:left-4 focus:z-50",
+        "focus:bg-background focus:px-4 focus:py-2 focus:rounded-md",
+        "focus:ring-2 focus:ring-primary",
       )}
     >
       Skip to main content
@@ -302,12 +309,15 @@ function Layout({ children }) {
 
 ```tsx
 function useAnnounce() {
-  const [message, setMessage] = React.useState('');
+  const [message, setMessage] = React.useState("");
 
-  const announce = React.useCallback((text: string, priority: 'polite' | 'assertive' = 'polite') => {
-    setMessage(''); // Clear first to ensure re-announcement
-    setTimeout(() => setMessage(text), 100);
-  }, []);
+  const announce = React.useCallback(
+    (text: string, priority: "polite" | "assertive" = "polite") => {
+      setMessage(""); // Clear first to ensure re-announcement
+      setTimeout(() => setMessage(text), 100);
+    },
+    [],
+  );
 
   const Announcer = () => (
     <div

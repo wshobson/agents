@@ -32,19 +32,19 @@ marts/            Final analytics tables
 
 ### 2. Naming Conventions
 
-| Layer | Prefix | Example |
-|-------|--------|---------|
-| Staging | `stg_` | `stg_stripe__payments` |
-| Intermediate | `int_` | `int_payments_pivoted` |
-| Marts | `dim_`, `fct_` | `dim_customers`, `fct_orders` |
+| Layer        | Prefix         | Example                       |
+| ------------ | -------------- | ----------------------------- |
+| Staging      | `stg_`         | `stg_stripe__payments`        |
+| Intermediate | `int_`         | `int_payments_pivoted`        |
+| Marts        | `dim_`, `fct_` | `dim_customers`, `fct_orders` |
 
 ## Quick Start
 
 ```yaml
 # dbt_project.yml
-name: 'analytics'
-version: '1.0.0'
-profile: 'analytics'
+name: "analytics"
+version: "1.0.0"
+profile: "analytics"
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -53,7 +53,7 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 
 vars:
-  start_date: '2020-01-01'
+  start_date: "2020-01-01"
 
 models:
   analytics:
@@ -107,8 +107,8 @@ sources:
     loader: fivetran
     loaded_at_field: _fivetran_synced
     freshness:
-      warn_after: {count: 12, period: hour}
-      error_after: {count: 24, period: hour}
+      warn_after: { count: 12, period: hour }
+      error_after: { count: 24, period: hour }
     tables:
       - name: customers
         description: Stripe customer records
@@ -409,7 +409,7 @@ models:
         description: Customer value tier based on lifetime value
         tests:
           - accepted_values:
-              values: ['high', 'medium', 'low']
+              values: ["high", "medium", "low"]
 
       - name: lifetime_value
         description: Total amount paid by customer
@@ -540,6 +540,7 @@ dbt ls --select tag:critical     # List models by tag
 ## Best Practices
 
 ### Do's
+
 - **Use staging layer** - Clean data once, use everywhere
 - **Test aggressively** - Not null, unique, relationships
 - **Document everything** - Column descriptions, model descriptions
@@ -547,6 +548,7 @@ dbt ls --select tag:critical     # List models by tag
 - **Version control** - dbt project in Git
 
 ### Don'ts
+
 - **Don't skip staging** - Raw → mart is tech debt
 - **Don't hardcode dates** - Use `{{ var('start_date') }}`
 - **Don't repeat logic** - Extract to macros

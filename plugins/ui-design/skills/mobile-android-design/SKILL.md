@@ -27,6 +27,7 @@ Master Material Design 3 (Material You) and Jetpack Compose to build modern, ada
 **Large Screens**: Responsive layouts for tablets and foldables
 
 **Material Components:**
+
 - Cards, Buttons, FABs, Chips
 - Navigation (rail, drawer, bottom nav)
 - Text fields, Dialogs, Sheets
@@ -35,6 +36,7 @@ Master Material Design 3 (Material You) and Jetpack Compose to build modern, ada
 ### 2. Jetpack Compose Layout System
 
 **Column and Row:**
+
 ```kotlin
 // Vertical arrangement with alignment
 Column(
@@ -69,6 +71,7 @@ Row(
 ```
 
 **Lazy Lists and Grids:**
+
 ```kotlin
 // Lazy column with sticky headers
 LazyColumn {
@@ -105,6 +108,7 @@ LazyVerticalGrid(
 ### 3. Navigation Patterns
 
 **Bottom Navigation:**
+
 ```kotlin
 @Composable
 fun MainScreen() {
@@ -151,6 +155,7 @@ fun MainScreen() {
 ```
 
 **Navigation Drawer:**
+
 ```kotlin
 @Composable
 fun DrawerNavigation() {
@@ -205,6 +210,7 @@ fun DrawerNavigation() {
 ### 4. Material 3 Theming
 
 **Color Scheme:**
+
 ```kotlin
 // Dynamic color (Android 12+)
 val dynamicColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -231,6 +237,7 @@ private val LightColorScheme = lightColorScheme(
 ```
 
 **Typography:**
+
 ```kotlin
 val AppTypography = Typography(
     displayLarge = TextStyle(
@@ -269,6 +276,7 @@ val AppTypography = Typography(
 ### 5. Component Examples
 
 **Cards:**
+
 ```kotlin
 @Composable
 fun FeatureCard(
@@ -312,6 +320,7 @@ fun FeatureCard(
 ```
 
 **Buttons:**
+
 ```kotlin
 // Filled button (primary action)
 Button(onClick = { }) {

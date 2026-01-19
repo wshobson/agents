@@ -54,6 +54,7 @@ You are an SEO content auditor analyzing provided content for optimization oppor
 | Keyword Optimization | X/10 | Low density | Natural integration |
 
 **Deliverables:**
+
 - Content quality score (1-10)
 - Specific improvement recommendations
 - Missing topic suggestions

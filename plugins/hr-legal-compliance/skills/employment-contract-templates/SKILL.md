@@ -20,13 +20,13 @@ Templates and patterns for creating legally sound employment documentation inclu
 
 ### 1. Employment Document Types
 
-| Document | Purpose | When Used |
-|----------|---------|-----------|
-| **Offer Letter** | Initial job offer | Pre-hire |
-| **Employment Contract** | Formal agreement | Hire |
-| **Employee Handbook** | Policies & procedures | Onboarding |
-| **NDA** | Confidentiality | Before access |
-| **Non-Compete** | Competition restriction | Hire/Exit |
+| Document                | Purpose                 | When Used     |
+| ----------------------- | ----------------------- | ------------- |
+| **Offer Letter**        | Initial job offer       | Pre-hire      |
+| **Employment Contract** | Formal agreement        | Hire          |
+| **Employee Handbook**   | Policies & procedures   | Onboarding    |
+| **NDA**                 | Confidentiality         | Before access |
+| **Non-Compete**         | Competition restriction | Hire/Exit     |
 
 ### 2. Key Legal Considerations
 
@@ -82,10 +82,11 @@ Not applicable]
 ## Benefits
 
 You will be eligible for our standard benefits package, including:
+
 - Health insurance (medical, dental, vision) effective [date]
 - 401(k) with [X]% company match
-- [X] days paid time off per year
-- [X] paid holidays
+- [x] days paid time off per year
+- [x] paid holidays
 - [Other benefits]
 
 Full details will be provided during onboarding.
@@ -93,6 +94,7 @@ Full details will be provided during onboarding.
 ## Contingencies
 
 This offer is contingent upon:
+
 - Successful completion of background check
 - Verification of your right to work in [Country]
 - Execution of required employment documents including:
@@ -117,7 +119,8 @@ questions, please contact [HR Contact] at [email/phone].
 
 Sincerely,
 
-_________________________
+---
+
 [Hiring Manager Name]
 [Title]
 [Company Name]
@@ -128,13 +131,13 @@ _________________________
 
 I accept this offer of employment and agree to the terms stated above.
 
-Signature: _________________________
+Signature: ************\_************
 
-Printed Name: _________________________
+Printed Name: ************\_************
 
-Date: _________________________
+Date: ************\_************
 
-Anticipated Start Date: _________________________
+Anticipated Start Date: ************\_************
 ```
 
 ### Template 2: Employment Agreement (Contract Position)
@@ -158,16 +161,17 @@ the terms of this Agreement.
 
 1.2 **Duties.** Employee shall perform duties consistent with their position,
 including but not limited to:
+
 - [Primary duty 1]
 - [Primary duty 2]
 - [Primary duty 3]
 - Other duties as reasonably assigned
 
-1.3 **Best Efforts.** Employee agrees to devote their full business time,
-attention, and best efforts to the Company's business during employment.
+  1.3 **Best Efforts.** Employee agrees to devote their full business time,
+  attention, and best efforts to the Company's business during employment.
 
-1.4 **Location.** Employee's primary work location shall be [Location/Remote].
-[Travel requirements, if any.]
+  1.4 **Location.** Employee's primary work location shall be [Location/Remote].
+  [Travel requirements, if any.]
 
 ## 2. TERM
 
@@ -271,6 +275,7 @@ shall receive [X] weeks base salary as severance, contingent upon execution
 of a release agreement.
 
 7.5 **Effect of Termination.** Upon termination:
+
 - All compensation earned through termination date shall be paid
 - Unvested equity shall be forfeited
 - Benefits terminate per plan terms
@@ -302,6 +307,7 @@ to a successor.
 ## 9. ACKNOWLEDGMENTS
 
 Employee acknowledges:
+
 - Having read and understood this Agreement
 - Having opportunity to consult with counsel
 - Agreeing to all terms voluntarily
@@ -313,16 +319,16 @@ Effective Date.
 
 **[COMPANY NAME]**
 
-By: _________________________
+By: ************\_************
 Name: [Authorized Signatory]
 Title: [Title]
-Date: _________________________
+Date: ************\_************
 
 **EMPLOYEE**
 
-Signature: _________________________
+Signature: ************\_************
 Name: [Employee Name]
-Date: _________________________
+Date: ************\_************
 
 ---
 
@@ -330,7 +336,7 @@ Date: _________________________
 
 [Employee to list any prior inventions, if any, or write "None"]
 
-_________________________
+---
 ```
 
 ### Template 3: Employee Handbook Policy Section
@@ -347,6 +353,7 @@ race, color, religion, sex, sexual orientation, gender identity, national
 origin, age, disability, veteran status, or any other protected characteristic.
 
 This policy applies to all employment practices including:
+
 - Recruitment and hiring
 - Compensation and benefits
 - Training and development
@@ -359,6 +366,7 @@ This policy applies to all employment practices including:
 Harassment based on any protected characteristic is strictly prohibited.
 
 **Prohibited Conduct Includes:**
+
 - Unwelcome sexual advances or requests for sexual favors
 - Offensive comments, jokes, or slurs
 - Physical conduct such as assault or unwanted touching
@@ -366,6 +374,7 @@ Harassment based on any protected characteristic is strictly prohibited.
 - Threatening, intimidating, or hostile acts
 
 **Reporting Procedure:**
+
 1. Report to your manager, HR, or any member of leadership
 2. Reports may be made verbally or in writing
 3. Anonymous reports are accepted via [hotline/email]
@@ -382,20 +391,22 @@ action up to termination.
 **Flexible Work:** [Policy on remote work, flexible scheduling]
 
 **Attendance Expectations:**
+
 - Notify your manager as soon as possible if you will be absent
 - Excessive unexcused absences may result in disciplinary action
-- [X] unexcused absences in [Y] days considered excessive
+- [x] unexcused absences in [Y] days considered excessive
 
 ### Paid Time Off (PTO)
 
 **PTO Accrual:**
 | Years of Service | Annual PTO Days |
 |------------------|-----------------|
-| 0-2 years        | 15 days         |
-| 3-5 years        | 20 days         |
-| 6+ years         | 25 days         |
+| 0-2 years | 15 days |
+| 3-5 years | 20 days |
+| 6+ years | 25 days |
 
 **PTO Guidelines:**
+
 - PTO accrues per pay period
 - Maximum accrual: [X] days (use it or lose it after)
 - Request PTO at least [2] weeks in advance
@@ -404,13 +415,14 @@ action up to termination.
 
 ### Sick Leave
 
-- [X] days sick leave per year
+- [x] days sick leave per year
 - May be used for personal illness or family member care
 - Doctor's note required for absences exceeding [3] days
 
 ### Holidays
 
 The following paid holidays are observed:
+
 - New Year's Day
 - Martin Luther King Jr. Day
 - Presidents Day
@@ -425,6 +437,7 @@ The following paid holidays are observed:
 ### Code of Conduct
 
 All employees are expected to:
+
 - Act with integrity and honesty
 - Treat colleagues, customers, and partners with respect
 - Protect company confidential information
@@ -437,15 +450,18 @@ All employees are expected to:
 ### Technology and Communication
 
 **Acceptable Use:**
+
 - Company technology is for business purposes
 - Limited personal use is permitted if it doesn't interfere with work
 - No illegal activities or viewing inappropriate content
 
 **Monitoring:**
+
 - Company reserves the right to monitor company systems
 - Employees should have no expectation of privacy on company devices
 
 **Security:**
+
 - Use strong passwords and enable 2FA
 - Report security incidents immediately
 - Lock devices when unattended
@@ -453,11 +469,13 @@ All employees are expected to:
 ### Social Media Policy
 
 **Personal Social Media:**
+
 - Clearly state opinions are your own, not the company's
 - Do not share confidential company information
 - Be respectful and professional
 
 **Company Social Media:**
+
 - Only authorized personnel may post on behalf of the company
 - Follow brand guidelines
 - Escalate negative comments to [Marketing/PR]
@@ -476,16 +494,17 @@ understand that:
 
 I agree to abide by the policies and procedures outlined in this handbook.
 
-Employee Signature: _________________________
+Employee Signature: ************\_************
 
-Employee Name (Print): _________________________
+Employee Name (Print): ************\_************
 
-Date: _________________________
+Date: ************\_************
 ```
 
 ## Best Practices
 
 ### Do's
+
 - **Consult legal counsel** - Employment law varies by jurisdiction
 - **Keep copies signed** - Document all agreements
 - **Update regularly** - Laws and policies change
@@ -493,6 +512,7 @@ Date: _________________________
 - **Train managers** - On policies and procedures
 
 ### Don'ts
+
 - **Don't use generic templates** - Customize for your jurisdiction
 - **Don't make promises** - That could create implied contracts
 - **Don't discriminate** - In language or application

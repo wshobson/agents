@@ -2,13 +2,13 @@
 
 ## Comparison Matrix
 
-| Approach | Runtime | Bundle Size | Learning Curve | Dynamic Styles | SSR |
-|----------|---------|-------------|----------------|----------------|-----|
-| CSS Modules | None | Minimal | Low | Limited | Yes |
-| Tailwind | None | Small (purged) | Medium | Via classes | Yes |
-| styled-components | Yes | Medium | Medium | Full | Yes* |
-| Emotion | Yes | Medium | Medium | Full | Yes |
-| Vanilla Extract | None | Minimal | High | Limited | Yes |
+| Approach          | Runtime | Bundle Size    | Learning Curve | Dynamic Styles | SSR   |
+| ----------------- | ------- | -------------- | -------------- | -------------- | ----- |
+| CSS Modules       | None    | Minimal        | Low            | Limited        | Yes   |
+| Tailwind          | None    | Small (purged) | Medium         | Via classes    | Yes   |
+| styled-components | Yes     | Medium         | Medium         | Full           | Yes\* |
+| Emotion           | Yes     | Medium         | Medium         | Full           | Yes   |
+| Vanilla Extract   | None    | Minimal        | High           | Limited        | Yes   |
 
 ## CSS Modules
 
@@ -56,19 +56,19 @@ Scoped CSS with zero runtime overhead.
 
 ```tsx
 // Button.tsx
-import styles from './Button.module.css';
-import { clsx } from 'clsx';
+import styles from "./Button.module.css";
+import { clsx } from "clsx";
 
 interface ButtonProps {
-  variant?: 'primary' | 'secondary';
-  size?: 'small' | 'medium' | 'large';
+  variant?: "primary" | "secondary";
+  size?: "small" | "medium" | "large";
   children: React.ReactNode;
   onClick?: () => void;
 }
 
 export function Button({
-  variant = 'primary',
-  size = 'medium',
+  variant = "primary",
+  size = "medium",
   children,
   onClick,
 }: ButtonProps) {
@@ -77,7 +77,7 @@ export function Button({
       className={clsx(
         styles.button,
         styles[variant],
-        size !== 'medium' && styles[size]
+        size !== "medium" && styles[size],
       )}
       onClick={onClick}
     >
@@ -104,7 +104,7 @@ export function Button({
 
 /* Button.module.css */
 .srOnly {
-  composes: visuallyHidden from './base.module.css';
+  composes: visuallyHidden from "./base.module.css";
 }
 ```
 
@@ -115,38 +115,42 @@ Utility-first CSS with design system constraints.
 ### Class Variance Authority (CVA)
 
 ```tsx
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   // Base styles
-  'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
-        icon: 'h-10 w-10',
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: "default",
+      size: "default",
     },
-  }
+  },
 );
 
 interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
@@ -160,7 +164,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  }
+  },
 );
 ```
 
@@ -168,48 +172,48 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 ```tsx
 // lib/utils.ts
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 // Usage - handles conflicting classes
-cn('px-4 py-2', 'px-6'); // => 'py-2 px-6'
-cn('text-red-500', condition && 'text-blue-500'); // => 'text-blue-500' if condition
+cn("px-4 py-2", "px-6"); // => 'py-2 px-6'
+cn("text-red-500", condition && "text-blue-500"); // => 'text-blue-500' if condition
 ```
 
 ### Custom Plugin
 
 ```js
 // tailwind.config.js
-const plugin = require('tailwindcss/plugin');
+const plugin = require("tailwindcss/plugin");
 
 module.exports = {
   plugins: [
-    plugin(function({ addUtilities, addComponents, theme }) {
+    plugin(function ({ addUtilities, addComponents, theme }) {
       // Add utilities
       addUtilities({
-        '.text-balance': {
-          'text-wrap': 'balance',
+        ".text-balance": {
+          "text-wrap": "balance",
         },
-        '.scrollbar-hide': {
-          '-ms-overflow-style': 'none',
-          'scrollbar-width': 'none',
-          '&::-webkit-scrollbar': {
-            display: 'none',
+        ".scrollbar-hide": {
+          "-ms-overflow-style": "none",
+          "scrollbar-width": "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
           },
         },
       });
 
       // Add components
       addComponents({
-        '.card': {
-          backgroundColor: theme('colors.white'),
-          borderRadius: theme('borderRadius.lg'),
-          padding: theme('spacing.6'),
-          boxShadow: theme('boxShadow.md'),
+        ".card": {
+          backgroundColor: theme("colors.white"),
+          borderRadius: theme("borderRadius.lg"),
+          padding: theme("spacing.6"),
+          boxShadow: theme("boxShadow.md"),
         },
       });
     }),
@@ -222,7 +226,7 @@ module.exports = {
 CSS-in-JS with template literals.
 
 ```tsx
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css, keyframes } from "styled-components";
 
 // Keyframes
 const fadeIn = keyframes`
@@ -232,8 +236,8 @@ const fadeIn = keyframes`
 
 // Base button with variants
 interface ButtonProps {
-  $variant?: 'primary' | 'secondary' | 'ghost';
-  $size?: 'sm' | 'md' | 'lg';
+  $variant?: "primary" | "secondary" | "ghost";
+  $size?: "sm" | "md" | "lg";
   $isLoading?: boolean;
 }
 
@@ -287,8 +291,8 @@ const Button = styled.button<ButtonProps>`
   transition: all 0.2s ease;
   animation: ${fadeIn} 0.3s ease;
 
-  ${({ $size = 'md' }) => sizeStyles[$size]}
-  ${({ $variant = 'primary' }) => variantStyles[$variant]}
+  ${({ $size = "md" }) => sizeStyles[$size]}
+  ${({ $variant = "primary" }) => variantStyles[$variant]}
 
   &:disabled {
     opacity: 0.5;
@@ -312,12 +316,12 @@ const IconButton = styled(Button)`
 // Theme provider
 const theme = {
   colors: {
-    primary: '#2563eb',
-    primaryHover: '#1d4ed8',
-    secondary: '#f3f4f6',
-    secondaryHover: '#e5e7eb',
-    ghost: 'rgba(0, 0, 0, 0.05)',
-    text: '#1f2937',
+    primary: "#2563eb",
+    primaryHover: "#1d4ed8",
+    secondary: "#f3f4f6",
+    secondaryHover: "#e5e7eb",
+    ghost: "rgba(0, 0, 0, 0.05)",
+    text: "#1f2937",
   },
 };
 
@@ -326,7 +330,7 @@ const theme = {
   <Button $variant="primary" $size="lg">
     Click me
   </Button>
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 ## Emotion
@@ -335,11 +339,11 @@ Flexible CSS-in-JS with object and template syntax.
 
 ```tsx
 /** @jsxImportSource @emotion/react */
-import { css, Theme, ThemeProvider, useTheme } from '@emotion/react';
-import styled from '@emotion/styled';
+import { css, Theme, ThemeProvider, useTheme } from "@emotion/react";
+import styled from "@emotion/styled";
 
 // Theme typing
-declare module '@emotion/react' {
+declare module "@emotion/react" {
   export interface Theme {
     colors: {
       primary: string;
@@ -352,20 +356,21 @@ declare module '@emotion/react' {
 
 const theme: Theme = {
   colors: {
-    primary: '#2563eb',
-    background: '#ffffff',
-    text: '#1f2937',
+    primary: "#2563eb",
+    background: "#ffffff",
+    text: "#1f2937",
   },
   spacing: (factor: number) => `${factor * 0.25}rem`,
 };
 
 // Object syntax
-const cardStyles = (theme: Theme) => css({
-  backgroundColor: theme.colors.background,
-  padding: theme.spacing(4),
-  borderRadius: '0.5rem',
-  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-});
+const cardStyles = (theme: Theme) =>
+  css({
+    backgroundColor: theme.colors.background,
+    padding: theme.spacing(4),
+    borderRadius: "0.5rem",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+  });
 
 // Template literal syntax
 const buttonStyles = css`
@@ -407,7 +412,7 @@ function Alert({ children }: { children: React.ReactNode }) {
   <Card>
     <Alert>Important message</Alert>
   </Card>
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 ## Vanilla Extract
@@ -416,26 +421,26 @@ Zero-runtime CSS-in-JS with full type safety.
 
 ```tsx
 // styles.css.ts
-import { style, styleVariants, createTheme } from '@vanilla-extract/css';
-import { recipe, type RecipeVariants } from '@vanilla-extract/recipes';
+import { style, styleVariants, createTheme } from "@vanilla-extract/css";
+import { recipe, type RecipeVariants } from "@vanilla-extract/recipes";
 
 // Theme contract
 export const [themeClass, vars] = createTheme({
   color: {
-    primary: '#2563eb',
-    secondary: '#64748b',
-    background: '#ffffff',
-    text: '#1f2937',
+    primary: "#2563eb",
+    secondary: "#64748b",
+    background: "#ffffff",
+    text: "#1f2937",
   },
   space: {
-    small: '0.5rem',
-    medium: '1rem',
-    large: '1.5rem',
+    small: "0.5rem",
+    medium: "1rem",
+    large: "1.5rem",
   },
   radius: {
-    small: '0.25rem',
-    medium: '0.375rem',
-    large: '0.5rem',
+    small: "0.25rem",
+    medium: "0.375rem",
+    large: "0.5rem",
   },
 });
 
@@ -455,54 +460,54 @@ export const text = styleVariants({
 // Recipe (like CVA)
 export const button = recipe({
   base: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     fontWeight: 500,
     borderRadius: vars.radius.medium,
-    transition: 'background-color 0.2s',
-    cursor: 'pointer',
-    border: 'none',
-    ':disabled': {
+    transition: "background-color 0.2s",
+    cursor: "pointer",
+    border: "none",
+    ":disabled": {
       opacity: 0.5,
-      cursor: 'not-allowed',
+      cursor: "not-allowed",
     },
   },
   variants: {
     variant: {
       primary: {
         backgroundColor: vars.color.primary,
-        color: 'white',
-        ':hover': {
-          backgroundColor: '#1d4ed8',
+        color: "white",
+        ":hover": {
+          backgroundColor: "#1d4ed8",
         },
       },
       secondary: {
-        backgroundColor: '#f3f4f6',
+        backgroundColor: "#f3f4f6",
         color: vars.color.text,
-        ':hover': {
-          backgroundColor: '#e5e7eb',
+        ":hover": {
+          backgroundColor: "#e5e7eb",
         },
       },
     },
     size: {
       small: {
-        padding: '0.25rem 0.75rem',
-        fontSize: '0.875rem',
+        padding: "0.25rem 0.75rem",
+        fontSize: "0.875rem",
       },
       medium: {
-        padding: '0.5rem 1rem',
-        fontSize: '1rem',
+        padding: "0.5rem 1rem",
+        fontSize: "1rem",
       },
       large: {
-        padding: '0.75rem 1.5rem',
-        fontSize: '1.125rem',
+        padding: "0.75rem 1.5rem",
+        fontSize: "1.125rem",
       },
     },
   },
   defaultVariants: {
-    variant: 'primary',
-    size: 'medium',
+    variant: "primary",
+    size: "medium",
   },
 });
 
@@ -511,7 +516,7 @@ export type ButtonVariants = RecipeVariants<typeof button>;
 
 ```tsx
 // Button.tsx
-import { button, type ButtonVariants, themeClass } from './styles.css';
+import { button, type ButtonVariants, themeClass } from "./styles.css";
 
 interface ButtonProps extends ButtonVariants {
   children: React.ReactNode;
@@ -545,8 +550,8 @@ function App() {
 ```tsx
 // Next.js with styled-components
 // pages/_document.tsx
-import Document, { DocumentContext } from 'next/document';
-import { ServerStyleSheet } from 'styled-components';
+import Document, { DocumentContext } from "next/document";
+import { ServerStyleSheet } from "styled-components";
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -576,9 +581,9 @@ export default class MyDocument extends Document {
 
 ```tsx
 // Dynamically import heavy styled components
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
-const HeavyChart = dynamic(() => import('./HeavyChart'), {
+const HeavyChart = dynamic(() => import("./HeavyChart"), {
   loading: () => <Skeleton height={400} />,
   ssr: false,
 });

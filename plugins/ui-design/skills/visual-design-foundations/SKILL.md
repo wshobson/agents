@@ -23,17 +23,18 @@ Build cohesive, accessible visual systems using typography, color, spacing, and 
 ### 1. Typography Scale
 
 **Modular Scale** (ratio-based sizing):
+
 ```css
 :root {
-  --font-size-xs: 0.75rem;   /* 12px */
-  --font-size-sm: 0.875rem;  /* 14px */
-  --font-size-base: 1rem;    /* 16px */
-  --font-size-lg: 1.125rem;  /* 18px */
-  --font-size-xl: 1.25rem;   /* 20px */
-  --font-size-2xl: 1.5rem;   /* 24px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
   --font-size-3xl: 1.875rem; /* 30px */
-  --font-size-4xl: 2.25rem;  /* 36px */
-  --font-size-5xl: 3rem;     /* 48px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
 }
 ```
 
@@ -47,24 +48,26 @@ Build cohesive, accessible visual systems using typography, color, spacing, and 
 ### 2. Spacing System
 
 **8-point grid** (industry standard):
+
 ```css
 :root {
-  --space-1: 0.25rem;  /* 4px */
-  --space-2: 0.5rem;   /* 8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px */
-  --space-5: 1.25rem;  /* 20px */
-  --space-6: 1.5rem;   /* 24px */
-  --space-8: 2rem;     /* 32px */
-  --space-10: 2.5rem;  /* 40px */
-  --space-12: 3rem;    /* 48px */
-  --space-16: 4rem;    /* 64px */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
 }
 ```
 
 ### 3. Color System
 
 **Semantic color tokens**:
+
 ```css
 :root {
   /* Brand */
@@ -100,29 +103,29 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
-        xs: ['0.75rem', { lineHeight: '1rem' }],
-        sm: ['0.875rem', { lineHeight: '1.25rem' }],
-        base: ['1rem', { lineHeight: '1.5rem' }],
-        lg: ['1.125rem', { lineHeight: '1.75rem' }],
-        xl: ['1.25rem', { lineHeight: '1.75rem' }],
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        xs: ["0.75rem", { lineHeight: "1rem" }],
+        sm: ["0.875rem", { lineHeight: "1.25rem" }],
+        base: ["1rem", { lineHeight: "1.5rem" }],
+        lg: ["1.125rem", { lineHeight: "1.75rem" }],
+        xl: ["1.25rem", { lineHeight: "1.75rem" }],
+        "2xl": ["1.5rem", { lineHeight: "2rem" }],
       },
       colors: {
         brand: {
-          50: '#eff6ff',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
+          50: "#eff6ff",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
         },
       },
       spacing: {
         // Extends default with custom values
-        '18': '4.5rem',
-        '88': '22rem',
+        18: "4.5rem",
+        88: "22rem",
       },
     },
   },
@@ -134,6 +137,7 @@ module.exports = {
 ### Font Pairing
 
 **Safe combinations**:
+
 - Heading: **Inter** / Body: **Inter** (single family)
 - Heading: **Playfair Display** / Body: **Source Sans Pro** (contrast)
 - Heading: **Space Grotesk** / Body: **IBM Plex Sans** (geometric)
@@ -159,8 +163,8 @@ p {
 ```css
 /* Prevent layout shift */
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter.woff2') format('woff2');
+  font-family: "Inter";
+  src: url("/fonts/Inter.woff2") format("woff2");
   font-display: swap;
   font-weight: 400 700;
 }
@@ -170,12 +174,12 @@ p {
 
 ### Contrast Requirements (WCAG)
 
-| Element | Minimum Ratio |
-|---------|---------------|
-| Body text | 4.5:1 (AA) |
-| Large text (18px+) | 3:1 (AA) |
-| UI components | 3:1 (AA) |
-| Enhanced | 7:1 (AAA) |
+| Element            | Minimum Ratio |
+| ------------------ | ------------- |
+| Body text          | 4.5:1 (AA)    |
+| Large text (18px+) | 3:1 (AA)      |
+| UI components      | 3:1 (AA)      |
+| Enhanced           | 7:1 (AAA)     |
 
 ### Dark Mode Strategy
 
@@ -204,7 +208,7 @@ p {
 function getContrastRatio(foreground: string, background: string): number {
   const getLuminance = (hex: string) => {
     const rgb = hexToRgb(hex);
-    const [r, g, b] = rgb.map(c => {
+    const [r, g, b] = rgb.map((c) => {
       c = c / 255;
       return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
     });
@@ -268,7 +272,7 @@ Icon-text gap:     8px (--space-2)
 ```tsx
 interface IconProps {
   name: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   className?: string;
 }
 
@@ -280,12 +284,12 @@ const sizeMap = {
   xl: 32,
 };
 
-export function Icon({ name, size = 'md', className }: IconProps) {
+export function Icon({ name, size = "md", className }: IconProps) {
   return (
     <svg
       width={sizeMap[size]}
       height={sizeMap[size]}
-      className={cn('inline-block flex-shrink-0', className)}
+      className={cn("inline-block flex-shrink-0", className)}
       aria-hidden="true"
     >
       <use href={`/icons.svg#${name}`} />

@@ -27,6 +27,7 @@ Master iOS Human Interface Guidelines (HIG) and SwiftUI patterns to build polish
 **Depth**: Visual layers and motion convey hierarchy and enable navigation
 
 **Platform Considerations:**
+
 - **iOS**: Touch-first, compact displays, portrait orientation
 - **iPadOS**: Larger canvas, multitasking, pointer support
 - **visionOS**: Spatial computing, eye/hand input
@@ -34,6 +35,7 @@ Master iOS Human Interface Guidelines (HIG) and SwiftUI patterns to build polish
 ### 2. SwiftUI Layout System
 
 **Stack-Based Layouts:**
+
 ```swift
 // Vertical stack with alignment
 VStack(alignment: .leading, spacing: 12) {
@@ -55,6 +57,7 @@ HStack {
 ```
 
 **Grid Layouts:**
+
 ```swift
 // Adaptive grid that fills available width
 LazyVGrid(columns: [
@@ -80,6 +83,7 @@ LazyVGrid(columns: [
 ### 3. Navigation Patterns
 
 **NavigationStack (iOS 16+):**
+
 ```swift
 struct ContentView: View {
     @State private var path = NavigationPath()
@@ -101,6 +105,7 @@ struct ContentView: View {
 ```
 
 **TabView:**
+
 ```swift
 struct MainTabView: View {
     @State private var selectedTab = 0
@@ -132,6 +137,7 @@ struct MainTabView: View {
 ### 4. System Integration
 
 **SF Symbols:**
+
 ```swift
 // Basic symbol
 Image(systemName: "heart.fill")
@@ -150,6 +156,7 @@ Image(systemName: "bell.fill")
 ```
 
 **Dynamic Type:**
+
 ```swift
 // Use semantic fonts
 Text("Headline")
@@ -166,6 +173,7 @@ Text("Custom")
 ### 5. Visual Design
 
 **Colors and Materials:**
+
 ```swift
 // Semantic colors that adapt to light/dark mode
 Text("Primary")
@@ -185,6 +193,7 @@ Text("Overlay")
 ```
 
 **Shadows and Depth:**
+
 ```swift
 // Standard card shadow
 RoundedRectangle(cornerRadius: 16)

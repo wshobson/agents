@@ -73,7 +73,7 @@ function Accordion({ items }) {
                 onClick={() => setOpenIndex(isOpen ? -1 : index)}
               >
                 {item.title}
-                <span aria-hidden="true">{isOpen ? '−' : '+'}</span>
+                <span aria-hidden="true">{isOpen ? "−" : "+"}</span>
               </button>
             </h3>
             <div
@@ -103,16 +103,16 @@ function Tabs({ tabs }) {
     let newIndex = index;
 
     switch (e.key) {
-      case 'ArrowRight':
+      case "ArrowRight":
         newIndex = (index + 1) % tabs.length;
         break;
-      case 'ArrowLeft':
+      case "ArrowLeft":
         newIndex = (index - 1 + tabs.length) % tabs.length;
         break;
-      case 'Home':
+      case "Home":
         newIndex = 0;
         break;
-      case 'End':
+      case "End":
         newIndex = tabs.length - 1;
         break;
       default:
@@ -172,7 +172,7 @@ function MenuButton({ label, items }) {
 
   const handleKeyDown = (e) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         if (!isOpen) {
           setIsOpen(true);
@@ -181,16 +181,16 @@ function MenuButton({ label, items }) {
           setActiveIndex((prev) => Math.min(prev + 1, items.length - 1));
         }
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         setActiveIndex((prev) => Math.max(prev - 1, 0));
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         buttonRef.current?.focus();
         break;
-      case 'Enter':
-      case ' ':
+      case "Enter":
+      case " ":
         if (isOpen && activeIndex >= 0) {
           e.preventDefault();
           items[activeIndex].onClick();
@@ -253,36 +253,36 @@ function MenuButton({ label, items }) {
 
 ```tsx
 function Combobox({ options, onSelect, placeholder }) {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef(null);
   const listboxId = useId();
 
   const filteredOptions = options.filter((opt) =>
-    opt.toLowerCase().includes(inputValue.toLowerCase())
+    opt.toLowerCase().includes(inputValue.toLowerCase()),
   );
 
   const handleKeyDown = (e) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         setIsOpen(true);
         setActiveIndex((prev) =>
-          Math.min(prev + 1, filteredOptions.length - 1)
+          Math.min(prev + 1, filteredOptions.length - 1),
         );
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         setActiveIndex((prev) => Math.max(prev - 1, 0));
         break;
-      case 'Enter':
+      case "Enter":
         if (activeIndex >= 0) {
           e.preventDefault();
           selectOption(filteredOptions[activeIndex]);
         }
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         setActiveIndex(-1);
         break;
@@ -396,16 +396,16 @@ function Toolbar({ items }) {
     let newIndex = activeIndex;
 
     switch (e.key) {
-      case 'ArrowRight':
+      case "ArrowRight":
         newIndex = (activeIndex + 1) % items.length;
         break;
-      case 'ArrowLeft':
+      case "ArrowLeft":
         newIndex = (activeIndex - 1 + items.length) % items.length;
         break;
-      case 'Home':
+      case "Home":
         newIndex = 0;
         break;
-      case 'End':
+      case "End":
         newIndex = items.length - 1;
         break;
       default:
@@ -414,7 +414,7 @@ function Toolbar({ items }) {
 
     e.preventDefault();
     setActiveIndex(newIndex);
-    toolbarRef.current?.querySelectorAll('button')[newIndex]?.focus();
+    toolbarRef.current?.querySelectorAll("button")[newIndex]?.focus();
   };
 
   return (

@@ -712,9 +712,12 @@ function BottomSheet({ children }) {
 
 ```typescript
 // Memoize animated style when dependencies don't change
-const animatedStyle = useAnimatedStyle(() => ({
-  transform: [{ translateX: translateX.value }],
-}), []); // Empty deps if no external dependencies
+const animatedStyle = useAnimatedStyle(
+  () => ({
+    transform: [{ translateX: translateX.value }],
+  }),
+  [],
+); // Empty deps if no external dependencies
 
 // Use useMemo for complex calculations outside worklets
 const threshold = useMemo(() => calculateThreshold(screenWidth), [screenWidth]);
@@ -725,7 +728,7 @@ const threshold = useMemo(() => calculateThreshold(screenWidth), [screenWidth]);
 ```typescript
 // Do: Keep worklets simple
 const simpleWorklet = () => {
-  'worklet';
+  "worklet";
   return scale.value * 2;
 };
 
@@ -738,7 +741,7 @@ const onComplete = () => {
 };
 
 opacity.value = withTiming(1, {}, (finished) => {
-  'worklet';
+  "worklet";
   if (finished) {
     runOnJS(onComplete)();
   }

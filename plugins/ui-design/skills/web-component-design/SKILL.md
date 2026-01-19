@@ -22,6 +22,7 @@ Build reusable, maintainable UI components using modern frameworks with clean co
 ### 1. Component Composition Patterns
 
 **Compound Components**: Related components that work together
+
 ```tsx
 // Usage
 <Select value={value} onChange={setValue}>
@@ -34,15 +35,17 @@ Build reusable, maintainable UI components using modern frameworks with clean co
 ```
 
 **Render Props**: Delegate rendering to parent
+
 ```tsx
 <DataFetcher url="/api/users">
-  {({ data, loading, error }) => (
+  {({ data, loading, error }) =>
     loading ? <Spinner /> : <UserList users={data} />
-  )}
+  }
 </DataFetcher>
 ```
 
 **Slots (Vue/Svelte)**: Named content injection points
+
 ```vue
 <template>
   <Card>
@@ -55,20 +58,20 @@ Build reusable, maintainable UI components using modern frameworks with clean co
 
 ### 2. CSS-in-JS Approaches
 
-| Solution | Approach | Best For |
-|----------|----------|----------|
-| **Tailwind CSS** | Utility classes | Rapid prototyping, design systems |
-| **CSS Modules** | Scoped CSS files | Existing CSS, gradual adoption |
-| **styled-components** | Template literals | React, dynamic styling |
-| **Emotion** | Object/template styles | Flexible, SSR-friendly |
-| **Vanilla Extract** | Zero-runtime | Performance-critical apps |
+| Solution              | Approach               | Best For                          |
+| --------------------- | ---------------------- | --------------------------------- |
+| **Tailwind CSS**      | Utility classes        | Rapid prototyping, design systems |
+| **CSS Modules**       | Scoped CSS files       | Existing CSS, gradual adoption    |
+| **styled-components** | Template literals      | React, dynamic styling            |
+| **Emotion**           | Object/template styles | Flexible, SSR-friendly            |
+| **Vanilla Extract**   | Zero-runtime           | Performance-critical apps         |
 
 ### 3. Component API Design
 
 ```tsx
 interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   isDisabled?: boolean;
   leftIcon?: React.ReactNode;
@@ -79,6 +82,7 @@ interface ButtonProps {
 ```
 
 **Principles**:
+
 - Use semantic prop names (`isLoading` vs `loading`)
 - Provide sensible defaults
 - Support composition via `children`
@@ -87,34 +91,35 @@ interface ButtonProps {
 ## Quick Start: React Component with Tailwind
 
 ```tsx
-import { forwardRef, type ComponentPropsWithoutRef } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
+  "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        primary: 'bg-blue-600 text-white hover:bg-blue-700',
-        secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
-        ghost: 'hover:bg-gray-100 hover:text-gray-900',
+        primary: "bg-blue-600 text-white hover:bg-blue-700",
+        secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
+        ghost: "hover:bg-gray-100 hover:text-gray-900",
       },
       size: {
-        sm: 'h-8 px-3 text-sm',
-        md: 'h-10 px-4 text-sm',
-        lg: 'h-12 px-6 text-base',
+        sm: "h-8 px-3 text-sm",
+        md: "h-10 px-4 text-sm",
+        lg: "h-12 px-6 text-base",
       },
     },
     defaultVariants: {
-      variant: 'primary',
-      size: 'md',
+      variant: "primary",
+      size: "md",
     },
-  }
+  },
 );
 
 interface ButtonProps
-  extends ComponentPropsWithoutRef<'button'>,
+  extends
+    ComponentPropsWithoutRef<"button">,
     VariantProps<typeof buttonVariants> {
   isLoading?: boolean;
 }
@@ -130,9 +135,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       {isLoading && <Spinner className="mr-2 h-4 w-4" />}
       {children}
     </button>
-  )
+  ),
 );
-Button.displayName = 'Button';
+Button.displayName = "Button";
 ```
 
 ## Framework Patterns
@@ -140,7 +145,7 @@ Button.displayName = 'Button';
 ### React: Compound Components
 
 ```tsx
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 interface AccordionContextValue {
   openItems: Set<string>;
@@ -151,7 +156,7 @@ const AccordionContext = createContext<AccordionContextValue | null>(null);
 
 function useAccordion() {
   const context = useContext(AccordionContext);
-  if (!context) throw new Error('Must be used within Accordion');
+  if (!context) throw new Error("Must be used within Accordion");
   return context;
 }
 
@@ -159,7 +164,7 @@ export function Accordion({ children }: { children: ReactNode }) {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
 
   const toggle = (id: string) => {
-    setOpenItems(prev => {
+    setOpenItems((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
@@ -176,8 +181,12 @@ export function Accordion({ children }: { children: ReactNode }) {
 Accordion.Item = function AccordionItem({
   id,
   title,
-  children
-}: { id: string; title: string; children: ReactNode }) {
+  children,
+}: {
+  id: string;
+  title: string;
+  children: ReactNode;
+}) {
   const { openItems, toggle } = useAccordion();
   const isOpen = openItems.has(id);
 
@@ -196,20 +205,22 @@ Accordion.Item = function AccordionItem({
 
 ```vue
 <script setup lang="ts">
-import { ref, computed, provide, inject, type InjectionKey } from 'vue';
+import { ref, computed, provide, inject, type InjectionKey } from "vue";
 
 interface TabsContext {
   activeTab: Ref<string>;
   setActive: (id: string) => void;
 }
 
-const TabsKey: InjectionKey<TabsContext> = Symbol('tabs');
+const TabsKey: InjectionKey<TabsContext> = Symbol("tabs");
 
 // Parent component
-const activeTab = ref('tab-1');
+const activeTab = ref("tab-1");
 provide(TabsKey, {
   activeTab,
-  setActive: (id: string) => { activeTab.value = id; }
+  setActive: (id: string) => {
+    activeTab.value = id;
+  },
 });
 
 // Child component usage

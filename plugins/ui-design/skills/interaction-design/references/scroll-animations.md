@@ -3,7 +3,7 @@
 ## Intersection Observer Hook
 
 ```tsx
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useRef, useState, type RefObject } from "react";
 
 interface UseInViewOptions {
   threshold?: number | number[];
@@ -13,7 +13,7 @@ interface UseInViewOptions {
 
 function useInView<T extends HTMLElement>({
   threshold = 0,
-  rootMargin = '0px',
+  rootMargin = "0px",
   triggerOnce = false,
 }: UseInViewOptions = {}): [RefObject<T>, boolean] {
   const ref = useRef<T>(null);
@@ -31,7 +31,7 @@ function useInView<T extends HTMLElement>({
           observer.unobserve(element);
         }
       },
-      { threshold, rootMargin }
+      { threshold, rootMargin },
     );
 
     observer.observe(element);
@@ -49,7 +49,7 @@ function FadeInSection({ children }) {
     <div
       ref={ref}
       className={`transition-all duration-700 ${
-        isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       }`}
     >
       {children}
@@ -61,7 +61,7 @@ function FadeInSection({ children }) {
 ## Scroll Progress Indicator
 
 ```tsx
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring } from "framer-motion";
 
 function ScrollProgress() {
   const { scrollYProgress } = useScroll();
@@ -104,26 +104,23 @@ function ScrollProgress() {
 ### Framer Motion Parallax
 
 ```tsx
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform } from "framer-motion";
 
 function ParallaxHero() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start start', 'end start'],
+    offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
 
   return (
     <section ref={ref} className="relative h-screen overflow-hidden">
       {/* Background image with parallax */}
-      <motion.div
-        style={{ y, scale }}
-        className="absolute inset-0"
-      >
+      <motion.div style={{ y, scale }} className="absolute inset-0">
         <img src="/hero-bg.jpg" alt="" className="w-full h-full object-cover" />
       </motion.div>
 
@@ -148,7 +145,7 @@ function ScrollAnimation() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start end', 'end start'],
+    offset: ["start end", "end start"],
   });
 
   // Different transformations based on scroll progress
@@ -157,7 +154,7 @@ function ScrollAnimation() {
   const backgroundColor = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
-    ['#3b82f6', '#8b5cf6', '#ec4899']
+    ["#3b82f6", "#8b5cf6", "#ec4899"],
   );
 
   return (
@@ -180,13 +177,13 @@ function HorizontalScroll({ items }) {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end end'],
+    offset: ["start start", "end end"],
   });
 
   const x = useTransform(
     scrollYProgress,
     [0, 1],
-    ['0%', `-${(items.length - 1) * 100}%`]
+    ["0%", `-${(items.length - 1) * 100}%`],
   );
 
   return (
@@ -239,7 +236,7 @@ function StaggeredList({ items }) {
 ```tsx
 function TextReveal({ text }) {
   const [ref, isInView] = useInView({ threshold: 0.5, triggerOnce: true });
-  const words = text.split(' ');
+  const words = text.split(" ");
 
   return (
     <p ref={ref} className="text-4xl font-bold">
@@ -268,8 +265,8 @@ function ClipReveal({ children }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ clipPath: 'inset(0 100% 0 0)' }}
-      animate={isInView ? { clipPath: 'inset(0 0% 0 0)' } : {}}
+      initial={{ clipPath: "inset(0 100% 0 0)" }}
+      animate={isInView ? { clipPath: "inset(0 0% 0 0)" } : {}}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
@@ -285,7 +282,7 @@ function StickySection({ title, content, image }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start start', 'end start'],
+    offset: ["start start", "end start"],
   });
 
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1, 0]);
@@ -373,7 +370,10 @@ function FullPageScroll({ sections }) {
   return (
     <div className="snap-container">
       {sections.map((section, i) => (
-        <section key={i} className="snap-section flex items-center justify-center">
+        <section
+          key={i}
+          className="snap-section flex items-center justify-center"
+        >
           {section}
         </section>
       ))}
@@ -403,14 +403,14 @@ function useThrottledScroll(callback, delay = 16) {
       }
     };
 
-    window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
   }, [callback, delay]);
 }
 
 // Use transform instead of top/left
 // Good
-const goodAnimation = { transform: 'translateY(100px)' };
+const goodAnimation = { transform: "translateY(100px)" };
 // Bad (causes reflow)
-const badAnimation = { top: '100px' };
+const badAnimation = { top: "100px" };
 ```

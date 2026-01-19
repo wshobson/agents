@@ -118,13 +118,13 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 
 ### 🎨 Development (5 plugins)
 
-| Plugin                          | Description                                                      | Install                                       |
-| ------------------------------- | ---------------------------------------------------------------- | --------------------------------------------- |
-| **debugging-toolkit**           | Interactive debugging and DX optimization                        | `/plugin install debugging-toolkit`           |
-| **backend-development**         | Backend API design with GraphQL and TDD                          | `/plugin install backend-development`         |
-| **frontend-mobile-development** | Frontend UI and mobile development                               | `/plugin install frontend-mobile-development` |
-| **ui-design**                   | UI/UX design for mobile (iOS, Android, React Native) and web     | `/plugin install ui-design`                   |
-| **multi-platform-apps**         | Cross-platform app coordination (web/iOS/Android)                | `/plugin install multi-platform-apps`         |
+| Plugin                          | Description                                                  | Install                                       |
+| ------------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
+| **debugging-toolkit**           | Interactive debugging and DX optimization                    | `/plugin install debugging-toolkit`           |
+| **backend-development**         | Backend API design with GraphQL and TDD                      | `/plugin install backend-development`         |
+| **frontend-mobile-development** | Frontend UI and mobile development                           | `/plugin install frontend-mobile-development` |
+| **ui-design**                   | UI/UX design for mobile (iOS, Android, React Native) and web | `/plugin install ui-design`                   |
+| **multi-platform-apps**         | Cross-platform app coordination (web/iOS/Android)            | `/plugin install multi-platform-apps`         |
 
 ### 📚 Documentation (3 plugins)
 

@@ -9,6 +9,7 @@ Orchestrate a comprehensive git workflow from code review through PR creation, l
 **Target branch**: $ARGUMENTS (defaults to 'main' if not specified)
 
 **Supported flags**:
+
 - `--skip-tests`: Skip automated test execution (use with caution)
 - `--draft-pr`: Create PR as draft for work-in-progress
 - `--no-push`: Perform all checks but don't push to remote
@@ -20,11 +21,13 @@ Orchestrate a comprehensive git workflow from code review through PR creation, l
 ## Phase 1: Pre-Commit Review and Analysis
 
 ### 1. Code Quality Assessment
+
 - Use Task tool with subagent_type="code-reviewer"
 - Prompt: "Review all uncommitted changes for code quality issues. Check for: 1) Code style violations, 2) Security vulnerabilities, 3) Performance concerns, 4) Missing error handling, 5) Incomplete implementations. Generate a detailed report with severity levels (critical/high/medium/low) and provide specific line-by-line feedback. Output format: JSON with {issues: [], summary: {critical: 0, high: 0, medium: 0, low: 0}, recommendations: []}"
 - Expected output: Structured code review report for next phase
 
 ### 2. Dependency and Breaking Change Analysis
+
 - Use Task tool with subagent_type="code-reviewer"
 - Prompt: "Analyze the changes for: 1) New dependencies or version changes, 2) Breaking API changes, 3) Database schema modifications, 4) Configuration changes, 5) Backward compatibility issues. Context from previous review: [insert issues summary]. Identify any changes that require migration scripts or documentation updates."
 - Context from previous: Code quality issues that might indicate breaking changes
@@ -33,12 +36,14 @@ Orchestrate a comprehensive git workflow from code review through PR creation, l
 ## Phase 2: Testing and Validation
 
 ### 1. Test Execution and Coverage
+
 - Use Task tool with subagent_type="unit-testing::test-automator"
 - Prompt: "Execute all test suites for the modified code. Run: 1) Unit tests, 2) Integration tests, 3) End-to-end tests if applicable. Generate coverage report and identify any untested code paths. Based on review issues: [insert critical/high issues], ensure tests cover the problem areas. Provide test results in format: {passed: [], failed: [], skipped: [], coverage: {statements: %, branches: %, functions: %, lines: %}, untested_critical_paths: []}"
 - Context from previous: Critical code review issues that need test coverage
 - Expected output: Complete test results and coverage metrics
 
 ### 2. Test Recommendations and Gap Analysis
+
 - Use Task tool with subagent_type="unit-testing::test-automator"
 - Prompt: "Based on test results [insert summary] and code changes, identify: 1) Missing test scenarios, 2) Edge cases not covered, 3) Integration points needing verification, 4) Performance benchmarks needed. Generate test implementation recommendations prioritized by risk. Consider the breaking changes identified: [insert breaking changes]."
 - Context from previous: Test results, breaking changes, untested paths
@@ -47,12 +52,14 @@ Orchestrate a comprehensive git workflow from code review through PR creation, l
 ## Phase 3: Commit Message Generation
 
 ### 1. Change Analysis and Categorization
+
 - Use Task tool with subagent_type="code-reviewer"
 - Prompt: "Analyze all changes and categorize them according to Conventional Commits specification. Identify the primary change type (feat/fix/docs/style/refactor/perf/test/build/ci/chore/revert) and scope. For changes: [insert file list and summary], determine if this should be a single commit or multiple atomic commits. Consider test results: [insert test summary]."
 - Context from previous: Test results, code review summary
 - Expected output: Commit structure recommendation
 
 ### 2. Conventional Commit Message Creation
+
 - Use Task tool with subagent_type="llm-application-dev::prompt-engineer"
 - Prompt: "Create Conventional Commits format message(s) based on categorization: [insert categorization]. Format: <type>(<scope>): <subject> with blank line then <body> explaining what and why (not how), then <footer> with BREAKING CHANGE: if applicable. Include: 1) Clear subject line (50 chars max), 2) Detailed body explaining rationale, 3) References to issues/tickets, 4) Co-authors if applicable. Consider the impact: [insert breaking changes if any]."
 - Context from previous: Change categorization, breaking changes
@@ -61,11 +68,13 @@ Orchestrate a comprehensive git workflow from code review through PR creation, l
 ## Phase 4: Branch Strategy and Push Preparation
 
 ### 1. Branch Management
+
 - Use Task tool with subagent_type="cicd-automation::deployment-engineer"
 - Prompt: "Based on workflow type [--trunk-based or --feature-branch], prepare branch strategy. For feature branch: ensure branch name follows pattern (feature|bugfix|hotfix)/<ticket>-<description>. For trunk-based: prepare for direct main push with feature flag strategy if needed. Current branch: [insert branch], target: [insert target branch]. Verify no conflicts with target branch."
 - Expected output: Branch preparation commands and conflict status
 
 ### 2. Pre-Push Validation
+
 - Use Task tool with subagent_type="cicd-automation::deployment-engineer"
 - Prompt: "Perform final pre-push checks: 1) Verify all CI checks will pass, 2) Confirm no sensitive data in commits, 3) Validate commit signatures if required, 4) Check branch protection rules, 5) Ensure all review comments addressed. Test summary: [insert test results]. Review status: [insert review summary]."
 - Context from previous: All previous validation results
@@ -74,12 +83,14 @@ Orchestrate a comprehensive git workflow from code review through PR creation, l
 ## Phase 5: Pull Request Creation
 
 ### 1. PR Description Generation
+
 - Use Task tool with subagent_type="documentation-generation::docs-architect"
 - Prompt: "Create comprehensive PR description including: 1) Summary of changes (what and why), 2) Type of change checklist, 3) Testing performed summary from [insert test results], 4) Screenshots/recordings if UI changes, 5) Deployment notes from [insert deployment considerations], 6) Related issues/tickets, 7) Breaking changes section if applicable: [insert breaking changes], 8) Reviewer checklist. Format as GitHub-flavored Markdown."
 - Context from previous: All validation results, test outcomes, breaking changes
 - Expected output: Complete PR description in Markdown
 
 ### 2. PR Metadata and Automation Setup
+
 - Use Task tool with subagent_type="cicd-automation::deployment-engineer"
 - Prompt: "Configure PR metadata: 1) Assign appropriate reviewers based on CODEOWNERS, 2) Add labels (type, priority, component), 3) Link related issues, 4) Set milestone if applicable, 5) Configure merge strategy (squash/merge/rebase), 6) Set up auto-merge if all checks pass. Consider draft status: [--draft-pr flag]. Include test status: [insert test summary]."
 - Context from previous: PR description, test results, review status

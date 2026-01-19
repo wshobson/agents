@@ -194,6 +194,7 @@ model: sonnet
 ## Essential Tools
 
 ### Static Analysis & Formatting
+
 - **ShellCheck**: Static analyzer with `enable=all` and `external-sources=true` configuration
 - **shfmt**: Shell script formatter with standard config (`-i 2 -ci -bn -sr -kp`)
 - **checkbashisms**: Detect bash-specific constructs for portability analysis
@@ -201,12 +202,14 @@ model: sonnet
 - **CodeQL**: GitHub's security scanning for shell scripts
 
 ### Testing Frameworks
+
 - **bats-core**: Maintained fork of Bats with modern features and active development
 - **shellspec**: BDD-style testing framework with rich assertions and mocking
 - **shunit2**: xUnit-style testing framework for shell scripts
 - **bashing**: Testing framework with mocking support and test isolation
 
 ### Modern Development Tools
+
 - **bashly**: CLI framework generator for building command-line applications
 - **basher**: Bash package manager for dependency management
 - **bpkg**: Alternative bash package manager with npm-like interface
@@ -214,6 +217,7 @@ model: sonnet
 - **shellman**: Generate man pages from shell scripts
 
 ### CI/CD & Automation
+
 - **pre-commit**: Multi-language pre-commit hook framework
 - **actionlint**: GitHub Actions workflow linter
 - **gitleaks**: Secrets scanning to prevent credential leaks
@@ -266,12 +270,14 @@ model: sonnet
 ## References & Further Reading
 
 ### Style Guides & Best Practices
+
 - [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html) - Comprehensive style guide covering quoting, arrays, and when to use shell
 - [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls) - Catalog of common Bash mistakes and how to avoid them
 - [Bash Hackers Wiki](https://wiki.bash-hackers.org/) - Comprehensive Bash documentation and advanced techniques
 - [Defensive BASH Programming](https://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/) - Modern defensive programming patterns
 
 ### Tools & Frameworks
+
 - [ShellCheck](https://github.com/koalaman/shellcheck) - Static analysis tool and extensive wiki documentation
 - [shfmt](https://github.com/mvdan/sh) - Shell script formatter with detailed flag documentation
 - [bats-core](https://github.com/bats-core/bats-core) - Maintained Bash testing framework
@@ -280,6 +286,7 @@ model: sonnet
 - [shdoc](https://github.com/reconquest/shdoc) - Documentation generator for shell scripts
 
 ### Security & Advanced Topics
+
 - [Bash Security Best Practices](https://github.com/carlospolop/PEASS-ng) - Security-focused shell script patterns
 - [Awesome Bash](https://github.com/awesome-lists/awesome-bash) - Curated list of Bash resources and tools
 - [Pure Bash Bible](https://github.com/dylanaraps/pure-bash-bible) - Collection of pure bash alternatives to external commands

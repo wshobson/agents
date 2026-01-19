@@ -23,6 +23,7 @@ Comprehensive guide for mastering modern JavaScript (ES6+) features, functional 
 ### 1. Arrow Functions
 
 **Syntax and Use Cases:**
+
 ```javascript
 // Traditional function
 function add(a, b) {
@@ -33,13 +34,13 @@ function add(a, b) {
 const add = (a, b) => a + b;
 
 // Single parameter (parentheses optional)
-const double = x => x * 2;
+const double = (x) => x * 2;
 
 // No parameters
 const getRandom = () => Math.random();
 
 // Multiple statements (need curly braces)
-const processUser = user => {
+const processUser = (user) => {
   const normalized = user.name.toLowerCase();
   return { ...user, name: normalized };
 };
@@ -49,6 +50,7 @@ const createUser = (name, age) => ({ name, age });
 ```
 
 **Lexical 'this' Binding:**
+
 ```javascript
 class Counter {
   constructor() {
@@ -62,15 +64,15 @@ class Counter {
 
   // Traditional function loses 'this' in callbacks
   incrementTraditional() {
-    setTimeout(function() {
-      this.count++;  // 'this' is undefined
+    setTimeout(function () {
+      this.count++; // 'this' is undefined
     }, 1000);
   }
 
   // Arrow function maintains 'this'
   incrementArrow() {
     setTimeout(() => {
-      this.count++;  // 'this' refers to Counter instance
+      this.count++; // 'this' refers to Counter instance
     }, 1000);
   }
 }
@@ -79,15 +81,16 @@ class Counter {
 ### 2. Destructuring
 
 **Object Destructuring:**
+
 ```javascript
 const user = {
   id: 1,
-  name: 'John Doe',
-  email: 'john@example.com',
+  name: "John Doe",
+  email: "john@example.com",
   address: {
-    city: 'New York',
-    country: 'USA'
-  }
+    city: "New York",
+    country: "USA",
+  },
 };
 
 // Basic destructuring
@@ -100,7 +103,9 @@ const { name: userName, email: userEmail } = user;
 const { age = 25 } = user;
 
 // Nested destructuring
-const { address: { city, country } } = user;
+const {
+  address: { city, country },
+} = user;
 
 // Rest operator
 const { id, ...userWithoutId } = user;
@@ -113,6 +118,7 @@ greet(user);
 ```
 
 **Array Destructuring:**
+
 ```javascript
 const numbers = [1, 2, 3, 4, 5];
 
@@ -126,7 +132,8 @@ const [, , third] = numbers;
 const [head, ...tail] = numbers;
 
 // Swapping variables
-let a = 1, b = 2;
+let a = 1,
+  b = 2;
 [a, b] = [b, a];
 
 // Function return values
@@ -142,6 +149,7 @@ const [one, two, three = 0] = [1, 2];
 ### 3. Spread and Rest Operators
 
 **Spread Operator:**
+
 ```javascript
 // Array spreading
 const arr1 = [1, 2, 3];
@@ -149,8 +157,8 @@ const arr2 = [4, 5, 6];
 const combined = [...arr1, ...arr2];
 
 // Object spreading
-const defaults = { theme: 'dark', lang: 'en' };
-const userPrefs = { theme: 'light' };
+const defaults = { theme: "dark", lang: "en" };
+const userPrefs = { theme: "light" };
 const settings = { ...defaults, ...userPrefs };
 
 // Function arguments
@@ -167,6 +175,7 @@ const newObj = { ...user, age: 30 };
 ```
 
 **Rest Parameters:**
+
 ```javascript
 // Collect function arguments
 function sum(...numbers) {
@@ -176,9 +185,9 @@ sum(1, 2, 3, 4, 5);
 
 // With regular parameters
 function greet(greeting, ...names) {
-  return `${greeting} ${names.join(', ')}`;
+  return `${greeting} ${names.join(", ")}`;
 }
-greet('Hello', 'John', 'Jane', 'Bob');
+greet("Hello", "John", "Jane", "Bob");
 
 // Object rest
 const { id, ...userData } = user;
@@ -191,7 +200,7 @@ const [first, ...rest] = [1, 2, 3, 4, 5];
 
 ```javascript
 // Basic usage
-const name = 'John';
+const name = "John";
 const greeting = `Hello, ${name}!`;
 
 // Multi-line strings
@@ -209,12 +218,12 @@ const total = `Total: $${(price * 1.2).toFixed(2)}`;
 // Tagged template literals
 function highlight(strings, ...values) {
   return strings.reduce((result, str, i) => {
-    const value = values[i] || '';
+    const value = values[i] || "";
     return result + str + `<mark>${value}</mark>`;
-  }, '');
+  }, "");
 }
 
-const name = 'John';
+const name = "John";
 const age = 30;
 const html = highlight`Name: ${name}, Age: ${age}`;
 // Output: "Name: <mark>John</mark>, Age: <mark>30</mark>"
@@ -223,7 +232,7 @@ const html = highlight`Name: ${name}, Age: ${age}`;
 ### 5. Enhanced Object Literals
 
 ```javascript
-const name = 'John';
+const name = "John";
 const age = 30;
 
 // Shorthand property names
@@ -236,28 +245,31 @@ const calculator = {
   },
   subtract(a, b) {
     return a - b;
-  }
+  },
 };
 
 // Computed property names
-const field = 'email';
+const field = "email";
 const user = {
-  name: 'John',
-  [field]: 'john@example.com',
+  name: "John",
+  [field]: "john@example.com",
   [`get${field.charAt(0).toUpperCase()}${field.slice(1)}`]() {
     return this[field];
-  }
+  },
 };
 
 // Dynamic property creation
 const createUser = (name, ...props) => {
-  return props.reduce((user, [key, value]) => ({
-    ...user,
-    [key]: value
-  }), { name });
+  return props.reduce(
+    (user, [key, value]) => ({
+      ...user,
+      [key]: value,
+    }),
+    { name },
+  );
 };
 
-const user = createUser('John', ['age', 30], ['email', 'john@example.com']);
+const user = createUser("John", ["age", 30], ["email", "john@example.com"]);
 ```
 
 ## Asynchronous Patterns
@@ -265,15 +277,16 @@ const user = createUser('John', ['age', 30], ['email', 'john@example.com']);
 ### 1. Promises
 
 **Creating and Using Promises:**
+
 ```javascript
 // Creating a promise
 const fetchUser = (id) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (id > 0) {
-        resolve({ id, name: 'John' });
+        resolve({ id, name: "John" });
       } else {
-        reject(new Error('Invalid ID'));
+        reject(new Error("Invalid ID"));
       }
     }, 1000);
   });
@@ -281,57 +294,54 @@ const fetchUser = (id) => {
 
 // Using promises
 fetchUser(1)
-  .then(user => console.log(user))
-  .catch(error => console.error(error))
-  .finally(() => console.log('Done'));
+  .then((user) => console.log(user))
+  .catch((error) => console.error(error))
+  .finally(() => console.log("Done"));
 
 // Chaining promises
 fetchUser(1)
-  .then(user => fetchUserPosts(user.id))
-  .then(posts => processPosts(posts))
-  .then(result => console.log(result))
-  .catch(error => console.error(error));
+  .then((user) => fetchUserPosts(user.id))
+  .then((posts) => processPosts(posts))
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
 ```
 
 **Promise Combinators:**
+
 ```javascript
 // Promise.all - Wait for all promises
-const promises = [
-  fetchUser(1),
-  fetchUser(2),
-  fetchUser(3)
-];
+const promises = [fetchUser(1), fetchUser(2), fetchUser(3)];
 
 Promise.all(promises)
-  .then(users => console.log(users))
-  .catch(error => console.error('At least one failed:', error));
+  .then((users) => console.log(users))
+  .catch((error) => console.error("At least one failed:", error));
 
 // Promise.allSettled - Wait for all, regardless of outcome
-Promise.allSettled(promises)
-  .then(results => {
-    results.forEach(result => {
-      if (result.status === 'fulfilled') {
-        console.log('Success:', result.value);
-      } else {
-        console.log('Error:', result.reason);
-      }
-    });
+Promise.allSettled(promises).then((results) => {
+  results.forEach((result) => {
+    if (result.status === "fulfilled") {
+      console.log("Success:", result.value);
+    } else {
+      console.log("Error:", result.reason);
+    }
   });
+});
 
 // Promise.race - First to complete
 Promise.race(promises)
-  .then(winner => console.log('First:', winner))
-  .catch(error => console.error(error));
+  .then((winner) => console.log("First:", winner))
+  .catch((error) => console.error(error));
 
 // Promise.any - First to succeed
 Promise.any(promises)
-  .then(first => console.log('First success:', first))
-  .catch(error => console.error('All failed:', error));
+  .then((first) => console.log("First success:", first))
+  .catch((error) => console.error("All failed:", error));
 ```
 
 ### 2. Async/Await
 
 **Basic Usage:**
+
 ```javascript
 // Async function always returns a Promise
 async function fetchUser(id) {
@@ -347,28 +357,26 @@ async function getUserData(id) {
     const posts = await fetchUserPosts(user.id);
     return { user, posts };
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error("Error fetching data:", error);
     throw error;
   }
 }
 
 // Sequential vs Parallel execution
 async function sequential() {
-  const user1 = await fetchUser(1);  // Wait
-  const user2 = await fetchUser(2);  // Then wait
+  const user1 = await fetchUser(1); // Wait
+  const user2 = await fetchUser(2); // Then wait
   return [user1, user2];
 }
 
 async function parallel() {
-  const [user1, user2] = await Promise.all([
-    fetchUser(1),
-    fetchUser(2)
-  ]);
+  const [user1, user2] = await Promise.all([fetchUser(1), fetchUser(2)]);
   return [user1, user2];
 }
 ```
 
 **Advanced Patterns:**
+
 ```javascript
 // Async IIFE
 (async () => {
@@ -385,7 +393,7 @@ async function processUsers(userIds) {
 }
 
 // Top-level await (ES2022)
-const config = await fetch('/config.json').then(r => r.json());
+const config = await fetch("/config.json").then((r) => r.json());
 
 // Retry logic
 async function fetchWithRetry(url, retries = 3) {
@@ -394,7 +402,7 @@ async function fetchWithRetry(url, retries = 3) {
       return await fetch(url);
     } catch (error) {
       if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
     }
   }
 }
@@ -402,7 +410,7 @@ async function fetchWithRetry(url, retries = 3) {
 // Timeout wrapper
 async function withTimeout(promise, ms) {
   const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Timeout')), ms)
+    setTimeout(() => reject(new Error("Timeout")), ms),
   );
   return Promise.race([promise, timeout]);
 }
@@ -413,20 +421,21 @@ async function withTimeout(promise, ms) {
 ### 1. Array Methods
 
 **Map, Filter, Reduce:**
+
 ```javascript
 const users = [
-  { id: 1, name: 'John', age: 30, active: true },
-  { id: 2, name: 'Jane', age: 25, active: false },
-  { id: 3, name: 'Bob', age: 35, active: true }
+  { id: 1, name: "John", age: 30, active: true },
+  { id: 2, name: "Jane", age: 25, active: false },
+  { id: 3, name: "Bob", age: 35, active: true },
 ];
 
 // Map - Transform array
-const names = users.map(user => user.name);
-const upperNames = users.map(user => user.name.toUpperCase());
+const names = users.map((user) => user.name);
+const upperNames = users.map((user) => user.name.toUpperCase());
 
 // Filter - Select elements
-const activeUsers = users.filter(user => user.active);
-const adults = users.filter(user => user.age >= 18);
+const activeUsers = users.filter((user) => user.active);
+const adults = users.filter((user) => user.age >= 18);
 
 // Reduce - Aggregate data
 const totalAge = users.reduce((sum, user) => sum + user.age, 0);
@@ -434,44 +443,45 @@ const avgAge = totalAge / users.length;
 
 // Group by property
 const byActive = users.reduce((groups, user) => {
-  const key = user.active ? 'active' : 'inactive';
+  const key = user.active ? "active" : "inactive";
   return {
     ...groups,
-    [key]: [...(groups[key] || []), user]
+    [key]: [...(groups[key] || []), user],
   };
 }, {});
 
 // Chaining methods
 const result = users
-  .filter(user => user.active)
-  .map(user => user.name)
+  .filter((user) => user.active)
+  .map((user) => user.name)
   .sort()
-  .join(', ');
+  .join(", ");
 ```
 
 **Advanced Array Methods:**
+
 ```javascript
 // Find - First matching element
-const user = users.find(u => u.id === 2);
+const user = users.find((u) => u.id === 2);
 
 // FindIndex - Index of first match
-const index = users.findIndex(u => u.name === 'Jane');
+const index = users.findIndex((u) => u.name === "Jane");
 
 // Some - At least one matches
-const hasActive = users.some(u => u.active);
+const hasActive = users.some((u) => u.active);
 
 // Every - All match
-const allAdults = users.every(u => u.age >= 18);
+const allAdults = users.every((u) => u.age >= 18);
 
 // FlatMap - Map and flatten
 const userTags = [
-  { name: 'John', tags: ['admin', 'user'] },
-  { name: 'Jane', tags: ['user'] }
+  { name: "John", tags: ["admin", "user"] },
+  { name: "Jane", tags: ["user"] },
 ];
-const allTags = userTags.flatMap(u => u.tags);
+const allTags = userTags.flatMap((u) => u.tags);
 
 // From - Create array from iterable
-const str = 'hello';
+const str = "hello";
 const chars = Array.from(str);
 const numbers = Array.from({ length: 5 }, (_, i) => i + 1);
 
@@ -482,6 +492,7 @@ const arr = Array.of(1, 2, 3);
 ### 2. Higher-Order Functions
 
 **Functions as Arguments:**
+
 ```javascript
 // Custom forEach
 function forEach(array, callback) {
@@ -512,14 +523,15 @@ function filter(array, predicate) {
 ```
 
 **Functions Returning Functions:**
+
 ```javascript
 // Currying
-const multiply = a => b => a * b;
+const multiply = (a) => (b) => a * b;
 const double = multiply(2);
 const triple = multiply(3);
 
-console.log(double(5));  // 10
-console.log(triple(5));  // 15
+console.log(double(5)); // 10
+console.log(triple(5)); // 15
 
 // Partial application
 function partial(fn, ...args) {
@@ -528,7 +540,7 @@ function partial(fn, ...args) {
 
 const add = (a, b, c) => a + b + c;
 const add5 = partial(add, 5);
-console.log(add5(3, 2));  // 10
+console.log(add5(3, 2)); // 10
 
 // Memoization
 function memoize(fn) {
@@ -554,34 +566,38 @@ const fibonacci = memoize((n) => {
 
 ```javascript
 // Function composition
-const compose = (...fns) => x =>
-  fns.reduceRight((acc, fn) => fn(acc), x);
+const compose =
+  (...fns) =>
+  (x) =>
+    fns.reduceRight((acc, fn) => fn(acc), x);
 
-const pipe = (...fns) => x =>
-  fns.reduce((acc, fn) => fn(acc), x);
+const pipe =
+  (...fns) =>
+  (x) =>
+    fns.reduce((acc, fn) => fn(acc), x);
 
 // Example usage
-const addOne = x => x + 1;
-const double = x => x * 2;
-const square = x => x * x;
+const addOne = (x) => x + 1;
+const double = (x) => x * 2;
+const square = (x) => x * x;
 
 const composed = compose(square, double, addOne);
-console.log(composed(3));  // ((3 + 1) * 2)^2 = 64
+console.log(composed(3)); // ((3 + 1) * 2)^2 = 64
 
 const piped = pipe(addOne, double, square);
-console.log(piped(3));  // ((3 + 1) * 2)^2 = 64
+console.log(piped(3)); // ((3 + 1) * 2)^2 = 64
 
 // Practical example
 const processUser = pipe(
-  user => ({ ...user, name: user.name.trim() }),
-  user => ({ ...user, email: user.email.toLowerCase() }),
-  user => ({ ...user, age: parseInt(user.age) })
+  (user) => ({ ...user, name: user.name.trim() }),
+  (user) => ({ ...user, email: user.email.toLowerCase() }),
+  (user) => ({ ...user, age: parseInt(user.age) }),
 );
 
 const user = processUser({
-  name: '  John  ',
-  email: 'JOHN@EXAMPLE.COM',
-  age: '30'
+  name: "  John  ",
+  email: "JOHN@EXAMPLE.COM",
+  age: "30",
 });
 ```
 
@@ -600,7 +616,7 @@ function addItemPure(cart, item) {
   return {
     ...cart,
     items: [...cart.items, item],
-    total: cart.total + item.price
+    total: cart.total + item.price,
   };
 }
 
@@ -611,28 +627,28 @@ const numbers = [1, 2, 3, 4, 5];
 const withSix = [...numbers, 6];
 
 // Remove from array
-const withoutThree = numbers.filter(n => n !== 3);
+const withoutThree = numbers.filter((n) => n !== 3);
 
 // Update array element
-const doubled = numbers.map(n => n === 3 ? n * 2 : n);
+const doubled = numbers.map((n) => (n === 3 ? n * 2 : n));
 
 // Immutable object operations
-const user = { name: 'John', age: 30 };
+const user = { name: "John", age: 30 };
 
 // Update property
 const olderUser = { ...user, age: 31 };
 
 // Add property
-const withEmail = { ...user, email: 'john@example.com' };
+const withEmail = { ...user, email: "john@example.com" };
 
 // Remove property
 const { age, ...withoutAge } = user;
 
 // Deep cloning (simple approach)
-const deepClone = obj => JSON.parse(JSON.stringify(obj));
+const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
 
 // Better deep cloning
-const structuredClone = obj => globalThis.structuredClone(obj);
+const structuredClone = (obj) => globalThis.structuredClone(obj);
 ```
 
 ## Modern Class Features
@@ -716,21 +732,21 @@ export default function multiply(a, b) {
 
 // Importing
 // app.js
-import multiply, { PI, add, Calculator } from './math.js';
+import multiply, { PI, add, Calculator } from "./math.js";
 
 // Rename imports
-import { add as sum } from './math.js';
+import { add as sum } from "./math.js";
 
 // Import all
-import * as Math from './math.js';
+import * as Math from "./math.js";
 
 // Dynamic imports
-const module = await import('./math.js');
-const { add } = await import('./math.js');
+const module = await import("./math.js");
+const { add } = await import("./math.js");
 
 // Conditional loading
 if (condition) {
-  const module = await import('./feature.js');
+  const module = await import("./feature.js");
   module.init();
 }
 ```
@@ -754,13 +770,13 @@ const range = {
         } else {
           return { done: true };
         }
-      }
+      },
     };
-  }
+  },
 };
 
 for (const num of range) {
-  console.log(num);  // 1, 2, 3, 4, 5
+  console.log(num); // 1, 2, 3, 4, 5
 }
 
 // Generator function
@@ -795,7 +811,7 @@ async function* fetchPages(url) {
   }
 }
 
-for await (const page of fetchPages('/api/users')) {
+for await (const page of fetchPages("/api/users")) {
   console.log(page);
 }
 ```
@@ -804,9 +820,9 @@ for await (const page of fetchPages('/api/users')) {
 
 ```javascript
 // Optional chaining
-const user = { name: 'John', address: { city: 'NYC' } };
+const user = { name: "John", address: { city: "NYC" } };
 const city = user?.address?.city;
-const zipCode = user?.address?.zipCode;  // undefined
+const zipCode = user?.address?.zipCode; // undefined
 
 // Function call
 const result = obj.method?.();
@@ -815,21 +831,21 @@ const result = obj.method?.();
 const first = arr?.[0];
 
 // Nullish coalescing
-const value = null ?? 'default';      // 'default'
-const value = undefined ?? 'default'; // 'default'
-const value = 0 ?? 'default';         // 0 (not 'default')
-const value = '' ?? 'default';        // '' (not 'default')
+const value = null ?? "default"; // 'default'
+const value = undefined ?? "default"; // 'default'
+const value = 0 ?? "default"; // 0 (not 'default')
+const value = "" ?? "default"; // '' (not 'default')
 
 // Logical assignment
 let a = null;
-a ??= 'default';  // a = 'default'
+a ??= "default"; // a = 'default'
 
 let b = 5;
-b ??= 10;  // b = 5 (unchanged)
+b ??= 10; // b = 5 (unchanged)
 
 let obj = { count: 0 };
-obj.count ||= 1;  // obj.count = 1
-obj.count &&= 2;  // obj.count = 2
+obj.count ||= 1; // obj.count = 1
+obj.count &&= 2; // obj.count = 2
 ```
 
 ## Performance Optimization
@@ -853,7 +869,7 @@ function throttle(fn, limit) {
     if (!inThrottle) {
       fn(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 }
@@ -869,8 +885,8 @@ function* lazyMap(iterable, transform) {
 
 // Use only what you need
 const numbers = [1, 2, 3, 4, 5];
-const doubled = lazyMap(numbers, x => x * 2);
-const first = doubled.next().value;  // Only computes first value
+const doubled = lazyMap(numbers, (x) => x * 2);
+const first = doubled.next().value; // Only computes first value
 ```
 
 ## Best Practices

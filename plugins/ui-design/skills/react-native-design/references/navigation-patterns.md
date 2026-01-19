@@ -18,9 +18,12 @@ npm install react-native-screens react-native-safe-area-context
 
 ```typescript
 // navigation/types.ts
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import {
+  CompositeScreenProps,
+  NavigatorScreenParams,
+} from "@react-navigation/native";
 
 // Define param lists for each navigator
 export type RootStackParamList = {
@@ -63,9 +66,9 @@ declare global {
 
 ```typescript
 // hooks/useAppNavigation.ts
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from './types';
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "./types";
 
 export function useAppNavigation() {
   return useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -464,9 +467,9 @@ function App() {
 ### Handling Deep Links
 
 ```typescript
-import { useEffect } from 'react';
-import { Linking } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useEffect } from "react";
+import { Linking } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 function useDeepLinkHandler() {
   const navigation = useNavigation();
@@ -481,7 +484,7 @@ function useDeepLinkHandler() {
     };
 
     // Handle URL changes
-    const subscription = Linking.addEventListener('url', ({ url }) => {
+    const subscription = Linking.addEventListener("url", ({ url }) => {
       handleDeepLink(url);
     });
 

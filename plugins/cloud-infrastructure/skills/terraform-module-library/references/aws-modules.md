@@ -1,6 +1,7 @@
 # AWS Terraform Module Patterns
 
 ## VPC Module
+
 - VPC with public/private subnets
 - Internet Gateway and NAT Gateways
 - Route tables and associations
@@ -8,6 +9,7 @@
 - VPC Flow Logs
 
 ## EKS Module
+
 - EKS cluster with managed node groups
 - IRSA (IAM Roles for Service Accounts)
 - Cluster autoscaler
@@ -15,6 +17,7 @@
 - Cluster logging
 
 ## RDS Module
+
 - RDS instance or cluster
 - Automated backups
 - Read replicas
@@ -23,6 +26,7 @@
 - Security groups
 
 ## S3 Module
+
 - S3 bucket with versioning
 - Encryption at rest
 - Bucket policies
@@ -30,6 +34,7 @@
 - Replication configuration
 
 ## ALB Module
+
 - Application Load Balancer
 - Target groups
 - Listener rules
@@ -37,6 +42,7 @@
 - Access logs
 
 ## Lambda Module
+
 - Lambda function
 - IAM execution role
 - CloudWatch Logs
@@ -44,6 +50,7 @@
 - VPC configuration (optional)
 
 ## Security Group Module
+
 - Reusable security group rules
 - Ingress/egress rules
 - Dynamic rule creation

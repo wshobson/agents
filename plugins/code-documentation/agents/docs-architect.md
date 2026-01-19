@@ -67,6 +67,7 @@ You are a technical documentation architect specializing in creating comprehensi
 ## Output Format
 
 Generate documentation in Markdown format with:
+
 - Clear heading hierarchy
 - Code blocks with syntax highlighting
 - Tables for structured data

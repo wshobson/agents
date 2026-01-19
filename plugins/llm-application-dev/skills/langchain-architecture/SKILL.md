@@ -33,9 +33,11 @@ langchain-pinecone        # Pinecone vector store
 ## Core Concepts
 
 ### 1. LangGraph Agents
+
 LangGraph is the standard for building agents in 2026. It provides:
 
 **Key Features:**
+
 - **StateGraph**: Explicit state management with typed state
 - **Durable Execution**: Agents persist through failures
 - **Human-in-the-Loop**: Inspect and modify state at any point
@@ -43,12 +45,14 @@ LangGraph is the standard for building agents in 2026. It provides:
 - **Checkpointing**: Save and resume agent state
 
 **Agent Patterns:**
+
 - **ReAct**: Reasoning + Acting with `create_react_agent`
 - **Plan-and-Execute**: Separate planning and execution nodes
 - **Multi-Agent**: Supervisor routing between specialized agents
 - **Tool-Calling**: Structured tool invocation with Pydantic schemas
 
 ### 2. State Management
+
 LangGraph uses TypedDict for explicit state:
 
 ```python
@@ -69,6 +73,7 @@ class CustomState(TypedDict):
 ```
 
 ### 3. Memory Systems
+
 Modern memory implementations:
 
 - **ConversationBufferMemory**: Stores all messages (short conversations)
@@ -78,15 +83,18 @@ Modern memory implementations:
 - **LangGraph Checkpointers**: Persistent state across sessions
 
 ### 4. Document Processing
+
 Loading, transforming, and storing documents:
 
 **Components:**
+
 - **Document Loaders**: Load from various sources
 - **Text Splitters**: Chunk documents intelligently
 - **Vector Stores**: Store and retrieve embeddings
 - **Retrievers**: Fetch relevant documents
 
 ### 5. Callbacks & Tracing
+
 LangSmith is the standard for observability:
 
 - Request/response logging

@@ -52,11 +52,21 @@ Start with the smallest screen, then progressively enhance for larger screens.
 /* xl: 1280px - Desktops */
 /* 2xl: 1536px - Large desktops */
 
-@media (min-width: 640px) { /* sm */ }
-@media (min-width: 768px) { /* md */ }
-@media (min-width: 1024px) { /* lg */ }
-@media (min-width: 1280px) { /* xl */ }
-@media (min-width: 1536px) { /* 2xl */ }
+@media (min-width: 640px) {
+  /* sm */
+}
+@media (min-width: 768px) {
+  /* md */
+}
+@media (min-width: 1024px) {
+  /* lg */
+}
+@media (min-width: 1280px) {
+  /* xl */
+}
+@media (min-width: 1536px) {
+  /* 2xl */
+}
 ```
 
 ### Bootstrap 5
@@ -69,11 +79,21 @@ Start with the smallest screen, then progressively enhance for larger screens.
 /* xl: 1200px */
 /* xxl: 1400px */
 
-@media (min-width: 576px) { /* sm */ }
-@media (min-width: 768px) { /* md */ }
-@media (min-width: 992px) { /* lg */ }
-@media (min-width: 1200px) { /* xl */ }
-@media (min-width: 1400px) { /* xxl */ }
+@media (min-width: 576px) {
+  /* sm */
+}
+@media (min-width: 768px) {
+  /* md */
+}
+@media (min-width: 992px) {
+  /* lg */
+}
+@media (min-width: 1200px) {
+  /* xl */
+}
+@media (min-width: 1400px) {
+  /* xxl */
+}
 ```
 
 ### Minimalist Scale
@@ -89,8 +109,12 @@ Start with the smallest screen, then progressively enhance for larger screens.
   --bp-lg: 1024px;
 }
 
-@media (min-width: 600px) { /* Medium */ }
-@media (min-width: 1024px) { /* Large */ }
+@media (min-width: 600px) {
+  /* Medium */
+}
+@media (min-width: 1024px) {
+  /* Large */
+}
 ```
 
 ## Content-Based Breakpoints
@@ -101,7 +125,9 @@ Instead of using device-based breakpoints, identify where your content naturally
 
 ```css
 /* Bad: Device-based thinking */
-@media (min-width: 768px) { /* iPad breakpoint */ }
+@media (min-width: 768px) {
+  /* iPad breakpoint */
+}
 
 /* Good: Content-based thinking */
 /* Breakpoint where sidebar fits comfortably next to content */
@@ -133,7 +159,7 @@ function findBreakpoints(selector) {
 
     // Check for overflow, wrapping, or layout issues
     if (element.scrollWidth > element.clientWidth) {
-      breakpoints.push({ width, issue: 'overflow' });
+      breakpoints.push({ width, issue: "overflow" });
     }
   }
 
@@ -179,7 +205,7 @@ export const breakpoints = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  '2xl': 1536,
+  "2xl": 1536,
 } as const;
 
 // Media query hook
@@ -191,8 +217,8 @@ function useMediaQuery(query: string): boolean {
     setMatches(media.matches);
 
     const listener = () => setMatches(media.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
   }, [query]);
 
   return matches;
@@ -209,7 +235,15 @@ function useBreakpoint() {
     isMobile: !isSmall,
     isTablet: isSmall && !isLarge,
     isDesktop: isLarge,
-    current: isXLarge ? 'xl' : isLarge ? 'lg' : isMedium ? 'md' : isSmall ? 'sm' : 'base',
+    current: isXLarge
+      ? "xl"
+      : isLarge
+        ? "lg"
+        : isMedium
+          ? "md"
+          : isSmall
+            ? "sm"
+            : "base",
   };
 }
 ```
@@ -444,11 +478,14 @@ function useBreakpoint() {
   }
 
   /* Handle page breaks */
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     page-break-after: avoid;
   }
 
-  img, table {
+  img,
+  table {
     page-break-inside: avoid;
   }
 
@@ -519,13 +556,16 @@ async function testBreakpoints(page, breakpoints) {
 
     // Check for horizontal overflow
     const hasOverflow = await page.evaluate(() => {
-      return document.documentElement.scrollWidth > document.documentElement.clientWidth;
+      return (
+        document.documentElement.scrollWidth >
+        document.documentElement.clientWidth
+      );
     });
 
     // Check for elements going off-screen
     const offscreenElements = await page.evaluate(() => {
-      const elements = document.querySelectorAll('*');
-      return Array.from(elements).filter(el => {
+      const elements = document.querySelectorAll("*");
+      return Array.from(elements).filter((el) => {
         const rect = el.getBoundingClientRect();
         return rect.right > window.innerWidth || rect.left < 0;
       }).length;

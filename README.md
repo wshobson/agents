@@ -85,12 +85,12 @@ Each installed plugin loads **only its specific agents, commands, and skills** i
 
 You install **plugins**, which bundle agents:
 
-| Plugin | Agents |
-|--------|--------|
-| `comprehensive-review` | architect-review, code-reviewer, security-auditor |
-| `javascript-typescript` | javascript-pro, typescript-pro |
-| `python-development` | python-pro, django-pro, fastapi-pro |
-| `blockchain-web3` | blockchain-developer |
+| Plugin                  | Agents                                            |
+| ----------------------- | ------------------------------------------------- |
+| `comprehensive-review`  | architect-review, code-reviewer, security-auditor |
+| `javascript-typescript` | javascript-pro, typescript-pro                    |
+| `python-development`    | python-pro, django-pro, fastapi-pro               |
+| `blockchain-web3`       | blockchain-developer                              |
 
 ```bash
 # ❌ Wrong - can't install agents directly
@@ -105,6 +105,7 @@ You install **plugins**, which bundle agents:
 **"Plugin not found"** → Use plugin names, not agent names. Add `@claude-code-workflows` suffix.
 
 **Plugins not loading** → Clear cache and reinstall:
+
 ```bash
 rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/installed_plugins.json
 ```
@@ -134,21 +135,25 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 Specialized knowledge packages following Anthropic's progressive disclosure architecture:
 
 **Language Development:**
+
 - **Python** (5 skills): async patterns, testing, packaging, performance, UV package manager
 - **JavaScript/TypeScript** (4 skills): advanced types, Node.js patterns, testing, modern ES6+
 
 **Infrastructure & DevOps:**
+
 - **Kubernetes** (4 skills): manifests, Helm charts, GitOps, security policies
 - **Cloud Infrastructure** (4 skills): Terraform, multi-cloud, hybrid networking, cost optimization
 - **CI/CD** (4 skills): pipeline design, GitHub Actions, GitLab CI, secrets management
 
 **Development & Architecture:**
+
 - **Backend** (3 skills): API design, architecture patterns, microservices
 - **LLM Applications** (8 skills): LangGraph, prompt engineering, RAG, evaluation, embeddings, similarity search, vector tuning, hybrid search
 
 **Blockchain & Web3** (4 skills): DeFi protocols, NFT standards, Solidity security, Web3 testing
 
 **Project Management:**
+
 - **Conductor** (3 skills): context-driven development, track management, workflow patterns
 
 **And more:** Framework migration, observability, payment processing, ML operations, security scanning
@@ -159,26 +164,29 @@ Specialized knowledge packages following Anthropic's progressive disclosure arch
 
 Strategic model assignment for optimal performance and cost:
 
-| Tier | Model | Agents | Use Case |
-|------|-------|--------|----------|
-| **Tier 1** | Opus 4.5 | 42 | Critical architecture, security, ALL code review, production coding (language pros, frameworks) |
-| **Tier 2** | Inherit | 42 | Complex tasks - user chooses model (AI/ML, backend, frontend/mobile, specialized) |
-| **Tier 3** | Sonnet | 51 | Support with intelligence (docs, testing, debugging, network, API docs, DX, legacy, payments) |
-| **Tier 4** | Haiku | 18 | Fast operational tasks (SEO, deployment, simple docs, sales, content, search) |
+| Tier       | Model    | Agents | Use Case                                                                                        |
+| ---------- | -------- | ------ | ----------------------------------------------------------------------------------------------- |
+| **Tier 1** | Opus 4.5 | 42     | Critical architecture, security, ALL code review, production coding (language pros, frameworks) |
+| **Tier 2** | Inherit  | 42     | Complex tasks - user chooses model (AI/ML, backend, frontend/mobile, specialized)               |
+| **Tier 3** | Sonnet   | 51     | Support with intelligence (docs, testing, debugging, network, API docs, DX, legacy, payments)   |
+| **Tier 4** | Haiku    | 18     | Fast operational tasks (SEO, deployment, simple docs, sales, content, search)                   |
 
 **Why Opus 4.5 for Critical Agents?**
+
 - 80.9% on SWE-bench (industry-leading)
 - 65% fewer tokens for complex tasks
 - Best for architecture decisions and security audits
 
 **Tier 2 Flexibility (`inherit`):**
 Agents marked `inherit` use your session's default model, letting you balance cost and capability:
+
 - Set via `claude --model opus` or `claude --model sonnet` when starting a session
 - Falls back to Sonnet 4.5 if no default specified
 - Perfect for frontend/mobile developers who want cost control
 - AI/ML engineers can choose Opus for complex model work
 
 **Cost Considerations:**
+
 - **Opus 4.5**: $5/$25 per million input/output tokens - Premium for critical work
 - **Sonnet 4.5**: $3/$15 per million tokens - Balanced performance/cost
 - **Haiku 4.5**: $1/$5 per million tokens - Fast, cost-effective operations
@@ -186,6 +194,7 @@ Agents marked `inherit` use your session's default model, letting you balance co
 - Use `inherit` tier to control costs for high-volume use cases
 
 Orchestration patterns combine models for efficiency:
+
 ```
 Opus (architecture) → Sonnet (development) → Haiku (deployment)
 ```
@@ -219,6 +228,7 @@ Multi-agent security assessment with SAST, dependency scanning, and code review.
 ```
 
 Creates production-ready FastAPI project with async patterns, activating skills:
+
 - `async-python-patterns` - AsyncIO and concurrency
 - `python-testing-patterns` - pytest and fixtures
 - `uv-package-manager` - Fast dependency management
@@ -273,6 +283,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 ### Progressive Disclosure (Skills)
 
 Three-tier architecture for token efficiency:
+
 1. **Metadata** - Name and activation criteria (always loaded)
 2. **Instructions** - Core guidance (loaded when activated)
 3. **Resources** - Examples and templates (loaded on demand)
@@ -317,6 +328,7 @@ See [Architecture Documentation](docs/architecture.md) for detailed guidelines.
 ## Resources
 
 ### Documentation
+
 - [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code/overview)
 - [Plugins Guide](https://docs.claude.com/en/docs/claude-code/plugins)
 - [Subagents Guide](https://docs.claude.com/en/docs/claude-code/sub-agents)
@@ -324,6 +336,7 @@ See [Architecture Documentation](docs/architecture.md) for detailed guidelines.
 - [Slash Commands Reference](https://docs.claude.com/en/docs/claude-code/slash-commands)
 
 ### This Repository
+
 - [Plugin Reference](docs/plugins.md)
 - [Agent Reference](docs/agents.md)
 - [Agent Skills Guide](docs/agent-skills.md)

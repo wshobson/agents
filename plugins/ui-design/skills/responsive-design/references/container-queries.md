@@ -63,22 +63,30 @@ Container queries have excellent modern browser support (Chrome 105+, Firefox 11
 
 /* Minimum width */
 @container (min-width: 300px) {
-  .element { /* styles */ }
+  .element {
+    /* styles */
+  }
 }
 
 /* Maximum width */
 @container (max-width: 500px) {
-  .element { /* styles */ }
+  .element {
+    /* styles */
+  }
 }
 
 /* Range syntax */
 @container (300px <= width <= 600px) {
-  .element { /* styles */ }
+  .element {
+    /* styles */
+  }
 }
 
 /* Exact width */
 @container (width: 400px) {
-  .element { /* styles */ }
+  .element {
+    /* styles */
+  }
 }
 ```
 
@@ -87,17 +95,23 @@ Container queries have excellent modern browser support (Chrome 105+, Firefox 11
 ```css
 /* AND condition */
 @container (min-width: 400px) and (max-width: 800px) {
-  .element { /* styles */ }
+  .element {
+    /* styles */
+  }
 }
 
 /* OR condition */
 @container (max-width: 300px) or (min-width: 800px) {
-  .element { /* styles */ }
+  .element {
+    /* styles */
+  }
 }
 
 /* NOT condition */
 @container not (min-width: 400px) {
-  .element { /* styles */ }
+  .element {
+    /* styles */
+  }
 }
 ```
 
@@ -403,9 +417,7 @@ Style queries allow querying CSS custom property values. Currently limited suppo
 // Tailwind v3.2+ supports container queries
 // tailwind.config.js
 module.exports = {
-  plugins: [
-    require('@tailwindcss/container-queries'),
-  ],
+  plugins: [require("@tailwindcss/container-queries")],
 };
 
 // Component usage
@@ -437,13 +449,9 @@ function Dashboard() {
   return (
     <div className="@container/main">
       <aside className="@container/sidebar">
-        <nav className="flex flex-col @lg/sidebar:flex-row">
-          {/* ... */}
-        </nav>
+        <nav className="flex flex-col @lg/sidebar:flex-row">{/* ... */}</nav>
       </aside>
-      <main className="@lg/main:grid @lg/main:grid-cols-2">
-        {/* ... */}
-      </main>
+      <main className="@lg/main:grid @lg/main:grid-cols-2">{/* ... */}</main>
     </div>
   );
 }
@@ -506,10 +514,18 @@ function Dashboard() {
 ```css
 /* Avoid over-nesting containers */
 /* Bad: Too many nested containers */
-.level-1 { container-type: inline-size; }
-.level-2 { container-type: inline-size; }
-.level-3 { container-type: inline-size; }
-.level-4 { container-type: inline-size; }
+.level-1 {
+  container-type: inline-size;
+}
+.level-2 {
+  container-type: inline-size;
+}
+.level-3 {
+  container-type: inline-size;
+}
+.level-4 {
+  container-type: inline-size;
+}
 
 /* Good: Strategic container placement */
 .component-wrapper {
@@ -528,16 +544,16 @@ function Dashboard() {
 
 ```javascript
 // Test container query support
-const supportsContainerQueries = CSS.supports('container-type', 'inline-size');
+const supportsContainerQueries = CSS.supports("container-type", "inline-size");
 
 // Resize observer for testing
 const observer = new ResizeObserver((entries) => {
   for (const entry of entries) {
-    console.log('Container width:', entry.contentRect.width);
+    console.log("Container width:", entry.contentRect.width);
   }
 });
 
-observer.observe(document.querySelector('.container'));
+observer.observe(document.querySelector(".container"));
 ```
 
 ## Resources

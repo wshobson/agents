@@ -52,21 +52,27 @@ Skills activate automatically based on your questions:
 ### Commands
 
 **Market Opportunity Analysis:**
+
 ```bash
 /startup-business-analyst:market-opportunity
 ```
+
 Generates comprehensive market sizing with TAM/SAM/SOM breakdown.
 
 **Financial Projections:**
+
 ```bash
 /startup-business-analyst:financial-projections
 ```
+
 Creates 3-scenario financial model with revenue, costs, and runway.
 
 **Business Case:**
+
 ```bash
 /startup-business-analyst:business-case
 ```
+
 Produces investor-ready business case document.
 
 ### Agent Usage
@@ -84,6 +90,7 @@ The startup-analyst agent triggers automatically for business-related questions:
 ### Market Sizing Analysis
 
 Covers three methodologies:
+
 - **Top-down**: Industry reports and market research
 - **Bottom-up**: Customer segment calculations
 - **Value theory**: Problem value and willingness to pay
@@ -93,6 +100,7 @@ Includes templates for SaaS, marketplace, consumer, B2B, and fintech.
 ### Startup Financial Modeling
 
 Components:
+
 - Revenue projections (by customer segment)
 - Cost structure (COGS, S&M, R&D, G&A)
 - Cash flow and runway calculations
@@ -102,6 +110,7 @@ Components:
 ### Team Composition Analysis
 
 Covers:
+
 - Role-by-stage recommendations
 - Compensation benchmarks (US-focused)
 - Equity/options allocation strategies
@@ -111,6 +120,7 @@ Covers:
 ### Competitive Landscape
 
 Frameworks:
+
 - Porter's Five Forces
 - Blue Ocean Strategy
 - Positioning maps
@@ -120,6 +130,7 @@ Frameworks:
 ### Startup Metrics Framework
 
 Business model coverage:
+
 - **SaaS**: ARR, MRR, NRR, CAC, LTV, Magic Number
 - **Marketplace**: GMV, Take Rate, Liquidity
 - **Consumer**: DAU/MAU, Retention, Virality
@@ -134,6 +145,7 @@ Business model coverage:
 "Calculate TAM/SAM/SOM for an AI-powered email marketing tool for e-commerce"
 
 → Skill activates and provides:
+
 - TAM: Total email marketing software market
 - SAM: AI-powered tools for e-commerce segment
 - SOM: Realistic 3-5 year capture
@@ -148,6 +160,7 @@ Business model coverage:
 "Create a 3-year financial model for a SaaS product with $50/mo pricing"
 
 → Command generates:
+
 - Revenue by cohort
 - Cost structure breakdown
 - Headcount plan
@@ -162,6 +175,7 @@ Business model coverage:
 "Analyze competitors in the project management software space"
 
 → Agent provides:
+
 - Competitive landscape map
 - Feature comparison matrix
 - Pricing analysis

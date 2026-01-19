@@ -159,13 +159,13 @@ services.AddDbContext<AppDbContext>(options =>
             maxRetryCount: 3,
             maxRetryDelay: TimeSpan.FromSeconds(10),
             errorNumbersToAdd: null);
-        
+
         sqlOptions.CommandTimeout(30);
     });
-    
+
     // Performance settings
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    
+
     // Development only
     if (env.IsDevelopment())
     {
@@ -196,7 +196,7 @@ public class Product
 {
     public string Id { get; set; }
     public string Name { get; set; }
-    
+
     [Timestamp]
     public byte[] RowVersion { get; set; }  // SQL Server rowversion
 }
@@ -214,13 +214,13 @@ catch (DbUpdateConcurrencyException ex)
 {
     var entry = ex.Entries.Single();
     var databaseValues = await entry.GetDatabaseValuesAsync(ct);
-    
+
     if (databaseValues == null)
     {
         // Entity was deleted
         throw new NotFoundException("Product was deleted by another user");
     }
-    
+
     // Client wins - overwrite database values
     entry.OriginalValues.SetValues(databaseValues);
     await _context.SaveChangesAsync(ct);
@@ -237,12 +237,12 @@ try
     // Multiple operations
     _context.Orders.Add(order);
     await _context.SaveChangesAsync(ct);
-    
+
     await _context.OrderItems.AddRangeAsync(items, ct);
     await _context.SaveChangesAsync(ct);
-    
+
     await _paymentService.ProcessAsync(order.Id, ct);
-    
+
     await transaction.CommitAsync(ct);
 }
 catch
@@ -264,14 +264,14 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         // Unique index
         builder.HasIndex(p => p.Sku)
             .IsUnique();
-        
+
         // Composite index for common query patterns
         builder.HasIndex(p => new { p.CategoryId, p.Name });
-        
+
         // Filtered index (SQL Server)
         builder.HasIndex(p => p.Price)
             .HasFilter("[IsDeleted] = 0");
-        
+
         // Include columns for covering index
         builder.HasIndex(p => p.CategoryId)
             .IncludeProperties(p => new { p.Name, p.Price });
@@ -335,7 +335,7 @@ builder.HasIndex(p => p.FullName);
 services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-    
+
     options.LogTo(
         filter: (eventId, level) => eventId.Id == CoreEventId.QueryExecutionPlanned.Id,
         logger: (eventData) =>

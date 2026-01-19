@@ -39,51 +39,51 @@ Base styles → Variants → Sizes → States → Overrides
 
 ```typescript
 // tailwind.config.ts
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
-  darkMode: 'class',
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
         // Semantic color tokens
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        border: 'hsl(var(--border))',
-        ring: 'hsl(var(--ring))',
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        border: "hsl(var(--border))",
+        ring: "hsl(var(--ring))",
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
-}
+  plugins: [require("tailwindcss-animate")],
+};
 
-export default config
+export default config;
 ```
 
 ```css
@@ -625,26 +625,27 @@ export function ThemeToggle() {
 
 ```typescript
 // lib/utils.ts
-import { type ClassValue, clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 // Focus ring utility
 export const focusRing = cn(
-  'focus-visible:outline-none focus-visible:ring-2',
-  'focus-visible:ring-ring focus-visible:ring-offset-2'
-)
+  "focus-visible:outline-none focus-visible:ring-2",
+  "focus-visible:ring-ring focus-visible:ring-offset-2",
+);
 
 // Disabled utility
-export const disabled = 'disabled:pointer-events-none disabled:opacity-50'
+export const disabled = "disabled:pointer-events-none disabled:opacity-50";
 ```
 
 ## Best Practices
 
 ### Do's
+
 - **Use CSS variables** - Enable runtime theming
 - **Compose with CVA** - Type-safe variants
 - **Use semantic colors** - `primary` not `blue-500`
@@ -652,6 +653,7 @@ export const disabled = 'disabled:pointer-events-none disabled:opacity-50'
 - **Add accessibility** - ARIA attributes, focus states
 
 ### Don'ts
+
 - **Don't use arbitrary values** - Extend theme instead
 - **Don't nest @apply** - Hurts readability
 - **Don't skip focus states** - Keyboard users need them

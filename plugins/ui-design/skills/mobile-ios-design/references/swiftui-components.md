@@ -3,6 +3,7 @@
 ## Lists and Collections
 
 ### Basic List
+
 ```swift
 struct ItemListView: View {
     @State private var items: [Item] = []
@@ -32,6 +33,7 @@ struct ItemListView: View {
 ```
 
 ### Sectioned List
+
 ```swift
 struct SectionedListView: View {
     let groupedItems: [String: [Item]]
@@ -52,6 +54,7 @@ struct SectionedListView: View {
 ```
 
 ### Search Integration
+
 ```swift
 struct SearchableListView: View {
     @State private var searchText = ""
@@ -85,6 +88,7 @@ struct SearchableListView: View {
 ## Forms and Input
 
 ### Settings Form
+
 ```swift
 struct SettingsView: View {
     @AppStorage("notifications") private var notificationsEnabled = true
@@ -125,6 +129,7 @@ struct SettingsView: View {
 ```
 
 ### Custom Input Fields
+
 ```swift
 struct ValidatedTextField: View {
     let title: String
@@ -171,6 +176,7 @@ struct ValidatedTextField: View {
 ## Buttons and Actions
 
 ### Button Styles
+
 ```swift
 // Primary filled button
 Button("Continue") {
@@ -202,6 +208,7 @@ struct ScaleButtonStyle: ButtonStyle {
 ```
 
 ### Menu and Context Menu
+
 ```swift
 // Menu button
 Menu {
@@ -226,6 +233,7 @@ Text("Long press me")
 ## Sheets and Modals
 
 ### Sheet Presentation
+
 ```swift
 struct ParentView: View {
     @State private var showSettings = false
@@ -269,6 +277,7 @@ struct SettingsSheet: View {
 ```
 
 ### Confirmation Dialog
+
 ```swift
 struct DeleteConfirmationView: View {
     @State private var showConfirmation = false
@@ -296,6 +305,7 @@ struct DeleteConfirmationView: View {
 ## Loading and Progress
 
 ### Progress Indicators
+
 ```swift
 // Indeterminate spinner
 ProgressView()
@@ -334,6 +344,7 @@ struct LoadingOverlay: View {
 ```
 
 ### Skeleton Loading
+
 ```swift
 struct SkeletonRow: View {
     @State private var isAnimating = false
@@ -366,6 +377,7 @@ struct SkeletonRow: View {
 ## Async Content Loading
 
 ### AsyncImage
+
 ```swift
 AsyncImage(url: imageURL) { phase in
     switch phase {
@@ -387,6 +399,7 @@ AsyncImage(url: imageURL) { phase in
 ```
 
 ### Task-Based Loading
+
 ```swift
 struct AsyncContentView: View {
     @State private var items: [Item] = []
@@ -435,6 +448,7 @@ struct AsyncContentView: View {
 ## Animations
 
 ### Implicit Animations
+
 ```swift
 struct AnimatedCard: View {
     @State private var isExpanded = false
@@ -461,6 +475,7 @@ struct AnimatedCard: View {
 ```
 
 ### Custom Transitions
+
 ```swift
 extension AnyTransition {
     static var slideAndFade: AnyTransition {
@@ -477,6 +492,7 @@ extension AnyTransition {
 ```
 
 ### Phase Animator (iOS 17+)
+
 ```swift
 struct PulsingButton: View {
     var body: some View {
@@ -495,6 +511,7 @@ struct PulsingButton: View {
 ## Gestures
 
 ### Drag Gesture
+
 ```swift
 struct DraggableCard: View {
     @State private var offset = CGSize.zero
@@ -524,6 +541,7 @@ struct DraggableCard: View {
 ```
 
 ### Simultaneous Gestures
+
 ```swift
 struct ZoomableImage: View {
     @State private var scale: CGFloat = 1.0

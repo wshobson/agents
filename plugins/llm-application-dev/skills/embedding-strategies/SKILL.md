@@ -20,18 +20,18 @@ Guide to selecting and optimizing embedding models for vector search application
 
 ### 1. Embedding Model Comparison (2026)
 
-| Model | Dimensions | Max Tokens | Best For |
-|-------|------------|------------|----------|
-| **voyage-3-large** | 1024 | 32000 | Claude apps (Anthropic recommended) |
-| **voyage-3** | 1024 | 32000 | Claude apps, cost-effective |
-| **voyage-code-3** | 1024 | 32000 | Code search |
-| **voyage-finance-2** | 1024 | 32000 | Financial documents |
-| **voyage-law-2** | 1024 | 32000 | Legal documents |
-| **text-embedding-3-large** | 3072 | 8191 | OpenAI apps, high accuracy |
-| **text-embedding-3-small** | 1536 | 8191 | OpenAI apps, cost-effective |
-| **bge-large-en-v1.5** | 1024 | 512 | Open source, local deployment |
-| **all-MiniLM-L6-v2** | 384 | 256 | Fast, lightweight |
-| **multilingual-e5-large** | 1024 | 512 | Multi-language |
+| Model                      | Dimensions | Max Tokens | Best For                            |
+| -------------------------- | ---------- | ---------- | ----------------------------------- |
+| **voyage-3-large**         | 1024       | 32000      | Claude apps (Anthropic recommended) |
+| **voyage-3**               | 1024       | 32000      | Claude apps, cost-effective         |
+| **voyage-code-3**          | 1024       | 32000      | Code search                         |
+| **voyage-finance-2**       | 1024       | 32000      | Financial documents                 |
+| **voyage-law-2**           | 1024       | 32000      | Legal documents                     |
+| **text-embedding-3-large** | 3072       | 8191       | OpenAI apps, high accuracy          |
+| **text-embedding-3-small** | 1536       | 8191       | OpenAI apps, cost-effective         |
+| **bge-large-en-v1.5**      | 1024       | 512        | Open source, local deployment       |
+| **all-MiniLM-L6-v2**       | 384        | 256        | Fast, lightweight                   |
+| **multilingual-e5-large**  | 1024       | 512        | Multi-language                      |
 
 ### 2. Embedding Pipeline
 
@@ -583,6 +583,7 @@ def compare_embedding_models(
 ## Best Practices
 
 ### Do's
+
 - **Match model to use case**: Code vs prose vs multilingual
 - **Chunk thoughtfully**: Preserve semantic boundaries
 - **Normalize embeddings**: For cosine similarity search
@@ -591,6 +592,7 @@ def compare_embedding_models(
 - **Use Voyage AI for Claude apps**: Recommended by Anthropic
 
 ### Don'ts
+
 - **Don't ignore token limits**: Truncation loses information
 - **Don't mix embedding models**: Incompatible vector spaces
 - **Don't skip preprocessing**: Garbage in, garbage out

@@ -10,14 +10,14 @@ This plugin provides agents, skills, and patterns for building production-grade 
 
 ### Agents
 
-| Agent | Model | Description |
-|-------|-------|-------------|
+| Agent              | Model  | Description                                                                        |
+| ------------------ | ------ | ---------------------------------------------------------------------------------- |
 | `dotnet-architect` | Sonnet | Expert .NET architect for API development, code review, and architecture decisions |
 
 ### Skills
 
-| Skill | Description |
-|-------|-------------|
+| Skill                     | Description                                                                 |
+| ------------------------- | --------------------------------------------------------------------------- |
 | `dotnet-backend-patterns` | Comprehensive patterns for services, repositories, DI, caching, and testing |
 
 ### Assets
@@ -48,26 +48,29 @@ claude -p "Use dotnet-backend-patterns skill to implement a repository with Dapp
 ### Example Prompts
 
 1. **API Design**
+
    ```
-   Act as dotnet-architect. Design a REST API for order management with proper 
+   Act as dotnet-architect. Design a REST API for order management with proper
    DTOs, validation, and error handling.
    ```
 
 2. **Performance Review**
+
    ```
-   Act as dotnet-architect. Review this EF Core query for N+1 problems and 
+   Act as dotnet-architect. Review this EF Core query for N+1 problems and
    suggest optimizations.
    ```
 
 3. **Architecture Decision**
    ```
-   Act as dotnet-architect. Should I use EF Core or Dapper for this high-throughput 
+   Act as dotnet-architect. Should I use EF Core or Dapper for this high-throughput
    read scenario? Explain trade-offs.
    ```
 
 ## Topics Covered
 
 ### C# Language
+
 - Async/await patterns and pitfalls
 - LINQ optimization
 - Records and immutability
@@ -76,6 +79,7 @@ claude -p "Use dotnet-backend-patterns skill to implement a repository with Dapp
 - Memory-efficient programming
 
 ### ASP.NET Core
+
 - Minimal APIs and Controllers
 - Dependency Injection (Scoped, Singleton, Transient, Keyed)
 - Configuration with IOptions
@@ -84,6 +88,7 @@ claude -p "Use dotnet-backend-patterns skill to implement a repository with Dapp
 - Health checks
 
 ### Data Access
+
 - Entity Framework Core best practices
 - Dapper for high-performance queries
 - Repository pattern
@@ -92,6 +97,7 @@ claude -p "Use dotnet-backend-patterns skill to implement a repository with Dapp
 - Transaction handling
 
 ### Caching
+
 - IMemoryCache
 - IDistributedCache with Redis
 - Multi-level caching
@@ -99,6 +105,7 @@ claude -p "Use dotnet-backend-patterns skill to implement a repository with Dapp
 - Distributed locking
 
 ### Testing
+
 - xUnit fundamentals
 - Moq for mocking
 - Integration tests with WebApplicationFactory
@@ -106,18 +113,19 @@ claude -p "Use dotnet-backend-patterns skill to implement a repository with Dapp
 
 ## Stack Compatibility
 
-| Technology | Version |
-|------------|---------|
-| .NET | 8.0+ |
-| C# | 12+ |
-| ASP.NET Core | 8.0+ |
-| Entity Framework Core | 8.0+ |
-| SQL Server | 2019+ |
-| Redis | 6.0+ |
+| Technology            | Version |
+| --------------------- | ------- |
+| .NET                  | 8.0+    |
+| C#                    | 12+     |
+| ASP.NET Core          | 8.0+    |
+| Entity Framework Core | 8.0+    |
+| SQL Server            | 2019+   |
+| Redis                 | 6.0+    |
 
 ## Contributing
 
 Contributions welcome! Please ensure:
+
 - Code examples compile and follow C# conventions
 - Patterns are production-tested
 - Documentation is clear and includes examples

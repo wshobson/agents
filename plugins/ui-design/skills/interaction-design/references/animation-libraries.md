@@ -7,7 +7,7 @@ The most popular React animation library with declarative API.
 ### Basic Animations
 
 ```tsx
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 // Simple animation
 function FadeIn({ children }) {
@@ -29,7 +29,7 @@ function InteractiveCard() {
     <motion.div
       whileHover={{ scale: 1.02, y: -4 }}
       whileTap={{ scale: 0.98 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
       className="p-6 bg-white rounded-lg shadow"
     >
       Hover or tap me
@@ -44,9 +44,9 @@ function PulseButton() {
       animate={{
         scale: [1, 1.05, 1],
         boxShadow: [
-          '0 0 0 0 rgba(59, 130, 246, 0.5)',
-          '0 0 0 10px rgba(59, 130, 246, 0)',
-          '0 0 0 0 rgba(59, 130, 246, 0)',
+          "0 0 0 0 rgba(59, 130, 246, 0.5)",
+          "0 0 0 10px rgba(59, 130, 246, 0)",
+          "0 0 0 0 rgba(59, 130, 246, 0)",
         ],
       }}
       transition={{ duration: 2, repeat: Infinity }}
@@ -61,7 +61,7 @@ function PulseButton() {
 ### Layout Animations
 
 ```tsx
-import { motion, LayoutGroup } from 'framer-motion';
+import { motion, LayoutGroup } from "framer-motion";
 
 // Shared layout animation
 function TabIndicator({ activeTab, tabs }) {
@@ -78,7 +78,7 @@ function TabIndicator({ activeTab, tabs }) {
             <motion.div
               layoutId="activeTab"
               className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
-              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           )}
         </button>
@@ -131,11 +131,7 @@ const itemVariants = {
 
 function StaggeredList({ items }) {
   return (
-    <motion.ul
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <motion.ul variants={containerVariants} initial="hidden" animate="visible">
       {items.map((item) => (
         <motion.li key={item.id} variants={itemVariants}>
           {item.content}
@@ -149,8 +145,8 @@ function StaggeredList({ items }) {
 ### Page Transitions
 
 ```tsx
-import { AnimatePresence, motion } from 'framer-motion';
-import { useRouter } from 'next/router';
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 const pageVariants = {
   initial: { opacity: 0, x: -20 },
@@ -185,8 +181,8 @@ Industry-standard animation library for complex, performant animations.
 ### Basic Timeline
 
 ```tsx
-import { useRef, useLayoutEffect } from 'react';
-import gsap from 'gsap';
+import { useRef, useLayoutEffect } from "react";
+import gsap from "gsap";
 
 function AnimatedHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -195,7 +191,7 @@ function AnimatedHero() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
       tl.from(titleRef.current, {
         y: 50,
@@ -209,9 +205,9 @@ function AnimatedHero() {
             opacity: 0,
             duration: 0.6,
           },
-          '-=0.4' // Start 0.4s before previous ends
+          "-=0.4", // Start 0.4s before previous ends
         )
-        .from('.cta-button', {
+        .from(".cta-button", {
           scale: 0.8,
           opacity: 0,
           duration: 0.4,
@@ -234,9 +230,9 @@ function AnimatedHero() {
 ### ScrollTrigger
 
 ```tsx
-import { useLayoutEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -249,24 +245,24 @@ function ParallaxSection() {
       // Parallax image
       gsap.to(imageRef.current, {
         yPercent: -20,
-        ease: 'none',
+        ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
+          start: "top bottom",
+          end: "bottom top",
           scrub: true,
         },
       });
 
       // Fade in content
-      gsap.from('.content-block', {
+      gsap.from(".content-block", {
         opacity: 0,
         y: 50,
         stagger: 0.2,
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
-          end: 'top 20%',
+          start: "top 80%",
+          end: "top 20%",
           scrub: 1,
         },
       });
@@ -290,9 +286,9 @@ function ParallaxSection() {
 ### Text Animation
 
 ```tsx
-import { useLayoutEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { SplitText } from 'gsap/SplitText';
+import { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
 
 gsap.registerPlugin(SplitText);
 
@@ -301,8 +297,8 @@ function AnimatedHeadline({ text }) {
 
   useLayoutEffect(() => {
     const split = new SplitText(textRef.current, {
-      type: 'chars,words',
-      charsClass: 'char',
+      type: "chars,words",
+      charsClass: "char",
     });
 
     gsap.from(split.chars, {
@@ -311,7 +307,7 @@ function AnimatedHeadline({ text }) {
       rotateX: -90,
       stagger: 0.02,
       duration: 0.8,
-      ease: 'back.out(1.7)',
+      ease: "back.out(1.7)",
     });
 
     return () => split.revert();
@@ -362,7 +358,7 @@ Native browser animation API for simple animations.
 function useWebAnimation(
   ref: RefObject<HTMLElement>,
   keyframes: Keyframe[],
-  options: KeyframeAnimationOptions
+  options: KeyframeAnimationOptions,
 ) {
   useEffect(() => {
     if (!ref.current) return;
@@ -380,14 +376,14 @@ function SlideIn({ children }) {
   useWebAnimation(
     elementRef,
     [
-      { transform: 'translateX(-100%)', opacity: 0 },
-      { transform: 'translateX(0)', opacity: 1 },
+      { transform: "translateX(-100%)", opacity: 0 },
+      { transform: "translateX(0)", opacity: 1 },
     ],
     {
       duration: 300,
-      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-      fill: 'forwards',
-    }
+      easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+      fill: "forwards",
+    },
   );
 
   return <div ref={elementRef}>{children}</div>;
@@ -400,7 +396,7 @@ Native browser API for page transitions.
 
 ```tsx
 // Check support
-const supportsViewTransitions = 'startViewTransition' in document;
+const supportsViewTransitions = "startViewTransition" in document;
 
 // Simple page transition
 async function navigateTo(url: string) {
@@ -456,7 +452,9 @@ function ProductCard({ product }) {
 
 /* Only animate transform and opacity for 60fps */
 .smooth {
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 /* Avoid animating these (cause reflow) */
@@ -472,12 +470,12 @@ function useReducedMotion() {
   const [prefersReduced, setPrefersReduced] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReduced(mq.matches);
 
     const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
   }, []);
 
   return prefersReduced;

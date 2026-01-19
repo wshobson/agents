@@ -129,9 +129,15 @@ Design tokens are the atomic values of a design system - the smallest pieces tha
 {
   "shadow": {
     "sm": { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
-    "md": { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)" },
-    "lg": { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)" },
-    "xl": { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }
+    "md": {
+      "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
+    },
+    "lg": {
+      "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)"
+    },
+    "xl": {
+      "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+    }
   },
   "radius": {
     "none": { "value": "0" },
@@ -302,13 +308,13 @@ Examples:
 ### Style Dictionary Transforms
 
 ```javascript
-const StyleDictionary = require('style-dictionary');
+const StyleDictionary = require("style-dictionary");
 
 // Custom transform for px to rem
 StyleDictionary.registerTransform({
-  name: 'size/pxToRem',
-  type: 'value',
-  matcher: (token) => token.attributes.category === 'size',
+  name: "size/pxToRem",
+  type: "value",
+  matcher: (token) => token.attributes.category === "size",
   transformer: (token) => {
     const value = parseFloat(token.value);
     return `${value / 16}rem`;
@@ -317,14 +323,14 @@ StyleDictionary.registerTransform({
 
 // Custom format for CSS custom properties
 StyleDictionary.registerFormat({
-  name: 'css/customProperties',
-  formatter: function({ dictionary, options }) {
-    const tokens = dictionary.allTokens.map(token => {
-      const name = token.name.replace(/\./g, '-');
+  name: "css/customProperties",
+  formatter: function ({ dictionary, options }) {
+    const tokens = dictionary.allTokens.map((token) => {
+      const name = token.name.replace(/\./g, "-");
       return `  --${name}: ${token.value};`;
     });
 
-    return `:root {\n${tokens.join('\n')}\n}`;
+    return `:root {\n${tokens.join("\n")}\n}`;
   },
 });
 ```
@@ -399,10 +405,10 @@ interface TokenValidation {
 function validateContrast(
   foreground: string,
   background: string,
-  level: 'AA' | 'AAA' = 'AA'
+  level: "AA" | "AAA" = "AA",
 ): boolean {
   const ratio = getContrastRatio(foreground, background);
-  return level === 'AA' ? ratio >= 4.5 : ratio >= 7;
+  return level === "AA" ? ratio >= 4.5 : ratio >= 7;
 }
 ```
 

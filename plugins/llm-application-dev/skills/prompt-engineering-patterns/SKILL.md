@@ -21,6 +21,7 @@ Master advanced prompt engineering techniques to maximize LLM performance, relia
 ## Core Capabilities
 
 ### 1. Few-Shot Learning
+
 - Example selection strategies (semantic similarity, diversity sampling)
 - Balancing example count with context window constraints
 - Constructing effective demonstrations with input-output pairs
@@ -28,6 +29,7 @@ Master advanced prompt engineering techniques to maximize LLM performance, relia
 - Handling edge cases through strategic example selection
 
 ### 2. Chain-of-Thought Prompting
+
 - Step-by-step reasoning elicitation
 - Zero-shot CoT with "Let's think step by step"
 - Few-shot CoT with reasoning traces
@@ -35,12 +37,14 @@ Master advanced prompt engineering techniques to maximize LLM performance, relia
 - Verification and validation steps
 
 ### 3. Structured Outputs
+
 - JSON mode for reliable parsing
 - Pydantic schema enforcement
 - Type-safe response handling
 - Error handling for malformed outputs
 
 ### 4. Prompt Optimization
+
 - Iterative refinement workflows
 - A/B testing prompt variations
 - Measuring prompt performance metrics (accuracy, consistency, latency)
@@ -48,6 +52,7 @@ Master advanced prompt engineering techniques to maximize LLM performance, relia
 - Handling edge cases and failure modes
 
 ### 5. Template Systems
+
 - Variable interpolation and formatting
 - Conditional prompt sections
 - Multi-turn conversation templates
@@ -55,6 +60,7 @@ Master advanced prompt engineering techniques to maximize LLM performance, relia
 - Modular prompt components
 
 ### 6. System Prompt Design
+
 - Setting model behavior and constraints
 - Defining output formats and structure
 - Establishing role and expertise
@@ -395,6 +401,7 @@ Response:"""
 ## Performance Optimization
 
 ### Token Efficiency
+
 ```python
 # Before: Verbose prompt (150+ tokens)
 verbose_prompt = """
@@ -457,6 +464,7 @@ response = client.messages.create(
 ## Success Metrics
 
 Track these KPIs for your prompts:
+
 - **Accuracy**: Correctness of outputs
 - **Consistency**: Reproducibility across similar inputs
 - **Latency**: Response time (P50, P95, P99)

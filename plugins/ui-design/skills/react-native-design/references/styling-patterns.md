@@ -5,7 +5,7 @@
 ### Creating Styles
 
 ```typescript
-import { StyleSheet, ViewStyle, TextStyle, ImageStyle } from 'react-native';
+import { StyleSheet, ViewStyle, TextStyle, ImageStyle } from "react-native";
 
 // Typed styles for better IDE support
 interface Styles {
@@ -18,12 +18,12 @@ const styles = StyleSheet.create<Styles>({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
-    color: '#1f2937',
+    fontWeight: "700",
+    color: "#1f2937",
   },
   image: {
     width: 100,
@@ -425,13 +425,10 @@ export function Spacer({ size, flex }: SpacerProps) {
 ### Cross-Platform Shadows
 
 ```typescript
-import { Platform, ViewStyle } from 'react-native';
+import { Platform, ViewStyle } from "react-native";
 
-export function createShadow(
-  elevation: number,
-  color = '#000000'
-): ViewStyle {
-  if (Platform.OS === 'android') {
+export function createShadow(elevation: number, color = "#000000"): ViewStyle {
+  if (Platform.OS === "android") {
     return { elevation };
   }
 
@@ -483,7 +480,7 @@ export const shadows = {
 // Usage
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 16,
     ...shadows.md,

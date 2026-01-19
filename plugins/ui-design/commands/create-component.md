@@ -24,6 +24,7 @@ Guided workflow for creating new UI components following established patterns an
    - Check for existing component conventions
 
 4. If no framework detected:
+
    ```
    I couldn't detect a UI framework. What are you using?
 
@@ -278,6 +279,7 @@ export interface {ComponentName}Props extends HTMLAttributes<HTMLDivElement> {
 Based on styling approach:
 
 **CSS Modules:**
+
 ```css
 /* {ComponentName}.styles.module.css */
 .root {
@@ -294,6 +296,7 @@ Based on styling approach:
 ```
 
 **Tailwind:**
+
 ```tsx
 // Inline in component
 className={cn(

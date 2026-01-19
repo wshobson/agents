@@ -21,24 +21,28 @@ Master modern responsive design techniques to create interfaces that adapt seaml
 ## Core Capabilities
 
 ### 1. Container Queries
+
 - Component-level responsiveness independent of viewport
 - Container query units (cqi, cqw, cqh)
 - Style queries for conditional styling
 - Fallbacks for browser support
 
 ### 2. Fluid Typography & Spacing
+
 - CSS clamp() for fluid scaling
 - Viewport-relative units (vw, vh, dvh)
 - Fluid type scales with min/max bounds
 - Responsive spacing systems
 
 ### 3. Layout Patterns
+
 - CSS Grid for 2D layouts
 - Flexbox for 1D distribution
 - Intrinsic layouts (content-based sizing)
 - Subgrid for nested grid alignment
 
 ### 4. Breakpoint Strategy
+
 - Mobile-first media queries
 - Content-based breakpoints
 - Design token integration
@@ -51,11 +55,21 @@ Master modern responsive design techniques to create interfaces that adapt seaml
 ```css
 /* Mobile-first breakpoints */
 /* Base: Mobile (< 640px) */
-@media (min-width: 640px) { /* sm: Landscape phones, small tablets */ }
-@media (min-width: 768px) { /* md: Tablets */ }
-@media (min-width: 1024px) { /* lg: Laptops, small desktops */ }
-@media (min-width: 1280px) { /* xl: Desktops */ }
-@media (min-width: 1536px) { /* 2xl: Large desktops */ }
+@media (min-width: 640px) {
+  /* sm: Landscape phones, small tablets */
+}
+@media (min-width: 768px) {
+  /* md: Tablets */
+}
+@media (min-width: 1024px) {
+  /* lg: Laptops, small desktops */
+}
+@media (min-width: 1280px) {
+  /* xl: Desktops */
+}
+@media (min-width: 1536px) {
+  /* 2xl: Large desktops */
+}
 
 /* Tailwind CSS equivalent */
 /* sm:  @media (min-width: 640px) */
@@ -148,10 +162,18 @@ function ResponsiveCard({ title, image, description }) {
 }
 
 /* Usage */
-h1 { font-size: var(--text-4xl); }
-h2 { font-size: var(--text-3xl); }
-h3 { font-size: var(--text-2xl); }
-p { font-size: var(--text-base); }
+h1 {
+  font-size: var(--text-4xl);
+}
+h2 {
+  font-size: var(--text-3xl);
+}
+h3 {
+  font-size: var(--text-2xl);
+}
+p {
+  font-size: var(--text-base);
+}
 
 /* Fluid spacing scale */
 :root {
@@ -165,7 +187,12 @@ p { font-size: var(--text-base); }
 
 ```tsx
 // Utility function for fluid values
-function fluidValue(minSize: number, maxSize: number, minWidth = 320, maxWidth = 1280) {
+function fluidValue(
+  minSize: number,
+  maxSize: number,
+  minWidth = 320,
+  maxWidth = 1280,
+) {
   const slope = (maxSize - minSize) / (maxWidth - minWidth);
   const yAxisIntersection = -minWidth * slope + minSize;
 
@@ -178,7 +205,7 @@ const fluidTypeScale = {
   base: fluidValue(1, 1.125),
   lg: fluidValue(1.25, 1.5),
   xl: fluidValue(1.5, 2),
-  '2xl': fluidValue(2, 3),
+  "2xl": fluidValue(2, 3),
 };
 ```
 
@@ -230,19 +257,23 @@ const fluidTypeScale = {
   }
 }
 
-.header { grid-area: header; }
-.main { grid-area: main; }
-.sidebar { grid-area: sidebar; }
-.footer { grid-area: footer; }
+.header {
+  grid-area: header;
+}
+.main {
+  grid-area: main;
+}
+.sidebar {
+  grid-area: sidebar;
+}
+.footer {
+  grid-area: footer;
+}
 ```
 
 ```tsx
 // Responsive grid component
-function ResponsiveGrid({
-  children,
-  minItemWidth = '250px',
-  gap = '1.5rem',
-}) {
+function ResponsiveGrid({ children, minItemWidth = "250px", gap = "1.5rem" }) {
   return (
     <div
       className="grid"
@@ -292,12 +323,12 @@ function ResponsiveNav({ items }) {
         id="nav-menu"
         className={cn(
           // Base: hidden on mobile
-          'absolute top-full left-0 right-0 bg-background border-b',
-          'flex flex-col',
+          "absolute top-full left-0 right-0 bg-background border-b",
+          "flex flex-col",
           // Mobile: slide down
-          isOpen ? 'flex' : 'hidden',
+          isOpen ? "flex" : "hidden",
           // Desktop: always visible, horizontal
-          'lg:static lg:flex lg:flex-row lg:border-0 lg:bg-transparent'
+          "lg:static lg:flex lg:flex-row lg:border-0 lg:bg-transparent",
         )}
       >
         {items.map((item) => (
@@ -305,9 +336,9 @@ function ResponsiveNav({ items }) {
             <a
               href={item.href}
               className={cn(
-                'block px-4 py-3',
-                'lg:px-3 lg:py-2',
-                'hover:bg-muted lg:hover:bg-transparent lg:hover:text-primary'
+                "block px-4 py-3",
+                "lg:px-3 lg:py-2",
+                "hover:bg-muted lg:hover:bg-transparent lg:hover:text-primary",
               )}
             >
               {item.label}
