@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "Production-ready workflow orchestration with 68 focused plugins, 102 specialized agents, and 116 skills - optimized for granular installation and minimal token usage",
-    "version": "1.3.5"
+    "version": "1.3.6"
   },
   "plugins": [
     {
@@ -340,50 +340,16 @@
     },
     {
       "name": "llm-application-dev",
-      "source": "./plugins/llm-application-dev",
       "description": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures for Claude 4.5 and GPT-5.2",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "author": {
         "name": "Seth Hobson",
-        "url": "https://github.com/wshobson"
+        "email": "seth@major7apps.com"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
-      "license": "MIT",
-      "keywords": [
-        "llm",
-        "ai",
-        "prompt-engineering",
-        "langchain",
-        "langgraph",
-        "rag",
-        "vector-search",
-        "voyage-ai",
-        "gpt",
-        "claude"
-      ],
+      "source": "./plugins/llm-application-dev",
       "category": "ai-ml",
-      "strict": false,
-      "commands": [
-        "./commands/langchain-agent.md",
-        "./commands/ai-assistant.md",
-        "./commands/prompt-optimize.md"
-      ],
-      "agents": [
-        "./agents/ai-engineer.md",
-        "./agents/prompt-engineer.md",
-        "./agents/vector-database-engineer.md"
-      ],
-      "skills": [
-        "./skills/langchain-architecture",
-        "./skills/llm-evaluation",
-        "./skills/prompt-engineering-patterns",
-        "./skills/rag-implementation",
-        "./skills/embedding-strategies",
-        "./skills/similarity-search-patterns",
-        "./skills/vector-index-tuning",
-        "./skills/hybrid-search-implementation"
-      ]
+      "homepage": "https://github.com/wshobson/agents",
+      "license": "MIT"
     },
     {
       "name": "agent-orchestration",
