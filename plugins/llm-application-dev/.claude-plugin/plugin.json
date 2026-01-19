@@ -1,6 +1,6 @@
 {
   "name": "llm-application-dev",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures. Updated for LangChain 1.x, Claude 4.5, and GPT-5.2.",
   "author": {
     "name": "Seth Hobson",

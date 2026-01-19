@@ -144,7 +144,7 @@ Specialized knowledge packages following Anthropic's progressive disclosure arch
 
 **Development & Architecture:**
 - **Backend** (3 skills): API design, architecture patterns, microservices
-- **LLM Applications** (4 skills): LangChain, prompt engineering, RAG, evaluation
+- **LLM Applications** (8 skills): LangGraph, prompt engineering, RAG, evaluation, embeddings, similarity search, vector tuning, hybrid search
 
 **Blockchain & Web3** (4 skills): DeFi protocols, NFT standards, Solidity security, Web3 testing
 

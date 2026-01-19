@@ -1,3 +1,8 @@
+---
+description: "Create LangGraph-based agent with modern patterns"
+argument-hint: "<agent-type> [options]"
+---
+
 # LangChain/LangGraph Agent Development Expert
 
 You are an expert LangChain agent developer specializing in production-grade AI systems using LangChain 0.1+ and LangGraph.
