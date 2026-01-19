@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "Production-ready workflow orchestration with 68 focused plugins, 102 specialized agents, and 116 skills - optimized for granular installation and minimal token usage",
-    "version": "1.3.6"
+    "version": "1.3.7"
   },
   "plugins": [
     {
@@ -1907,53 +1907,16 @@
     },
     {
       "name": "ui-design",
-      "source": "./plugins/ui-design",
-      "description": "Comprehensive UI/UX design plugin covering mobile (iOS, Android, React Native) and web applications with design systems, accessibility, responsive design, and modern patterns",
-      "version": "1.0.0",
+      "description": "Comprehensive UI/UX design plugin for mobile (iOS, Android, React Native) and web applications with design systems, accessibility, and modern patterns",
+      "version": "1.0.1",
       "author": {
         "name": "Seth Hobson",
-        "url": "https://github.com/wshobson"
+        "email": "seth@major7apps.com"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
-      "license": "MIT",
-      "keywords": [
-        "ui",
-        "ux",
-        "design-system",
-        "accessibility",
-        "wcag",
-        "ios",
-        "android",
-        "react-native",
-        "responsive",
-        "mobile",
-        "web"
-      ],
+      "source": "./plugins/ui-design",
       "category": "development",
-      "strict": false,
-      "commands": [
-        "./commands/design-review.md",
-        "./commands/create-component.md",
-        "./commands/accessibility-audit.md",
-        "./commands/design-system-setup.md"
-      ],
-      "agents": [
-        "./agents/ui-designer.md",
-        "./agents/accessibility-expert.md",
-        "./agents/design-system-architect.md"
-      ],
-      "skills": [
-        "./skills/design-system-patterns",
-        "./skills/accessibility-compliance",
-        "./skills/responsive-design",
-        "./skills/mobile-ios-design",
-        "./skills/mobile-android-design",
-        "./skills/react-native-design",
-        "./skills/web-component-design",
-        "./skills/interaction-design",
-        "./skills/visual-design-foundations"
-      ]
+      "homepage": "https://github.com/wshobson/agents",
+      "license": "MIT"
     }
   ]
 }
