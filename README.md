@@ -4,17 +4,17 @@
 
 [![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
 
-> **🎯 Agent Skills Enabled** — 110 specialized skills extend Claude's capabilities across plugins with progressive disclosure
+> **🎯 Agent Skills Enabled** — 116 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **100 specialized AI agents**, **15 multi-agent workflow orchestrators**, **110 agent skills**, and **76 development tools** organized into **68 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **102 specialized AI agents**, **15 multi-agent workflow orchestrators**, **116 agent skills**, and **76 development tools** organized into **68 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
 - **68 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
-- **100 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
-- **110 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
+- **102 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
+- **116 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **15 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
 - **76 Development Tools** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
 
@@ -23,7 +23,7 @@ This unified repository provides everything needed for intelligent automation an
 - **Granular Plugin Architecture**: 68 focused plugins optimized for minimal token usage
 - **Comprehensive Tooling**: 76 development tools including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
-- **Agent Skills**: 110 specialized skills following for progressive disclosure and token efficiency
+- **Agent Skills**: 116 specialized skills following for progressive disclosure and token efficiency
 - **Clear Organization**: 23 categories with 1-6 plugins each for easy discovery
 - **Efficient Design**: Average 3.4 components per plugin (follows Anthropic's 2-8 pattern)
 
@@ -114,8 +114,8 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 ### Core Guides
 
 - **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 68 plugins
-- **[Agent Reference](docs/agents.md)** - All 100 agents organized by category
-- **[Agent Skills](docs/agent-skills.md)** - 110 specialized skills with progressive disclosure
+- **[Agent Reference](docs/agents.md)** - All 102 agents organized by category
+- **[Agent Skills](docs/agent-skills.md)** - 116 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
 - **[Architecture](docs/architecture.md)** - Design principles and patterns
 
@@ -129,7 +129,7 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ## What's New
 
-### Agent Skills (110 skills across 19 plugins)
+### Agent Skills (116 skills across 20 plugins)
 
 Specialized knowledge packages following Anthropic's progressive disclosure architecture:
 
@@ -268,7 +268,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 - **Single responsibility** - Each plugin does one thing well
 - **Minimal token usage** - Average 3.4 components per plugin
 - **Composable** - Mix and match for complex workflows
-- **100% coverage** - All 100 agents accessible across plugins
+- **100% coverage** - All 102 agents accessible across plugins
 
 ### Progressive Disclosure (Skills)
 
