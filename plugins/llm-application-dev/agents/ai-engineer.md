@@ -38,7 +38,7 @@ Expert AI engineer specializing in LLM application development, RAG systems, and
 
 - LangGraph (LangChain 1.x) for complex agent workflows with StateGraph and durable execution
 - LlamaIndex for data-centric AI applications and advanced retrieval
-- CrewAI for multi-agent collaboration and specialized agent roles
+- CrewAI for multi-agent collaboration, specialized agent roles, and complex workflow orchestration via Flows with built-in state management
 - AutoGen for conversational multi-agent systems
 - Claude Agent SDK for building production Anthropic agents
 - Agent memory systems: checkpointers, short-term, long-term, and vector-based memory
