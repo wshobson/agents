@@ -37,7 +37,7 @@ Each plugin is completely isolated with its own agents, commands, and skills:
 - **Clear boundaries** - Each plugin has a single, focused purpose
 - **Progressive disclosure** - Skills load knowledge only when activated
 
-**Example**: Installing `python-development` loads 3 Python agents, 1 scaffolding tool, and makes 5 skills available (~300 tokens), not the entire marketplace.
+**Example**: Installing `python-development` loads 3 Python agents, 1 scaffolding tool, and makes 16 skills available (~1000 tokens), not the entire marketplace.
 
 ## Quick Start
 
@@ -63,7 +63,7 @@ Install the plugins you need:
 
 ```bash
 # Essential development plugins
-/plugin install python-development          # Python with 5 specialized skills
+/plugin install python-development          # Python with 16 specialized skills
 /plugin install javascript-typescript       # JS/TS with 4 specialized skills
 /plugin install backend-development         # Backend APIs with 3 architecture skills
 
@@ -130,7 +130,7 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ## What's New
 
-### Agent Skills (129 skills across 20 plugins)
+### Agent Skills (140 skills across 20 plugins)
 
 Specialized knowledge packages following Anthropic's progressive disclosure architecture:
 

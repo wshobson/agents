@@ -618,6 +618,52 @@ def test_sorted_list_properties(lst):
         assert sorted_lst[i] <= sorted_lst[i + 1]
 ```
 
+## Test Design Principles
+
+### One Behavior Per Test
+
+Each test should verify exactly one behavior. This makes failures easy to diagnose and tests easy to maintain.
+
+```python
+# BAD - testing multiple behaviors
+def test_user_service():
+    user = service.create_user(data)
+    assert user.id is not None
+    assert user.email == data["email"]
+    updated = service.update_user(user.id, {"name": "New"})
+    assert updated.name == "New"
+
+# GOOD - focused tests
+def test_create_user_assigns_id():
+    user = service.create_user(data)
+    assert user.id is not None
+
+def test_create_user_stores_email():
+    user = service.create_user(data)
+    assert user.email == data["email"]
+
+def test_update_user_changes_name():
+    user = service.create_user(data)
+    updated = service.update_user(user.id, {"name": "New"})
+    assert updated.name == "New"
+```
+
+### Test Error Paths
+
+Always test failure cases, not just happy paths.
+
+```python
+def test_get_user_raises_not_found():
+    with pytest.raises(UserNotFoundError) as exc_info:
+        service.get_user("nonexistent-id")
+
+    assert "nonexistent-id" in str(exc_info.value)
+
+def test_create_user_rejects_invalid_email():
+    with pytest.raises(ValueError, match="Invalid email format"):
+        service.create_user({"email": "not-an-email"})
+```
+
 ## Testing Best Practices
 
 ### Test Organization
@@ -636,36 +682,129 @@ def test_sorted_list_properties(lst):
 #     test_workflows.py
 ```
 
-### Test Naming
+### Test Naming Convention
+
+A common pattern: `test_<unit>_<scenario>_<expected_outcome>`. Adapt to your team's preferences.
 
 ```python
-# Good test names
+# Pattern: test_<unit>_<scenario>_<expected>
+def test_create_user_with_valid_data_returns_user():
+    ...
+
+def test_create_user_with_duplicate_email_raises_conflict():
+    ...
+
+def test_get_user_with_unknown_id_returns_none():
+    ...
+
+# Good test names - clear and descriptive
 def test_user_creation_with_valid_data():
     """Clear name describes what is being tested."""
     pass
-
 
 def test_login_fails_with_invalid_password():
     """Name describes expected behavior."""
     pass
 
-
 def test_api_returns_404_for_missing_resource():
     """Specific about inputs and expected outcomes."""
     pass
 
-
-# Bad test names
+# Bad test names - avoid these
 def test_1():  # Not descriptive
     pass
-
 
 def test_user():  # Too vague
     pass
 
-
 def test_function():  # Doesn't explain what's tested
     pass
+```
+
+### Testing Retry Behavior
+
+Verify that retry logic works correctly using mock side effects.
+
+```python
+from unittest.mock import Mock
+
+def test_retries_on_transient_error():
+    """Test that service retries on transient failures."""
+    client = Mock()
+    # Fail twice, then succeed
+    client.request.side_effect = [
+        ConnectionError("Failed"),
+        ConnectionError("Failed"),
+        {"status": "ok"},
+    ]
+
+    service = ServiceWithRetry(client, max_retries=3)
+    result = service.fetch()
+
+    assert result == {"status": "ok"}
+    assert client.request.call_count == 3
+
+def test_gives_up_after_max_retries():
+    """Test that service stops retrying after max attempts."""
+    client = Mock()
+    client.request.side_effect = ConnectionError("Failed")
+
+    service = ServiceWithRetry(client, max_retries=3)
+
+    with pytest.raises(ConnectionError):
+        service.fetch()
+
+    assert client.request.call_count == 3
+
+def test_does_not_retry_on_permanent_error():
+    """Test that permanent errors are not retried."""
+    client = Mock()
+    client.request.side_effect = ValueError("Invalid input")
+
+    service = ServiceWithRetry(client, max_retries=3)
+
+    with pytest.raises(ValueError):
+        service.fetch()
+
+    # Only called once - no retry for ValueError
+    assert client.request.call_count == 1
+```
+
+### Mocking Time with Freezegun
+
+Use freezegun to control time in tests for predictable time-dependent behavior.
+
+```python
+from freezegun import freeze_time
+from datetime import datetime, timedelta
+
+@freeze_time("2026-01-15 10:00:00")
+def test_token_expiry():
+    """Test token expires at correct time."""
+    token = create_token(expires_in_seconds=3600)
+    assert token.expires_at == datetime(2026, 1, 15, 11, 0, 0)
+
+@freeze_time("2026-01-15 10:00:00")
+def test_is_expired_returns_false_before_expiry():
+    """Test token is not expired when within validity period."""
+    token = create_token(expires_in_seconds=3600)
+    assert not token.is_expired()
+
+@freeze_time("2026-01-15 12:00:00")
+def test_is_expired_returns_true_after_expiry():
+    """Test token is expired after validity period."""
+    token = Token(expires_at=datetime(2026, 1, 15, 11, 30, 0))
+    assert token.is_expired()
+
+def test_with_time_travel():
+    """Test behavior across time using freeze_time context."""
+    with freeze_time("2026-01-01") as frozen_time:
+        item = create_item()
+        assert item.created_at == datetime(2026, 1, 1)
+
+        # Move forward in time
+        frozen_time.move_to("2026-01-15")
+        assert item.age_days == 14
 ```
 
 ### Test Markers

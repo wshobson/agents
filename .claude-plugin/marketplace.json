@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 72 focused plugins, 108 specialized agents, and 129 skills - optimized for granular installation and minimal token usage",
+    "description": "Production-ready workflow orchestration with 72 focused plugins, 108 specialized agents, and 140 skills - optimized for granular installation and minimal token usage",
     "version": "1.3.7"
   },
   "plugins": [
@@ -1611,7 +1611,18 @@
         "./skills/python-testing-patterns",
         "./skills/python-packaging",
         "./skills/python-performance-optimization",
-        "./skills/uv-package-manager"
+        "./skills/uv-package-manager",
+        "./skills/python-type-safety",
+        "./skills/python-code-style",
+        "./skills/python-observability",
+        "./skills/python-project-structure",
+        "./skills/python-design-patterns",
+        "./skills/python-error-handling",
+        "./skills/python-configuration",
+        "./skills/python-resilience",
+        "./skills/python-resource-management",
+        "./skills/python-background-jobs",
+        "./skills/python-anti-patterns"
       ]
     },
     {
