@@ -1917,6 +1917,33 @@
       "category": "development",
       "homepage": "https://github.com/wshobson/agents",
       "license": "MIT"
+    },
+    {
+      "name": "webapp-testing",
+      "source": "./plugins/webapp-testing",
+      "description": "AI-powered web application testing with ScoutQA for exploratory testing, accessibility audits, e-commerce flows, and user flow validation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "url": "https://github.com/wshobson"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "repository": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "keywords": [
+        "testing",
+        "qa",
+        "exploratory-testing",
+        "accessibility",
+        "e2e",
+        "scoutqa",
+        "automation"
+      ],
+      "category": "testing",
+      "strict": false,
+      "commands": [],
+      "agents": [],
+      "skills": ["./skills/scoutqa-test"]
     }
   ]
 }
