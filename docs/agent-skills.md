@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **129 specialized skills** across 27 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **130 specialized skills** across 28 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -262,6 +262,12 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **track-management**           | Manage development tracks for features, bugs, chores, and refactors with specs and implementation plans |
 | **workflow-patterns**          | Implement TDD workflows, commit strategies, and verification checkpoints for systematic development     |
 
+### Web Application Testing (1 skill)
+
+| Skill            | Description                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------- |
+| **scoutqa-test** | AI-powered exploratory testing for web applications including smoke tests, accessibility audits, and e2e flows |
+
 ## How Skills Work
 
 ### Activation
@@ -306,7 +312,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 107 skills follow the [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md):
+All 130 skills follow the [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause
