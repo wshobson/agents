@@ -3,20 +3,17 @@
 ## Installation Methods
 
 ### 1. Standard Installation
-
 ```bash
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
 ### 2. High Availability Installation
-
 ```bash
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/ha/install.yaml
 ```
 
 ### 3. Helm Installation
-
 ```bash
 helm repo add argo https://argoproj.github.io/argo-helm
 helm install argocd argo/argo-cd -n argocd --create-namespace
@@ -25,7 +22,6 @@ helm install argocd argo/argo-cd -n argocd --create-namespace
 ## Initial Configuration
 
 ### Access ArgoCD UI
-
 ```bash
 # Port forward
 kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -35,7 +31,6 @@ argocd admin initial-password -n argocd
 ```
 
 ### Configure Ingress
-
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -49,38 +44,35 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: argocd.example.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: argocd-server
-                port:
-                  number: 443
+  - host: argocd.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 443
   tls:
-    - hosts:
-        - argocd.example.com
-      secretName: argocd-secret
+  - hosts:
+    - argocd.example.com
+    secretName: argocd-secret
 ```
 
 ## CLI Configuration
 
 ### Login
-
 ```bash
 argocd login argocd.example.com --username admin
 ```
 
 ### Add Repository
-
 ```bash
 argocd repo add https://github.com/org/repo --username user --password token
 ```
 
 ### Create Application
-
 ```bash
 argocd app create my-app \
   --repo https://github.com/org/repo \
@@ -92,7 +84,6 @@ argocd app create my-app \
 ## SSO Configuration
 
 ### GitHub OAuth
-
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -114,7 +105,6 @@ data:
 ```
 
 ## RBAC Configuration
-
 ```yaml
 apiVersion: v1
 kind: ConfigMap

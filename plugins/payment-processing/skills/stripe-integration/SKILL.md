@@ -20,33 +20,25 @@ Master Stripe payment processing integration for robust, PCI-compliant payment f
 ## Core Concepts
 
 ### 1. Payment Flows
+**Checkout Session (Hosted)**
+- Stripe-hosted payment page
+- Minimal PCI compliance burden
+- Fastest implementation
+- Supports one-time and recurring payments
 
-**Checkout Sessions**
-
-- Recommended for most integrations
-- Supports all UI paths:
-  - Stripe-hosted checkout page
-  - Embedded checkout form
-  - Custom UI with Elements (Payment Element, Express Checkout Element) using `ui_mode='custom'`
-- Provides built-in checkout capabilities (line items, discounts, tax, shipping, address collection, saved payment methods, and checkout lifecycle events)
-- Lower integration and maintenance burden than Payment Intents
-
-**Payment Intents (Bespoke control)**
-
-- You calculate the final amount with taxes, discounts, subscriptions, and currency conversion yourself.
-- More complex implementation and long-term maintenance burden
+**Payment Intents (Custom UI)**
+- Full control over payment UI
 - Requires Stripe.js for PCI compliance
+- More complex implementation
+- Better customization options
 
 **Setup Intents (Save Payment Methods)**
-
 - Collect payment method without charging
 - Used for subscriptions and future payments
 - Requires customer confirmation
 
 ### 2. Webhooks
-
 **Critical Events:**
-
 - `payment_intent.succeeded`: Payment completed
 - `payment_intent.payment_failed`: Payment failed
 - `customer.subscription.updated`: Subscription changed
@@ -55,16 +47,13 @@ Master Stripe payment processing integration for robust, PCI-compliant payment f
 - `invoice.payment_succeeded`: Subscription payment successful
 
 ### 3. Subscriptions
-
 **Components:**
-
 - **Product**: What you're selling
 - **Price**: How much and how often
 - **Subscription**: Customer's recurring payment
 - **Invoice**: Generated for each billing cycle
 
 ### 4. Customer Management
-
 - Create and manage customer records
 - Store multiple payment methods
 - Track customer metadata
@@ -79,6 +68,7 @@ stripe.api_key = "sk_test_..."
 
 # Create a checkout session
 session = stripe.checkout.Session.create(
+    payment_method_types=['card'],
     line_items=[{
         'price_data': {
             'currency': 'usd',
@@ -94,7 +84,7 @@ session = stripe.checkout.Session.create(
     }],
     mode='subscription',
     success_url='https://yourdomain.com/success?session_id={CHECKOUT_SESSION_ID}',
-    cancel_url='https://yourdomain.com/cancel'
+    cancel_url='https://yourdomain.com/cancel',
 )
 
 # Redirect user to session.url
@@ -104,17 +94,17 @@ print(session.url)
 ## Payment Implementation Patterns
 
 ### Pattern 1: One-Time Payment (Hosted Checkout)
-
 ```python
 def create_checkout_session(amount, currency='usd'):
     """Create a one-time payment checkout session."""
     try:
         session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
             line_items=[{
                 'price_data': {
                     'currency': currency,
                     'product_data': {
-                        'name': 'Blue T-shirt',
+                        'name': 'Purchase',
                         'images': ['https://example.com/product.jpg'],
                     },
                     'unit_amount': amount,  # Amount in cents
@@ -136,77 +126,10 @@ def create_checkout_session(amount, currency='usd'):
         raise
 ```
 
-### Pattern 2: Elements with Checkout Sessions
-
-```python
-def create_checkout_session_for_elements(amount, currency='usd'):
-    """Create a checkout session configured for Payment Element."""
-    session = stripe.checkout.Session.create(
-        mode='payment',
-        ui_mode='custom',
-        line_items=[{
-            'price_data': {
-                'currency': currency,
-                'product_data': {'name': 'Blue T-shirt'},
-                'unit_amount': amount,
-            },
-            'quantity': 1,
-        }],
-        return_url='https://yourdomain.com/complete?session_id={CHECKOUT_SESSION_ID}'
-    )
-    return session.client_secret  # Send to frontend
-```
-
-```javascript
-const stripe = Stripe("pk_test_...");
-const appearance = { theme: "stripe" };
-
-const checkout = stripe.initCheckout({
-  clientSecret,
-  elementsOptions: { appearance },
-});
-const loadActionsResult = await checkout.loadActions();
-
-if (loadActionsResult.type === "success") {
-  const { actions } = loadActionsResult;
-  const session = actions.getSession();
-
-  const button = document.getElementById("pay-button");
-  const checkoutContainer = document.getElementById("checkout-container");
-  const emailInput = document.getElementById("email");
-  const emailErrors = document.getElementById("email-errors");
-  const errors = document.getElementById("confirm-errors");
-
-  // Display a formatted string representing the total amount
-  checkoutContainer.append(`Total: ${session.total.total.amount}`);
-
-  // Mount Payment Element
-  const paymentElement = checkout.createPaymentElement();
-  paymentElement.mount("#payment-element");
-
-  // Store email for submission
-  emailInput.addEventListener("blur", () => {
-    actions.updateEmail(emailInput.value).then((result) => {
-      if (result.error) emailErrors.textContent = result.error.message;
-    });
-  });
-
-  // Handle form submission
-  button.addEventListener("click", () => {
-    actions.confirm().then((result) => {
-      if (result.type === "error") errors.textContent = result.error.message;
-    });
-  });
-}
-```
-
-### Pattern 3: Elements with Payment Intents
-
-Pattern 2 (Elements with Checkout Sessions) is Stripe's recommended approach, but you can also use Payment Intents as an alternative.
-
+### Pattern 2: Custom Payment Intent Flow
 ```python
 def create_payment_intent(amount, currency='usd', customer_id=None):
-    """Create a payment intent for bespoke checkout UI with Payment Element."""
+    """Create a payment intent for custom checkout UI."""
     intent = stripe.PaymentIntent.create(
         amount=amount,
         currency=currency,
@@ -219,33 +142,35 @@ def create_payment_intent(amount, currency='usd', customer_id=None):
         }
     )
     return intent.client_secret  # Send to frontend
+
+# Frontend (JavaScript)
+"""
+const stripe = Stripe('pk_test_...');
+const elements = stripe.elements();
+const cardElement = elements.create('card');
+cardElement.mount('#card-element');
+
+const {error, paymentIntent} = await stripe.confirmCardPayment(
+    clientSecret,
+    {
+        payment_method: {
+            card: cardElement,
+            billing_details: {
+                name: 'Customer Name'
+            }
+        }
+    }
+);
+
+if (error) {
+    // Handle error
+} else if (paymentIntent.status === 'succeeded') {
+    // Payment successful
+}
+"""
 ```
 
-```javascript
-// Mount Payment Element and confirm via Payment Intents
-const stripe = Stripe("pk_test_...");
-const appearance = { theme: "stripe" };
-const elements = stripe.elements({ appearance, clientSecret });
-
-const paymentElement = elements.create("payment");
-paymentElement.mount("#payment-element");
-
-document.getElementById("pay-button").addEventListener("click", async () => {
-  const { error } = await stripe.confirmPayment({
-    elements,
-    confirmParams: {
-      return_url: "https://yourdomain.com/complete",
-    },
-  });
-
-  if (error) {
-    document.getElementById("errors").textContent = error.message;
-  }
-});
-```
-
-### Pattern 4: Subscription Creation
-
+### Pattern 3: Subscription Creation
 ```python
 def create_subscription(customer_id, price_id):
     """Create a subscription for a customer."""
@@ -267,8 +192,7 @@ def create_subscription(customer_id, price_id):
         raise
 ```
 
-### Pattern 5: Customer Portal
-
+### Pattern 4: Customer Portal
 ```python
 def create_customer_portal_session(customer_id):
     """Create a portal session for customers to manage subscriptions."""
@@ -282,7 +206,6 @@ def create_customer_portal_session(customer_id):
 ## Webhook Handling
 
 ### Secure Webhook Endpoint
-
 ```python
 from flask import Flask, request
 import stripe
@@ -347,7 +270,6 @@ def handle_subscription_canceled(subscription):
 ```
 
 ### Webhook Best Practices
-
 ```python
 import hashlib
 import hmac
@@ -475,11 +397,9 @@ def test_payment_flow():
     # Create payment intent
     intent = stripe.PaymentIntent.create(
         amount=1000,
-        automatic_payment_methods={
-            'enabled': True
-        },
         currency='usd',
-        customer=customer.id
+        customer=customer.id,
+        payment_method_types=['card']
     )
 
     # Confirm with test card

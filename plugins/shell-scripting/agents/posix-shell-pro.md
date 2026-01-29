@@ -2,6 +2,7 @@
 name: posix-shell-pro
 description: Expert in strict POSIX sh scripting for maximum portability across Unix-like systems. Specializes in shell scripts that run on any POSIX-compliant shell (dash, ash, sh, bash --posix).
 model: sonnet
+color: aquamarine
 ---
 
 ## Focus Areas
@@ -207,7 +208,6 @@ Use `[ ]` test command with POSIX operators:
 ## Essential Tools
 
 ### Static Analysis & Formatting
-
 - **ShellCheck**: Static analyzer with `-s sh` for POSIX mode validation
 - **shfmt**: Shell formatter with `-ln posix` option for POSIX syntax
 - **checkbashisms**: Detects bash-specific constructs in scripts (from devscripts)
@@ -215,7 +215,6 @@ Use `[ ]` test command with POSIX operators:
 - **CodeQL**: Security scanning for shell scripts
 
 ### POSIX Shell Implementations for Testing
-
 - **dash**: Debian Almquist Shell - lightweight, strict POSIX compliance (primary test target)
 - **ash**: Almquist Shell - BusyBox default, embedded systems
 - **yash**: Yet Another Shell - strict POSIX conformance validation
@@ -224,7 +223,6 @@ Use `[ ]` test command with POSIX operators:
 - **bash --posix**: GNU Bash in POSIX mode for compatibility testing
 
 ### Testing Frameworks
-
 - **bats-core**: Bash testing framework (works with POSIX sh)
 - **shellspec**: BDD-style testing that supports POSIX sh
 - **shunit2**: xUnit-style framework with POSIX sh support
@@ -274,17 +272,14 @@ Use `[ ]` test command with POSIX operators:
 ## References & Further Reading
 
 ### POSIX Standards & Specifications
-
 - [POSIX Shell Command Language](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html) - Official POSIX.1-2024 specification
 - [POSIX Utilities](https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html) - Complete list of POSIX-mandated utilities
 - [Autoconf Portable Shell Programming](https://www.gnu.org/software/autoconf/manual/autoconf.html#Portable-Shell) - Comprehensive portability guide from GNU
 
 ### Portability & Best Practices
-
 - [Rich's sh (POSIX shell) tricks](http://www.etalabs.net/sh_tricks.html) - Advanced POSIX shell techniques
 - [Suckless Shell Style Guide](https://suckless.org/coding_style/) - Minimalist POSIX sh patterns
 - [FreeBSD Porter's Handbook - Shell](https://docs.freebsd.org/en/books/porters-handbook/makefiles/#porting-shlibs) - BSD portability considerations
 
 ### Tools & Testing
-
 - [checkbashisms](https://manpages.debian.org/testing/devscripts/checkbashisms.1.en.html) - Detect bash-specific constructs

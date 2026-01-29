@@ -23,7 +23,6 @@ Comprehensive guidance for writing comprehensive unit tests for shell scripts us
 ### What is Bats?
 
 Bats (Bash Automated Testing System) is a TAP (Test Anything Protocol) compliant testing framework for shell scripts that provides:
-
 - Simple, natural test syntax
 - TAP output format compatible with CI systems
 - Fixtures and setup/teardown support

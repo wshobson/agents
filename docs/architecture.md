@@ -49,19 +49,16 @@ This marketplace follows industry best practices with a focus on granularity, co
 ### Component Breakdown
 
 **99 Specialized Agents**
-
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
 - Model-optimized with three-tier strategy (Opus, Sonnet, Haiku) for performance and cost
 
 **15 Workflow Orchestrators**
-
 - Multi-agent coordination systems
 - Complex operations like full-stack development, security hardening, ML pipelines, incident response
 - Pre-configured agent workflows
 
 **71 Development Tools**
-
 - Optimized utilities including:
   - Project scaffolding (Python, TypeScript, Rust)
   - Security scanning (SAST, dependency audit, XSS)
@@ -70,7 +67,6 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Infrastructure setup (Terraform, Kubernetes)
 
 **107 Agent Skills**
-
 - Modular knowledge packages
 - Progressive disclosure architecture
 - Domain-specific expertise across 18 plugins
@@ -180,9 +176,10 @@ All skills follow the [Agent Skills Specification](https://github.com/anthropics
 
 ```yaml
 ---
-name: skill-name # Required: hyphen-case
+name: skill-name                  # Required: hyphen-case
 description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 ---
+
 # Skill content with progressive disclosure
 ```
 
@@ -202,16 +199,15 @@ See [Agent Skills](./agent-skills.md) for complete details on the 107 skills.
 
 The system uses Claude Opus and Sonnet models strategically:
 
-| Model  | Count     | Use Case                                     |
-| ------ | --------- | -------------------------------------------- |
-| Opus   | 42 agents | Critical architecture, security, code review |
-| Sonnet | 39 agents | Complex tasks, support with intelligence     |
-| Haiku  | 18 agents | Fast operational tasks                       |
+| Model | Count | Use Case |
+|-------|-------|----------|
+| Opus | 42 agents | Critical architecture, security, code review |
+| Sonnet | 39 agents | Complex tasks, support with intelligence |
+| Haiku | 18 agents | Fast operational tasks |
 
 ### Selection Criteria
 
 **Haiku - Fast Execution & Deterministic Tasks**
-
 - Generating code from well-defined specifications
 - Creating tests following established patterns
 - Writing documentation with clear templates
@@ -222,7 +218,6 @@ The system uses Claude Opus and Sonnet models strategically:
 - Managing deployment pipelines
 
 **Sonnet - Complex Reasoning & Architecture**
-
 - Designing system architecture
 - Making technology selection decisions
 - Performing security audits
@@ -285,7 +280,6 @@ python-development/
 ```
 
 **Benefits:**
-
 - Clear responsibility
 - Easy to maintain
 - Minimal token usage
@@ -302,7 +296,6 @@ full-stack-orchestration/
 ```
 
 **Orchestration:**
-
 1. backend-architect (design API)
 2. database-architect (design schema)
 3. frontend-developer (build UI)

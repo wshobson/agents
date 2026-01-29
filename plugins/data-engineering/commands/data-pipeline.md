@@ -20,32 +20,26 @@ $ARGUMENTS
 ## Instructions
 
 ### 1. Architecture Design
-
 - Assess: sources, volume, latency requirements, targets
 - Select pattern: ETL (transform before load), ELT (load then transform), Lambda (batch + speed layers), Kappa (stream-only), Lakehouse (unified)
 - Design flow: sources → ingestion → processing → storage → serving
 - Add observability touchpoints
 
 ### 2. Ingestion Implementation
-
 **Batch**
-
 - Incremental loading with watermark columns
 - Retry logic with exponential backoff
 - Schema validation and dead letter queue for invalid records
-- Metadata tracking (\_extracted_at, \_source)
+- Metadata tracking (_extracted_at, _source)
 
 **Streaming**
-
 - Kafka consumers with exactly-once semantics
 - Manual offset commits within transactions
 - Windowing for time-based aggregations
 - Error handling and replay capability
 
 ### 3. Orchestration
-
 **Airflow**
-
 - Task groups for logical organization
 - XCom for inter-task communication
 - SLA monitoring and email alerts
@@ -53,14 +47,12 @@ $ARGUMENTS
 - Retry with exponential backoff
 
 **Prefect**
-
 - Task caching for idempotency
 - Parallel execution with .submit()
 - Artifacts for visibility
 - Automatic retries with configurable delays
 
 ### 4. Transformation with dbt
-
 - Staging layer: incremental materialization, deduplication, late-arriving data handling
 - Marts layer: dimensional models, aggregations, business logic
 - Tests: unique, not_null, relationships, accepted_values, custom data quality tests
@@ -68,9 +60,7 @@ $ARGUMENTS
 - Incremental strategy: merge or delete+insert
 
 ### 5. Data Quality Framework
-
 **Great Expectations**
-
 - Table-level: row count, column count
 - Column-level: uniqueness, nullability, type validation, value sets, ranges
 - Checkpoints for validation execution
@@ -78,15 +68,12 @@ $ARGUMENTS
 - Failure notifications
 
 **dbt Tests**
-
 - Schema tests in YAML
 - Custom data quality tests with dbt-expectations
 - Test results tracked in metadata
 
 ### 6. Storage Strategy
-
 **Delta Lake**
-
 - ACID transactions with append/overwrite/merge modes
 - Upsert with predicate-based matching
 - Time travel for historical queries
@@ -94,7 +81,6 @@ $ARGUMENTS
 - Vacuum to remove old files
 
 **Apache Iceberg**
-
 - Partitioning and sort order optimization
 - MERGE INTO for upserts
 - Snapshot isolation and time travel
@@ -102,9 +88,7 @@ $ARGUMENTS
 - Snapshot expiration for cleanup
 
 ### 7. Monitoring & Cost Optimization
-
 **Monitoring**
-
 - Track: records processed/failed, data size, execution time, success/failure rates
 - CloudWatch metrics and custom namespaces
 - SNS alerts for critical/warning/info events
@@ -112,7 +96,6 @@ $ARGUMENTS
 - Performance trend analysis
 
 **Cost Optimization**
-
 - Partitioning: date/entity-based, avoid over-partitioning (keep >1GB)
 - File sizes: 512MB-1GB for Parquet
 - Lifecycle policies: hot (Standard) → warm (IA) → cold (Glacier)
@@ -161,14 +144,12 @@ ingester.save_dead_letter_queue('s3://lake/dlq/orders')
 ## Output Deliverables
 
 ### 1. Architecture Documentation
-
 - Architecture diagram with data flow
 - Technology stack with justification
 - Scalability analysis and growth patterns
 - Failure modes and recovery strategies
 
 ### 2. Implementation Code
-
 - Ingestion: batch/streaming with error handling
 - Transformation: dbt models (staging → marts) or Spark jobs
 - Orchestration: Airflow/Prefect DAGs with dependencies
@@ -176,21 +157,18 @@ ingester.save_dead_letter_queue('s3://lake/dlq/orders')
 - Data quality: Great Expectations suites and dbt tests
 
 ### 3. Configuration Files
-
 - Orchestration: DAG definitions, schedules, retry policies
 - dbt: models, sources, tests, project config
 - Infrastructure: Docker Compose, K8s manifests, Terraform
 - Environment: dev/staging/prod configs
 
 ### 4. Monitoring & Observability
-
 - Metrics: execution time, records processed, quality scores
 - Alerts: failures, performance degradation, data freshness
 - Dashboards: Grafana/CloudWatch for pipeline health
 - Logging: structured logs with correlation IDs
 
 ### 5. Operations Guide
-
 - Deployment procedures and rollback strategy
 - Troubleshooting guide for common issues
 - Scaling guide for increased volume
@@ -198,7 +176,6 @@ ingester.save_dead_letter_queue('s3://lake/dlq/orders')
 - Disaster recovery and backup procedures
 
 ## Success Criteria
-
 - Pipeline meets defined SLA (latency, throughput)
 - Data quality checks pass with >99% success rate
 - Automatic retry and alerting on failures
