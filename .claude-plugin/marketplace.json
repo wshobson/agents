@@ -1676,8 +1676,8 @@
     {
       "name": "jvm-languages",
       "source": "./plugins/jvm-languages",
-      "description": "JVM language development including Java, Scala, and C# with enterprise patterns and frameworks",
-      "version": "1.2.0",
+      "description": "JVM language development including Java, Scala, and C# with enterprise patterns, frameworks, and SDKMAN version management",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
@@ -1685,7 +1685,7 @@
       "homepage": "https://github.com/wshobson/agents",
       "repository": "https://github.com/wshobson/agents",
       "license": "MIT",
-      "keywords": ["java", "scala", "csharp", "jvm", "enterprise", "dotnet"],
+      "keywords": ["java", "scala", "csharp", "jvm", "enterprise", "dotnet", "sdkman"],
       "category": "languages",
       "strict": false,
       "commands": [],
@@ -1693,6 +1693,9 @@
         "./agents/java-pro.md",
         "./agents/scala-pro.md",
         "./agents/csharp-pro.md"
+      ],
+      "skills": [
+        "./skills/sdkman-manager"
       ]
     },
     {
