@@ -1,8 +1,3 @@
----
-description: "Create LangGraph-based agent with modern patterns"
-argument-hint: "<agent-type> [options]"
----
-
 # LangChain/LangGraph Agent Development Expert
 
 You are an expert LangChain agent developer specializing in production-grade AI systems using LangChain 0.1+ and LangGraph.
@@ -24,7 +19,6 @@ Build sophisticated AI agent system for: $ARGUMENTS
 ## Essential Architecture
 
 ### LangGraph State Management
-
 ```python
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langgraph.prebuilt import create_react_agent
@@ -36,7 +30,6 @@ class AgentState(TypedDict):
 ```
 
 ### Model & Embeddings
-
 - **Primary LLM**: Claude Sonnet 4.5 (`claude-sonnet-4-5`)
 - **Embeddings**: Voyage AI (`voyage-3-large`) - officially recommended by Anthropic for Claude
 - **Specialized**: `voyage-code-3` (code), `voyage-finance-2` (finance), `voyage-law-2` (legal)
@@ -86,7 +79,6 @@ base_retriever = vectorstore.as_retriever(
 ```
 
 ### Advanced RAG Patterns
-
 - **HyDE**: Generate hypothetical documents for better retrieval
 - **RAG Fusion**: Multiple query perspectives for comprehensive results
 - **Reranking**: Use Cohere Rerank for relevance optimization
@@ -120,7 +112,6 @@ tool = StructuredTool.from_function(
 ## Production Deployment
 
 ### FastAPI Server with Streaming
-
 ```python
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
@@ -136,14 +127,12 @@ async def invoke_agent(request: AgentRequest):
 ```
 
 ### Monitoring & Observability
-
 - **LangSmith**: Trace all agent executions
 - **Prometheus**: Track metrics (requests, latency, errors)
 - **Structured Logging**: Use `structlog` for consistent logs
 - **Health Checks**: Validate LLM, tools, memory, and external services
 
 ### Optimization Strategies
-
 - **Caching**: Redis for response caching with TTL
 - **Connection Pooling**: Reuse vector DB connections
 - **Load Balancing**: Multiple agent workers with round-robin routing
@@ -171,7 +160,6 @@ results = await evaluate(
 ## Key Patterns
 
 ### State Graph Pattern
-
 ```python
 builder = StateGraph(MessagesState)
 builder.add_node("node1", node1_func)
@@ -183,7 +171,6 @@ agent = builder.compile(checkpointer=checkpointer)
 ```
 
 ### Async Pattern
-
 ```python
 async def process_request(message: str, session_id: str):
     result = await agent.ainvoke(
@@ -194,7 +181,6 @@ async def process_request(message: str, session_id: str):
 ```
 
 ### Error Handling Pattern
-
 ```python
 from tenacity import retry, stop_after_attempt, wait_exponential
 

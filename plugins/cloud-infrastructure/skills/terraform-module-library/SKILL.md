@@ -58,7 +58,6 @@ module-name/
 ## AWS VPC Module Example
 
 **main.tf:**
-
 ```hcl
 resource "aws_vpc" "main" {
   cidr_block           = var.cidr_block
@@ -102,7 +101,6 @@ resource "aws_internet_gateway" "main" {
 ```
 
 **variables.tf:**
-
 ```hcl
 variable "name" {
   description = "Name of the VPC"
@@ -143,7 +141,6 @@ variable "tags" {
 ```
 
 **outputs.tf:**
-
 ```hcl
 output "vpc_id" {
   description = "ID of the VPC"

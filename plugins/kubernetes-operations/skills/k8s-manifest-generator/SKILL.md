@@ -14,7 +14,6 @@ This skill provides comprehensive guidance for generating well-structured, secur
 ## When to Use This Skill
 
 Use this skill when you need to:
-
 - Create new Kubernetes Deployment manifests
 - Define Service resources for network connectivity
 - Generate ConfigMap and Secret resources for configuration management
@@ -28,7 +27,6 @@ Use this skill when you need to:
 ### 1. Gather Requirements
 
 **Understand the workload:**
-
 - Application type (stateless/stateful)
 - Container image and version
 - Environment variables and configuration needs
@@ -39,7 +37,6 @@ Use this skill when you need to:
 - Health check endpoints
 
 **Questions to ask:**
-
 - What is the application name and purpose?
 - What container image and tag will be used?
 - Does the application need persistent storage?
@@ -73,42 +70,41 @@ spec:
         version: <version>
     spec:
       containers:
-        - name: <container-name>
-          image: <image>:<tag>
-          ports:
-            - containerPort: <port>
-              name: http
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          env:
-            - name: ENV_VAR
-              value: "value"
-          envFrom:
-            - configMapRef:
-                name: <app-name>-config
-            - secretRef:
-                name: <app-name>-secret
+      - name: <container-name>
+        image: <image>:<tag>
+        ports:
+        - containerPort: <port>
+          name: http
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        env:
+        - name: ENV_VAR
+          value: "value"
+        envFrom:
+        - configMapRef:
+            name: <app-name>-config
+        - secretRef:
+            name: <app-name>-secret
 ```
 
 **Best practices to apply:**
-
 - Always set resource requests and limits
 - Implement both liveness and readiness probes
 - Use specific image tags (never `:latest`)
@@ -123,7 +119,6 @@ spec:
 **Choose the appropriate Service type:**
 
 **ClusterIP (internal only):**
-
 ```yaml
 apiVersion: v1
 kind: Service
@@ -137,14 +132,13 @@ spec:
   selector:
     app: <app-name>
   ports:
-    - name: http
-      port: 80
-      targetPort: 8080
-      protocol: TCP
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
 ```
 
 **LoadBalancer (external access):**
-
 ```yaml
 apiVersion: v1
 kind: Service
@@ -160,10 +154,10 @@ spec:
   selector:
     app: <app-name>
   ports:
-    - name: http
-      port: 80
-      targetPort: 8080
-      protocol: TCP
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
 ```
 
 **Reference:** See `references/service-spec.md` for service types and networking
@@ -190,7 +184,6 @@ data:
 ```
 
 **Best practices:**
-
 - Use ConfigMaps for non-sensitive data only
 - Organize related configuration together
 - Use meaningful names for keys
@@ -225,7 +218,6 @@ stringData:
 ```
 
 **Security considerations:**
-
 - Never commit secrets to Git in plain text
 - Use Sealed Secrets, External Secrets Operator, or Vault
 - Rotate secrets regularly
@@ -244,7 +236,7 @@ metadata:
   namespace: <namespace>
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   storageClassName: gp3
   resources:
     requests:
@@ -252,24 +244,22 @@ spec:
 ```
 
 **Mount in Deployment:**
-
 ```yaml
 spec:
   template:
     spec:
       containers:
-        - name: app
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/app
-      volumes:
+      - name: app
+        volumeMounts:
         - name: data
-          persistentVolumeClaim:
-            claimName: <app-name>-data
+          mountPath: /var/lib/app
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: <app-name>-data
 ```
 
 **Storage considerations:**
-
 - Choose appropriate StorageClass for performance needs
 - Use ReadWriteOnce for single-pod access
 - Use ReadWriteMany for multi-pod shared storage
@@ -291,17 +281,16 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: app
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - ALL
+      - name: app
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
 ```
 
 **Security checklist:**
-
 - [ ] Run as non-root user
 - [ ] Drop all capabilities
 - [ ] Use read-only root filesystem
@@ -341,7 +330,6 @@ metadata:
 **File organization options:**
 
 **Option 1: Single file with `---` separator**
-
 ```yaml
 # app-name.yaml
 ---
@@ -363,7 +351,6 @@ kind: Service
 ```
 
 **Option 2: Separate files**
-
 ```
 manifests/
 ├── configmap.yaml
@@ -374,7 +361,6 @@ manifests/
 ```
 
 **Option 3: Kustomize structure**
-
 ```
 base/
 ├── kustomization.yaml
@@ -410,7 +396,6 @@ kube-linter lint manifest.yaml
 ```
 
 **Testing checklist:**
-
 - [ ] Manifest passes dry-run validation
 - [ ] All required fields are present
 - [ ] Resource limits are reasonable
@@ -426,7 +411,6 @@ kube-linter lint manifest.yaml
 **Use case:** Standard web API or microservice
 
 **Components needed:**
-
 - Deployment (3 replicas for HA)
 - ClusterIP Service
 - ConfigMap for configuration
@@ -440,7 +424,6 @@ kube-linter lint manifest.yaml
 **Use case:** Database or persistent storage application
 
 **Components needed:**
-
 - StatefulSet (not Deployment)
 - Headless Service
 - PersistentVolumeClaim template
@@ -452,7 +435,6 @@ kube-linter lint manifest.yaml
 **Use case:** Scheduled tasks or batch processing
 
 **Components needed:**
-
 - CronJob or Job
 - ConfigMap for job parameters
 - Secret for credentials
@@ -463,7 +445,6 @@ kube-linter lint manifest.yaml
 **Use case:** Application with sidecar containers
 
 **Components needed:**
-
 - Deployment with multiple containers
 - Shared volumes between containers
 - Init containers for setup
@@ -500,19 +481,16 @@ The following templates are available in the `assets/` directory:
 ## Troubleshooting
 
 **Pods not starting:**
-
 - Check image pull errors: `kubectl describe pod <pod-name>`
 - Verify resource availability: `kubectl get nodes`
 - Check events: `kubectl get events --sort-by='.lastTimestamp'`
 
 **Service not accessible:**
-
 - Verify selector matches pod labels: `kubectl get endpoints <service-name>`
 - Check service type and port configuration
 - Test from within cluster: `kubectl run debug --rm -it --image=busybox -- sh`
 
 **ConfigMap/Secret not loading:**
-
 - Verify names match in Deployment
 - Check namespace
 - Ensure resources exist: `kubectl get configmap,secret`
@@ -520,7 +498,6 @@ The following templates are available in the `assets/` directory:
 ## Next Steps
 
 After creating manifests:
-
 1. Store in Git repository
 2. Set up CI/CD pipeline for deployment
 3. Consider using Helm or Kustomize for templating

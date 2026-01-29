@@ -23,7 +23,6 @@ Build efficient, scalable monorepos that enable code sharing, consistent tooling
 ### 1. Why Monorepos?
 
 **Advantages:**
-
 - Shared code and dependencies
 - Atomic commits across projects
 - Consistent tooling and standards
@@ -32,7 +31,6 @@ Build efficient, scalable monorepos that enable code sharing, consistent tooling
 - Better code visibility
 
 **Challenges:**
-
 - Build performance at scale
 - CI/CD complexity
 - Access control
@@ -41,13 +39,11 @@ Build efficient, scalable monorepos that enable code sharing, consistent tooling
 ### 2. Monorepo Tools
 
 **Package Managers:**
-
 - pnpm workspaces (recommended)
 - npm workspaces
 - Yarn workspaces
 
 **Build Systems:**
-
 - Turborepo (recommended for most)
 - Nx (feature-rich, complex)
 - Lerna (older, maintenance mode)
@@ -109,7 +105,10 @@ cd my-monorepo
 {
   "name": "my-monorepo",
   "private": true,
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -171,9 +170,9 @@ cd my-monorepo
 ```yaml
 # pnpm-workspace.yaml
 packages:
-  - "apps/*"
-  - "packages/*"
-  - "tools/*"
+  - 'apps/*'
+  - 'packages/*'
+  - 'tools/*'
 ```
 
 ```json
@@ -347,35 +346,35 @@ nx run-many --target=build --all --parallel=3
 // packages/config/eslint-preset.js
 module.exports = {
   extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "prettier",
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier',
   ],
-  plugins: ["@typescript-eslint", "react", "react-hooks"],
-  parser: "@typescript-eslint/parser",
+  plugins: ['@typescript-eslint', 'react', 'react-hooks'],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2022,
-    sourceType: "module",
+    sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
     },
   },
   settings: {
     react: {
-      version: "detect",
+      version: 'detect',
     },
   },
   rules: {
-    "@typescript-eslint/no-unused-vars": "error",
-    "react/react-in-jsx-scope": "off",
+    '@typescript-eslint/no-unused-vars': 'error',
+    'react/react-in-jsx-scope': 'off',
   },
 };
 
 // apps/web/.eslintrc.js
 module.exports = {
-  extends: ["@repo/config/eslint-preset"],
+  extends: ['@repo/config/eslint-preset'],
   rules: {
     // App-specific rules
   },
@@ -428,16 +427,16 @@ export function capitalize(str: string): string {
 }
 
 export function truncate(str: string, length: number): string {
-  return str.length > length ? str.slice(0, length) + "..." : str;
+  return str.length > length ? str.slice(0, length) + '...' : str;
 }
 
 // packages/utils/src/index.ts
-export * from "./string";
-export * from "./array";
-export * from "./date";
+export * from './string';
+export * from './array';
+export * from './date';
 
 // Usage in apps
-import { capitalize, truncate } from "@repo/utils";
+import { capitalize, truncate } from '@repo/utils';
 ```
 
 ### Pattern 3: Shared Types
@@ -448,7 +447,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: "admin" | "user";
+  role: 'admin' | 'user';
 }
 
 export interface CreateUserInput {
@@ -458,7 +457,7 @@ export interface CreateUserInput {
 }
 
 // Used in both frontend and backend
-import type { User, CreateUserInput } from "@repo/types";
+import type { User, CreateUserInput } from '@repo/types';
 ```
 
 ## Build Optimization
@@ -526,7 +525,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # For Nx affected commands
+          fetch-depth: 0  # For Nx affected commands
 
       - uses: pnpm/action-setup@v2
         with:
@@ -535,7 +534,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

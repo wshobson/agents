@@ -3,7 +3,6 @@
 ## URL Structure
 
 ### Resource Naming
-
 ```
 # Good - Plural nouns
 GET /api/users
@@ -17,7 +16,6 @@ POST /api/createOrder
 ```
 
 ### Nested Resources
-
 ```
 # Shallow nesting (preferred)
 GET /api/users/{id}/orders
@@ -32,7 +30,6 @@ GET /api/order-items/{id}/reviews
 ## HTTP Methods and Status Codes
 
 ### GET - Retrieve Resources
-
 ```
 GET /api/users              → 200 OK (with list)
 GET /api/users/{id}         → 200 OK or 404 Not Found
@@ -40,7 +37,6 @@ GET /api/users?page=2       → 200 OK (paginated)
 ```
 
 ### POST - Create Resources
-
 ```
 POST /api/users
   Body: {"name": "John", "email": "john@example.com"}
@@ -54,7 +50,6 @@ POST /api/users (validation error)
 ```
 
 ### PUT - Replace Resources
-
 ```
 PUT /api/users/{id}
   Body: {complete user object}
@@ -65,7 +60,6 @@ PUT /api/users/{id}
 ```
 
 ### PATCH - Partial Update
-
 ```
 PATCH /api/users/{id}
   Body: {"name": "Jane"}  (only changed fields)
@@ -74,7 +68,6 @@ PATCH /api/users/{id}
 ```
 
 ### DELETE - Remove Resources
-
 ```
 DELETE /api/users/{id}
   → 204 No Content (deleted)
@@ -85,7 +78,6 @@ DELETE /api/users/{id}
 ## Filtering, Sorting, and Searching
 
 ### Query Parameters
-
 ```
 # Filtering
 GET /api/users?status=active
@@ -107,7 +99,6 @@ GET /api/users?fields=id,name,email
 ## Pagination Patterns
 
 ### Offset-Based Pagination
-
 ```python
 GET /api/users?page=2&page_size=20
 
@@ -122,7 +113,6 @@ Response:
 ```
 
 ### Cursor-Based Pagination (for large datasets)
-
 ```python
 GET /api/users?limit=20&cursor=eyJpZCI6MTIzfQ
 
@@ -135,7 +125,6 @@ Response:
 ```
 
 ### Link Header Pagination (RESTful)
-
 ```
 GET /api/users?page=2
 
@@ -149,7 +138,6 @@ Link: <https://api.example.com/users?page=3>; rel="next",
 ## Versioning Strategies
 
 ### URL Versioning (Recommended)
-
 ```
 /api/v1/users
 /api/v2/users
@@ -159,7 +147,6 @@ Cons: Multiple URLs for same resource
 ```
 
 ### Header Versioning
-
 ```
 GET /api/users
 Accept: application/vnd.api+json; version=2
@@ -169,7 +156,6 @@ Cons: Less visible, harder to test
 ```
 
 ### Query Parameter
-
 ```
 GET /api/users?version=2
 
@@ -180,7 +166,6 @@ Cons: Optional parameter can be forgotten
 ## Rate Limiting
 
 ### Headers
-
 ```
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 742
@@ -192,7 +177,6 @@ Retry-After: 3600
 ```
 
 ### Implementation Pattern
-
 ```python
 from fastapi import HTTPException, Request
 from datetime import datetime, timedelta
@@ -235,7 +219,6 @@ async def get_users(request: Request):
 ## Authentication and Authorization
 
 ### Bearer Token
-
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 
@@ -244,7 +227,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ```
 
 ### API Keys
-
 ```
 X-API-Key: your-api-key-here
 ```
@@ -252,7 +234,6 @@ X-API-Key: your-api-key-here
 ## Error Response Format
 
 ### Consistent Structure
-
 ```json
 {
   "error": {
@@ -272,7 +253,6 @@ X-API-Key: your-api-key-here
 ```
 
 ### Status Code Guidelines
-
 - `200 OK`: Successful GET, PATCH, PUT
 - `201 Created`: Successful POST
 - `204 No Content`: Successful DELETE
@@ -289,7 +269,6 @@ X-API-Key: your-api-key-here
 ## Caching
 
 ### Cache Headers
-
 ```
 # Client caching
 Cache-Control: public, max-age=3600
@@ -306,7 +285,6 @@ If-None-Match: "33a64df551425fcc55e4d42a148795d9f25f89d4"
 ## Bulk Operations
 
 ### Batch Endpoints
-
 ```python
 POST /api/users/batch
 {
@@ -328,7 +306,6 @@ Response:
 ## Idempotency
 
 ### Idempotency Keys
-
 ```
 POST /api/orders
 Idempotency-Key: unique-key-123

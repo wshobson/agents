@@ -3,7 +3,6 @@
 ## Schema Organization
 
 ### Modular Schema Structure
-
 ```graphql
 # user.graphql
 type User {
@@ -38,19 +37,17 @@ extend type Query {
 ## Type Design Patterns
 
 ### 1. Non-Null Types
-
 ```graphql
 type User {
-  id: ID! # Always required
-  email: String! # Required
-  phone: String # Optional (nullable)
-  posts: [Post!]! # Non-null array of non-null posts
-  tags: [String!] # Nullable array of non-null strings
+  id: ID!              # Always required
+  email: String!       # Required
+  phone: String        # Optional (nullable)
+  posts: [Post!]!      # Non-null array of non-null posts
+  tags: [String!]      # Nullable array of non-null strings
 }
 ```
 
 ### 2. Interfaces for Polymorphism
-
 ```graphql
 interface Node {
   id: ID!
@@ -75,7 +72,6 @@ type Query {
 ```
 
 ### 3. Unions for Heterogeneous Results
-
 ```graphql
 union SearchResult = User | Post | Comment
 
@@ -96,16 +92,13 @@ type Query {
     }
     ... on Comment {
       text
-      author {
-        name
-      }
+      author { name }
     }
   }
 }
 ```
 
 ### 4. Input Types
-
 ```graphql
 input CreateUserInput {
   email: String!
@@ -131,7 +124,6 @@ input UpdateUserInput {
 ## Pagination Patterns
 
 ### Relay Cursor Pagination (Recommended)
-
 ```graphql
 type UserConnection {
   edges: [UserEdge!]!
@@ -152,7 +144,12 @@ type PageInfo {
 }
 
 type Query {
-  users(first: Int, after: String, last: Int, before: String): UserConnection!
+  users(
+    first: Int
+    after: String
+    last: Int
+    before: String
+  ): UserConnection!
 }
 
 # Usage
@@ -174,7 +171,6 @@ type Query {
 ```
 
 ### Offset Pagination (Simpler)
-
 ```graphql
 type UserList {
   items: [User!]!
@@ -191,7 +187,6 @@ type Query {
 ## Mutation Design Patterns
 
 ### 1. Input/Payload Pattern
-
 ```graphql
 input CreatePostInput {
   title: String!
@@ -217,7 +212,6 @@ type Mutation {
 ```
 
 ### 2. Optimistic Response Support
-
 ```graphql
 type UpdateUserPayload {
   user: User
@@ -237,7 +231,6 @@ type Mutation {
 ```
 
 ### 3. Batch Mutations
-
 ```graphql
 input BatchCreateUserInput {
   users: [CreateUserInput!]!
@@ -263,7 +256,6 @@ type Mutation {
 ## Field Design
 
 ### Arguments and Filtering
-
 ```graphql
 type Query {
   posts(
@@ -304,20 +296,20 @@ enum OrderDirection {
 ```
 
 ### Computed Fields
-
 ```graphql
 type User {
   firstName: String!
   lastName: String!
-  fullName: String! # Computed in resolver
+  fullName: String!  # Computed in resolver
+
   posts: [Post!]!
-  postCount: Int! # Computed, doesn't load all posts
+  postCount: Int!    # Computed, doesn't load all posts
 }
 
 type Post {
   likeCount: Int!
   commentCount: Int!
-  isLikedByViewer: Boolean! # Context-dependent
+  isLikedByViewer: Boolean!  # Context-dependent
 }
 ```
 
@@ -374,7 +366,6 @@ type Product {
 ## Directives
 
 ### Built-in Directives
-
 ```graphql
 type User {
   name: String!
@@ -397,7 +388,6 @@ query GetUser($isOwner: Boolean!) {
 ```
 
 ### Custom Directives
-
 ```graphql
 directive @auth(requires: Role = USER) on FIELD_DEFINITION
 
@@ -416,7 +406,6 @@ type Mutation {
 ## Error Handling
 
 ### Union Error Pattern
-
 ```graphql
 type User {
   id: ID!
@@ -463,7 +452,6 @@ type Query {
 ```
 
 ### Errors in Payload
-
 ```graphql
 type CreateUserPayload {
   user: User
@@ -488,7 +476,6 @@ enum ErrorCode {
 ## N+1 Query Problem Solutions
 
 ### DataLoader Pattern
-
 ```python
 from aiodataloader import DataLoader
 
@@ -506,7 +493,6 @@ async def resolve_posts(user, info):
 ```
 
 ### Query Depth Limiting
-
 ```python
 from graphql import GraphQLError
 
@@ -521,7 +507,6 @@ def depth_limit_validator(max_depth: int):
 ```
 
 ### Query Complexity Analysis
-
 ```python
 def complexity_limit_validator(max_complexity: int):
     def calculate_complexity(node):
@@ -537,7 +522,6 @@ def complexity_limit_validator(max_complexity: int):
 ## Schema Versioning
 
 ### Field Deprecation
-
 ```graphql
 type User {
   name: String! @deprecated(reason: "Use firstName and lastName")
@@ -547,7 +531,6 @@ type User {
 ```
 
 ### Schema Evolution
-
 ```graphql
 # v1 - Initial
 type User {

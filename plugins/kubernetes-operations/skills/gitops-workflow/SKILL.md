@@ -87,7 +87,7 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
+    - CreateNamespace=true
 ```
 
 ### 4. App of Apps Pattern
@@ -165,12 +165,11 @@ spec:
 ### Auto-Sync Configuration
 
 **ArgoCD:**
-
 ```yaml
 syncPolicy:
   automated:
-    prune: true # Delete resources not in Git
-    selfHeal: true # Reconcile manual changes
+    prune: true      # Delete resources not in Git
+    selfHeal: true   # Reconcile manual changes
     allowEmpty: false
   retry:
     limit: 5
@@ -181,7 +180,6 @@ syncPolicy:
 ```
 
 **Flux:**
-
 ```yaml
 spec:
   interval: 1m
@@ -206,11 +204,11 @@ spec:
   strategy:
     canary:
       steps:
-        - setWeight: 20
-        - pause: { duration: 1m }
-        - setWeight: 50
-        - pause: { duration: 2m }
-        - setWeight: 100
+      - setWeight: 20
+      - pause: {duration: 1m}
+      - setWeight: 50
+      - pause: {duration: 2m}
+      - setWeight: 100
 ```
 
 ### Blue-Green Deployment
@@ -240,9 +238,9 @@ spec:
   target:
     name: db-credentials
   data:
-    - secretKey: password
-      remoteRef:
-        key: prod/db/password
+  - secretKey: password
+    remoteRef:
+      key: prod/db/password
 ```
 
 ### Sealed Secrets
@@ -270,14 +268,12 @@ kubeseal --format yaml < secret.yaml > sealed-secret.yaml
 ## Troubleshooting
 
 **Sync failures:**
-
 ```bash
 argocd app get my-app
 argocd app sync my-app --prune
 ```
 
 **Out of sync status:**
-
 ```bash
 argocd app diff my-app
 argocd app sync my-app --force

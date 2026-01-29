@@ -39,7 +39,6 @@ async def test_workflow_execution(workflow_env):
 ```
 
 **Key Benefits**:
-
 - `workflow.sleep(timedelta(days=30))` completes instantly
 - Fast feedback loop (milliseconds vs hours)
 - Deterministic test execution
@@ -47,7 +46,6 @@ async def test_workflow_execution(workflow_env):
 ### Time-Skipping Examples
 
 **Sleep Advancement**:
-
 ```python
 @pytest.mark.asyncio
 async def test_workflow_with_delays(workflow_env):
@@ -74,7 +72,6 @@ async def test_workflow_with_delays(workflow_env):
 ```
 
 **Manual Time Control**:
-
 ```python
 @pytest.mark.asyncio
 async def test_workflow_manual_time(workflow_env):
@@ -102,7 +99,6 @@ async def test_workflow_manual_time(workflow_env):
 ### Testing Workflow Logic
 
 **Decision Testing**:
-
 ```python
 @pytest.mark.asyncio
 async def test_workflow_branching(workflow_env):
@@ -164,7 +160,6 @@ async def test_activity_basic():
 ### Testing Activity Context
 
 **Heartbeat Testing**:
-
 ```python
 async def test_activity_heartbeat():
     """Verify heartbeat calls"""
@@ -182,7 +177,6 @@ async def test_activity_heartbeat():
 ```
 
 **Cancellation Testing**:
-
 ```python
 async def test_activity_cancellation():
     """Test activity cancellation handling"""
@@ -205,7 +199,6 @@ async def test_activity_cancellation():
 ### Testing Error Handling
 
 **Exception Propagation**:
-
 ```python
 async def test_activity_error():
     """Test activity error handling"""
@@ -277,7 +270,6 @@ async def test_activity_parameterized(activity_env, input, expected):
 ## Common Patterns
 
 **Testing Retry Logic**:
-
 ```python
 @pytest.mark.asyncio
 async def test_workflow_with_retries(workflow_env):

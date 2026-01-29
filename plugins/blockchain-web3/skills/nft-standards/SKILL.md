@@ -150,7 +150,6 @@ contract GameItems is ERC1155, Ownable {
 ## Metadata Standards
 
 ### Off-Chain Metadata (IPFS)
-
 ```json
 {
   "name": "NFT #1",
@@ -176,7 +175,6 @@ contract GameItems is ERC1155, Ownable {
 ```
 
 ### On-Chain Metadata
-
 ```solidity
 contract OnChainNFT is ERC721 {
     struct Traits {

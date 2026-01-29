@@ -41,29 +41,29 @@ my-app/
 ### API Version v2 (Helm 3+)
 
 ```yaml
-apiVersion: v2 # Required: API version
-name: my-application # Required: Chart name
-version: 1.2.3 # Required: Chart version (SemVer)
-appVersion: "2.5.0" # Application version
-description: A Helm chart for my application # Required
-type: application # Chart type: application or library
-keywords: # Search keywords
+apiVersion: v2                    # Required: API version
+name: my-application              # Required: Chart name
+version: 1.2.3                    # Required: Chart version (SemVer)
+appVersion: "2.5.0"              # Application version
+description: A Helm chart for my application  # Required
+type: application                 # Chart type: application or library
+keywords:                         # Search keywords
   - web
   - api
   - backend
-home: https://example.com # Project home page
-sources: # Source code URLs
+home: https://example.com         # Project home page
+sources:                          # Source code URLs
   - https://github.com/example/my-app
-maintainers: # Maintainer list
+maintainers:                      # Maintainer list
   - name: John Doe
     email: john@example.com
     url: https://github.com/johndoe
-icon: https://example.com/icon.png # Chart icon URL
-kubeVersion: ">=1.24.0" # Compatible Kubernetes versions
-deprecated: false # Mark chart as deprecated
-annotations: # Arbitrary annotations
+icon: https://example.com/icon.png  # Chart icon URL
+kubeVersion: ">=1.24.0"          # Compatible Kubernetes versions
+deprecated: false                 # Mark chart as deprecated
+annotations:                      # Arbitrary annotations
   example.com/release-notes: https://example.com/releases/v1.2.3
-dependencies: # Chart dependencies
+dependencies:                     # Chart dependencies
   - name: postgresql
     version: "12.0.0"
     repository: "https://charts.bitnami.com/bitnami"
@@ -79,21 +79,17 @@ dependencies: # Chart dependencies
 ## Chart Types
 
 ### Application Chart
-
 ```yaml
 type: application
 ```
-
 - Standard Kubernetes applications
 - Can be installed and managed
 - Contains templates for K8s resources
 
 ### Library Chart
-
 ```yaml
 type: library
 ```
-
 - Shared template helpers
 - Cannot be installed directly
 - Used as dependency by other charts
@@ -102,7 +98,6 @@ type: library
 ## Values Files Organization
 
 ### values.yaml (defaults)
-
 ```yaml
 # Global values (shared with subcharts)
 global:
@@ -113,7 +108,7 @@ global:
 image:
   registry: docker.io
   repository: myapp/web
-  tag: "" # Defaults to .Chart.AppVersion
+  tag: ""  # Defaults to .Chart.AppVersion
   pullPolicy: IfNotPresent
 
 # Deployment settings
@@ -133,7 +128,7 @@ securityContext:
   readOnlyRootFilesystem: true
   capabilities:
     drop:
-      - ALL
+    - ALL
 
 # Service
 service:
@@ -170,7 +165,6 @@ serviceMonitor:
 ```
 
 ### values.schema.json (validation)
-
 ```json
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
@@ -212,8 +206,7 @@ serviceMonitor:
 
 ### Common Templates
 
-#### \_helpers.tpl
-
+#### _helpers.tpl
 ```yaml
 {{/*
 Standard naming helpers
@@ -268,7 +261,6 @@ Image name helper
 ```
 
 #### NOTES.txt
-
 ```
 Thank you for installing {{ .Chart.Name }}.
 
@@ -304,13 +296,13 @@ dependencies:
   - name: postgresql
     version: "12.0.0"
     repository: "https://charts.bitnami.com/bitnami"
-    condition: postgresql.enabled # Enable/disable via values
-    tags: # Group dependencies
+    condition: postgresql.enabled  # Enable/disable via values
+    tags:                          # Group dependencies
       - database
-    import-values: # Import values from subchart
+    import-values:                 # Import values from subchart
       - child: database
         parent: database
-    alias: db # Reference as .Values.db
+    alias: db                      # Reference as .Values.db
 ```
 
 ### Managing Dependencies
@@ -332,9 +324,9 @@ Generated automatically by `helm dependency update`:
 
 ```yaml
 dependencies:
-  - name: postgresql
-    repository: https://charts.bitnami.com/bitnami
-    version: 12.0.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.0.0
 digest: sha256:abcd1234...
 generated: "2024-01-01T00:00:00Z"
 ```
@@ -382,7 +374,6 @@ crds/
 ```
 
 **Important CRD notes:**
-
 - CRDs are installed before any templates
 - CRDs are NOT templated (no `{{ }}` syntax)
 - CRDs are NOT upgraded or deleted with chart
@@ -402,7 +393,7 @@ crds/
   - Not required to follow SemVer
 
 ```yaml
-version: 2.3.1 # Chart version
+version: 2.3.1      # Chart version
 appVersion: "1.5.0" # Application version
 ```
 

@@ -20,11 +20,9 @@ Master comprehensive evaluation strategies for LLM applications, from automated 
 ## Core Evaluation Types
 
 ### 1. Automated Metrics
-
 Fast, repeatable, scalable evaluation using computed scores.
 
 **Text Generation:**
-
 - **BLEU**: N-gram overlap (translation)
 - **ROUGE**: Recall-oriented (summarization)
 - **METEOR**: Semantic similarity
@@ -32,25 +30,21 @@ Fast, repeatable, scalable evaluation using computed scores.
 - **Perplexity**: Language model confidence
 
 **Classification:**
-
 - **Accuracy**: Percentage correct
 - **Precision/Recall/F1**: Class-specific performance
 - **Confusion Matrix**: Error patterns
 - **AUC-ROC**: Ranking quality
 
 **Retrieval (RAG):**
-
 - **MRR**: Mean Reciprocal Rank
 - **NDCG**: Normalized Discounted Cumulative Gain
 - **Precision@K**: Relevant in top K
 - **Recall@K**: Coverage in top K
 
 ### 2. Human Evaluation
-
 Manual assessment for quality aspects difficult to automate.
 
 **Dimensions:**
-
 - **Accuracy**: Factual correctness
 - **Coherence**: Logical flow
 - **Relevance**: Answers the question
@@ -59,11 +53,9 @@ Manual assessment for quality aspects difficult to automate.
 - **Helpfulness**: Useful to the user
 
 ### 3. LLM-as-Judge
-
 Use stronger LLMs to evaluate weaker model outputs.
 
 **Approaches:**
-
 - **Pointwise**: Score individual responses
 - **Pairwise**: Compare two responses
 - **Reference-based**: Compare to gold standard
@@ -72,81 +64,43 @@ Use stronger LLMs to evaluate weaker model outputs.
 ## Quick Start
 
 ```python
-from dataclasses import dataclass
-from typing import Callable
-import numpy as np
+from llm_eval import EvaluationSuite, Metric
 
-@dataclass
-class Metric:
-    name: str
-    fn: Callable
-
-    @staticmethod
-    def accuracy():
-        return Metric("accuracy", calculate_accuracy)
-
-    @staticmethod
-    def bleu():
-        return Metric("bleu", calculate_bleu)
-
-    @staticmethod
-    def bertscore():
-        return Metric("bertscore", calculate_bertscore)
-
-    @staticmethod
-    def custom(name: str, fn: Callable):
-        return Metric(name, fn)
-
-class EvaluationSuite:
-    def __init__(self, metrics: list[Metric]):
-        self.metrics = metrics
-
-    async def evaluate(self, model, test_cases: list[dict]) -> dict:
-        results = {m.name: [] for m in self.metrics}
-
-        for test in test_cases:
-            prediction = await model.predict(test["input"])
-
-            for metric in self.metrics:
-                score = metric.fn(
-                    prediction=prediction,
-                    reference=test.get("expected"),
-                    context=test.get("context")
-                )
-                results[metric.name].append(score)
-
-        return {
-            "metrics": {k: np.mean(v) for k, v in results.items()},
-            "raw_scores": results
-        }
-
-# Usage
+# Define evaluation suite
 suite = EvaluationSuite([
     Metric.accuracy(),
     Metric.bleu(),
     Metric.bertscore(),
-    Metric.custom("groundedness", check_groundedness)
+    Metric.custom(name="groundedness", fn=check_groundedness)
 ])
 
+# Prepare test cases
 test_cases = [
     {
         "input": "What is the capital of France?",
         "expected": "Paris",
         "context": "France is a country in Europe. Paris is its capital."
     },
+    # ... more test cases
 ]
 
-results = await suite.evaluate(model=your_model, test_cases=test_cases)
+# Run evaluation
+results = suite.evaluate(
+    model=your_model,
+    test_cases=test_cases
+)
+
+print(f"Overall Accuracy: {results.metrics['accuracy']}")
+print(f"BLEU Score: {results.metrics['bleu']}")
 ```
 
 ## Automated Metrics Implementation
 
 ### BLEU Score
-
 ```python
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 
-def calculate_bleu(reference: str, hypothesis: str, **kwargs) -> float:
+def calculate_bleu(reference, hypothesis):
     """Calculate BLEU score between reference and hypothesis."""
     smoothie = SmoothingFunction().method4
 
@@ -155,19 +109,21 @@ def calculate_bleu(reference: str, hypothesis: str, **kwargs) -> float:
         hypothesis.split(),
         smoothing_function=smoothie
     )
+
+# Usage
+bleu = calculate_bleu(
+    reference="The cat sat on the mat",
+    hypothesis="A cat is sitting on the mat"
+)
 ```
 
 ### ROUGE Score
-
 ```python
 from rouge_score import rouge_scorer
 
-def calculate_rouge(reference: str, hypothesis: str, **kwargs) -> dict:
+def calculate_rouge(reference, hypothesis):
     """Calculate ROUGE scores."""
-    scorer = rouge_scorer.RougeScorer(
-        ['rouge1', 'rouge2', 'rougeL'],
-        use_stemmer=True
-    )
+    scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
     scores = scorer.score(reference, hypothesis)
 
     return {
@@ -178,16 +134,11 @@ def calculate_rouge(reference: str, hypothesis: str, **kwargs) -> dict:
 ```
 
 ### BERTScore
-
 ```python
 from bert_score import score
 
-def calculate_bertscore(
-    references: list[str],
-    hypotheses: list[str],
-    **kwargs
-) -> dict:
-    """Calculate BERTScore using pre-trained model."""
+def calculate_bertscore(references, hypotheses):
+    """Calculate BERTScore using pre-trained BERT."""
     P, R, F1 = score(
         hypotheses,
         references,
@@ -203,75 +154,45 @@ def calculate_bertscore(
 ```
 
 ### Custom Metrics
-
 ```python
-def calculate_groundedness(response: str, context: str, **kwargs) -> float:
+def calculate_groundedness(response, context):
     """Check if response is grounded in provided context."""
+    # Use NLI model to check entailment
     from transformers import pipeline
 
-    nli = pipeline(
-        "text-classification",
-        model="microsoft/deberta-large-mnli"
-    )
+    nli = pipeline("text-classification", model="microsoft/deberta-large-mnli")
 
     result = nli(f"{context} [SEP] {response}")[0]
 
     # Return confidence that response is entailed by context
     return result['score'] if result['label'] == 'ENTAILMENT' else 0.0
 
-def calculate_toxicity(text: str, **kwargs) -> float:
+def calculate_toxicity(text):
     """Measure toxicity in generated text."""
     from detoxify import Detoxify
 
     results = Detoxify('original').predict(text)
     return max(results.values())  # Return highest toxicity score
 
-def calculate_factuality(claim: str, sources: list[str], **kwargs) -> float:
-    """Verify factual claims against sources."""
-    from transformers import pipeline
-
-    nli = pipeline("text-classification", model="facebook/bart-large-mnli")
-
-    scores = []
-    for source in sources:
-        result = nli(f"{source}</s></s>{claim}")[0]
-        if result['label'] == 'entailment':
-            scores.append(result['score'])
-
-    return max(scores) if scores else 0.0
+def calculate_factuality(claim, knowledge_base):
+    """Verify factual claims against knowledge base."""
+    # Implementation depends on your knowledge base
+    # Could use retrieval + NLI, or fact-checking API
+    pass
 ```
 
 ## LLM-as-Judge Patterns
 
 ### Single Output Evaluation
-
 ```python
-from anthropic import Anthropic
-from pydantic import BaseModel, Field
-import json
-
-class QualityRating(BaseModel):
-    accuracy: int = Field(ge=1, le=10, description="Factual correctness")
-    helpfulness: int = Field(ge=1, le=10, description="Answers the question")
-    clarity: int = Field(ge=1, le=10, description="Well-written and understandable")
-    reasoning: str = Field(description="Brief explanation")
-
-async def llm_judge_quality(
-    response: str,
-    question: str,
-    context: str = None
-) -> QualityRating:
-    """Use Claude to judge response quality."""
-    client = Anthropic()
-
-    system = """You are an expert evaluator of AI responses.
-    Rate responses on accuracy, helpfulness, and clarity (1-10 scale).
-    Provide brief reasoning for your ratings."""
-
-    prompt = f"""Rate the following response:
+def llm_judge_quality(response, question):
+    """Use GPT-5 to judge response quality."""
+    prompt = f"""Rate the following response on a scale of 1-10 for:
+1. Accuracy (factually correct)
+2. Helpfulness (answers the question)
+3. Clarity (well-written and understandable)
 
 Question: {question}
-{f'Context: {context}' if context else ''}
 Response: {response}
 
 Provide ratings in JSON format:
@@ -280,38 +201,23 @@ Provide ratings in JSON format:
   "helpfulness": <1-10>,
   "clarity": <1-10>,
   "reasoning": "<brief explanation>"
-}}"""
+}}
+"""
 
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=500,
-        system=system,
-        messages=[{"role": "user", "content": prompt}]
+    result = openai.ChatCompletion.create(
+        model="gpt-5",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
     )
 
-    return QualityRating(**json.loads(message.content[0].text))
+    return json.loads(result.choices[0].message.content)
 ```
 
 ### Pairwise Comparison
-
 ```python
-from pydantic import BaseModel, Field
-from typing import Literal
-
-class ComparisonResult(BaseModel):
-    winner: Literal["A", "B", "tie"]
-    reasoning: str
-    confidence: int = Field(ge=1, le=10)
-
-async def compare_responses(
-    question: str,
-    response_a: str,
-    response_b: str
-) -> ComparisonResult:
+def compare_responses(question, response_a, response_b):
     """Compare two responses using LLM judge."""
-    client = Anthropic()
-
-    prompt = f"""Compare these two responses and determine which is better.
+    prompt = f"""Compare these two responses to the question and determine which is better.
 
 Question: {question}
 
@@ -319,86 +225,38 @@ Response A: {response_a}
 
 Response B: {response_b}
 
-Consider accuracy, helpfulness, and clarity.
+Which response is better and why? Consider accuracy, helpfulness, and clarity.
 
 Answer with JSON:
 {{
   "winner": "A" or "B" or "tie",
   "reasoning": "<explanation>",
   "confidence": <1-10>
-}}"""
+}}
+"""
 
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=500,
-        messages=[{"role": "user", "content": prompt}]
+    result = openai.ChatCompletion.create(
+        model="gpt-5",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0
     )
 
-    return ComparisonResult(**json.loads(message.content[0].text))
-```
-
-### Reference-Based Evaluation
-
-```python
-class ReferenceEvaluation(BaseModel):
-    semantic_similarity: float = Field(ge=0, le=1)
-    factual_accuracy: float = Field(ge=0, le=1)
-    completeness: float = Field(ge=0, le=1)
-    issues: list[str]
-
-async def evaluate_against_reference(
-    response: str,
-    reference: str,
-    question: str
-) -> ReferenceEvaluation:
-    """Evaluate response against gold standard reference."""
-    client = Anthropic()
-
-    prompt = f"""Compare the response to the reference answer.
-
-Question: {question}
-Reference Answer: {reference}
-Response to Evaluate: {response}
-
-Evaluate:
-1. Semantic similarity (0-1): How similar is the meaning?
-2. Factual accuracy (0-1): Are all facts correct?
-3. Completeness (0-1): Does it cover all key points?
-4. List any specific issues or errors.
-
-Respond in JSON:
-{{
-  "semantic_similarity": <0-1>,
-  "factual_accuracy": <0-1>,
-  "completeness": <0-1>,
-  "issues": ["issue1", "issue2"]
-}}"""
-
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=500,
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    return ReferenceEvaluation(**json.loads(message.content[0].text))
+    return json.loads(result.choices[0].message.content)
 ```
 
 ## Human Evaluation Frameworks
 
 ### Annotation Guidelines
-
 ```python
-from dataclasses import dataclass, field
-from typing import Optional
-
-@dataclass
 class AnnotationTask:
     """Structure for human annotation task."""
-    response: str
-    question: str
-    context: Optional[str] = None
 
-    def get_annotation_form(self) -> dict:
+    def __init__(self, response, question, context=None):
+        self.response = response
+        self.question = question
+        self.context = context
+
+    def get_annotation_form(self):
         return {
             "question": self.question,
             "context": self.context,
@@ -428,63 +286,51 @@ class AnnotationTask:
 ```
 
 ### Inter-Rater Agreement
-
 ```python
 from sklearn.metrics import cohen_kappa_score
 
-def calculate_agreement(
-    rater1_scores: list[int],
-    rater2_scores: list[int]
-) -> dict:
+def calculate_agreement(rater1_scores, rater2_scores):
     """Calculate inter-rater agreement."""
     kappa = cohen_kappa_score(rater1_scores, rater2_scores)
 
-    if kappa < 0:
-        interpretation = "Poor"
-    elif kappa < 0.2:
-        interpretation = "Slight"
-    elif kappa < 0.4:
-        interpretation = "Fair"
-    elif kappa < 0.6:
-        interpretation = "Moderate"
-    elif kappa < 0.8:
-        interpretation = "Substantial"
-    else:
-        interpretation = "Almost Perfect"
+    interpretation = {
+        kappa < 0: "Poor",
+        kappa < 0.2: "Slight",
+        kappa < 0.4: "Fair",
+        kappa < 0.6: "Moderate",
+        kappa < 0.8: "Substantial",
+        kappa <= 1.0: "Almost Perfect"
+    }
 
     return {
         "kappa": kappa,
-        "interpretation": interpretation
+        "interpretation": interpretation[True]
     }
 ```
 
 ## A/B Testing
 
 ### Statistical Testing Framework
-
 ```python
 from scipy import stats
 import numpy as np
-from dataclasses import dataclass, field
 
-@dataclass
 class ABTest:
-    variant_a_name: str = "A"
-    variant_b_name: str = "B"
-    variant_a_scores: list[float] = field(default_factory=list)
-    variant_b_scores: list[float] = field(default_factory=list)
+    def __init__(self, variant_a_name="A", variant_b_name="B"):
+        self.variant_a = {"name": variant_a_name, "scores": []}
+        self.variant_b = {"name": variant_b_name, "scores": []}
 
-    def add_result(self, variant: str, score: float):
+    def add_result(self, variant, score):
         """Add evaluation result for a variant."""
         if variant == "A":
-            self.variant_a_scores.append(score)
+            self.variant_a["scores"].append(score)
         else:
-            self.variant_b_scores.append(score)
+            self.variant_b["scores"].append(score)
 
-    def analyze(self, alpha: float = 0.05) -> dict:
+    def analyze(self, alpha=0.05):
         """Perform statistical analysis."""
-        a_scores = np.array(self.variant_a_scores)
-        b_scores = np.array(self.variant_b_scores)
+        a_scores = self.variant_a["scores"]
+        b_scores = self.variant_b["scores"]
 
         # T-test
         t_stat, p_value = stats.ttest_ind(a_scores, b_scores)
@@ -501,12 +347,12 @@ class ABTest:
             "p_value": p_value,
             "statistically_significant": p_value < alpha,
             "cohens_d": cohens_d,
-            "effect_size": self._interpret_cohens_d(cohens_d),
-            "winner": self.variant_b_name if np.mean(b_scores) > np.mean(a_scores) else self.variant_a_name
+            "effect_size": self.interpret_cohens_d(cohens_d),
+            "winner": "B" if np.mean(b_scores) > np.mean(a_scores) else "A"
         }
 
     @staticmethod
-    def _interpret_cohens_d(d: float) -> str:
+    def interpret_cohens_d(d):
         """Interpret Cohen's d effect size."""
         abs_d = abs(d)
         if abs_d < 0.2:
@@ -522,24 +368,13 @@ class ABTest:
 ## Regression Testing
 
 ### Regression Detection
-
 ```python
-from dataclasses import dataclass
-
-@dataclass
-class RegressionResult:
-    metric: str
-    baseline: float
-    current: float
-    change: float
-    is_regression: bool
-
 class RegressionDetector:
-    def __init__(self, baseline_results: dict, threshold: float = 0.05):
+    def __init__(self, baseline_results, threshold=0.05):
         self.baseline = baseline_results
         self.threshold = threshold
 
-    def check_for_regression(self, new_results: dict) -> dict:
+    def check_for_regression(self, new_results):
         """Detect if new results show regression."""
         regressions = []
 
@@ -554,98 +389,39 @@ class RegressionDetector:
             relative_change = (new_score - baseline_score) / baseline_score
 
             # Flag if significant decrease
-            is_regression = relative_change < -self.threshold
-            if is_regression:
-                regressions.append(RegressionResult(
-                    metric=metric,
-                    baseline=baseline_score,
-                    current=new_score,
-                    change=relative_change,
-                    is_regression=True
-                ))
+            if relative_change < -self.threshold:
+                regressions.append({
+                    "metric": metric,
+                    "baseline": baseline_score,
+                    "current": new_score,
+                    "change": relative_change
+                })
 
         return {
             "has_regression": len(regressions) > 0,
-            "regressions": regressions,
-            "summary": f"{len(regressions)} metric(s) regressed"
+            "regressions": regressions
         }
-```
-
-## LangSmith Evaluation Integration
-
-```python
-from langsmith import Client
-from langsmith.evaluation import evaluate, LangChainStringEvaluator
-
-# Initialize LangSmith client
-client = Client()
-
-# Create dataset
-dataset = client.create_dataset("qa_test_cases")
-client.create_examples(
-    inputs=[{"question": q} for q in questions],
-    outputs=[{"answer": a} for a in expected_answers],
-    dataset_id=dataset.id
-)
-
-# Define evaluators
-evaluators = [
-    LangChainStringEvaluator("qa"),           # QA correctness
-    LangChainStringEvaluator("context_qa"),   # Context-grounded QA
-    LangChainStringEvaluator("cot_qa"),       # Chain-of-thought QA
-]
-
-# Run evaluation
-async def target_function(inputs: dict) -> dict:
-    result = await your_chain.ainvoke(inputs)
-    return {"answer": result}
-
-experiment_results = await evaluate(
-    target_function,
-    data=dataset.name,
-    evaluators=evaluators,
-    experiment_prefix="v1.0.0",
-    metadata={"model": "claude-sonnet-4-5", "version": "1.0.0"}
-)
-
-print(f"Mean score: {experiment_results.aggregate_metrics['qa']['mean']}")
 ```
 
 ## Benchmarking
 
 ### Running Benchmarks
-
 ```python
-from dataclasses import dataclass
-import numpy as np
-
-@dataclass
-class BenchmarkResult:
-    metric: str
-    mean: float
-    std: float
-    min: float
-    max: float
-
 class BenchmarkRunner:
-    def __init__(self, benchmark_dataset: list[dict]):
+    def __init__(self, benchmark_dataset):
         self.dataset = benchmark_dataset
 
-    async def run_benchmark(
-        self,
-        model,
-        metrics: list[Metric]
-    ) -> dict[str, BenchmarkResult]:
+    def run_benchmark(self, model, metrics):
         """Run model on benchmark and calculate metrics."""
         results = {metric.name: [] for metric in metrics}
 
         for example in self.dataset:
             # Generate prediction
-            prediction = await model.predict(example["input"])
+            prediction = model.predict(example["input"])
 
             # Calculate each metric
             for metric in metrics:
-                score = metric.fn(
+                score = metric.calculate(
                     prediction=prediction,
                     reference=example["reference"],
                     context=example.get("context")
@@ -654,24 +430,26 @@ class BenchmarkRunner:
 
         # Aggregate results
         return {
-            metric: BenchmarkResult(
-                metric=metric,
-                mean=np.mean(scores),
-                std=np.std(scores),
-                min=min(scores),
-                max=max(scores)
-            )
+            metric: {
+                "mean": np.mean(scores),
+                "std": np.std(scores),
+                "min": min(scores),
+                "max": max(scores)
+            }
             for metric, scores in results.items()
         }
 ```
 
 ## Resources
 
-- [LangSmith Evaluation Guide](https://docs.smith.langchain.com/evaluation)
-- [RAGAS Framework](https://docs.ragas.io/)
-- [DeepEval Library](https://docs.deepeval.com/)
-- [Arize Phoenix](https://docs.arize.com/phoenix/)
-- [HELM Benchmark](https://crfm.stanford.edu/helm/)
+- **references/metrics.md**: Comprehensive metric guide
+- **references/human-evaluation.md**: Annotation best practices
+- **references/benchmarking.md**: Standard benchmarks
+- **references/a-b-testing.md**: Statistical testing guide
+- **references/regression-testing.md**: CI/CD integration
+- **assets/evaluation-framework.py**: Complete evaluation harness
+- **assets/benchmark-dataset.jsonl**: Example datasets
+- **scripts/evaluate-model.py**: Automated evaluation runner
 
 ## Best Practices
 
@@ -691,5 +469,3 @@ class BenchmarkRunner:
 - **Data Contamination**: Testing on training data
 - **Ignoring Variance**: Not accounting for statistical uncertainty
 - **Metric Mismatch**: Using metrics not aligned with business goals
-- **Position Bias**: In pairwise evals, randomize order
-- **Overfitting Prompts**: Optimizing for test set instead of real use
