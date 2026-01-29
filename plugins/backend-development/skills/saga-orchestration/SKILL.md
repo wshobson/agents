@@ -35,13 +35,13 @@ Choreography                    Orchestration
 
 ### 2. Saga Execution States
 
-| State | Description |
-|-------|-------------|
-| **Started** | Saga initiated |
-| **Pending** | Waiting for step completion |
-| **Compensating** | Rolling back due to failure |
-| **Completed** | All steps succeeded |
-| **Failed** | Saga failed after compensation |
+| State            | Description                    |
+| ---------------- | ------------------------------ |
+| **Started**      | Saga initiated                 |
+| **Pending**      | Waiting for step completion    |
+| **Compensating** | Rolling back due to failure    |
+| **Completed**    | All steps succeeded            |
+| **Failed**       | Saga failed after compensation |
 
 ## Templates
 
@@ -464,6 +464,7 @@ class TimeoutSagaOrchestrator(SagaOrchestrator):
 ## Best Practices
 
 ### Do's
+
 - **Make steps idempotent** - Safe to retry
 - **Design compensations carefully** - They must work
 - **Use correlation IDs** - For tracing across services
@@ -471,6 +472,7 @@ class TimeoutSagaOrchestrator(SagaOrchestrator):
 - **Log everything** - For debugging failures
 
 ### Don'ts
+
 - **Don't assume instant completion** - Sagas take time
 - **Don't skip compensation testing** - Most critical part
 - **Don't couple services** - Use async messaging

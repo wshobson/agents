@@ -3,9 +3,11 @@
 You are an SLO (Service Level Objective) expert specializing in implementing reliability standards and error budget-based engineering practices. Design comprehensive SLO frameworks, establish meaningful SLIs, and create monitoring systems that balance reliability with feature velocity.
 
 ## Context
+
 The user needs to implement SLOs to establish reliability targets, measure service performance, and make data-driven decisions about reliability vs. feature development. Focus on practical SLO implementation that aligns with business objectives.
 
 ## Requirements
+
 $ARGUMENTS
 
 ## Instructions
@@ -15,6 +17,7 @@ $ARGUMENTS
 Establish SLO fundamentals and framework:
 
 **SLO Framework Designer**
+
 ```python
 import numpy as np
 from datetime import datetime, timedelta
@@ -25,7 +28,7 @@ class SLOFramework:
         self.service = service_name
         self.slos = []
         self.error_budget = None
-        
+
     def design_slo_framework(self):
         """
         Design comprehensive SLO framework
@@ -38,9 +41,9 @@ class SLOFramework:
             'error_budgets': self._define_error_budgets(),
             'measurement_strategy': self._design_measurement_strategy()
         }
-        
+
         return self._generate_slo_specification(framework)
-    
+
     def _analyze_service_context(self):
         """Analyze service characteristics for SLO design"""
         return {
@@ -50,7 +53,7 @@ class SLOFramework:
             'technical_constraints': self._identify_constraints(),
             'dependencies': self._map_dependencies()
         }
-    
+
     def _determine_service_tier(self):
         """Determine appropriate service tier and SLO targets"""
         tiers = {
@@ -83,21 +86,21 @@ class SLOFramework:
                 'examples': ['batch processing', 'reporting']
             }
         }
-        
+
         # Analyze service characteristics to determine tier
         characteristics = self._analyze_service_characteristics()
         recommended_tier = self._match_tier(characteristics, tiers)
-        
+
         return {
             'recommended': recommended_tier,
             'rationale': self._explain_tier_selection(characteristics),
             'all_tiers': tiers
         }
-    
+
     def _identify_user_journeys(self):
         """Map critical user journeys for SLI selection"""
         journeys = []
-        
+
         # Example user journey mapping
         journey_template = {
             'name': 'User Login',
@@ -127,7 +130,7 @@ class SLOFramework:
             'critical_path': True,
             'business_impact': 'high'
         }
-        
+
         return journeys
 ```
 
@@ -136,6 +139,7 @@ class SLOFramework:
 Choose and implement appropriate SLIs:
 
 **SLI Implementation**
+
 ```python
 class SLIImplementation:
     def __init__(self):
@@ -146,7 +150,7 @@ class SLIImplementation:
             'throughput': ThroughputSLI,
             'quality': QualitySLI
         }
-    
+
     def implement_slis(self, service_type):
         """Implement SLIs based on service type"""
         if service_type == 'api':
@@ -157,7 +161,7 @@ class SLIImplementation:
             return self._batch_slis()
         elif service_type == 'streaming':
             return self._streaming_slis()
-    
+
     def _api_slis(self):
         """SLIs for API services"""
         return {
@@ -167,7 +171,7 @@ class SLIImplementation:
                 'implementation': '''
 # Prometheus query for API availability
 api_availability = """
-sum(rate(http_requests_total{status!~"5.."}[5m])) / 
+sum(rate(http_requests_total{status!~"5.."}[5m])) /
 sum(rate(http_requests_total[5m])) * 100
 """
 
@@ -175,22 +179,22 @@ sum(rate(http_requests_total[5m])) * 100
 class APIAvailabilitySLI:
     def __init__(self, prometheus_client):
         self.prom = prometheus_client
-        
+
     def calculate(self, time_range='5m'):
         query = f"""
-        sum(rate(http_requests_total{{status!~"5.."}}[{time_range}])) / 
+        sum(rate(http_requests_total{{status!~"5.."}}[{time_range}])) /
         sum(rate(http_requests_total[{time_range}])) * 100
         """
         result = self.prom.query(query)
         return float(result[0]['value'][1])
-    
+
     def calculate_with_exclusions(self, time_range='5m'):
         """Calculate availability excluding certain endpoints"""
         query = f"""
         sum(rate(http_requests_total{{
             status!~"5..",
             endpoint!~"/health|/metrics"
-        }}[{time_range}])) / 
+        }}[{time_range}])) /
         sum(rate(http_requests_total{{
             endpoint!~"/health|/metrics"
         }}[{time_range}])) * 100
@@ -206,26 +210,26 @@ class APIAvailabilitySLI:
 class LatencySLI:
     def __init__(self, thresholds_ms):
         self.thresholds = thresholds_ms  # e.g., {'p50': 100, 'p95': 500, 'p99': 1000}
-    
+
     def calculate_latency_sli(self, time_range='5m'):
         slis = {}
-        
+
         for percentile, threshold in self.thresholds.items():
             query = f"""
             sum(rate(http_request_duration_seconds_bucket{{
                 le="{threshold/1000}"
-            }}[{time_range}])) / 
+            }}[{time_range}])) /
             sum(rate(http_request_duration_seconds_count[{time_range}])) * 100
             """
-            
+
             slis[f'latency_{percentile}'] = {
                 'value': self.execute_query(query),
                 'threshold': threshold,
                 'unit': 'ms'
             }
-        
+
         return slis
-    
+
     def calculate_user_centric_latency(self):
         """Calculate latency from user perspective"""
         # Include client-side metrics
@@ -244,7 +248,7 @@ class LatencySLI:
 class ErrorRateSLI:
     def calculate_error_rate(self, time_range='5m'):
         """Calculate error rate with categorization"""
-        
+
         # Different error categories
         error_categories = {
             'client_errors': 'status=~"4.."',
@@ -252,22 +256,22 @@ class ErrorRateSLI:
             'timeout_errors': 'status="504"',
             'business_errors': 'error_type="business_logic"'
         }
-        
+
         results = {}
         for category, filter_expr in error_categories.items():
             query = f"""
-            sum(rate(http_requests_total{{{filter_expr}}}[{time_range}])) / 
+            sum(rate(http_requests_total{{{filter_expr}}}[{time_range}])) /
             sum(rate(http_requests_total[{time_range}])) * 100
             """
             results[category] = self.execute_query(query)
-        
+
         # Overall error rate (excluding 4xx)
         overall_query = f"""
-        (1 - sum(rate(http_requests_total{{status=~"5.."}}[{time_range}])) / 
+        (1 - sum(rate(http_requests_total{{status=~"5.."}}[{time_range}])) /
         sum(rate(http_requests_total[{time_range}]))) * 100
         """
         results['overall_success_rate'] = self.execute_query(overall_query)
-        
+
         return results
 '''
             }
@@ -279,39 +283,40 @@ class ErrorRateSLI:
 Implement error budget tracking:
 
 **Error Budget Manager**
+
 ```python
 class ErrorBudgetManager:
     def __init__(self, slo_target: float, window_days: int):
         self.slo_target = slo_target
         self.window_days = window_days
         self.error_budget_minutes = self._calculate_total_budget()
-    
+
     def _calculate_total_budget(self):
         """Calculate total error budget in minutes"""
         total_minutes = self.window_days * 24 * 60
         allowed_downtime_ratio = 1 - (self.slo_target / 100)
         return total_minutes * allowed_downtime_ratio
-    
+
     def calculate_error_budget_status(self, start_date, end_date):
         """Calculate current error budget status"""
         # Get actual performance
         actual_uptime = self._get_actual_uptime(start_date, end_date)
-        
+
         # Calculate consumed budget
         total_time = (end_date - start_date).total_seconds() / 60
         expected_uptime = total_time * (self.slo_target / 100)
         consumed_minutes = expected_uptime - actual_uptime
-        
+
         # Calculate remaining budget
         remaining_budget = self.error_budget_minutes - consumed_minutes
         burn_rate = consumed_minutes / self.error_budget_minutes
-        
+
         # Project exhaustion
         if burn_rate > 0:
             days_until_exhaustion = (self.window_days * (1 - burn_rate)) / burn_rate
         else:
             days_until_exhaustion = float('inf')
-        
+
         return {
             'total_budget_minutes': self.error_budget_minutes,
             'consumed_minutes': consumed_minutes,
@@ -321,7 +326,7 @@ class ErrorBudgetManager:
             'projected_exhaustion_days': days_until_exhaustion,
             'status': self._determine_status(remaining_budget, burn_rate)
         }
-    
+
     def _determine_status(self, remaining_budget, burn_rate):
         """Determine error budget status"""
         if remaining_budget <= 0:
@@ -334,7 +339,7 @@ class ErrorBudgetManager:
             return 'attention'
         else:
             return 'healthy'
-    
+
     def generate_burn_rate_alerts(self):
         """Generate multi-window burn rate alerts"""
         return {
@@ -358,6 +363,7 @@ class ErrorBudgetManager:
 Implement comprehensive SLO monitoring:
 
 **SLO Monitoring Implementation**
+
 ```yaml
 # Prometheus recording rules for SLO
 groups:
@@ -368,7 +374,7 @@ groups:
       - record: service:request_rate
         expr: |
           sum(rate(http_requests_total[5m])) by (service, method, route)
-      
+
       # Success rate
       - record: service:success_rate_5m
         expr: |
@@ -377,7 +383,7 @@ groups:
             /
             sum(rate(http_requests_total[5m])) by (service)
           ) * 100
-      
+
       # Multi-window success rates
       - record: service:success_rate_30m
         expr: |
@@ -386,7 +392,7 @@ groups:
             /
             sum(rate(http_requests_total[30m])) by (service)
           ) * 100
-      
+
       - record: service:success_rate_1h
         expr: |
           (
@@ -394,26 +400,26 @@ groups:
             /
             sum(rate(http_requests_total[1h])) by (service)
           ) * 100
-      
+
       # Latency percentiles
       - record: service:latency_p50_5m
         expr: |
           histogram_quantile(0.50,
             sum(rate(http_request_duration_seconds_bucket[5m])) by (service, le)
           )
-      
+
       - record: service:latency_p95_5m
         expr: |
           histogram_quantile(0.95,
             sum(rate(http_request_duration_seconds_bucket[5m])) by (service, le)
           )
-      
+
       - record: service:latency_p99_5m
         expr: |
           histogram_quantile(0.99,
             sum(rate(http_request_duration_seconds_bucket[5m])) by (service, le)
           )
-      
+
       # Error budget burn rate
       - record: service:error_budget_burn_rate_1h
         expr: |
@@ -427,6 +433,7 @@ groups:
 ```
 
 **Alert Configuration**
+
 ```yaml
 # Multi-window multi-burn-rate alerts
 groups:
@@ -450,7 +457,7 @@ groups:
             Service {{ $labels.service }} is burning error budget at 14.4x rate.
             Current burn rate: {{ $value }}x
             This will exhaust 2% of monthly budget in 1 hour.
-          
+
       # Slow burn alert (10% budget in 6 hours)
       - alert: ErrorBudgetSlowBurn
         expr: |
@@ -476,6 +483,7 @@ groups:
 Create comprehensive SLO dashboards:
 
 **Grafana Dashboard Configuration**
+
 ```python
 def create_slo_dashboard():
     """Generate Grafana dashboard for SLO monitoring"""
@@ -579,11 +587,12 @@ def create_slo_dashboard():
 Generate SLO reports and reviews:
 
 **SLO Report Generator**
+
 ```python
 class SLOReporter:
     def __init__(self, metrics_client):
         self.metrics = metrics_client
-        
+
     def generate_monthly_report(self, service, month):
         """Generate comprehensive monthly SLO report"""
         report_data = {
@@ -595,13 +604,13 @@ class SLOReporter:
             'trends': self._analyze_trends(service, month),
             'recommendations': self._generate_recommendations(service, month)
         }
-        
+
         return self._format_report(report_data)
-    
+
     def _calculate_slo_performance(self, service, month):
         """Calculate SLO performance metrics"""
         slos = {}
-        
+
         # Availability SLO
         availability_query = f"""
         avg_over_time(
@@ -613,7 +622,7 @@ class SLOReporter:
             'actual': self.metrics.query(availability_query),
             'met': self.metrics.query(availability_query) >= 99.9
         }
-        
+
         # Latency SLO
         latency_query = f"""
         quantile_over_time(0.95,
@@ -625,9 +634,9 @@ class SLOReporter:
             'actual': self.metrics.query(latency_query) * 1000,
             'met': self.metrics.query(latency_query) * 1000 <= 500
         }
-        
+
         return slos
-    
+
     def _format_report(self, data):
         """Format report as HTML"""
         return f"""
@@ -649,14 +658,14 @@ class SLOReporter:
 <body>
     <h1>SLO Report: {data['service']}</h1>
     <h2>Period: {data['period']}</h2>
-    
+
     <div class="summary">
         <h3>Executive Summary</h3>
         <p>Service reliability: {data['slo_performance']['availability']['actual']:.2f}%</p>
         <p>Error budget remaining: {data['error_budget']['remaining_percentage']:.1f}%</p>
         <p>Number of incidents: {len(data['incidents'])}</p>
     </div>
-    
+
     <div class="metric">
         <h3>SLO Performance</h3>
         <table>
@@ -669,12 +678,12 @@ class SLOReporter:
             {self._format_slo_table_rows(data['slo_performance'])}
         </table>
     </div>
-    
+
     <div class="incidents">
         <h3>Incident Analysis</h3>
         {self._format_incident_analysis(data['incidents'])}
     </div>
-    
+
     <div class="recommendations">
         <h3>Recommendations</h3>
         {self._format_recommendations(data['recommendations'])}
@@ -689,15 +698,16 @@ class SLOReporter:
 Implement SLO-driven engineering decisions:
 
 **SLO Decision Framework**
+
 ```python
 class SLODecisionFramework:
     def __init__(self, error_budget_policy):
         self.policy = error_budget_policy
-        
+
     def make_release_decision(self, service, release_risk):
         """Make release decisions based on error budget"""
         budget_status = self.get_error_budget_status(service)
-        
+
         decision_matrix = {
             'healthy': {
                 'low_risk': 'approve',
@@ -725,24 +735,24 @@ class SLODecisionFramework:
                 'high_risk': 'block'
             }
         }
-        
+
         decision = decision_matrix[budget_status['status']][release_risk]
-        
+
         return {
             'decision': decision,
             'rationale': self._explain_decision(budget_status, release_risk),
             'conditions': self._get_approval_conditions(decision, budget_status),
             'alternative_actions': self._suggest_alternatives(decision, budget_status)
         }
-    
+
     def prioritize_reliability_work(self, service):
         """Prioritize reliability improvements based on SLO gaps"""
         slo_gaps = self.analyze_slo_gaps(service)
-        
+
         priorities = []
         for gap in slo_gaps:
             priority_score = self.calculate_priority_score(gap)
-            
+
             priorities.append({
                 'issue': gap['issue'],
                 'impact': gap['impact'],
@@ -750,16 +760,16 @@ class SLODecisionFramework:
                 'priority_score': priority_score,
                 'recommended_actions': self.recommend_actions(gap)
             })
-        
+
         return sorted(priorities, key=lambda x: x['priority_score'], reverse=True)
-    
+
     def calculate_toil_budget(self, team_size, slo_performance):
         """Calculate how much toil is acceptable based on SLOs"""
         # If meeting SLOs, can afford more toil
         # If not meeting SLOs, need to reduce toil
-        
+
         base_toil_percentage = 50  # Google SRE recommendation
-        
+
         if slo_performance >= 100:
             # Exceeding SLO, can take on more toil
             toil_budget = base_toil_percentage + 10
@@ -769,7 +779,7 @@ class SLODecisionFramework:
         else:
             # Not meeting SLO, reduce toil
             toil_budget = base_toil_percentage - (100 - slo_performance) * 5
-        
+
         return {
             'toil_percentage': max(toil_budget, 20),  # Minimum 20%
             'toil_hours_per_week': (toil_budget / 100) * 40 * team_size,
@@ -782,6 +792,7 @@ class SLODecisionFramework:
 Provide SLO templates for common services:
 
 **SLO Template Library**
+
 ```python
 class SLOTemplates:
     @staticmethod
@@ -816,7 +827,7 @@ class SLOTemplates:
                 }
             ]
         }
-    
+
     @staticmethod
     def get_data_pipeline_template():
         """SLO template for data pipelines"""
@@ -856,30 +867,31 @@ class SLOTemplates:
 Automate SLO management:
 
 **SLO Automation Tools**
+
 ```python
 class SLOAutomation:
     def __init__(self):
         self.config = self.load_slo_config()
-        
+
     def auto_generate_slos(self, service_discovery):
         """Automatically generate SLOs for discovered services"""
         services = service_discovery.get_all_services()
         generated_slos = []
-        
+
         for service in services:
             # Analyze service characteristics
             characteristics = self.analyze_service(service)
-            
+
             # Select appropriate template
             template = self.select_template(characteristics)
-            
+
             # Customize based on observed behavior
             customized_slo = self.customize_slo(template, service)
-            
+
             generated_slos.append(customized_slo)
-        
+
         return generated_slos
-    
+
     def implement_progressive_slos(self, service):
         """Implement progressively stricter SLOs"""
         return {
@@ -904,7 +916,7 @@ class SLOAutomation:
                 'description': 'Excellence'
             }
         }
-    
+
     def create_slo_as_code(self):
         """Define SLOs as code"""
         return '''
@@ -917,7 +929,7 @@ metadata:
 spec:
   service: api-service
   description: API service availability SLO
-  
+
   indicator:
     type: ratio
     counter:
@@ -926,12 +938,12 @@ spec:
         - status_code != 5xx
     total:
       metric: http_requests_total
-  
+
   objectives:
     - displayName: 30-day rolling window
       window: 30d
       target: 0.999
-      
+
   alerting:
     burnRates:
       - severity: critical
@@ -942,7 +954,7 @@ spec:
         shortWindow: 6h
         longWindow: 30m
         burnRate: 3
-        
+
   annotations:
     runbook: https://runbooks.example.com/api-availability
     dashboard: https://grafana.example.com/d/api-slo
@@ -954,6 +966,7 @@ spec:
 Establish SLO culture:
 
 **SLO Governance Framework**
+
 ```python
 class SLOGovernance:
     def establish_slo_culture(self):
@@ -998,7 +1011,7 @@ class SLOGovernance:
                 }
             }
         }
-    
+
     def create_slo_review_process(self):
         """Create structured SLO review process"""
         return '''

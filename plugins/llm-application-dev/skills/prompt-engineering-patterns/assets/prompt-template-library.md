@@ -3,6 +3,7 @@
 ## Classification Templates
 
 ### Sentiment Analysis
+
 ```
 Classify the sentiment of the following text as Positive, Negative, or Neutral.
 
@@ -12,6 +13,7 @@ Sentiment:
 ```
 
 ### Intent Detection
+
 ```
 Determine the user's intent from the following message.
 
@@ -23,6 +25,7 @@ Intent:
 ```
 
 ### Topic Classification
+
 ```
 Classify the following article into one of these categories: {categories}
 
@@ -35,6 +38,7 @@ Category:
 ## Extraction Templates
 
 ### Named Entity Recognition
+
 ```
 Extract all named entities from the text and categorize them.
 
@@ -50,6 +54,7 @@ Entities (JSON format):
 ```
 
 ### Structured Data Extraction
+
 ```
 Extract structured information from the job posting.
 
@@ -70,6 +75,7 @@ Extracted Information (JSON):
 ## Generation Templates
 
 ### Email Generation
+
 ```
 Write a professional {email_type} email.
 
@@ -84,6 +90,7 @@ Body:
 ```
 
 ### Code Generation
+
 ```
 Generate {language} code for the following task:
 
@@ -101,6 +108,7 @@ Code:
 ```
 
 ### Creative Writing
+
 ```
 Write a {length}-word {style} story about {topic}.
 
@@ -115,6 +123,7 @@ Story:
 ## Transformation Templates
 
 ### Summarization
+
 ```
 Summarize the following text in {num_sentences} sentences.
 
@@ -125,6 +134,7 @@ Summary:
 ```
 
 ### Translation with Context
+
 ```
 Translate the following {source_lang} text to {target_lang}.
 
@@ -137,6 +147,7 @@ Translation:
 ```
 
 ### Format Conversion
+
 ```
 Convert the following {source_format} to {target_format}.
 
@@ -149,6 +160,7 @@ Output ({target_format}):
 ## Analysis Templates
 
 ### Code Review
+
 ```
 Review the following code for:
 1. Bugs and errors
@@ -163,6 +175,7 @@ Review:
 ```
 
 ### SWOT Analysis
+
 ```
 Conduct a SWOT analysis for: {subject}
 
@@ -185,6 +198,7 @@ Threats:
 ## Question Answering Templates
 
 ### RAG Template
+
 ```
 Answer the question based on the provided context. If the context doesn't contain enough information, say so.
 
@@ -197,6 +211,7 @@ Answer:
 ```
 
 ### Multi-Turn Q&A
+
 ```
 Previous conversation:
 {conversation_history}
@@ -209,6 +224,7 @@ Answer (continue naturally from conversation):
 ## Specialized Templates
 
 ### SQL Query Generation
+
 ```
 Generate a SQL query for the following request.
 
@@ -221,6 +237,7 @@ SQL Query:
 ```
 
 ### Regex Pattern Creation
+
 ```
 Create a regex pattern to match: {requirement}
 
@@ -234,6 +251,7 @@ Regex pattern:
 ```
 
 ### API Documentation
+
 ```
 Generate API documentation for this function:
 

@@ -36,20 +36,20 @@ Systematic attack path visualization and analysis.
 
 ### 2. Node Types
 
-| Type | Symbol | Description |
-|------|--------|-------------|
-| **OR** | Oval | Any child achieves goal |
-| **AND** | Rectangle | All children required |
-| **Leaf** | Box | Atomic attack step |
+| Type     | Symbol    | Description             |
+| -------- | --------- | ----------------------- |
+| **OR**   | Oval      | Any child achieves goal |
+| **AND**  | Rectangle | All children required   |
+| **Leaf** | Box       | Atomic attack step      |
 
 ### 3. Attack Attributes
 
-| Attribute | Description | Values |
-|-----------|-------------|--------|
-| **Cost** | Resources needed | $, $$, $$$ |
-| **Time** | Duration to execute | Hours, Days, Weeks |
-| **Skill** | Expertise required | Low, Medium, High |
-| **Detection** | Likelihood of detection | Low, Medium, High |
+| Attribute     | Description             | Values             |
+| ------------- | ----------------------- | ------------------ |
+| **Cost**      | Resources needed        | $, $$, $$$         |
+| **Time**      | Duration to execute     | Hours, Days, Weeks |
+| **Skill**     | Expertise required      | Low, Medium, High  |
+| **Detection** | Likelihood of detection | Low, Medium, High  |
 
 ## Templates
 
@@ -665,6 +665,7 @@ class AttackPathAnalyzer:
 ## Best Practices
 
 ### Do's
+
 - **Start with clear goals** - Define what attacker wants
 - **Be exhaustive** - Consider all attack vectors
 - **Attribute attacks** - Cost, skill, and detection
@@ -672,6 +673,7 @@ class AttackPathAnalyzer:
 - **Validate with experts** - Red team review
 
 ### Don'ts
+
 - **Don't oversimplify** - Real attacks are complex
 - **Don't ignore dependencies** - AND nodes matter
 - **Don't forget insider threats** - Not all attackers are external

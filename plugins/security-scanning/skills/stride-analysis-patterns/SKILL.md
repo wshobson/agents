@@ -34,14 +34,14 @@ E - Elevation of   → Authorization threats
 
 ### 2. Threat Analysis Matrix
 
-| Category | Question | Control Family |
-|----------|----------|----------------|
-| **Spoofing** | Can attacker pretend to be someone else? | Authentication |
-| **Tampering** | Can attacker modify data in transit/rest? | Integrity |
-| **Repudiation** | Can attacker deny actions? | Logging/Audit |
-| **Info Disclosure** | Can attacker access unauthorized data? | Encryption |
-| **DoS** | Can attacker disrupt availability? | Rate limiting |
-| **Elevation** | Can attacker gain higher privileges? | Authorization |
+| Category            | Question                                  | Control Family |
+| ------------------- | ----------------------------------------- | -------------- |
+| **Spoofing**        | Can attacker pretend to be someone else?  | Authentication |
+| **Tampering**       | Can attacker modify data in transit/rest? | Integrity      |
+| **Repudiation**     | Can attacker deny actions?                | Logging/Audit  |
+| **Info Disclosure** | Can attacker access unauthorized data?    | Encryption     |
+| **DoS**             | Can attacker disrupt availability?        | Rate limiting  |
+| **Elevation**       | Can attacker gain higher privileges?      | Authorization  |
 
 ## Templates
 
@@ -53,14 +53,17 @@ E - Elevation of   → Authorization threats
 ## 1. System Overview
 
 ### 1.1 Description
+
 [Brief description of the system and its purpose]
 
 ### 1.2 Data Flow Diagram
 ```
+
 [User] --> [Web App] --> [API Gateway] --> [Backend Services]
-                              |
-                              v
-                        [Database]
+|
+v
+[Database]
+
 ```
 
 ### 1.3 Trust Boundaries
@@ -163,12 +166,15 @@ E - Elevation of   → Authorization threats
 ### 4.1 Risk Matrix
 
 ```
+
               IMPACT
          Low  Med  High Crit
     Low   1    2    3    4
-L   Med   2    4    6    8
-I   High  3    6    9    12
-K   Crit  4    8   12    16
+
+L Med 2 4 6 8
+I High 3 6 9 12
+K Crit 4 8 12 16
+
 ```
 
 ### 4.2 Prioritized Risks
@@ -636,6 +642,7 @@ class StridePerInteraction:
 ## Best Practices
 
 ### Do's
+
 - **Involve stakeholders** - Security, dev, and ops perspectives
 - **Be systematic** - Cover all STRIDE categories
 - **Prioritize realistically** - Focus on high-impact threats
@@ -643,6 +650,7 @@ class StridePerInteraction:
 - **Use visual aids** - DFDs help communication
 
 ### Don'ts
+
 - **Don't skip categories** - Each reveals different threats
 - **Don't assume security** - Question every component
 - **Don't work in isolation** - Collaborative modeling is better

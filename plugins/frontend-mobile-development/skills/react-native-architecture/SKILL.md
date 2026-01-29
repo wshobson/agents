@@ -38,13 +38,13 @@ src/
 
 ### 2. Expo vs Bare React Native
 
-| Feature | Expo | Bare RN |
-|---------|------|---------|
-| Setup complexity | Low | High |
-| Native modules | EAS Build | Manual linking |
-| OTA updates | Built-in | Manual setup |
-| Build service | EAS | Custom CI |
-| Custom native code | Config plugins | Direct access |
+| Feature            | Expo           | Bare RN        |
+| ------------------ | -------------- | -------------- |
+| Setup complexity   | Low            | High           |
+| Native modules     | EAS Build      | Manual linking |
+| OTA updates        | Built-in       | Manual setup   |
+| Build service      | EAS            | Custom CI      |
+| Custom native code | Config plugins | Direct access  |
 
 ## Quick Start
 
@@ -332,60 +332,60 @@ export function useCreateProduct() {
 
 ```typescript
 // services/haptics.ts
-import * as Haptics from 'expo-haptics'
-import { Platform } from 'react-native'
+import * as Haptics from "expo-haptics";
+import { Platform } from "react-native";
 
 export const haptics = {
   light: () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   },
   medium: () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
   },
   heavy: () => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     }
   },
   success: () => {
-    if (Platform.OS !== 'web') {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    if (Platform.OS !== "web") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
   },
   error: () => {
-    if (Platform.OS !== 'web') {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+    if (Platform.OS !== "web") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
   },
-}
+};
 
 // services/biometrics.ts
-import * as LocalAuthentication from 'expo-local-authentication'
+import * as LocalAuthentication from "expo-local-authentication";
 
 export async function authenticateWithBiometrics(): Promise<boolean> {
-  const hasHardware = await LocalAuthentication.hasHardwareAsync()
-  if (!hasHardware) return false
+  const hasHardware = await LocalAuthentication.hasHardwareAsync();
+  if (!hasHardware) return false;
 
-  const isEnrolled = await LocalAuthentication.isEnrolledAsync()
-  if (!isEnrolled) return false
+  const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+  if (!isEnrolled) return false;
 
   const result = await LocalAuthentication.authenticateAsync({
-    promptMessage: 'Authenticate to continue',
-    fallbackLabel: 'Use passcode',
+    promptMessage: "Authenticate to continue",
+    fallbackLabel: "Use passcode",
     disableDeviceFallback: false,
-  })
+  });
 
-  return result.success
+  return result.success;
 }
 
 // services/notifications.ts
-import * as Notifications from 'expo-notifications'
-import { Platform } from 'react-native'
-import Constants from 'expo-constants'
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
+import Constants from "expo-constants";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -393,35 +393,35 @@ Notifications.setNotificationHandler({
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
-})
+});
 
 export async function registerForPushNotifications() {
-  let token: string | undefined
+  let token: string | undefined;
 
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-    })
+    });
   }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync()
-  let finalStatus = existingStatus
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
 
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync()
-    finalStatus = status
+  if (existingStatus !== "granted") {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
   }
 
-  if (finalStatus !== 'granted') {
-    return null
+  if (finalStatus !== "granted") {
+    return null;
   }
 
-  const projectId = Constants.expoConfig?.extra?.eas?.projectId
-  token = (await Notifications.getExpoPushTokenAsync({ projectId })).data
+  const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+  token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
 
-  return token
+  return token;
 }
 ```
 
@@ -650,6 +650,7 @@ eas update --branch production --message "Bug fixes"
 ## Best Practices
 
 ### Do's
+
 - **Use Expo** - Faster development, OTA updates, managed native code
 - **FlashList over FlatList** - Better performance for long lists
 - **Memoize components** - Prevent unnecessary re-renders
@@ -657,6 +658,7 @@ eas update --branch production --message "Bug fixes"
 - **Test on real devices** - Simulators miss real-world issues
 
 ### Don'ts
+
 - **Don't inline styles** - Use StyleSheet.create for performance
 - **Don't fetch in render** - Use useEffect or React Query
 - **Don't ignore platform differences** - Test on both iOS and Android

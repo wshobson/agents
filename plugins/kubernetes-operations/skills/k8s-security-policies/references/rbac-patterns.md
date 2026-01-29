@@ -3,18 +3,20 @@
 ## Common RBAC Patterns
 
 ### Pattern 1: Read-Only Access
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: read-only
 rules:
-- apiGroups: ["", "apps", "batch"]
-  resources: ["*"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: ["", "apps", "batch"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
 ```
 
 ### Pattern 2: Namespace Admin
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -22,12 +24,13 @@ metadata:
   name: namespace-admin
   namespace: production
 rules:
-- apiGroups: ["", "apps", "batch", "extensions"]
-  resources: ["*"]
-  verbs: ["*"]
+  - apiGroups: ["", "apps", "batch", "extensions"]
+    resources: ["*"]
+    verbs: ["*"]
 ```
 
 ### Pattern 3: Deployment Manager
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -35,15 +38,16 @@ metadata:
   name: deployment-manager
   namespace: production
 rules:
-- apiGroups: ["apps"]
-  resources: ["deployments"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
 ```
 
 ### Pattern 4: Secret Reader (ServiceAccount)
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -51,10 +55,10 @@ metadata:
   name: secret-reader
   namespace: production
 rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get"]
-  resourceNames: ["app-secrets"]  # Specific secret only
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+    resourceNames: ["app-secrets"] # Specific secret only
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -62,9 +66,9 @@ metadata:
   name: app-secret-reader
   namespace: production
 subjects:
-- kind: ServiceAccount
-  name: my-app
-  namespace: production
+  - kind: ServiceAccount
+    name: my-app
+    namespace: production
 roleRef:
   kind: Role
   name: secret-reader
@@ -72,26 +76,28 @@ roleRef:
 ```
 
 ### Pattern 5: CI/CD Pipeline Access
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: cicd-deployer
 rules:
-- apiGroups: ["apps"]
-  resources: ["deployments", "replicasets"]
-  verbs: ["get", "list", "create", "update", "patch"]
-- apiGroups: [""]
-  resources: ["services", "configmaps"]
-  verbs: ["get", "list", "create", "update", "patch"]
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "list"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["services", "configmaps"]
+    verbs: ["get", "list", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
 ```
 
 ## ServiceAccount Best Practices
 
 ### Create Dedicated ServiceAccounts
+
 ```yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -107,10 +113,11 @@ spec:
   template:
     spec:
       serviceAccountName: my-app
-      automountServiceAccountToken: false  # Disable if not needed
+      automountServiceAccountToken: false # Disable if not needed
 ```
 
 ### Least-Privilege ServiceAccount
+
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -118,10 +125,10 @@ metadata:
   name: my-app-role
   namespace: production
 rules:
-- apiGroups: [""]
-  resources: ["configmaps"]
-  verbs: ["get"]
-  resourceNames: ["my-app-config"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get"]
+    resourceNames: ["my-app-config"]
 ```
 
 ## Security Best Practices
@@ -140,18 +147,21 @@ rules:
 ## Troubleshooting RBAC
 
 ### Check User Permissions
+
 ```bash
 kubectl auth can-i list pods --as john@example.com
 kubectl auth can-i '*' '*' --as system:serviceaccount:default:my-app
 ```
 
 ### View Effective Permissions
+
 ```bash
 kubectl describe clusterrole cluster-admin
 kubectl describe rolebinding -n production
 ```
 
 ### Debug Access Issues
+
 ```bash
 kubectl get rolebindings,clusterrolebindings --all-namespaces -o wide | grep my-user
 ```
@@ -171,6 +181,7 @@ kubectl get rolebindings,clusterrolebindings --all-namespaces -o wide | grep my-
 ## Resource Scope
 
 ### Cluster-Scoped Resources
+
 - Nodes
 - PersistentVolumes
 - ClusterRoles
@@ -178,6 +189,7 @@ kubectl get rolebindings,clusterrolebindings --all-namespaces -o wide | grep my-
 - Namespaces
 
 ### Namespace-Scoped Resources
+
 - Pods
 - Services
 - Deployments

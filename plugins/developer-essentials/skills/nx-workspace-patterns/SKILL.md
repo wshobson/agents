@@ -39,13 +39,13 @@ workspace/
 
 ### 2. Library Types
 
-| Type | Purpose | Example |
-|------|---------|---------|
-| **feature** | Smart components, business logic | `feature-auth` |
-| **ui** | Presentational components | `ui-buttons` |
-| **data-access** | API calls, state management | `data-access-users` |
-| **util** | Pure functions, helpers | `util-formatting` |
-| **shell** | App bootstrapping | `shell-web` |
+| Type            | Purpose                          | Example             |
+| --------------- | -------------------------------- | ------------------- |
+| **feature**     | Smart components, business logic | `feature-auth`      |
+| **ui**          | Presentational components        | `ui-buttons`        |
+| **data-access** | API calls, state management      | `data-access-users` |
+| **util**        | Pure functions, helpers          | `util-formatting`   |
+| **shell**       | App bootstrapping                | `shell-web`         |
 
 ## Templates
 
@@ -276,8 +276,8 @@ import {
   joinPathFragments,
   names,
   readProjectConfiguration,
-} from '@nx/devkit';
-import { libraryGenerator } from '@nx/react';
+} from "@nx/devkit";
+import { libraryGenerator } from "@nx/react";
 
 interface FeatureLibraryGeneratorSchema {
   name: string;
@@ -287,7 +287,7 @@ interface FeatureLibraryGeneratorSchema {
 
 export default async function featureLibraryGenerator(
   tree: Tree,
-  options: FeatureLibraryGeneratorSchema
+  options: FeatureLibraryGeneratorSchema,
 ) {
   const { name, scope, directory } = options;
   const projectDirectory = directory
@@ -299,26 +299,29 @@ export default async function featureLibraryGenerator(
     name: `feature-${name}`,
     directory: projectDirectory,
     tags: `type:feature,scope:${scope}`,
-    style: 'css',
+    style: "css",
     skipTsConfig: false,
     skipFormat: true,
-    unitTestRunner: 'jest',
-    linter: 'eslint',
+    unitTestRunner: "jest",
+    linter: "eslint",
   });
 
   // Add custom files
-  const projectConfig = readProjectConfiguration(tree, `${scope}-feature-${name}`);
+  const projectConfig = readProjectConfiguration(
+    tree,
+    `${scope}-feature-${name}`,
+  );
   const projectNames = names(name);
 
   generateFiles(
     tree,
-    joinPathFragments(__dirname, 'files'),
+    joinPathFragments(__dirname, "files"),
     projectConfig.sourceRoot,
     {
       ...projectNames,
       scope,
-      tmpl: '',
-    }
+      tmpl: "",
+    },
   );
 
   await formatFiles(tree);
@@ -351,7 +354,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -433,6 +436,7 @@ nx migrate --run-migrations
 ## Best Practices
 
 ### Do's
+
 - **Use tags consistently** - Enforce with module boundaries
 - **Enable caching early** - Significant CI savings
 - **Keep libs focused** - Single responsibility
@@ -440,6 +444,7 @@ nx migrate --run-migrations
 - **Document boundaries** - Help new developers
 
 ### Don'ts
+
 - **Don't create circular deps** - Graph should be acyclic
 - **Don't skip affected** - Test only what changed
 - **Don't ignore boundaries** - Tech debt accumulates

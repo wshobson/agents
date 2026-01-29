@@ -55,7 +55,7 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 ### Docker Compose
 
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   prometheus:
     image: prom/prometheus:latest
@@ -65,9 +65,9 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=30d'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=30d"
 
 volumes:
   prometheus-data:
@@ -76,20 +76,21 @@ volumes:
 ## Configuration File
 
 **prometheus.yml:**
+
 ```yaml
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
   external_labels:
-    cluster: 'production'
-    region: 'us-west-2'
+    cluster: "production"
+    region: "us-west-2"
 
 # Alertmanager configuration
 alerting:
   alertmanagers:
     - static_configs:
         - targets:
-          - alertmanager:9093
+            - alertmanager:9093
 
 # Load rules files
 rule_files:
@@ -98,25 +99,25 @@ rule_files:
 # Scrape configurations
 scrape_configs:
   # Prometheus itself
-  - job_name: 'prometheus'
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
 
   # Node exporters
-  - job_name: 'node-exporter'
+  - job_name: "node-exporter"
     static_configs:
       - targets:
-        - 'node1:9100'
-        - 'node2:9100'
-        - 'node3:9100'
+          - "node1:9100"
+          - "node2:9100"
+          - "node3:9100"
     relabel_configs:
       - source_labels: [__address__]
         target_label: instance
-        regex: '([^:]+)(:[0-9]+)?'
-        replacement: '${1}'
+        regex: "([^:]+)(:[0-9]+)?"
+        replacement: "${1}"
 
   # Kubernetes pods with annotations
-  - job_name: 'kubernetes-pods'
+  - job_name: "kubernetes-pods"
     kubernetes_sd_configs:
       - role: pod
     relabel_configs:
@@ -127,7 +128,8 @@ scrape_configs:
         action: replace
         target_label: __metrics_path__
         regex: (.+)
-      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+      - source_labels:
+          [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
         action: replace
         regex: ([^:]+)(?::\d+)?;(\d+)
         replacement: $1:$2
@@ -140,13 +142,13 @@ scrape_configs:
         target_label: pod
 
   # Application metrics
-  - job_name: 'my-app'
+  - job_name: "my-app"
     static_configs:
       - targets:
-        - 'app1.example.com:9090'
-        - 'app2.example.com:9090'
-    metrics_path: '/metrics'
-    scheme: 'https'
+          - "app1.example.com:9090"
+          - "app2.example.com:9090"
+    metrics_path: "/metrics"
+    scheme: "https"
     tls_config:
       ca_file: /etc/prometheus/ca.crt
       cert_file: /etc/prometheus/client.crt
@@ -161,27 +163,28 @@ scrape_configs:
 
 ```yaml
 scrape_configs:
-  - job_name: 'static-targets'
+  - job_name: "static-targets"
     static_configs:
-      - targets: ['host1:9100', 'host2:9100']
+      - targets: ["host1:9100", "host2:9100"]
         labels:
-          env: 'production'
-          region: 'us-west-2'
+          env: "production"
+          region: "us-west-2"
 ```
 
 ### File-based Service Discovery
 
 ```yaml
 scrape_configs:
-  - job_name: 'file-sd'
+  - job_name: "file-sd"
     file_sd_configs:
       - files:
-        - /etc/prometheus/targets/*.json
-        - /etc/prometheus/targets/*.yml
+          - /etc/prometheus/targets/*.json
+          - /etc/prometheus/targets/*.yml
         refresh_interval: 5m
 ```
 
 **targets/production.json:**
+
 ```json
 [
   {
@@ -198,14 +201,16 @@ scrape_configs:
 
 ```yaml
 scrape_configs:
-  - job_name: 'kubernetes-services'
+  - job_name: "kubernetes-services"
     kubernetes_sd_configs:
       - role: service
     relabel_configs:
-      - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+      - source_labels:
+          [__meta_kubernetes_service_annotation_prometheus_io_scrape]
         action: keep
         regex: true
-      - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+      - source_labels:
+          [__meta_kubernetes_service_annotation_prometheus_io_scheme]
         action: replace
         target_label: __scheme__
         regex: (https?)
@@ -364,16 +369,19 @@ promtool query instant http://localhost:9090 'up'
 ## Troubleshooting
 
 **Check scrape targets:**
+
 ```bash
 curl http://localhost:9090/api/v1/targets
 ```
 
 **Check configuration:**
+
 ```bash
 curl http://localhost:9090/api/v1/status/config
 ```
 
 **Test query:**
+
 ```bash
 curl 'http://localhost:9090/api/v1/query?query=up'
 ```

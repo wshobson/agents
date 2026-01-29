@@ -23,22 +23,23 @@ Comprehensive guidance for building scalable, maintainable, and production-ready
 ### Express.js - Minimalist Framework
 
 **Basic Setup:**
+
 ```typescript
-import express, { Request, Response, NextFunction } from 'express';
-import helmet from 'helmet';
-import cors from 'cors';
-import compression from 'compression';
+import express, { Request, Response, NextFunction } from "express";
+import helmet from "helmet";
+import cors from "cors";
+import compression from "compression";
 
 const app = express();
 
 // Security middleware
 app.use(helmet());
-app.use(cors({ origin: process.env.ALLOWED_ORIGINS?.split(',') }));
+app.use(cors({ origin: process.env.ALLOWED_ORIGINS?.split(",") }));
 app.use(compression());
 
 // Body parsing
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Request logging
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -55,20 +56,21 @@ app.listen(PORT, () => {
 ### Fastify - High Performance Framework
 
 **Basic Setup:**
+
 ```typescript
-import Fastify from 'fastify';
-import helmet from '@fastify/helmet';
-import cors from '@fastify/cors';
-import compress from '@fastify/compress';
+import Fastify from "fastify";
+import helmet from "@fastify/helmet";
+import cors from "@fastify/cors";
+import compress from "@fastify/compress";
 
 const fastify = Fastify({
   logger: {
-    level: process.env.LOG_LEVEL || 'info',
+    level: process.env.LOG_LEVEL || "info",
     transport: {
-      target: 'pino-pretty',
-      options: { colorize: true }
-    }
-  }
+      target: "pino-pretty",
+      options: { colorize: true },
+    },
+  },
 });
 
 // Plugins
@@ -80,23 +82,27 @@ await fastify.register(compress);
 fastify.post<{
   Body: { name: string; email: string };
   Reply: { id: string; name: string };
-}>('/users', {
-  schema: {
-    body: {
-      type: 'object',
-      required: ['name', 'email'],
-      properties: {
-        name: { type: 'string', minLength: 1 },
-        email: { type: 'string', format: 'email' }
-      }
-    }
-  }
-}, async (request, reply) => {
-  const { name, email } = request.body;
-  return { id: '123', name };
-});
+}>(
+  "/users",
+  {
+    schema: {
+      body: {
+        type: "object",
+        required: ["name", "email"],
+        properties: {
+          name: { type: "string", minLength: 1 },
+          email: { type: "string", format: "email" },
+        },
+      },
+    },
+  },
+  async (request, reply) => {
+    const { name, email } = request.body;
+    return { id: "123", name };
+  },
+);
 
-await fastify.listen({ port: 3000, host: '0.0.0.0' });
+await fastify.listen({ port: 3000, host: "0.0.0.0" });
 ```
 
 ## Architectural Patterns
@@ -104,6 +110,7 @@ await fastify.listen({ port: 3000, host: '0.0.0.0' });
 ### Pattern 1: Layered Architecture
 
 **Structure:**
+
 ```
 src/
 ├── controllers/     # Handle HTTP requests/responses
@@ -118,11 +125,12 @@ src/
 ```
 
 **Controller Layer:**
+
 ```typescript
 // controllers/user.controller.ts
-import { Request, Response, NextFunction } from 'express';
-import { UserService } from '../services/user.service';
-import { CreateUserDTO, UpdateUserDTO } from '../types/user.types';
+import { Request, Response, NextFunction } from "express";
+import { UserService } from "../services/user.service";
+import { CreateUserDTO, UpdateUserDTO } from "../types/user.types";
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -171,12 +179,13 @@ export class UserController {
 ```
 
 **Service Layer:**
+
 ```typescript
 // services/user.service.ts
-import { UserRepository } from '../repositories/user.repository';
-import { CreateUserDTO, UpdateUserDTO, User } from '../types/user.types';
-import { NotFoundError, ValidationError } from '../utils/errors';
-import bcrypt from 'bcrypt';
+import { UserRepository } from "../repositories/user.repository";
+import { CreateUserDTO, UpdateUserDTO, User } from "../types/user.types";
+import { NotFoundError, ValidationError } from "../utils/errors";
+import bcrypt from "bcrypt";
 
 export class UserService {
   constructor(private userRepository: UserRepository) {}
@@ -185,7 +194,7 @@ export class UserService {
     // Validation
     const existingUser = await this.userRepository.findByEmail(userData.email);
     if (existingUser) {
-      throw new ValidationError('Email already exists');
+      throw new ValidationError("Email already exists");
     }
 
     // Hash password
@@ -194,7 +203,7 @@ export class UserService {
     // Create user
     const user = await this.userRepository.create({
       ...userData,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     // Remove password from response
@@ -205,7 +214,7 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     const user = await this.userRepository.findById(id);
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError("User not found");
     }
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword as User;
@@ -214,7 +223,7 @@ export class UserService {
   async updateUser(id: string, updates: UpdateUserDTO): Promise<User> {
     const user = await this.userRepository.update(id, updates);
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError("User not found");
     }
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword as User;
@@ -223,22 +232,25 @@ export class UserService {
   async deleteUser(id: string): Promise<void> {
     const deleted = await this.userRepository.delete(id);
     if (!deleted) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError("User not found");
     }
   }
 }
 ```
 
 **Repository Layer:**
+
 ```typescript
 // repositories/user.repository.ts
-import { Pool } from 'pg';
-import { CreateUserDTO, UpdateUserDTO, UserEntity } from '../types/user.types';
+import { Pool } from "pg";
+import { CreateUserDTO, UpdateUserDTO, UserEntity } from "../types/user.types";
 
 export class UserRepository {
   constructor(private db: Pool) {}
 
-  async create(userData: CreateUserDTO & { password: string }): Promise<UserEntity> {
+  async create(
+    userData: CreateUserDTO & { password: string },
+  ): Promise<UserEntity> {
     const query = `
       INSERT INTO users (name, email, password)
       VALUES ($1, $2, $3)
@@ -247,19 +259,19 @@ export class UserRepository {
     const { rows } = await this.db.query(query, [
       userData.name,
       userData.email,
-      userData.password
+      userData.password,
     ]);
     return rows[0];
   }
 
   async findById(id: string): Promise<UserEntity | null> {
-    const query = 'SELECT * FROM users WHERE id = $1';
+    const query = "SELECT * FROM users WHERE id = $1";
     const { rows } = await this.db.query(query, [id]);
     return rows[0] || null;
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    const query = 'SELECT * FROM users WHERE email = $1';
+    const query = "SELECT * FROM users WHERE email = $1";
     const { rows } = await this.db.query(query, [email]);
     return rows[0] || null;
   }
@@ -270,7 +282,7 @@ export class UserRepository {
 
     const setClause = fields
       .map((field, idx) => `${field} = $${idx + 2}`)
-      .join(', ');
+      .join(", ");
 
     const query = `
       UPDATE users
@@ -284,7 +296,7 @@ export class UserRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const query = 'DELETE FROM users WHERE id = $1';
+    const query = "DELETE FROM users WHERE id = $1";
     const { rowCount } = await this.db.query(query, [id]);
     return rowCount > 0;
   }
@@ -294,13 +306,14 @@ export class UserRepository {
 ### Pattern 2: Dependency Injection
 
 **DI Container:**
+
 ```typescript
 // di-container.ts
-import { Pool } from 'pg';
-import { UserRepository } from './repositories/user.repository';
-import { UserService } from './services/user.service';
-import { UserController } from './controllers/user.controller';
-import { AuthService } from './services/auth.service';
+import { Pool } from "pg";
+import { UserRepository } from "./repositories/user.repository";
+import { UserService } from "./services/user.service";
+import { UserController } from "./controllers/user.controller";
+import { AuthService } from "./services/auth.service";
 
 class Container {
   private instances = new Map<string, any>();
@@ -331,31 +344,39 @@ class Container {
 export const container = new Container();
 
 // Register dependencies
-container.singleton('db', () => new Pool({
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-}));
-
-container.singleton('userRepository', () =>
-  new UserRepository(container.resolve('db'))
+container.singleton(
+  "db",
+  () =>
+    new Pool({
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT || "5432"),
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      max: 20,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+    }),
 );
 
-container.singleton('userService', () =>
-  new UserService(container.resolve('userRepository'))
+container.singleton(
+  "userRepository",
+  () => new UserRepository(container.resolve("db")),
 );
 
-container.register('userController', () =>
-  new UserController(container.resolve('userService'))
+container.singleton(
+  "userService",
+  () => new UserService(container.resolve("userRepository")),
 );
 
-container.singleton('authService', () =>
-  new AuthService(container.resolve('userRepository'))
+container.register(
+  "userController",
+  () => new UserController(container.resolve("userService")),
+);
+
+container.singleton(
+  "authService",
+  () => new AuthService(container.resolve("userRepository")),
 );
 ```
 
@@ -365,9 +386,9 @@ container.singleton('authService', () =>
 
 ```typescript
 // middleware/auth.middleware.ts
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { UnauthorizedError } from '../utils/errors';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { UnauthorizedError } from "../utils/errors";
 
 interface JWTPayload {
   userId: string;
@@ -385,40 +406,35 @@ declare global {
 export const authenticate = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
-      throw new UnauthorizedError('No token provided');
+      throw new UnauthorizedError("No token provided");
     }
 
-    const payload = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    ) as JWTPayload;
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
 
     req.user = payload;
     next();
   } catch (error) {
-    next(new UnauthorizedError('Invalid token'));
+    next(new UnauthorizedError("Invalid token"));
   }
 };
 
 export const authorize = (...roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
-      return next(new UnauthorizedError('Not authenticated'));
+      return next(new UnauthorizedError("Not authenticated"));
     }
 
     // Check if user has required role
-    const hasRole = roles.some(role =>
-      req.user?.roles?.includes(role)
-    );
+    const hasRole = roles.some((role) => req.user?.roles?.includes(role));
 
     if (!hasRole) {
-      return next(new UnauthorizedError('Insufficient permissions'));
+      return next(new UnauthorizedError("Insufficient permissions"));
     }
 
     next();
@@ -430,9 +446,9 @@ export const authorize = (...roles: string[]) => {
 
 ```typescript
 // middleware/validation.middleware.ts
-import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject, ZodError } from 'zod';
-import { ValidationError } from '../utils/errors';
+import { Request, Response, NextFunction } from "express";
+import { AnyZodObject, ZodError } from "zod";
+import { ValidationError } from "../utils/errors";
 
 export const validate = (schema: AnyZodObject) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -440,16 +456,16 @@ export const validate = (schema: AnyZodObject) => {
       await schema.parseAsync({
         body: req.body,
         query: req.query,
-        params: req.params
+        params: req.params,
       });
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        const errors = error.errors.map(err => ({
-          field: err.path.join('.'),
-          message: err.message
+        const errors = error.errors.map((err) => ({
+          field: err.path.join("."),
+          message: err.message,
         }));
-        next(new ValidationError('Validation failed', errors));
+        next(new ValidationError("Validation failed", errors));
       } else {
         next(error);
       }
@@ -458,40 +474,40 @@ export const validate = (schema: AnyZodObject) => {
 };
 
 // Usage with Zod
-import { z } from 'zod';
+import { z } from "zod";
 
 const createUserSchema = z.object({
   body: z.object({
     name: z.string().min(1),
     email: z.string().email(),
-    password: z.string().min(8)
-  })
+    password: z.string().min(8),
+  }),
 });
 
-router.post('/users', validate(createUserSchema), userController.createUser);
+router.post("/users", validate(createUserSchema), userController.createUser);
 ```
 
 ### Rate Limiting Middleware
 
 ```typescript
 // middleware/rate-limit.middleware.ts
-import rateLimit from 'express-rate-limit';
-import RedisStore from 'rate-limit-redis';
-import Redis from 'ioredis';
+import rateLimit from "express-rate-limit";
+import RedisStore from "rate-limit-redis";
+import Redis from "ioredis";
 
 const redis = new Redis({
   host: process.env.REDIS_HOST,
-  port: parseInt(process.env.REDIS_PORT || '6379')
+  port: parseInt(process.env.REDIS_PORT || "6379"),
 });
 
 export const apiLimiter = rateLimit({
   store: new RedisStore({
     client: redis,
-    prefix: 'rl:',
+    prefix: "rl:",
   }),
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later',
+  message: "Too many requests from this IP, please try again later",
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -499,7 +515,7 @@ export const apiLimiter = rateLimit({
 export const authLimiter = rateLimit({
   store: new RedisStore({
     client: redis,
-    prefix: 'rl:auth:',
+    prefix: "rl:auth:",
   }),
   windowMs: 15 * 60 * 1000,
   max: 5, // Stricter limit for auth endpoints
@@ -511,34 +527,34 @@ export const authLimiter = rateLimit({
 
 ```typescript
 // middleware/logger.middleware.ts
-import { Request, Response, NextFunction } from 'express';
-import pino from 'pino';
+import { Request, Response, NextFunction } from "express";
+import pino from "pino";
 
 const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
+  level: process.env.LOG_LEVEL || "info",
   transport: {
-    target: 'pino-pretty',
-    options: { colorize: true }
-  }
+    target: "pino-pretty",
+    options: { colorize: true },
+  },
 });
 
 export const requestLogger = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const start = Date.now();
 
   // Log response when finished
-  res.on('finish', () => {
+  res.on("finish", () => {
     const duration = Date.now() - start;
     logger.info({
       method: req.method,
       url: req.url,
       status: res.statusCode,
       duration: `${duration}ms`,
-      userAgent: req.headers['user-agent'],
-      ip: req.ip
+      userAgent: req.headers["user-agent"],
+      ip: req.ip,
     });
   });
 
@@ -558,7 +574,7 @@ export class AppError extends Error {
   constructor(
     public message: string,
     public statusCode: number = 500,
-    public isOperational: boolean = true
+    public isOperational: boolean = true,
   ) {
     super(message);
     Object.setPrototypeOf(this, AppError.prototype);
@@ -567,25 +583,28 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, public errors?: any[]) {
+  constructor(
+    message: string,
+    public errors?: any[],
+  ) {
     super(message, 400);
   }
 }
 
 export class NotFoundError extends AppError {
-  constructor(message: string = 'Resource not found') {
+  constructor(message: string = "Resource not found") {
     super(message, 404);
   }
 }
 
 export class UnauthorizedError extends AppError {
-  constructor(message: string = 'Unauthorized') {
+  constructor(message: string = "Unauthorized") {
     super(message, 401);
   }
 }
 
 export class ForbiddenError extends AppError {
-  constructor(message: string = 'Forbidden') {
+  constructor(message: string = "Forbidden") {
     super(message, 403);
   }
 }
@@ -601,21 +620,21 @@ export class ConflictError extends AppError {
 
 ```typescript
 // middleware/error-handler.ts
-import { Request, Response, NextFunction } from 'express';
-import { AppError } from '../utils/errors';
-import { logger } from './logger.middleware';
+import { Request, Response, NextFunction } from "express";
+import { AppError } from "../utils/errors";
+import { logger } from "./logger.middleware";
 
 export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
-      status: 'error',
+      status: "error",
       message: err.message,
-      ...(err instanceof ValidationError && { errors: err.errors })
+      ...(err instanceof ValidationError && { errors: err.errors }),
     });
   }
 
@@ -624,23 +643,24 @@ export const errorHandler = (
     error: err.message,
     stack: err.stack,
     url: req.url,
-    method: req.method
+    method: req.method,
   });
 
   // Don't leak error details in production
-  const message = process.env.NODE_ENV === 'production'
-    ? 'Internal server error'
-    : err.message;
+  const message =
+    process.env.NODE_ENV === "production"
+      ? "Internal server error"
+      : err.message;
 
   res.status(500).json({
-    status: 'error',
-    message
+    status: "error",
+    message,
   });
 };
 
 // Async error wrapper
 export const asyncHandler = (
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>,
 ) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
@@ -654,11 +674,11 @@ export const asyncHandler = (
 
 ```typescript
 // config/database.ts
-import { Pool, PoolConfig } from 'pg';
+import { Pool, PoolConfig } from "pg";
 
 const poolConfig: PoolConfig = {
   host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || '5432'),
+  port: parseInt(process.env.DB_PORT || "5432"),
   database: process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -670,19 +690,19 @@ const poolConfig: PoolConfig = {
 export const pool = new Pool(poolConfig);
 
 // Test connection
-pool.on('connect', () => {
-  console.log('Database connected');
+pool.on("connect", () => {
+  console.log("Database connected");
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected database error', err);
+pool.on("error", (err) => {
+  console.error("Unexpected database error", err);
   process.exit(-1);
 });
 
 // Graceful shutdown
 export const closeDatabase = async () => {
   await pool.end();
-  console.log('Database connection closed');
+  console.log("Database connection closed");
 };
 ```
 
@@ -690,7 +710,7 @@ export const closeDatabase = async () => {
 
 ```typescript
 // config/mongoose.ts
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
@@ -700,25 +720,25 @@ const connectDB = async () => {
       socketTimeoutMS: 45000,
     });
 
-    console.log('MongoDB connected');
+    console.log("MongoDB connected");
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error("MongoDB connection error:", error);
     process.exit(1);
   }
 };
 
-mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected');
+mongoose.connection.on("disconnected", () => {
+  console.log("MongoDB disconnected");
 });
 
-mongoose.connection.on('error', (err) => {
-  console.error('MongoDB error:', err);
+mongoose.connection.on("error", (err) => {
+  console.error("MongoDB error:", err);
 });
 
 export { connectDB };
 
 // Model example
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document } from "mongoose";
 
 interface IUser extends Document {
   name: string;
@@ -728,25 +748,28 @@ interface IUser extends Document {
   updatedAt: Date;
 }
 
-const userSchema = new Schema<IUser>({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-}, {
-  timestamps: true
-});
+const userSchema = new Schema<IUser>(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 // Indexes
 userSchema.index({ email: 1 });
 
-export const User = model<IUser>('User', userSchema);
+export const User = model<IUser>("User", userSchema);
 ```
 
 ### Transaction Pattern
 
 ```typescript
 // services/order.service.ts
-import { Pool } from 'pg';
+import { Pool } from "pg";
 
 export class OrderService {
   constructor(private db: Pool) {}
@@ -755,33 +778,33 @@ export class OrderService {
     const client = await this.db.connect();
 
     try {
-      await client.query('BEGIN');
+      await client.query("BEGIN");
 
       // Create order
       const orderResult = await client.query(
-        'INSERT INTO orders (user_id, total) VALUES ($1, $2) RETURNING id',
-        [userId, calculateTotal(items)]
+        "INSERT INTO orders (user_id, total) VALUES ($1, $2) RETURNING id",
+        [userId, calculateTotal(items)],
       );
       const orderId = orderResult.rows[0].id;
 
       // Create order items
       for (const item of items) {
         await client.query(
-          'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)',
-          [orderId, item.productId, item.quantity, item.price]
+          "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)",
+          [orderId, item.productId, item.quantity, item.price],
         );
 
         // Update inventory
         await client.query(
-          'UPDATE products SET stock = stock - $1 WHERE id = $2',
-          [item.quantity, item.productId]
+          "UPDATE products SET stock = stock - $1 WHERE id = $2",
+          [item.quantity, item.productId],
         );
       }
 
-      await client.query('COMMIT');
+      await client.query("COMMIT");
       return orderId;
     } catch (error) {
-      await client.query('ROLLBACK');
+      await client.query("ROLLBACK");
       throw error;
     } finally {
       client.release();
@@ -796,10 +819,10 @@ export class OrderService {
 
 ```typescript
 // services/auth.service.ts
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { UserRepository } from '../repositories/user.repository';
-import { UnauthorizedError } from '../utils/errors';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { UserRepository } from "../repositories/user.repository";
+import { UnauthorizedError } from "../utils/errors";
 
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
@@ -808,22 +831,22 @@ export class AuthService {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
-      throw new UnauthorizedError('Invalid credentials');
+      throw new UnauthorizedError("Invalid credentials");
     }
 
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      throw new UnauthorizedError('Invalid credentials');
+      throw new UnauthorizedError("Invalid credentials");
     }
 
     const token = this.generateToken({
       userId: user.id,
-      email: user.email
+      email: user.email,
     });
 
     const refreshToken = this.generateRefreshToken({
-      userId: user.id
+      userId: user.id,
     });
 
     return {
@@ -832,8 +855,8 @@ export class AuthService {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+      },
     };
   }
 
@@ -841,35 +864,35 @@ export class AuthService {
     try {
       const payload = jwt.verify(
         refreshToken,
-        process.env.REFRESH_TOKEN_SECRET!
+        process.env.REFRESH_TOKEN_SECRET!,
       ) as { userId: string };
 
       const user = await this.userRepository.findById(payload.userId);
 
       if (!user) {
-        throw new UnauthorizedError('User not found');
+        throw new UnauthorizedError("User not found");
       }
 
       const token = this.generateToken({
         userId: user.id,
-        email: user.email
+        email: user.email,
       });
 
       return { token };
     } catch (error) {
-      throw new UnauthorizedError('Invalid refresh token');
+      throw new UnauthorizedError("Invalid refresh token");
     }
   }
 
   private generateToken(payload: any): string {
     return jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: '15m'
+      expiresIn: "15m",
     });
   }
 
   private generateRefreshToken(payload: any): string {
     return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET!, {
-      expiresIn: '7d'
+      expiresIn: "7d",
     });
   }
 }
@@ -879,15 +902,15 @@ export class AuthService {
 
 ```typescript
 // utils/cache.ts
-import Redis from 'ioredis';
+import Redis from "ioredis";
 
 const redis = new Redis({
   host: process.env.REDIS_HOST,
-  port: parseInt(process.env.REDIS_PORT || '6379'),
+  port: parseInt(process.env.REDIS_PORT || "6379"),
   retryStrategy: (times) => {
     const delay = Math.min(times * 50, 2000);
     return delay;
-  }
+  },
 });
 
 export class CacheService {
@@ -922,7 +945,7 @@ export function Cacheable(ttl: number = 300) {
   return function (
     target: any,
     propertyKey: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
@@ -950,22 +973,27 @@ export function Cacheable(ttl: number = 300) {
 
 ```typescript
 // utils/response.ts
-import { Response } from 'express';
+import { Response } from "express";
 
 export class ApiResponse {
-  static success<T>(res: Response, data: T, message?: string, statusCode = 200) {
+  static success<T>(
+    res: Response,
+    data: T,
+    message?: string,
+    statusCode = 200,
+  ) {
     return res.status(statusCode).json({
-      status: 'success',
+      status: "success",
       message,
-      data
+      data,
     });
   }
 
   static error(res: Response, message: string, statusCode = 500, errors?: any) {
     return res.status(statusCode).json({
-      status: 'error',
+      status: "error",
       message,
-      ...(errors && { errors })
+      ...(errors && { errors }),
     });
   }
 
@@ -974,17 +1002,17 @@ export class ApiResponse {
     data: T[],
     page: number,
     limit: number,
-    total: number
+    total: number,
   ) {
     return res.json({
-      status: 'success',
+      status: "success",
       data,
       pagination: {
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit)
-      }
+        pages: Math.ceil(total / limit),
+      },
     });
   }
 }

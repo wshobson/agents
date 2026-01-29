@@ -23,12 +23,14 @@ Build resilient applications with robust error handling strategies that graceful
 ### 1. Error Handling Philosophies
 
 **Exceptions vs Result Types:**
+
 - **Exceptions**: Traditional try-catch, disrupts control flow
 - **Result Types**: Explicit success/failure, functional approach
 - **Error Codes**: C-style, requires discipline
 - **Option/Maybe Types**: For nullable values
 
 **When to Use Each:**
+
 - Exceptions: Unexpected errors, exceptional conditions
 - Result Types: Expected errors, validation failures
 - Panics/Crashes: Unrecoverable errors, programming bugs
@@ -36,12 +38,14 @@ Build resilient applications with robust error handling strategies that graceful
 ### 2. Error Categories
 
 **Recoverable Errors:**
+
 - Network timeouts
 - Missing files
 - Invalid user input
 - API rate limits
 
 **Unrecoverable Errors:**
+
 - Out of memory
 - Stack overflow
 - Programming bugs (null pointer, etc.)
@@ -51,6 +55,7 @@ Build resilient applications with robust error handling strategies that graceful
 ### Python Error Handling
 
 **Custom Exception Hierarchy:**
+
 ```python
 class ApplicationError(Exception):
     """Base exception for all application errors."""
@@ -87,6 +92,7 @@ def get_user(user_id: str) -> User:
 ```
 
 **Context Managers for Cleanup:**
+
 ```python
 from contextlib import contextmanager
 
@@ -110,6 +116,7 @@ with database_transaction(db.session) as session:
 ```
 
 **Retry with Exponential Backoff:**
+
 ```python
 import time
 from functools import wraps
@@ -152,131 +159,128 @@ def fetch_data(url: str) -> dict:
 ### TypeScript/JavaScript Error Handling
 
 **Custom Error Classes:**
+
 ```typescript
 // Custom error classes
 class ApplicationError extends Error {
-    constructor(
-        message: string,
-        public code: string,
-        public statusCode: number = 500,
-        public details?: Record<string, any>
-    ) {
-        super(message);
-        this.name = this.constructor.name;
-        Error.captureStackTrace(this, this.constructor);
-    }
+  constructor(
+    message: string,
+    public code: string,
+    public statusCode: number = 500,
+    public details?: Record<string, any>,
+  ) {
+    super(message);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+  }
 }
 
 class ValidationError extends ApplicationError {
-    constructor(message: string, details?: Record<string, any>) {
-        super(message, 'VALIDATION_ERROR', 400, details);
-    }
+  constructor(message: string, details?: Record<string, any>) {
+    super(message, "VALIDATION_ERROR", 400, details);
+  }
 }
 
 class NotFoundError extends ApplicationError {
-    constructor(resource: string, id: string) {
-        super(
-            `${resource} not found`,
-            'NOT_FOUND',
-            404,
-            { resource, id }
-        );
-    }
+  constructor(resource: string, id: string) {
+    super(`${resource} not found`, "NOT_FOUND", 404, { resource, id });
+  }
 }
 
 // Usage
 function getUser(id: string): User {
-    const user = users.find(u => u.id === id);
-    if (!user) {
-        throw new NotFoundError('User', id);
-    }
-    return user;
+  const user = users.find((u) => u.id === id);
+  if (!user) {
+    throw new NotFoundError("User", id);
+  }
+  return user;
 }
 ```
 
 **Result Type Pattern:**
+
 ```typescript
 // Result type for explicit error handling
-type Result<T, E = Error> =
-    | { ok: true; value: T }
-    | { ok: false; error: E };
+type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
 
 // Helper functions
 function Ok<T>(value: T): Result<T, never> {
-    return { ok: true, value };
+  return { ok: true, value };
 }
 
 function Err<E>(error: E): Result<never, E> {
-    return { ok: false, error };
+  return { ok: false, error };
 }
 
 // Usage
 function parseJSON<T>(json: string): Result<T, SyntaxError> {
-    try {
-        const value = JSON.parse(json) as T;
-        return Ok(value);
-    } catch (error) {
-        return Err(error as SyntaxError);
-    }
+  try {
+    const value = JSON.parse(json) as T;
+    return Ok(value);
+  } catch (error) {
+    return Err(error as SyntaxError);
+  }
 }
 
 // Consuming Result
 const result = parseJSON<User>(userJson);
 if (result.ok) {
-    console.log(result.value.name);
+  console.log(result.value.name);
 } else {
-    console.error('Parse failed:', result.error.message);
+  console.error("Parse failed:", result.error.message);
 }
 
 // Chaining Results
 function chain<T, U, E>(
-    result: Result<T, E>,
-    fn: (value: T) => Result<U, E>
+  result: Result<T, E>,
+  fn: (value: T) => Result<U, E>,
 ): Result<U, E> {
-    return result.ok ? fn(result.value) : result;
+  return result.ok ? fn(result.value) : result;
 }
 ```
 
 **Async Error Handling:**
+
 ```typescript
 // Async/await with proper error handling
 async function fetchUserOrders(userId: string): Promise<Order[]> {
-    try {
-        const user = await getUser(userId);
-        const orders = await getOrders(user.id);
-        return orders;
-    } catch (error) {
-        if (error instanceof NotFoundError) {
-            return [];  // Return empty array for not found
-        }
-        if (error instanceof NetworkError) {
-            // Retry logic
-            return retryFetchOrders(userId);
-        }
-        // Re-throw unexpected errors
-        throw error;
+  try {
+    const user = await getUser(userId);
+    const orders = await getOrders(user.id);
+    return orders;
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      return []; // Return empty array for not found
     }
+    if (error instanceof NetworkError) {
+      // Retry logic
+      return retryFetchOrders(userId);
+    }
+    // Re-throw unexpected errors
+    throw error;
+  }
 }
 
 // Promise error handling
 function fetchData(url: string): Promise<Data> {
-    return fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new NetworkError(`HTTP ${response.status}`);
-            }
-            return response.json();
-        })
-        .catch(error => {
-            console.error('Fetch failed:', error);
-            throw error;
-        });
+  return fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new NetworkError(`HTTP ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Fetch failed:", error);
+      throw error;
+    });
 }
 ```
 
 ### Rust Error Handling
 
 **Result and Option Types:**
+
 ```rust
 use std::fs::File;
 use std::io::{self, Read};
@@ -328,6 +332,7 @@ fn get_user_age(id: &str) -> Result<u32, AppError> {
 ### Go Error Handling
 
 **Explicit Error Returns:**
+
 ```go
 // Basic error handling
 func getUser(id string) (*User, error) {
@@ -464,54 +469,54 @@ Collect multiple errors instead of failing on first error.
 
 ```typescript
 class ErrorCollector {
-    private errors: Error[] = [];
+  private errors: Error[] = [];
 
-    add(error: Error): void {
-        this.errors.push(error);
-    }
+  add(error: Error): void {
+    this.errors.push(error);
+  }
 
-    hasErrors(): boolean {
-        return this.errors.length > 0;
-    }
+  hasErrors(): boolean {
+    return this.errors.length > 0;
+  }
 
-    getErrors(): Error[] {
-        return [...this.errors];
-    }
+  getErrors(): Error[] {
+    return [...this.errors];
+  }
 
-    throw(): never {
-        if (this.errors.length === 1) {
-            throw this.errors[0];
-        }
-        throw new AggregateError(
-            this.errors,
-            `${this.errors.length} errors occurred`
-        );
+  throw(): never {
+    if (this.errors.length === 1) {
+      throw this.errors[0];
     }
+    throw new AggregateError(
+      this.errors,
+      `${this.errors.length} errors occurred`,
+    );
+  }
 }
 
 // Usage: Validate multiple fields
 function validateUser(data: any): User {
-    const errors = new ErrorCollector();
+  const errors = new ErrorCollector();
 
-    if (!data.email) {
-        errors.add(new ValidationError('Email is required'));
-    } else if (!isValidEmail(data.email)) {
-        errors.add(new ValidationError('Email is invalid'));
-    }
+  if (!data.email) {
+    errors.add(new ValidationError("Email is required"));
+  } else if (!isValidEmail(data.email)) {
+    errors.add(new ValidationError("Email is invalid"));
+  }
 
-    if (!data.name || data.name.length < 2) {
-        errors.add(new ValidationError('Name must be at least 2 characters'));
-    }
+  if (!data.name || data.name.length < 2) {
+    errors.add(new ValidationError("Name must be at least 2 characters"));
+  }
 
-    if (!data.age || data.age < 18) {
-        errors.add(new ValidationError('Age must be 18 or older'));
-    }
+  if (!data.age || data.age < 18) {
+    errors.add(new ValidationError("Age must be 18 or older"));
+  }
 
-    if (errors.hasErrors()) {
-        errors.throw();
-    }
+  if (errors.hasErrors()) {
+    errors.throw();
+  }
 
-    return data as User;
+  return data as User;
 }
 ```
 

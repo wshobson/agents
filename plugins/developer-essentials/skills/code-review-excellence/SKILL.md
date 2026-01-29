@@ -23,6 +23,7 @@ Transform code reviews from gatekeeping to knowledge sharing through constructiv
 ### 1. The Review Mindset
 
 **Goals of Code Review:**
+
 - Catch bugs and edge cases
 - Ensure code maintainability
 - Share knowledge across team
@@ -31,6 +32,7 @@ Transform code reviews from gatekeeping to knowledge sharing through constructiv
 - Build team culture
 
 **Not the Goals:**
+
 - Show off knowledge
 - Nitpick formatting (use linters)
 - Block progress unnecessarily
@@ -39,6 +41,7 @@ Transform code reviews from gatekeeping to knowledge sharing through constructiv
 ### 2. Effective Feedback
 
 **Good Feedback is:**
+
 - Specific and actionable
 - Educational, not judgmental
 - Focused on the code, not the person
@@ -48,20 +51,21 @@ Transform code reviews from gatekeeping to knowledge sharing through constructiv
 ```markdown
 ❌ Bad: "This is wrong."
 ✅ Good: "This could cause a race condition when multiple users
-         access simultaneously. Consider using a mutex here."
+access simultaneously. Consider using a mutex here."
 
 ❌ Bad: "Why didn't you use X pattern?"
 ✅ Good: "Have you considered the Repository pattern? It would
-         make this easier to test. Here's an example: [link]"
+make this easier to test. Here's an example: [link]"
 
 ❌ Bad: "Rename this variable."
 ✅ Good: "[nit] Consider `userCount` instead of `uc` for
-         clarity. Not blocking if you prefer to keep it."
+clarity. Not blocking if you prefer to keep it."
 ```
 
 ### 3. Review Scope
 
 **What to Review:**
+
 - Logic correctness and edge cases
 - Security vulnerabilities
 - Performance implications
@@ -72,6 +76,7 @@ Transform code reviews from gatekeeping to knowledge sharing through constructiv
 - Architectural fit
 
 **What Not to Review Manually:**
+
 - Code formatting (use Prettier, Black, etc.)
 - Import organization
 - Linting violations
@@ -159,6 +164,7 @@ For each file:
 
 ```markdown
 ## Security Checklist
+
 - [ ] User input validated and sanitized
 - [ ] SQL queries use parameterization
 - [ ] Authentication/authorization checked
@@ -166,6 +172,7 @@ For each file:
 - [ ] Error messages don't leak info
 
 ## Performance Checklist
+
 - [ ] No N+1 queries
 - [ ] Database queries indexed
 - [ ] Large lists paginated
@@ -173,6 +180,7 @@ For each file:
 - [ ] No blocking I/O in hot paths
 
 ## Testing Checklist
+
 - [ ] Happy path tested
 - [ ] Edge cases covered
 - [ ] Error cases tested
@@ -193,28 +201,28 @@ Instead of stating problems, ask questions to encourage thinking:
 
 ❌ "This is inefficient."
 ✅ "I see this loops through all users. Have we considered
-    the performance impact with 100k users?"
+the performance impact with 100k users?"
 ```
 
 ### Technique 3: Suggest, Don't Command
 
-```markdown
+````markdown
 ## Use Collaborative Language
 
 ❌ "You must change this to use async/await"
 ✅ "Suggestion: async/await might make this more readable:
-    ```typescript
+`typescript
     async function fetchUser(id: string) {
         const user = await db.query('SELECT * FROM users WHERE id = ?', id);
         return user;
     }
-    ```
-    What do you think?"
+    `
+What do you think?"
 
 ❌ "Extract this into a function"
 ✅ "This logic appears in 3 places. Would it make sense to
-    extract it into a shared utility function?"
-```
+extract it into a shared utility function?"
+````
 
 ### Technique 4: Differentiate Severity
 
@@ -230,7 +238,7 @@ Use labels to indicate priority:
 
 Example:
 "🔴 [blocking] This SQL query is vulnerable to injection.
- Please use parameterized queries."
+Please use parameterized queries."
 
 "🟢 [nit] Consider renaming `data` to `userData` for clarity."
 
@@ -389,24 +397,28 @@ test('displays incremented count when clicked', () => {
 ## Security Review Checklist
 
 ### Authentication & Authorization
+
 - [ ] Is authentication required where needed?
 - [ ] Are authorization checks before every action?
 - [ ] Is JWT validation proper (signature, expiry)?
 - [ ] Are API keys/secrets properly secured?
 
 ### Input Validation
+
 - [ ] All user inputs validated?
 - [ ] File uploads restricted (size, type)?
 - [ ] SQL queries parameterized?
 - [ ] XSS protection (escape output)?
 
 ### Data Protection
+
 - [ ] Passwords hashed (bcrypt/argon2)?
 - [ ] Sensitive data encrypted at rest?
 - [ ] HTTPS enforced for sensitive data?
 - [ ] PII handled according to regulations?
 
 ### Common Vulnerabilities
+
 - [ ] No eval() or similar dynamic execution?
 - [ ] No hardcoded secrets?
 - [ ] CSRF protection for state-changing operations?
@@ -444,14 +456,14 @@ When author disagrees with your feedback:
 
 1. **Seek to Understand**
    "Help me understand your approach. What led you to
-    choose this pattern?"
+   choose this pattern?"
 
 2. **Acknowledge Valid Points**
    "That's a good point about X. I hadn't considered that."
 
 3. **Provide Data**
    "I'm concerned about performance. Can we add a benchmark
-    to validate the approach?"
+   to validate the approach?"
 
 4. **Escalate if Needed**
    "Let's get [architect/senior dev] to weigh in on this."
@@ -488,25 +500,31 @@ When author disagrees with your feedback:
 
 ```markdown
 ## Summary
+
 [Brief overview of what was reviewed]
 
 ## Strengths
+
 - [What was done well]
 - [Good patterns or approaches]
 
 ## Required Changes
+
 🔴 [Blocking issue 1]
 🔴 [Blocking issue 2]
 
 ## Suggestions
+
 💡 [Improvement 1]
 💡 [Improvement 2]
 
 ## Questions
+
 ❓ [Clarification needed on X]
 ❓ [Alternative approach consideration]
 
 ## Verdict
+
 ✅ Approve after addressing required changes
 ```
 

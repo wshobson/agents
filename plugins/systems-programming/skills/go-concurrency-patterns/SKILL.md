@@ -20,14 +20,14 @@ Production patterns for Go concurrency including goroutines, channels, synchroni
 
 ### 1. Go Concurrency Primitives
 
-| Primitive | Purpose |
-|-----------|---------|
-| `goroutine` | Lightweight concurrent execution |
-| `channel` | Communication between goroutines |
-| `select` | Multiplex channel operations |
-| `sync.Mutex` | Mutual exclusion |
-| `sync.WaitGroup` | Wait for goroutines to complete |
-| `context.Context` | Cancellation and deadlines |
+| Primitive         | Purpose                          |
+| ----------------- | -------------------------------- |
+| `goroutine`       | Lightweight concurrent execution |
+| `channel`         | Communication between goroutines |
+| `select`          | Multiplex channel operations     |
+| `sync.Mutex`      | Mutual exclusion                 |
+| `sync.WaitGroup`  | Wait for goroutines to complete  |
+| `context.Context` | Cancellation and deadlines       |
 
 ### 2. Go Concurrency Mantra
 
@@ -635,6 +635,7 @@ go run -race main.go
 ## Best Practices
 
 ### Do's
+
 - **Use context** - For cancellation and deadlines
 - **Close channels** - From sender side only
 - **Use errgroup** - For concurrent operations with errors
@@ -642,6 +643,7 @@ go run -race main.go
 - **Prefer channels** - Over mutexes when possible
 
 ### Don'ts
+
 - **Don't leak goroutines** - Always have exit path
 - **Don't close from receiver** - Causes panic
 - **Don't use shared memory** - Unless necessary

@@ -3,38 +3,42 @@
 ## ArgoCD Sync Policies
 
 ### Automated Sync
+
 ```yaml
 syncPolicy:
   automated:
-    prune: true       # Delete resources removed from Git
-    selfHeal: true    # Reconcile manual changes
+    prune: true # Delete resources removed from Git
+    selfHeal: true # Reconcile manual changes
     allowEmpty: false # Prevent empty sync
 ```
 
 ### Manual Sync
+
 ```yaml
 syncPolicy:
   syncOptions:
-  - PrunePropagationPolicy=foreground
-  - CreateNamespace=true
+    - PrunePropagationPolicy=foreground
+    - CreateNamespace=true
 ```
 
 ### Sync Windows
+
 ```yaml
 syncWindows:
-- kind: allow
-  schedule: "0 8 * * *"
-  duration: 1h
-  applications:
-  - my-app
-- kind: deny
-  schedule: "0 22 * * *"
-  duration: 8h
-  applications:
-  - '*'
+  - kind: allow
+    schedule: "0 8 * * *"
+    duration: 1h
+    applications:
+      - my-app
+  - kind: deny
+    schedule: "0 22 * * *"
+    duration: 8h
+    applications:
+      - "*"
 ```
 
 ### Retry Policy
+
 ```yaml
 syncPolicy:
   retry:
@@ -48,6 +52,7 @@ syncPolicy:
 ## Flux Sync Policies
 
 ### Kustomization Sync
+
 ```yaml
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -63,6 +68,7 @@ spec:
 ```
 
 ### Source Sync Interval
+
 ```yaml
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
@@ -76,6 +82,7 @@ spec:
 ## Health Assessment
 
 ### Custom Health Checks
+
 ```yaml
 # ArgoCD
 apiVersion: v1
@@ -110,6 +117,7 @@ data:
 ## Sync Options
 
 ### Common Sync Options
+
 - `PrunePropagationPolicy=foreground` - Wait for pruned resources to be deleted
 - `CreateNamespace=true` - Auto-create namespace
 - `Validate=false` - Skip kubectl validation

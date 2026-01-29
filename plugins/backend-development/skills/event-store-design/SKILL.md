@@ -40,23 +40,23 @@ Comprehensive guide to designing event stores for event-sourced applications.
 
 ### 2. Event Store Requirements
 
-| Requirement | Description |
-|-------------|-------------|
-| **Append-only** | Events are immutable, only appends |
-| **Ordered** | Per-stream and global ordering |
-| **Versioned** | Optimistic concurrency control |
-| **Subscriptions** | Real-time event notifications |
-| **Idempotent** | Handle duplicate writes safely |
+| Requirement       | Description                        |
+| ----------------- | ---------------------------------- |
+| **Append-only**   | Events are immutable, only appends |
+| **Ordered**       | Per-stream and global ordering     |
+| **Versioned**     | Optimistic concurrency control     |
+| **Subscriptions** | Real-time event notifications      |
+| **Idempotent**    | Handle duplicate writes safely     |
 
 ## Technology Comparison
 
-| Technology | Best For | Limitations |
-|------------|----------|-------------|
-| **EventStoreDB** | Pure event sourcing | Single-purpose |
-| **PostgreSQL** | Existing Postgres stack | Manual implementation |
-| **Kafka** | High-throughput streaming | Not ideal for per-stream queries |
-| **DynamoDB** | Serverless, AWS-native | Query limitations |
-| **Marten** | .NET ecosystems | .NET specific |
+| Technology       | Best For                  | Limitations                      |
+| ---------------- | ------------------------- | -------------------------------- |
+| **EventStoreDB** | Pure event sourcing       | Single-purpose                   |
+| **PostgreSQL**   | Existing Postgres stack   | Manual implementation            |
+| **Kafka**        | High-throughput streaming | Not ideal for per-stream queries |
+| **DynamoDB**     | Serverless, AWS-native    | Query limitations                |
+| **Marten**       | .NET ecosystems           | .NET specific                    |
 
 ## Templates
 
@@ -416,6 +416,7 @@ Capacity: On-demand or provisioned based on throughput needs
 ## Best Practices
 
 ### Do's
+
 - **Use stream IDs that include aggregate type** - `Order-{uuid}`
 - **Include correlation/causation IDs** - For tracing
 - **Version events from day one** - Plan for schema evolution
@@ -423,6 +424,7 @@ Capacity: On-demand or provisioned based on throughput needs
 - **Index appropriately** - For your query patterns
 
 ### Don'ts
+
 - **Don't update or delete events** - They're immutable facts
 - **Don't store large payloads** - Keep events small
 - **Don't skip optimistic concurrency** - Prevents data corruption
