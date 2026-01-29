@@ -20,12 +20,12 @@ Production-ready patterns for Apache Airflow including DAG design, operators, se
 
 ### 1. DAG Design Principles
 
-| Principle | Description |
-|-----------|-------------|
-| **Idempotent** | Running twice produces same result |
-| **Atomic** | Tasks succeed or fail completely |
-| **Incremental** | Process only new/changed data |
-| **Observable** | Logs, metrics, alerts at every step |
+| Principle       | Description                         |
+| --------------- | ----------------------------------- |
+| **Idempotent**  | Running twice produces same result  |
+| **Atomic**      | Tasks succeed or fail completely    |
+| **Incremental** | Process only new/changed data       |
+| **Observable**  | Logs, metrics, alerts at every step |
 
 ### 2. Task Dependencies
 
@@ -503,6 +503,7 @@ airflow/
 ## Best Practices
 
 ### Do's
+
 - **Use TaskFlow API** - Cleaner code, automatic XCom
 - **Set timeouts** - Prevent zombie tasks
 - **Use `mode='reschedule'`** - For sensors, free up workers
@@ -510,6 +511,7 @@ airflow/
 - **Idempotent tasks** - Safe to retry
 
 ### Don'ts
+
 - **Don't use `depends_on_past=True`** - Creates bottlenecks
 - **Don't hardcode dates** - Use `{{ ds }}` macros
 - **Don't use global state** - Tasks should be stateless

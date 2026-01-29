@@ -5,18 +5,21 @@ Orchestrate end-to-end feature development from requirements to production deplo
 ## Configuration Options
 
 ### Development Methodology
+
 - **traditional**: Sequential development with testing after implementation
 - **tdd**: Test-Driven Development with red-green-refactor cycles
 - **bdd**: Behavior-Driven Development with scenario-based testing
 - **ddd**: Domain-Driven Design with bounded contexts and aggregates
 
 ### Feature Complexity
+
 - **simple**: Single service, minimal integration (1-2 days)
 - **medium**: Multiple services, moderate integration (3-5 days)
 - **complex**: Cross-domain, extensive integration (1-2 weeks)
 - **epic**: Major architectural changes, multiple teams (2+ weeks)
 
 ### Deployment Strategy
+
 - **direct**: Immediate rollout to all users
 - **canary**: Gradual rollout starting with 5% of traffic
 - **feature-flag**: Controlled activation via feature toggles
@@ -106,11 +109,13 @@ Orchestrate end-to-end feature development from requirements to production deplo
 ## Execution Parameters
 
 ### Required Parameters
+
 - **--feature**: Feature name and description
 - **--methodology**: Development approach (traditional|tdd|bdd|ddd)
 - **--complexity**: Feature complexity level (simple|medium|complex|epic)
 
 ### Optional Parameters
+
 - **--deployment-strategy**: Deployment approach (direct|canary|feature-flag|blue-green|a-b-test)
 - **--test-coverage-min**: Minimum test coverage threshold (default: 80%)
 - **--performance-budget**: Performance requirements (e.g., <200ms response time)
@@ -135,6 +140,7 @@ Orchestrate end-to-end feature development from requirements to production deplo
 ## Rollback Strategy
 
 If issues arise during or after deployment:
+
 1. Immediate feature flag disable (< 1 minute)
 2. Blue-green traffic switch (< 5 minutes)
 3. Full deployment rollback via CI/CD (< 15 minutes)

@@ -13,6 +13,7 @@ This workflow orchestrates multiple specialized agents to build a production-rea
 - **Continuous improvement**: Automated retraining, A/B testing, and drift detection
 
 The multi-agent approach ensures each aspect is handled by domain experts:
+
 - Data engineers handle ingestion and quality
 - Data scientists design features and experiments
 - ML engineers implement training pipelines
@@ -26,26 +27,27 @@ subagent_type: data-engineer
 prompt: |
   Analyze and design data pipeline for ML system with requirements: $ARGUMENTS
 
-  Deliverables:
-  1. Data source audit and ingestion strategy:
-     - Source systems and connection patterns
-     - Schema validation using Pydantic/Great Expectations
-     - Data versioning with DVC or lakeFS
-     - Incremental loading and CDC strategies
+Deliverables:
 
-  2. Data quality framework:
-     - Profiling and statistics generation
-     - Anomaly detection rules
-     - Data lineage tracking
-     - Quality gates and SLAs
+1. Data source audit and ingestion strategy:
+   - Source systems and connection patterns
+   - Schema validation using Pydantic/Great Expectations
+   - Data versioning with DVC or lakeFS
+   - Incremental loading and CDC strategies
 
-  3. Storage architecture:
-     - Raw/processed/feature layers
-     - Partitioning strategy
-     - Retention policies
-     - Cost optimization
+2. Data quality framework:
+   - Profiling and statistics generation
+   - Anomaly detection rules
+   - Data lineage tracking
+   - Quality gates and SLAs
 
-  Provide implementation code for critical components and integration patterns.
+3. Storage architecture:
+   - Raw/processed/feature layers
+   - Partitioning strategy
+   - Retention policies
+   - Cost optimization
+
+Provide implementation code for critical components and integration patterns.
 </Task>
 
 <Task>
@@ -54,26 +56,27 @@ prompt: |
   Design feature engineering and model requirements for: $ARGUMENTS
   Using data architecture from: {phase1.data-engineer.output}
 
-  Deliverables:
-  1. Feature engineering pipeline:
-     - Transformation specifications
-     - Feature store schema (Feast/Tecton)
-     - Statistical validation rules
-     - Handling strategies for missing data/outliers
+Deliverables:
 
-  2. Model requirements:
-     - Algorithm selection rationale
-     - Performance metrics and baselines
-     - Training data requirements
-     - Evaluation criteria and thresholds
+1. Feature engineering pipeline:
+   - Transformation specifications
+   - Feature store schema (Feast/Tecton)
+   - Statistical validation rules
+   - Handling strategies for missing data/outliers
 
-  3. Experiment design:
-     - Hypothesis and success metrics
-     - A/B testing methodology
-     - Sample size calculations
-     - Bias detection approach
+2. Model requirements:
+   - Algorithm selection rationale
+   - Performance metrics and baselines
+   - Training data requirements
+   - Evaluation criteria and thresholds
 
-  Include feature transformation code and statistical validation logic.
+3. Experiment design:
+   - Hypothesis and success metrics
+   - A/B testing methodology
+   - Sample size calculations
+   - Bias detection approach
+
+Include feature transformation code and statistical validation logic.
 </Task>
 
 ## Phase 2: Model Development & Training
@@ -84,26 +87,27 @@ prompt: |
   Implement training pipeline based on requirements: {phase1.data-scientist.output}
   Using data pipeline: {phase1.data-engineer.output}
 
-  Build comprehensive training system:
-  1. Training pipeline implementation:
-     - Modular training code with clear interfaces
-     - Hyperparameter optimization (Optuna/Ray Tune)
-     - Distributed training support (Horovod/PyTorch DDP)
-     - Cross-validation and ensemble strategies
+Build comprehensive training system:
 
-  2. Experiment tracking setup:
-     - MLflow/Weights & Biases integration
-     - Metric logging and visualization
-     - Artifact management (models, plots, data samples)
-     - Experiment comparison and analysis tools
+1. Training pipeline implementation:
+   - Modular training code with clear interfaces
+   - Hyperparameter optimization (Optuna/Ray Tune)
+   - Distributed training support (Horovod/PyTorch DDP)
+   - Cross-validation and ensemble strategies
 
-  3. Model registry integration:
-     - Version control and tagging strategy
-     - Model metadata and lineage
-     - Promotion workflows (dev -> staging -> prod)
-     - Rollback procedures
+2. Experiment tracking setup:
+   - MLflow/Weights & Biases integration
+   - Metric logging and visualization
+   - Artifact management (models, plots, data samples)
+   - Experiment comparison and analysis tools
 
-  Provide complete training code with configuration management.
+3. Model registry integration:
+   - Version control and tagging strategy
+   - Model metadata and lineage
+   - Promotion workflows (dev -> staging -> prod)
+   - Rollback procedures
+
+Provide complete training code with configuration management.
 </Task>
 
 <Task>
@@ -111,26 +115,27 @@ subagent_type: python-pro
 prompt: |
   Optimize and productionize ML code from: {phase2.ml-engineer.output}
 
-  Focus areas:
-  1. Code quality and structure:
-     - Refactor for production standards
-     - Add comprehensive error handling
-     - Implement proper logging with structured formats
-     - Create reusable components and utilities
+Focus areas:
 
-  2. Performance optimization:
-     - Profile and optimize bottlenecks
-     - Implement caching strategies
-     - Optimize data loading and preprocessing
-     - Memory management for large-scale training
+1. Code quality and structure:
+   - Refactor for production standards
+   - Add comprehensive error handling
+   - Implement proper logging with structured formats
+   - Create reusable components and utilities
 
-  3. Testing framework:
-     - Unit tests for data transformations
-     - Integration tests for pipeline components
-     - Model quality tests (invariance, directional)
-     - Performance regression tests
+2. Performance optimization:
+   - Profile and optimize bottlenecks
+   - Implement caching strategies
+   - Optimize data loading and preprocessing
+   - Memory management for large-scale training
 
-  Deliver production-ready, maintainable code with full test coverage.
+3. Testing framework:
+   - Unit tests for data transformations
+   - Integration tests for pipeline components
+   - Model quality tests (invariance, directional)
+   - Performance regression tests
+
+Deliver production-ready, maintainable code with full test coverage.
 </Task>
 
 ## Phase 3: Production Deployment & Serving
@@ -141,32 +146,33 @@ prompt: |
   Design production deployment for models from: {phase2.ml-engineer.output}
   With optimized code from: {phase2.python-pro.output}
 
-  Implementation requirements:
-  1. Model serving infrastructure:
-     - REST/gRPC APIs with FastAPI/TorchServe
-     - Batch prediction pipelines (Airflow/Kubeflow)
-     - Stream processing (Kafka/Kinesis integration)
-     - Model serving platforms (KServe/Seldon Core)
+Implementation requirements:
 
-  2. Deployment strategies:
-     - Blue-green deployments for zero downtime
-     - Canary releases with traffic splitting
-     - Shadow deployments for validation
-     - A/B testing infrastructure
+1. Model serving infrastructure:
+   - REST/gRPC APIs with FastAPI/TorchServe
+   - Batch prediction pipelines (Airflow/Kubeflow)
+   - Stream processing (Kafka/Kinesis integration)
+   - Model serving platforms (KServe/Seldon Core)
 
-  3. CI/CD pipeline:
-     - GitHub Actions/GitLab CI workflows
-     - Automated testing gates
-     - Model validation before deployment
-     - ArgoCD for GitOps deployment
+2. Deployment strategies:
+   - Blue-green deployments for zero downtime
+   - Canary releases with traffic splitting
+   - Shadow deployments for validation
+   - A/B testing infrastructure
 
-  4. Infrastructure as Code:
-     - Terraform modules for cloud resources
-     - Helm charts for Kubernetes deployments
-     - Docker multi-stage builds for optimization
-     - Secret management with Vault/Secrets Manager
+3. CI/CD pipeline:
+   - GitHub Actions/GitLab CI workflows
+   - Automated testing gates
+   - Model validation before deployment
+   - ArgoCD for GitOps deployment
 
-  Provide complete deployment configuration and automation scripts.
+4. Infrastructure as Code:
+   - Terraform modules for cloud resources
+   - Helm charts for Kubernetes deployments
+   - Docker multi-stage builds for optimization
+   - Secret management with Vault/Secrets Manager
+
+Provide complete deployment configuration and automation scripts.
 </Task>
 
 <Task>
@@ -174,26 +180,27 @@ subagent_type: kubernetes-architect
 prompt: |
   Design Kubernetes infrastructure for ML workloads from: {phase3.mlops-engineer.output}
 
-  Kubernetes-specific requirements:
-  1. Workload orchestration:
-     - Training job scheduling with Kubeflow
-     - GPU resource allocation and sharing
-     - Spot/preemptible instance integration
-     - Priority classes and resource quotas
+Kubernetes-specific requirements:
 
-  2. Serving infrastructure:
-     - HPA/VPA for autoscaling
-     - KEDA for event-driven scaling
-     - Istio service mesh for traffic management
-     - Model caching and warm-up strategies
+1. Workload orchestration:
+   - Training job scheduling with Kubeflow
+   - GPU resource allocation and sharing
+   - Spot/preemptible instance integration
+   - Priority classes and resource quotas
 
-  3. Storage and data access:
-     - PVC strategies for training data
-     - Model artifact storage with CSI drivers
-     - Distributed storage for feature stores
-     - Cache layers for inference optimization
+2. Serving infrastructure:
+   - HPA/VPA for autoscaling
+   - KEDA for event-driven scaling
+   - Istio service mesh for traffic management
+   - Model caching and warm-up strategies
 
-  Provide Kubernetes manifests and Helm charts for entire ML platform.
+3. Storage and data access:
+   - PVC strategies for training data
+   - Model artifact storage with CSI drivers
+   - Distributed storage for feature stores
+   - Cache layers for inference optimization
+
+Provide Kubernetes manifests and Helm charts for entire ML platform.
 </Task>
 
 ## Phase 4: Monitoring & Continuous Improvement
@@ -204,38 +211,39 @@ prompt: |
   Implement comprehensive monitoring for ML system deployed in: {phase3.mlops-engineer.output}
   Using Kubernetes infrastructure: {phase3.kubernetes-architect.output}
 
-  Monitoring framework:
-  1. Model performance monitoring:
-     - Prediction accuracy tracking
-     - Latency and throughput metrics
-     - Feature importance shifts
-     - Business KPI correlation
+Monitoring framework:
 
-  2. Data and model drift detection:
-     - Statistical drift detection (KS test, PSI)
-     - Concept drift monitoring
-     - Feature distribution tracking
-     - Automated drift alerts and reports
+1. Model performance monitoring:
+   - Prediction accuracy tracking
+   - Latency and throughput metrics
+   - Feature importance shifts
+   - Business KPI correlation
 
-  3. System observability:
-     - Prometheus metrics for all components
-     - Grafana dashboards for visualization
-     - Distributed tracing with Jaeger/Zipkin
-     - Log aggregation with ELK/Loki
+2. Data and model drift detection:
+   - Statistical drift detection (KS test, PSI)
+   - Concept drift monitoring
+   - Feature distribution tracking
+   - Automated drift alerts and reports
 
-  4. Alerting and automation:
-     - PagerDuty/Opsgenie integration
-     - Automated retraining triggers
-     - Performance degradation workflows
-     - Incident response runbooks
+3. System observability:
+   - Prometheus metrics for all components
+   - Grafana dashboards for visualization
+   - Distributed tracing with Jaeger/Zipkin
+   - Log aggregation with ELK/Loki
 
-  5. Cost tracking:
-     - Resource utilization metrics
-     - Cost allocation by model/experiment
-     - Optimization recommendations
-     - Budget alerts and controls
+4. Alerting and automation:
+   - PagerDuty/Opsgenie integration
+   - Automated retraining triggers
+   - Performance degradation workflows
+   - Incident response runbooks
 
-  Deliver monitoring configuration, dashboards, and alert rules.
+5. Cost tracking:
+   - Resource utilization metrics
+   - Cost allocation by model/experiment
+   - Optimization recommendations
+   - Budget alerts and controls
+
+Deliver monitoring configuration, dashboards, and alert rules.
 </Task>
 
 ## Configuration Options
@@ -283,6 +291,7 @@ prompt: |
 ## Final Deliverables
 
 Upon completion, the orchestrated pipeline will provide:
+
 - End-to-end ML pipeline with full automation
 - Comprehensive documentation and runbooks
 - Production-ready infrastructure as code

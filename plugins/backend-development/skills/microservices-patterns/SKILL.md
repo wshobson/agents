@@ -22,16 +22,19 @@ Master microservices architecture patterns including service boundaries, inter-s
 ### 1. Service Decomposition Strategies
 
 **By Business Capability**
+
 - Organize services around business functions
 - Each service owns its domain
 - Example: OrderService, PaymentService, InventoryService
 
 **By Subdomain (DDD)**
+
 - Core domain, supporting subdomains
 - Bounded contexts map to services
 - Clear ownership and responsibility
 
 **Strangler Fig Pattern**
+
 - Gradually extract from monolith
 - New functionality as microservices
 - Proxy routes to old/new systems
@@ -39,11 +42,13 @@ Master microservices architecture patterns including service boundaries, inter-s
 ### 2. Communication Patterns
 
 **Synchronous (Request/Response)**
+
 - REST APIs
 - gRPC
 - GraphQL
 
 **Asynchronous (Events/Messages)**
+
 - Event streaming (Kafka)
 - Message queues (RabbitMQ, SQS)
 - Pub/Sub patterns
@@ -51,11 +56,13 @@ Master microservices architecture patterns including service boundaries, inter-s
 ### 3. Data Management
 
 **Database Per Service**
+
 - Each service owns its data
 - No shared databases
 - Loose coupling
 
 **Saga Pattern**
+
 - Distributed transactions
 - Compensating actions
 - Eventual consistency
@@ -63,14 +70,17 @@ Master microservices architecture patterns including service boundaries, inter-s
 ### 4. Resilience Patterns
 
 **Circuit Breaker**
+
 - Fail fast on repeated errors
 - Prevent cascade failures
 
 **Retry with Backoff**
+
 - Transient fault handling
 - Exponential backoff
 
 **Bulkhead**
+
 - Isolate resources
 - Limit impact of failures
 

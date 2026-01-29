@@ -23,31 +23,31 @@ Design cloud-agnostic architectures and make informed decisions about service se
 
 ### Compute Services
 
-| AWS | Azure | GCP | Use Case |
-|-----|-------|-----|----------|
-| EC2 | Virtual Machines | Compute Engine | IaaS VMs |
-| ECS | Container Instances | Cloud Run | Containers |
-| EKS | AKS | GKE | Kubernetes |
-| Lambda | Functions | Cloud Functions | Serverless |
-| Fargate | Container Apps | Cloud Run | Managed containers |
+| AWS     | Azure               | GCP             | Use Case           |
+| ------- | ------------------- | --------------- | ------------------ |
+| EC2     | Virtual Machines    | Compute Engine  | IaaS VMs           |
+| ECS     | Container Instances | Cloud Run       | Containers         |
+| EKS     | AKS                 | GKE             | Kubernetes         |
+| Lambda  | Functions           | Cloud Functions | Serverless         |
+| Fargate | Container Apps      | Cloud Run       | Managed containers |
 
 ### Storage Services
 
-| AWS | Azure | GCP | Use Case |
-|-----|-------|-----|----------|
-| S3 | Blob Storage | Cloud Storage | Object storage |
-| EBS | Managed Disks | Persistent Disk | Block storage |
-| EFS | Azure Files | Filestore | File storage |
-| Glacier | Archive Storage | Archive Storage | Cold storage |
+| AWS     | Azure           | GCP             | Use Case       |
+| ------- | --------------- | --------------- | -------------- |
+| S3      | Blob Storage    | Cloud Storage   | Object storage |
+| EBS     | Managed Disks   | Persistent Disk | Block storage  |
+| EFS     | Azure Files     | Filestore       | File storage   |
+| Glacier | Archive Storage | Archive Storage | Cold storage   |
 
 ### Database Services
 
-| AWS | Azure | GCP | Use Case |
-|-----|-------|-----|----------|
-| RDS | SQL Database | Cloud SQL | Managed SQL |
-| DynamoDB | Cosmos DB | Firestore | NoSQL |
-| Aurora | PostgreSQL/MySQL | Cloud Spanner | Distributed SQL |
-| ElastiCache | Cache for Redis | Memorystore | Caching |
+| AWS         | Azure            | GCP           | Use Case        |
+| ----------- | ---------------- | ------------- | --------------- |
+| RDS         | SQL Database     | Cloud SQL     | Managed SQL     |
+| DynamoDB    | Cosmos DB        | Firestore     | NoSQL           |
+| Aurora      | PostgreSQL/MySQL | Cloud Spanner | Distributed SQL |
+| ElastiCache | Cache for Redis  | Memorystore   | Caching         |
 
 **Reference:** See `references/service-comparison.md` for complete comparison
 
@@ -129,24 +129,28 @@ AWS / Azure / GCP
 ## Migration Strategy
 
 ### Phase 1: Assessment
+
 - Inventory current infrastructure
 - Identify dependencies
 - Assess cloud compatibility
 - Estimate costs
 
 ### Phase 2: Pilot
+
 - Select pilot workload
 - Implement in target cloud
 - Test thoroughly
 - Document learnings
 
 ### Phase 3: Migration
+
 - Migrate workloads incrementally
 - Maintain dual-run period
 - Monitor performance
 - Validate functionality
 
 ### Phase 4: Optimization
+
 - Right-size resources
 - Implement cloud-native services
 - Optimize costs

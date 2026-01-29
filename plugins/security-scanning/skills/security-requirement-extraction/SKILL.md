@@ -29,20 +29,20 @@ Business Requirements → Security Requirements → Technical Controls
 
 ### 2. Security Requirement Types
 
-| Type | Focus | Example |
-|------|-------|---------|
-| **Functional** | What system must do | "System must authenticate users" |
+| Type               | Focus                   | Example                               |
+| ------------------ | ----------------------- | ------------------------------------- |
+| **Functional**     | What system must do     | "System must authenticate users"      |
 | **Non-functional** | How system must perform | "Authentication must complete in <2s" |
-| **Constraint** | Limitations imposed | "Must use approved crypto libraries" |
+| **Constraint**     | Limitations imposed     | "Must use approved crypto libraries"  |
 
 ### 3. Requirement Attributes
 
-| Attribute | Description |
-|-----------|-------------|
+| Attribute        | Description                 |
+| ---------------- | --------------------------- |
 | **Traceability** | Links to threats/compliance |
-| **Testability** | Can be verified |
-| **Priority** | Business importance |
-| **Risk Level** | Impact if not met |
+| **Testability**  | Can be verified             |
+| **Priority**     | Business importance         |
+| **Risk Level**   | Impact if not met           |
 
 ## Templates
 
@@ -657,6 +657,7 @@ This epic covers all security requirements related to {domain.value.replace('_',
 ## Best Practices
 
 ### Do's
+
 - **Trace to threats** - Every requirement should map to threats
 - **Be specific** - Vague requirements can't be tested
 - **Include acceptance criteria** - Define "done"
@@ -664,6 +665,7 @@ This epic covers all security requirements related to {domain.value.replace('_',
 - **Review regularly** - Requirements evolve with threats
 
 ### Don'ts
+
 - **Don't be generic** - "Be secure" is not a requirement
 - **Don't skip rationale** - Explain why it matters
 - **Don't ignore priorities** - Not all requirements are equal

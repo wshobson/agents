@@ -20,13 +20,13 @@ Effective patterns for on-call shift transitions, ensuring continuity, context t
 
 ### 1. Handoff Components
 
-| Component | Purpose |
-|-----------|---------|
-| **Active Incidents** | What's currently broken |
-| **Ongoing Investigations** | Issues being debugged |
-| **Recent Changes** | Deployments, configs |
-| **Known Issues** | Workarounds in place |
-| **Upcoming Events** | Maintenance, releases |
+| Component                  | Purpose                 |
+| -------------------------- | ----------------------- |
+| **Active Incidents**       | What's currently broken |
+| **Ongoing Investigations** | Issues being debugged   |
+| **Recent Changes**         | Deployments, configs    |
+| **Known Issues**           | Workarounds in place    |
+| **Upcoming Events**        | Maintenance, releases   |
 
 ### 2. Handoff Timing
 
@@ -47,7 +47,7 @@ Incoming:
 
 ### Template 1: Shift Handoff Document
 
-```markdown
+````markdown
 # On-Call Handoff: Platform Team
 
 **Outgoing**: @alice (2024-01-15 to 2024-01-22)
@@ -59,6 +59,7 @@ Incoming:
 ## 🔴 Active Incidents
 
 ### None currently active
+
 No active incidents at handoff time.
 
 ---
@@ -66,40 +67,48 @@ No active incidents at handoff time.
 ## 🟡 Ongoing Investigations
 
 ### 1. Intermittent API Timeouts (ENG-1234)
+
 **Status**: Investigating
 **Started**: 2024-01-20
 **Impact**: ~0.1% of requests timing out
 
 **Context**:
+
 - Timeouts correlate with database backup window (02:00-03:00 UTC)
 - Suspect backup process causing lock contention
 - Added extra logging in PR #567 (deployed 01/21)
 
 **Next Steps**:
+
 - [ ] Review new logs after tonight's backup
 - [ ] Consider moving backup window if confirmed
 
 **Resources**:
+
 - Dashboard: [API Latency](https://grafana/d/api-latency)
 - Thread: #platform-eng (01/20, 14:32)
 
 ---
 
 ### 2. Memory Growth in Auth Service (ENG-1235)
+
 **Status**: Monitoring
 **Started**: 2024-01-18
 **Impact**: None yet (proactive)
 
 **Context**:
+
 - Memory usage growing ~5% per day
 - No memory leak found in profiling
 - Suspect connection pool not releasing properly
 
 **Next Steps**:
+
 - [ ] Review heap dump from 01/21
 - [ ] Consider restart if usage > 80%
 
 **Resources**:
+
 - Dashboard: [Auth Service Memory](https://grafana/d/auth-memory)
 - Analysis doc: [Memory Investigation](https://docs/eng-1235)
 
@@ -108,6 +117,7 @@ No active incidents at handoff time.
 ## 🟢 Resolved This Shift
 
 ### Payment Service Outage (2024-01-19)
+
 - **Duration**: 23 minutes
 - **Root Cause**: Database connection exhaustion
 - **Resolution**: Rolled back v2.3.4, increased pool size
@@ -119,17 +129,20 @@ No active incidents at handoff time.
 ## 📋 Recent Changes
 
 ### Deployments
-| Service | Version | Time | Notes |
-|---------|---------|------|-------|
-| api-gateway | v3.2.1 | 01/21 14:00 | Bug fix for header parsing |
-| user-service | v2.8.0 | 01/20 10:00 | New profile features |
-| auth-service | v4.1.2 | 01/19 16:00 | Security patch |
+
+| Service      | Version | Time        | Notes                      |
+| ------------ | ------- | ----------- | -------------------------- |
+| api-gateway  | v3.2.1  | 01/21 14:00 | Bug fix for header parsing |
+| user-service | v2.8.0  | 01/20 10:00 | New profile features       |
+| auth-service | v4.1.2  | 01/19 16:00 | Security patch             |
 
 ### Configuration Changes
+
 - 01/21: Increased API rate limit from 1000 to 1500 RPS
 - 01/20: Updated database connection pool max from 50 to 75
 
 ### Infrastructure
+
 - 01/20: Added 2 nodes to Kubernetes cluster
 - 01/19: Upgraded Redis from 6.2 to 7.0
 
@@ -138,11 +151,13 @@ No active incidents at handoff time.
 ## ⚠️ Known Issues & Workarounds
 
 ### 1. Slow Dashboard Loading
+
 **Issue**: Grafana dashboards slow on Monday mornings
 **Workaround**: Wait 5 min after 08:00 UTC for cache warm-up
 **Ticket**: OPS-456 (P3)
 
 ### 2. Flaky Integration Test
+
 **Issue**: `test_payment_flow` fails intermittently in CI
 **Workaround**: Re-run failed job (usually passes on retry)
 **Ticket**: ENG-1200 (P2)
@@ -151,28 +166,29 @@ No active incidents at handoff time.
 
 ## 📅 Upcoming Events
 
-| Date | Event | Impact | Contact |
-|------|-------|--------|---------|
-| 01/23 02:00 | Database maintenance | 5 min read-only | @dba-team |
-| 01/24 14:00 | Major release v5.0 | Monitor closely | @release-team |
-| 01/25 | Marketing campaign | 2x traffic expected | @platform |
+| Date        | Event                | Impact              | Contact       |
+| ----------- | -------------------- | ------------------- | ------------- |
+| 01/23 02:00 | Database maintenance | 5 min read-only     | @dba-team     |
+| 01/24 14:00 | Major release v5.0   | Monitor closely     | @release-team |
+| 01/25       | Marketing campaign   | 2x traffic expected | @platform     |
 
 ---
 
 ## 📞 Escalation Reminders
 
-| Issue Type | First Escalation | Second Escalation |
-|------------|------------------|-------------------|
-| Payment issues | @payments-oncall | @payments-manager |
-| Auth issues | @auth-oncall | @security-team |
-| Database issues | @dba-team | @infra-manager |
-| Unknown/severe | @engineering-manager | @vp-engineering |
+| Issue Type      | First Escalation     | Second Escalation |
+| --------------- | -------------------- | ----------------- |
+| Payment issues  | @payments-oncall     | @payments-manager |
+| Auth issues     | @auth-oncall         | @security-team    |
+| Database issues | @dba-team            | @infra-manager    |
+| Unknown/severe  | @engineering-manager | @vp-engineering   |
 
 ---
 
 ## 🔧 Quick Reference
 
 ### Common Commands
+
 ```bash
 # Check service health
 kubectl get pods -A | grep -v Running
@@ -186,8 +202,10 @@ psql -c "SELECT count(*) FROM pg_stat_activity;"
 # Clear cache (emergency only)
 redis-cli FLUSHDB
 ```
+````
 
 ### Important Links
+
 - [Runbooks](https://wiki/runbooks)
 - [Service Catalog](https://wiki/services)
 - [Incident Slack](https://slack.com/incidents)
@@ -198,6 +216,7 @@ redis-cli FLUSHDB
 ## Handoff Checklist
 
 ### Outgoing Engineer
+
 - [x] Document active incidents
 - [x] Document ongoing investigations
 - [x] List recent changes
@@ -206,13 +225,15 @@ redis-cli FLUSHDB
 - [x] Sync with incoming engineer
 
 ### Incoming Engineer
+
 - [ ] Read this document
 - [ ] Join sync call
 - [ ] Verify PagerDuty is routing to you
 - [ ] Verify Slack notifications working
 - [ ] Check VPN/access working
 - [ ] Review critical dashboards
-```
+
+````
 
 ### Template 2: Quick Handoff (Async)
 
@@ -238,7 +259,7 @@ redis-cli FLUSHDB
 
 ## Questions?
 I'll be available on Slack until 17:00 today.
-```
+````
 
 ### Template 3: Incident Handoff (Mid-Incident)
 
@@ -252,36 +273,43 @@ I'll be available on Slack until 17:00 today.
 ---
 
 ## Current State
+
 - Error rate: 15% (down from 40%)
 - Mitigation in progress: scaling up pods
 - ETA to resolution: ~30 min
 
 ## What We Know
+
 1. Root cause: Memory pressure on payment-service pods
 2. Triggered by: Unusual traffic spike (3x normal)
 3. Contributing: Inefficient query in checkout flow
 
 ## What We've Done
+
 - Scaled payment-service from 5 → 15 pods
 - Enabled rate limiting on checkout endpoint
 - Disabled non-critical features
 
 ## What Needs to Happen
+
 1. Monitor error rate - should reach <1% in ~15 min
 2. If not improving, escalate to @payments-manager
 3. Once stable, begin root cause investigation
 
 ## Key People
+
 - Incident Commander: @alice (handing off)
 - Comms Lead: @charlie
 - Technical Lead: @bob (incoming)
 
 ## Communication
+
 - Status page: Updated at 08:45
 - Customer support: Notified
 - Exec team: Aware
 
 ## Resources
+
 - Incident channel: #inc-20240122-payment
 - Dashboard: [Payment Service](https://grafana/d/payments)
 - Runbook: [Payment Degradation](https://wiki/runbooks/payments)
@@ -289,6 +317,7 @@ I'll be available on Slack until 17:00 today.
 ---
 
 **Incoming on-call (@bob) - Please confirm you have:**
+
 - [ ] Joined #inc-20240122-payment
 - [ ] Access to dashboards
 - [ ] Understand current state
@@ -331,6 +360,7 @@ I'll be available on Slack until 17:00 today.
 ## Pre-Shift Checklist
 
 ### Access Verification
+
 - [ ] VPN working
 - [ ] kubectl access to all clusters
 - [ ] Database read access
@@ -338,18 +368,21 @@ I'll be available on Slack until 17:00 today.
 - [ ] PagerDuty app installed and logged in
 
 ### Alerting Setup
+
 - [ ] PagerDuty schedule shows you as primary
 - [ ] Phone notifications enabled
 - [ ] Slack notifications for incident channels
 - [ ] Test alert received and acknowledged
 
 ### Knowledge Refresh
+
 - [ ] Review recent incidents (past 2 weeks)
 - [ ] Check service changelog
 - [ ] Skim critical runbooks
 - [ ] Know escalation contacts
 
 ### Environment Ready
+
 - [ ] Laptop charged and accessible
 - [ ] Phone charged
 - [ ] Quiet space available for calls
@@ -362,18 +395,21 @@ I'll be available on Slack until 17:00 today.
 ## Daily On-Call Routine
 
 ### Morning (start of day)
+
 - [ ] Check overnight alerts
 - [ ] Review dashboards for anomalies
 - [ ] Check for any P0/P1 tickets created
 - [ ] Skim incident channels for context
 
 ### Throughout Day
+
 - [ ] Respond to alerts within SLA
 - [ ] Document investigation progress
 - [ ] Update team on significant issues
 - [ ] Triage incoming pages
 
 ### End of Day
+
 - [ ] Hand off any active issues
 - [ ] Update investigation docs
 - [ ] Note anything for next shift
@@ -400,18 +436,21 @@ I'll be available on Slack until 17:00 today.
 ## Escalation Triggers
 
 ### Immediate Escalation
+
 - SEV1 incident declared
 - Data breach suspected
 - Unable to diagnose within 30 min
 - Customer or legal escalation received
 
 ### Consider Escalation
+
 - Issue spans multiple teams
 - Requires expertise you don't have
 - Business impact exceeds threshold
 - You're uncertain about next steps
 
 ### How to Escalate
+
 1. Page the appropriate escalation path
 2. Provide brief context in Slack
 3. Stay engaged until escalation acknowledges
@@ -421,6 +460,7 @@ I'll be available on Slack until 17:00 today.
 ## Best Practices
 
 ### Do's
+
 - **Document everything** - Future you will thank you
 - **Escalate early** - Better safe than sorry
 - **Take breaks** - Alert fatigue is real
@@ -428,6 +468,7 @@ I'll be available on Slack until 17:00 today.
 - **Test your setup** - Before incidents, not during
 
 ### Don'ts
+
 - **Don't skip handoffs** - Context loss causes incidents
 - **Don't hero** - Escalate when needed
 - **Don't ignore alerts** - Even if they seem minor

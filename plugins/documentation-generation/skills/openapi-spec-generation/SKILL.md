@@ -37,11 +37,11 @@ components:
 
 ### 2. Design Approaches
 
-| Approach | Description | Best For |
-|----------|-------------|----------|
-| **Design-First** | Write spec before code | New APIs, contracts |
-| **Code-First** | Generate spec from code | Existing APIs |
-| **Hybrid** | Annotate code, generate spec | Evolving APIs |
+| Approach         | Description                  | Best For            |
+| ---------------- | ---------------------------- | ------------------- |
+| **Design-First** | Write spec before code       | New APIs, contracts |
+| **Code-First**   | Generate spec from code      | Existing APIs       |
+| **Hybrid**       | Annotate code, generate spec | Evolving APIs       |
 
 ## Templates
 
@@ -94,13 +94,13 @@ paths:
       tags:
         - Users
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
         - name: status
           in: query
           description: Filter by user status
           schema:
-            $ref: '#/components/schemas/UserStatus'
+            $ref: "#/components/schemas/UserStatus"
         - name: search
           in: query
           description: Search by name or email
@@ -109,21 +109,21 @@ paths:
             minLength: 2
             maxLength: 100
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserListResponse'
+                $ref: "#/components/schemas/UserListResponse"
               examples:
                 default:
-                  $ref: '#/components/examples/UserListExample'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/RateLimited'
+                  $ref: "#/components/examples/UserListExample"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/RateLimited"
       security:
         - bearerAuth: []
 
@@ -138,7 +138,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUserRequest'
+              $ref: "#/components/schemas/CreateUserRequest"
             examples:
               standard:
                 summary: Standard user
@@ -153,32 +153,32 @@ paths:
                   name: Admin User
                   role: admin
       responses:
-        '201':
+        "201":
           description: User created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
           headers:
             Location:
               description: URL of created user
               schema:
                 type: string
                 format: uri
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
           description: Email already exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
       security:
         - bearerAuth: []
 
   /users/{userId}:
     parameters:
-      - $ref: '#/components/parameters/UserIdParam'
+      - $ref: "#/components/parameters/UserIdParam"
 
     get:
       operationId: getUser
@@ -186,14 +186,14 @@ paths:
       tags:
         - Users
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/User"
+        "404":
+          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
 
@@ -207,18 +207,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateUserRequest'
+              $ref: "#/components/schemas/UpdateUserRequest"
       responses:
-        '200':
+        "200":
           description: User updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
 
@@ -229,10 +229,10 @@ paths:
         - Users
         - Admin
       responses:
-        '204':
+        "204":
           description: User deleted
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "404":
+          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
         - apiKey: []
@@ -263,7 +263,7 @@ components:
           maxLength: 100
           description: User display name
         status:
-          $ref: '#/components/schemas/UserStatus'
+          $ref: "#/components/schemas/UserStatus"
         role:
           type: string
           enum: [user, moderator, admin]
@@ -320,7 +320,7 @@ components:
           minLength: 1
           maxLength: 100
         status:
-          $ref: '#/components/schemas/UserStatus'
+          $ref: "#/components/schemas/UserStatus"
         role:
           type: string
           enum: [user, moderator, admin]
@@ -337,9 +337,9 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/User'
+            $ref: "#/components/schemas/User"
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
 
     Pagination:
       type: object
@@ -427,7 +427,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             code: VALIDATION_ERROR
             message: Invalid request parameters
@@ -440,7 +440,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             code: UNAUTHORIZED
             message: Authentication required
@@ -450,7 +450,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             code: NOT_FOUND
             message: User not found
@@ -460,7 +460,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
       headers:
         Retry-After:
           description: Seconds until rate limit resets
@@ -826,7 +826,7 @@ export class UsersController extends Controller {
     @Query() page: number = 1,
     @Query() limit: number = 20,
     @Query() status?: UserStatus,
-    @Query() search?: string
+    @Query() search?: string,
   ): Promise<UserListResponse> {
     // Implementation
     throw new Error("Not implemented");
@@ -840,9 +840,7 @@ export class UsersController extends Controller {
   @SuccessResponse(201, "Created")
   @Response<ErrorResponse>(400, "Invalid request")
   @Response<ErrorResponse>(409, "Email already exists")
-  public async createUser(
-    @Body() body: CreateUserRequest
-  ): Promise<User> {
+  public async createUser(@Body() body: CreateUserRequest): Promise<User> {
     this.setStatus(201);
     throw new Error("Not implemented");
   }
@@ -854,9 +852,7 @@ export class UsersController extends Controller {
   @Get("{userId}")
   @Security("bearerAuth")
   @Response<ErrorResponse>(404, "User not found")
-  public async getUser(
-    @Path() userId: string
-  ): Promise<User> {
+  public async getUser(@Path() userId: string): Promise<User> {
     throw new Error("Not implemented");
   }
 
@@ -870,7 +866,7 @@ export class UsersController extends Controller {
   @Response<ErrorResponse>(404, "User not found")
   public async updateUser(
     @Path() userId: string,
-    @Body() body: UpdateUserRequest
+    @Body() body: UpdateUserRequest,
   ): Promise<User> {
     throw new Error("Not implemented");
   }
@@ -884,9 +880,7 @@ export class UsersController extends Controller {
   @Security("bearerAuth")
   @SuccessResponse(204, "Deleted")
   @Response<ErrorResponse>(404, "User not found")
-  public async deleteUser(
-    @Path() userId: string
-  ): Promise<void> {
+  public async deleteUser(@Path() userId: string): Promise<void> {
     this.setStatus(204);
   }
 }
@@ -1007,6 +1001,7 @@ openapi-generator-cli generate \
 ## Best Practices
 
 ### Do's
+
 - **Use $ref** - Reuse schemas, parameters, responses
 - **Add examples** - Real-world values help consumers
 - **Document errors** - All possible error codes
@@ -1014,6 +1009,7 @@ openapi-generator-cli generate \
 - **Use semantic versioning** - For spec changes
 
 ### Don'ts
+
 - **Don't use generic descriptions** - Be specific
 - **Don't skip security** - Define all schemes
 - **Don't forget nullable** - Be explicit about null

@@ -20,13 +20,13 @@ Comprehensive guide to modern React state management patterns, from local compon
 
 ### 1. State Categories
 
-| Type | Description | Solutions |
-|------|-------------|-----------|
-| **Local State** | Component-specific, UI state | useState, useReducer |
-| **Global State** | Shared across components | Redux Toolkit, Zustand, Jotai |
-| **Server State** | Remote data, caching | React Query, SWR, RTK Query |
-| **URL State** | Route parameters, search | React Router, nuqs |
-| **Form State** | Input values, validation | React Hook Form, Formik |
+| Type             | Description                  | Solutions                     |
+| ---------------- | ---------------------------- | ----------------------------- |
+| **Local State**  | Component-specific, UI state | useState, useReducer          |
+| **Global State** | Shared across components     | Redux Toolkit, Zustand, Jotai |
+| **Server State** | Remote data, caching         | React Query, SWR, RTK Query   |
+| **URL State**    | Route parameters, search     | React Router, nuqs            |
+| **Form State**   | Input values, validation     | React Hook Form, Formik       |
 
 ### 2. Selection Criteria
 
@@ -87,10 +87,10 @@ function Header() {
 
 ```typescript
 // store/index.ts
-import { configureStore } from '@reduxjs/toolkit'
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import userReducer from './slices/userSlice'
-import cartReducer from './slices/cartSlice'
+import { configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import userReducer from "./slices/userSlice";
+import cartReducer from "./slices/cartSlice";
 
 export const store = configureStore({
   reducer: {
@@ -100,99 +100,99 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST'],
+        ignoredActions: ["persist/PERSIST"],
       },
     }),
-})
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 // Typed hooks
-export const useAppDispatch: () => AppDispatch = useDispatch
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 ```
 
 ```typescript
 // store/slices/userSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
-  id: string
-  email: string
-  name: string
+  id: string;
+  email: string;
+  name: string;
 }
 
 interface UserState {
-  current: User | null
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
-  error: string | null
+  current: User | null;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
 }
 
 const initialState: UserState = {
   current: null,
-  status: 'idle',
+  status: "idle",
   error: null,
-}
+};
 
 export const fetchUser = createAsyncThunk(
-  'user/fetchUser',
+  "user/fetchUser",
   async (userId: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/users/${userId}`)
-      if (!response.ok) throw new Error('Failed to fetch user')
-      return await response.json()
+      const response = await fetch(`/api/users/${userId}`);
+      if (!response.ok) throw new Error("Failed to fetch user");
+      return await response.json();
     } catch (error) {
-      return rejectWithValue((error as Error).message)
+      return rejectWithValue((error as Error).message);
     }
-  }
-)
+  },
+);
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
-      state.current = action.payload
-      state.status = 'succeeded'
+      state.current = action.payload;
+      state.status = "succeeded";
     },
     clearUser: (state) => {
-      state.current = null
-      state.status = 'idle'
+      state.current = null;
+      state.status = "idle";
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUser.pending, (state) => {
-        state.status = 'loading'
-        state.error = null
+        state.status = "loading";
+        state.error = null;
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
-        state.status = 'succeeded'
-        state.current = action.payload
+        state.status = "succeeded";
+        state.current = action.payload;
       })
       .addCase(fetchUser.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.payload as string
-      })
+        state.status = "failed";
+        state.error = action.payload as string;
+      });
   },
-})
+});
 
-export const { setUser, clearUser } = userSlice.actions
-export default userSlice.reducer
+export const { setUser, clearUser } = userSlice.actions;
+export default userSlice.reducer;
 ```
 
 ### Pattern 2: Zustand with Slices (Scalable)
 
 ```typescript
 // store/slices/createUserSlice.ts
-import { StateCreator } from 'zustand'
+import { StateCreator } from "zustand";
 
 export interface UserSlice {
-  user: User | null
-  isAuthenticated: boolean
-  login: (credentials: Credentials) => Promise<void>
-  logout: () => void
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (credentials: Credentials) => Promise<void>;
+  logout: () => void;
 }
 
 export const createUserSlice: StateCreator<
@@ -204,31 +204,31 @@ export const createUserSlice: StateCreator<
   user: null,
   isAuthenticated: false,
   login: async (credentials) => {
-    const user = await authApi.login(credentials)
-    set({ user, isAuthenticated: true })
+    const user = await authApi.login(credentials);
+    set({ user, isAuthenticated: true });
   },
   logout: () => {
-    set({ user: null, isAuthenticated: false })
+    set({ user: null, isAuthenticated: false });
     // Can access other slices
     // get().clearCart()
   },
-})
+});
 
 // store/index.ts
-import { create } from 'zustand'
-import { createUserSlice, UserSlice } from './slices/createUserSlice'
-import { createCartSlice, CartSlice } from './slices/createCartSlice'
+import { create } from "zustand";
+import { createUserSlice, UserSlice } from "./slices/createUserSlice";
+import { createCartSlice, CartSlice } from "./slices/createCartSlice";
 
-type StoreState = UserSlice & CartSlice
+type StoreState = UserSlice & CartSlice;
 
 export const useStore = create<StoreState>()((...args) => ({
   ...createUserSlice(...args),
   ...createCartSlice(...args),
-}))
+}));
 
 // Selective subscriptions (prevents unnecessary re-renders)
-export const useUser = () => useStore((state) => state.user)
-export const useCart = () => useStore((state) => state.cart)
+export const useUser = () => useStore((state) => state.user);
+export const useCart = () => useStore((state) => state.cart);
 ```
 
 ### Pattern 3: Jotai for Atomic State
@@ -280,16 +280,16 @@ function Profile() {
 
 ```typescript
 // hooks/useUsers.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // Query keys factory
 export const userKeys = {
-  all: ['users'] as const,
-  lists: () => [...userKeys.all, 'list'] as const,
+  all: ["users"] as const,
+  lists: () => [...userKeys.all, "list"] as const,
   list: (filters: UserFilters) => [...userKeys.lists(), filters] as const,
-  details: () => [...userKeys.all, 'detail'] as const,
+  details: () => [...userKeys.all, "detail"] as const,
   detail: (id: string) => [...userKeys.details(), id] as const,
-}
+};
 
 // Fetch hook
 export function useUsers(filters: UserFilters) {
@@ -298,7 +298,7 @@ export function useUsers(filters: UserFilters) {
     queryFn: () => fetchUsers(filters),
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes (formerly cacheTime)
-  })
+  });
 }
 
 // Single user hook
@@ -307,39 +307,45 @@ export function useUser(id: string) {
     queryKey: userKeys.detail(id),
     queryFn: () => fetchUser(id),
     enabled: !!id, // Don't fetch if no id
-  })
+  });
 }
 
 // Mutation with optimistic update
 export function useUpdateUser() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: updateUser,
     onMutate: async (newUser) => {
       // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: userKeys.detail(newUser.id) })
+      await queryClient.cancelQueries({
+        queryKey: userKeys.detail(newUser.id),
+      });
 
       // Snapshot previous value
-      const previousUser = queryClient.getQueryData(userKeys.detail(newUser.id))
+      const previousUser = queryClient.getQueryData(
+        userKeys.detail(newUser.id),
+      );
 
       // Optimistically update
-      queryClient.setQueryData(userKeys.detail(newUser.id), newUser)
+      queryClient.setQueryData(userKeys.detail(newUser.id), newUser);
 
-      return { previousUser }
+      return { previousUser };
     },
     onError: (err, newUser, context) => {
       // Rollback on error
       queryClient.setQueryData(
         userKeys.detail(newUser.id),
-        context?.previousUser
-      )
+        context?.previousUser,
+      );
     },
     onSettled: (data, error, variables) => {
       // Refetch after mutation
-      queryClient.invalidateQueries({ queryKey: userKeys.detail(variables.id) })
+      queryClient.invalidateQueries({
+        queryKey: userKeys.detail(variables.id),
+      });
     },
-  })
+  });
 }
 ```
 
@@ -378,6 +384,7 @@ function Dashboard() {
 ## Best Practices
 
 ### Do's
+
 - **Colocate state** - Keep state as close to where it's used as possible
 - **Use selectors** - Prevent unnecessary re-renders with selective subscriptions
 - **Normalize data** - Flatten nested structures for easier updates
@@ -385,6 +392,7 @@ function Dashboard() {
 - **Separate concerns** - Server state (React Query) vs client state (Zustand)
 
 ### Don'ts
+
 - **Don't over-globalize** - Not everything needs to be in global state
 - **Don't duplicate server state** - Let React Query manage it
 - **Don't mutate directly** - Always use immutable updates
@@ -397,28 +405,28 @@ function Dashboard() {
 
 ```typescript
 // Before (legacy Redux)
-const ADD_TODO = 'ADD_TODO'
-const addTodo = (text) => ({ type: ADD_TODO, payload: text })
+const ADD_TODO = "ADD_TODO";
+const addTodo = (text) => ({ type: ADD_TODO, payload: text });
 function todosReducer(state = [], action) {
   switch (action.type) {
     case ADD_TODO:
-      return [...state, { text: action.payload, completed: false }]
+      return [...state, { text: action.payload, completed: false }];
     default:
-      return state
+      return state;
   }
 }
 
 // After (Redux Toolkit)
 const todosSlice = createSlice({
-  name: 'todos',
+  name: "todos",
   initialState: [],
   reducers: {
     addTodo: (state, action: PayloadAction<string>) => {
       // Immer allows "mutations"
-      state.push({ text: action.payload, completed: false })
+      state.push({ text: action.payload, completed: false });
     },
   },
-})
+});
 ```
 
 ## Resources

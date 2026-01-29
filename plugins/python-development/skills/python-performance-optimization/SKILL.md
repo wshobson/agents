@@ -22,18 +22,21 @@ Comprehensive guide to profiling, analyzing, and optimizing Python code for bett
 ## Core Concepts
 
 ### 1. Profiling Types
+
 - **CPU Profiling**: Identify time-consuming functions
 - **Memory Profiling**: Track memory allocation and leaks
 - **Line Profiling**: Profile at line-by-line granularity
 - **Call Graph**: Visualize function call relationships
 
 ### 2. Performance Metrics
+
 - **Execution Time**: How long operations take
 - **Memory Usage**: Peak and average memory consumption
 - **CPU Utilization**: Processor usage patterns
 - **I/O Wait**: Time spent on I/O operations
 
 ### 3. Optimization Strategies
+
 - **Algorithmic**: Better algorithms and data structures
 - **Implementation**: More efficient code patterns
 - **Parallelization**: Multi-threading/processing
@@ -113,6 +116,7 @@ if __name__ == "__main__":
 ```
 
 **Command-line profiling:**
+
 ```bash
 # Profile a script
 python -m cProfile -o output.prof script.py
@@ -144,6 +148,7 @@ def process_data(data):
 ```
 
 **Manual line profiling:**
+
 ```python
 from line_profiler import LineProfiler
 
@@ -483,7 +488,7 @@ print(f"With cache (1000 runs): {fast_time:.4f}s")
 print(f"Cache info: {fibonacci_fast.cache_info()}")
 ```
 
-### Pattern 13: Using __slots__ for Memory
+### Pattern 13: Using **slots** for Memory
 
 ```python
 import sys

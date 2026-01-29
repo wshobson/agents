@@ -3,9 +3,11 @@
 You are an accessibility expert specializing in WCAG compliance, inclusive design, and assistive technology compatibility. Conduct comprehensive audits, identify barriers, provide remediation guidance, and ensure digital products are accessible to all users.
 
 ## Context
+
 The user needs to audit and improve accessibility to ensure compliance with WCAG standards and provide an inclusive experience for users with disabilities. Focus on automated testing, manual verification, remediation strategies, and establishing ongoing accessibility practices.
 
 ## Requirements
+
 $ARGUMENTS
 
 ## Instructions
@@ -14,69 +16,69 @@ $ARGUMENTS
 
 ```javascript
 // accessibility-test.js
-const { AxePuppeteer } = require('@axe-core/puppeteer');
-const puppeteer = require('puppeteer');
+const { AxePuppeteer } = require("@axe-core/puppeteer");
+const puppeteer = require("puppeteer");
 
 class AccessibilityAuditor {
-    constructor(options = {}) {
-        this.wcagLevel = options.wcagLevel || 'AA';
-        this.viewport = options.viewport || { width: 1920, height: 1080 };
-    }
+  constructor(options = {}) {
+    this.wcagLevel = options.wcagLevel || "AA";
+    this.viewport = options.viewport || { width: 1920, height: 1080 };
+  }
 
-    async runFullAudit(url) {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.setViewport(this.viewport);
-        await page.goto(url, { waitUntil: 'networkidle2' });
+  async runFullAudit(url) {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setViewport(this.viewport);
+    await page.goto(url, { waitUntil: "networkidle2" });
 
-        const results = await new AxePuppeteer(page)
-            .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-            .exclude('.no-a11y-check')
-            .analyze();
+    const results = await new AxePuppeteer(page)
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .exclude(".no-a11y-check")
+      .analyze();
 
-        await browser.close();
+    await browser.close();
 
-        return {
-            url,
-            timestamp: new Date().toISOString(),
-            violations: results.violations.map(v => ({
-                id: v.id,
-                impact: v.impact,
-                description: v.description,
-                help: v.help,
-                helpUrl: v.helpUrl,
-                nodes: v.nodes.map(n => ({
-                    html: n.html,
-                    target: n.target,
-                    failureSummary: n.failureSummary
-                }))
-            })),
-            score: this.calculateScore(results)
-        };
-    }
+    return {
+      url,
+      timestamp: new Date().toISOString(),
+      violations: results.violations.map((v) => ({
+        id: v.id,
+        impact: v.impact,
+        description: v.description,
+        help: v.help,
+        helpUrl: v.helpUrl,
+        nodes: v.nodes.map((n) => ({
+          html: n.html,
+          target: n.target,
+          failureSummary: n.failureSummary,
+        })),
+      })),
+      score: this.calculateScore(results),
+    };
+  }
 
-    calculateScore(results) {
-        const weights = { critical: 10, serious: 5, moderate: 2, minor: 1 };
-        let totalWeight = 0;
-        results.violations.forEach(v => {
-            totalWeight += weights[v.impact] || 0;
-        });
-        return Math.max(0, 100 - totalWeight);
-    }
+  calculateScore(results) {
+    const weights = { critical: 10, serious: 5, moderate: 2, minor: 1 };
+    let totalWeight = 0;
+    results.violations.forEach((v) => {
+      totalWeight += weights[v.impact] || 0;
+    });
+    return Math.max(0, 100 - totalWeight);
+  }
 }
 
 // Component testing with jest-axe
-import { render } from '@testing-library/react';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { render } from "@testing-library/react";
+import { axe, toHaveNoViolations } from "jest-axe";
 
 expect.extend(toHaveNoViolations);
 
-describe('Accessibility Tests', () => {
-    it('should have no violations', async () => {
-        const { container } = render(<MyComponent />);
-        const results = await axe(container);
-        expect(results).toHaveNoViolations();
-    });
+describe("Accessibility Tests", () => {
+  it("should have no violations", async () => {
+    const { container } = render(<MyComponent />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
 });
 ```
 
@@ -162,62 +164,67 @@ class ColorContrastAnalyzer {
 ```javascript
 // keyboard-navigation.js
 class KeyboardNavigationTester {
-    async testKeyboardNavigation(page) {
-        const results = { focusableElements: [], missingFocusIndicators: [], keyboardTraps: [] };
+  async testKeyboardNavigation(page) {
+    const results = {
+      focusableElements: [],
+      missingFocusIndicators: [],
+      keyboardTraps: [],
+    };
 
-        // Get all focusable elements
-        const focusable = await page.evaluate(() => {
-            const selector = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
-            return Array.from(document.querySelectorAll(selector)).map(el => ({
-                tagName: el.tagName.toLowerCase(),
-                text: el.innerText || el.value || el.placeholder || '',
-                tabIndex: el.tabIndex
-            }));
-        });
+    // Get all focusable elements
+    const focusable = await page.evaluate(() => {
+      const selector =
+        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+      return Array.from(document.querySelectorAll(selector)).map((el) => ({
+        tagName: el.tagName.toLowerCase(),
+        text: el.innerText || el.value || el.placeholder || "",
+        tabIndex: el.tabIndex,
+      }));
+    });
 
-        results.focusableElements = focusable;
+    results.focusableElements = focusable;
 
-        // Test tab order and focus indicators
-        for (let i = 0; i < focusable.length; i++) {
-            await page.keyboard.press('Tab');
+    // Test tab order and focus indicators
+    for (let i = 0; i < focusable.length; i++) {
+      await page.keyboard.press("Tab");
 
-            const focused = await page.evaluate(() => {
-                const el = document.activeElement;
-                return {
-                    tagName: el.tagName.toLowerCase(),
-                    hasFocusIndicator: window.getComputedStyle(el).outline !== 'none'
-                };
-            });
+      const focused = await page.evaluate(() => {
+        const el = document.activeElement;
+        return {
+          tagName: el.tagName.toLowerCase(),
+          hasFocusIndicator: window.getComputedStyle(el).outline !== "none",
+        };
+      });
 
-            if (!focused.hasFocusIndicator) {
-                results.missingFocusIndicators.push(focused);
-            }
-        }
-
-        return results;
+      if (!focused.hasFocusIndicator) {
+        results.missingFocusIndicators.push(focused);
+      }
     }
+
+    return results;
+  }
 }
 
 // Enhance keyboard accessibility
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        const modal = document.querySelector('.modal.open');
-        if (modal) closeModal(modal);
-    }
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    const modal = document.querySelector(".modal.open");
+    if (modal) closeModal(modal);
+  }
 });
 
 // Make div clickable accessible
-document.querySelectorAll('[onclick]').forEach(el => {
-    if (!['a', 'button', 'input'].includes(el.tagName.toLowerCase())) {
-        el.setAttribute('tabindex', '0');
-        el.setAttribute('role', 'button');
-        el.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                el.click();
-                e.preventDefault();
-            }
-        });
-    }
+document.querySelectorAll("[onclick]").forEach((el) => {
+  if (!["a", "button", "input"].includes(el.tagName.toLowerCase())) {
+    el.setAttribute("tabindex", "0");
+    el.setAttribute("role", "button");
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        el.click();
+        e.preventDefault();
+      }
+    });
+  }
 });
 ```
 
@@ -226,94 +233,98 @@ document.querySelectorAll('[onclick]').forEach(el => {
 ```javascript
 // screen-reader-test.js
 class ScreenReaderTester {
-    async testScreenReaderCompatibility(page) {
+  async testScreenReaderCompatibility(page) {
+    return {
+      landmarks: await this.testLandmarks(page),
+      headings: await this.testHeadingStructure(page),
+      images: await this.testImageAccessibility(page),
+      forms: await this.testFormAccessibility(page),
+    };
+  }
+
+  async testHeadingStructure(page) {
+    const headings = await page.evaluate(() => {
+      return Array.from(
+        document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+      ).map((h) => ({
+        level: parseInt(h.tagName[1]),
+        text: h.textContent.trim(),
+        isEmpty: !h.textContent.trim(),
+      }));
+    });
+
+    const issues = [];
+    let previousLevel = 0;
+
+    headings.forEach((heading, index) => {
+      if (heading.level > previousLevel + 1 && previousLevel !== 0) {
+        issues.push({
+          type: "skipped-level",
+          message: `Heading level ${heading.level} skips from level ${previousLevel}`,
+        });
+      }
+      if (heading.isEmpty) {
+        issues.push({ type: "empty-heading", index });
+      }
+      previousLevel = heading.level;
+    });
+
+    if (!headings.some((h) => h.level === 1)) {
+      issues.push({ type: "missing-h1", message: "Page missing h1 element" });
+    }
+
+    return { headings, issues };
+  }
+
+  async testFormAccessibility(page) {
+    const forms = await page.evaluate(() => {
+      return Array.from(document.querySelectorAll("form")).map((form) => {
+        const inputs = form.querySelectorAll("input, textarea, select");
         return {
-            landmarks: await this.testLandmarks(page),
-            headings: await this.testHeadingStructure(page),
-            images: await this.testImageAccessibility(page),
-            forms: await this.testFormAccessibility(page)
+          fields: Array.from(inputs).map((input) => ({
+            type: input.type || input.tagName.toLowerCase(),
+            id: input.id,
+            hasLabel: input.id
+              ? !!document.querySelector(`label[for="${input.id}"]`)
+              : !!input.closest("label"),
+            hasAriaLabel: !!input.getAttribute("aria-label"),
+            required: input.required,
+          })),
         };
-    }
+      });
+    });
 
-    async testHeadingStructure(page) {
-        const headings = await page.evaluate(() => {
-            return Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).map(h => ({
-                level: parseInt(h.tagName[1]),
-                text: h.textContent.trim(),
-                isEmpty: !h.textContent.trim()
-            }));
-        });
-
-        const issues = [];
-        let previousLevel = 0;
-
-        headings.forEach((heading, index) => {
-            if (heading.level > previousLevel + 1 && previousLevel !== 0) {
-                issues.push({
-                    type: 'skipped-level',
-                    message: `Heading level ${heading.level} skips from level ${previousLevel}`
-                });
-            }
-            if (heading.isEmpty) {
-                issues.push({ type: 'empty-heading', index });
-            }
-            previousLevel = heading.level;
-        });
-
-        if (!headings.some(h => h.level === 1)) {
-            issues.push({ type: 'missing-h1', message: 'Page missing h1 element' });
+    const issues = [];
+    forms.forEach((form, i) => {
+      form.fields.forEach((field, j) => {
+        if (!field.hasLabel && !field.hasAriaLabel) {
+          issues.push({ type: "missing-label", form: i, field: j });
         }
+      });
+    });
 
-        return { headings, issues };
-    }
-
-    async testFormAccessibility(page) {
-        const forms = await page.evaluate(() => {
-            return Array.from(document.querySelectorAll('form')).map(form => {
-                const inputs = form.querySelectorAll('input, textarea, select');
-                return {
-                    fields: Array.from(inputs).map(input => ({
-                        type: input.type || input.tagName.toLowerCase(),
-                        id: input.id,
-                        hasLabel: input.id ? !!document.querySelector(`label[for="${input.id}"]`) : !!input.closest('label'),
-                        hasAriaLabel: !!input.getAttribute('aria-label'),
-                        required: input.required
-                    }))
-                };
-            });
-        });
-
-        const issues = [];
-        forms.forEach((form, i) => {
-            form.fields.forEach((field, j) => {
-                if (!field.hasLabel && !field.hasAriaLabel) {
-                    issues.push({ type: 'missing-label', form: i, field: j });
-                }
-            });
-        });
-
-        return { forms, issues };
-    }
+    return { forms, issues };
+  }
 }
 
 // ARIA patterns
 const ariaPatterns = {
-    modal: `
+  modal: `
 <div role="dialog" aria-labelledby="modal-title" aria-modal="true">
     <h2 id="modal-title">Modal Title</h2>
     <button aria-label="Close">×</button>
 </div>`,
 
-    tabs: `
+  tabs: `
 <div role="tablist" aria-label="Navigation">
     <button role="tab" aria-selected="true" aria-controls="panel-1">Tab 1</button>
 </div>
 <div role="tabpanel" id="panel-1" aria-labelledby="tab-1">Content</div>`,
 
-    form: `
+  form: `
 <label for="name">Name <span aria-label="required">*</span></label>
 <input id="name" required aria-required="true" aria-describedby="name-error">
-<span id="name-error" role="alert" aria-live="polite"></span>`
+<span id="name-error" role="alert" aria-live="polite"></span>`,
 };
 ```
 
@@ -323,6 +334,7 @@ const ariaPatterns = {
 ## Manual Accessibility Testing
 
 ### Keyboard Navigation
+
 - [ ] All interactive elements accessible via Tab
 - [ ] Buttons activate with Enter/Space
 - [ ] Esc key closes modals
@@ -331,6 +343,7 @@ const ariaPatterns = {
 - [ ] Logical tab order
 
 ### Screen Reader
+
 - [ ] Page title descriptive
 - [ ] Headings create logical outline
 - [ ] Images have alt text
@@ -339,6 +352,7 @@ const ariaPatterns = {
 - [ ] Dynamic updates announced
 
 ### Visual
+
 - [ ] Text resizes to 200% without loss
 - [ ] Color not sole means of info
 - [ ] Focus indicators have sufficient contrast
@@ -346,6 +360,7 @@ const ariaPatterns = {
 - [ ] Animations can be paused
 
 ### Cognitive
+
 - [ ] Instructions clear and simple
 - [ ] Error messages helpful
 - [ ] No time limits on forms
@@ -357,29 +372,37 @@ const ariaPatterns = {
 
 ```javascript
 // Fix missing alt text
-document.querySelectorAll('img:not([alt])').forEach(img => {
-    const isDecorative = img.role === 'presentation' || img.closest('[role="presentation"]');
-    img.setAttribute('alt', isDecorative ? '' : img.title || 'Image');
+document.querySelectorAll("img:not([alt])").forEach((img) => {
+  const isDecorative =
+    img.role === "presentation" || img.closest('[role="presentation"]');
+  img.setAttribute("alt", isDecorative ? "" : img.title || "Image");
 });
 
 // Fix missing labels
-document.querySelectorAll('input:not([aria-label]):not([id])').forEach(input => {
+document
+  .querySelectorAll("input:not([aria-label]):not([id])")
+  .forEach((input) => {
     if (input.placeholder) {
-        input.setAttribute('aria-label', input.placeholder);
+      input.setAttribute("aria-label", input.placeholder);
     }
-});
+  });
 
 // React accessible components
 const AccessibleButton = ({ children, onClick, ariaLabel, ...props }) => (
-    <button onClick={onClick} aria-label={ariaLabel} {...props}>
-        {children}
-    </button>
+  <button onClick={onClick} aria-label={ariaLabel} {...props}>
+    {children}
+  </button>
 );
 
-const LiveRegion = ({ message, politeness = 'polite' }) => (
-    <div role="status" aria-live={politeness} aria-atomic="true" className="sr-only">
-        {message}
-    </div>
+const LiveRegion = ({ message, politeness = "polite" }) => (
+  <div
+    role="status"
+    aria-live={politeness}
+    aria-atomic="true"
+    className="sr-only"
+  >
+    {message}
+  </div>
 );
 ```
 
@@ -396,35 +419,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
 
-    - name: Install and build
-      run: |
-        npm ci
-        npm run build
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
 
-    - name: Start server
-      run: |
-        npm start &
-        npx wait-on http://localhost:3000
+      - name: Start server
+        run: |
+          npm start &
+          npx wait-on http://localhost:3000
 
-    - name: Run axe tests
-      run: npm run test:a11y
+      - name: Run axe tests
+        run: npm run test:a11y
 
-    - name: Run pa11y
-      run: npx pa11y http://localhost:3000 --standard WCAG2AA --threshold 0
+      - name: Run pa11y
+        run: npx pa11y http://localhost:3000 --standard WCAG2AA --threshold 0
 
-    - name: Upload report
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: a11y-report
-        path: a11y-report.html
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: a11y-report
+          path: a11y-report.html
 ```
 
 ### 8. Reporting
@@ -432,8 +455,8 @@ jobs:
 ```javascript
 // report-generator.js
 class AccessibilityReportGenerator {
-    generateHTMLReport(auditResults) {
-        return `
+  generateHTMLReport(auditResults) {
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -458,17 +481,21 @@ class AccessibilityReportGenerator {
     </div>
 
     <h2>Violations</h2>
-    ${auditResults.violations.map(v => `
+    ${auditResults.violations
+      .map(
+        (v) => `
         <div class="violation ${v.impact}">
             <h3>${v.help}</h3>
             <p><strong>Impact:</strong> ${v.impact}</p>
             <p>${v.description}</p>
             <a href="${v.helpUrl}">Learn more</a>
         </div>
-    `).join('')}
+    `,
+      )
+      .join("")}
 </body>
 </html>`;
-    }
+  }
 }
 ```
 

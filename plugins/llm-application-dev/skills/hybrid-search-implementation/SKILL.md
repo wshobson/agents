@@ -27,12 +27,12 @@ Query → ┬─► Vector Search ──► Candidates ─┐
 
 ### 2. Fusion Methods
 
-| Method | Description | Best For |
-|--------|-------------|----------|
-| **RRF** | Reciprocal Rank Fusion | General purpose |
-| **Linear** | Weighted sum of scores | Tunable balance |
+| Method            | Description              | Best For        |
+| ----------------- | ------------------------ | --------------- |
+| **RRF**           | Reciprocal Rank Fusion   | General purpose |
+| **Linear**        | Weighted sum of scores   | Tunable balance |
 | **Cross-encoder** | Rerank with neural model | Highest quality |
-| **Cascade** | Filter then rerank | Efficiency |
+| **Cascade**       | Filter then rerank       | Efficiency      |
 
 ## Templates
 
@@ -549,6 +549,7 @@ class HybridRAGPipeline:
 ## Best Practices
 
 ### Do's
+
 - **Tune weights empirically** - Test on your data
 - **Use RRF for simplicity** - Works well without tuning
 - **Add reranking** - Significant quality improvement
@@ -556,6 +557,7 @@ class HybridRAGPipeline:
 - **A/B test** - Measure real user impact
 
 ### Don'ts
+
 - **Don't assume one size fits all** - Different queries need different weights
 - **Don't skip keyword search** - Handles exact matches better
 - **Don't over-fetch** - Balance recall vs latency

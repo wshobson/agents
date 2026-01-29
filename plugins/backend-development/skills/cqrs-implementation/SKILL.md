@@ -48,14 +48,14 @@ Comprehensive guide to implementing CQRS (Command Query Responsibility Segregati
 
 ### 2. Key Components
 
-| Component | Responsibility |
-|-----------|---------------|
-| **Command** | Intent to change state |
+| Component           | Responsibility                  |
+| ------------------- | ------------------------------- |
+| **Command**         | Intent to change state          |
 | **Command Handler** | Validates and executes commands |
-| **Event** | Record of state change |
-| **Query** | Request for data |
-| **Query Handler** | Retrieves data from read model |
-| **Projector** | Updates read model from events |
+| **Event**           | Record of state change          |
+| **Query**           | Request for data                |
+| **Query Handler**   | Retrieves data from read model  |
+| **Projector**       | Updates read model from events  |
 
 ## Templates
 
@@ -534,6 +534,7 @@ class ConsistentQueryHandler:
 ## Best Practices
 
 ### Do's
+
 - **Separate command and query models** - Different needs
 - **Use eventual consistency** - Accept propagation delay
 - **Validate in command handlers** - Before state change
@@ -541,6 +542,7 @@ class ConsistentQueryHandler:
 - **Version your events** - For schema evolution
 
 ### Don'ts
+
 - **Don't query in commands** - Use only for writes
 - **Don't couple read/write schemas** - Independent evolution
 - **Don't over-engineer** - Start simple

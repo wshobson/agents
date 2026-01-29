@@ -92,7 +92,7 @@ spec:
     8080:
       mode: STRICT
     9090:
-      mode: DISABLE  # Metrics port, no mTLS
+      mode: DISABLE # Metrics port, no mTLS
 ```
 
 ### Template 2: Istio Destination Rule for mTLS
@@ -277,7 +277,7 @@ spec:
     matchLabels:
       app: my-app
   port: external-api
-  proxyProtocol: HTTP/1  # or TLS for passthrough
+  proxyProtocol: HTTP/1 # or TLS for passthrough
 ---
 # Skip TLS for specific port
 apiVersion: v1
@@ -285,7 +285,7 @@ kind: Service
 metadata:
   name: my-service
   annotations:
-    config.linkerd.io/skip-outbound-ports: "3306"  # MySQL
+    config.linkerd.io/skip-outbound-ports: "3306" # MySQL
 ```
 
 ## Certificate Rotation
@@ -327,6 +327,7 @@ linkerd viz tap deploy/my-app --to deploy/my-backend
 ## Best Practices
 
 ### Do's
+
 - **Start with PERMISSIVE** - Migrate gradually to STRICT
 - **Monitor certificate expiry** - Set up alerts
 - **Use short-lived certs** - 24h or less for workloads
@@ -334,6 +335,7 @@ linkerd viz tap deploy/my-app --to deploy/my-backend
 - **Log TLS errors** - For debugging and audit
 
 ### Don'ts
+
 - **Don't disable mTLS** - For convenience in production
 - **Don't ignore cert expiry** - Automate rotation
 - **Don't use self-signed certs** - Use proper CA hierarchy

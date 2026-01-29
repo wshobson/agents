@@ -20,13 +20,13 @@ Build robust, production-grade backtesting systems that avoid common pitfalls an
 
 ### 1. Backtesting Biases
 
-| Bias | Description | Mitigation |
-|------|-------------|------------|
-| **Look-ahead** | Using future information | Point-in-time data |
+| Bias             | Description               | Mitigation              |
+| ---------------- | ------------------------- | ----------------------- |
+| **Look-ahead**   | Using future information  | Point-in-time data      |
 | **Survivorship** | Only testing on survivors | Use delisted securities |
-| **Overfitting** | Curve-fitting to history | Out-of-sample testing |
-| **Selection** | Cherry-picking strategies | Pre-registration |
-| **Transaction** | Ignoring trading costs | Realistic cost models |
+| **Overfitting**  | Curve-fitting to history  | Out-of-sample testing   |
+| **Selection**    | Cherry-picking strategies | Pre-registration        |
+| **Transaction**  | Ignoring trading costs    | Realistic cost models   |
 
 ### 2. Proper Backtest Structure
 
@@ -641,6 +641,7 @@ def calculate_metrics(returns: pd.Series, rf_rate: float = 0.02) -> Dict[str, fl
 ## Best Practices
 
 ### Do's
+
 - **Use point-in-time data** - Avoid look-ahead bias
 - **Include transaction costs** - Realistic estimates
 - **Test out-of-sample** - Always reserve data
@@ -648,6 +649,7 @@ def calculate_metrics(returns: pd.Series, rf_rate: float = 0.02) -> Dict[str, fl
 - **Monte Carlo analysis** - Understand uncertainty
 
 ### Don'ts
+
 - **Don't overfit** - Limit parameters
 - **Don't ignore survivorship** - Include delisted
 - **Don't use adjusted data carelessly** - Understand adjustments

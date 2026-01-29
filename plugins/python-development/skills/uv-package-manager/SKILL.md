@@ -23,6 +23,7 @@ Comprehensive guide to using uv, an extremely fast Python package installer and 
 ## Core Concepts
 
 ### 1. What is uv?
+
 - **Ultra-fast package installer**: 10-100x faster than pip
 - **Written in Rust**: Leverages Rust's performance
 - **Drop-in pip replacement**: Compatible with pip workflows
@@ -32,6 +33,7 @@ Comprehensive guide to using uv, an extremely fast Python package installer and 
 - **Lockfile support**: Reproducible installations
 
 ### 2. Key Features
+
 - Blazing fast installation speeds
 - Disk space efficient with global cache
 - Compatible with pip, pip-tools, poetry
@@ -41,6 +43,7 @@ Comprehensive guide to using uv, an extremely fast Python package installer and 
 - Built-in virtual environment support
 
 ### 3. UV vs Traditional Tools
+
 - **vs pip**: 10-100x faster, better resolver
 - **vs pip-tools**: Faster, simpler, better UX
 - **vs poetry**: Faster, less opinionated, lighter

@@ -31,11 +31,11 @@ Data Size           Recommended Index
 
 ### 2. HNSW Parameters
 
-| Parameter | Default | Effect |
-|-----------|---------|--------|
-| **M** | 16 | Connections per node, ↑ = better recall, more memory |
-| **efConstruction** | 100 | Build quality, ↑ = better index, slower build |
-| **efSearch** | 50 | Search quality, ↑ = better recall, slower search |
+| Parameter          | Default | Effect                                               |
+| ------------------ | ------- | ---------------------------------------------------- |
+| **M**              | 16      | Connections per node, ↑ = better recall, more memory |
+| **efConstruction** | 100     | Build quality, ↑ = better index, slower build        |
+| **efSearch**       | 50      | Search quality, ↑ = better recall, slower search     |
 
 ### 3. Quantization Types
 
@@ -502,6 +502,7 @@ def profile_index_build(
 ## Best Practices
 
 ### Do's
+
 - **Benchmark with real queries** - Synthetic may not represent production
 - **Monitor recall continuously** - Can degrade with data drift
 - **Start with defaults** - Tune only when needed
@@ -509,6 +510,7 @@ def profile_index_build(
 - **Consider tiered storage** - Hot/cold data separation
 
 ### Don'ts
+
 - **Don't over-optimize early** - Profile first
 - **Don't ignore build time** - Index updates have cost
 - **Don't forget reindexing** - Plan for maintenance

@@ -15,6 +15,7 @@ $ARGUMENTS
 ### 1. Analyze Project Type
 
 Determine the project type from user requirements:
+
 - **FastAPI**: REST APIs, microservices, async applications
 - **Django**: Full-stack web applications, admin panels, ORM-heavy projects
 - **Library**: Reusable packages, utilities, tools
@@ -86,6 +87,7 @@ fastapi-project/
 ```
 
 **pyproject.toml**:
+
 ```toml
 [project]
 name = "project-name"
@@ -122,6 +124,7 @@ asyncio_mode = "auto"
 ```
 
 **src/project_name/main.py**:
+
 ```python
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -162,6 +165,7 @@ python manage.py startapp core
 ```
 
 **pyproject.toml for Django**:
+
 ```toml
 [project]
 name = "django-project"
@@ -200,6 +204,7 @@ library-name/
 ```
 
 **pyproject.toml for Library**:
+
 ```toml
 [build-system]
 requires = ["hatchling"]
@@ -243,6 +248,7 @@ dependencies = [
 ```
 
 **src/project_name/cli.py**:
+
 ```python
 import typer
 from rich.console import Console
@@ -262,6 +268,7 @@ def main():
 ### 7. Configure Development Tools
 
 **.env.example**:
+
 ```env
 # Application
 PROJECT_NAME="Project Name"
@@ -280,6 +287,7 @@ SECRET_KEY="your-secret-key-here"
 ```
 
 **Makefile**:
+
 ```makefile
 .PHONY: install dev test lint format clean
 

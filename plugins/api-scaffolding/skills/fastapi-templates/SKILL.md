@@ -20,6 +20,7 @@ Production-ready FastAPI project structures with async patterns, dependency inje
 ### 1. Project Structure
 
 **Recommended Layout:**
+
 ```
 app/
 ├── api/                    # API routes
@@ -52,6 +53,7 @@ app/
 ### 2. Dependency Injection
 
 FastAPI's built-in DI system using `Depends`:
+
 - Database session management
 - Authentication/authorization
 - Shared business logic
@@ -60,6 +62,7 @@ FastAPI's built-in DI system using `Depends`:
 ### 3. Async Patterns
 
 Proper async/await usage:
+
 - Async route handlers
 - Async database operations
 - Async background tasks

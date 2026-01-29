@@ -3,7 +3,7 @@ name: postgresql-table-design
 description: Design a PostgreSQL-specific schema. Covers best-practices, data types, indexing, constraints, performance patterns, and advanced features
 ---
 
-# PostgreSQL Table Design 
+# PostgreSQL Table Design
 
 ## Core Rules
 
@@ -43,15 +43,14 @@ description: Design a PostgreSQL-specific schema. Covers best-practices, data ty
 - **JSONB**: preferred over JSON; index with **GIN**. Use only for optional/semi-structured attrs. ONLY use JSON if the original ordering of the contents MUST be preserved.
 - **Vector types**: `vector` type by `pgvector` for vector similarity search for embeddings.
 
-
 ### Do not use the following data types
+
 - DO NOT use `timestamp` (without time zone); DO use `timestamptz` instead.
 - DO NOT use `char(n)` or `varchar(n)`; DO use `text` instead.
 - DO NOT use `money` type; DO use `numeric` instead.
 - DO NOT use `timetz` type; DO use `timestamptz` instead.
 - DO NOT use `timestamptz(0)` or any other precision specification; DO use `timestamptz` instead
 - DO NOT use `serial` type; DO use `generated always as identity` instead.
-
 
 ## Table Types
 
@@ -161,7 +160,6 @@ Enable with `ALTER TABLE tbl ENABLE ROW LEVEL SECURITY`. Create policies: `CREAT
 - Arrays inside JSONB: use GIN + `@>` for containment (e.g., tags). Consider `jsonb_path_ops` if only doing containment.
 - Keep core relations in tables; use JSONB for optional/variable attributes.
 - Use constraints to limit allowed JSONB values in a column e.g. `config JSONB NOT NULL CHECK(jsonb_typeof(config) = 'object')`
-
 
 ## Examples
 

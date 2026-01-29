@@ -20,12 +20,12 @@ Practical implementation guide for GDPR-compliant data processing, consent manag
 
 ### 1. Personal Data Categories
 
-| Category | Examples | Protection Level |
-|----------|----------|------------------|
-| **Basic** | Name, email, phone | Standard |
-| **Sensitive (Art. 9)** | Health, religion, ethnicity | Explicit consent |
-| **Criminal (Art. 10)** | Convictions, offenses | Official authority |
-| **Children's** | Under 16 data | Parental consent |
+| Category               | Examples                    | Protection Level   |
+| ---------------------- | --------------------------- | ------------------ |
+| **Basic**              | Name, email, phone          | Standard           |
+| **Sensitive (Art. 9)** | Health, religion, ethnicity | Explicit consent   |
+| **Criminal (Art. 10)** | Convictions, offenses       | Official authority |
+| **Children's**         | Under 16 data               | Parental consent   |
 
 ### 2. Legal Bases for Processing
 
@@ -58,21 +58,25 @@ Right to Object (Art. 21)       ─┘
 // Consent data model
 const consentSchema = {
   userId: String,
-  consents: [{
-    purpose: String,         // 'marketing', 'analytics', etc.
-    granted: Boolean,
-    timestamp: Date,
-    source: String,          // 'web_form', 'api', etc.
-    version: String,         // Privacy policy version
-    ipAddress: String,       // For proof
-    userAgent: String        // For proof
-  }],
-  auditLog: [{
-    action: String,          // 'granted', 'withdrawn', 'updated'
-    purpose: String,
-    timestamp: Date,
-    source: String
-  }]
+  consents: [
+    {
+      purpose: String, // 'marketing', 'analytics', etc.
+      granted: Boolean,
+      timestamp: Date,
+      source: String, // 'web_form', 'api', etc.
+      version: String, // Privacy policy version
+      ipAddress: String, // For proof
+      userAgent: String, // For proof
+    },
+  ],
+  auditLog: [
+    {
+      action: String, // 'granted', 'withdrawn', 'updated'
+      purpose: String,
+      timestamp: Date,
+      source: String,
+    },
+  ],
 };
 
 // Consent service
@@ -85,7 +89,7 @@ class ConsentManager {
       source: metadata.source,
       version: await this.getCurrentPolicyVersion(),
       ipAddress: metadata.ipAddress,
-      userAgent: metadata.userAgent
+      userAgent: metadata.userAgent,
     };
 
     // Store consent
@@ -95,22 +99,22 @@ class ConsentManager {
         $push: {
           consents: consent,
           auditLog: {
-            action: granted ? 'granted' : 'withdrawn',
+            action: granted ? "granted" : "withdrawn",
             purpose,
             timestamp: consent.timestamp,
-            source: metadata.source
-          }
-        }
+            source: metadata.source,
+          },
+        },
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     // Emit event for downstream systems
-    await this.eventBus.emit('consent.changed', {
+    await this.eventBus.emit("consent.changed", {
       userId,
       purpose,
       granted,
-      timestamp: consent.timestamp
+      timestamp: consent.timestamp,
     });
   }
 
@@ -119,7 +123,7 @@ class ConsentManager {
     if (!record) return false;
 
     const latestConsent = record.consents
-      .filter(c => c.purpose === purpose)
+      .filter((c) => c.purpose === purpose)
       .sort((a, b) => b.timestamp - a.timestamp)[0];
 
     return latestConsent?.granted === true;
@@ -137,12 +141,14 @@ class ConsentManager {
 <div class="consent-banner" role="dialog" aria-labelledby="consent-title">
   <h2 id="consent-title">Cookie Preferences</h2>
 
-  <p>We use cookies to improve your experience. Select your preferences below.</p>
+  <p>
+    We use cookies to improve your experience. Select your preferences below.
+  </p>
 
   <form id="consent-form">
     <!-- Necessary - always on, no consent needed -->
     <div class="consent-category">
-      <input type="checkbox" id="necessary" checked disabled>
+      <input type="checkbox" id="necessary" checked disabled />
       <label for="necessary">
         <strong>Necessary</strong>
         <span>Required for the website to function. Cannot be disabled.</span>
@@ -151,7 +157,7 @@ class ConsentManager {
 
     <!-- Analytics - requires consent -->
     <div class="consent-category">
-      <input type="checkbox" id="analytics" name="analytics">
+      <input type="checkbox" id="analytics" name="analytics" />
       <label for="analytics">
         <strong>Analytics</strong>
         <span>Help us understand how you use our site.</span>
@@ -160,7 +166,7 @@ class ConsentManager {
 
     <!-- Marketing - requires consent -->
     <div class="consent-category">
-      <input type="checkbox" id="marketing" name="marketing">
+      <input type="checkbox" id="marketing" name="marketing" />
       <label for="marketing">
         <strong>Marketing</strong>
         <span>Personalized ads based on your interests.</span>
@@ -560,16 +566,19 @@ class BreachNotificationHandler:
 ## GDPR Implementation Checklist
 
 ### Legal Basis
+
 - [ ] Documented legal basis for each processing activity
 - [ ] Consent mechanisms meet GDPR requirements
 - [ ] Legitimate interest assessments completed
 
 ### Transparency
+
 - [ ] Privacy policy is clear and accessible
 - [ ] Processing purposes clearly stated
 - [ ] Data retention periods documented
 
 ### Data Subject Rights
+
 - [ ] Access request process implemented
 - [ ] Erasure request process implemented
 - [ ] Portability export available
@@ -577,17 +586,20 @@ class BreachNotificationHandler:
 - [ ] Response within 30-day deadline
 
 ### Security
+
 - [ ] Encryption at rest implemented
 - [ ] Encryption in transit (TLS)
 - [ ] Access controls in place
 - [ ] Audit logging enabled
 
 ### Breach Response
+
 - [ ] Breach detection mechanisms
 - [ ] 72-hour notification process
 - [ ] Breach documentation system
 
 ### Documentation
+
 - [ ] Records of processing activities (Art. 30)
 - [ ] Data protection impact assessments
 - [ ] Data processing agreements with vendors
@@ -596,6 +608,7 @@ class BreachNotificationHandler:
 ## Best Practices
 
 ### Do's
+
 - **Minimize data collection** - Only collect what's needed
 - **Document everything** - Processing activities, legal bases
 - **Encrypt PII** - At rest and in transit
@@ -603,6 +616,7 @@ class BreachNotificationHandler:
 - **Regular audits** - Verify compliance continuously
 
 ### Don'ts
+
 - **Don't pre-check consent boxes** - Must be opt-in
 - **Don't bundle consent** - Separate purposes separately
 - **Don't retain indefinitely** - Define and enforce retention

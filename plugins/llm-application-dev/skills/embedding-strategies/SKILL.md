@@ -18,16 +18,20 @@ Guide to selecting and optimizing embedding models for vector search application
 
 ## Core Concepts
 
-### 1. Embedding Model Comparison
+### 1. Embedding Model Comparison (2026)
 
-| Model | Dimensions | Max Tokens | Best For |
-|-------|------------|------------|----------|
-| **text-embedding-3-large** | 3072 | 8191 | High accuracy |
-| **text-embedding-3-small** | 1536 | 8191 | Cost-effective |
-| **voyage-2** | 1024 | 4000 | Code, legal |
-| **bge-large-en-v1.5** | 1024 | 512 | Open source |
-| **all-MiniLM-L6-v2** | 384 | 256 | Fast, lightweight |
-| **multilingual-e5-large** | 1024 | 512 | Multi-language |
+| Model                      | Dimensions | Max Tokens | Best For                            |
+| -------------------------- | ---------- | ---------- | ----------------------------------- |
+| **voyage-3-large**         | 1024       | 32000      | Claude apps (Anthropic recommended) |
+| **voyage-3**               | 1024       | 32000      | Claude apps, cost-effective         |
+| **voyage-code-3**          | 1024       | 32000      | Code search                         |
+| **voyage-finance-2**       | 1024       | 32000      | Financial documents                 |
+| **voyage-law-2**           | 1024       | 32000      | Legal documents                     |
+| **text-embedding-3-large** | 3072       | 8191       | OpenAI apps, high accuracy          |
+| **text-embedding-3-small** | 1536       | 8191       | OpenAI apps, cost-effective         |
+| **bge-large-en-v1.5**      | 1024       | 512        | Open source, local deployment       |
+| **all-MiniLM-L6-v2**       | 384        | 256        | Fast, lightweight                   |
+| **multilingual-e5-large**  | 1024       | 512        | Multi-language                      |
 
 ### 2. Embedding Pipeline
 
@@ -39,7 +43,34 @@ Document → Chunking → Preprocessing → Embedding Model → Vector
 
 ## Templates
 
-### Template 1: OpenAI Embeddings
+### Template 1: Voyage AI Embeddings (Recommended for Claude)
+
+```python
+from langchain_voyageai import VoyageAIEmbeddings
+from typing import List
+import os
+
+# Initialize Voyage AI embeddings (recommended by Anthropic for Claude)
+embeddings = VoyageAIEmbeddings(
+    model="voyage-3-large",
+    voyage_api_key=os.environ.get("VOYAGE_API_KEY")
+)
+
+def get_embeddings(texts: List[str]) -> List[List[float]]:
+    """Get embeddings from Voyage AI."""
+    return embeddings.embed_documents(texts)
+
+def get_query_embedding(query: str) -> List[float]:
+    """Get single query embedding."""
+    return embeddings.embed_query(query)
+
+# Specialized models for domains
+code_embeddings = VoyageAIEmbeddings(model="voyage-code-3")
+finance_embeddings = VoyageAIEmbeddings(model="voyage-finance-2")
+legal_embeddings = VoyageAIEmbeddings(model="voyage-law-2")
+```
+
+### Template 2: OpenAI Embeddings
 
 ```python
 from openai import OpenAI
@@ -53,7 +84,7 @@ def get_embeddings(
     model: str = "text-embedding-3-small",
     dimensions: int = None
 ) -> List[List[float]]:
-    """Get embeddings from OpenAI."""
+    """Get embeddings from OpenAI with optional dimension reduction."""
     # Handle batching for large lists
     batch_size = 100
     all_embeddings = []
@@ -63,6 +94,7 @@ def get_embeddings(
 
         kwargs = {"input": batch, "model": model}
         if dimensions:
+            # Matryoshka dimensionality reduction
             kwargs["dimensions"] = dimensions
 
         response = client.embeddings.create(**kwargs)
@@ -77,7 +109,7 @@ def get_embedding(text: str, **kwargs) -> List[float]:
     return get_embeddings([text], **kwargs)[0]
 
 
-# Dimension reduction with OpenAI
+# Dimension reduction with Matryoshka embeddings
 def get_reduced_embedding(text: str, dimensions: int = 512) -> List[float]:
     """Get embedding with reduced dimensions (Matryoshka)."""
     return get_embedding(
@@ -87,7 +119,7 @@ def get_reduced_embedding(text: str, dimensions: int = 512) -> List[float]:
     )
 ```
 
-### Template 2: Local Embeddings with Sentence Transformers
+### Template 3: Local Embeddings with Sentence Transformers
 
 ```python
 from sentence_transformers import SentenceTransformer
@@ -103,6 +135,7 @@ class LocalEmbedder:
         device: str = "cuda"
     ):
         self.model = SentenceTransformer(model_name, device=device)
+        self.model_name = model_name
 
     def embed(
         self,
@@ -120,9 +153,9 @@ class LocalEmbedder:
         return embeddings
 
     def embed_query(self, query: str) -> np.ndarray:
-        """Embed a query with BGE-style prefix."""
-        # BGE models benefit from query prefix
-        if "bge" in self.model.get_sentence_embedding_dimension():
+        """Embed a query with appropriate prefix for retrieval models."""
+        # BGE and similar models benefit from query prefix
+        if "bge" in self.model_name.lower():
             query = f"Represent this sentence for searching relevant passages: {query}"
         return self.embed([query])[0]
 
@@ -137,13 +170,15 @@ class E5Embedder:
         self.model = SentenceTransformer(model_name)
 
     def embed_query(self, query: str) -> np.ndarray:
+        """E5 requires 'query:' prefix for queries."""
         return self.model.encode(f"query: {query}")
 
     def embed_document(self, document: str) -> np.ndarray:
+        """E5 requires 'passage:' prefix for documents."""
         return self.model.encode(f"passage: {document}")
 ```
 
-### Template 3: Chunking Strategies
+### Template 4: Chunking Strategies
 
 ```python
 from typing import List, Tuple
@@ -288,20 +323,33 @@ def recursive_character_splitter(
     return split_text(text, separators)
 ```
 
-### Template 4: Domain-Specific Embedding Pipeline
+### Template 5: Domain-Specific Embedding Pipeline
 
 ```python
+import re
+from typing import List, Optional
+from dataclasses import dataclass
+
+@dataclass
+class EmbeddedDocument:
+    id: str
+    document_id: str
+    chunk_index: int
+    text: str
+    embedding: List[float]
+    metadata: dict
+
 class DomainEmbeddingPipeline:
     """Pipeline for domain-specific embeddings."""
 
     def __init__(
         self,
-        embedding_model: str = "text-embedding-3-small",
+        embedding_model: str = "voyage-3-large",
         chunk_size: int = 512,
         chunk_overlap: int = 50,
         preprocessing_fn=None
     ):
-        self.embedding_model = embedding_model
+        self.embeddings = VoyageAIEmbeddings(model=embedding_model)
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.preprocess = preprocessing_fn or self._default_preprocess
@@ -310,7 +358,7 @@ class DomainEmbeddingPipeline:
         """Default preprocessing."""
         # Remove excessive whitespace
         text = re.sub(r'\s+', ' ', text)
-        # Remove special characters
+        # Remove special characters (customize for your domain)
         text = re.sub(r'[^\w\s.,!?-]', '', text)
         return text.strip()
 
@@ -319,8 +367,8 @@ class DomainEmbeddingPipeline:
         documents: List[dict],
         id_field: str = "id",
         content_field: str = "content",
-        metadata_fields: List[str] = None
-    ) -> List[dict]:
+        metadata_fields: Optional[List[str]] = None
+    ) -> List[EmbeddedDocument]:
         """Process documents for vector storage."""
         processed = []
 
@@ -339,25 +387,26 @@ class DomainEmbeddingPipeline:
             )
 
             # Create embeddings
-            embeddings = get_embeddings(chunks, self.embedding_model)
+            embeddings = await self.embeddings.aembed_documents(chunks)
 
             # Create records
             for i, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
-                record = {
-                    "id": f"{doc_id}_chunk_{i}",
-                    "document_id": doc_id,
-                    "chunk_index": i,
-                    "text": chunk,
-                    "embedding": embedding
-                }
+                metadata = {"document_id": doc_id, "chunk_index": i}
 
-                # Add metadata
+                # Add specified metadata fields
                 if metadata_fields:
                     for field in metadata_fields:
                         if field in doc:
-                            record[field] = doc[field]
+                            metadata[field] = doc[field]
 
-                processed.append(record)
+                processed.append(EmbeddedDocument(
+                    id=f"{doc_id}_chunk_{i}",
+                    document_id=doc_id,
+                    chunk_index=i,
+                    text=chunk,
+                    embedding=embedding,
+                    metadata=metadata
+                ))
 
         return processed
 
@@ -366,42 +415,77 @@ class DomainEmbeddingPipeline:
 class CodeEmbeddingPipeline:
     """Specialized pipeline for code embeddings."""
 
-    def __init__(self, model: str = "voyage-code-2"):
-        self.model = model
+    def __init__(self):
+        # Use Voyage's code-specific model
+        self.embeddings = VoyageAIEmbeddings(model="voyage-code-3")
 
     def chunk_code(self, code: str, language: str) -> List[dict]:
-        """Chunk code by functions/classes."""
-        import tree_sitter
+        """Chunk code by functions/classes using tree-sitter."""
+        try:
+            import tree_sitter_languages
+            parser = tree_sitter_languages.get_parser(language)
+            tree = parser.parse(bytes(code, "utf8"))
 
-        # Parse with tree-sitter
-        # Extract functions, classes, methods
-        # Return chunks with context
-        pass
+            chunks = []
+            # Extract function and class definitions
+            self._extract_nodes(tree.root_node, code, chunks)
+            return chunks
+        except ImportError:
+            # Fallback to simple chunking
+            return [{"text": code, "type": "module"}]
 
-    def embed_with_context(self, chunk: str, context: str) -> List[float]:
+    def _extract_nodes(self, node, source_code: str, chunks: list):
+        """Recursively extract function/class definitions."""
+        if node.type in ['function_definition', 'class_definition', 'method_definition']:
+            text = source_code[node.start_byte:node.end_byte]
+            chunks.append({
+                "text": text,
+                "type": node.type,
+                "name": self._get_name(node),
+                "start_line": node.start_point[0],
+                "end_line": node.end_point[0]
+            })
+        for child in node.children:
+            self._extract_nodes(child, source_code, chunks)
+
+    def _get_name(self, node) -> str:
+        """Extract name from function/class node."""
+        for child in node.children:
+            if child.type == 'identifier' or child.type == 'name':
+                return child.text.decode('utf8')
+        return "unknown"
+
+    async def embed_with_context(
+        self,
+        chunk: str,
+        context: str = ""
+    ) -> List[float]:
         """Embed code with surrounding context."""
-        combined = f"Context: {context}\n\nCode:\n{chunk}"
-        return get_embedding(combined, model=self.model)
+        if context:
+            combined = f"Context: {context}\n\nCode:\n{chunk}"
+        else:
+            combined = chunk
+        return await self.embeddings.aembed_query(combined)
 ```
 
-### Template 5: Embedding Quality Evaluation
+### Template 6: Embedding Quality Evaluation
 
 ```python
 import numpy as np
-from typing import List, Tuple
+from typing import List, Dict
 
 def evaluate_retrieval_quality(
     queries: List[str],
     relevant_docs: List[List[str]],  # List of relevant doc IDs per query
     retrieved_docs: List[List[str]],  # List of retrieved doc IDs per query
     k: int = 10
-) -> dict:
+) -> Dict[str, float]:
     """Evaluate embedding quality for retrieval."""
 
     def precision_at_k(relevant: set, retrieved: List[str], k: int) -> float:
         retrieved_k = retrieved[:k]
         relevant_retrieved = len(set(retrieved_k) & relevant)
-        return relevant_retrieved / k
+        return relevant_retrieved / k if k > 0 else 0
 
     def recall_at_k(relevant: set, retrieved: List[str], k: int) -> float:
         retrieved_k = retrieved[:k]
@@ -446,7 +530,7 @@ def compute_embedding_similarity(
 ) -> np.ndarray:
     """Compute similarity matrix between embedding sets."""
     if metric == "cosine":
-        # Normalize
+        # Normalize and compute dot product
         norm1 = embeddings1 / np.linalg.norm(embeddings1, axis=1, keepdims=True)
         norm2 = embeddings2 / np.linalg.norm(embeddings2, axis=1, keepdims=True)
         return norm1 @ norm2.T
@@ -455,25 +539,70 @@ def compute_embedding_similarity(
         return -cdist(embeddings1, embeddings2, metric='euclidean')
     elif metric == "dot":
         return embeddings1 @ embeddings2.T
+    else:
+        raise ValueError(f"Unknown metric: {metric}")
+
+
+def compare_embedding_models(
+    texts: List[str],
+    models: Dict[str, callable],
+    queries: List[str],
+    relevant_indices: List[List[int]],
+    k: int = 5
+) -> Dict[str, Dict[str, float]]:
+    """Compare multiple embedding models on retrieval quality."""
+    results = {}
+
+    for model_name, embed_fn in models.items():
+        # Embed all texts
+        doc_embeddings = np.array(embed_fn(texts))
+
+        retrieved_per_query = []
+        for query in queries:
+            query_embedding = np.array(embed_fn([query])[0])
+            # Compute similarities
+            similarities = compute_embedding_similarity(
+                query_embedding.reshape(1, -1),
+                doc_embeddings,
+                metric="cosine"
+            )[0]
+            # Get top-k indices
+            top_k_indices = np.argsort(similarities)[::-1][:k]
+            retrieved_per_query.append([str(i) for i in top_k_indices])
+
+        # Convert relevant indices to string IDs
+        relevant_docs = [[str(i) for i in indices] for indices in relevant_indices]
+
+        results[model_name] = evaluate_retrieval_quality(
+            queries, relevant_docs, retrieved_per_query, k
+        )
+
+    return results
 ```
 
 ## Best Practices
 
 ### Do's
-- **Match model to use case** - Code vs prose vs multilingual
-- **Chunk thoughtfully** - Preserve semantic boundaries
-- **Normalize embeddings** - For cosine similarity
-- **Batch requests** - More efficient than one-by-one
-- **Cache embeddings** - Avoid recomputing
+
+- **Match model to use case**: Code vs prose vs multilingual
+- **Chunk thoughtfully**: Preserve semantic boundaries
+- **Normalize embeddings**: For cosine similarity search
+- **Batch requests**: More efficient than one-by-one
+- **Cache embeddings**: Avoid recomputing for static content
+- **Use Voyage AI for Claude apps**: Recommended by Anthropic
 
 ### Don'ts
-- **Don't ignore token limits** - Truncation loses info
-- **Don't mix embedding models** - Incompatible spaces
-- **Don't skip preprocessing** - Garbage in, garbage out
-- **Don't over-chunk** - Lose context
+
+- **Don't ignore token limits**: Truncation loses information
+- **Don't mix embedding models**: Incompatible vector spaces
+- **Don't skip preprocessing**: Garbage in, garbage out
+- **Don't over-chunk**: Lose important context
+- **Don't forget metadata**: Essential for filtering and debugging
 
 ## Resources
 
-- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings)
+- [Voyage AI Documentation](https://docs.voyageai.com/)
+- [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings)
 - [Sentence Transformers](https://www.sbert.net/)
 - [MTEB Benchmark](https://huggingface.co/spaces/mteb/leaderboard)
+- [LangChain Embedding Models](https://python.langchain.com/docs/integrations/text_embedding/)

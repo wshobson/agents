@@ -23,6 +23,7 @@ Build reliable, fast, and maintainable end-to-end test suites that provide confi
 ### 1. E2E Testing Fundamentals
 
 **What to Test with E2E:**
+
 - Critical user journeys (login, checkout, signup)
 - Complex interactions (drag-and-drop, multi-step forms)
 - Cross-browser compatibility
@@ -30,6 +31,7 @@ Build reliable, fast, and maintainable end-to-end test suites that provide confi
 - Authentication flows
 
 **What NOT to Test with E2E:**
+
 - Unit-level logic (use unit tests)
 - API contracts (use integration tests)
 - Edge cases (too slow)
@@ -38,6 +40,7 @@ Build reliable, fast, and maintainable end-to-end test suites that provide confi
 ### 2. Test Philosophy
 
 **The Testing Pyramid:**
+
 ```
         /\
        /E2E\         ← Few, focused on critical paths
@@ -49,6 +52,7 @@ Build reliable, fast, and maintainable end-to-end test suites that provide confi
 ```
 
 **Best Practices:**
+
 - Test user behavior, not implementation
 - Keep tests independent
 - Make tests deterministic
@@ -61,34 +65,31 @@ Build reliable, fast, and maintainable end-to-end test suites that provide confi
 
 ```typescript
 // playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-    testDir: './e2e',
-    timeout: 30000,
-    expect: {
-        timeout: 5000,
-    },
-    fullyParallel: true,
-    forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 1 : undefined,
-    reporter: [
-        ['html'],
-        ['junit', { outputFile: 'results.xml' }],
-    ],
-    use: {
-        baseURL: 'http://localhost:3000',
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
-    },
-    projects: [
-        { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-        { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-        { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-        { name: 'mobile', use: { ...devices['iPhone 13'] } },
-    ],
+  testDir: "./e2e",
+  timeout: 30000,
+  expect: {
+    timeout: 5000,
+  },
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: [["html"], ["junit", { outputFile: "results.xml" }]],
+  use: {
+    baseURL: "http://localhost:3000",
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
+  },
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+    { name: "webkit", use: { ...devices["Desktop Safari"] } },
+    { name: "mobile", use: { ...devices["iPhone 13"] } },
+  ],
 });
 ```
 
@@ -96,59 +97,58 @@ export default defineConfig({
 
 ```typescript
 // pages/LoginPage.ts
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator } from "@playwright/test";
 
 export class LoginPage {
-    readonly page: Page;
-    readonly emailInput: Locator;
-    readonly passwordInput: Locator;
-    readonly loginButton: Locator;
-    readonly errorMessage: Locator;
+  readonly page: Page;
+  readonly emailInput: Locator;
+  readonly passwordInput: Locator;
+  readonly loginButton: Locator;
+  readonly errorMessage: Locator;
 
-    constructor(page: Page) {
-        this.page = page;
-        this.emailInput = page.getByLabel('Email');
-        this.passwordInput = page.getByLabel('Password');
-        this.loginButton = page.getByRole('button', { name: 'Login' });
-        this.errorMessage = page.getByRole('alert');
-    }
+  constructor(page: Page) {
+    this.page = page;
+    this.emailInput = page.getByLabel("Email");
+    this.passwordInput = page.getByLabel("Password");
+    this.loginButton = page.getByRole("button", { name: "Login" });
+    this.errorMessage = page.getByRole("alert");
+  }
 
-    async goto() {
-        await this.page.goto('/login');
-    }
+  async goto() {
+    await this.page.goto("/login");
+  }
 
-    async login(email: string, password: string) {
-        await this.emailInput.fill(email);
-        await this.passwordInput.fill(password);
-        await this.loginButton.click();
-    }
+  async login(email: string, password: string) {
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click();
+  }
 
-    async getErrorMessage(): Promise<string> {
-        return await this.errorMessage.textContent() ?? '';
-    }
+  async getErrorMessage(): Promise<string> {
+    return (await this.errorMessage.textContent()) ?? "";
+  }
 }
 
 // Test using Page Object
-import { test, expect } from '@playwright/test';
-import { LoginPage } from './pages/LoginPage';
+import { test, expect } from "@playwright/test";
+import { LoginPage } from "./pages/LoginPage";
 
-test('successful login', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.goto();
-    await loginPage.login('user@example.com', 'password123');
+test("successful login", async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login("user@example.com", "password123");
 
-    await expect(page).toHaveURL('/dashboard');
-    await expect(page.getByRole('heading', { name: 'Dashboard' }))
-        .toBeVisible();
+  await expect(page).toHaveURL("/dashboard");
+  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
 });
 
-test('failed login shows error', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.goto();
-    await loginPage.login('invalid@example.com', 'wrong');
+test("failed login shows error", async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.goto();
+  await loginPage.login("invalid@example.com", "wrong");
 
-    const error = await loginPage.getErrorMessage();
-    expect(error).toContain('Invalid credentials');
+  const error = await loginPage.getErrorMessage();
+  expect(error).toContain("Invalid credentials");
 });
 ```
 
@@ -156,56 +156,56 @@ test('failed login shows error', async ({ page }) => {
 
 ```typescript
 // fixtures/test-data.ts
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 type TestData = {
-    testUser: {
-        email: string;
-        password: string;
-        name: string;
-    };
-    adminUser: {
-        email: string;
-        password: string;
-    };
+  testUser: {
+    email: string;
+    password: string;
+    name: string;
+  };
+  adminUser: {
+    email: string;
+    password: string;
+  };
 };
 
 export const test = base.extend<TestData>({
-    testUser: async ({}, use) => {
-        const user = {
-            email: `test-${Date.now()}@example.com`,
-            password: 'Test123!@#',
-            name: 'Test User',
-        };
-        // Setup: Create user in database
-        await createTestUser(user);
-        await use(user);
-        // Teardown: Clean up user
-        await deleteTestUser(user.email);
-    },
+  testUser: async ({}, use) => {
+    const user = {
+      email: `test-${Date.now()}@example.com`,
+      password: "Test123!@#",
+      name: "Test User",
+    };
+    // Setup: Create user in database
+    await createTestUser(user);
+    await use(user);
+    // Teardown: Clean up user
+    await deleteTestUser(user.email);
+  },
 
-    adminUser: async ({}, use) => {
-        await use({
-            email: 'admin@example.com',
-            password: process.env.ADMIN_PASSWORD!,
-        });
-    },
+  adminUser: async ({}, use) => {
+    await use({
+      email: "admin@example.com",
+      password: process.env.ADMIN_PASSWORD!,
+    });
+  },
 });
 
 // Usage in tests
-import { test } from './fixtures/test-data';
+import { test } from "./fixtures/test-data";
 
-test('user can update profile', async ({ page, testUser }) => {
-    await page.goto('/login');
-    await page.getByLabel('Email').fill(testUser.email);
-    await page.getByLabel('Password').fill(testUser.password);
-    await page.getByRole('button', { name: 'Login' }).click();
+test("user can update profile", async ({ page, testUser }) => {
+  await page.goto("/login");
+  await page.getByLabel("Email").fill(testUser.email);
+  await page.getByLabel("Password").fill(testUser.password);
+  await page.getByRole("button", { name: "Login" }).click();
 
-    await page.goto('/profile');
-    await page.getByLabel('Name').fill('Updated Name');
-    await page.getByRole('button', { name: 'Save' }).click();
+  await page.goto("/profile");
+  await page.getByLabel("Name").fill("Updated Name");
+  await page.getByRole("button", { name: "Save" }).click();
 
-    await expect(page.getByText('Profile updated')).toBeVisible();
+  await expect(page.getByText("Profile updated")).toBeVisible();
 });
 ```
 
@@ -213,32 +213,32 @@ test('user can update profile', async ({ page, testUser }) => {
 
 ```typescript
 // ❌ Bad: Fixed timeouts
-await page.waitForTimeout(3000);  // Flaky!
+await page.waitForTimeout(3000); // Flaky!
 
 // ✅ Good: Wait for specific conditions
-await page.waitForLoadState('networkidle');
-await page.waitForURL('/dashboard');
+await page.waitForLoadState("networkidle");
+await page.waitForURL("/dashboard");
 await page.waitForSelector('[data-testid="user-profile"]');
 
 // ✅ Better: Auto-waiting with assertions
-await expect(page.getByText('Welcome')).toBeVisible();
-await expect(page.getByRole('button', { name: 'Submit' }))
-    .toBeEnabled();
+await expect(page.getByText("Welcome")).toBeVisible();
+await expect(page.getByRole("button", { name: "Submit" })).toBeEnabled();
 
 // Wait for API response
 const responsePromise = page.waitForResponse(
-    response => response.url().includes('/api/users') && response.status() === 200
+  (response) =>
+    response.url().includes("/api/users") && response.status() === 200,
 );
-await page.getByRole('button', { name: 'Load Users' }).click();
+await page.getByRole("button", { name: "Load Users" }).click();
 const response = await responsePromise;
 const data = await response.json();
 expect(data.users).toHaveLength(10);
 
 // Wait for multiple conditions
 await Promise.all([
-    page.waitForURL('/success'),
-    page.waitForLoadState('networkidle'),
-    expect(page.getByText('Payment successful')).toBeVisible(),
+  page.waitForURL("/success"),
+  page.waitForLoadState("networkidle"),
+  expect(page.getByText("Payment successful")).toBeVisible(),
 ]);
 ```
 
@@ -246,49 +246,49 @@ await Promise.all([
 
 ```typescript
 // Mock API responses
-test('displays error when API fails', async ({ page }) => {
-    await page.route('**/api/users', route => {
-        route.fulfill({
-            status: 500,
-            contentType: 'application/json',
-            body: JSON.stringify({ error: 'Internal Server Error' }),
-        });
+test("displays error when API fails", async ({ page }) => {
+  await page.route("**/api/users", (route) => {
+    route.fulfill({
+      status: 500,
+      contentType: "application/json",
+      body: JSON.stringify({ error: "Internal Server Error" }),
     });
+  });
 
-    await page.goto('/users');
-    await expect(page.getByText('Failed to load users')).toBeVisible();
+  await page.goto("/users");
+  await expect(page.getByText("Failed to load users")).toBeVisible();
 });
 
 // Intercept and modify requests
-test('can modify API request', async ({ page }) => {
-    await page.route('**/api/users', async route => {
-        const request = route.request();
-        const postData = JSON.parse(request.postData() || '{}');
+test("can modify API request", async ({ page }) => {
+  await page.route("**/api/users", async (route) => {
+    const request = route.request();
+    const postData = JSON.parse(request.postData() || "{}");
 
-        // Modify request
-        postData.role = 'admin';
+    // Modify request
+    postData.role = "admin";
 
-        await route.continue({
-            postData: JSON.stringify(postData),
-        });
+    await route.continue({
+      postData: JSON.stringify(postData),
     });
+  });
 
-    // Test continues...
+  // Test continues...
 });
 
 // Mock third-party services
-test('payment flow with mocked Stripe', async ({ page }) => {
-    await page.route('**/api/stripe/**', route => {
-        route.fulfill({
-            status: 200,
-            body: JSON.stringify({
-                id: 'mock_payment_id',
-                status: 'succeeded',
-            }),
-        });
+test("payment flow with mocked Stripe", async ({ page }) => {
+  await page.route("**/api/stripe/**", (route) => {
+    route.fulfill({
+      status: 200,
+      body: JSON.stringify({
+        id: "mock_payment_id",
+        status: "succeeded",
+      }),
     });
+  });
 
-    // Test payment flow with mocked response
+  // Test payment flow with mocked response
 });
 ```
 
@@ -298,21 +298,21 @@ test('payment flow with mocked Stripe', async ({ page }) => {
 
 ```typescript
 // cypress.config.ts
-import { defineConfig } from 'cypress';
+import { defineConfig } from "cypress";
 
 export default defineConfig({
-    e2e: {
-        baseUrl: 'http://localhost:3000',
-        viewportWidth: 1280,
-        viewportHeight: 720,
-        video: false,
-        screenshotOnRunFailure: true,
-        defaultCommandTimeout: 10000,
-        requestTimeout: 10000,
-        setupNodeEvents(on, config) {
-            // Implement node event listeners
-        },
+  e2e: {
+    baseUrl: "http://localhost:3000",
+    viewportWidth: 1280,
+    viewportHeight: 720,
+    video: false,
+    screenshotOnRunFailure: true,
+    defaultCommandTimeout: 10000,
+    requestTimeout: 10000,
+    setupNodeEvents(on, config) {
+      // Implement node event listeners
     },
+  },
 });
 ```
 
@@ -321,68 +321,67 @@ export default defineConfig({
 ```typescript
 // cypress/support/commands.ts
 declare global {
-    namespace Cypress {
-        interface Chainable {
-            login(email: string, password: string): Chainable<void>;
-            createUser(userData: UserData): Chainable<User>;
-            dataCy(value: string): Chainable<JQuery<HTMLElement>>;
-        }
+  namespace Cypress {
+    interface Chainable {
+      login(email: string, password: string): Chainable<void>;
+      createUser(userData: UserData): Chainable<User>;
+      dataCy(value: string): Chainable<JQuery<HTMLElement>>;
     }
+  }
 }
 
-Cypress.Commands.add('login', (email: string, password: string) => {
-    cy.visit('/login');
-    cy.get('[data-testid="email"]').type(email);
-    cy.get('[data-testid="password"]').type(password);
-    cy.get('[data-testid="login-button"]').click();
-    cy.url().should('include', '/dashboard');
+Cypress.Commands.add("login", (email: string, password: string) => {
+  cy.visit("/login");
+  cy.get('[data-testid="email"]').type(email);
+  cy.get('[data-testid="password"]').type(password);
+  cy.get('[data-testid="login-button"]').click();
+  cy.url().should("include", "/dashboard");
 });
 
-Cypress.Commands.add('createUser', (userData: UserData) => {
-    return cy.request('POST', '/api/users', userData)
-        .its('body');
+Cypress.Commands.add("createUser", (userData: UserData) => {
+  return cy.request("POST", "/api/users", userData).its("body");
 });
 
-Cypress.Commands.add('dataCy', (value: string) => {
-    return cy.get(`[data-cy="${value}"]`);
+Cypress.Commands.add("dataCy", (value: string) => {
+  return cy.get(`[data-cy="${value}"]`);
 });
 
 // Usage
-cy.login('user@example.com', 'password');
-cy.dataCy('submit-button').click();
+cy.login("user@example.com", "password");
+cy.dataCy("submit-button").click();
 ```
 
 ### Pattern 2: Cypress Intercept
 
 ```typescript
 // Mock API calls
-cy.intercept('GET', '/api/users', {
-    statusCode: 200,
-    body: [
-        { id: 1, name: 'John' },
-        { id: 2, name: 'Jane' },
-    ],
-}).as('getUsers');
+cy.intercept("GET", "/api/users", {
+  statusCode: 200,
+  body: [
+    { id: 1, name: "John" },
+    { id: 2, name: "Jane" },
+  ],
+}).as("getUsers");
 
-cy.visit('/users');
-cy.wait('@getUsers');
-cy.get('[data-testid="user-list"]').children().should('have.length', 2);
+cy.visit("/users");
+cy.wait("@getUsers");
+cy.get('[data-testid="user-list"]').children().should("have.length", 2);
 
 // Modify responses
-cy.intercept('GET', '/api/users', (req) => {
-    req.reply((res) => {
-        // Modify response
-        res.body.users = res.body.users.slice(0, 5);
-        res.send();
-    });
+cy.intercept("GET", "/api/users", (req) => {
+  req.reply((res) => {
+    // Modify response
+    res.body.users = res.body.users.slice(0, 5);
+    res.send();
+  });
 });
 
 // Simulate slow network
-cy.intercept('GET', '/api/data', (req) => {
-    req.reply((res) => {
-        res.delay(3000);  // 3 second delay
-        res.send();
-    });
+cy.intercept("GET", "/api/data", (req) => {
+  req.reply((res) => {
+    res.delay(3000); // 3 second delay
+    res.send();
+  });
 });
 ```
 
@@ -392,31 +391,31 @@ cy.intercept('GET', '/api/data', (req) => {
 
 ```typescript
 // With Playwright
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('homepage looks correct', async ({ page }) => {
-    await page.goto('/');
-    await expect(page).toHaveScreenshot('homepage.png', {
-        fullPage: true,
-        maxDiffPixels: 100,
-    });
+test("homepage looks correct", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveScreenshot("homepage.png", {
+    fullPage: true,
+    maxDiffPixels: 100,
+  });
 });
 
-test('button in all states', async ({ page }) => {
-    await page.goto('/components');
+test("button in all states", async ({ page }) => {
+  await page.goto("/components");
 
-    const button = page.getByRole('button', { name: 'Submit' });
+  const button = page.getByRole("button", { name: "Submit" });
 
-    // Default state
-    await expect(button).toHaveScreenshot('button-default.png');
+  // Default state
+  await expect(button).toHaveScreenshot("button-default.png");
 
-    // Hover state
-    await button.hover();
-    await expect(button).toHaveScreenshot('button-hover.png');
+  // Hover state
+  await button.hover();
+  await expect(button).toHaveScreenshot("button-hover.png");
 
-    // Disabled state
-    await button.evaluate(el => el.setAttribute('disabled', 'true'));
-    await expect(button).toHaveScreenshot('button-disabled.png');
+  // Disabled state
+  await button.evaluate((el) => el.setAttribute("disabled", "true"));
+  await expect(button).toHaveScreenshot("button-disabled.png");
 });
 ```
 
@@ -425,20 +424,20 @@ test('button in all states', async ({ page }) => {
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-    projects: [
-        {
-            name: 'shard-1',
-            use: { ...devices['Desktop Chrome'] },
-            grepInvert: /@slow/,
-            shard: { current: 1, total: 4 },
-        },
-        {
-            name: 'shard-2',
-            use: { ...devices['Desktop Chrome'] },
-            shard: { current: 2, total: 4 },
-        },
-        // ... more shards
-    ],
+  projects: [
+    {
+      name: "shard-1",
+      use: { ...devices["Desktop Chrome"] },
+      grepInvert: /@slow/,
+      shard: { current: 1, total: 4 },
+    },
+    {
+      name: "shard-2",
+      use: { ...devices["Desktop Chrome"] },
+      shard: { current: 2, total: 4 },
+    },
+    // ... more shards
+  ],
 });
 
 // Run in CI
@@ -450,27 +449,25 @@ export default defineConfig({
 
 ```typescript
 // Install: npm install @axe-core/playwright
-import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
-test('page should not have accessibility violations', async ({ page }) => {
-    await page.goto('/');
+test("page should not have accessibility violations", async ({ page }) => {
+  await page.goto("/");
 
-    const accessibilityScanResults = await new AxeBuilder({ page })
-        .exclude('#third-party-widget')
-        .analyze();
+  const accessibilityScanResults = await new AxeBuilder({ page })
+    .exclude("#third-party-widget")
+    .analyze();
 
-    expect(accessibilityScanResults.violations).toEqual([]);
+  expect(accessibilityScanResults.violations).toEqual([]);
 });
 
-test('form is accessible', async ({ page }) => {
-    await page.goto('/signup');
+test("form is accessible", async ({ page }) => {
+  await page.goto("/signup");
 
-    const results = await new AxeBuilder({ page })
-        .include('form')
-        .analyze();
+  const results = await new AxeBuilder({ page }).include("form").analyze();
 
-    expect(results.violations).toEqual([]);
+  expect(results.violations).toEqual([]);
 });
 ```
 
@@ -487,13 +484,13 @@ test('form is accessible', async ({ page }) => {
 
 ```typescript
 // ❌ Bad selectors
-cy.get('.btn.btn-primary.submit-button').click();
-cy.get('div > form > div:nth-child(2) > input').type('text');
+cy.get(".btn.btn-primary.submit-button").click();
+cy.get("div > form > div:nth-child(2) > input").type("text");
 
 // ✅ Good selectors
-cy.getByRole('button', { name: 'Submit' }).click();
-cy.getByLabel('Email address').type('user@example.com');
-cy.get('[data-testid="email-input"]').type('user@example.com');
+cy.getByRole("button", { name: "Submit" }).click();
+cy.getByLabel("Email address").type("user@example.com");
+cy.get('[data-testid="email-input"]').type("user@example.com");
 ```
 
 ## Common Pitfalls

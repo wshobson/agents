@@ -3,9 +3,11 @@
 You are a PR optimization expert specializing in creating high-quality pull requests that facilitate efficient code reviews. Generate comprehensive PR descriptions, automate review processes, and ensure PRs follow best practices for clarity, size, and reviewability.
 
 ## Context
+
 The user needs to create or improve pull requests with detailed descriptions, proper documentation, test coverage analysis, and review facilitation. Focus on making PRs that are easy to review, well-documented, and include all necessary context.
 
 ## Requirements
+
 $ARGUMENTS
 
 ## Instructions
@@ -15,6 +17,7 @@ $ARGUMENTS
 Analyze the changes and generate insights:
 
 **Change Summary Generator**
+
 ```python
 import subprocess
 import re
@@ -32,14 +35,14 @@ class PRAnalyzer:
             'potential_impacts': self._assess_impacts(base_branch),
             'dependencies_affected': self._check_dependencies(base_branch)
         }
-        
+
         return analysis
-    
+
     def _get_changed_files(self, base_branch):
         """Get list of changed files with statistics"""
         cmd = f"git diff --name-status {base_branch}...HEAD"
         result = subprocess.run(cmd.split(), capture_output=True, text=True)
-        
+
         files = []
         for line in result.stdout.strip().split('\n'):
             if line:
@@ -49,18 +52,18 @@ class PRAnalyzer:
                     'status': self._parse_status(status),
                     'category': self._categorize_file(filename)
                 })
-        
+
         return files
-    
+
     def _get_change_stats(self, base_branch):
         """Get detailed change statistics"""
         cmd = f"git diff --shortstat {base_branch}...HEAD"
         result = subprocess.run(cmd.split(), capture_output=True, text=True)
-        
+
         # Parse output like: "10 files changed, 450 insertions(+), 123 deletions(-)"
         stats_pattern = r'(\d+) files? changed(?:, (\d+) insertions?\(\+\))?(?:, (\d+) deletions?\(-\))?'
         match = re.search(stats_pattern, result.stdout)
-        
+
         if match:
             files, insertions, deletions = match.groups()
             return {
@@ -69,9 +72,9 @@ class PRAnalyzer:
                 'deletions': int(deletions or 0),
                 'net_change': int(insertions or 0) - int(deletions or 0)
             }
-        
+
         return {'files_changed': 0, 'insertions': 0, 'deletions': 0, 'net_change': 0}
-    
+
     def _categorize_file(self, filename):
         """Categorize file by type"""
         categories = {
@@ -82,11 +85,11 @@ class PRAnalyzer:
             'styles': ['.css', '.scss', '.less'],
             'build': ['Makefile', 'Dockerfile', '.gradle', 'pom.xml']
         }
-        
+
         for category, patterns in categories.items():
             if any(pattern in filename for pattern in patterns):
                 return category
-        
+
         return 'other'
 ```
 
@@ -95,6 +98,7 @@ class PRAnalyzer:
 Create comprehensive PR descriptions:
 
 **Description Template Generator**
+
 ```python
 def generate_pr_description(analysis, commits):
     """
@@ -150,10 +154,10 @@ def generate_pr_description(analysis, commits):
 def generate_summary(analysis, commits):
     """Generate executive summary"""
     stats = analysis['change_statistics']
-    
+
     # Extract main purpose from commits
     main_purpose = extract_main_purpose(commits)
-    
+
     summary = f"""
 This PR {main_purpose}.
 
@@ -166,10 +170,10 @@ This PR {main_purpose}.
 def generate_change_list(analysis):
     """Generate categorized change list"""
     changes_by_category = defaultdict(list)
-    
+
     for file in analysis['files_changed']:
         changes_by_category[file['category']].append(file)
-    
+
     change_list = ""
     icons = {
         'source': '🔧',
@@ -180,14 +184,14 @@ def generate_change_list(analysis):
         'build': '🏗️',
         'other': '📁'
     }
-    
+
     for category, files in changes_by_category.items():
         change_list += f"\n### {icons.get(category, '📁')} {category.title()} Changes\n"
         for file in files[:10]:  # Limit to 10 files per category
             change_list += f"- {file['status']}: `{file['filename']}`\n"
         if len(files) > 10:
             change_list += f"- ...and {len(files) - 10} more\n"
-    
+
     return change_list
 ```
 
@@ -196,13 +200,14 @@ def generate_change_list(analysis):
 Create automated review checklists:
 
 **Smart Checklist Generator**
+
 ```python
 def generate_review_checklist(analysis):
     """
     Generate context-aware review checklist
     """
     checklist = ["## Review Checklist\n"]
-    
+
     # General items
     general_items = [
         "Code follows project style guidelines",
@@ -211,15 +216,15 @@ def generate_review_checklist(analysis):
         "No debugging code left",
         "No sensitive data exposed"
     ]
-    
+
     # Add general items
     checklist.append("### General")
     for item in general_items:
         checklist.append(f"- [ ] {item}")
-    
+
     # File-specific checks
     file_types = {file['category'] for file in analysis['files_changed']}
-    
+
     if 'source' in file_types:
         checklist.append("\n### Code Quality")
         checklist.extend([
@@ -229,7 +234,7 @@ def generate_review_checklist(analysis):
             "- [ ] Error handling is comprehensive",
             "- [ ] No performance bottlenecks introduced"
         ])
-    
+
     if 'test' in file_types:
         checklist.append("\n### Testing")
         checklist.extend([
@@ -239,7 +244,7 @@ def generate_review_checklist(analysis):
             "- [ ] Tests follow AAA pattern (Arrange, Act, Assert)",
             "- [ ] No flaky tests introduced"
         ])
-    
+
     if 'config' in file_types:
         checklist.append("\n### Configuration")
         checklist.extend([
@@ -249,7 +254,7 @@ def generate_review_checklist(analysis):
             "- [ ] Security implications reviewed",
             "- [ ] Default values are sensible"
         ])
-    
+
     if 'docs' in file_types:
         checklist.append("\n### Documentation")
         checklist.extend([
@@ -259,7 +264,7 @@ def generate_review_checklist(analysis):
             "- [ ] README updated if necessary",
             "- [ ] Changelog updated"
         ])
-    
+
     # Security checks
     if has_security_implications(analysis):
         checklist.append("\n### Security")
@@ -270,7 +275,7 @@ def generate_review_checklist(analysis):
             "- [ ] No sensitive data in logs",
             "- [ ] Dependencies are secure"
         ])
-    
+
     return '\n'.join(checklist)
 ```
 
@@ -279,6 +284,7 @@ def generate_review_checklist(analysis):
 Automate common review tasks:
 
 **Automated Review Bot**
+
 ```python
 class ReviewBot:
     def perform_automated_checks(self, pr_diff):
@@ -286,7 +292,7 @@ class ReviewBot:
         Perform automated code review checks
         """
         findings = []
-        
+
         # Check for common issues
         checks = [
             self._check_console_logs,
@@ -297,17 +303,17 @@ class ReviewBot:
             self._check_missing_error_handling,
             self._check_security_issues
         ]
-        
+
         for check in checks:
             findings.extend(check(pr_diff))
-        
+
         return findings
-    
+
     def _check_console_logs(self, diff):
         """Check for console.log statements"""
         findings = []
         pattern = r'\+.*console\.(log|debug|info|warn|error)'
-        
+
         for file, content in diff.items():
             matches = re.finditer(pattern, content, re.MULTILINE)
             for match in matches:
@@ -318,13 +324,13 @@ class ReviewBot:
                     'message': 'Console statement found - remove before merging',
                     'suggestion': 'Use proper logging framework instead'
                 })
-        
+
         return findings
-    
+
     def _check_large_functions(self, diff):
         """Check for functions that are too large"""
         findings = []
-        
+
         # Simple heuristic: count lines between function start and end
         for file, content in diff.items():
             if file.endswith(('.js', '.ts', '.py')):
@@ -338,7 +344,7 @@ class ReviewBot:
                             'message': f"Function '{func['name']}' is {func['lines']} lines long",
                             'suggestion': 'Consider breaking into smaller functions'
                         })
-        
+
         return findings
 ```
 
@@ -347,17 +353,18 @@ class ReviewBot:
 Help split large PRs:
 
 **PR Splitter Suggestions**
-```python
+
+````python
 def suggest_pr_splits(analysis):
     """
     Suggest how to split large PRs
     """
     stats = analysis['change_statistics']
-    
+
     # Check if PR is too large
     if stats['files_changed'] > 20 or stats['insertions'] + stats['deletions'] > 1000:
         suggestions = analyze_split_opportunities(analysis)
-        
+
         return f"""
 ## ⚠️ Large PR Detected
 
@@ -386,21 +393,22 @@ git checkout -b feature/part-2
 git cherry-pick <commit-hashes-for-part-2>
 git push origin feature/part-2
 # Create PR for part 2
-```
+````
+
 """
-    
+
     return ""
 
 def analyze_split_opportunities(analysis):
-    """Find logical units for splitting"""
-    suggestions = []
-    
+"""Find logical units for splitting"""
+suggestions = []
+
     # Group by feature areas
     feature_groups = defaultdict(list)
     for file in analysis['files_changed']:
         feature = extract_feature_area(file['filename'])
         feature_groups[feature].append(file)
-    
+
     # Suggest splits
     for feature, files in feature_groups.items():
         if len(files) >= 5:
@@ -409,9 +417,10 @@ def analyze_split_opportunities(analysis):
                 'files': files,
                 'reason': f"Isolated changes to {feature} feature"
             })
-    
+
     return suggestions
-```
+
+````
 
 ### 6. Visual Diff Enhancement
 
@@ -433,25 +442,27 @@ graph LR
         A1[Component A] --> B1[Component B]
         B1 --> C1[Database]
     end
-    
+
     subgraph "After"
         A2[Component A] --> B2[Component B]
         B2 --> C2[Database]
         B2 --> D2[New Cache Layer]
         A2 --> E2[New API Gateway]
     end
-    
+
     style D2 fill:#90EE90
     style E2 fill:#90EE90
-```
+````
 
 ### Key Changes:
+
 1. Added caching layer for performance
 2. Introduced API gateway for better routing
 3. Refactored component communication
-"""
-    return ""
-```
+   """
+   return ""
+
+````
 
 ### 7. Test Coverage Report
 
@@ -466,9 +477,9 @@ def generate_coverage_report(base_branch='main'):
     # Get coverage before and after
     before_coverage = get_coverage_for_branch(base_branch)
     after_coverage = get_coverage_for_branch('HEAD')
-    
+
     coverage_diff = after_coverage - before_coverage
-    
+
     report = f"""
 ## Test Coverage
 
@@ -480,11 +491,11 @@ def generate_coverage_report(base_branch='main'):
 
 ### Uncovered Files
 """
-    
+
     # List files with low coverage
     for file in get_low_coverage_files():
         report += f"- `{file['name']}`: {file['coverage']:.1f}% coverage\n"
-    
+
     return report
 
 def format_diff(value):
@@ -495,13 +506,14 @@ def format_diff(value):
         return f"<span style='color: red'>{value:.1f}%</span> ⚠️"
     else:
         return "No change"
-```
+````
 
 ### 8. Risk Assessment
 
 Evaluate PR risk:
 
 **Risk Calculator**
+
 ```python
 def calculate_pr_risk(analysis):
     """
@@ -514,9 +526,9 @@ def calculate_pr_risk(analysis):
         'dependencies': calculate_dependency_risk(analysis),
         'security': calculate_security_risk(analysis)
     }
-    
+
     overall_risk = sum(risk_factors.values()) / len(risk_factors)
-    
+
     risk_report = f"""
 ## Risk Assessment
 
@@ -536,7 +548,7 @@ def calculate_pr_risk(analysis):
 
 {generate_mitigation_strategies(risk_factors)}
 """
-    
+
     return risk_report
 
 def get_risk_level(score):
@@ -637,7 +649,7 @@ So that [benefit]
 | Performance | Xms | Yms |
 """
     }
-    
+
     return templates.get(pr_type, templates['feature'])
 ```
 
@@ -650,7 +662,7 @@ review_response_templates = {
     'acknowledge_feedback': """
 Thank you for the thorough review! I'll address these points.
 """,
-    
+
     'explain_decision': """
 Great question! I chose this approach because:
 1. [Reason 1]
@@ -662,12 +674,12 @@ Alternative approaches considered:
 
 Happy to discuss further if you have concerns.
 """,
-    
+
     'request_clarification': """
 Thanks for the feedback. Could you clarify what you mean by [specific point]?
 I want to make sure I understand your concern correctly before making changes.
 """,
-    
+
     'disagree_respectfully': """
 I appreciate your perspective on this. I have a slightly different view:
 
@@ -675,7 +687,7 @@ I appreciate your perspective on this. I have a slightly different view:
 
 However, I'm open to discussing this further. What do you think about [compromise/middle ground]?
 """,
-    
+
     'commit_to_change': """
 Good catch! I'll update this to [specific change].
 This should address [concern] while maintaining [other requirement].
@@ -687,7 +699,7 @@ This should address [concern] while maintaining [other requirement].
 
 1. **PR Summary**: Executive summary with key metrics
 2. **Detailed Description**: Comprehensive PR description
-3. **Review Checklist**: Context-aware review items  
+3. **Review Checklist**: Context-aware review items
 4. **Risk Assessment**: Risk analysis with mitigation strategies
 5. **Test Coverage**: Before/after coverage comparison
 6. **Visual Aids**: Diagrams and visual diffs where applicable

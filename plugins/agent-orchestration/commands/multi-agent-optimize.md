@@ -3,9 +3,11 @@
 ## Role: AI-Powered Multi-Agent Performance Engineering Specialist
 
 ### Context
+
 The Multi-Agent Optimization Tool is an advanced AI-driven framework designed to holistically improve system performance through intelligent, coordinated agent-based optimization. Leveraging cutting-edge AI orchestration techniques, this tool provides a comprehensive approach to performance engineering across multiple domains.
 
 ### Core Capabilities
+
 - Intelligent multi-agent coordination
 - Performance profiling and bottleneck identification
 - Adaptive optimization strategies
@@ -13,7 +15,9 @@ The Multi-Agent Optimization Tool is an advanced AI-driven framework designed to
 - Cost and efficiency tracking
 
 ## Arguments Handling
+
 The tool processes optimization arguments with flexible input parameters:
+
 - `$TARGET`: Primary system/application to optimize
 - `$PERFORMANCE_GOALS`: Specific performance metrics and objectives
 - `$OPTIMIZATION_SCOPE`: Depth of optimization (quick-win, comprehensive)
@@ -23,11 +27,13 @@ The tool processes optimization arguments with flexible input parameters:
 ## 1. Multi-Agent Performance Profiling
 
 ### Profiling Strategy
+
 - Distributed performance monitoring across system layers
 - Real-time metrics collection and analysis
 - Continuous performance signature tracking
 
 #### Profiling Agents
+
 1. **Database Performance Agent**
    - Query execution time analysis
    - Index utilization tracking
@@ -44,6 +50,7 @@ The tool processes optimization arguments with flexible input parameters:
    - Core Web Vitals monitoring
 
 ### Profiling Code Example
+
 ```python
 def multi_agent_profiler(target_system):
     agents = [
@@ -62,12 +69,14 @@ def multi_agent_profiler(target_system):
 ## 2. Context Window Optimization
 
 ### Optimization Techniques
+
 - Intelligent context compression
 - Semantic relevance filtering
 - Dynamic context window resizing
 - Token budget management
 
 ### Context Compression Algorithm
+
 ```python
 def compress_context(context, max_tokens=4000):
     # Semantic compression using embedding-based truncation
@@ -82,12 +91,14 @@ def compress_context(context, max_tokens=4000):
 ## 3. Agent Coordination Efficiency
 
 ### Coordination Principles
+
 - Parallel execution design
 - Minimal inter-agent communication overhead
 - Dynamic workload distribution
 - Fault-tolerant agent interactions
 
 ### Orchestration Framework
+
 ```python
 class MultiAgentOrchestrator:
     def __init__(self, agents):
@@ -112,6 +123,7 @@ class MultiAgentOrchestrator:
 ## 4. Parallel Execution Optimization
 
 ### Key Strategies
+
 - Asynchronous agent processing
 - Workload partitioning
 - Dynamic resource allocation
@@ -120,12 +132,14 @@ class MultiAgentOrchestrator:
 ## 5. Cost Optimization Strategies
 
 ### LLM Cost Management
+
 - Token usage tracking
 - Adaptive model selection
 - Caching and result reuse
 - Efficient prompt engineering
 
 ### Cost Tracking Example
+
 ```python
 class CostOptimizer:
     def __init__(self):
@@ -145,6 +159,7 @@ class CostOptimizer:
 ## 6. Latency Reduction Techniques
 
 ### Performance Acceleration
+
 - Predictive caching
 - Pre-warming agent contexts
 - Intelligent result memoization
@@ -153,6 +168,7 @@ class CostOptimizer:
 ## 7. Quality vs Speed Tradeoffs
 
 ### Optimization Spectrum
+
 - Performance thresholds
 - Acceptable degradation margins
 - Quality-aware optimization
@@ -161,6 +177,7 @@ class CostOptimizer:
 ## 8. Monitoring and Continuous Improvement
 
 ### Observability Framework
+
 - Real-time performance dashboards
 - Automated optimization feedback loops
 - Machine learning-driven improvement
@@ -169,18 +186,21 @@ class CostOptimizer:
 ## Reference Workflows
 
 ### Workflow 1: E-Commerce Platform Optimization
+
 1. Initial performance profiling
 2. Agent-based optimization
 3. Cost and performance tracking
 4. Continuous improvement cycle
 
 ### Workflow 2: Enterprise API Performance Enhancement
+
 1. Comprehensive system analysis
 2. Multi-layered agent optimization
 3. Iterative performance refinement
 4. Cost-efficient scaling strategy
 
 ## Key Considerations
+
 - Always measure before and after optimization
 - Maintain system stability during optimization
 - Balance performance gains with resource consumption

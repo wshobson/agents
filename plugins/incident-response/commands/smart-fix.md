@@ -9,6 +9,7 @@ Use Task tool with subagent_type="error-debugging::error-detective" followed by 
 **First: Error-Detective Analysis**
 
 **Prompt:**
+
 ```
 Analyze error traces, logs, and observability data for: $ARGUMENTS
 
@@ -33,6 +34,7 @@ Modern debugging techniques to employ:
 ```
 
 **Expected output:**
+
 ```
 ERROR_SIGNATURE: {exception type + key message pattern}
 FREQUENCY: {count, rate, trend}
@@ -48,6 +50,7 @@ RELATED_ISSUES: [similar errors, cascading failures]
 **Second: Debugger Root Cause Identification**
 
 **Prompt:**
+
 ```
 Perform root cause investigation using error-detective output:
 
@@ -75,6 +78,7 @@ Context needed for next phase:
 ```
 
 **Expected output:**
+
 ```
 ROOT_CAUSE: {technical explanation with evidence}
 INTRODUCING_COMMIT: {git SHA + summary if found via bisect}
@@ -94,7 +98,8 @@ Use Task tool with subagent_type="error-debugging::debugger" and subagent_type="
 **First: Debugger Code Analysis**
 
 **Prompt:**
-```
+
+````
 Perform deep code analysis and bisect investigation:
 
 Context from Phase 1:
@@ -111,22 +116,26 @@ Deliverables:
    ```bash
    git bisect start HEAD v1.2.3
    git bisect run ./test_reproduction.sh
-   ```
+````
+
 5. Dependency compatibility matrix: version combinations that work/fail
 6. Configuration analysis: environment variables, feature flags, deployment configs
 7. Timing and race condition analysis: async operations, event ordering, locks
 8. Memory and resource analysis: leaks, exhaustion, contention
 
 Modern investigation techniques:
+
 - AI-assisted code explanation (Claude/Copilot to understand complex logic)
 - Automated git bisect with reproduction test
 - Dependency graph analysis (npm ls, go mod graph, pip show)
 - Configuration drift detection (compare staging vs production)
 - Time-travel debugging using production traces
+
 ```
 
 **Expected output:**
 ```
+
 CODE_PATH: {entry → ... → failure location with key variables}
 STATE_AT_FAILURE: {variable values, object states, database state}
 BISECT_RESULT: {exact commit that introduced bug + diff}
@@ -134,20 +143,24 @@ DEPENDENCY_ISSUES: [version conflicts, breaking changes, CVEs]
 CONFIGURATION_DRIFT: {differences between environments}
 RACE_CONDITIONS: {async issues, event ordering problems}
 ISOLATION_VERIFICATION: {confirmed single root cause vs multiple issues}
+
 ```
 
 **Second: Code-Reviewer Deep Dive**
 
 **Prompt:**
 ```
+
 Review code logic and identify design issues:
 
 Context from Debugger:
+
 - Code path: {CODE_PATH}
 - State at failure: {STATE_AT_FAILURE}
 - Bisect result: {BISECT_RESULT}
 
 Deliverables:
+
 1. Logic flaw analysis: incorrect assumptions, missing edge cases, wrong algorithms
 2. Type safety gaps: where stronger types could prevent the issue
 3. Error handling review: missing try-catch, unhandled promises, panic scenarios
@@ -157,16 +170,19 @@ Deliverables:
 7. Fix design: minimal change vs refactoring vs architectural improvement
 
 Review checklist:
+
 - Are null/undefined values handled correctly?
 - Are async operations properly awaited/chained?
 - Are error cases explicitly handled?
 - Are type assertions safe?
 - Are API contracts respected?
 - Are side effects isolated?
+
 ```
 
 **Expected output:**
 ```
+
 LOGIC_FLAWS: [specific incorrect assumptions or algorithms]
 TYPE_SAFETY_GAPS: [where types could prevent issues]
 ERROR_HANDLING_GAPS: [unhandled error paths]
@@ -174,6 +190,7 @@ SIMILAR_VULNERABILITIES: [other code with same pattern]
 FIX_DESIGN: {minimal change approach}
 REFACTORING_OPPORTUNITIES: {if larger improvements warranted}
 ARCHITECTURAL_CONCERNS: {if systemic issues exist}
+
 ```
 
 ## Phase 3: Fix Implementation - Domain-Specific Agent Execution
@@ -191,9 +208,11 @@ Based on Phase 2 output, route to appropriate domain agent using Task tool:
 
 **Prompt Template (adapt for language):**
 ```
+
 Implement production-safe fix with comprehensive test coverage:
 
 Context from Phase 2:
+
 - Root cause: {ROOT_CAUSE}
 - Logic flaws: {LOGIC_FLAWS}
 - Fix design: {FIX_DESIGN}
@@ -201,6 +220,7 @@ Context from Phase 2:
 - Similar vulnerabilities: {SIMILAR_VULNERABILITIES}
 
 Deliverables:
+
 1. Minimal fix implementation addressing root cause (not symptoms)
 2. Unit tests:
    - Specific failure case reproduction
@@ -223,6 +243,7 @@ Deliverables:
    - Structured logging for debugging
 
 Modern implementation techniques (2024/2025):
+
 - AI pair programming (GitHub Copilot, Claude Code) for test generation
 - Type-driven development (leverage TypeScript, mypy, clippy)
 - Contract-first APIs (OpenAPI, gRPC schemas)
@@ -230,6 +251,7 @@ Modern implementation techniques (2024/2025):
 - Defensive programming (explicit error handling, validation)
 
 Implementation requirements:
+
 - Follow existing code patterns and conventions
 - Add strategic debug logging (JSON structured logs)
 - Include comprehensive type annotations
@@ -237,30 +259,33 @@ Implementation requirements:
 - Maintain backward compatibility (version APIs if breaking)
 - Add OpenTelemetry spans for distributed tracing
 - Include metric counters for monitoring (success/failure rates)
+
 ```
 
 **Expected output:**
 ```
+
 FIX_SUMMARY: {what changed and why - root cause vs symptom}
 CHANGED_FILES: [
-  {path: "...", changes: "...", reasoning: "..."}
+{path: "...", changes: "...", reasoning: "..."}
 ]
 NEW_FILES: [{path: "...", purpose: "..."}]
 TEST_COVERAGE: {
-  unit: "X scenarios",
-  integration: "Y scenarios",
-  edge_cases: "Z scenarios",
-  regression: "W scenarios"
+unit: "X scenarios",
+integration: "Y scenarios",
+edge_cases: "Z scenarios",
+regression: "W scenarios"
 }
 TEST_RESULTS: {all_passed: true/false, details: "..."}
 BREAKING_CHANGES: {none | API changes with migration path}
 OBSERVABILITY_ADDITIONS: [
-  {type: "log", location: "...", purpose: "..."},
-  {type: "metric", name: "...", purpose: "..."},
-  {type: "trace", span: "...", purpose: "..."}
+{type: "log", location: "...", purpose: "..."},
+{type: "metric", name: "...", purpose: "..."},
+{type: "trace", span: "...", purpose: "..."}
 ]
 FEATURE_FLAGS: [{flag: "...", rollout_strategy: "..."}]
 BACKWARD_COMPATIBILITY: {maintained | breaking with mitigation}
+
 ```
 
 ## Phase 4: Verification - Automated Testing and Performance Validation
@@ -271,15 +296,18 @@ Use Task tool with subagent_type="unit-testing::test-automator" and subagent_typ
 
 **Prompt:**
 ```
+
 Run comprehensive regression testing and verify fix quality:
 
 Context from Phase 3:
+
 - Fix summary: {FIX_SUMMARY}
 - Changed files: {CHANGED_FILES}
 - Test coverage: {TEST_COVERAGE}
 - Test results: {TEST_RESULTS}
 
 Deliverables:
+
 1. Full test suite execution:
    - Unit tests (all existing + new)
    - Integration tests
@@ -308,51 +336,58 @@ Deliverables:
    - Fuzzing for input validation
 
 Modern testing practices (2024/2025):
+
 - AI-generated test cases (GitHub Copilot, Claude Code)
 - Snapshot testing for UI/API contracts
 - Visual regression testing for frontend
 - Chaos engineering for resilience testing
 - Production traffic replay for load testing
+
 ```
 
 **Expected output:**
 ```
+
 TEST_RESULTS: {
-  total: N,
-  passed: X,
-  failed: Y,
-  skipped: Z,
-  new_failures: [list if any],
-  flaky_tests: [list if any]
+total: N,
+passed: X,
+failed: Y,
+skipped: Z,
+new_failures: [list if any],
+flaky_tests: [list if any]
 }
 CODE_COVERAGE: {
-  line: "X%",
-  branch: "Y%",
-  function: "Z%",
-  delta: "+/-W%"
+line: "X%",
+branch: "Y%",
+function: "Z%",
+delta: "+/-W%"
 }
 REGRESSION_DETECTED: {yes/no + details if yes}
 CROSS_ENV_RESULTS: {staging: "...", qa: "..."}
 SECURITY_SCAN: {
-  vulnerabilities: [list or "none"],
-  static_analysis: "...",
-  dependency_audit: "..."
+vulnerabilities: [list or "none"],
+static_analysis: "...",
+dependency_audit: "..."
 }
 TEST_QUALITY: {deterministic: true/false, coverage_adequate: true/false}
+
 ```
 
 **Second: Performance-Engineer Validation**
 
 **Prompt:**
 ```
+
 Measure performance impact and validate no regressions:
 
 Context from Test-Automator:
+
 - Test results: {TEST_RESULTS}
 - Code coverage: {CODE_COVERAGE}
 - Fix summary: {FIX_SUMMARY}
 
 Deliverables:
+
 1. Performance benchmarks:
    - Response time (p50, p95, p99)
    - Throughput (requests/second)
@@ -380,53 +415,60 @@ Deliverables:
    - Cost implications (cloud resources)
 
 Modern performance practices:
+
 - OpenTelemetry instrumentation
 - Continuous profiling (Pyroscope, pprof)
 - Real User Monitoring (RUM)
 - Synthetic monitoring
+
 ```
 
 **Expected output:**
 ```
+
 PERFORMANCE_BASELINE: {
-  response_time_p95: "Xms",
-  throughput: "Y req/s",
-  cpu_usage: "Z%",
-  memory_usage: "W MB"
+response_time_p95: "Xms",
+throughput: "Y req/s",
+cpu_usage: "Z%",
+memory_usage: "W MB"
 }
 PERFORMANCE_AFTER_FIX: {
-  response_time_p95: "Xms (delta)",
-  throughput: "Y req/s (delta)",
-  cpu_usage: "Z% (delta)",
-  memory_usage: "W MB (delta)"
+response_time_p95: "Xms (delta)",
+throughput: "Y req/s (delta)",
+cpu_usage: "Z% (delta)",
+memory_usage: "W MB (delta)"
 }
 PERFORMANCE_IMPACT: {
-  verdict: "improved|neutral|degraded",
-  acceptable: true/false,
-  reasoning: "..."
+verdict: "improved|neutral|degraded",
+acceptable: true/false,
+reasoning: "..."
 }
 LOAD_TEST_RESULTS: {
-  max_throughput: "...",
-  breaking_point: "...",
-  memory_leaks: "none|detected"
+max_throughput: "...",
+breaking_point: "...",
+memory_leaks: "none|detected"
 }
 APM_INSIGHTS: [slow queries, N+1 patterns, bottlenecks]
 PRODUCTION_READY: {yes/no + blockers if no}
+
 ```
 
 **Third: Code-Reviewer Final Approval**
 
 **Prompt:**
 ```
+
 Perform final code review and approve for deployment:
 
 Context from Testing:
+
 - Test results: {TEST_RESULTS}
 - Regression detected: {REGRESSION_DETECTED}
 - Performance impact: {PERFORMANCE_IMPACT}
 - Security scan: {SECURITY_SCAN}
 
 Deliverables:
+
 1. Code quality review:
    - Follows project conventions
    - No code smells or anti-patterns
@@ -454,6 +496,7 @@ Deliverables:
    - Success metrics defined
 
 Review checklist:
+
 - All tests pass
 - No performance regressions
 - Security vulnerabilities addressed
@@ -461,34 +504,37 @@ Review checklist:
 - Backward compatibility maintained
 - Observability adequate
 - Deployment plan clear
+
 ```
 
 **Expected output:**
 ```
+
 REVIEW_STATUS: {APPROVED|NEEDS_REVISION|BLOCKED}
 CODE_QUALITY: {score/assessment}
 ARCHITECTURE_CONCERNS: [list or "none"]
 SECURITY_CONCERNS: [list or "none"]
 DEPLOYMENT_RISK: {low|medium|high}
 ROLLBACK_PLAN: {
-  steps: ["..."],
-  estimated_time: "X minutes",
-  data_recovery: "..."
+steps: ["..."],
+estimated_time: "X minutes",
+data_recovery: "..."
 }
 ROLLOUT_STRATEGY: {
-  approach: "canary|blue-green|rolling|big-bang",
-  phases: ["..."],
-  success_metrics: ["..."],
-  abort_criteria: ["..."]
+approach: "canary|blue-green|rolling|big-bang",
+phases: ["..."],
+success_metrics: ["..."],
+abort_criteria: ["..."]
 }
 MONITORING_REQUIREMENTS: [
-  {metric: "...", threshold: "...", action: "..."}
+{metric: "...", threshold: "...", action: "..."}
 ]
 FINAL_VERDICT: {
-  approved: true/false,
-  blockers: [list if not approved],
-  recommendations: ["..."]
+approved: true/false,
+blockers: [list if not approved],
+recommendations: ["..."]
 }
+
 ```
 
 ## Phase 5: Documentation and Prevention - Long-term Resilience
@@ -497,9 +543,11 @@ Use Task tool with subagent_type="comprehensive-review::code-reviewer" for preve
 
 **Prompt:**
 ```
+
 Document fix and implement prevention strategies to avoid recurrence:
 
 Context from Phase 4:
+
 - Final verdict: {FINAL_VERDICT}
 - Review status: {REVIEW_STATUS}
 - Root cause: {ROOT_CAUSE}
@@ -507,6 +555,7 @@ Context from Phase 4:
 - Monitoring requirements: {MONITORING_REQUIREMENTS}
 
 Deliverables:
+
 1. Code documentation:
    - Inline comments for non-obvious logic (minimal)
    - Function/class documentation updates
@@ -543,62 +592,66 @@ Deliverables:
    - Document testing strategy gaps
 
 Modern prevention practices (2024/2025):
+
 - AI-assisted code review rules (GitHub Copilot, Claude Code)
 - Continuous security scanning (Snyk, Dependabot)
 - Infrastructure as Code validation (Terraform validate, CloudFormation Linter)
 - Contract testing for APIs (Pact, OpenAPI validation)
 - Observability-driven development (instrument before deploying)
+
 ```
 
 **Expected output:**
 ```
+
 DOCUMENTATION_UPDATES: [
-  {file: "CHANGELOG.md", summary: "..."},
-  {file: "docs/runbook.md", summary: "..."},
-  {file: "docs/architecture.md", summary: "..."}
+{file: "CHANGELOG.md", summary: "..."},
+{file: "docs/runbook.md", summary: "..."},
+{file: "docs/architecture.md", summary: "..."}
 ]
 PREVENTION_MEASURES: {
-  static_analysis: [
-    {tool: "eslint", rule: "...", reason: "..."},
-    {tool: "ruff", rule: "...", reason: "..."}
-  ],
-  type_system: [
-    {enhancement: "...", location: "...", benefit: "..."}
-  ],
-  pre_commit_hooks: [
-    {hook: "...", purpose: "..."}
-  ]
+static_analysis: [
+{tool: "eslint", rule: "...", reason: "..."},
+{tool: "ruff", rule: "...", reason: "..."}
+],
+type_system: [
+{enhancement: "...", location: "...", benefit: "..."}
+],
+pre_commit_hooks: [
+{hook: "...", purpose: "..."}
+]
 }
 MONITORING_ADDED: {
-  alerts: [
-    {name: "...", threshold: "...", channel: "..."}
-  ],
-  dashboards: [
-    {name: "...", metrics: [...], url: "..."}
-  ],
-  slos: [
-    {service: "...", sli: "...", target: "...", window: "..."}
-  ]
+alerts: [
+{name: "...", threshold: "...", channel: "..."}
+],
+dashboards: [
+{name: "...", metrics: [...], url: "..."}
+],
+slos: [
+{service: "...", sli: "...", target: "...", window: "..."}
+]
 }
 ARCHITECTURAL_IMPROVEMENTS: [
-  {improvement: "...", reasoning: "...", effort: "small|medium|large"}
+{improvement: "...", reasoning: "...", effort: "small|medium|large"}
 ]
 SIMILAR_VULNERABILITIES: {
-  found: N,
-  locations: [...],
-  remediation_plan: "..."
+found: N,
+locations: [...],
+remediation_plan: "..."
 }
 FOLLOW_UP_TASKS: [
-  {task: "...", priority: "high|medium|low", owner: "..."}
+{task: "...", priority: "high|medium|low", owner: "..."}
 ]
 POSTMORTEM: {
-  created: true/false,
-  location: "...",
-  incident_severity: "SEV1|SEV2|SEV3|SEV4"
+created: true/false,
+location: "...",
+incident_severity: "SEV1|SEV2|SEV3|SEV4"
 }
 KNOWLEDGE_BASE_UPDATES: [
-  {article: "...", summary: "..."}
+{article: "...", summary: "..."}
 ]
+
 ```
 
 ## Multi-Domain Coordination for Complex Issues
@@ -657,26 +710,32 @@ For issues spanning multiple domains, orchestrate specialized agents sequentiall
 
 **Context Passing Template:**
 ```
+
 Context for {next_agent}:
 
 Completed by {previous_agent}:
+
 - {summary_of_work}
 - {key_findings}
 - {changes_made}
 
 Remaining work:
+
 - {specific_tasks_for_next_agent}
 - {files_to_modify}
 - {constraints_to_follow}
 
 Dependencies:
+
 - {systems_or_components_affected}
 - {data_needed}
 - {integration_points}
 
 Success criteria:
+
 - {measurable_outcomes}
 - {verification_steps}
+
 ```
 
 ## Configuration Options
@@ -721,13 +780,16 @@ Customize workflow behavior by setting priorities at invocation:
 
 **Example Invocation:**
 ```
+
 Issue: Users experiencing timeout errors on checkout page (500+ errors/hour)
 
 Config:
+
 - VERIFICATION_LEVEL: comprehensive (affects revenue)
 - PREVENTION_FOCUS: comprehensive (high business impact)
 - ROLLOUT_STRATEGY: canary (test on 5% traffic first)
 - OBSERVABILITY_LEVEL: comprehensive (need detailed monitoring)
+
 ```
 
 ## Modern Debugging Tools Integration
@@ -832,3 +894,4 @@ A fix is considered complete when ALL of the following are met:
 - Deployment success rate: > 95% (rollback rate < 5%)
 
 Issue to resolve: $ARGUMENTS
+```

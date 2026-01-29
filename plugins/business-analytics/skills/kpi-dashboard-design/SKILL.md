@@ -20,11 +20,11 @@ Comprehensive patterns for designing effective Key Performance Indicator (KPI) d
 
 ### 1. KPI Framework
 
-| Level | Focus | Update Frequency | Audience |
-|-------|-------|------------------|----------|
-| **Strategic** | Long-term goals | Monthly/Quarterly | Executives |
-| **Tactical** | Department goals | Weekly/Monthly | Managers |
-| **Operational** | Day-to-day | Real-time/Daily | Teams |
+| Level           | Focus            | Update Frequency  | Audience   |
+| --------------- | ---------------- | ----------------- | ---------- |
+| **Strategic**   | Long-term goals  | Monthly/Quarterly | Executives |
+| **Tactical**    | Department goals | Weekly/Monthly    | Managers   |
+| **Operational** | Day-to-day       | Real-time/Daily   | Teams      |
 
 ### 2. SMART KPIs
 
@@ -406,6 +406,7 @@ for alert in alerts:
 ## Best Practices
 
 ### Do's
+
 - **Limit to 5-7 KPIs** - Focus on what matters
 - **Show context** - Comparisons, trends, targets
 - **Use consistent colors** - Red=bad, green=good
@@ -413,6 +414,7 @@ for alert in alerts:
 - **Update appropriately** - Match metric frequency
 
 ### Don'ts
+
 - **Don't show vanity metrics** - Focus on actionable data
 - **Don't overcrowd** - White space aids comprehension
 - **Don't use 3D charts** - They distort perception

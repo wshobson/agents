@@ -20,9 +20,11 @@ Master smart contract security best practices, vulnerability prevention, and sec
 ## Critical Vulnerabilities
 
 ### 1. Reentrancy
+
 Attacker calls back into your contract before state is updated.
 
 **Vulnerable Code:**
+
 ```solidity
 // VULNERABLE TO REENTRANCY
 contract VulnerableBank {
@@ -41,6 +43,7 @@ contract VulnerableBank {
 ```
 
 **Secure Pattern (Checks-Effects-Interactions):**
+
 ```solidity
 contract SecureBank {
     mapping(address => uint256) public balances;
@@ -60,6 +63,7 @@ contract SecureBank {
 ```
 
 **Alternative: ReentrancyGuard**
+
 ```solidity
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
@@ -81,6 +85,7 @@ contract SecureBank is ReentrancyGuard {
 ### 2. Integer Overflow/Underflow
 
 **Vulnerable Code (Solidity < 0.8.0):**
+
 ```solidity
 // VULNERABLE
 contract VulnerableToken {
@@ -95,6 +100,7 @@ contract VulnerableToken {
 ```
 
 **Secure Pattern (Solidity >= 0.8.0):**
+
 ```solidity
 // Solidity 0.8+ has built-in overflow/underflow checks
 contract SecureToken {
@@ -109,6 +115,7 @@ contract SecureToken {
 ```
 
 **For Solidity < 0.8.0, use SafeMath:**
+
 ```solidity
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
@@ -126,6 +133,7 @@ contract SecureToken {
 ### 3. Access Control
 
 **Vulnerable Code:**
+
 ```solidity
 // VULNERABLE: Anyone can call critical functions
 contract VulnerableContract {
@@ -139,6 +147,7 @@ contract VulnerableContract {
 ```
 
 **Secure Pattern:**
+
 ```solidity
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -166,6 +175,7 @@ contract RoleBasedContract {
 ### 4. Front-Running
 
 **Vulnerable:**
+
 ```solidity
 // VULNERABLE TO FRONT-RUNNING
 contract VulnerableDEX {
@@ -179,6 +189,7 @@ contract VulnerableDEX {
 ```
 
 **Mitigation:**
+
 ```solidity
 contract SecureDEX {
     mapping(bytes32 => bool) public usedCommitments;
@@ -206,6 +217,7 @@ contract SecureDEX {
 ## Security Best Practices
 
 ### Checks-Effects-Interactions Pattern
+
 ```solidity
 contract SecurePattern {
     mapping(address => uint256) public balances;
@@ -226,6 +238,7 @@ contract SecurePattern {
 ```
 
 ### Pull Over Push Pattern
+
 ```solidity
 // Prefer this (pull)
 contract SecurePayment {
@@ -256,6 +269,7 @@ contract RiskyPayment {
 ```
 
 ### Input Validation
+
 ```solidity
 contract SecureContract {
     function transfer(address to, uint256 amount) public {
@@ -273,6 +287,7 @@ contract SecureContract {
 ```
 
 ### Emergency Stop (Circuit Breaker)
+
 ```solidity
 import "@openzeppelin/contracts/security/Pausable.sol";
 
@@ -294,6 +309,7 @@ contract EmergencyStop is Pausable, Ownable {
 ## Gas Optimization
 
 ### Use `uint256` Instead of Smaller Types
+
 ```solidity
 // More gas efficient
 contract GasEfficient {
@@ -315,6 +331,7 @@ contract GasInefficient {
 ```
 
 ### Pack Storage Variables
+
 ```solidity
 // Gas efficient (3 variables in 1 slot)
 contract PackedStorage {
@@ -334,6 +351,7 @@ contract UnpackedStorage {
 ```
 
 ### Use `calldata` Instead of `memory` for Function Arguments
+
 ```solidity
 contract GasOptimized {
     // More gas efficient
@@ -349,6 +367,7 @@ contract GasOptimized {
 ```
 
 ### Use Events for Data Storage (When Appropriate)
+
 ```solidity
 contract EventStorage {
     // Emitting events is cheaper than storage
@@ -394,45 +413,44 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("Security Tests", function () {
-    it("Should prevent reentrancy attack", async function () {
-        const [attacker] = await ethers.getSigners();
+  it("Should prevent reentrancy attack", async function () {
+    const [attacker] = await ethers.getSigners();
 
-        const VictimBank = await ethers.getContractFactory("SecureBank");
-        const bank = await VictimBank.deploy();
+    const VictimBank = await ethers.getContractFactory("SecureBank");
+    const bank = await VictimBank.deploy();
 
-        const Attacker = await ethers.getContractFactory("ReentrancyAttacker");
-        const attackerContract = await Attacker.deploy(bank.address);
+    const Attacker = await ethers.getContractFactory("ReentrancyAttacker");
+    const attackerContract = await Attacker.deploy(bank.address);
 
-        // Deposit funds
-        await bank.deposit({value: ethers.utils.parseEther("10")});
+    // Deposit funds
+    await bank.deposit({ value: ethers.utils.parseEther("10") });
 
-        // Attempt reentrancy attack
-        await expect(
-            attackerContract.attack({value: ethers.utils.parseEther("1")})
-        ).to.be.revertedWith("ReentrancyGuard: reentrant call");
-    });
+    // Attempt reentrancy attack
+    await expect(
+      attackerContract.attack({ value: ethers.utils.parseEther("1") }),
+    ).to.be.revertedWith("ReentrancyGuard: reentrant call");
+  });
 
-    it("Should prevent integer overflow", async function () {
-        const Token = await ethers.getContractFactory("SecureToken");
-        const token = await Token.deploy();
+  it("Should prevent integer overflow", async function () {
+    const Token = await ethers.getContractFactory("SecureToken");
+    const token = await Token.deploy();
 
-        // Attempt overflow
-        await expect(
-            token.transfer(attacker.address, ethers.constants.MaxUint256)
-        ).to.be.reverted;
-    });
+    // Attempt overflow
+    await expect(token.transfer(attacker.address, ethers.constants.MaxUint256))
+      .to.be.reverted;
+  });
 
-    it("Should enforce access control", async function () {
-        const [owner, attacker] = await ethers.getSigners();
+  it("Should enforce access control", async function () {
+    const [owner, attacker] = await ethers.getSigners();
 
-        const Contract = await ethers.getContractFactory("SecureContract");
-        const contract = await Contract.deploy();
+    const Contract = await ethers.getContractFactory("SecureContract");
+    const contract = await Contract.deploy();
 
-        // Attempt unauthorized withdrawal
-        await expect(
-            contract.connect(attacker).withdraw(100)
-        ).to.be.revertedWith("Ownable: caller is not the owner");
-    });
+    // Attempt unauthorized withdrawal
+    await expect(contract.connect(attacker).withdraw(100)).to.be.revertedWith(
+      "Ownable: caller is not the owner",
+    );
+  });
 });
 ```
 

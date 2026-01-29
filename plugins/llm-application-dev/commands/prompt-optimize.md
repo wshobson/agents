@@ -1,3 +1,8 @@
+---
+description: "Optimize prompts for production with CoT, few-shot, and constitutional AI patterns"
+argument-hint: "<prompt-text-or-file>"
+---
+
 # Prompt Optimization
 
 You are an expert prompt engineer specializing in crafting effective prompts for LLMs through advanced techniques including constitutional AI, chain-of-thought reasoning, and model-specific optimization.
@@ -17,12 +22,14 @@ $ARGUMENTS
 Evaluate the prompt across key dimensions:
 
 **Assessment Framework**
+
 - Clarity score (1-10) and ambiguity points
 - Structure: logical flow and section boundaries
 - Model alignment: capability utilization and token efficiency
 - Performance: success rate, failure modes, edge case handling
 
 **Decomposition**
+
 - Core objective and constraints
 - Output format requirements
 - Explicit vs implicit expectations
@@ -31,6 +38,7 @@ Evaluate the prompt across key dimensions:
 ### 2. Apply Chain-of-Thought Enhancement
 
 **Standard CoT Pattern**
+
 ```python
 # Before: Simple instruction
 prompt = "Analyze this customer feedback and determine sentiment"
@@ -51,11 +59,13 @@ Step 1 - Key emotional phrases:
 ```
 
 **Zero-Shot CoT**
+
 ```python
 enhanced = original + "\n\nLet's approach this step-by-step, breaking down the problem into smaller components and reasoning through each carefully."
 ```
 
 **Tree-of-Thoughts**
+
 ```python
 tot_prompt = """
 Explore multiple solution paths:
@@ -74,6 +84,7 @@ Select best approach and implement.
 ### 3. Implement Few-Shot Learning
 
 **Strategic Example Selection**
+
 ```python
 few_shot = """
 Example 1 (Simple case):
@@ -95,6 +106,7 @@ Now apply to: {actual_input}
 ### 4. Apply Constitutional AI Patterns
 
 **Self-Critique Loop**
+
 ```python
 constitutional = """
 {initial_instruction}
@@ -113,9 +125,10 @@ Final Response: [Refined]
 
 ### 5. Model-Specific Optimization
 
-**GPT-5/GPT-4o**
-```python
-gpt4_optimized = """
+**GPT-5.2**
+
+````python
+gpt5_optimized = """
 ##CONTEXT##
 {structured_context}
 
@@ -129,12 +142,13 @@ gpt4_optimized = """
 ##OUTPUT FORMAT##
 ```json
 {"structured": "response"}
-```
+````
 
 ##EXAMPLES##
 {few_shot_examples}
 """
-```
+
+````
 
 **Claude 4.5/4**
 ```python
@@ -157,9 +171,10 @@ claude_optimized = """
 {xml_structured_response}
 </output_format>
 """
-```
+````
 
 **Gemini Pro/Ultra**
+
 ```python
 gemini_optimized = """
 **System Context:** {background}
@@ -183,6 +198,7 @@ gemini_optimized = """
 ### 6. RAG Integration
 
 **RAG-Optimized Prompt**
+
 ```python
 rag_prompt = """
 ## Context Documents
@@ -205,6 +221,7 @@ Example: "Based on [Source 1], {answer}. [Source 3] corroborates: {detail}. No i
 ### 7. Evaluation Framework
 
 **Testing Protocol**
+
 ```python
 evaluation = """
 ## Test Cases (20 total)
@@ -222,6 +239,7 @@ evaluation = """
 ```
 
 **LLM-as-Judge**
+
 ```python
 judge_prompt = """
 Evaluate AI response quality.
@@ -247,6 +265,7 @@ Recommendation: Accept/Revise/Reject
 ### 8. Production Deployment
 
 **Prompt Versioning**
+
 ```python
 class PromptVersion:
     def __init__(self, base_prompt):
@@ -265,6 +284,7 @@ class PromptVersion:
 ```
 
 **Error Handling**
+
 ```python
 robust_prompt = """
 {main_instruction}
@@ -286,15 +306,18 @@ Provide partial solution with boundaries and next steps if full task cannot be c
 ### Example 1: Customer Support
 
 **Before**
+
 ```
 Answer customer questions about our product.
 ```
 
 **After**
-```markdown
+
+````markdown
 You are a senior customer support specialist for TechCorp with 5+ years experience.
 
 ## Context
+
 - Product: {product_name}
 - Customer Tier: {tier}
 - Issue Category: {category}
@@ -302,9 +325,11 @@ You are a senior customer support specialist for TechCorp with 5+ years experien
 ## Framework
 
 ### 1. Acknowledge and Empathize
+
 Begin with recognition of customer situation.
 
 ### 2. Diagnostic Reasoning
+
 <thinking>
 1. Identify core issue
 2. Consider common causes
@@ -313,23 +338,27 @@ Begin with recognition of customer situation.
 </thinking>
 
 ### 3. Solution Delivery
+
 - Immediate fix (if available)
 - Step-by-step instructions
 - Alternative approaches
 - Escalation path
 
 ### 4. Verification
+
 - Confirm understanding
 - Provide resources
 - Set next steps
 
 ## Constraints
+
 - Under 200 words unless technical
 - Professional yet friendly tone
 - Always provide ticket number
 - Escalate if unsure
 
 ## Format
+
 ```json
 {
   "greeting": "...",
@@ -338,14 +367,18 @@ Begin with recognition of customer situation.
   "follow_up": "..."
 }
 ```
+````
+
 ```
 
 ### Example 2: Data Analysis
 
 **Before**
 ```
+
 Analyze this sales data and provide insights.
-```
+
+````
 
 **After**
 ```python
@@ -399,16 +432,20 @@ recommendations:
   immediate: []
   short_term: []
   long_term: []
-```
+````
+
 """
+
 ```
 
 ### Example 3: Code Generation
 
 **Before**
 ```
+
 Write a Python function to process user data.
-```
+
+````
 
 **After**
 ```python
@@ -468,15 +505,17 @@ def process_user_data(raw_data: Dict[str, Any]) -> Union[ProcessedUser, Dict[str
         name=sanitize_string(raw_data['name'], 100),
         metadata={k: v for k, v in raw_data.items() if k not in required}
     )
-```
+````
 
 ### Self-Review
+
 ✓ Input validation and sanitization
 ✓ Injection prevention
 ✓ Error handling
 ✓ Performance: O(n) complexity
 """
-```
+
+````
 
 ### Example 4: Meta-Prompt Generator
 
@@ -525,18 +564,20 @@ ELSE: APPLY hybrid
 Overall: []/50
 Recommendation: use_as_is | iterate | redesign
 """
-```
+````
 
 ## Output Format
 
 Deliver comprehensive optimization report:
 
 ### Optimized Prompt
+
 ```markdown
 [Complete production-ready prompt with all enhancements]
 ```
 
 ### Optimization Report
+
 ```yaml
 analysis:
   original_assessment:
@@ -566,7 +607,7 @@ testing_recommendations:
   metrics: ["accuracy", "satisfaction", "cost"]
 
 deployment_strategy:
-  model: "GPT-5 for quality, Claude for safety"
+  model: "GPT-5.2 for quality, Claude 4.5 for safety"
   temperature: 0.7
   max_tokens: 2000
   monitoring: "Track success, latency, feedback"
@@ -578,6 +619,7 @@ next_steps:
 ```
 
 ### Usage Guidelines
+
 1. **Implementation**: Use optimized prompt exactly
 2. **Parameters**: Apply recommended settings
 3. **Testing**: Run test cases before production

@@ -20,29 +20,30 @@ Master database schema and data migrations across ORMs (Sequelize, TypeORM, Pris
 ## ORM Migrations
 
 ### Sequelize Migrations
+
 ```javascript
 // migrations/20231201-create-users.js
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable("users", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
       email: {
         type: Sequelize.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: Sequelize.DATE,
-      updatedAt: Sequelize.DATE
+      updatedAt: Sequelize.DATE,
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
-  }
+    await queryInterface.dropTable("users");
+  },
 };
 
 // Run: npx sequelize-cli db:migrate
@@ -50,40 +51,41 @@ module.exports = {
 ```
 
 ### TypeORM Migrations
+
 ```typescript
 // migrations/1701234567-CreateUsers.ts
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class CreateUsers1701234567 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'users',
+        name: "users",
         columns: [
           {
-            name: 'id',
-            type: 'int',
+            name: "id",
+            type: "int",
             isPrimary: true,
             isGenerated: true,
-            generationStrategy: 'increment'
+            generationStrategy: "increment",
           },
           {
-            name: 'email',
-            type: 'varchar',
-            isUnique: true
+            name: "email",
+            type: "varchar",
+            isUnique: true,
           },
           {
-            name: 'created_at',
-            type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP'
-          }
-        ]
-      })
+            name: "created_at",
+            type: "timestamp",
+            default: "CURRENT_TIMESTAMP",
+          },
+        ],
+      }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('users');
+    await queryRunner.dropTable("users");
   }
 }
 
@@ -92,6 +94,7 @@ export class CreateUsers1701234567 implements MigrationInterface {
 ```
 
 ### Prisma Migrations
+
 ```prisma
 // schema.prisma
 model User {
@@ -107,41 +110,41 @@ model User {
 ## Schema Transformations
 
 ### Adding Columns with Defaults
+
 ```javascript
 // Safe migration: add column with default
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('users', 'status', {
+    await queryInterface.addColumn("users", "status", {
       type: Sequelize.STRING,
-      defaultValue: 'active',
-      allowNull: false
+      defaultValue: "active",
+      allowNull: false,
     });
   },
 
   down: async (queryInterface) => {
-    await queryInterface.removeColumn('users', 'status');
-  }
+    await queryInterface.removeColumn("users", "status");
+  },
 };
 ```
 
 ### Renaming Columns (Zero Downtime)
+
 ```javascript
 // Step 1: Add new column
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('users', 'full_name', {
-      type: Sequelize.STRING
+    await queryInterface.addColumn("users", "full_name", {
+      type: Sequelize.STRING,
     });
 
     // Copy data from old column
-    await queryInterface.sequelize.query(
-      'UPDATE users SET full_name = name'
-    );
+    await queryInterface.sequelize.query("UPDATE users SET full_name = name");
   },
 
   down: async (queryInterface) => {
-    await queryInterface.removeColumn('users', 'full_name');
-  }
+    await queryInterface.removeColumn("users", "full_name");
+  },
 };
 
 // Step 2: Update application to use new column
@@ -149,26 +152,27 @@ module.exports = {
 // Step 3: Remove old column
 module.exports = {
   up: async (queryInterface) => {
-    await queryInterface.removeColumn('users', 'name');
+    await queryInterface.removeColumn("users", "name");
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('users', 'name', {
-      type: Sequelize.STRING
+    await queryInterface.addColumn("users", "name", {
+      type: Sequelize.STRING,
     });
-  }
+  },
 };
 ```
 
 ### Changing Column Types
+
 ```javascript
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // For large tables, use multi-step approach
 
     // 1. Add new column
-    await queryInterface.addColumn('users', 'age_new', {
-      type: Sequelize.INTEGER
+    await queryInterface.addColumn("users", "age_new", {
+      type: Sequelize.INTEGER,
     });
 
     // 2. Copy and transform data
@@ -179,34 +183,35 @@ module.exports = {
     `);
 
     // 3. Drop old column
-    await queryInterface.removeColumn('users', 'age');
+    await queryInterface.removeColumn("users", "age");
 
     // 4. Rename new column
-    await queryInterface.renameColumn('users', 'age_new', 'age');
+    await queryInterface.renameColumn("users", "age_new", "age");
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.changeColumn('users', 'age', {
-      type: Sequelize.STRING
+    await queryInterface.changeColumn("users", "age", {
+      type: Sequelize.STRING,
     });
-  }
+  },
 };
 ```
 
 ## Data Transformations
 
 ### Complex Data Migration
+
 ```javascript
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // Get all records
     const [users] = await queryInterface.sequelize.query(
-      'SELECT id, address_string FROM users'
+      "SELECT id, address_string FROM users",
     );
 
     // Transform each record
     for (const user of users) {
-      const addressParts = user.address_string.split(',');
+      const addressParts = user.address_string.split(",");
 
       await queryInterface.sequelize.query(
         `UPDATE users
@@ -219,20 +224,20 @@ module.exports = {
             id: user.id,
             street: addressParts[0]?.trim(),
             city: addressParts[1]?.trim(),
-            state: addressParts[2]?.trim()
-          }
-        }
+            state: addressParts[2]?.trim(),
+          },
+        },
       );
     }
 
     // Drop old column
-    await queryInterface.removeColumn('users', 'address_string');
+    await queryInterface.removeColumn("users", "address_string");
   },
 
   down: async (queryInterface, Sequelize) => {
     // Reconstruct original column
-    await queryInterface.addColumn('users', 'address_string', {
-      type: Sequelize.STRING
+    await queryInterface.addColumn("users", "address_string", {
+      type: Sequelize.STRING,
     });
 
     await queryInterface.sequelize.query(`
@@ -240,16 +245,17 @@ module.exports = {
       SET address_string = CONCAT(street, ', ', city, ', ', state)
     `);
 
-    await queryInterface.removeColumn('users', 'street');
-    await queryInterface.removeColumn('users', 'city');
-    await queryInterface.removeColumn('users', 'state');
-  }
+    await queryInterface.removeColumn("users", "street");
+    await queryInterface.removeColumn("users", "city");
+    await queryInterface.removeColumn("users", "state");
+  },
 };
 ```
 
 ## Rollback Strategies
 
 ### Transaction-Based Migrations
+
 ```javascript
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -257,15 +263,15 @@ module.exports = {
 
     try {
       await queryInterface.addColumn(
-        'users',
-        'verified',
+        "users",
+        "verified",
         { type: Sequelize.BOOLEAN, defaultValue: false },
-        { transaction }
+        { transaction },
       );
 
       await queryInterface.sequelize.query(
-        'UPDATE users SET verified = true WHERE email_verified_at IS NOT NULL',
-        { transaction }
+        "UPDATE users SET verified = true WHERE email_verified_at IS NOT NULL",
+        { transaction },
       );
 
       await transaction.commit();
@@ -276,62 +282,64 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
-    await queryInterface.removeColumn('users', 'verified');
-  }
+    await queryInterface.removeColumn("users", "verified");
+  },
 };
 ```
 
 ### Checkpoint-Based Rollback
+
 ```javascript
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // Create backup table
     await queryInterface.sequelize.query(
-      'CREATE TABLE users_backup AS SELECT * FROM users'
+      "CREATE TABLE users_backup AS SELECT * FROM users",
     );
 
     try {
       // Perform migration
-      await queryInterface.addColumn('users', 'new_field', {
-        type: Sequelize.STRING
+      await queryInterface.addColumn("users", "new_field", {
+        type: Sequelize.STRING,
       });
 
       // Verify migration
       const [result] = await queryInterface.sequelize.query(
-        "SELECT COUNT(*) as count FROM users WHERE new_field IS NULL"
+        "SELECT COUNT(*) as count FROM users WHERE new_field IS NULL",
       );
 
       if (result[0].count > 0) {
-        throw new Error('Migration verification failed');
+        throw new Error("Migration verification failed");
       }
 
       // Drop backup
-      await queryInterface.dropTable('users_backup');
+      await queryInterface.dropTable("users_backup");
     } catch (error) {
       // Restore from backup
-      await queryInterface.sequelize.query('DROP TABLE users');
+      await queryInterface.sequelize.query("DROP TABLE users");
       await queryInterface.sequelize.query(
-        'CREATE TABLE users AS SELECT * FROM users_backup'
+        "CREATE TABLE users AS SELECT * FROM users_backup",
       );
-      await queryInterface.dropTable('users_backup');
+      await queryInterface.dropTable("users_backup");
       throw error;
     }
-  }
+  },
 };
 ```
 
 ## Zero-Downtime Migrations
 
 ### Blue-Green Deployment Strategy
+
 ```javascript
 // Phase 1: Make changes backward compatible
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // Add new column (both old and new code can work)
-    await queryInterface.addColumn('users', 'email_new', {
-      type: Sequelize.STRING
+    await queryInterface.addColumn("users", "email_new", {
+      type: Sequelize.STRING,
     });
-  }
+  },
 };
 
 // Phase 2: Deploy code that writes to both columns
@@ -344,7 +352,7 @@ module.exports = {
       SET email_new = email
       WHERE email_new IS NULL
     `);
-  }
+  },
 };
 
 // Phase 4: Deploy code that reads from new column
@@ -352,44 +360,45 @@ module.exports = {
 // Phase 5: Remove old column
 module.exports = {
   up: async (queryInterface) => {
-    await queryInterface.removeColumn('users', 'email');
-  }
+    await queryInterface.removeColumn("users", "email");
+  },
 };
 ```
 
 ## Cross-Database Migrations
 
 ### PostgreSQL to MySQL
+
 ```javascript
 // Handle differences
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const dialectName = queryInterface.sequelize.getDialect();
 
-    if (dialectName === 'mysql') {
-      await queryInterface.createTable('users', {
+    if (dialectName === "mysql") {
+      await queryInterface.createTable("users", {
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
-          autoIncrement: true
+          autoIncrement: true,
         },
         data: {
-          type: Sequelize.JSON  // MySQL JSON type
-        }
+          type: Sequelize.JSON, // MySQL JSON type
+        },
       });
-    } else if (dialectName === 'postgres') {
-      await queryInterface.createTable('users', {
+    } else if (dialectName === "postgres") {
+      await queryInterface.createTable("users", {
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
-          autoIncrement: true
+          autoIncrement: true,
         },
         data: {
-          type: Sequelize.JSONB  // PostgreSQL JSONB type
-        }
+          type: Sequelize.JSONB, // PostgreSQL JSONB type
+        },
       });
     }
-  }
+  },
 };
 ```
 

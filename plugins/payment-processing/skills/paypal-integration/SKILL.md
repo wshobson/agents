@@ -20,32 +20,40 @@ Master PayPal payment integration including Express Checkout, IPN handling, recu
 ## Core Concepts
 
 ### 1. Payment Products
+
 **PayPal Checkout**
+
 - One-time payments
 - Express checkout experience
 - Guest and PayPal account payments
 
 **PayPal Subscriptions**
+
 - Recurring billing
 - Subscription plans
 - Automatic renewals
 
 **PayPal Payouts**
+
 - Send money to multiple recipients
 - Marketplace and platform payments
 
 ### 2. Integration Methods
+
 **Client-Side (JavaScript SDK)**
+
 - Smart Payment Buttons
 - Hosted payment flow
 - Minimal backend code
 
 **Server-Side (REST API)**
+
 - Full control over payment flow
 - Custom checkout UI
 - Advanced features
 
 ### 3. IPN (Instant Payment Notification)
+
 - Webhook-like payment notifications
 - Asynchronous payment updates
 - Verification required
@@ -118,6 +126,7 @@ def capture_paypal_order(order_id):
 ## Express Checkout Implementation
 
 ### Server-Side Order Creation
+
 ```python
 import requests
 import json
@@ -189,6 +198,7 @@ class PayPalClient:
 ## IPN (Instant Payment Notification) Handling
 
 ### IPN Verification and Processing
+
 ```python
 from flask import Flask, request
 import requests
@@ -268,6 +278,7 @@ def handle_chargeback(ipn_data):
 ## Subscription/Recurring Billing
 
 ### Create Subscription Plan
+
 ```python
 def create_subscription_plan(name, amount, interval='MONTH'):
     """Create a subscription plan."""

@@ -519,6 +519,7 @@ async def test_workflow_with_breakpoint(workflow_env):
 ## Troubleshooting
 
 **Issue: Temporal server not starting**
+
 ```bash
 # Check logs
 docker-compose logs temporal
@@ -529,12 +530,14 @@ docker-compose up -d
 ```
 
 **Issue: Tests timing out**
+
 ```python
 # Increase timeout in pytest.ini
 asyncio_default_timeout = 30
 ```
 
 **Issue: Port already in use**
+
 ```bash
 # Find process using port 7233
 lsof -i :7233

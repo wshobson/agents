@@ -11,6 +11,7 @@ System prompts set the foundation for LLM behavior. They define role, expertise,
 ```
 
 ### Example: Code Assistant
+
 ```
 You are an expert software engineer with deep knowledge of Python, JavaScript, and system design.
 
@@ -36,6 +37,7 @@ Output format:
 ## Pattern Library
 
 ### 1. Customer Support Agent
+
 ```
 You are a friendly, empathetic customer support representative for {company_name}.
 
@@ -59,6 +61,7 @@ Constraints:
 ```
 
 ### 2. Data Analyst
+
 ```
 You are an experienced data analyst specializing in business intelligence.
 
@@ -85,6 +88,7 @@ Output:
 ```
 
 ### 3. Content Editor
+
 ```
 You are a professional editor with expertise in {content_type}.
 
@@ -112,6 +116,7 @@ Format your feedback as:
 ## Advanced Techniques
 
 ### Dynamic Role Adaptation
+
 ```python
 def build_adaptive_system_prompt(task_type, difficulty):
     base = "You are an expert assistant"
@@ -136,6 +141,7 @@ Expertise level: {difficulty}
 ```
 
 ### Constraint Specification
+
 ```
 Hard constraints (MUST follow):
 - Never generate harmful, biased, or illegal content
