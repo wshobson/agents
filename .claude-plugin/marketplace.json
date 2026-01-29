@@ -793,8 +793,8 @@
     {
       "name": "jvm-languages",
       "source": "./plugins/jvm-languages",
-      "description": "JVM language development including Java, Scala, and C# with enterprise patterns and frameworks",
-      "version": "1.2.0",
+      "description": "JVM language development including Java, Scala, and C# with enterprise patterns, frameworks, and SDKMAN version management",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"

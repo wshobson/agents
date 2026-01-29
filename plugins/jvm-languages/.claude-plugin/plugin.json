@@ -1,7 +1,8 @@
 {
   "name": "jvm-languages",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "JVM language development including Java, Scala, and C# with enterprise patterns and frameworks",
+  "keywords": ["java", "scala", "csharp", "jvm", "enterprise", "dotnet", "sdkman"],
   "author": {
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
