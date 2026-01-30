@@ -18,6 +18,20 @@ Comprehensive guidance for implementing asynchronous Python applications using a
 - Optimizing I/O-bound workloads
 - Implementing async background tasks and queues
 
+## Sync vs Async Decision Guide
+
+Before adopting async, consider whether it's the right choice for your use case.
+
+| Use Case | Recommended Approach |
+|----------|---------------------|
+| Many concurrent network/DB calls | `asyncio` |
+| CPU-bound computation | `multiprocessing` or thread pool |
+| Mixed I/O + CPU | Offload CPU work with `asyncio.to_thread()` |
+| Simple scripts, few connections | Sync (simpler, easier to debug) |
+| Web APIs with high concurrency | Async frameworks (FastAPI, aiohttp) |
+
+**Key Rule:** Stay fully sync or fully async within a call path. Mixing creates hidden blocking and complexity.
+
 ## Core Concepts
 
 ### 1. Event Loop
@@ -583,6 +597,46 @@ async def process_item(item: str):
 
 ### 3. Avoid Blocking Operations
 
+Never block the event loop with synchronous operations. A single blocking call stalls all concurrent tasks.
+
+```python
+# BAD - blocks the entire event loop
+async def fetch_data_bad():
+    import time
+    import requests
+    time.sleep(1)  # Blocks!
+    response = requests.get(url)  # Also blocks!
+
+# GOOD - use async-native libraries (e.g., httpx for async HTTP)
+import httpx
+
+async def fetch_data_good(url: str):
+    await asyncio.sleep(1)
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+```
+
+**Wrapping Blocking Code with `asyncio.to_thread()` (Python 3.9+):**
+
+When you must use synchronous libraries, offload to a thread pool:
+
+```python
+import asyncio
+from pathlib import Path
+
+async def read_file_async(path: str) -> str:
+    """Read file without blocking event loop."""
+    # asyncio.to_thread() runs sync code in a thread pool
+    return await asyncio.to_thread(Path(path).read_text)
+
+async def call_sync_library(data: dict) -> dict:
+    """Wrap a synchronous library call."""
+    # Useful for sync database drivers, file I/O, CPU work
+    return await asyncio.to_thread(sync_library.process, data)
+```
+
+**Lower-level approach with `run_in_executor()`:**
+
 ```python
 import asyncio
 import concurrent.futures
@@ -596,7 +650,7 @@ def blocking_operation(data: Any) -> Any:
 
 async def run_in_executor(data: Any) -> Any:
     """Run blocking operation in thread pool."""
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     with concurrent.futures.ThreadPoolExecutor() as pool:
         result = await loop.run_in_executor(pool, blocking_operation, data)
         return result
@@ -692,11 +746,12 @@ async def test_with_timeout():
 
 1. **Use asyncio.run()** for entry point (Python 3.7+)
 2. **Always await coroutines** to execute them
-3. **Use gather() for concurrent execution** of multiple tasks
+3. **Limit concurrency with semaphores** - unbounded `gather()` can exhaust resources
 4. **Implement proper error handling** with try/except
 5. **Use timeouts** to prevent hanging operations
 6. **Pool connections** for better performance
-7. **Avoid blocking operations** in async code
-8. **Use semaphores** for rate limiting
-9. **Handle task cancellation** properly
+7. **Never block the event loop** - use `asyncio.to_thread()` for sync code
+8. **Use semaphores** for rate limiting external API calls
+9. **Handle task cancellation** properly - always re-raise `CancelledError`
 10. **Test async code** with pytest-asyncio
+11. **Stay consistent** - fully sync or fully async, avoid mixing
