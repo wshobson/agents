@@ -671,7 +671,7 @@ framework_upgrades = {
     },
     'vue': {
         'upgrade_command': 'npm install vue@{version}',
-        'migration_tool': 'npx @vue/migration-tool',
+        'migration_tool': 'npx vue-codemod -t <transform> <path>',
         'breaking_changes': {
             '2_to_3': [
                 'Composition API',

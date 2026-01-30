@@ -165,20 +165,23 @@ describe("Dependency Compatibility", () => {
 npx changelog-parser react 16.0.0 17.0.0
 
 # Or manually check
-curl https://raw.githubusercontent.com/facebook/react/main/CHANGELOG.md
+curl https://raw.githubusercontent.com/facebook/react/master/CHANGELOG.md
 ```
 
 ### Codemod for Automated Fixes
 
 ```bash
-# React upgrade codemods
-npx react-codeshift <transform> <path>
+# Run jscodeshift with transform URL
+npx jscodeshift -t <transform-url> <path>
 
-# Example: Update lifecycle methods
-npx react-codeshift \
-  --parser tsx \
-  --transform react-codeshift/transforms/rename-unsafe-lifecycles.js \
-  src/
+# Example: Rename unsafe lifecycle methods
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js src/
+
+# For TypeScript files
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --parser=tsx src/
+
+# Dry run to preview changes
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --dry src/
 ```
 
 ### Custom Migration Script
