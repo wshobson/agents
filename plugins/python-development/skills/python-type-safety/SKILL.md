@@ -331,12 +331,14 @@ class Comparable(Protocol):
 
 Create meaningful type names.
 
-**Note:** The `type` statement syntax is Python 3.12+ only. For Python 3.9-3.11, use the `TypeAlias` annotation shown below.
+**Note:** The `type` statement was introduced in Python 3.10 for simple aliases. Generic type statements require Python 3.12+.
 
 ```python
-# Python 3.12+ type statement (recommended for new projects)
+# Python 3.10+ type statement for simple aliases
 type UserId = str
 type UserDict = dict[str, Any]
+
+# Python 3.12+ type statement with generics
 type Handler[T] = Callable[[Request], T]
 type AsyncHandler[T] = Callable[[Request], Awaitable[T]]
 

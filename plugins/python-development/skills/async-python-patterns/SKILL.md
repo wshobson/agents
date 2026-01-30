@@ -608,7 +608,9 @@ async def fetch_data_bad():
     response = requests.get(url)  # Also blocks!
 
 # GOOD - use async-native libraries (e.g., httpx for async HTTP)
-async def fetch_data_good():
+import httpx
+
+async def fetch_data_good(url: str):
     await asyncio.sleep(1)
     async with httpx.AsyncClient() as client:
         response = await client.get(url)

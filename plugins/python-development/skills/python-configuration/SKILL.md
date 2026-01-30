@@ -56,7 +56,7 @@ Create a central settings class that loads and validates all configuration.
 
 ```python
 from pydantic_settings import BaseSettings
-from pydantic import Field, PostgresDsn
+from pydantic import Field, PostgresDsn, ValidationError
 import sys
 
 class Settings(BaseSettings):
