@@ -350,3 +350,11 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=wshobson/agents&type=date&legend=top-left)](https://www.star-history.com/#wshobson/agents&type=date&legend=top-left)
+
+## Compatible Agents
+
+These plugins and skills work with:
+
+- [Claude Code](https://claude.ai/code) - Anthropic's official CLI
+- [AdaL](https://sylph.ai/adal) - Self-evolving AI coding agent with MCP support
+
