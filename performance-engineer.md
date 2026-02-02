@@ -1,7 +1,7 @@
 ---
 description: Expert performance engineer specializing in modern observability, application optimization, and scalable system performance. Masters OpenTelemetry, distributed tracing, load testing, multi-tier caching, Core Web Vitals, and performance monitoring. Handles end-to-end optimization, real user monitoring, and scalability patterns. Use PROACTIVELY for performance optimization, observability, or scalability challenges.
 mode: subagent
-model: anthropic/claude-3-opus-20240229
+model: anthropic/claude-opus-4-20250514
 temperature: 0.3
 tools:
   write: true

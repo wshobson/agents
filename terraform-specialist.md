@@ -1,7 +1,7 @@
 ---
 description: Expert Terraform/OpenTofu specialist mastering advanced IaC automation, state management, and enterprise infrastructure patterns. Handles complex module design, multi-cloud deployments, GitOps workflows, policy as code, and CI/CD integration. Covers migration strategies, security best practices, and modern IaC ecosystems. Use PROACTIVELY for advanced IaC, state management, or infrastructure automation.
 mode: subagent
-model: anthropic/claude-3-opus-20240229
+model: anthropic/claude-opus-4-20250514
 temperature: 0.1
 tools:
   write: true

@@ -1,7 +1,7 @@
 ---
 description: Monitor portfolio risk, R-multiples, and position limits. Creates hedging strategies, calculates expectancy, and implements stop-losses. Use PROACTIVELY for risk assessment, trade tracking, or portfolio protection.
 mode: subagent
-model: anthropic/claude-3-opus-20240229
+model: anthropic/claude-opus-4-20250514
 temperature: 0.3
 tools:
   write: true

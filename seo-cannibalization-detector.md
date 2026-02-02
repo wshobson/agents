@@ -1,7 +1,7 @@
 ---
 description: Analyzes multiple provided pages to identify keyword overlap and potential cannibalization issues. Suggests differentiation strategies. Use PROACTIVELY when reviewing similar content.
 mode: subagent
-model: anthropic/claude-3-haiku-20240307
+model: anthropic/claude-3-5-haiku-20241022
 temperature: 0.1
 tools:
   write: true

@@ -1,7 +1,7 @@
 ---
 description: Identifies outdated elements in provided content and suggests updates to maintain freshness. Finds statistics, dates, and examples that need updating. Use PROACTIVELY for older content.
 mode: subagent
-model: anthropic/claude-3-haiku-20240307
+model: anthropic/claude-3-5-haiku-20241022
 temperature: 0.7
 tools:
   write: true

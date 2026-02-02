@@ -1,7 +1,7 @@
 ---
 description: Build production ML systems with PyTorch 2.x, TensorFlow, and modern ML frameworks. Implements model serving, feature engineering, A/B testing, and monitoring. Use PROACTIVELY for ML model deployment, inference optimization, or production ML infrastructure.
 mode: subagent
-model: anthropic/claude-3-opus-20240229
+model: anthropic/claude-opus-4-20250514
 temperature: 0.3
 tools:
   write: true

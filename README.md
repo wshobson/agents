@@ -239,7 +239,7 @@ The hive-mind system enables intelligent coordination of multiple agents for com
 
 All 95 subagents are configured with specific Claude models based on task complexity:
 
-### 🚀 Haiku (Fast & Cost-Effective) - 13 agents
+### 🚀 Haiku (Fast & Cost-Effective) - 15 agents
 **Model:** `haiku`
 - `context-manager` - AI context engineering with vector databases
 - `reference-builder` - Exhaustive technical references and API documentation
@@ -255,7 +255,7 @@ All 95 subagents are configured with specific Claude models based on task comple
 - `task-router` - Intelligent task assignment and capability matching
 - `agent-spawner` - Agent creation and lifecycle management
 
-### ⚡ Sonnet (Balanced Performance) - 51 agents
+### ⚡ Sonnet (Balanced Performance) - 49 agents
 **Model:** `sonnet`
 
 **Development & Languages:**
@@ -360,8 +360,8 @@ All 95 subagents are configured with specific Claude models based on task comple
 **Model Optimization:**
 Agents are strategically assigned models based on task complexity:
 - **Opus (31)**: Complex reasoning, critical analysis, architecture, hive-mind leadership
-- **Sonnet (51)**: Balanced development, specialized tasks, swarm coordination
-- **Haiku (13)**: Fast, focused utility tasks, task routing
+- **Sonnet (49)**: Balanced development, specialized tasks, swarm coordination
+- **Haiku (15)**: Fast, focused utility tasks, task routing
 
 ## Installation
 

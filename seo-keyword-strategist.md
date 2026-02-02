@@ -1,7 +1,7 @@
 ---
 description: Analyzes keyword usage in provided content, calculates density, suggests semantic variations and LSI keywords based on the topic. Prevents over-optimization. Use PROACTIVELY for content optimization.
 mode: subagent
-model: anthropic/claude-3-haiku-20240307
+model: anthropic/claude-3-5-haiku-20241022
 temperature: 0.1
 tools:
   write: true

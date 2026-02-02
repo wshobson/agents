@@ -1,7 +1,7 @@
 ---
 description: Creates exhaustive technical references and API documentation. Generates comprehensive parameter listings, configuration guides, and searchable reference materials. Use PROACTIVELY for API docs, configuration references, or complete technical specifications.
 mode: subagent
-model: anthropic/claude-3-haiku-20240307
+model: anthropic/claude-3-5-haiku-20241022
 temperature: 0.3
 tools:
   write: true
