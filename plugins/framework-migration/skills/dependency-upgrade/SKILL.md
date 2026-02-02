@@ -161,10 +161,7 @@ describe("Dependency Compatibility", () => {
 ### Identifying Breaking Changes
 
 ```bash
-# Use changelog parsers
-npx changelog-parser react 16.0.0 17.0.0
-
-# Or manually check
+# Check the changelog directly
 curl https://raw.githubusercontent.com/facebook/react/master/CHANGELOG.md
 ```
 
