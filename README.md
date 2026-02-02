@@ -31,17 +31,104 @@
 
 # Claude Code Subagents Collection
 
-A comprehensive collection of specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), designed to enhance development workflows with domain-specific expertise.
+A comprehensive collection of specialized AI subagents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), designed to enhance development workflows with domain-specific expertise. Now featuring **Hive-Mind Architecture** for intelligent multi-agent coordination.
 
 ## Overview
 
-This repository contains **77 expert-level subagents** that extend Claude Code's capabilities with deep, specialized knowledge across all areas of software development and business operations. Each subagent has been comprehensively enhanced with:
+This repository contains **95 expert-level subagents** that extend Claude Code's capabilities with deep, specialized knowledge across all areas of software development and business operations. Each subagent has been comprehensively enhanced with:
 
 - **2024/2025 Best Practices** - Latest tools, frameworks, and industry standards
 - **Production-Ready Knowledge** - Real-world scenarios and enterprise patterns
 - **Expert-Level Depth** - 8-12 detailed capability subsections per agent
 - **Modern Tech Stacks** - Current versions and cutting-edge technologies
-- **Optimal Model Selection** - Sonnet/Haiku assignment based on task complexity
+- **Optimal Model Selection** - Opus/Sonnet/Haiku assignment based on task complexity
+- **Hive-Mind Architecture** - Distributed multi-agent coordination for complex tasks
+
+## 🐝 Hive-Mind Architecture
+
+The hive-mind system enables intelligent coordination of multiple agents for complex, enterprise-scale tasks. Inspired by swarm intelligence and distributed systems patterns.
+
+### Queen Agents (Strategic Leadership)
+
+| Agent | Purpose | Model |
+|-------|---------|-------|
+| **[hive-queen-strategic](hive-queen-strategic.md)** | High-level planning, goal decomposition, multi-agent orchestration | Opus |
+| **[hive-queen-tactical](hive-queen-tactical.md)** | Real-time execution coordination, progress monitoring, blocker resolution | Opus |
+| **[hive-queen-adaptive](hive-queen-adaptive.md)** | Continuous optimization, pattern learning, workflow improvement | Opus |
+
+### Coordination Agents (Swarm Management)
+
+| Agent | Purpose | Model |
+|-------|---------|-------|
+| **[swarm-coordinator](swarm-coordinator.md)** | Distributed agent spawning, communication protocols, result aggregation | Sonnet |
+| **[consensus-builder](consensus-builder.md)** | Multi-agent decision-making, conflict resolution, voting mechanisms | Sonnet |
+| **[memory-archivist](memory-archivist.md)** | Persistent shared memory, knowledge consolidation, cross-session continuity | Sonnet |
+| **[task-router](task-router.md)** | Intelligent task assignment, capability matching, load balancing | Haiku |
+| **[agent-spawner](agent-spawner.md)** | Agent creation, configuration, lifecycle management | Haiku |
+
+### Hive-Mind Workflow Example
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    HIVE-QUEEN-STRATEGIC                             │
+│                 (Planning & Decomposition)                          │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    HIVE-QUEEN-TACTICAL                              │
+│                 (Execution Coordination)                            │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │
+              ┌────────────┼────────────┐
+              │            │            │
+              ▼            ▼            ▼
+        ┌─────────┐  ┌─────────┐  ┌─────────┐
+        │ SWARM   │  │ TASK    │  │ MEMORY  │
+        │COORDNTR │  │ ROUTER  │  │ARCHIVIST│
+        └────┬────┘  └────┬────┘  └────┬────┘
+             │            │            │
+     ┌───────┴───────┐    │            │
+     │               │    │            │
+     ▼               ▼    ▼            ▼
+┌─────────┐    ┌─────────────┐   ┌─────────────┐
+│ Worker  │    │   Worker    │   │   Shared    │
+│ Agents  │    │   Agents    │   │   Memory    │
+│ (Swarm) │    │  (Routed)   │   │   System    │
+└─────────┘    └─────────────┘   └─────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    HIVE-QUEEN-ADAPTIVE                              │
+│            (Learning & Continuous Improvement)                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Hive-Mind Use Cases
+
+```bash
+# Enterprise-scale platform migration
+"Use hive-queen-strategic to orchestrate migration from monolith to microservices"
+# Spawns: backend-architect, database-architect, kubernetes-architect, devops-troubleshooter
+
+# Complex feature with multiple teams
+"Have hive-queen-tactical coordinate the checkout feature across frontend, backend, and payments"
+# Coordinates: frontend-developer, backend-architect, payment-integration, test-automator
+
+# Continuous optimization
+"Use hive-queen-adaptive to analyze our deployment patterns and suggest improvements"
+# Analyzes: deployment-engineer, performance-engineer, observability-engineer
+
+# Distributed code analysis
+"Have swarm-coordinator spawn parallel code reviewers across the codebase"
+# Spawns: multiple code-reviewer instances, consensus-builder for aggregation
+
+# Multi-agent decision making
+"Use consensus-builder to resolve the architecture disagreement between teams"
+# Coordinates: backend-architect, frontend-developer, security-auditor
+```
+
+---
 
 ## Available Subagents
 
@@ -53,6 +140,9 @@ This repository contains **77 expert-level subagents** that extend Claude Code's
 - **[mobile-developer](mobile-developer.md)** - Develop React Native or Flutter apps with native integrations
 - **[graphql-architect](graphql-architect.md)** - Design GraphQL schemas, resolvers, and federation
 - **[architect-reviewer](architect-review.md)** - Reviews code changes for architectural consistency and patterns
+- **[database-architect](database-architect.md)** - Design scalable database systems, data modeling, and distributed data architecture
+- **[event-sourcing-architect](event-sourcing-architect.md)** - Expert in event sourcing, CQRS, and event-driven architecture patterns
+- **[monorepo-architect](monorepo-architect.md)** - Monorepo strategy with Nx, Turborepo, and Bazel for large-scale codebases
 
 ### Language Specialists
 - **[python-pro](python-pro.md)** - Write idiomatic Python code with advanced features and optimizations
@@ -73,6 +163,7 @@ This repository contains **77 expert-level subagents** that extend Claude Code's
 - **[minecraft-bukkit-pro](minecraft-bukkit-pro.md)** - Master Minecraft server plugin development with Bukkit, Spigot, and Paper APIs
 - **[ios-developer](ios-developer.md)** - Develop native iOS applications with Swift/SwiftUI
 - **[sql-pro](sql-pro.md)** - Write complex SQL queries, optimize execution plans, and design normalized schemas
+- **[haskell-pro](haskell-pro.md)** - Pure functional programming with advanced type systems and GHC
 
 ### Infrastructure & Operations
 - **[devops-troubleshooter](devops-troubleshooter.md)** - Debug production issues, analyze logs, and fix deployment failures
@@ -86,6 +177,9 @@ This repository contains **77 expert-level subagents** that extend Claude Code's
 - **[incident-responder](incident-responder.md)** - Handles production incidents with urgency and precision
 - **[network-engineer](network-engineer.md)** - Debug network connectivity, configure load balancers, and analyze traffic patterns
 - **[dx-optimizer](dx-optimizer.md)** - Developer Experience specialist that improves tooling, setup, and workflows
+- **[service-mesh-expert](service-mesh-expert.md)** - Istio, Linkerd, and Envoy for microservice traffic management and mTLS
+- **[observability-engineer](observability-engineer.md)** - OpenTelemetry, metrics, logging, and distributed tracing
+- **[arm-cortex-expert](arm-cortex-expert.md)** - Embedded systems with ARM Cortex-M, RTOS, and bare-metal programming
 
 ### Quality & Security
 - **[code-reviewer](code-reviewer.md)** - Expert code review with deep configuration security focus and production reliability
@@ -95,6 +189,7 @@ This repository contains **77 expert-level subagents** that extend Claude Code's
 - **[debugger](debugger.md)** - Debugging specialist for errors, test failures, and unexpected behavior
 - **[error-detective](error-detective.md)** - Search logs and codebases for error patterns, stack traces, and anomalies
 - **[search-specialist](search-specialist.md)** - Expert web researcher using advanced search techniques and synthesis
+- **[tdd-orchestrator](tdd-orchestrator.md)** - Test-Driven Development workflows and testing strategy
 
 ### Data & AI
 - **[data-scientist](data-scientist.md)** - Data analysis expert for SQL queries, BigQuery operations, and data insights
@@ -103,6 +198,7 @@ This repository contains **77 expert-level subagents** that extend Claude Code's
 - **[ml-engineer](ml-engineer.md)** - Implement ML pipelines, model serving, and feature engineering
 - **[mlops-engineer](mlops-engineer.md)** - Build ML pipelines, experiment tracking, and model registries
 - **[prompt-engineer](prompt-engineer.md)** - Optimizes prompts for LLMs and AI systems
+- **[vector-database-engineer](vector-database-engineer.md)** - Pinecone, Qdrant, Weaviate, and semantic search systems
 
 ### Specialized Domains
 - **[api-documenter](api-documenter.md)** - Create OpenAPI/Swagger specs and write developer documentation
@@ -111,6 +207,7 @@ This repository contains **77 expert-level subagents** that extend Claude Code's
 - **[risk-manager](risk-manager.md)** - Monitor portfolio risk, R-multiples, and position limits
 - **[legacy-modernizer](legacy-modernizer.md)** - Refactor legacy codebases and implement gradual modernization
 - **[context-manager](context-manager.md)** - Manages context across multiple agents and long-running tasks
+- **[blockchain-developer](blockchain-developer.md)** - Smart contracts, DeFi, Web3, and blockchain security with Solidity
 
 ### Documentation
 - **[docs-architect](docs-architect.md)** - Creates comprehensive technical documentation from existing codebases
@@ -140,9 +237,9 @@ This repository contains **77 expert-level subagents** that extend Claude Code's
 
 ## Model Assignments
 
-All 76 subagents are configured with specific Claude models based on task complexity:
+All 95 subagents are configured with specific Claude models based on task complexity:
 
-### 🚀 Haiku (Fast & Cost-Effective) - 11 agents
+### 🚀 Haiku (Fast & Cost-Effective) - 13 agents
 **Model:** `haiku`
 - `context-manager` - AI context engineering with vector databases
 - `reference-builder` - Exhaustive technical references and API documentation
@@ -155,8 +252,10 @@ All 76 subagents are configured with specific Claude models based on task comple
 - `seo-content-refresher` - Content freshness updates
 - `seo-cannibalization-detector` - Keyword overlap detection
 - `seo-content-planner` - Content calendars and topic clusters
+- `task-router` - Intelligent task assignment and capability matching
+- `agent-spawner` - Agent creation and lifecycle management
 
-### ⚡ Sonnet (Balanced Performance) - 45 agents
+### ⚡ Sonnet (Balanced Performance) - 51 agents
 **Model:** `sonnet`
 
 **Development & Languages:**
@@ -184,6 +283,7 @@ All 76 subagents are configured with specific Claude models based on task comple
 - `mobile-developer` - React Native/Flutter apps
 - `sql-pro` - Complex SQL optimization
 - `graphql-architect` - GraphQL schemas and resolvers
+- `haskell-pro` - Pure functional programming with advanced type systems
 
 **Infrastructure & Operations:**
 - `devops-troubleshooter` - Production debugging with modern observability
@@ -200,6 +300,13 @@ All 76 subagents are configured with specific Claude models based on task comple
 - `incident-responder` - SRE principles and modern incident management
 - `dx-optimizer` - Developer experience and platform engineering
 - `data-engineer` - Modern data stack and real-time streaming
+- `service-mesh-expert` - Istio, Linkerd, and microservice traffic management
+- `arm-cortex-expert` - Embedded systems with ARM Cortex-M microcontrollers
+- `monorepo-architect` - Nx, Turborepo, and Bazel for large codebases
+- `swarm-coordinator` - Distributed agent spawning and coordination
+- `consensus-builder` - Multi-agent decision-making and conflict resolution
+- `memory-archivist` - Persistent shared memory for multi-agent operations
+- `tdd-orchestrator` - Test-Driven Development workflows
 
 **Quality & AI/ML:**
 - `test-automator` - AI-powered testing with self-healing frameworks
@@ -210,7 +317,7 @@ All 76 subagents are configured with specific Claude models based on task comple
 - `data-scientist` - Advanced analytics with cloud platforms
 - `prompt-engineer` - Cutting-edge LLM optimization techniques
 
-### 🧠 Opus (Maximum Capability) - 21 agents
+### 🧠 Opus (Maximum Capability) - 31 agents
 **Model:** `opus`
 
 **Critical Analysis & Architecture:**
@@ -221,6 +328,8 @@ All 76 subagents are configured with specific Claude models based on task comple
 - `code-reviewer` - Critical code quality and security analysis
 - `data-scientist` - Complex analytics and statistical modeling
 - `database-optimizer` - Performance-critical query optimization
+- `database-architect` - Scalable database design and distributed systems
+- `event-sourcing-architect` - Event sourcing, CQRS, and domain-driven design
 
 **Complex Engineering & Operations:**
 - `hybrid-cloud-architect` - Complex multi-cloud strategies
@@ -232,6 +341,14 @@ All 76 subagents are configured with specific Claude models based on task comple
 - `prompt-engineer` - Advanced LLM optimization techniques
 - `security-auditor` - Comprehensive vulnerability analysis
 - `terraform-specialist` - Infrastructure architecture with IaC
+- `observability-engineer` - OpenTelemetry, distributed tracing, and monitoring
+- `vector-database-engineer` - Semantic search and RAG infrastructure
+- `blockchain-developer` - Smart contracts, DeFi, and Web3 security
+
+**Hive-Mind Leadership:**
+- `hive-queen-strategic` - Strategic planning and multi-agent orchestration
+- `hive-queen-tactical` - Real-time execution coordination
+- `hive-queen-adaptive` - Continuous optimization and learning
 
 **Business Critical & Compliance:**
 - `context-manager` - Multi-agent coordination for complex tasks
@@ -242,9 +359,9 @@ All 76 subagents are configured with specific Claude models based on task comple
 
 **Model Optimization:**
 Agents are strategically assigned models based on task complexity:
-- **Opus (21)**: Complex reasoning, critical analysis, architecture
-- **Sonnet (45)**: Balanced development and specialized tasks
-- **Haiku (11)**: Fast, focused utility tasks
+- **Opus (31)**: Complex reasoning, critical analysis, architecture, hive-mind leadership
+- **Sonnet (51)**: Balanced development, specialized tasks, swarm coordination
+- **Haiku (13)**: Fast, focused utility tasks, task routing
 
 ## Installation
 
@@ -418,11 +535,24 @@ payment-integration → security-auditor → Validated implementation
 
 ## When to Use Which Agent
 
+### 🐝 Hive-Mind & Orchestration
+- **hive-queen-strategic**: Enterprise-scale planning, multi-team coordination, complex initiatives
+- **hive-queen-tactical**: Active project execution, progress monitoring, blocker resolution
+- **hive-queen-adaptive**: Workflow optimization, pattern analysis, continuous improvement
+- **swarm-coordinator**: Parallel task execution, distributed agent management
+- **consensus-builder**: Multi-agent decisions, conflict resolution, voting
+- **memory-archivist**: Persistent context, cross-session continuity, collective knowledge
+- **task-router**: Automatic task assignment, capability matching
+- **agent-spawner**: Dynamic agent creation, configuration management
+
 ### 🏗️ Planning & Architecture
 - **backend-architect**: API design, database schemas, system architecture
 - **frontend-developer**: UI/UX planning, component architecture
 - **ui-ux-designer**: Interface design, wireframes, design systems, user research
 - **cloud-architect**: Infrastructure design, scalability planning
+- **database-architect**: Data modeling, distributed databases, sharding strategies
+- **event-sourcing-architect**: Event sourcing, CQRS, domain-driven design
+- **monorepo-architect**: Nx, Turborepo, Bazel, large-scale repo management
 
 ### 🔧 Implementation & Development  
 - **python-pro**: Python-specific development tasks
@@ -442,6 +572,8 @@ payment-integration → security-auditor → Validated implementation
 - **ios-developer**: Native iOS development with Swift/SwiftUI
 - **sql-pro**: Database queries, schema design, query optimization
 - **mobile-developer**: React Native/Flutter development
+- **haskell-pro**: Pure functional programming, advanced type systems
+- **arm-cortex-expert**: Embedded systems, ARM Cortex-M, RTOS
 
 ### 🛠️ Operations & Maintenance
 - **devops-troubleshooter**: Production issues, deployment problems
@@ -450,12 +582,15 @@ payment-integration → security-auditor → Validated implementation
 - **database-admin**: Backup strategies, replication, user management, disaster recovery
 - **terraform-specialist**: Infrastructure as Code, Terraform modules, state management
 - **network-engineer**: Network connectivity, load balancers, SSL/TLS, DNS debugging
+- **service-mesh-expert**: Istio, Linkerd, Envoy, mTLS, traffic management
+- **observability-engineer**: OpenTelemetry, metrics, logging, distributed tracing
 
 ### 📊 Analysis & Optimization
 - **performance-engineer**: Application bottlenecks, optimization
 - **security-auditor**: Vulnerability scanning, compliance checks
 - **data-scientist**: Data analysis, insights, reporting
 - **mlops-engineer**: ML infrastructure, experiment tracking, model registries, pipeline automation
+- **vector-database-engineer**: Pinecone, Qdrant, Weaviate, semantic search, RAG systems
 
 ### 🧪 Quality Assurance
 - **code-reviewer**: Code quality, configuration security, production reliability
@@ -463,6 +598,7 @@ payment-integration → security-auditor → Validated implementation
 - **debugger**: Bug investigation, error resolution
 - **error-detective**: Log analysis, error pattern recognition, root cause analysis
 - **search-specialist**: Deep web research, competitive analysis, fact-checking
+- **tdd-orchestrator**: Test-Driven Development, testing strategy, test pyramid design
 
 ### 📚 Documentation & Architecture
 - **api-documenter**: AI-powered documentation with modern dev portal architecture
@@ -483,6 +619,7 @@ payment-integration → security-auditor → Validated implementation
 - **risk-manager**: Comprehensive risk management with modern analytics
 - **payment-integration**: Modern payment systems and fintech integration
 - **legacy-modernizer**: Strategic legacy transformation with cloud migration
+- **blockchain-developer**: Smart contracts, DeFi, Web3, Solidity, blockchain security
 
 ## Best Practices
 
