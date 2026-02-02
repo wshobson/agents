@@ -660,8 +660,8 @@ framework_upgrades = {
     'react': {
         'upgrade_command': 'npm install react@{version} react-dom@{version}',
         'codemods': [
-            'npx react-codemod rename-unsafe-lifecycles',
-            'npx react-codemod error-boundaries'
+            'npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js src/',
+            'npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/error-boundaries.js src/'
         ],
         'verification': [
             'npm run build',
@@ -671,7 +671,7 @@ framework_upgrades = {
     },
     'vue': {
         'upgrade_command': 'npm install vue@{version}',
-        'migration_tool': 'npx @vue/migration-tool',
+        'migration_tool': 'npx vue-codemod -t <transform> <path>',
         'breaking_changes': {
             '2_to_3': [
                 'Composition API',

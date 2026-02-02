@@ -327,21 +327,20 @@ function ProfileTimeline() {
 ### Run React Codemods
 
 ```bash
-# Install jscodeshift
-npm install -g jscodeshift
+# Rename unsafe lifecycle methods
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js src/
 
-# React 16.9 codemod (rename unsafe lifecycle methods)
-npx react-codeshift <transform> <path>
+# Update React imports (React 17+)
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/update-react-imports.js src/
 
-# Example: Rename UNSAFE_ methods
-npx react-codeshift --parser=tsx \
-  --transform=react-codeshift/transforms/rename-unsafe-lifecycles.js \
-  src/
+# Add error boundaries
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/error-boundaries.js src/
 
-# Update to new JSX Transform (React 17+)
-npx react-codeshift --parser=tsx \
-  --transform=react-codeshift/transforms/new-jsx-transform.js \
-  src/
+# For TypeScript files
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --parser=tsx src/
+
+# Dry run to preview changes
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --dry --print src/
 
 # Class to Hooks (third-party)
 npx codemod react/hooks/convert-class-to-function src/
