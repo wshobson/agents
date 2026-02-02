@@ -7,7 +7,7 @@ description: Build scalable design systems with Tailwind CSS v4, design tokens, 
 
 Build production-ready design systems with Tailwind CSS v4, including CSS-first configuration, design tokens, component variants, responsive patterns, and accessibility.
 
-> **Note**: This skill targets Tailwind CSS v4 (2024+). For v3 projects, refer to the [v3 migration guide](https://tailwindcss.com/docs/v4-beta).
+> **Note**: This skill targets Tailwind CSS v4 (2024+). For v3 projects, refer to the [upgrade guide](https://tailwindcss.com/docs/upgrade-guide).
 
 ## When to Use This Skill
 
@@ -20,13 +20,13 @@ Build production-ready design systems with Tailwind CSS v4, including CSS-first 
 
 ## Key v4 Changes
 
-| v3 Pattern | v4 Pattern |
-|------------|------------|
-| `tailwind.config.ts` | `@theme` in CSS |
-| `@tailwind base/components/utilities` | `@import "tailwindcss"` |
-| `darkMode: "class"` | `@custom-variant dark (&:where(.dark, .dark *))` |
-| `theme.extend.colors` | `@theme { --color-*: value }` |
-| `require("tailwindcss-animate")` | Native CSS `@starting-style` + `transition-behavior` |
+| v3 Pattern                            | v4 Pattern                                                            |
+| ------------------------------------- | --------------------------------------------------------------------- |
+| `tailwind.config.ts`                  | `@theme` in CSS                                                       |
+| `@tailwind base/components/utilities` | `@import "tailwindcss"`                                               |
+| `darkMode: "class"`                   | `@custom-variant dark (&:where(.dark, .dark *))`                      |
+| `theme.extend.colors`                 | `@theme { --color-*: value }`                                         |
+| `require("tailwindcss-animate")`      | CSS `@keyframes` in `@theme` + `@starting-style` for entry animations |
 
 ## Quick Start
 
@@ -39,89 +39,114 @@ Build production-ready design systems with Tailwind CSS v4, including CSS-first 
   /* Semantic color tokens using OKLCH for better color perception */
   --color-background: oklch(100% 0 0);
   --color-foreground: oklch(14.5% 0.025 264);
-  
+
   --color-primary: oklch(14.5% 0.025 264);
   --color-primary-foreground: oklch(98% 0.01 264);
-  
+
   --color-secondary: oklch(96% 0.01 264);
   --color-secondary-foreground: oklch(14.5% 0.025 264);
-  
+
   --color-muted: oklch(96% 0.01 264);
   --color-muted-foreground: oklch(46% 0.02 264);
-  
+
   --color-accent: oklch(96% 0.01 264);
   --color-accent-foreground: oklch(14.5% 0.025 264);
-  
+
   --color-destructive: oklch(53% 0.22 27);
   --color-destructive-foreground: oklch(98% 0.01 264);
-  
+
   --color-border: oklch(91% 0.01 264);
   --color-ring: oklch(14.5% 0.025 264);
-  
+
   --color-card: oklch(100% 0 0);
   --color-card-foreground: oklch(14.5% 0.025 264);
-  
+
+  /* Ring offset for focus states */
+  --color-ring-offset: oklch(100% 0 0);
+
   /* Radius tokens */
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
-  
-  /* Animation tokens - keyframes MUST be inside @theme */
+
+  /* Animation tokens - keyframes inside @theme are output when referenced by --animate-* variables */
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-fade-out: fade-out 0.2s ease-in;
   --animate-slide-in: slide-in 0.3s ease-out;
   --animate-slide-out: slide-out 0.3s ease-in;
 
   @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes fade-out {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 
   @keyframes slide-in {
-    from { transform: translateY(-0.5rem); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+      transform: translateY(-0.5rem);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 
   @keyframes slide-out {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-0.5rem); opacity: 0; }
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-0.5rem);
+      opacity: 0;
+    }
   }
 }
 
 /* Dark mode variant - use @custom-variant for class-based dark mode */
-@custom-variant dark (&:where(.dark, .dark *))
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Dark mode theme overrides */
 .dark {
   --color-background: oklch(14.5% 0.025 264);
   --color-foreground: oklch(98% 0.01 264);
-  
+
   --color-primary: oklch(98% 0.01 264);
   --color-primary-foreground: oklch(14.5% 0.025 264);
-  
+
   --color-secondary: oklch(22% 0.02 264);
   --color-secondary-foreground: oklch(98% 0.01 264);
-  
+
   --color-muted: oklch(22% 0.02 264);
   --color-muted-foreground: oklch(65% 0.02 264);
-  
+
   --color-accent: oklch(22% 0.02 264);
   --color-accent-foreground: oklch(98% 0.01 264);
-  
+
   --color-destructive: oklch(42% 0.15 27);
   --color-destructive-foreground: oklch(98% 0.01 264);
-  
+
   --color-border: oklch(22% 0.02 264);
   --color-ring: oklch(83% 0.02 264);
-  
+
   --color-card: oklch(14.5% 0.025 264);
   --color-card-foreground: oklch(98% 0.01 264);
+
+  --color-ring-offset: oklch(14.5% 0.025 264);
 }
 
 /* Base styles */
@@ -129,7 +154,7 @@ Build production-ready design systems with Tailwind CSS v4, including CSS-first 
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground antialiased;
   }
@@ -161,6 +186,7 @@ Base styles → Variants → Sizes → States → Overrides
 
 ```typescript
 // components/ui/button.tsx
+import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
@@ -198,13 +224,13 @@ export interface ButtonProps
 }
 
 // React 19: No forwardRef needed
-export function Button({ 
-  className, 
-  variant, 
-  size, 
-  asChild = false, 
+export function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
   ref,
-  ...props 
+  ...props
 }: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }) {
   const Comp = asChild ? Slot : 'button'
   return (
@@ -229,10 +255,10 @@ export function Button({
 import { cn } from '@/lib/utils'
 
 // React 19: ref is a regular prop, no forwardRef
-export function Card({ 
-  className, 
+export function Card({
+  className,
   ref,
-  ...props 
+  ...props
 }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
   return (
     <div
@@ -246,10 +272,10 @@ export function Card({
   )
 }
 
-export function CardHeader({ 
-  className, 
+export function CardHeader({
+  className,
   ref,
-  ...props 
+  ...props
 }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
   return (
     <div
@@ -260,10 +286,10 @@ export function CardHeader({
   )
 }
 
-export function CardTitle({ 
-  className, 
+export function CardTitle({
+  className,
   ref,
-  ...props 
+  ...props
 }: React.HTMLAttributes<HTMLHeadingElement> & { ref?: React.Ref<HTMLHeadingElement> }) {
   return (
     <h3
@@ -274,10 +300,10 @@ export function CardTitle({
   )
 }
 
-export function CardDescription({ 
-  className, 
+export function CardDescription({
+  className,
   ref,
-  ...props 
+  ...props
 }: React.HTMLAttributes<HTMLParagraphElement> & { ref?: React.Ref<HTMLParagraphElement> }) {
   return (
     <p
@@ -288,20 +314,20 @@ export function CardDescription({
   )
 }
 
-export function CardContent({ 
-  className, 
+export function CardContent({
+  className,
   ref,
-  ...props 
+  ...props
 }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
   return (
     <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
   )
 }
 
-export function CardFooter({ 
-  className, 
+export function CardFooter({
+  className,
   ref,
-  ...props 
+  ...props
 }: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
   return (
     <div
@@ -373,23 +399,23 @@ const labelVariants = cva(
   'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
 )
 
-export function Label({ 
-  className, 
+export function Label({
+  className,
   ref,
-  ...props 
+  ...props
 }: React.LabelHTMLAttributes<HTMLLabelElement> & { ref?: React.Ref<HTMLLabelElement> }) {
   return (
     <label ref={ref} className={cn(labelVariants(), className)} {...props} />
   )
 }
 
-// Usage with React Hook Form + Zod v4
+// Usage with React Hook Form + Zod
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 
 const schema = z.object({
-  email: z.email('Invalid email address'),
+  email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 })
 
@@ -535,7 +561,10 @@ export function Container({ className, size, ...props }: ContainerProps) {
 
 /* Native popover animations using @starting-style */
 [popover] {
-  transition: opacity 0.2s, transform 0.2s, display 0.2s allow-discrete;
+  transition:
+    opacity 0.2s,
+    transform 0.2s,
+    display 0.2s allow-discrete;
   opacity: 0;
   transform: scale(0.95);
 }
@@ -558,12 +587,14 @@ export function Container({ className, size, ...props }: ContainerProps) {
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { cn } from '@/lib/utils'
 
-export function DialogOverlay({ 
-  className, 
+const DialogPortal = DialogPrimitive.Portal
+
+export function DialogOverlay({
+  className,
   ref,
-  ...props 
-}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & { 
-  ref?: React.Ref<HTMLDivElement> 
+  ...props
+}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & {
+  ref?: React.Ref<HTMLDivElement>
 }) {
   return (
     <DialogPrimitive.Overlay
@@ -578,13 +609,13 @@ export function DialogOverlay({
   )
 }
 
-export function DialogContent({ 
-  className, 
-  children, 
+export function DialogContent({
+  className,
+  children,
   ref,
-  ...props 
-}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { 
-  ref?: React.Ref<HTMLDivElement> 
+  ...props
+}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+  ref?: React.Ref<HTMLDivElement>
 }) {
   return (
     <DialogPortal>
@@ -650,7 +681,7 @@ export function ThemeProvider({
 
     root.classList.add(resolved)
     setResolvedTheme(resolved)
-    
+
     // Update meta theme-color for mobile browsers
     const metaThemeColor = document.querySelector('meta[name="theme-color"]')
     if (metaThemeColor) {
@@ -765,7 +796,7 @@ Define reusable custom utilities:
   --color-black: #000;
   --color-primary: oklch(45% 0.2 260);
   --color-secondary: oklch(65% 0.15 200);
-  
+
   /* Clear ALL defaults for a minimal setup */
   /* --*: initial; */
 }
@@ -777,8 +808,16 @@ Define reusable custom utilities:
 @theme {
   /* Use color-mix() for alpha variants */
   --color-primary-50: color-mix(in oklab, var(--color-primary) 5%, transparent);
-  --color-primary-100: color-mix(in oklab, var(--color-primary) 10%, transparent);
-  --color-primary-200: color-mix(in oklab, var(--color-primary) 20%, transparent);
+  --color-primary-100: color-mix(
+    in oklab,
+    var(--color-primary) 10%,
+    transparent
+  );
+  --color-primary-200: color-mix(
+    in oklab,
+    var(--color-primary) 20%,
+    transparent
+  );
 }
 ```
 
@@ -799,7 +838,7 @@ Define reusable custom utilities:
 - [ ] Change `@tailwind base/components/utilities` to `@import "tailwindcss"`
 - [ ] Move color definitions to `@theme { --color-*: value }`
 - [ ] Replace `darkMode: "class"` with `@custom-variant dark`
-- [ ] Move `@keyframes` inside `@theme` blocks (required for tree-shaking)
+- [ ] Move `@keyframes` inside `@theme` blocks (ensures keyframes output with theme)
 - [ ] Replace `require("tailwindcss-animate")` with native CSS animations
 - [ ] Update `h-10 w-10` to `size-10` (new utility)
 - [ ] Remove `forwardRef` (React 19 passes ref as prop)
