@@ -48,7 +48,7 @@ If a preset is specified, use these configurations:
 **`research`** — Parallel codebase, web, and documentation research (default: 3 members)
 
 - Spawn 3 `general-purpose` agents, each assigned a different research question or area
-- Agents have access to codebase search (Grep, Glob, Read), web search (WebSearch, WebFetch), and library documentation (Context7 MCP)
+- Agents have access to codebase search (Grep, Glob, Read) and web search (WebSearch, WebFetch)
 - Team name default: `research-team`
 
 **`security`** — Comprehensive security audit (default: 4 members)

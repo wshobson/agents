@@ -1,6 +1,7 @@
 ---
 name: multi-reviewer-patterns
 description: Coordinate parallel code reviews across multiple quality dimensions with finding deduplication, severity calibration, and consolidated reporting. Use this skill when organizing multi-reviewer code reviews, calibrating finding severity, or consolidating review results.
+version: 1.0.1
 ---
 
 # Multi-Reviewer Patterns

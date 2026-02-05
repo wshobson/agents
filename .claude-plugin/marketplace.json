@@ -1933,7 +1933,7 @@
       "name": "agent-teams",
       "source": "./plugins/agent-teams",
       "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's Agent Teams",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"

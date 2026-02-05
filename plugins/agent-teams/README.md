@@ -116,7 +116,7 @@ Decomposes the feature into work streams with file ownership boundaries, gets yo
 /team-spawn research --name codebase-research
 ```
 
-Spawns 3 researchers to investigate different aspects in parallel — across your codebase (Grep/Read), the web (WebSearch/WebFetch), and library documentation (Context7 MCP). Each reports findings with citations.
+Spawns 3 researchers to investigate different aspects in parallel — across your codebase (Grep/Read) and the web (WebSearch/WebFetch). Each reports findings with citations.
 
 ### Security Audit
 

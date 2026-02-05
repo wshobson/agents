@@ -1,6 +1,7 @@
 ---
 name: team-composition-patterns
 description: Design optimal agent team compositions with sizing heuristics, preset configurations, and agent type selection. Use this skill when deciding team size, selecting agent types, or configuring team presets for multi-agent workflows.
+version: 1.0.1
 ---
 
 # Team Composition Patterns
@@ -59,7 +60,7 @@ Best practices for composing multi-agent teams, selecting team sizes, choosing a
 - **Size**: 3 researchers
 - **Agents**: 3x `general-purpose`
 - **Default areas**: Each assigned a different research question, module, or topic
-- **Capabilities**: Codebase search (Grep, Glob, Read), web search (WebSearch, WebFetch), library documentation (Context7 MCP)
+- **Capabilities**: Codebase search (Grep, Glob, Read), web search (WebSearch, WebFetch)
 - **Use when**: Need to understand a codebase, research libraries, compare approaches, or gather information from code and web sources in parallel
 
 ### Security Team

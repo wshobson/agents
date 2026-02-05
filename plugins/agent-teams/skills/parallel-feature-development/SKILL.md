@@ -1,6 +1,7 @@
 ---
 name: parallel-feature-development
 description: Coordinate parallel feature development with file ownership strategies, conflict avoidance rules, and integration patterns for multi-agent implementation. Use this skill when decomposing features for parallel development, establishing file ownership boundaries, or managing integration between parallel work streams.
+version: 1.0.1
 ---
 
 # Parallel Feature Development

@@ -149,7 +149,6 @@ Each researcher has access to:
 
 - **Codebase**: `Grep`, `Glob`, `Read` — search and read local files
 - **Web**: `WebSearch`, `WebFetch` — search the web and fetch page content
-- **Library Docs**: Context7 MCP (`resolve-library-id`, `query-docs`) — look up current documentation for any library
 - **Deep Exploration**: `Task` with `subagent_type: Explore` — spawn sub-explorers for deep dives
 
 ### Task Template
@@ -162,7 +161,6 @@ Description:
   Tools to prioritize:
     - Codebase: Grep/Glob/Read for local code analysis
     - Web: WebSearch/WebFetch for articles, examples, best practices
-    - Docs: Context7 MCP for up-to-date library documentation
   Deliverable: Summary with citations (file:line for code, URLs for web)
   Output format: Structured report with sections, evidence, and recommendations
 ```
@@ -170,7 +168,6 @@ Description:
 ### Variations
 
 - **Codebase-only**: 3 researchers exploring different modules or patterns locally
-- **Documentation**: 3 researchers using Context7 to compare library APIs and patterns
 - **Web research**: 3 researchers using WebSearch to survey approaches, benchmarks, or best practices
 - **Mixed**: 1 codebase researcher + 1 docs researcher + 1 web researcher (recommended for evaluating new libraries)
 
@@ -178,8 +175,8 @@ Description:
 
 ```
 Researcher 1 (codebase): "How does our current auth system work? Trace the flow from login to token validation."
-Researcher 2 (docs): "Use Context7 to look up the latest NextAuth.js v5 API. How does it handle JWT and session management?"
-Researcher 3 (web): "Search for comparisons between NextAuth, Clerk, and Auth0 for Next.js apps. Focus on pricing, DX, and migration effort."
+Researcher 2 (web): "Search for comparisons between NextAuth, Clerk, and Auth0 for Next.js apps. Focus on pricing, DX, and migration effort."
+Researcher 3 (docs): "Look up the latest NextAuth.js v5 API docs. How does it handle JWT and session management?"
 ```
 
 ## Security Team Preset

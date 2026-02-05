@@ -1,6 +1,6 @@
 {
   "name": "agent-teams",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's Agent Teams",
   "author": {
     "name": "Seth Hobson",

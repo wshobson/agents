@@ -142,11 +142,11 @@ Orchestrate multi-agent teams for parallel workflows using Claude Code's experim
 - **Parallel Code Review** — `/team-review src/ --reviewers security,performance,architecture`
 - **Hypothesis-Driven Debugging** — `/team-debug "API returns 500" --hypotheses 3`
 - **Parallel Feature Development** — `/team-feature "Add OAuth2 auth" --plan-first`
-- **Research Teams** — Parallel investigation across codebase, web, and library docs (Context7 MCP)
+- **Research Teams** — Parallel investigation across codebase and web sources
 - **Security Audits** — 4 reviewers covering OWASP, auth, dependencies, and secrets
 - **Migration Support** — Coordinated migration with parallel streams and correctness verification
 
-Includes 4 specialized agents, 7 commands, 6 skills with reference documentation, and Context7 MCP integration.
+Includes 4 specialized agents, 7 commands, and 6 skills with reference documentation.
 
 [→ View agent-teams documentation](plugins/agent-teams/README.md)
 
