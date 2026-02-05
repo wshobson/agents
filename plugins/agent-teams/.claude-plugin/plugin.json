@@ -1,0 +1,21 @@
+{
+  "name": "agent-teams",
+  "version": "1.0.0",
+  "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's Agent Teams",
+  "author": {
+    "name": "Seth Hobson",
+    "url": "https://github.com/wshobson"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/wshobson/agents",
+  "repository": "https://github.com/wshobson/agents",
+  "keywords": [
+    "agent-teams",
+    "multi-agent",
+    "coordination",
+    "parallel-development",
+    "code-review",
+    "debugging",
+    "orchestration"
+  ]
+}
