@@ -1931,50 +1931,16 @@
     },
     {
       "name": "agent-teams",
-      "source": "./plugins/agent-teams",
       "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's Agent Teams",
       "version": "1.0.1",
       "author": {
         "name": "Seth Hobson",
-        "url": "https://github.com/wshobson"
+        "email": "seth@major7apps.com"
       },
-      "homepage": "https://github.com/wshobson/agents",
-      "repository": "https://github.com/wshobson/agents",
-      "license": "MIT",
-      "keywords": [
-        "agent-teams",
-        "multi-agent",
-        "coordination",
-        "parallel-development",
-        "code-review",
-        "debugging",
-        "orchestration"
-      ],
+      "source": "./plugins/agent-teams",
       "category": "workflows",
-      "strict": false,
-      "commands": [
-        "./commands/team-spawn.md",
-        "./commands/team-status.md",
-        "./commands/team-shutdown.md",
-        "./commands/team-review.md",
-        "./commands/team-debug.md",
-        "./commands/team-feature.md",
-        "./commands/team-delegate.md"
-      ],
-      "agents": [
-        "./agents/team-lead.md",
-        "./agents/team-reviewer.md",
-        "./agents/team-debugger.md",
-        "./agents/team-implementer.md"
-      ],
-      "skills": [
-        "./skills/team-composition-patterns",
-        "./skills/task-coordination-strategies",
-        "./skills/parallel-debugging",
-        "./skills/multi-reviewer-patterns",
-        "./skills/parallel-feature-development",
-        "./skills/team-communication-protocols"
-      ]
+      "homepage": "https://github.com/wshobson/agents",
+      "license": "MIT"
     }
   ]
 }
