@@ -28,16 +28,16 @@ Available display modes:
 
 ### Installation
 
-```bash
-claude --plugin-dir ./plugins/agent-teams
+First, add the marketplace (if you haven't already):
+
+```
+/plugin marketplace add wshobson/agents
 ```
 
-Or add to your project's `.claude/settings.json`:
+Then install the plugin:
 
-```json
-{
-  "plugins": ["./plugins/agent-teams"]
-}
+```
+/plugin install agent-teams@claude-code-workflows
 ```
 
 ## Features
