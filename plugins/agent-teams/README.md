@@ -1,6 +1,6 @@
 # Agent Teams Plugin
 
-Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's experimental Agent Teams feature.
+Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's experimental [Agent Teams](https://code.claude.com/docs/en/agent-teams) feature.
 
 ## Setup
 
