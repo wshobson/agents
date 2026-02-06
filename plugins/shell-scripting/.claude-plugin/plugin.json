@@ -1,0 +1,10 @@
+{
+  "name": "shell-scripting",
+  "version": "1.2.1",
+  "description": "Production-grade Bash scripting with defensive programming, POSIX compliance, and comprehensive testing",
+  "author": {
+    "name": "Ryan Snodgrass",
+    "url": "https://github.com/rsnodgrass"
+  },
+  "license": "MIT"
+}

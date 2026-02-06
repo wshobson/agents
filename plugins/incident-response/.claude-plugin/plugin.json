@@ -1,0 +1,10 @@
+{
+  "name": "incident-response",
+  "version": "1.2.2",
+  "description": "Production incident management, triage workflows, and automated incident resolution",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

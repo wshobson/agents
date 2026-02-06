@@ -1,0 +1,10 @@
+{
+  "name": "payment-processing",
+  "version": "1.2.1",
+  "description": "Payment gateway integration with Stripe, PayPal, checkout flow implementation, subscription billing, and PCI compliance",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

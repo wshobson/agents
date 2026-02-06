@@ -1,0 +1,10 @@
+{
+  "name": "distributed-debugging",
+  "version": "1.2.0",
+  "description": "Distributed system tracing and debugging across microservices",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

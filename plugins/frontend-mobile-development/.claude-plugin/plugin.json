@@ -1,0 +1,10 @@
+{
+  "name": "frontend-mobile-development",
+  "version": "1.2.1",
+  "description": "Frontend UI development and mobile application implementation across platforms",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "blockchain-web3",
+  "version": "1.2.1",
+  "description": "Smart contract development with Solidity, DeFi protocol implementation, NFT platforms, and Web3 application architecture",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "systems-programming",
+  "version": "1.2.1",
+  "description": "Systems programming with Rust, Go, C, and C++ for performance-critical and low-level development",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "database-migrations",
+  "version": "1.2.0",
+  "description": "Database migration automation, observability, and cross-database migration strategies",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

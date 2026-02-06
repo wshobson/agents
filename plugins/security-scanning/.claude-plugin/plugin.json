@@ -1,0 +1,10 @@
+{
+  "name": "security-scanning",
+  "version": "1.2.3",
+  "description": "SAST analysis, dependency vulnerability scanning, OWASP Top 10 compliance, container security scanning, and automated security hardening",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

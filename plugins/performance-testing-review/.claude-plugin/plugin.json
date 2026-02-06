@@ -1,0 +1,10 @@
+{
+  "name": "performance-testing-review",
+  "version": "1.2.0",
+  "description": "Performance analysis, test coverage review, and AI-powered code quality assessment",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

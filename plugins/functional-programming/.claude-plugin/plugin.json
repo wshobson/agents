@@ -1,0 +1,10 @@
+{
+  "name": "functional-programming",
+  "version": "1.2.0",
+  "description": "Functional programming with Elixir, OTP patterns, Phoenix framework, and distributed systems",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

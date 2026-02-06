@@ -1,0 +1,10 @@
+{
+  "name": "code-review-ai",
+  "version": "1.2.0",
+  "description": "AI-powered architectural review and code quality analysis",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

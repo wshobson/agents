@@ -1,0 +1,10 @@
+{
+  "name": "content-marketing",
+  "version": "1.2.0",
+  "description": "Content marketing strategy, web research, and information synthesis for marketing operations",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

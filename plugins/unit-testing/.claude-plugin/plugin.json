@@ -1,0 +1,10 @@
+{
+  "name": "unit-testing",
+  "version": "1.2.0",
+  "description": "Unit and integration test automation for Python and JavaScript with debugging support",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

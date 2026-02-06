@@ -1,0 +1,10 @@
+{
+  "name": "tdd-workflows",
+  "version": "1.2.1",
+  "description": "Test-driven development methodology with red-green-refactor cycles and code review",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

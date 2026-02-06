@@ -1,0 +1,10 @@
+{
+  "name": "web-scripting",
+  "version": "1.2.0",
+  "description": "Web scripting with PHP and Ruby for web applications, CMS development, and backend services",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

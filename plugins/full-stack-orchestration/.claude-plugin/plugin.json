@@ -1,0 +1,10 @@
+{
+  "name": "full-stack-orchestration",
+  "version": "1.2.1",
+  "description": "End-to-end feature orchestration with testing, security, performance, and deployment",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

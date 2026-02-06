@@ -1,0 +1,10 @@
+{
+  "name": "security-compliance",
+  "version": "1.2.0",
+  "description": "SOC2, HIPAA, and GDPR compliance validation, secrets scanning, compliance checklists, and regulatory documentation",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

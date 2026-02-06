@@ -1,0 +1,10 @@
+{
+  "name": "data-validation-suite",
+  "version": "1.2.0",
+  "description": "Schema validation, data quality monitoring, streaming validation pipelines, and input validation for backend APIs",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

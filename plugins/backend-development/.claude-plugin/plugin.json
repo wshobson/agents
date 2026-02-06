@@ -1,0 +1,10 @@
+{
+  "name": "backend-development",
+  "version": "1.2.4",
+  "description": "Backend API design, GraphQL architecture, workflow orchestration with Temporal, and test-driven backend development",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

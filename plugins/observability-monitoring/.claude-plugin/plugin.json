@@ -1,0 +1,10 @@
+{
+  "name": "observability-monitoring",
+  "version": "1.2.1",
+  "description": "Metrics collection, logging infrastructure, distributed tracing, SLO implementation, and monitoring dashboards",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "machine-learning-ops",
+  "version": "1.2.1",
+  "description": "ML model training pipelines, hyperparameter tuning, model deployment automation, experiment tracking, and MLOps workflows",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

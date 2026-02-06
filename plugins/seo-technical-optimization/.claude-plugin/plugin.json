@@ -1,0 +1,10 @@
+{
+  "name": "seo-technical-optimization",
+  "version": "1.2.0",
+  "description": "Technical SEO optimization including meta tags, keywords, structure, and featured snippets",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

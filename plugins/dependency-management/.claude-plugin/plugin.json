@@ -1,0 +1,10 @@
+{
+  "name": "dependency-management",
+  "version": "1.2.0",
+  "description": "Dependency auditing, version management, and security vulnerability scanning",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

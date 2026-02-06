@@ -1,0 +1,10 @@
+{
+  "name": "application-performance",
+  "version": "1.2.1",
+  "description": "Application profiling, performance optimization, and observability for frontend and backend systems",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

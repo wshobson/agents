@@ -1,0 +1,10 @@
+{
+  "name": "cicd-automation",
+  "version": "1.2.1",
+  "description": "CI/CD pipeline configuration, GitHub Actions/GitLab CI workflow setup, and automated deployment pipeline orchestration",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

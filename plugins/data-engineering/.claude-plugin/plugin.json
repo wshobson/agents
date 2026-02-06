@@ -1,0 +1,10 @@
+{
+  "name": "data-engineering",
+  "version": "1.2.2",
+  "description": "ETL pipeline construction, data warehouse design, batch processing workflows, and data-driven feature development",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "multi-platform-apps",
+  "version": "1.2.1",
+  "description": "Cross-platform application development coordinating web, iOS, Android, and desktop implementations",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

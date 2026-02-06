@@ -1,0 +1,10 @@
+{
+  "name": "agent-orchestration",
+  "version": "1.2.0",
+  "description": "Multi-agent system optimization, agent improvement workflows, and context management",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

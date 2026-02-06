@@ -1,0 +1,10 @@
+{
+  "name": "api-scaffolding",
+  "version": "1.2.1",
+  "description": "REST and GraphQL API scaffolding, framework selection, backend architecture, and API generation",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

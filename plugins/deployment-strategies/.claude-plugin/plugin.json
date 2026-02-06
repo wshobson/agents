@@ -1,0 +1,10 @@
+{
+  "name": "deployment-strategies",
+  "version": "1.2.0",
+  "description": "Deployment patterns, rollback automation, and infrastructure templates",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}
