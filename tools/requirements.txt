@@ -1,0 +1,13 @@
+# Core dependencies
+yt-dlp>=2024.0.0
+youtube-transcript-api>=0.6.0
+Pillow>=10.0.0
+
+# OCR (Tesseract) - also requires: apt install tesseract-ocr
+pytesseract>=0.3.10
+
+# Optional: Better OCR for stylized text (larger download, ~1GB models)
+# easyocr>=1.7.0
+
+# Optional: Color palette extraction
+colorthief>=0.2.1
