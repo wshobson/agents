@@ -11,12 +11,19 @@ Usage:
 Examples:
     python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY"
     python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --interval 30
-    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --scene-detect
-    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --interval 15 --scene-detect
+    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --scene-detect --ocr
+    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --full  # all features
+    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --ocr --ocr-engine easyocr
 
 Requirements:
-    pip install yt-dlp youtube-transcript-api Pillow
-    apt install ffmpeg
+    pip install yt-dlp youtube-transcript-api Pillow pytesseract
+    apt install ffmpeg tesseract-ocr
+
+    Optional (better OCR for stylized text):
+    pip install easyocr
+
+    Optional (color palette extraction):
+    pip install colorthief
 """
 
 import argparse
@@ -26,8 +33,31 @@ import re
 import subprocess
 import sys
 import textwrap
+from collections import Counter
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
+
+# Optional imports - gracefully degrade if not available
+try:
+    import pytesseract
+    from PIL import Image
+    TESSERACT_AVAILABLE = True
+except ImportError:
+    TESSERACT_AVAILABLE = False
+
+try:
+    import easyocr
+    EASYOCR_AVAILABLE = True
+except ImportError:
+    EASYOCR_AVAILABLE = False
+
+try:
+    from colorthief import ColorThief
+    COLORTHIEF_AVAILABLE = True
+except ImportError:
+    COLORTHIEF_AVAILABLE = False
 
 # ---------------------------------------------------------------------------
 # Transcript extraction
@@ -157,6 +187,136 @@ def extract_frames_scene(video_path: Path, out_dir: Path,
 
 
 # ---------------------------------------------------------------------------
+# OCR extraction
+# ---------------------------------------------------------------------------
+
+def ocr_frame_tesseract(frame_path: Path) -> str:
+    """Extract text from a frame using Tesseract OCR."""
+    if not TESSERACT_AVAILABLE:
+        return ""
+    try:
+        img = Image.open(frame_path)
+        # Preprocessing for better OCR: convert to grayscale
+        if img.mode != "L":
+            img = img.convert("L")
+        text = pytesseract.image_to_string(img, config="--psm 6")
+        return text.strip()
+    except Exception as e:
+        return f"[OCR error: {e}]"
+
+
+def ocr_frame_easyocr(frame_path: Path, reader) -> str:
+    """Extract text from a frame using EasyOCR (better for stylized text)."""
+    try:
+        results = reader.readtext(str(frame_path), detail=0)
+        return "\n".join(results).strip()
+    except Exception as e:
+        return f"[OCR error: {e}]"
+
+
+def run_ocr_on_frames(frames: list[Path], ocr_engine: str = "tesseract",
+                      workers: int = 4) -> dict[Path, str]:
+    """Run OCR on all frames in parallel. Returns {frame_path: text}."""
+    if not frames:
+        return {}
+
+    results = {}
+
+    if ocr_engine == "easyocr":
+        if not EASYOCR_AVAILABLE:
+            print("[!] EasyOCR not installed, falling back to Tesseract")
+            ocr_engine = "tesseract"
+        else:
+            print("[*] Initializing EasyOCR (this may take a moment) …")
+            reader = easyocr.Reader(["en"], gpu=False, verbose=False)
+
+    if ocr_engine == "tesseract" and not TESSERACT_AVAILABLE:
+        print("[!] Tesseract/pytesseract not installed, skipping OCR")
+        return {}
+
+    print(f"[*] Running OCR on {len(frames)} frames ({ocr_engine}) …")
+
+    if ocr_engine == "easyocr":
+        # EasyOCR doesn't parallelize well, run sequentially
+        for i, frame in enumerate(frames):
+            results[frame] = ocr_frame_easyocr(frame, reader)
+            if (i + 1) % 10 == 0:
+                print(f"    → processed {i + 1}/{len(frames)} frames")
+    else:
+        # Tesseract can run in parallel
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            future_to_frame = {
+                executor.submit(ocr_frame_tesseract, f): f for f in frames
+            }
+            for i, future in enumerate(as_completed(future_to_frame)):
+                frame = future_to_frame[future]
+                results[frame] = future.result()
+                if (i + 1) % 10 == 0:
+                    print(f"    → processed {i + 1}/{len(frames)} frames")
+
+    # Count frames with meaningful text
+    with_text = sum(1 for t in results.values() if len(t) > 10)
+    print(f"    → found text in {with_text}/{len(frames)} frames")
+
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Color palette extraction
+# ---------------------------------------------------------------------------
+
+def extract_color_palette(frame_path: Path, color_count: int = 6) -> list[tuple]:
+    """Extract dominant colors from a frame. Returns list of RGB tuples."""
+    if not COLORTHIEF_AVAILABLE:
+        return []
+    try:
+        ct = ColorThief(str(frame_path))
+        palette = ct.get_palette(color_count=color_count, quality=5)
+        return palette
+    except Exception:
+        return []
+
+
+def rgb_to_hex(rgb: tuple) -> str:
+    """Convert RGB tuple to hex color string."""
+    return "#{:02x}{:02x}{:02x}".format(*rgb)
+
+
+def analyze_color_palettes(frames: list[Path], sample_size: int = 10) -> dict:
+    """Analyze color palettes across sampled frames."""
+    if not COLORTHIEF_AVAILABLE:
+        return {}
+    if not frames:
+        return {}
+
+    # Sample frames evenly across the video
+    step = max(1, len(frames) // sample_size)
+    sampled = frames[::step][:sample_size]
+
+    print(f"[*] Extracting color palettes from {len(sampled)} frames …")
+
+    all_colors = []
+    for frame in sampled:
+        palette = extract_color_palette(frame)
+        all_colors.extend(palette)
+
+    if not all_colors:
+        return {}
+
+    # Find most common colors (rounded to reduce similar colors)
+    def round_color(rgb, step=32):
+        return tuple((c // step) * step for c in rgb)
+
+    rounded = [round_color(c) for c in all_colors]
+    most_common = Counter(rounded).most_common(12)
+
+    return {
+        "dominant_colors": [rgb_to_hex(c) for c, _ in most_common[:6]],
+        "all_sampled_colors": [rgb_to_hex(c) for c in all_colors[:24]],
+    }
+
+
+# ---------------------------------------------------------------------------
 # Markdown assembly
 # ---------------------------------------------------------------------------
 
@@ -188,7 +348,9 @@ def group_transcript(entries: list[dict], chunk_seconds: int = 60) -> list[dict]
 
 def build_markdown(meta: dict, transcript: list[dict] | None,
                    interval_frames: list[Path], scene_frames: list[Path],
-                   out_dir: Path, interval: int) -> Path:
+                   out_dir: Path, interval: int,
+                   ocr_results: Optional[dict[Path, str]] = None,
+                   color_analysis: Optional[dict] = None) -> Path:
     """Assemble the final reference markdown document."""
     title = meta.get("title", "Untitled Video")
     channel = meta.get("channel", meta.get("uploader", "Unknown"))
@@ -197,6 +359,9 @@ def build_markdown(meta: dict, transcript: list[dict] | None,
     chapters = meta.get("chapters") or []
     video_url = meta.get("webpage_url", "")
     tags = meta.get("tags") or []
+
+    ocr_results = ocr_results or {}
+    color_analysis = color_analysis or {}
 
     lines: list[str] = []
 
@@ -208,6 +373,20 @@ def build_markdown(meta: dict, transcript: list[dict] | None,
     if tags:
         lines.append(f"> **Tags:** {', '.join(tags[:15])}")
     lines.append("")
+
+    # --- Color Palette (if extracted) ---
+    if color_analysis.get("dominant_colors"):
+        lines.append("## Color Palette\n")
+        lines.append("Dominant colors detected across the video:\n")
+        colors = color_analysis["dominant_colors"]
+        # Create color swatches as a table
+        lines.append("| Color | Hex |")
+        lines.append("|-------|-----|")
+        for hex_color in colors:
+            # Unicode block for color preview (won't show actual color but placeholder)
+            lines.append(f"| ████ | `{hex_color}` |")
+        lines.append("")
+        lines.append(f"*Full palette: {', '.join(f'`{c}`' for c in colors)}*\n")
 
     # --- Description ---
     if description:
@@ -258,7 +437,13 @@ def build_markdown(meta: dict, transcript: list[dict] | None,
             ts = fmt_timestamp(i * interval)
             lines.append(f"### Frame at `{ts}`\n")
             lines.append(f"![frame-{ts}]({rel})\n")
-            all_frames.append((ts, rel))
+            # Include OCR text if available
+            ocr_text = ocr_results.get(f, "").strip()
+            if ocr_text and len(ocr_text) > 5:
+                lines.append("<details><summary>📝 Text detected in frame</summary>\n")
+                lines.append(f"```\n{ocr_text}\n```")
+                lines.append("</details>\n")
+            all_frames.append((ts, rel, ocr_text))
         lines.append("")
 
     if scene_frames:
@@ -268,15 +453,45 @@ def build_markdown(meta: dict, transcript: list[dict] | None,
             rel = os.path.relpath(f, out_dir)
             lines.append(f"### Scene {i+1}\n")
             lines.append(f"![scene-{i+1}]({rel})\n")
+            # Include OCR text if available
+            ocr_text = ocr_results.get(f, "").strip()
+            if ocr_text and len(ocr_text) > 5:
+                lines.append("<details><summary>📝 Text detected in frame</summary>\n")
+                lines.append(f"```\n{ocr_text}\n```")
+                lines.append("</details>\n")
         lines.append("")
+
+    # --- Visual Text Index (OCR summary) ---
+    frames_with_text = [(ts, rel, txt) for ts, rel, txt in all_frames if txt and len(txt) > 10]
+    if frames_with_text:
+        lines.append("## Visual Text Index\n")
+        lines.append("Searchable index of all text detected in video frames.\n")
+        lines.append("| Timestamp | Key Text (preview) |")
+        lines.append("|-----------|-------------------|")
+        for ts, rel, txt in frames_with_text:
+            # First line or first 80 chars as preview
+            preview = txt.split("\n")[0][:80].replace("|", "\\|")
+            if len(txt) > 80:
+                preview += "…"
+            lines.append(f"| `{ts}` | {preview} |")
+        lines.append("")
+
+        # Full text dump for searchability
+        lines.append("### All Detected Text (Full)\n")
+        lines.append("<details><summary>Click to expand full OCR text</summary>\n")
+        for ts, rel, txt in frames_with_text:
+            lines.append(f"**[{ts}]**")
+            lines.append(f"```\n{txt}\n```\n")
+        lines.append("</details>\n")
 
     # --- Frame index (for quick reference) ---
     if all_frames:
         lines.append("## Frame Index\n")
-        lines.append("| Timestamp | File |")
-        lines.append("|-----------|------|")
-        for ts, rel in all_frames:
-            lines.append(f"| `{ts}` | `{rel}` |")
+        lines.append("| Timestamp | File | Has Text |")
+        lines.append("|-----------|------|----------|")
+        for ts, rel, txt in all_frames:
+            has_text = "✓" if txt and len(txt) > 10 else ""
+            lines.append(f"| `{ts}` | `{rel}` | {has_text} |")
         lines.append("")
 
     # --- Footer ---
@@ -302,7 +517,9 @@ def main():
         epilog=textwrap.dedent("""\
             Examples:
               %(prog)s "https://youtu.be/eVnQFWGDEdY"
-              %(prog)s "https://youtu.be/eVnQFWGDEdY" --interval 15 --scene-detect
+              %(prog)s "https://youtu.be/eVnQFWGDEdY" --full
+              %(prog)s "https://youtu.be/eVnQFWGDEdY" --interval 15 --scene-detect --ocr
+              %(prog)s "https://youtu.be/eVnQFWGDEdY" --ocr --ocr-engine easyocr --colors
               %(prog)s "https://youtu.be/eVnQFWGDEdY" -o ./my-output
         """),
     )
@@ -331,8 +548,30 @@ def main():
         "--chunk-seconds", type=int, default=60,
         help="Group transcript into chunks of N seconds (default: 60)",
     )
+    parser.add_argument(
+        "--ocr", action="store_true",
+        help="Run OCR on frames to extract on-screen text",
+    )
+    parser.add_argument(
+        "--ocr-engine", choices=["tesseract", "easyocr"], default="tesseract",
+        help="OCR engine: 'tesseract' (fast) or 'easyocr' (better for stylized text)",
+    )
+    parser.add_argument(
+        "--colors", action="store_true",
+        help="Extract color palette from frames",
+    )
+    parser.add_argument(
+        "--full", action="store_true",
+        help="Enable all features: scene-detect, OCR, and color extraction",
+    )
 
     args = parser.parse_args()
+
+    # --full enables everything
+    if args.full:
+        args.scene_detect = True
+        args.ocr = True
+        args.colors = True
 
     video_id = extract_video_id(args.url)
     out_dir = Path(args.output_dir or f"./yt-extract-{video_id}")
@@ -356,6 +595,10 @@ def main():
     interval_frames: list[Path] = []
     scene_frames: list[Path] = []
 
+    # OCR and color analysis results
+    ocr_results: dict[Path, str] = {}
+    color_analysis: dict = {}
+
     if not args.transcript_only:
         video_path = download_video(args.url, out_dir)
         interval_frames = extract_frames_interval(
@@ -368,24 +611,52 @@ def main():
         # Clean up video file to save space
         print(f"[*] Removing downloaded video to save space …")
         video_path.unlink(missing_ok=True)
+
+        # 4. OCR extraction
+        if args.ocr:
+            all_frames_for_ocr = interval_frames + scene_frames
+            ocr_results = run_ocr_on_frames(
+                all_frames_for_ocr,
+                ocr_engine=args.ocr_engine,
+            )
+            # Save OCR results to JSON for reuse
+            ocr_json = {str(k): v for k, v in ocr_results.items()}
+            (out_dir / "ocr-results.json").write_text(
+                json.dumps(ocr_json, indent=2), encoding="utf-8"
+            )
+
+        # 5. Color palette analysis
+        if args.colors:
+            all_frames_for_color = interval_frames + scene_frames
+            color_analysis = analyze_color_palettes(all_frames_for_color)
+            if color_analysis:
+                (out_dir / "color-palette.json").write_text(
+                    json.dumps(color_analysis, indent=2), encoding="utf-8"
+                )
     else:
         print("[*] --transcript-only: skipping video download")
 
-    # 4. Build markdown
+    # 6. Build markdown
     md_path = build_markdown(
-        meta, transcript, interval_frames, scene_frames, out_dir, args.interval
+        meta, transcript, interval_frames, scene_frames, out_dir, args.interval,
+        ocr_results=ocr_results, color_analysis=color_analysis,
     )
 
     # Summary
     print("\n" + "=" * 60)
     print("DONE! Output directory:", out_dir)
     print("=" * 60)
-    print(f"  Reference doc : {md_path}")
-    print(f"  Metadata      : {out_dir / 'metadata.json'}")
+    print(f"  Reference doc  : {md_path}")
+    print(f"  Metadata       : {out_dir / 'metadata.json'}")
     if interval_frames:
         print(f"  Interval frames: {len(interval_frames)} in frames/")
     if scene_frames:
         print(f"  Scene frames   : {len(scene_frames)} in frames_scene/")
+    if ocr_results:
+        frames_with_text = sum(1 for t in ocr_results.values() if len(t) > 10)
+        print(f"  OCR results    : {frames_with_text} frames with text → ocr-results.json")
+    if color_analysis:
+        print(f"  Color palette  : {len(color_analysis.get('dominant_colors', []))} colors → color-palette.json")
     print()
     print("Next steps:")
     print("  1. Review extracted-reference.md")
