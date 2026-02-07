@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "Production-ready workflow orchestration with 73 focused plugins, 112 specialized agents, and 146 skills - optimized for granular installation and minimal token usage",
-    "version": "1.5.0"
+    "version": "1.5.1"
   },
   "plugins": [
     {
@@ -40,7 +40,7 @@
       "name": "git-pr-workflows",
       "source": "./plugins/git-pr-workflows",
       "description": "Git workflow automation, pull request enhancement, and team onboarding processes",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -53,7 +53,7 @@
       "name": "backend-development",
       "source": "./plugins/backend-development",
       "description": "Backend API design, GraphQL architecture, workflow orchestration with Temporal, and test-driven backend development",
-      "version": "1.2.4",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -79,7 +79,7 @@
       "name": "full-stack-orchestration",
       "source": "./plugins/full-stack-orchestration",
       "description": "End-to-end feature orchestration with testing, security, performance, and deployment",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -105,7 +105,7 @@
       "name": "tdd-workflows",
       "source": "./plugins/tdd-workflows",
       "description": "Test-driven development methodology with red-green-refactor cycles and code review",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -182,7 +182,7 @@
     {
       "name": "llm-application-dev",
       "description": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures for Claude 4.5 and GPT-5.2",
-      "version": "2.0.2",
+      "version": "2.0.3",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -234,7 +234,7 @@
     {
       "name": "data-engineering",
       "description": "ETL pipeline construction, data warehouse design, batch processing workflows, and data-driven feature development",
-      "version": "1.2.2",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -247,7 +247,7 @@
     {
       "name": "incident-response",
       "description": "Production incident management, triage workflows, and automated incident resolution",
-      "version": "1.2.2",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -365,7 +365,7 @@
       "name": "application-performance",
       "source": "./plugins/application-performance",
       "description": "Application profiling, performance optimization, and observability for frontend and backend systems",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -391,7 +391,7 @@
       "name": "comprehensive-review",
       "source": "./plugins/comprehensive-review",
       "description": "Multi-perspective code analysis covering architecture, security, and best practices",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -417,7 +417,7 @@
       "name": "framework-migration",
       "source": "./plugins/framework-migration",
       "description": "Framework updates, migration planning, and architectural transformation workflows",
-      "version": "1.2.2",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -468,7 +468,7 @@
     {
       "name": "security-scanning",
       "description": "SAST analysis, dependency vulnerability scanning, OWASP Top 10 compliance, container security scanning, and automated security hardening",
-      "version": "1.2.3",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -625,7 +625,7 @@
       "name": "multi-platform-apps",
       "source": "./plugins/multi-platform-apps",
       "description": "Cross-platform application development coordinating web, iOS, Android, and desktop implementations",
-      "version": "1.2.1",
+      "version": "1.3.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -650,7 +650,7 @@
     {
       "name": "startup-business-analyst",
       "description": "Comprehensive startup business analysis with market sizing (TAM/SAM/SOM), financial modeling, team planning, and strategic research for early-stage companies",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -923,7 +923,7 @@
     {
       "name": "ui-design",
       "description": "Comprehensive UI/UX design plugin for mobile (iOS, Android, React Native) and web applications with design systems, accessibility, and modern patterns",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -945,6 +945,19 @@
       "category": "workflows",
       "homepage": "https://github.com/wshobson/agents",
       "license": "MIT"
+    },
+    {
+      "name": "dotnet-contribution",
+      "source": "./plugins/dotnet-contribution",
+      "description": "Comprehensive .NET backend development with C#, ASP.NET Core, Entity Framework Core, and Dapper for production-grade applications",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "email": "seth@major7apps.com"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "category": "languages"
     }
   ]
 }
