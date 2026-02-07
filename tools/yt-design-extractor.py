@@ -16,8 +16,12 @@ Examples:
     python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --ocr --ocr-engine easyocr
 
 Requirements:
-    pip install yt-dlp youtube-transcript-api Pillow pytesseract
-    apt install ffmpeg tesseract-ocr
+    pip install yt-dlp youtube-transcript-api
+    apt install ffmpeg
+
+    Optional (OCR via Tesseract):
+    pip install Pillow pytesseract
+    apt install tesseract-ocr
 
     Optional (better OCR for stylized text):
     pip install easyocr
@@ -30,6 +34,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import textwrap
@@ -40,21 +45,33 @@ from pathlib import Path
 from typing import Optional
 
 # Optional imports - gracefully degrade if not available
+PILLOW_AVAILABLE = False
+TESSERACT_AVAILABLE = False
+
+try:
+    from PIL import Image
+
+    PILLOW_AVAILABLE = True
+except ImportError:
+    pass
+
 try:
     import pytesseract
-    from PIL import Image
-    TESSERACT_AVAILABLE = True
+
+    TESSERACT_AVAILABLE = PILLOW_AVAILABLE
 except ImportError:
-    TESSERACT_AVAILABLE = False
+    pass
 
 try:
     import easyocr
+
     EASYOCR_AVAILABLE = True
 except ImportError:
     EASYOCR_AVAILABLE = False
 
 try:
     from colorthief import ColorThief
+
     COLORTHIEF_AVAILABLE = True
 except ImportError:
     COLORTHIEF_AVAILABLE = False
@@ -62,6 +79,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 # Transcript extraction
 # ---------------------------------------------------------------------------
+
 
 def extract_video_id(url: str) -> str:
     """Pull the 11-char video ID out of any common YouTube URL format."""
@@ -90,10 +108,18 @@ def get_video_metadata(url: str) -> dict:
         url,
     ]
     print("[*] Fetching video metadata …")
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        sys.exit("yt-dlp metadata fetch timed out after 120s.")
     if result.returncode != 0:
         sys.exit(f"yt-dlp metadata failed:\n{result.stderr}")
-    return json.loads(result.stdout)
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError as e:
+        sys.exit(
+            f"yt-dlp returned invalid JSON: {e}\nFirst 200 chars: {result.stdout[:200]}"
+        )
 
 
 def get_transcript(video_id: str) -> list[dict] | None:
@@ -101,19 +127,30 @@ def get_transcript(video_id: str) -> list[dict] | None:
     {text, start, duration} dicts, or None if unavailable."""
     try:
         from youtube_transcript_api import YouTubeTranscriptApi
+        from youtube_transcript_api._errors import (
+            TranscriptsDisabled,
+            NoTranscriptFound,
+            VideoUnavailable,
+        )
+    except ImportError:
+        print("[!] youtube-transcript-api not installed. Skipping transcript.")
+        return None
+
+    try:
         print("[*] Fetching transcript …")
         ytt_api = YouTubeTranscriptApi()
         transcript = ytt_api.fetch(video_id)
-        # Convert FetchedTranscript to list of dicts
         entries = []
         for snippet in transcript:
-            entries.append({
-                "text": snippet.text,
-                "start": snippet.start,
-                "duration": snippet.duration,
-            })
+            entries.append(
+                {
+                    "text": snippet.text,
+                    "start": snippet.start,
+                    "duration": snippet.duration,
+                }
+            )
         return entries
-    except Exception as e:
+    except (TranscriptsDisabled, NoTranscriptFound, VideoUnavailable) as e:
         print(f"[!] Transcript unavailable ({e}). Will proceed without it.")
         return None
 
@@ -122,19 +159,29 @@ def get_transcript(video_id: str) -> list[dict] | None:
 # Keyframe extraction
 # ---------------------------------------------------------------------------
 
+
 def download_video(url: str, out_dir: Path) -> Path:
-    """Download the video at 720p max to keep file size sane."""
+    """Download video, preferring 720p or lower. Falls back to best available."""
     out_template = str(out_dir / "video.%(ext)s")
     cmd = [
         "yt-dlp",
-        "-f", "bestvideo[height<=720]+bestaudio/best[height<=720]/best",
-        "--merge-output-format", "mp4",
-        "-o", out_template,
+        "-f",
+        "bestvideo[height<=720]+bestaudio/best[height<=720]/best",
+        "--merge-output-format",
+        "mp4",
+        "-o",
+        out_template,
         "--no-playlist",
         url,
     ]
-    print("[*] Downloading video (720p max) …")
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    print("[*] Downloading video (720p preferred) …")
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        sys.exit(
+            "Video download timed out after 10 minutes. "
+            "The video may be too large or your connection too slow."
+        )
     if result.returncode != 0:
         sys.exit(f"yt-dlp download failed:\n{result.stderr}")
 
@@ -145,44 +192,78 @@ def download_video(url: str, out_dir: Path) -> Path:
     sys.exit("Download succeeded but could not locate video file.")
 
 
-def extract_frames_interval(video_path: Path, out_dir: Path,
-                            interval: int = 30) -> list[Path]:
+def extract_frames_interval(
+    video_path: Path, out_dir: Path, interval: int = 30
+) -> list[Path]:
     """Extract one frame every `interval` seconds."""
     frames_dir = out_dir / "frames"
     frames_dir.mkdir(exist_ok=True)
     pattern = str(frames_dir / "frame_%04d.png")
     cmd = [
-        "ffmpeg", "-i", str(video_path),
-        "-vf", f"fps=1/{interval}",
-        "-q:v", "2",
+        "ffmpeg",
+        "-i",
+        str(video_path),
+        "-vf",
+        f"fps=1/{interval}",
+        "-q:v",
+        "2",
         pattern,
         "-y",
     ]
     print(f"[*] Extracting frames every {interval}s …")
-    subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        sys.exit("Frame extraction timed out after 10 minutes.")
+    if result.returncode != 0:
+        print(f"[!] ffmpeg frame extraction failed (exit code {result.returncode}):")
+        print(f"    {result.stderr[:500]}")
+        return []
     frames = sorted(frames_dir.glob("frame_*.png"))
-    print(f"    → captured {len(frames)} frames")
+    if not frames:
+        print(
+            "[!] WARNING: ffmpeg ran but produced no frames. "
+            "The video may be too short or corrupted."
+        )
+    else:
+        print(f"    → captured {len(frames)} frames")
     return frames
 
 
-def extract_frames_scene(video_path: Path, out_dir: Path,
-                         threshold: float = 0.3) -> list[Path]:
+def extract_frames_scene(
+    video_path: Path, out_dir: Path, threshold: float = 0.3
+) -> list[Path]:
     """Use ffmpeg scene-change detection to grab visually distinct frames."""
     frames_dir = out_dir / "frames_scene"
     frames_dir.mkdir(exist_ok=True)
     pattern = str(frames_dir / "scene_%04d.png")
     cmd = [
-        "ffmpeg", "-i", str(video_path),
-        "-vf", f"select='gt(scene,{threshold})',showinfo",
-        "-vsync", "vfr",
-        "-q:v", "2",
+        "ffmpeg",
+        "-i",
+        str(video_path),
+        "-vf",
+        f"select='gt(scene,{threshold})',showinfo",
+        "-vsync",
+        "vfr",
+        "-q:v",
+        "2",
         pattern,
         "-y",
     ]
     print(f"[*] Extracting scene-change frames (threshold={threshold}) …")
-    subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        sys.exit("Scene-change frame extraction timed out after 10 minutes.")
+    if result.returncode != 0:
+        print(f"[!] ffmpeg scene detection failed (exit code {result.returncode}):")
+        print(f"    {result.stderr[:500]}")
+        return []
     frames = sorted(frames_dir.glob("scene_*.png"))
-    print(f"    → captured {len(frames)} scene-change frames")
+    if not frames:
+        print("[!] No scene-change frames detected (try lowering --scene-threshold).")
+    else:
+        print(f"    → captured {len(frames)} scene-change frames")
     return frames
 
 
@@ -190,19 +271,20 @@ def extract_frames_scene(video_path: Path, out_dir: Path,
 # OCR extraction
 # ---------------------------------------------------------------------------
 
+
 def ocr_frame_tesseract(frame_path: Path) -> str:
-    """Extract text from a frame using Tesseract OCR."""
+    """Extract text from a frame using Tesseract OCR. Converts to grayscale first."""
     if not TESSERACT_AVAILABLE:
         return ""
     try:
         img = Image.open(frame_path)
-        # Preprocessing for better OCR: convert to grayscale
         if img.mode != "L":
             img = img.convert("L")
         text = pytesseract.image_to_string(img, config="--psm 6")
         return text.strip()
     except Exception as e:
-        return f"[OCR error: {e}]"
+        print(f"[!] OCR failed for {frame_path}: {e}")
+        return ""
 
 
 def ocr_frame_easyocr(frame_path: Path, reader) -> str:
@@ -211,12 +293,15 @@ def ocr_frame_easyocr(frame_path: Path, reader) -> str:
         results = reader.readtext(str(frame_path), detail=0)
         return "\n".join(results).strip()
     except Exception as e:
-        return f"[OCR error: {e}]"
+        print(f"[!] OCR failed for {frame_path}: {e}")
+        return ""
 
 
-def run_ocr_on_frames(frames: list[Path], ocr_engine: str = "tesseract",
-                      workers: int = 4) -> dict[Path, str]:
-    """Run OCR on all frames in parallel. Returns {frame_path: text}."""
+def run_ocr_on_frames(
+    frames: list[Path], ocr_engine: str = "tesseract", workers: int = 4
+) -> dict[Path, str]:
+    """Run OCR on frames. Tesseract runs in parallel; EasyOCR sequentially.
+    Returns {frame_path: text}."""
     if not frames:
         return {}
 
@@ -224,8 +309,12 @@ def run_ocr_on_frames(frames: list[Path], ocr_engine: str = "tesseract",
 
     if ocr_engine == "easyocr":
         if not EASYOCR_AVAILABLE:
-            print("[!] EasyOCR not installed, falling back to Tesseract")
-            ocr_engine = "tesseract"
+            sys.exit(
+                "EasyOCR was explicitly requested but is not installed.\n"
+                "  Install: pip install torch torchvision --index-url "
+                "https://download.pytorch.org/whl/cpu && pip install easyocr\n"
+                "  Or use: --ocr-engine tesseract"
+            )
         else:
             print("[*] Initializing EasyOCR (this may take a moment) …")
             reader = easyocr.Reader(["en"], gpu=False, verbose=False)
@@ -250,7 +339,11 @@ def run_ocr_on_frames(frames: list[Path], ocr_engine: str = "tesseract",
             }
             for i, future in enumerate(as_completed(future_to_frame)):
                 frame = future_to_frame[future]
-                results[frame] = future.result()
+                try:
+                    results[frame] = future.result()
+                except Exception as e:
+                    print(f"[!] OCR failed for {frame}: {e}")
+                    results[frame] = ""
                 if (i + 1) % 10 == 0:
                     print(f"    → processed {i + 1}/{len(frames)} frames")
 
@@ -265,6 +358,7 @@ def run_ocr_on_frames(frames: list[Path], ocr_engine: str = "tesseract",
 # Color palette extraction
 # ---------------------------------------------------------------------------
 
+
 def extract_color_palette(frame_path: Path, color_count: int = 6) -> list[tuple]:
     """Extract dominant colors from a frame. Returns list of RGB tuples."""
     if not COLORTHIEF_AVAILABLE:
@@ -273,7 +367,8 @@ def extract_color_palette(frame_path: Path, color_count: int = 6) -> list[tuple]
         ct = ColorThief(str(frame_path))
         palette = ct.get_palette(color_count=color_count, quality=5)
         return palette
-    except Exception:
+    except Exception as e:
+        print(f"[!] Color extraction failed for {frame_path}: {e}")
         return []
 
 
@@ -304,8 +399,8 @@ def analyze_color_palettes(frames: list[Path], sample_size: int = 10) -> dict:
         return {}
 
     # Find most common colors (rounded to reduce similar colors)
-    def round_color(rgb, step=32):
-        return tuple((c // step) * step for c in rgb)
+    def round_color(rgb, bucket_size=32):
+        return tuple((c // bucket_size) * bucket_size for c in rgb)
 
     rounded = [round_color(c) for c in all_colors]
     most_common = Counter(rounded).most_common(12)
@@ -320,6 +415,7 @@ def analyze_color_palettes(frames: list[Path], sample_size: int = 10) -> dict:
 # Markdown assembly
 # ---------------------------------------------------------------------------
 
+
 def fmt_timestamp(seconds: float) -> str:
     m, s = divmod(int(seconds), 60)
     h, m = divmod(m, 60)
@@ -329,7 +425,7 @@ def fmt_timestamp(seconds: float) -> str:
 
 
 def group_transcript(entries: list[dict], chunk_seconds: int = 60) -> list[dict]:
-    """Merge transcript snippets into chunks of roughly `chunk_seconds`."""
+    """Merge transcript snippets into chunks of at least `chunk_seconds` duration."""
     if not entries:
         return []
     groups = []
@@ -346,11 +442,16 @@ def group_transcript(entries: list[dict], chunk_seconds: int = 60) -> list[dict]
     return groups
 
 
-def build_markdown(meta: dict, transcript: list[dict] | None,
-                   interval_frames: list[Path], scene_frames: list[Path],
-                   out_dir: Path, interval: int,
-                   ocr_results: Optional[dict[Path, str]] = None,
-                   color_analysis: Optional[dict] = None) -> Path:
+def build_markdown(
+    meta: dict,
+    transcript: list[dict] | None,
+    interval_frames: list[Path],
+    scene_frames: list[Path],
+    out_dir: Path,
+    interval: int,
+    ocr_results: Optional[dict[Path, str]] = None,
+    color_analysis: Optional[dict] = None,
+) -> Path:
     """Assemble the final reference markdown document."""
     title = meta.get("title", "Untitled Video")
     channel = meta.get("channel", meta.get("uploader", "Unknown"))
@@ -451,8 +552,8 @@ def build_markdown(meta: dict, transcript: list[dict] | None,
         lines.append("Frames captured when the visual content changed significantly.\n")
         for i, f in enumerate(scene_frames):
             rel = os.path.relpath(f, out_dir)
-            lines.append(f"### Scene {i+1}\n")
-            lines.append(f"![scene-{i+1}]({rel})\n")
+            lines.append(f"### Scene {i + 1}\n")
+            lines.append(f"![scene-{i + 1}]({rel})\n")
             # Include OCR text if available
             ocr_text = ocr_results.get(f, "").strip()
             if ocr_text and len(ocr_text) > 5:
@@ -462,7 +563,9 @@ def build_markdown(meta: dict, transcript: list[dict] | None,
         lines.append("")
 
     # --- Visual Text Index (OCR summary) ---
-    frames_with_text = [(ts, rel, txt) for ts, rel, txt in all_frames if txt and len(txt) > 10]
+    frames_with_text = [
+        (ts, rel, txt) for ts, rel, txt in all_frames if txt and len(txt) > 10
+    ]
     if frames_with_text:
         lines.append("## Visual Text Index\n")
         lines.append("Searchable index of all text detected in video frames.\n")
@@ -509,10 +612,11 @@ def build_markdown(meta: dict, transcript: list[dict] | None,
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Extract design concepts from a YouTube video into a "
-                    "structured markdown reference document.",
+        "structured markdown reference document.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             Examples:
@@ -525,43 +629,57 @@ def main():
     )
     parser.add_argument("url", help="YouTube video URL or ID")
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         help="Output directory (default: ./yt-extract-<video_id>)",
     )
     parser.add_argument(
-        "--interval", type=int, default=30,
+        "--interval",
+        type=int,
+        default=30,
         help="Seconds between keyframe captures (default: 30)",
     )
     parser.add_argument(
-        "--scene-detect", action="store_true",
+        "--scene-detect",
+        action="store_true",
         help="Also extract frames on scene changes (good for visual-heavy videos)",
     )
     parser.add_argument(
-        "--scene-threshold", type=float, default=0.3,
+        "--scene-threshold",
+        type=float,
+        default=0.3,
         help="Scene change sensitivity 0.0-1.0, lower = more frames (default: 0.3)",
     )
     parser.add_argument(
-        "--transcript-only", action="store_true",
+        "--transcript-only",
+        action="store_true",
         help="Skip video download, only fetch transcript + metadata",
     )
     parser.add_argument(
-        "--chunk-seconds", type=int, default=60,
+        "--chunk-seconds",
+        type=int,
+        default=60,
         help="Group transcript into chunks of N seconds (default: 60)",
     )
     parser.add_argument(
-        "--ocr", action="store_true",
+        "--ocr",
+        action="store_true",
         help="Run OCR on frames to extract on-screen text",
     )
     parser.add_argument(
-        "--ocr-engine", choices=["tesseract", "easyocr"], default="tesseract",
+        "--ocr-engine",
+        choices=["tesseract", "easyocr"],
+        default="tesseract",
         help="OCR engine: 'tesseract' (fast) or 'easyocr' (better for stylized text)",
     )
     parser.add_argument(
-        "--colors", action="store_true",
+        "--colors",
+        action="store_true",
         help="Extract color palette from frames",
     )
     parser.add_argument(
-        "--full", action="store_true",
+        "--full",
+        action="store_true",
         help="Enable all features: scene-detect, OCR, and color extraction",
     )
 
@@ -572,6 +690,17 @@ def main():
         args.scene_detect = True
         args.ocr = True
         args.colors = True
+
+    # Upfront dependency checks
+    if not shutil.which("yt-dlp"):
+        sys.exit(
+            "Required tool 'yt-dlp' not found on PATH. Install with: pip install yt-dlp"
+        )
+    if not args.transcript_only and not shutil.which("ffmpeg"):
+        sys.exit(
+            "Required tool 'ffmpeg' not found on PATH. "
+            "Install with: make install-ocr (or: brew install ffmpeg)"
+        )
 
     video_id = extract_video_id(args.url)
     out_dir = Path(args.output_dir or f"./yt-extract-{video_id}")
@@ -601,16 +730,18 @@ def main():
 
     if not args.transcript_only:
         video_path = download_video(args.url, out_dir)
-        interval_frames = extract_frames_interval(
-            video_path, out_dir, interval=args.interval
-        )
-        if args.scene_detect:
-            scene_frames = extract_frames_scene(
-                video_path, out_dir, threshold=args.scene_threshold
+        try:
+            interval_frames = extract_frames_interval(
+                video_path, out_dir, interval=args.interval
             )
-        # Clean up video file to save space
-        print(f"[*] Removing downloaded video to save space …")
-        video_path.unlink(missing_ok=True)
+            if args.scene_detect:
+                scene_frames = extract_frames_scene(
+                    video_path, out_dir, threshold=args.scene_threshold
+                )
+        finally:
+            # Always clean up video file to save space
+            print("[*] Removing downloaded video to save space …")
+            video_path.unlink(missing_ok=True)
 
         # 4. OCR extraction
         if args.ocr:
@@ -638,8 +769,14 @@ def main():
 
     # 6. Build markdown
     md_path = build_markdown(
-        meta, transcript, interval_frames, scene_frames, out_dir, args.interval,
-        ocr_results=ocr_results, color_analysis=color_analysis,
+        meta,
+        transcript,
+        interval_frames,
+        scene_frames,
+        out_dir,
+        args.interval,
+        ocr_results=ocr_results,
+        color_analysis=color_analysis,
     )
 
     # Summary
@@ -654,9 +791,13 @@ def main():
         print(f"  Scene frames   : {len(scene_frames)} in frames_scene/")
     if ocr_results:
         frames_with_text = sum(1 for t in ocr_results.values() if len(t) > 10)
-        print(f"  OCR results    : {frames_with_text} frames with text → ocr-results.json")
+        print(
+            f"  OCR results    : {frames_with_text} frames with text → ocr-results.json"
+        )
     if color_analysis:
-        print(f"  Color palette  : {len(color_analysis.get('dominant_colors', []))} colors → color-palette.json")
+        print(
+            f"  Color palette  : {len(color_analysis.get('dominant_colors', []))} colors → color-palette.json"
+        )
     print()
     print("Next steps:")
     print("  1. Review extracted-reference.md")

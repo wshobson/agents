@@ -5,7 +5,7 @@ PYTHON := python3
 PIP := pip3
 SCRIPT := tools/yt-design-extractor.py
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr clean
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean
 
 help:
 	@echo "YouTube Design Extractor"
@@ -23,6 +23,7 @@ help:
 	@echo "  make run URL=<youtube-url>           Basic extraction"
 	@echo "  make run-full URL=<youtube-url>      Full extraction (OCR + colors + scene)"
 	@echo "  make run-ocr URL=<youtube-url>       With OCR only"
+	@echo "  make run-transcript URL=<youtube-url> Transcript + metadata only"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make run URL='https://youtu.be/eVnQFWGDEdY'"
