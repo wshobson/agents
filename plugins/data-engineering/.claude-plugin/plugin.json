@@ -1,6 +1,6 @@
 {
   "name": "data-engineering",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "ETL pipeline construction, data warehouse design, batch processing workflows, and data-driven feature development",
   "author": {
     "name": "Seth Hobson",

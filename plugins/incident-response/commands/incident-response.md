@@ -1,166 +1,601 @@
-Orchestrate multi-agent incident response with modern SRE practices for rapid resolution and learning:
+---
+description: "Orchestrate multi-agent incident response with modern SRE practices for rapid resolution and learning"
+argument-hint: "<incident description> [--severity P0|P1|P2|P3]"
+---
 
-[Extended thinking: This workflow implements a comprehensive incident command system (ICS) following modern SRE principles. Multiple specialized agents collaborate through defined phases: detection/triage, investigation/mitigation, communication/coordination, and resolution/postmortem. The workflow emphasizes speed without sacrificing accuracy, maintains clear communication channels, and ensures every incident becomes a learning opportunity through blameless postmortems and systematic improvements.]
+# Incident Response Orchestrator
 
-## Configuration
+## CRITICAL BEHAVIORAL RULES
 
-### Severity Levels
+You MUST follow these rules exactly. Violating any of them is a failure.
 
-- **P0/SEV-1**: Complete outage, security breach, data loss - immediate all-hands response
-- **P1/SEV-2**: Major degradation, significant user impact - rapid response required
-- **P2/SEV-3**: Minor degradation, limited impact - standard response
-- **P3/SEV-4**: Cosmetic issues, no user impact - scheduled resolution
+1. **Execute steps in order.** Do NOT skip ahead, reorder, or merge steps.
+2. **Write output files.** Each step MUST produce its output file in `.incident-response/` before the next step begins. Read from prior step files — do NOT rely on context window memory.
+3. **Stop at checkpoints.** When you reach a `PHASE CHECKPOINT`, you MUST stop and wait for explicit user approval before continuing. Use the AskUserQuestion tool with clear options.
+4. **Halt on failure.** If any step fails (agent error, test failure, missing dependency), STOP immediately. Present the error and ask the user how to proceed. Do NOT silently continue.
+5. **Use only local agents.** All `subagent_type` references use agents bundled with this plugin or `general-purpose`. No cross-plugin dependencies.
+6. **Never enter plan mode autonomously.** Do NOT use EnterPlanMode. This command IS the plan — execute it.
 
-### Incident Types
+## Pre-flight Checks
 
-- Performance degradation
-- Service outage
-- Security incident
-- Data integrity issue
-- Infrastructure failure
-- Third-party service disruption
+Before starting, perform these checks:
 
-## Phase 1: Detection & Triage
+### 1. Check for existing session
 
-### 1. Incident Detection and Classification
+Check if `.incident-response/state.json` exists:
 
-- Use Task tool with subagent_type="incident-responder"
-- Prompt: "URGENT: Detect and classify incident: $ARGUMENTS. Analyze alerts from PagerDuty/Opsgenie/monitoring. Determine: 1) Incident severity (P0-P3), 2) Affected services and dependencies, 3) User impact and business risk, 4) Initial incident command structure needed. Check error budgets and SLO violations."
-- Output: Severity classification, impact assessment, incident command assignments, SLO status
-- Context: Initial alerts, monitoring dashboards, recent changes
+- If it exists and `status` is `"in_progress"`: Read it, display the current step, and ask the user:
 
-### 2. Observability Analysis
+  ```
+  Found an in-progress incident response session:
+  Incident: [incident from state]
+  Severity: [severity from state]
+  Current step: [step from state]
 
-- Use Task tool with subagent_type="observability-monitoring::observability-engineer"
-- Prompt: "Perform rapid observability sweep for incident: $ARGUMENTS. Query: 1) Distributed tracing (OpenTelemetry/Jaeger), 2) Metrics correlation (Prometheus/Grafana/DataDog), 3) Log aggregation (ELK/Splunk), 4) APM data, 5) Real User Monitoring. Identify anomalies, error patterns, and service degradation points."
-- Output: Observability findings, anomaly detection, service health matrix, trace analysis
-- Context: Severity level from step 1, affected services
+  1. Resume from where we left off
+  2. Start fresh (archives existing session)
+  ```
 
-### 3. Initial Mitigation
+- If it exists and `status` is `"complete"`: Ask whether to archive and start fresh.
 
-- Use Task tool with subagent_type="incident-responder"
-- Prompt: "Implement immediate mitigation for P$SEVERITY incident: $ARGUMENTS. Actions: 1) Traffic throttling/rerouting if needed, 2) Feature flag disabling for affected features, 3) Circuit breaker activation, 4) Rollback assessment for recent deployments, 5) Scale resources if capacity-related. Prioritize user experience restoration."
-- Output: Mitigation actions taken, temporary fixes applied, rollback decisions
-- Context: Observability findings, severity classification
+### 2. Initialize state
 
-## Phase 2: Investigation & Root Cause Analysis
+Create `.incident-response/` directory and `state.json`:
 
-### 4. Deep System Debugging
+```json
+{
+  "incident": "$ARGUMENTS",
+  "status": "in_progress",
+  "severity": "P1",
+  "current_step": 1,
+  "current_phase": 1,
+  "completed_steps": [],
+  "files_created": [],
+  "started_at": "ISO_TIMESTAMP",
+  "last_updated": "ISO_TIMESTAMP"
+}
+```
 
-- Use Task tool with subagent_type="error-debugging::debugger"
-- Prompt: "Conduct deep debugging for incident: $ARGUMENTS using observability data. Investigate: 1) Stack traces and error logs, 2) Database query performance and locks, 3) Network latency and timeouts, 4) Memory leaks and CPU spikes, 5) Dependency failures and cascading errors. Apply Five Whys analysis."
-- Output: Root cause identification, contributing factors, dependency impact map
-- Context: Observability analysis, mitigation status
+Parse `$ARGUMENTS` for `--severity` flag. Default to P1 if not specified.
 
-### 5. Security Assessment
+### 3. Parse incident description
 
-- Use Task tool with subagent_type="security-scanning::security-auditor"
-- Prompt: "Assess security implications of incident: $ARGUMENTS. Check: 1) DDoS attack indicators, 2) Authentication/authorization failures, 3) Data exposure risks, 4) Certificate issues, 5) Suspicious access patterns. Review WAF logs, security groups, and audit trails."
-- Output: Security assessment, breach analysis, vulnerability identification
-- Context: Root cause findings, system logs
+Extract the incident description from `$ARGUMENTS` (everything before the flags). This is referenced as `$INCIDENT` in prompts below.
 
-### 6. Performance Engineering Analysis
+---
 
-- Use Task tool with subagent_type="application-performance::performance-engineer"
-- Prompt: "Analyze performance aspects of incident: $ARGUMENTS. Examine: 1) Resource utilization patterns, 2) Query optimization opportunities, 3) Caching effectiveness, 4) Load balancer health, 5) CDN performance, 6) Autoscaling triggers. Identify bottlenecks and capacity issues."
-- Output: Performance bottlenecks, resource recommendations, optimization opportunities
-- Context: Debug findings, current mitigation state
+## Phase 1: Detection & Triage (Steps 1-3)
 
-## Phase 3: Resolution & Recovery
+### Step 1: Incident Detection and Classification
 
-### 7. Fix Implementation
+Use the Task tool to launch the incident responder agent:
 
-- Use Task tool with subagent_type="backend-development::backend-architect"
-- Prompt: "Design and implement production fix for incident: $ARGUMENTS based on root cause. Requirements: 1) Minimal viable fix for rapid deployment, 2) Risk assessment and rollback capability, 3) Staged rollout plan with monitoring, 4) Validation criteria and health checks. Consider both immediate fix and long-term solution."
-- Output: Fix implementation, deployment strategy, validation plan, rollback procedures
-- Context: Root cause analysis, performance findings, security assessment
+```
+Task:
+  subagent_type: "incident-responder"
+  description: "URGENT: Classify incident: $INCIDENT"
+  prompt: |
+    URGENT: Detect and classify incident: $INCIDENT
 
-### 8. Deployment and Validation
+    Determine:
+    1. Incident severity (P0-P3) based on impact assessment
+    2. Affected services and their dependencies
+    3. User impact and business risk
+    4. Initial incident command structure needed
+    5. SLO violation status and error budget impact
 
-- Use Task tool with subagent_type="deployment-strategies::deployment-engineer"
-- Prompt: "Execute emergency deployment for incident fix: $ARGUMENTS. Process: 1) Blue-green or canary deployment, 2) Progressive rollout with monitoring, 3) Health check validation at each stage, 4) Rollback triggers configured, 5) Real-time monitoring during deployment. Coordinate with incident command."
-- Output: Deployment status, validation results, monitoring dashboard, rollback readiness
-- Context: Fix implementation, current system state
+    Check: error budgets, recent deployments, configuration changes, and monitoring alerts.
 
-## Phase 4: Communication & Coordination
+    Provide structured output with: SEVERITY, AFFECTED_SERVICES, USER_IMPACT,
+    BUSINESS_RISK, INCIDENT_COMMAND, SLO_STATUS.
+```
 
-### 9. Stakeholder Communication
+Save output to `.incident-response/01-classification.md`.
 
-- Use Task tool with subagent_type="content-marketing::content-marketer"
-- Prompt: "Manage incident communication for: $ARGUMENTS. Create: 1) Status page updates (public-facing), 2) Internal engineering updates (technical details), 3) Executive summary (business impact/ETA), 4) Customer support briefing (talking points), 5) Timeline documentation with key decisions. Update every 15-30 minutes based on severity."
-- Output: Communication artifacts, status updates, stakeholder briefings, timeline log
-- Context: All previous phases, current resolution status
+Update `state.json`: set `current_step` to 2, update severity from classification, add step 1 to `completed_steps`.
 
-### 10. Customer Impact Assessment
+### Step 2: Observability Analysis
 
-- Use Task tool with subagent_type="incident-responder"
-- Prompt: "Assess and document customer impact for incident: $ARGUMENTS. Analyze: 1) Affected user segments and geography, 2) Failed transactions or data loss, 3) SLA violations and contractual implications, 4) Customer support ticket volume, 5) Revenue impact estimation. Prepare proactive customer outreach list."
-- Output: Customer impact report, SLA analysis, outreach recommendations
-- Context: Resolution progress, communication status
+Read `.incident-response/01-classification.md`.
 
-## Phase 5: Postmortem & Prevention
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Observability sweep for incident: $INCIDENT"
+  prompt: |
+    You are an observability engineer. Perform rapid observability sweep for this incident.
 
-### 11. Blameless Postmortem
+    Context: [Insert contents of .incident-response/01-classification.md]
 
-- Use Task tool with subagent_type="documentation-generation::docs-architect"
-- Prompt: "Conduct blameless postmortem for incident: $ARGUMENTS. Document: 1) Complete incident timeline with decisions, 2) Root cause and contributing factors (systems focus), 3) What went well in response, 4) What could improve, 5) Action items with owners and deadlines, 6) Lessons learned for team education. Follow SRE postmortem best practices."
-- Output: Postmortem document, action items list, process improvements, training needs
-- Context: Complete incident history, all agent outputs
+    Query and analyze:
+    1. Distributed tracing (OpenTelemetry/Jaeger) for request flow
+    2. Metrics correlation (Prometheus/Grafana/DataDog) for anomalies
+    3. Log aggregation (ELK/Splunk) for error patterns
+    4. APM data for performance degradation points
+    5. Real User Monitoring for user experience impact
 
-### 12. Monitoring and Alert Enhancement
+    Identify anomalies, error patterns, and service degradation points.
 
-- Use Task tool with subagent_type="observability-monitoring::observability-engineer"
-- Prompt: "Enhance monitoring to prevent recurrence of: $ARGUMENTS. Implement: 1) New alerts for early detection, 2) SLI/SLO adjustments if needed, 3) Dashboard improvements for visibility, 4) Runbook automation opportunities, 5) Chaos engineering scenarios for testing. Ensure alerts are actionable and reduce noise."
-- Output: New monitoring configuration, alert rules, dashboard updates, runbook automation
-- Context: Postmortem findings, root cause analysis
+    Provide structured output with: TRACE_ANALYSIS, METRICS_ANOMALIES, LOG_PATTERNS,
+    APM_FINDINGS, RUM_IMPACT, SERVICE_HEALTH_MATRIX.
+```
 
-### 13. System Hardening
+Save output to `.incident-response/02-observability.md`.
 
-- Use Task tool with subagent_type="backend-development::backend-architect"
-- Prompt: "Design system improvements to prevent incident: $ARGUMENTS. Propose: 1) Architecture changes for resilience (circuit breakers, bulkheads), 2) Graceful degradation strategies, 3) Capacity planning adjustments, 4) Technical debt prioritization, 5) Dependency reduction opportunities. Create implementation roadmap."
-- Output: Architecture improvements, resilience patterns, technical debt items, roadmap
-- Context: Postmortem action items, performance analysis
+Update `state.json`: set `current_step` to 3, add step 2 to `completed_steps`.
+
+### Step 3: Initial Mitigation
+
+Read `.incident-response/01-classification.md` and `.incident-response/02-observability.md`.
+
+```
+Task:
+  subagent_type: "incident-responder"
+  description: "Immediate mitigation for: $INCIDENT"
+  prompt: |
+    Implement immediate mitigation for this incident.
+
+    Classification: [Insert contents of .incident-response/01-classification.md]
+    Observability: [Insert contents of .incident-response/02-observability.md]
+
+    Actions to evaluate and implement:
+    1. Traffic throttling/rerouting if needed
+    2. Feature flag disabling for affected features
+    3. Circuit breaker activation
+    4. Rollback assessment for recent deployments
+    5. Scale resources if capacity-related
+
+    Prioritize user experience restoration.
+
+    Provide structured output with: MITIGATION_ACTIONS, TEMPORARY_FIXES,
+    ROLLBACK_DECISIONS, SERVICE_STATUS_AFTER, USER_IMPACT_REDUCTION.
+```
+
+Save output to `.incident-response/03-mitigation.md`.
+
+Update `state.json`: set `current_step` to "checkpoint-1", add step 3 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 1 — User Approval Required
+
+You MUST stop here and present the triage results.
+
+Display a summary from `.incident-response/01-classification.md` and `.incident-response/03-mitigation.md` and ask:
+
+```
+Triage and initial mitigation complete.
+
+Severity: [from classification]
+Affected services: [from classification]
+Mitigation status: [from mitigation]
+User impact reduction: [from mitigation]
+
+1. Approve — proceed to investigation and root cause analysis
+2. Request changes — adjust mitigation or severity
+3. Pause — save progress and stop here (mitigation in place)
+```
+
+Do NOT proceed to Phase 2 until the user approves.
+
+---
+
+## Phase 2: Investigation & Root Cause (Steps 4-6)
+
+### Step 4: Deep System Debugging
+
+Read `.incident-response/02-observability.md` and `.incident-response/03-mitigation.md`.
+
+```
+Task:
+  subagent_type: "debugger"
+  description: "Deep debugging for: $INCIDENT"
+  prompt: |
+    Conduct deep debugging for this incident using observability data.
+
+    Observability: [Insert contents of .incident-response/02-observability.md]
+    Mitigation: [Insert contents of .incident-response/03-mitigation.md]
+
+    Investigate:
+    1. Stack traces and error logs
+    2. Database query performance and locks
+    3. Network latency and timeouts
+    4. Memory leaks and CPU spikes
+    5. Dependency failures and cascading errors
+
+    Apply Five Whys analysis to identify root cause.
+
+    Provide structured output with: ROOT_CAUSE, CONTRIBUTING_FACTORS,
+    DEPENDENCY_IMPACT_MAP, FIVE_WHYS_ANALYSIS.
+```
+
+Save output to `.incident-response/04-debugging.md`.
+
+Update `state.json`: set `current_step` to 5, add step 4 to `completed_steps`.
+
+### Step 5: Security Assessment
+
+Read `.incident-response/04-debugging.md`.
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Security assessment for: $INCIDENT"
+  prompt: |
+    You are a security auditor. Assess security implications of this incident.
+
+    Debug findings: [Insert contents of .incident-response/04-debugging.md]
+
+    Check:
+    1. DDoS attack indicators
+    2. Authentication/authorization failures
+    3. Data exposure risks
+    4. Certificate issues
+    5. Suspicious access patterns
+
+    Review WAF logs, security groups, and audit trails.
+
+    Provide structured output with: SECURITY_ASSESSMENT, BREACH_ANALYSIS,
+    VULNERABILITY_IDENTIFICATION, DATA_EXPOSURE_RISK, REMEDIATION_STEPS.
+```
+
+### Step 6: Performance Analysis
+
+Read `.incident-response/04-debugging.md`.
+
+Launch in parallel with Step 5:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Performance analysis for: $INCIDENT"
+  prompt: |
+    You are a performance engineer. Analyze performance aspects of this incident.
+
+    Debug findings: [Insert contents of .incident-response/04-debugging.md]
+
+    Examine:
+    1. Resource utilization patterns
+    2. Query optimization opportunities
+    3. Caching effectiveness
+    4. Load balancer health
+    5. CDN performance
+    6. Autoscaling triggers
+
+    Identify bottlenecks and capacity issues.
+
+    Provide structured output with: PERFORMANCE_BOTTLENECKS, RESOURCE_RECOMMENDATIONS,
+    OPTIMIZATION_OPPORTUNITIES, CAPACITY_ISSUES.
+```
+
+After both complete, consolidate into `.incident-response/05-investigation.md`:
+
+```markdown
+# Investigation: $INCIDENT
+
+## Root Cause (from debugging)
+
+[From Step 4]
+
+## Security Assessment
+
+[From Step 5]
+
+## Performance Analysis
+
+[From Step 6]
+
+## Combined Findings
+
+[Synthesis of all investigation results]
+```
+
+Update `state.json`: set `current_step` to "checkpoint-2", add steps 4-6 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 2 — User Approval Required
+
+Display investigation results from `.incident-response/05-investigation.md` and ask:
+
+```
+Investigation complete. Please review .incident-response/05-investigation.md
+
+Root cause: [brief summary]
+Security concerns: [summary]
+Performance issues: [summary]
+
+1. Approve — proceed to fix implementation and deployment
+2. Request changes — investigate further
+3. Pause — save progress and stop here
+```
+
+Do NOT proceed to Phase 3 until the user approves.
+
+---
+
+## Phase 3: Resolution & Recovery (Steps 7-8)
+
+### Step 7: Fix Implementation
+
+Read `.incident-response/05-investigation.md`.
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Implement production fix for: $INCIDENT"
+  prompt: |
+    You are a senior backend architect. Design and implement a production fix for this incident.
+
+    Investigation: [Insert contents of .incident-response/05-investigation.md]
+
+    Requirements:
+    1. Minimal viable fix for rapid deployment
+    2. Risk assessment and rollback capability
+    3. Staged rollout plan with monitoring
+    4. Validation criteria and health checks
+    5. Consider both immediate fix and long-term solution
+
+    Provide structured output with: FIX_IMPLEMENTATION, DEPLOYMENT_STRATEGY,
+    VALIDATION_PLAN, ROLLBACK_PROCEDURES, LONG_TERM_SOLUTION.
+```
+
+Save output to `.incident-response/06-fix.md`.
+
+Update `state.json`: set `current_step` to 8, add step 7 to `completed_steps`.
+
+### Step 8: Deployment and Validation
+
+Read `.incident-response/06-fix.md`.
+
+```
+Task:
+  subagent_type: "devops-troubleshooter"
+  description: "Deploy and validate fix for: $INCIDENT"
+  prompt: |
+    Execute emergency deployment for incident fix.
+
+    Fix details: [Insert contents of .incident-response/06-fix.md]
+
+    Process:
+    1. Blue-green or canary deployment strategy
+    2. Progressive rollout with monitoring
+    3. Health check validation at each stage
+    4. Rollback triggers configured
+    5. Real-time monitoring during deployment
+
+    Provide structured output with: DEPLOYMENT_STATUS, VALIDATION_RESULTS,
+    MONITORING_DASHBOARD, ROLLBACK_READINESS, SERVICE_HEALTH_POST_DEPLOY.
+```
+
+Save output to `.incident-response/07-deployment.md`.
+
+Update `state.json`: set `current_step` to "checkpoint-3", add step 8 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 3 — User Approval Required
+
+Display deployment results from `.incident-response/07-deployment.md` and ask:
+
+```
+Fix deployed and validated.
+
+Deployment status: [from deployment]
+Service health: [from deployment]
+Rollback ready: [yes/no]
+
+1. Approve — proceed to communication and postmortem
+2. Rollback — revert the deployment
+3. Pause — save progress and monitor
+```
+
+Do NOT proceed to Phase 4 until the user approves.
+
+---
+
+## Phase 4: Communication & Coordination (Steps 9-10)
+
+### Step 9: Stakeholder Communication
+
+Read `.incident-response/01-classification.md`, `.incident-response/05-investigation.md`, and `.incident-response/07-deployment.md`.
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Manage incident communication for: $INCIDENT"
+  prompt: |
+    You are a communications specialist. Manage incident communication for this incident.
+
+    Classification: [Insert contents of .incident-response/01-classification.md]
+    Investigation: [Insert contents of .incident-response/05-investigation.md]
+    Deployment: [Insert contents of .incident-response/07-deployment.md]
+
+    Create:
+    1. Status page updates (public-facing)
+    2. Internal engineering updates (technical details)
+    3. Executive summary (business impact/ETA)
+    4. Customer support briefing (talking points)
+    5. Timeline documentation with key decisions
+
+    Provide structured output with: STATUS_PAGE_UPDATE, ENGINEERING_UPDATE,
+    EXECUTIVE_SUMMARY, SUPPORT_BRIEFING, INCIDENT_TIMELINE.
+```
+
+Save output to `.incident-response/08-communication.md`.
+
+Update `state.json`: set `current_step` to 10, add step 9 to `completed_steps`.
+
+### Step 10: Customer Impact Assessment
+
+Read `.incident-response/01-classification.md` and `.incident-response/07-deployment.md`.
+
+```
+Task:
+  subagent_type: "incident-responder"
+  description: "Assess customer impact for: $INCIDENT"
+  prompt: |
+    Assess and document customer impact for this incident.
+
+    Classification: [Insert contents of .incident-response/01-classification.md]
+    Resolution: [Insert contents of .incident-response/07-deployment.md]
+
+    Analyze:
+    1. Affected user segments and geography
+    2. Failed transactions or data loss
+    3. SLA violations and contractual implications
+    4. Customer support ticket volume
+    5. Revenue impact estimation
+    6. Proactive customer outreach recommendations
+
+    Provide structured output with: CUSTOMER_IMPACT_REPORT, SLA_ANALYSIS,
+    REVENUE_IMPACT, OUTREACH_RECOMMENDATIONS.
+```
+
+Save output to `.incident-response/09-customer-impact.md`.
+
+Update `state.json`: set `current_step` to 11, add step 10 to `completed_steps`.
+
+---
+
+## Phase 5: Postmortem & Prevention (Steps 11-13)
+
+### Step 11: Blameless Postmortem
+
+Read all `.incident-response/*.md` files.
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Blameless postmortem for: $INCIDENT"
+  prompt: |
+    You are an SRE documentation specialist. Conduct a blameless postmortem for this incident.
+
+    Context: [Insert contents of all .incident-response/*.md files]
+
+    Document:
+    1. Complete incident timeline with decisions
+    2. Root cause and contributing factors (systems focus, not people)
+    3. What went well in response
+    4. What could improve
+    5. Action items with owners and deadlines
+    6. Lessons learned for team education
+
+    Follow SRE postmortem best practices. Focus on systems, not blame.
+
+    Provide structured output with: INCIDENT_TIMELINE, ROOT_CAUSE_SUMMARY,
+    WHAT_WENT_WELL, IMPROVEMENTS, ACTION_ITEMS, LESSONS_LEARNED.
+```
+
+Save output to `.incident-response/10-postmortem.md`.
+
+Update `state.json`: set `current_step` to 12, add step 11 to `completed_steps`.
+
+### Step 12: Monitoring Enhancement
+
+Read `.incident-response/05-investigation.md` and `.incident-response/10-postmortem.md`.
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Enhance monitoring for: $INCIDENT prevention"
+  prompt: |
+    You are an observability engineer. Enhance monitoring to prevent recurrence of this incident.
+
+    Investigation: [Insert contents of .incident-response/05-investigation.md]
+    Postmortem: [Insert contents of .incident-response/10-postmortem.md]
+
+    Implement:
+    1. New alerts for early detection
+    2. SLI/SLO adjustments if needed
+    3. Dashboard improvements for visibility
+    4. Runbook automation opportunities
+    5. Chaos engineering scenarios for testing
+
+    Ensure alerts are actionable and reduce noise.
+
+    Provide structured output with: NEW_ALERTS, SLO_ADJUSTMENTS, DASHBOARD_UPDATES,
+    RUNBOOK_AUTOMATION, CHAOS_SCENARIOS.
+```
+
+Save output to `.incident-response/11-monitoring.md`.
+
+Update `state.json`: set `current_step` to 13, add step 12 to `completed_steps`.
+
+### Step 13: System Hardening
+
+Read `.incident-response/05-investigation.md` and `.incident-response/10-postmortem.md`.
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "System hardening for: $INCIDENT prevention"
+  prompt: |
+    You are a senior backend architect. Design system improvements to prevent recurrence.
+
+    Investigation: [Insert contents of .incident-response/05-investigation.md]
+    Postmortem: [Insert contents of .incident-response/10-postmortem.md]
+
+    Propose:
+    1. Architecture changes for resilience (circuit breakers, bulkheads)
+    2. Graceful degradation strategies
+    3. Capacity planning adjustments
+    4. Technical debt prioritization
+    5. Dependency reduction opportunities
+    6. Implementation roadmap
+
+    Provide structured output with: ARCHITECTURE_IMPROVEMENTS, RESILIENCE_PATTERNS,
+    CAPACITY_PLAN, TECH_DEBT_ITEMS, IMPLEMENTATION_ROADMAP.
+```
+
+Save output to `.incident-response/12-hardening.md`.
+
+Update `state.json`: set `current_step` to "complete", add step 13 to `completed_steps`.
+
+---
+
+## Completion
+
+Update `state.json`:
+
+- Set `status` to `"complete"`
+- Set `last_updated` to current timestamp
+
+Present the final summary:
+
+```
+Incident response complete: $INCIDENT
+
+## Files Created
+[List all .incident-response/ output files]
+
+## Response Summary
+- Classification: .incident-response/01-classification.md
+- Observability: .incident-response/02-observability.md
+- Mitigation: .incident-response/03-mitigation.md
+- Debugging: .incident-response/04-debugging.md
+- Investigation: .incident-response/05-investigation.md
+- Fix: .incident-response/06-fix.md
+- Deployment: .incident-response/07-deployment.md
+- Communication: .incident-response/08-communication.md
+- Customer Impact: .incident-response/09-customer-impact.md
+- Postmortem: .incident-response/10-postmortem.md
+- Monitoring: .incident-response/11-monitoring.md
+- Hardening: .incident-response/12-hardening.md
+
+## Immediate Follow-ups
+1. Verify service stability over the next 24 hours
+2. Complete all postmortem action items
+3. Deploy monitoring enhancements within 1 week
+4. Schedule system hardening work
+5. Conduct team learning session on lessons learned
 
 ## Success Criteria
-
-### Immediate Success (During Incident)
-
-- Service restoration within SLA targets
-- Accurate severity classification within 5 minutes
-- Stakeholder communication every 15-30 minutes
-- No cascading failures or incident escalation
-- Clear incident command structure maintained
-
-### Long-term Success (Post-Incident)
-
-- Comprehensive postmortem within 48 hours
+- Service restored within SLA targets
+- Postmortem completed within 48 hours
 - All action items assigned with deadlines
 - Monitoring improvements deployed within 1 week
-- Runbook updates completed
-- Team training conducted on lessons learned
-- Error budget impact assessed and communicated
-
-## Coordination Protocols
-
-### Incident Command Structure
-
-- **Incident Commander**: Decision authority, coordination
-- **Technical Lead**: Technical investigation and resolution
-- **Communications Lead**: Stakeholder updates
-- **Subject Matter Experts**: Specific system expertise
-
-### Communication Channels
-
-- War room (Slack/Teams channel or Zoom)
-- Status page updates (StatusPage, Statusly)
-- PagerDuty/Opsgenie for alerting
-- Confluence/Notion for documentation
-
-### Handoff Requirements
-
-- Each phase provides clear context to the next
-- All findings documented in shared incident doc
-- Decision rationale recorded for postmortem
-- Timestamp all significant events
+- No recurrence of the same root cause
+```
 
 Production incident requiring immediate response: $ARGUMENTS

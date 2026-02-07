@@ -1,6 +1,6 @@
 {
   "name": "multi-platform-apps",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Cross-platform application development coordinating web, iOS, Android, and desktop implementations",
   "author": {
     "name": "Seth Hobson",

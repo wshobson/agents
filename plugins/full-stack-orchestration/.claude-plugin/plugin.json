@@ -1,6 +1,6 @@
 {
   "name": "full-stack-orchestration",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "End-to-end feature orchestration with testing, security, performance, and deployment",
   "author": {
     "name": "Seth Hobson",

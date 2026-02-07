@@ -1,128 +1,593 @@
-Orchestrate full-stack feature development across backend, frontend, and infrastructure layers with modern API-first approach:
+---
+description: "Orchestrate end-to-end full-stack feature development across backend, frontend, database, and infrastructure layers"
+argument-hint: "<feature description> [--stack react/fastapi/postgres] [--api-style rest|graphql] [--complexity simple|medium|complex]"
+---
 
-[Extended thinking: This workflow coordinates multiple specialized agents to deliver a complete full-stack feature from architecture through deployment. It follows API-first development principles, ensuring contract-driven development where the API specification drives both backend implementation and frontend consumption. Each phase builds upon previous outputs, creating a cohesive system with proper separation of concerns, comprehensive testing, and production-ready deployment. The workflow emphasizes modern practices like component-driven UI development, feature flags, observability, and progressive rollout strategies.]
+# Full-Stack Feature Orchestrator
 
-## Phase 1: Architecture & Design Foundation
+## CRITICAL BEHAVIORAL RULES
 
-### 1. Database Architecture Design
+You MUST follow these rules exactly. Violating any of them is a failure.
 
-- Use Task tool with subagent_type="database-design::database-architect"
-- Prompt: "Design database schema and data models for: $ARGUMENTS. Consider scalability, query patterns, indexing strategy, and data consistency requirements. Include migration strategy if modifying existing schema. Provide both logical and physical data models."
-- Expected output: Entity relationship diagrams, table schemas, indexing strategy, migration scripts, data access patterns
-- Context: Initial requirements and business domain model
+1. **Execute steps in order.** Do NOT skip ahead, reorder, or merge steps.
+2. **Write output files.** Each step MUST produce its output file in `.full-stack-feature/` before the next step begins. Read from prior step files -- do NOT rely on context window memory.
+3. **Stop at checkpoints.** When you reach a `PHASE CHECKPOINT`, you MUST stop and wait for explicit user approval before continuing. Use the AskUserQuestion tool with clear options.
+4. **Halt on failure.** If any step fails (agent error, test failure, missing dependency), STOP immediately. Present the error and ask the user how to proceed. Do NOT silently continue.
+5. **Use only local agents.** All `subagent_type` references use agents bundled with this plugin or `general-purpose`. No cross-plugin dependencies.
+6. **Never enter plan mode autonomously.** Do NOT use EnterPlanMode. This command IS the plan -- execute it.
 
-### 2. Backend Service Architecture
+## Pre-flight Checks
 
-- Use Task tool with subagent_type="backend-development::backend-architect"
-- Prompt: "Design backend service architecture for: $ARGUMENTS. Using the database design from previous step, create service boundaries, define API contracts (OpenAPI/GraphQL), design authentication/authorization strategy, and specify inter-service communication patterns. Include resilience patterns (circuit breakers, retries) and caching strategy."
-- Expected output: Service architecture diagram, OpenAPI specifications, authentication flows, caching architecture, message queue design (if applicable)
-- Context: Database schema from step 1, non-functional requirements
+Before starting, perform these checks:
 
-### 3. Frontend Component Architecture
+### 1. Check for existing session
 
-- Use Task tool with subagent_type="frontend-mobile-development::frontend-developer"
-- Prompt: "Design frontend architecture and component structure for: $ARGUMENTS. Based on the API contracts from previous step, design component hierarchy, state management approach (Redux/Zustand/Context), routing structure, and data fetching patterns. Include accessibility requirements and responsive design strategy. Plan for Storybook component documentation."
-- Expected output: Component tree diagram, state management design, routing configuration, design system integration plan, accessibility checklist
-- Context: API specifications from step 2, UI/UX requirements
+Check if `.full-stack-feature/state.json` exists:
 
-## Phase 2: Parallel Implementation
+- If it exists and `status` is `"in_progress"`: Read it, display the current step, and ask the user:
 
-### 4. Backend Service Implementation
+  ```
+  Found an in-progress full-stack feature session:
+  Feature: [name from state]
+  Current step: [step from state]
 
-- Use Task tool with subagent_type="python-development::python-pro" (or "golang-pro"/"nodejs-expert" based on stack)
-- Prompt: "Implement backend services for: $ARGUMENTS. Using the architecture and API specs from Phase 1, build RESTful/GraphQL endpoints with proper validation, error handling, and logging. Implement business logic, data access layer, authentication middleware, and integration with external services. Include observability (structured logging, metrics, tracing)."
-- Expected output: Backend service code, API endpoints, middleware, background jobs, unit tests, integration tests
-- Context: Architecture designs from Phase 1, database schema
+  1. Resume from where we left off
+  2. Start fresh (archives existing session)
+  ```
 
-### 5. Frontend Implementation
+- If it exists and `status` is `"complete"`: Ask whether to archive and start fresh.
 
-- Use Task tool with subagent_type="frontend-mobile-development::frontend-developer"
-- Prompt: "Implement frontend application for: $ARGUMENTS. Build React/Next.js components using the component architecture from Phase 1. Implement state management, API integration with proper error handling and loading states, form validation, and responsive layouts. Create Storybook stories for components. Ensure accessibility (WCAG 2.1 AA compliance)."
-- Expected output: React components, state management implementation, API client code, Storybook stories, responsive styles, accessibility implementations
-- Context: Component architecture from step 3, API contracts
+### 2. Initialize state
 
-### 6. Database Implementation & Optimization
+Create `.full-stack-feature/` directory and `state.json`:
 
-- Use Task tool with subagent_type="database-design::sql-pro"
-- Prompt: "Implement and optimize database layer for: $ARGUMENTS. Create migration scripts, stored procedures (if needed), optimize queries identified by backend implementation, set up proper indexes, and implement data validation constraints. Include database-level security measures and backup strategies."
-- Expected output: Migration scripts, optimized queries, stored procedures, index definitions, database security configuration
-- Context: Database design from step 1, query patterns from backend implementation
+```json
+{
+  "feature": "$ARGUMENTS",
+  "status": "in_progress",
+  "stack": "auto-detect",
+  "api_style": "rest",
+  "complexity": "medium",
+  "current_step": 1,
+  "current_phase": 1,
+  "completed_steps": [],
+  "files_created": [],
+  "started_at": "ISO_TIMESTAMP",
+  "last_updated": "ISO_TIMESTAMP"
+}
+```
 
-## Phase 3: Integration & Testing
+Parse `$ARGUMENTS` for `--stack`, `--api-style`, and `--complexity` flags. Use defaults if not specified.
 
-### 7. API Contract Testing
+### 3. Parse feature description
 
-- Use Task tool with subagent_type="test-automator"
-- Prompt: "Create contract tests for: $ARGUMENTS. Implement Pact/Dredd tests to validate API contracts between backend and frontend. Create integration tests for all API endpoints, test authentication flows, validate error responses, and ensure proper CORS configuration. Include load testing scenarios."
-- Expected output: Contract test suites, integration tests, load test scenarios, API documentation validation
-- Context: API implementations from Phase 2
+Extract the feature description from `$ARGUMENTS` (everything before the flags). This is referenced as `$FEATURE` in prompts below.
 
-### 8. End-to-End Testing
+---
 
-- Use Task tool with subagent_type="test-automator"
-- Prompt: "Implement E2E tests for: $ARGUMENTS. Create Playwright/Cypress tests covering critical user journeys, cross-browser compatibility, mobile responsiveness, and error scenarios. Test feature flags integration, analytics tracking, and performance metrics. Include visual regression tests."
-- Expected output: E2E test suites, visual regression baselines, performance benchmarks, test reports
-- Context: Frontend and backend implementations from Phase 2
+## Phase 1: Architecture & Design Foundation (Steps 1-3) -- Interactive
 
-### 9. Security Audit & Hardening
+### Step 1: Requirements Gathering
 
-- Use Task tool with subagent_type="security-auditor"
-- Prompt: "Perform security audit for: $ARGUMENTS. Review API security (authentication, authorization, rate limiting), check for OWASP Top 10 vulnerabilities, audit frontend for XSS/CSRF risks, validate input sanitization, and review secrets management. Provide penetration testing results and remediation steps."
-- Expected output: Security audit report, vulnerability assessment, remediation recommendations, security headers configuration
-- Context: All implementations from Phase 2
+Gather requirements through interactive Q&A. Ask ONE question at a time using the AskUserQuestion tool. Do NOT ask all questions at once.
 
-## Phase 4: Deployment & Operations
+**Questions to ask (in order):**
 
-### 10. Infrastructure & CI/CD Setup
+1. **Problem Statement**: "What problem does this feature solve? Who is the user and what's their pain point?"
+2. **Acceptance Criteria**: "What are the key acceptance criteria? When is this feature 'done'?"
+3. **Scope Boundaries**: "What is explicitly OUT of scope for this feature?"
+4. **Technical Constraints**: "Any technical constraints? (e.g., existing API conventions, specific DB, latency requirements, auth system)"
+5. **Stack Confirmation**: "Confirm the tech stack -- detected [stack] from project. Frontend framework? Backend framework? Database? Any changes?"
+6. **Dependencies**: "Does this feature depend on or affect other features/services?"
 
-- Use Task tool with subagent_type="deployment-engineer"
-- Prompt: "Setup deployment infrastructure for: $ARGUMENTS. Create Docker containers, Kubernetes manifests (or cloud-specific configs), implement CI/CD pipelines with automated testing gates, setup feature flags (LaunchDarkly/Unleash), and configure monitoring/alerting. Include blue-green deployment strategy and rollback procedures."
-- Expected output: Dockerfiles, K8s manifests, CI/CD pipeline configs, feature flag setup, IaC templates (Terraform/CloudFormation)
-- Context: All implementations and tests from previous phases
+After gathering answers, write the requirements document:
 
-### 11. Observability & Monitoring
+**Output file:** `.full-stack-feature/01-requirements.md`
 
-- Use Task tool with subagent_type="deployment-engineer"
-- Prompt: "Implement observability stack for: $ARGUMENTS. Setup distributed tracing (OpenTelemetry), configure application metrics (Prometheus/DataDog), implement centralized logging (ELK/Splunk), create dashboards for key metrics, and define SLIs/SLOs. Include alerting rules and on-call procedures."
-- Expected output: Observability configuration, dashboard definitions, alert rules, runbooks, SLI/SLO definitions
-- Context: Infrastructure setup from step 10
+```markdown
+# Requirements: $FEATURE
 
-### 12. Performance Optimization
+## Problem Statement
 
-- Use Task tool with subagent_type="performance-engineer"
-- Prompt: "Optimize performance across stack for: $ARGUMENTS. Analyze and optimize database queries, implement caching strategies (Redis/CDN), optimize frontend bundle size and loading performance, setup lazy loading and code splitting, and tune backend service performance. Include before/after metrics."
-- Expected output: Performance improvements, caching configuration, CDN setup, optimized bundles, performance metrics report
-- Context: Monitoring data from step 11, load test results
+[From Q1]
 
-## Configuration Options
+## Acceptance Criteria
 
-- `stack`: Specify technology stack (e.g., "React/FastAPI/PostgreSQL", "Next.js/Django/MongoDB")
-- `deployment_target`: Cloud platform (AWS/GCP/Azure) or on-premises
-- `feature_flags`: Enable/disable feature flag integration
-- `api_style`: REST or GraphQL
-- `testing_depth`: Comprehensive or essential
-- `compliance`: Specific compliance requirements (GDPR, HIPAA, SOC2)
+[From Q2 -- formatted as checkboxes]
 
-## Success Criteria
+## Scope
 
-- All API contracts validated through contract tests
-- Frontend and backend integration tests passing
-- E2E tests covering critical user journeys
-- Security audit passed with no critical vulnerabilities
-- Performance metrics meeting defined SLOs
-- Observability stack capturing all key metrics
-- Feature flags configured for progressive rollout
-- Documentation complete for all components
-- CI/CD pipeline with automated quality gates
-- Zero-downtime deployment capability verified
+### In Scope
 
-## Coordination Notes
+[Derived from answers]
 
-- Each phase builds upon outputs from previous phases
-- Parallel tasks in Phase 2 can run simultaneously but must converge for Phase 3
-- Maintain traceability between requirements and implementations
-- Use correlation IDs across all services for distributed tracing
-- Document all architectural decisions in ADRs
-- Ensure consistent error handling and API responses across services
+### Out of Scope
 
-Feature to implement: $ARGUMENTS
+[From Q3]
+
+## Technical Constraints
+
+[From Q4]
+
+## Technology Stack
+
+[From Q5 -- frontend, backend, database, infrastructure]
+
+## Dependencies
+
+[From Q6]
+
+## Configuration
+
+- Stack: [detected or specified]
+- API Style: [rest|graphql]
+- Complexity: [simple|medium|complex]
+```
+
+Update `state.json`: set `current_step` to 2, add `"01-requirements.md"` to `files_created`, add step 1 to `completed_steps`.
+
+### Step 2: Database & Data Model Design
+
+Read `.full-stack-feature/01-requirements.md` to load requirements context.
+
+Use the Task tool to launch a database architecture agent:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Design database schema and data models for $FEATURE"
+  prompt: |
+    You are a database architect. Design the database schema and data models for this feature.
+
+    ## Requirements
+    [Insert full contents of .full-stack-feature/01-requirements.md]
+
+    ## Deliverables
+    1. **Entity relationship design**: Tables/collections, relationships, cardinality
+    2. **Schema definitions**: Column types, constraints, defaults, nullable fields
+    3. **Indexing strategy**: Which columns to index, index types, composite indexes
+    4. **Migration strategy**: How to safely add/modify schema in production
+    5. **Query patterns**: Expected read/write patterns and how the schema supports them
+    6. **Data access patterns**: Repository/DAO interface design
+
+    Write your complete database design as a single markdown document.
+```
+
+Save the agent's output to `.full-stack-feature/02-database-design.md`.
+
+Update `state.json`: set `current_step` to 3, add step 2 to `completed_steps`.
+
+### Step 3: Backend & Frontend Architecture
+
+Read `.full-stack-feature/01-requirements.md` and `.full-stack-feature/02-database-design.md`.
+
+Use the Task tool to launch an architecture agent:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Design full-stack architecture for $FEATURE"
+  prompt: |
+    You are a full-stack architect. Design the complete backend and frontend architecture for this feature.
+
+    ## Requirements
+    [Insert contents of .full-stack-feature/01-requirements.md]
+
+    ## Database Design
+    [Insert contents of .full-stack-feature/02-database-design.md]
+
+    ## Deliverables
+
+    ### Backend Architecture
+    1. **API design**: Endpoints/resolvers, request/response schemas, error handling, versioning
+    2. **Service layer**: Business logic components, their responsibilities, boundaries
+    3. **Authentication/authorization**: How auth applies to new endpoints
+    4. **Integration points**: How this connects to existing services/systems
+
+    ### Frontend Architecture
+    1. **Component hierarchy**: Page components, containers, presentational components
+    2. **State management**: What state is needed, where it lives, data flow
+    3. **Routing**: New routes, navigation structure, route guards
+    4. **API integration**: Data fetching strategy, caching, optimistic updates
+
+    ### Cross-Cutting Concerns
+    1. **Error handling**: Backend errors -> API responses -> frontend error states
+    2. **Security considerations**: Input validation, XSS prevention, CSRF, data protection
+    3. **Risk assessment**: Technical risks and mitigation strategies
+
+    Write your complete architecture design as a single markdown document.
+```
+
+Save the agent's output to `.full-stack-feature/03-architecture.md`.
+
+Update `state.json`: set `current_step` to "checkpoint-1", add step 3 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 1 -- User Approval Required
+
+You MUST stop here and present the architecture for review.
+
+Display a summary of the database design and architecture from `.full-stack-feature/02-database-design.md` and `.full-stack-feature/03-architecture.md` (key components, API endpoints, data model overview, component structure) and ask:
+
+```
+Architecture and database design are complete. Please review:
+- .full-stack-feature/02-database-design.md
+- .full-stack-feature/03-architecture.md
+
+1. Approve -- proceed to implementation
+2. Request changes -- tell me what to adjust
+3. Pause -- save progress and stop here
+```
+
+Do NOT proceed to Phase 2 until the user selects option 1. If they select option 2, revise and re-checkpoint. If option 3, update `state.json` and stop.
+
+---
+
+## Phase 2: Implementation (Steps 4-7)
+
+### Step 4: Database Implementation
+
+Read `.full-stack-feature/01-requirements.md` and `.full-stack-feature/02-database-design.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Implement database layer for $FEATURE"
+  prompt: |
+    You are a database engineer. Implement the database layer for this feature.
+
+    ## Requirements
+    [Insert contents of .full-stack-feature/01-requirements.md]
+
+    ## Database Design
+    [Insert contents of .full-stack-feature/02-database-design.md]
+
+    ## Instructions
+    1. Create migration scripts for schema changes
+    2. Implement models/entities matching the schema design
+    3. Implement repository/data access layer with the designed query patterns
+    4. Add database-level validation constraints
+    5. Optimize queries with proper indexes as designed
+    6. Follow the project's existing ORM and migration patterns
+
+    Write all code files. Report what files were created/modified.
+```
+
+Save a summary to `.full-stack-feature/04-database-impl.md`.
+
+Update `state.json`: set `current_step` to 5, add step 4 to `completed_steps`.
+
+### Step 5: Backend Implementation
+
+Read `.full-stack-feature/01-requirements.md`, `.full-stack-feature/03-architecture.md`, and `.full-stack-feature/04-database-impl.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Implement backend services for $FEATURE"
+  prompt: |
+    You are a backend developer. Implement the backend services for this feature based on the approved architecture.
+
+    ## Requirements
+    [Insert contents of .full-stack-feature/01-requirements.md]
+
+    ## Architecture
+    [Insert contents of .full-stack-feature/03-architecture.md]
+
+    ## Database Implementation
+    [Insert contents of .full-stack-feature/04-database-impl.md]
+
+    ## Instructions
+    1. Implement API endpoints/resolvers as designed in the architecture
+    2. Implement business logic in the service layer
+    3. Wire up the data access layer from the database implementation
+    4. Add input validation, error handling, and proper HTTP status codes
+    5. Implement authentication/authorization middleware as designed
+    6. Add structured logging and observability hooks
+    7. Follow the project's existing code patterns and conventions
+
+    Write all code files. Report what files were created/modified.
+```
+
+Save a summary to `.full-stack-feature/05-backend-impl.md`.
+
+Update `state.json`: set `current_step` to 6, add step 5 to `completed_steps`.
+
+### Step 6: Frontend Implementation
+
+Read `.full-stack-feature/01-requirements.md`, `.full-stack-feature/03-architecture.md`, and `.full-stack-feature/05-backend-impl.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Implement frontend for $FEATURE"
+  prompt: |
+    You are a frontend developer. Implement the frontend components for this feature.
+
+    ## Requirements
+    [Insert contents of .full-stack-feature/01-requirements.md]
+
+    ## Architecture
+    [Insert contents of .full-stack-feature/03-architecture.md]
+
+    ## Backend Implementation
+    [Insert contents of .full-stack-feature/05-backend-impl.md]
+
+    ## Instructions
+    1. Build UI components following the component hierarchy from the architecture
+    2. Implement state management and data flow as designed
+    3. Integrate with the backend API endpoints using the designed data fetching strategy
+    4. Implement form handling, validation, and error states
+    5. Add loading states and optimistic updates where appropriate
+    6. Ensure responsive design and accessibility basics (semantic HTML, ARIA labels, keyboard nav)
+    7. Follow the project's existing frontend patterns and component conventions
+
+    Write all code files. Report what files were created/modified.
+```
+
+Save a summary to `.full-stack-feature/06-frontend-impl.md`.
+
+**Note:** If the feature has no frontend component (pure backend/API), skip this step -- write a brief note in `06-frontend-impl.md` explaining why it was skipped, and continue.
+
+Update `state.json`: set `current_step` to 7, add step 6 to `completed_steps`.
+
+### Step 7: Testing & Validation
+
+Read `.full-stack-feature/04-database-impl.md`, `.full-stack-feature/05-backend-impl.md`, and `.full-stack-feature/06-frontend-impl.md`.
+
+Launch three agents in parallel using multiple Task tool calls in a single response:
+
+**7a. Test Suite Creation:**
+
+```
+Task:
+  subagent_type: "test-automator"
+  description: "Create test suite for $FEATURE"
+  prompt: |
+    Create a comprehensive test suite for this full-stack feature.
+
+    ## What was implemented
+    ### Database
+    [Insert contents of .full-stack-feature/04-database-impl.md]
+
+    ### Backend
+    [Insert contents of .full-stack-feature/05-backend-impl.md]
+
+    ### Frontend
+    [Insert contents of .full-stack-feature/06-frontend-impl.md]
+
+    ## Instructions
+    1. Write unit tests for all new backend functions/methods
+    2. Write integration tests for API endpoints
+    3. Write database tests for migrations and query patterns
+    4. Write frontend component tests if applicable
+    5. Cover: happy path, edge cases, error handling, boundary conditions
+    6. Follow existing test patterns and frameworks in the project
+    7. Target 80%+ code coverage for new code
+
+    Write all test files. Report what test files were created and what they cover.
+```
+
+**7b. Security Review:**
+
+```
+Task:
+  subagent_type: "security-auditor"
+  description: "Security review of $FEATURE"
+  prompt: |
+    Perform a security review of this full-stack feature implementation.
+
+    ## Architecture
+    [Insert contents of .full-stack-feature/03-architecture.md]
+
+    ## Database Implementation
+    [Insert contents of .full-stack-feature/04-database-impl.md]
+
+    ## Backend Implementation
+    [Insert contents of .full-stack-feature/05-backend-impl.md]
+
+    ## Frontend Implementation
+    [Insert contents of .full-stack-feature/06-frontend-impl.md]
+
+    Review for: OWASP Top 10, authentication/authorization flaws, input validation gaps,
+    SQL injection risks, XSS/CSRF vulnerabilities, data protection issues, dependency vulnerabilities,
+    and any security anti-patterns.
+
+    Provide findings with severity, location, and specific fix recommendations.
+```
+
+**7c. Performance Review:**
+
+```
+Task:
+  subagent_type: "performance-engineer"
+  description: "Performance review of $FEATURE"
+  prompt: |
+    Review the performance of this full-stack feature implementation.
+
+    ## Architecture
+    [Insert contents of .full-stack-feature/03-architecture.md]
+
+    ## Database Implementation
+    [Insert contents of .full-stack-feature/04-database-impl.md]
+
+    ## Backend Implementation
+    [Insert contents of .full-stack-feature/05-backend-impl.md]
+
+    ## Frontend Implementation
+    [Insert contents of .full-stack-feature/06-frontend-impl.md]
+
+    Review for: N+1 queries, missing indexes, unoptimized queries, memory leaks,
+    missing caching opportunities, large payloads, slow rendering paths,
+    bundle size concerns, unnecessary re-renders.
+
+    Provide findings with impact estimates and specific optimization recommendations.
+```
+
+After all three complete, consolidate results into `.full-stack-feature/07-testing.md`:
+
+```markdown
+# Testing & Validation: $FEATURE
+
+## Test Suite
+
+[Summary from 7a -- files created, coverage areas]
+
+## Security Findings
+
+[Summary from 7b -- findings by severity]
+
+## Performance Findings
+
+[Summary from 7c -- findings by impact]
+
+## Action Items
+
+[List any critical/high findings that need to be addressed before delivery]
+```
+
+If there are Critical or High severity findings from security or performance review, address them now before proceeding. Apply fixes and re-validate.
+
+Update `state.json`: set `current_step` to "checkpoint-2", add step 7 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 2 -- User Approval Required
+
+Display a summary of testing and validation results from `.full-stack-feature/07-testing.md` and ask:
+
+```
+Testing and validation complete. Please review .full-stack-feature/07-testing.md
+
+Test coverage: [summary]
+Security findings: [X critical, Y high, Z medium]
+Performance findings: [X critical, Y high, Z medium]
+
+1. Approve -- proceed to deployment & documentation
+2. Request changes -- tell me what to fix
+3. Pause -- save progress and stop here
+```
+
+Do NOT proceed to Phase 3 until the user approves.
+
+---
+
+## Phase 3: Delivery (Steps 8-9)
+
+### Step 8: Deployment & Infrastructure
+
+Read `.full-stack-feature/03-architecture.md` and `.full-stack-feature/07-testing.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "deployment-engineer"
+  description: "Create deployment config for $FEATURE"
+  prompt: |
+    Create the deployment and infrastructure configuration for this full-stack feature.
+
+    ## Architecture
+    [Insert contents of .full-stack-feature/03-architecture.md]
+
+    ## Testing Results
+    [Insert contents of .full-stack-feature/07-testing.md]
+
+    ## Instructions
+    1. Create or update CI/CD pipeline configuration for the new code
+    2. Add database migration steps to the deployment pipeline
+    3. Add feature flag configuration if the feature should be gradually rolled out
+    4. Define health checks and readiness probes for new services/endpoints
+    5. Create monitoring alerts for key metrics (error rate, latency, throughput)
+    6. Write a deployment runbook with rollback steps (including database rollback)
+    7. Follow existing deployment patterns in the project
+
+    Write all configuration files. Report what was created/modified.
+```
+
+Save output to `.full-stack-feature/08-deployment.md`.
+
+Update `state.json`: set `current_step` to 9, add step 8 to `completed_steps`.
+
+### Step 9: Documentation & Handoff
+
+Read all previous `.full-stack-feature/*.md` files.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Write documentation for $FEATURE"
+  prompt: |
+    You are a technical writer. Create documentation for this full-stack feature.
+
+    ## Feature Context
+    [Insert contents of .full-stack-feature/01-requirements.md]
+
+    ## Architecture
+    [Insert contents of .full-stack-feature/03-architecture.md]
+
+    ## Implementation Summary
+    ### Database: [Insert contents of .full-stack-feature/04-database-impl.md]
+    ### Backend: [Insert contents of .full-stack-feature/05-backend-impl.md]
+    ### Frontend: [Insert contents of .full-stack-feature/06-frontend-impl.md]
+
+    ## Deployment
+    [Insert contents of .full-stack-feature/08-deployment.md]
+
+    ## Instructions
+    1. Write API documentation for new endpoints (request/response examples)
+    2. Document the database schema changes and migration notes
+    3. Update or create user-facing documentation if applicable
+    4. Write a brief architecture decision record (ADR) explaining key design choices
+    5. Create a handoff summary: what was built, how to test it, known limitations
+
+    Write documentation files. Report what was created/modified.
+```
+
+Save output to `.full-stack-feature/09-documentation.md`.
+
+Update `state.json`: set `current_step` to "complete", add step 9 to `completed_steps`.
+
+---
+
+## Completion
+
+Update `state.json`:
+
+- Set `status` to `"complete"`
+- Set `last_updated` to current timestamp
+
+Present the final summary:
+
+```
+Full-stack feature development complete: $FEATURE
+
+## Files Created
+[List all .full-stack-feature/ output files]
+
+## Implementation Summary
+- Requirements: .full-stack-feature/01-requirements.md
+- Database Design: .full-stack-feature/02-database-design.md
+- Architecture: .full-stack-feature/03-architecture.md
+- Database Implementation: .full-stack-feature/04-database-impl.md
+- Backend Implementation: .full-stack-feature/05-backend-impl.md
+- Frontend Implementation: .full-stack-feature/06-frontend-impl.md
+- Testing & Validation: .full-stack-feature/07-testing.md
+- Deployment: .full-stack-feature/08-deployment.md
+- Documentation: .full-stack-feature/09-documentation.md
+
+## Next Steps
+1. Review all generated code and documentation
+2. Run the full test suite to verify everything passes
+3. Create a pull request with the implementation
+4. Deploy using the runbook in .full-stack-feature/08-deployment.md
+```

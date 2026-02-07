@@ -1,0 +1,10 @@
+{
+  "name": "dotnet-contribution",
+  "version": "1.0.0",
+  "description": "Comprehensive .NET backend development with C#, ASP.NET Core, Entity Framework Core, and Dapper for production-grade applications",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}
