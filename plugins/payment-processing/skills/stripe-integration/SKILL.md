@@ -198,7 +198,48 @@ if (loadActionsResult.type === 'success') {
 """
 ```
 
-### Pattern 3: Subscription Creation
+### Pattern 3: Payment Intents with Payment Element (Bespoke Control)
+
+Use this when you need full control over the payment flow and cannot use Checkout Sessions
+(e.g., you have your own tax, discount, or subscription calculation engine).
+
+```python
+def create_payment_intent(amount, currency='usd', customer_id=None):
+    """Create a payment intent for bespoke checkout UI with Payment Element."""
+    intent = stripe.PaymentIntent.create(
+        amount=amount,
+        currency=currency,
+        customer=customer_id,
+        automatic_payment_methods={
+            'enabled': True,
+        },
+    )
+    return intent.client_secret  # Send to frontend
+```
+
+```javascript
+// Frontend: Mount Payment Element and confirm via Payment Intents
+const stripe = Stripe('pk_test_...');
+const elements = stripe.elements({clientSecret});
+
+const paymentElement = elements.create('payment');
+paymentElement.mount('#payment-element');
+
+document.getElementById('pay-button').addEventListener('click', async () => {
+    const {error} = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+            return_url: 'https://yourdomain.com/complete',
+        },
+    });
+
+    if (error) {
+        document.getElementById('errors').textContent = error.message;
+    }
+});
+```
+
+### Pattern 4: Subscription Creation
 
 ```python
 def create_subscription(customer_id, price_id):
@@ -221,7 +262,7 @@ def create_subscription(customer_id, price_id):
         raise
 ```
 
-### Pattern 4: Customer Portal
+### Pattern 5: Customer Portal
 
 ```python
 def create_customer_portal_session(customer_id):
