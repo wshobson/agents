@@ -6,8 +6,8 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 73 focused plugins, 112 specialized agents, and 146 skills - optimized for granular installation and minimal token usage",
-    "version": "1.5.2"
+    "description": "Production-ready workflow orchestration with 72 focused plugins, 112 specialized agents, and 146 skills - optimized for granular installation and minimal token usage",
+    "version": "1.5.3"
   },
   "plugins": [
     {
@@ -113,19 +113,6 @@
       "homepage": "https://github.com/wshobson/agents",
       "license": "MIT",
       "category": "workflows"
-    },
-    {
-      "name": "code-review-ai",
-      "source": "./plugins/code-review-ai",
-      "description": "AI-powered architectural review and code quality analysis",
-      "version": "1.2.1",
-      "author": {
-        "name": "Seth Hobson",
-        "email": "seth@major7apps.com"
-      },
-      "homepage": "https://github.com/wshobson/agents",
-      "license": "MIT",
-      "category": "quality"
     },
     {
       "name": "code-refactoring",

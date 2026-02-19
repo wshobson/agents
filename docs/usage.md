@@ -70,7 +70,6 @@ Claude Code automatically selects and coordinates the appropriate agents based o
 
 | Command                             | Description                |
 | ----------------------------------- | -------------------------- |
-| `/code-review-ai:ai-review`         | AI-powered code review     |
 | `/comprehensive-review:full-review` | Multi-perspective analysis |
 | `/comprehensive-review:pr-enhance`  | Enhance pull requests      |
 
@@ -361,7 +360,7 @@ Compose multiple plugins for complex scenarios:
 /unit-testing:test-generate
 
 # 4. Review the implementation
-/code-review-ai:ai-review
+/comprehensive-review:full-review
 
 # 5. Set up CI/CD
 /cicd-automation:workflow-automate

@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **72 focused, single-purpose plugins** organized by category.
+Browse all **71 focused, single-purpose plugins** organized by category.
 
 ## Quick Start - Essential Plugins
 
@@ -67,14 +67,6 @@ Multi-agent coordination from backend → frontend → testing → security → 
 ```
 
 Generate pytest (Python) and Jest (JavaScript) unit tests automatically with comprehensive edge case coverage.
-
-**code-review-ai** - AI-powered code review
-
-```bash
-/plugin install code-review-ai
-```
-
-Architectural analysis, security assessment, and code quality review with actionable feedback.
 
 ### Infrastructure & Operations
 
@@ -150,11 +142,10 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **unit-testing**  | Automated unit test generation (Python/JavaScript) | `/plugin install unit-testing`  |
 | **tdd-workflows** | Test-driven development methodology                | `/plugin install tdd-workflows` |
 
-### 🔍 Quality (3 plugins)
+### 🔍 Quality (2 plugins)
 
 | Plugin                         | Description                                   | Install                                      |
 | ------------------------------ | --------------------------------------------- | -------------------------------------------- |
-| **code-review-ai**             | AI-powered architectural review               | `/plugin install code-review-ai`             |
 | **comprehensive-review**       | Multi-perspective code analysis               | `/plugin install comprehensive-review`       |
 | **performance-testing-review** | Performance analysis and test coverage review | `/plugin install performance-testing-review` |
 

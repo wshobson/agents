@@ -6,13 +6,13 @@
 
 > **🎯 Agent Skills Enabled** — 146 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **112 specialized AI agents**, **16 multi-agent workflow orchestrators**, **146 agent skills**, and **79 development tools** organized into **73 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **112 specialized AI agents**, **16 multi-agent workflow orchestrators**, **146 agent skills**, and **79 development tools** organized into **72 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **73 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
+- **72 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
 - **112 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
 - **146 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **16 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
@@ -20,7 +20,7 @@ This unified repository provides everything needed for intelligent automation an
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 73 focused plugins optimized for minimal token usage
+- **Granular Plugin Architecture**: 72 focused plugins optimized for minimal token usage
 - **Comprehensive Tooling**: 79 development tools including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
 - **Agent Skills**: 146 specialized skills following for progressive disclosure and token efficiency
@@ -49,7 +49,7 @@ Add this marketplace to Claude Code:
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 73 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 72 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Plugins
 
@@ -73,7 +73,7 @@ Install the plugins you need:
 
 # Security & quality
 /plugin install security-scanning           # SAST with security skill
-/plugin install code-review-ai             # AI-powered code review
+/plugin install comprehensive-review       # Multi-perspective code analysis
 
 # Full-stack orchestration
 /plugin install full-stack-orchestration   # Multi-agent workflows
@@ -114,7 +114,7 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ### Core Guides
 
-- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 73 plugins
+- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 72 plugins
 - **[Agent Reference](docs/agents.md)** - All 112 agents organized by category
 - **[Agent Skills](docs/agent-skills.md)** - 146 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
@@ -283,13 +283,13 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 ## Plugin Categories
 
-**24 categories, 73 plugins:**
+**24 categories, 72 plugins:**
 
 - 🎨 **Development** (4) - debugging, backend, frontend, multi-platform
 - 📚 **Documentation** (3) - code docs, API specs, diagrams, C4 architecture
 - 🔄 **Workflows** (5) - git, full-stack, TDD, **Conductor** (context-driven development), **Agent Teams** (multi-agent orchestration)
 - ✅ **Testing** (2) - unit testing, TDD workflows
-- 🔍 **Quality** (3) - code review, comprehensive review, performance
+- 🔍 **Quality** (2) - comprehensive review, performance
 - 🤖 **AI & ML** (4) - LLM apps, agent orchestration, context, MLOps
 - 📊 **Data** (2) - data engineering, data validation
 - 🗄️ **Database** (2) - database design, migrations
@@ -330,7 +330,7 @@ Three-tier architecture for token efficiency:
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # 73 plugins
+│   └── marketplace.json          # 72 plugins
 ├── plugins/
 │   ├── python-development/
 │   │   ├── agents/               # 3 Python experts

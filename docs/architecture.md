@@ -334,7 +334,7 @@ Feature Development Workflow:
 1. backend-development:feature-development
 2. security-scanning:security-hardening
 3. unit-testing:test-generate
-4. code-review-ai:ai-review
+4. comprehensive-review:full-review
 5. cicd-automation:workflow-automate
 6. observability-monitoring:monitor-setup
 ```
