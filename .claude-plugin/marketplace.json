@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "Production-ready workflow orchestration with 73 focused plugins, 112 specialized agents, and 146 skills - optimized for granular installation and minimal token usage",
-    "version": "1.5.1"
+    "version": "1.5.2"
   },
   "plugins": [
     {
@@ -118,7 +118,7 @@
       "name": "code-review-ai",
       "source": "./plugins/code-review-ai",
       "description": "AI-powered architectural review and code quality analysis",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -181,8 +181,8 @@
     },
     {
       "name": "llm-application-dev",
-      "description": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures for Claude 4.5 and GPT-5.2",
-      "version": "2.0.3",
+      "description": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures for Claude 4.6 and GPT-5.2",
+      "version": "2.0.4",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -196,7 +196,7 @@
       "name": "agent-orchestration",
       "source": "./plugins/agent-orchestration",
       "description": "Multi-agent system optimization, agent improvement workflows, and context management",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -404,7 +404,7 @@
       "name": "performance-testing-review",
       "source": "./plugins/performance-testing-review",
       "description": "Performance analysis, test coverage review, and AI-powered code quality assessment",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"

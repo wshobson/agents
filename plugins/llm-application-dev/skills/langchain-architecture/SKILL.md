@@ -115,8 +115,8 @@ from langchain_core.tools import tool
 import ast
 import operator
 
-# Initialize LLM (Claude Sonnet 4.5 recommended)
-llm = ChatAnthropic(model="claude-sonnet-4-5", temperature=0)
+# Initialize LLM (Claude Sonnet 4.6 recommended)
+llm = ChatAnthropic(model="claude-sonnet-4-6", temperature=0)
 
 # Define tools with Pydantic schemas
 @tool
@@ -201,7 +201,7 @@ class RAGState(TypedDict):
     answer: str
 
 # Initialize components
-llm = ChatAnthropic(model="claude-sonnet-4-5")
+llm = ChatAnthropic(model="claude-sonnet-4-6")
 embeddings = VoyageAIEmbeddings(model="voyage-3-large")
 vectorstore = PineconeVectorStore(index_name="docs", embedding=embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
@@ -489,7 +489,7 @@ os.environ["LANGCHAIN_API_KEY"] = "your-api-key"
 os.environ["LANGCHAIN_PROJECT"] = "my-project"
 
 # All LangChain/LangGraph operations are automatically traced
-llm = ChatAnthropic(model="claude-sonnet-4-5")
+llm = ChatAnthropic(model="claude-sonnet-4-6")
 ```
 
 ### Custom Callback Handler
@@ -530,7 +530,7 @@ result = await agent.ainvoke(
 ```python
 from langchain_anthropic import ChatAnthropic
 
-llm = ChatAnthropic(model="claude-sonnet-4-5", streaming=True)
+llm = ChatAnthropic(model="claude-sonnet-4-6", streaming=True)
 
 # Stream tokens
 async for chunk in llm.astream("Tell me a story"):
