@@ -21,19 +21,21 @@ Master Stripe payment processing integration for robust, PCI-compliant payment f
 
 ### 1. Payment Flows
 
-**Checkout Session (Hosted)**
+**Checkout Sessions**
 
-- Stripe-hosted payment page
-- Minimal PCI compliance burden
-- Fastest implementation
-- Supports one-time and recurring payments
+- Recommended for most integrations
+- Supports all UI paths:
+  - Stripe-hosted checkout page
+  - Embedded checkout form
+  - Custom UI with Elements (Payment Element, Express Checkout Element) using `ui_mode='custom'`
+- Provides built-in checkout capabilities (line items, discounts, tax, shipping, address collection, saved payment methods, and checkout lifecycle events)
+- Lower integration and maintenance burden than Payment Intents
 
-**Payment Intents (Custom UI)**
+**Payment Intents (Bespoke control)**
 
-- Full control over payment UI
+- You calculate the final amount with taxes, discounts, subscriptions, and currency conversion yourself.
+- More complex implementation and long-term maintenance burden
 - Requires Stripe.js for PCI compliance
-- More complex implementation
-- Better customization options
 
 **Setup Intents (Save Payment Methods)**
 
@@ -109,7 +111,6 @@ def create_checkout_session(amount, currency='usd'):
     """Create a one-time payment checkout session."""
     try:
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
             line_items=[{
                 'price_data': {
                     'currency': currency,
@@ -136,47 +137,64 @@ def create_checkout_session(amount, currency='usd'):
         raise
 ```
 
-### Pattern 2: Custom Payment Intent Flow
+### Pattern 2: Checkout Sessions with Payment Element
 
 ```python
-def create_payment_intent(amount, currency='usd', customer_id=None):
-    """Create a payment intent for custom checkout UI."""
-    intent = stripe.PaymentIntent.create(
-        amount=amount,
-        currency=currency,
-        customer=customer_id,
-        automatic_payment_methods={
-            'enabled': True,
-        },
-        metadata={
-            'integration_check': 'accept_a_payment'
-        }
+def create_checkout_session_for_elements(amount, currency='usd'):
+    """Create a checkout session configured for Payment Element."""
+    session = stripe.checkout.Session.create(
+        mode='payment',
+        ui_mode='custom',
+        line_items=[{
+            'price_data': {
+                'currency': currency,
+                'product_data': {'name': 'Purchase'},
+                'unit_amount': amount,
+            },
+            'quantity': 1,
+        }],
+        return_url='https://yourdomain.com/complete?session_id={CHECKOUT_SESSION_ID}'
     )
-    return intent.client_secret  # Send to frontend
+    return session.client_secret  # Send to frontend
 
 # Frontend (JavaScript)
 """
 const stripe = Stripe('pk_test_...');
-const elements = stripe.elements();
-const cardElement = elements.create('card');
-cardElement.mount('#card-element');
+const appearance = { theme: 'stripe' };
 
-const {error, paymentIntent} = await stripe.confirmCardPayment(
-    clientSecret,
-    {
-        payment_method: {
-            card: cardElement,
-            billing_details: {
-                name: 'Customer Name'
-            }
-        }
-    }
-);
+const checkout = stripe.initCheckout({clientSecret});
+const loadActionsResult = await checkout.loadActions();
 
-if (error) {
-    // Handle error
-} else if (paymentIntent.status === 'succeeded') {
-    // Payment successful
+if (loadActionsResult.type === 'success') {
+    const session = loadActionsResult.actions.getSession();
+    const {actions} = loadActionsResult;
+
+    const button = document.getElementById('pay-button');
+    const checkoutContainer = document.getElementById('checkout-container');
+    const emailInput = document.getElementById('email');
+    const emailErrors = document.getElementById('email-errors');
+    const errors = document.getElementById('confirm-errors');
+
+    // Display total to user
+    checkoutContainer.append(`Total: ${session.total.total.amount}`);
+
+    // Mount Payment Element
+    const paymentElement = checkout.createPaymentElement();
+    paymentElement.mount('#payment-element');
+
+    // Store email for submission
+    emailInput.addEventListener('blur', () => {
+        actions.updateEmail(emailInput.value).then((result) => {
+            if (result.error) emailErrors.textContent = result.error.message;
+        });
+    });
+
+    // Handle form submission
+    button.addEventListener('click', () => {
+        actions.confirm().then((result) => {
+            if (result.type === 'error') errors.textContent = result.error.message;
+        });
+    });
 }
 """
 ```
