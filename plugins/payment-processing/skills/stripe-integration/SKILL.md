@@ -26,7 +26,7 @@ Master Stripe payment processing integration for robust, PCI-compliant payment f
 - Recommended for most integrations
 - Supports all UI paths:
   - Stripe-hosted checkout page
-  - Embedded checkout form
+  - Embedded checkout form (`ui_mode='embedded'`)
   - Custom UI with Elements (Payment Element, Express Checkout Element) using `ui_mode='custom'`
 - Provides built-in checkout capabilities (line items, discounts, tax, shipping, address collection, saved payment methods, and checkout lifecycle events)
 - Lower integration and maintenance burden than Payment Intents
@@ -79,7 +79,6 @@ stripe.api_key = "sk_test_..."
 
 # Create a checkout session
 session = stripe.checkout.Session.create(
-    payment_method_types=['card'],
     line_items=[{
         'price_data': {
             'currency': 'usd',
@@ -155,19 +154,19 @@ def create_checkout_session_for_elements(amount, currency='usd'):
         }],
         return_url='https://yourdomain.com/complete?session_id={CHECKOUT_SESSION_ID}'
     )
-    return session.client_secret  # Send to frontend
+    return session.client_secret  # Send to frontend for stripe.initCheckout()
 
 # Frontend (JavaScript)
 """
 const stripe = Stripe('pk_test_...');
-const appearance = { theme: 'stripe' };
 
+// initCheckout() is synchronous; loadActions() is async
 const checkout = stripe.initCheckout({clientSecret});
 const loadActionsResult = await checkout.loadActions();
 
 if (loadActionsResult.type === 'success') {
-    const session = loadActionsResult.actions.getSession();
     const {actions} = loadActionsResult;
+    const session = actions.getSession();
 
     const button = document.getElementById('pay-button');
     const checkoutContainer = document.getElementById('checkout-container');
@@ -175,7 +174,7 @@ if (loadActionsResult.type === 'success') {
     const emailErrors = document.getElementById('email-errors');
     const errors = document.getElementById('confirm-errors');
 
-    // Display total to user
+    // Display grand total (amount in smallest currency unit, e.g. cents)
     checkoutContainer.append(`Total: ${session.total.total.amount}`);
 
     // Mount Payment Element
@@ -432,7 +431,7 @@ def test_payment_flow():
         amount=1000,
         currency='usd',
         customer=customer.id,
-        payment_method_types=['card']
+        automatic_payment_methods={'enabled': True},
     )
 
     # Confirm with test card
