@@ -161,7 +161,7 @@ def create_checkout_session_for_elements(amount, currency='usd'):
 const stripe = Stripe('pk_test_...');
 const appearance = { theme: 'stripe' };
 
-const checkout = stripe.initCheckout({clientSecret});
+const checkout = stripe.initCheckout({ clientSecret, elementsOptions: { appearance } });
 const loadActionsResult = await checkout.loadActions();
 
 if (loadActionsResult.type === 'success') {
