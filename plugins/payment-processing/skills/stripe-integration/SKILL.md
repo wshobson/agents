@@ -214,6 +214,9 @@ def create_payment_intent(amount, currency='usd', customer_id=None):
         automatic_payment_methods={
             'enabled': True,
         },
+        metadata={
+            'integration_check': 'accept_a_payment'
+        }
     )
     return intent.client_secret  # Send to frontend
 ```
@@ -517,7 +520,3 @@ def test_payment_flow():
 - **Hardcoded Amounts**: Use cents/smallest currency unit
 - **No Retry Logic**: Implement retries for API calls
 - **Ignoring Test Mode**: Test all edge cases with test cards
-
-```
-
-```
