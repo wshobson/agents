@@ -94,7 +94,7 @@ session = stripe.checkout.Session.create(
     }],
     mode='subscription',
     success_url='https://yourdomain.com/success?session_id={CHECKOUT_SESSION_ID}',
-    cancel_url='https://yourdomain.com/cancel',
+    cancel_url='https://yourdomain.com/cancel'
 )
 
 # Redirect user to session.url
@@ -161,12 +161,15 @@ def create_checkout_session_for_elements(amount, currency='usd'):
 const stripe = Stripe('pk_test_...');
 const appearance = { theme: 'stripe' };
 
-const checkout = stripe.initCheckout({ clientSecret, elementsOptions: { appearance } });
+const checkout = stripe.initCheckout({
+    clientSecret,
+    elementsOptions: { appearance }
+});
 const loadActionsResult = await checkout.loadActions();
 
 if (loadActionsResult.type === 'success') {
-    const session = loadActionsResult.actions.getSession();
     const {actions} = loadActionsResult;
+    const session = actions.getSession();
 
     const button = document.getElementById('pay-button');
     const checkoutContainer = document.getElementById('checkout-container');
@@ -174,7 +177,7 @@ if (loadActionsResult.type === 'success') {
     const emailErrors = document.getElementById('email-errors');
     const errors = document.getElementById('confirm-errors');
 
-    // Display total to user
+    // Display a formatted string representing the total amount
     checkoutContainer.append(`Total: ${session.total.total.amount}`);
 
     // Mount Payment Element
