@@ -114,7 +114,7 @@ def create_checkout_session(amount, currency='usd'):
                 'price_data': {
                     'currency': currency,
                     'product_data': {
-                        'name': 'Purchase',
+                        'name': 'Blue T-shirt',
                         'images': ['https://example.com/product.jpg'],
                     },
                     'unit_amount': amount,  # Amount in cents
@@ -136,7 +136,7 @@ def create_checkout_session(amount, currency='usd'):
         raise
 ```
 
-### Pattern 2: Checkout Sessions with Payment Element
+### Pattern 2: Elements with Checkout Sessions
 
 ```python
 def create_checkout_session_for_elements(amount, currency='usd'):
@@ -147,7 +147,7 @@ def create_checkout_session_for_elements(amount, currency='usd'):
         line_items=[{
             'price_data': {
                 'currency': currency,
-                'product_data': {'name': 'Purchase'},
+                'product_data': {'name': 'Blue T-shirt'},
                 'unit_amount': amount,
             },
             'quantity': 1,
@@ -155,53 +155,93 @@ def create_checkout_session_for_elements(amount, currency='usd'):
         return_url='https://yourdomain.com/complete?session_id={CHECKOUT_SESSION_ID}'
     )
     return session.client_secret  # Send to frontend
+```
 
-# Frontend (JavaScript)
-"""
-const stripe = Stripe('pk_test_...');
-const appearance = { theme: 'stripe' };
+```javascript
+const stripe = Stripe("pk_test_...");
+const appearance = { theme: "stripe" };
 
 const checkout = stripe.initCheckout({
-    clientSecret,
-    elementsOptions: { appearance }
+  clientSecret,
+  elementsOptions: { appearance },
 });
 const loadActionsResult = await checkout.loadActions();
 
-if (loadActionsResult.type === 'success') {
-    const {actions} = loadActionsResult;
-    const session = actions.getSession();
+if (loadActionsResult.type === "success") {
+  const { actions } = loadActionsResult;
+  const session = actions.getSession();
 
-    const button = document.getElementById('pay-button');
-    const checkoutContainer = document.getElementById('checkout-container');
-    const emailInput = document.getElementById('email');
-    const emailErrors = document.getElementById('email-errors');
-    const errors = document.getElementById('confirm-errors');
+  const button = document.getElementById("pay-button");
+  const checkoutContainer = document.getElementById("checkout-container");
+  const emailInput = document.getElementById("email");
+  const emailErrors = document.getElementById("email-errors");
+  const errors = document.getElementById("confirm-errors");
 
-    // Display a formatted string representing the total amount
-    checkoutContainer.append(`Total: ${session.total.total.amount}`);
+  // Display a formatted string representing the total amount
+  checkoutContainer.append(`Total: ${session.total.total.amount}`);
 
-    // Mount Payment Element
-    const paymentElement = checkout.createPaymentElement();
-    paymentElement.mount('#payment-element');
+  // Mount Payment Element
+  const paymentElement = checkout.createPaymentElement();
+  paymentElement.mount("#payment-element");
 
-    // Store email for submission
-    emailInput.addEventListener('blur', () => {
-        actions.updateEmail(emailInput.value).then((result) => {
-            if (result.error) emailErrors.textContent = result.error.message;
-        });
+  // Store email for submission
+  emailInput.addEventListener("blur", () => {
+    actions.updateEmail(emailInput.value).then((result) => {
+      if (result.error) emailErrors.textContent = result.error.message;
     });
+  });
 
-    // Handle form submission
-    button.addEventListener('click', () => {
-        actions.confirm().then((result) => {
-            if (result.type === 'error') errors.textContent = result.error.message;
-        });
+  // Handle form submission
+  button.addEventListener("click", () => {
+    actions.confirm().then((result) => {
+      if (result.type === "error") errors.textContent = result.error.message;
     });
+  });
 }
-"""
 ```
 
-### Pattern 3: Subscription Creation
+### Pattern 3: Elements with Payment Intents
+
+Pattern 2 (Elements with Checkout Sessions) is Stripe's recommended approach, but you can also use Payment Intents as an alternative.
+
+```python
+def create_payment_intent(amount, currency='usd', customer_id=None):
+    """Create a payment intent for bespoke checkout UI with Payment Element."""
+    intent = stripe.PaymentIntent.create(
+        amount=amount,
+        currency=currency,
+        customer=customer_id,
+        automatic_payment_methods={
+            'enabled': True,
+        },
+    )
+    return intent.client_secret  # Send to frontend
+```
+
+```javascript
+// Mount Payment Element and confirm via Payment Intents
+const stripe = Stripe("pk_test_...");
+const appearance = { theme: "stripe" };
+const elements = stripe.elements({ appearance, clientSecret });
+
+const paymentElement = elements.create("payment");
+paymentElement.mount("#payment-element");
+
+document.getElementById("pay-button").addEventListener("click", async () => {
+  const { error } = await stripe.confirmPayment({
+    elements,
+    confirmParams: {
+      return_url: "https://yourdomain.com/complete",
+    },
+  });
+
+  if (error) {
+    document.getElementById("errors").textContent = error.message;
+  }
+});
+```
+
+### Pattern 4: Subscription Creation
 
 ```python
 def create_subscription(customer_id, price_id):
@@ -224,7 +264,7 @@ def create_subscription(customer_id, price_id):
         raise
 ```
 
-### Pattern 4: Customer Portal
+### Pattern 5: Customer Portal
 
 ```python
 def create_customer_portal_session(customer_id):
@@ -477,3 +517,7 @@ def test_payment_flow():
 - **Hardcoded Amounts**: Use cents/smallest currency unit
 - **No Retry Logic**: Implement retries for API calls
 - **Ignoring Test Mode**: Test all edge cases with test cards
+
+```
+
+```
