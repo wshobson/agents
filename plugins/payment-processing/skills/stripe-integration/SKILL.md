@@ -79,7 +79,6 @@ stripe.api_key = "sk_test_..."
 
 # Create a checkout session
 session = stripe.checkout.Session.create(
-    payment_method_types=['card'],
     line_items=[{
         'price_data': {
             'currency': 'usd',
@@ -431,8 +430,7 @@ def test_payment_flow():
     intent = stripe.PaymentIntent.create(
         amount=1000,
         currency='usd',
-        customer=customer.id,
-        payment_method_types=['card']
+        customer=customer.id
     )
 
     # Confirm with test card
