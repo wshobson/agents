@@ -429,6 +429,9 @@ def test_payment_flow():
     # Create payment intent
     intent = stripe.PaymentIntent.create(
         amount=1000,
+        automatic_payment_methods={
+            'enabled': True
+        },
         currency='usd',
         customer=customer.id
     )
