@@ -1,6 +1,12 @@
 ---
 name: context-driven-development
-description: Use this skill when working with Conductor's context-driven development methodology, managing project context artifacts, or understanding the relationship between product.md, tech-stack.md, and workflow.md files.
+description: >-
+  Creates and maintains project context artifacts (product.md, tech-stack.md, workflow.md, tracks.md)
+  in a `conductor/` directory. Scaffolds new projects from scratch, extracts context from existing
+  codebases, validates artifact consistency before implementation, and synchronizes documents as the
+  project evolves. Use when setting up a project, creating or updating product docs, managing a tech
+  stack file, defining development workflows, tracking work units, onboarding to an existing codebase,
+  or running project scaffolding.
 version: 1.0.0
 ---
 
@@ -132,6 +138,8 @@ Update when:
 - New tracks are created
 - Track status changes
 - Tracks are completed or archived
+
+See [references/artifact-templates.md](references/artifact-templates.md) for copy-paste starter templates.
 
 ## Context Maintenance Principles
 
