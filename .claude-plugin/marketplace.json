@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "Production-ready workflow orchestration with 72 focused plugins, 112 specialized agents, and 146 skills - optimized for granular installation and minimal token usage",
-    "version": "1.5.4"
+    "version": "1.5.5"
   },
   "plugins": [
     {
@@ -910,7 +910,7 @@
     {
       "name": "ui-design",
       "description": "Comprehensive UI/UX design plugin for mobile (iOS, Android, React Native) and web applications with design systems, accessibility, and modern patterns",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"

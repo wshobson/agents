@@ -294,7 +294,7 @@ struct CustomSheetView: View {
 
 ## Tab Navigation
 
-### Basic TabView
+### Basic TabView (iOS 18+)
 
 ```swift
 struct MainTabView: View {
@@ -302,37 +302,31 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-                .tag(0)
+            Tab("Home", systemImage: "house", value: 0) {
+                HomeView()
+            }
 
-            SearchView()
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
-                .tag(1)
+            Tab("Search", systemImage: "magnifyingglass", value: 1) {
+                SearchView()
+            }
 
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person")
-                }
-                .tag(2)
-                .badge(unreadCount)
+            Tab("Profile", systemImage: "person", value: 2) {
+                ProfileView()
+            }
+            .badge(unreadCount)
         }
     }
 }
 ```
 
-### Tab with Custom Badge
+### Tab with Custom Badge (iOS 18+)
 
 ```swift
 struct BadgedTabView: View {
-    @State private var selectedTab: Tab = .home
+    @State private var selectedTab: AppTab = .home
     @State private var cartCount = 3
 
-    enum Tab: String, CaseIterable {
+    enum AppTab: String, CaseIterable {
         case home, search, cart, profile
 
         var icon: String {
@@ -347,14 +341,12 @@ struct BadgedTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            ForEach(Tab.allCases, id: \.self) { tab in
-                NavigationStack {
-                    contentView(for: tab)
+            ForEach(AppTab.allCases, id: \.self) { tab in
+                Tab(tab.rawValue.capitalized, systemImage: tab.icon, value: tab) {
+                    NavigationStack {
+                        contentView(for: tab)
+                    }
                 }
-                .tabItem {
-                    Label(tab.rawValue.capitalized, systemImage: tab.icon)
-                }
-                .tag(tab)
                 .badge(tab == .cart ? cartCount : 0)
             }
         }

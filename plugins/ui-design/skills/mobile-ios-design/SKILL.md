@@ -104,7 +104,7 @@ struct ContentView: View {
 }
 ```
 
-**TabView:**
+**TabView (iOS 18+):**
 
 ```swift
 struct MainTabView: View {
@@ -112,23 +112,17 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-                .tag(0)
+            Tab("Home", systemImage: "house", value: 0) {
+                HomeView()
+            }
 
-            SearchView()
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
-                .tag(1)
+            Tab("Search", systemImage: "magnifyingglass", value: 1) {
+                SearchView()
+            }
 
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person")
-                }
-                .tag(2)
+            Tab("Profile", systemImage: "person", value: 2) {
+                ProfileView()
+            }
         }
     }
 }
