@@ -283,7 +283,7 @@ Provide ratings in JSON format:
 }}"""
 
     message = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-sonnet-4-6",
         max_tokens=500,
         system=system,
         messages=[{"role": "user", "content": prompt}]
@@ -329,7 +329,7 @@ Answer with JSON:
 }}"""
 
     message = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-sonnet-4-6",
         max_tokens=500,
         messages=[{"role": "user", "content": prompt}]
     )
@@ -375,7 +375,7 @@ Respond in JSON:
 }}"""
 
     message = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-sonnet-4-6",
         max_tokens=500,
         messages=[{"role": "user", "content": prompt}]
     )
@@ -605,7 +605,7 @@ experiment_results = await evaluate(
     data=dataset.name,
     evaluators=evaluators,
     experiment_prefix="v1.0.0",
-    metadata={"model": "claude-sonnet-4-5", "version": "1.0.0"}
+    metadata={"model": "claude-sonnet-4-6", "version": "1.0.0"}
 )
 
 print(f"Mean score: {experiment_results.aggregate_metrics['qa']['mean']}")

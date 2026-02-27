@@ -1,150 +1,481 @@
-Orchestrate end-to-end feature development from requirements to production deployment:
+---
+description: "Orchestrate end-to-end feature development from requirements to deployment"
+argument-hint: "<feature description> [--methodology tdd|bdd|ddd] [--complexity simple|medium|complex]"
+---
 
-[Extended thinking: This workflow orchestrates specialized agents through comprehensive feature development phases - from discovery and planning through implementation, testing, and deployment. Each phase builds on previous outputs, ensuring coherent feature delivery. The workflow supports multiple development methodologies (traditional, TDD/BDD, DDD), feature complexity levels, and modern deployment strategies including feature flags, gradual rollouts, and observability-first development. Agents receive detailed context from previous phases to maintain consistency and quality throughout the development lifecycle.]
+# Feature Development Orchestrator
 
-## Configuration Options
+## CRITICAL BEHAVIORAL RULES
 
-### Development Methodology
+You MUST follow these rules exactly. Violating any of them is a failure.
 
-- **traditional**: Sequential development with testing after implementation
-- **tdd**: Test-Driven Development with red-green-refactor cycles
-- **bdd**: Behavior-Driven Development with scenario-based testing
-- **ddd**: Domain-Driven Design with bounded contexts and aggregates
+1. **Execute steps in order.** Do NOT skip ahead, reorder, or merge steps.
+2. **Write output files.** Each step MUST produce its output file in `.feature-dev/` before the next step begins. Read from prior step files — do NOT rely on context window memory.
+3. **Stop at checkpoints.** When you reach a `PHASE CHECKPOINT`, you MUST stop and wait for explicit user approval before continuing. Use the AskUserQuestion tool with clear options.
+4. **Halt on failure.** If any step fails (agent error, test failure, missing dependency), STOP immediately. Present the error and ask the user how to proceed. Do NOT silently continue.
+5. **Use only local agents.** All `subagent_type` references use agents bundled with this plugin or `general-purpose`. No cross-plugin dependencies.
+6. **Never enter plan mode autonomously.** Do NOT use EnterPlanMode. This command IS the plan — execute it.
 
-### Feature Complexity
+## Pre-flight Checks
 
-- **simple**: Single service, minimal integration (1-2 days)
-- **medium**: Multiple services, moderate integration (3-5 days)
-- **complex**: Cross-domain, extensive integration (1-2 weeks)
-- **epic**: Major architectural changes, multiple teams (2+ weeks)
+Before starting, perform these checks:
 
-### Deployment Strategy
+### 1. Check for existing session
 
-- **direct**: Immediate rollout to all users
-- **canary**: Gradual rollout starting with 5% of traffic
-- **feature-flag**: Controlled activation via feature toggles
-- **blue-green**: Zero-downtime deployment with instant rollback
-- **a-b-test**: Split traffic for experimentation and metrics
+Check if `.feature-dev/state.json` exists:
 
-## Phase 1: Discovery & Requirements Planning
+- If it exists and `status` is `"in_progress"`: Read it, display the current step, and ask the user:
 
-1. **Business Analysis & Requirements**
-   - Use Task tool with subagent_type="business-analytics::business-analyst"
-   - Prompt: "Analyze feature requirements for: $ARGUMENTS. Define user stories, acceptance criteria, success metrics, and business value. Identify stakeholders, dependencies, and risks. Create feature specification document with clear scope boundaries."
-   - Expected output: Requirements document with user stories, success metrics, risk assessment
-   - Context: Initial feature request and business context
+  ```
+  Found an in-progress feature development session:
+  Feature: [name from state]
+  Current step: [step from state]
 
-2. **Technical Architecture Design**
-   - Use Task tool with subagent_type="comprehensive-review::architect-review"
-   - Prompt: "Design technical architecture for feature: $ARGUMENTS. Using requirements: [include business analysis from step 1]. Define service boundaries, API contracts, data models, integration points, and technology stack. Consider scalability, performance, and security requirements."
-   - Expected output: Technical design document with architecture diagrams, API specifications, data models
-   - Context: Business requirements, existing system architecture
+  1. Resume from where we left off
+  2. Start fresh (archives existing session)
+  ```
 
-3. **Feasibility & Risk Assessment**
-   - Use Task tool with subagent_type="security-scanning::security-auditor"
-   - Prompt: "Assess security implications and risks for feature: $ARGUMENTS. Review architecture: [include technical design from step 2]. Identify security requirements, compliance needs, data privacy concerns, and potential vulnerabilities."
-   - Expected output: Security assessment with risk matrix, compliance checklist, mitigation strategies
-   - Context: Technical design, regulatory requirements
+- If it exists and `status` is `"complete"`: Ask whether to archive and start fresh.
 
-## Phase 2: Implementation & Development
+### 2. Initialize state
 
-4. **Backend Services Implementation**
-   - Use Task tool with subagent_type="backend-architect"
-   - Prompt: "Implement backend services for: $ARGUMENTS. Follow technical design: [include architecture from step 2]. Build RESTful/GraphQL APIs, implement business logic, integrate with data layer, add resilience patterns (circuit breakers, retries), implement caching strategies. Include feature flags for gradual rollout."
-   - Expected output: Backend services with APIs, business logic, database integration, feature flags
-   - Context: Technical design, API contracts, data models
+Create `.feature-dev/` directory and `state.json`:
 
-5. **Frontend Implementation**
-   - Use Task tool with subagent_type="frontend-mobile-development::frontend-developer"
-   - Prompt: "Build frontend components for: $ARGUMENTS. Integrate with backend APIs: [include API endpoints from step 4]. Implement responsive UI, state management, error handling, loading states, and analytics tracking. Add feature flag integration for A/B testing capabilities."
-   - Expected output: Frontend components with API integration, state management, analytics
-   - Context: Backend APIs, UI/UX designs, user stories
+```json
+{
+  "feature": "$ARGUMENTS",
+  "status": "in_progress",
+  "methodology": "traditional",
+  "complexity": "medium",
+  "current_step": 1,
+  "current_phase": 1,
+  "completed_steps": [],
+  "files_created": [],
+  "started_at": "ISO_TIMESTAMP",
+  "last_updated": "ISO_TIMESTAMP"
+}
+```
 
-6. **Data Pipeline & Integration**
-   - Use Task tool with subagent_type="data-engineering::data-engineer"
-   - Prompt: "Build data pipelines for: $ARGUMENTS. Design ETL/ELT processes, implement data validation, create analytics events, set up data quality monitoring. Integrate with product analytics platforms for feature usage tracking."
-   - Expected output: Data pipelines, analytics events, data quality checks
-   - Context: Data requirements, analytics needs, existing data infrastructure
+Parse `$ARGUMENTS` for `--methodology` and `--complexity` flags. Use defaults if not specified.
 
-## Phase 3: Testing & Quality Assurance
+### 3. Parse feature description
 
-7. **Automated Test Suite**
-   - Use Task tool with subagent_type="unit-testing::test-automator"
-   - Prompt: "Create comprehensive test suite for: $ARGUMENTS. Write unit tests for backend: [from step 4] and frontend: [from step 5]. Add integration tests for API endpoints, E2E tests for critical user journeys, performance tests for scalability validation. Ensure minimum 80% code coverage."
-   - Expected output: Test suites with unit, integration, E2E, and performance tests
-   - Context: Implementation code, acceptance criteria, test requirements
+Extract the feature description from `$ARGUMENTS` (everything before the flags). This is referenced as `$FEATURE` in prompts below.
 
-8. **Security Validation**
-   - Use Task tool with subagent_type="security-scanning::security-auditor"
-   - Prompt: "Perform security testing for: $ARGUMENTS. Review implementation: [include backend and frontend from steps 4-5]. Run OWASP checks, penetration testing, dependency scanning, and compliance validation. Verify data encryption, authentication, and authorization."
-   - Expected output: Security test results, vulnerability report, remediation actions
-   - Context: Implementation code, security requirements
+---
 
-9. **Performance Optimization**
-   - Use Task tool with subagent_type="application-performance::performance-engineer"
-   - Prompt: "Optimize performance for: $ARGUMENTS. Analyze backend services: [from step 4] and frontend: [from step 5]. Profile code, optimize queries, implement caching, reduce bundle sizes, improve load times. Set up performance budgets and monitoring."
-   - Expected output: Performance improvements, optimization report, performance metrics
-   - Context: Implementation code, performance requirements
+## Phase 1: Discovery (Steps 1–2) — Interactive
 
-## Phase 4: Deployment & Monitoring
+### Step 1: Requirements Gathering
 
-10. **Deployment Strategy & Pipeline**
-    - Use Task tool with subagent_type="deployment-strategies::deployment-engineer"
-    - Prompt: "Prepare deployment for: $ARGUMENTS. Create CI/CD pipeline with automated tests: [from step 7]. Configure feature flags for gradual rollout, implement blue-green deployment, set up rollback procedures. Create deployment runbook and rollback plan."
-    - Expected output: CI/CD pipeline, deployment configuration, rollback procedures
-    - Context: Test suites, infrastructure requirements, deployment strategy
+Gather requirements through interactive Q&A. Ask ONE question at a time using the AskUserQuestion tool. Do NOT ask all questions at once.
 
-11. **Observability & Monitoring**
-    - Use Task tool with subagent_type="observability-monitoring::observability-engineer"
-    - Prompt: "Set up observability for: $ARGUMENTS. Implement distributed tracing, custom metrics, error tracking, and alerting. Create dashboards for feature usage, performance metrics, error rates, and business KPIs. Set up SLOs/SLIs with automated alerts."
-    - Expected output: Monitoring dashboards, alerts, SLO definitions, observability infrastructure
-    - Context: Feature implementation, success metrics, operational requirements
+**Questions to ask (in order):**
 
-12. **Documentation & Knowledge Transfer**
-    - Use Task tool with subagent_type="documentation-generation::docs-architect"
-    - Prompt: "Generate comprehensive documentation for: $ARGUMENTS. Create API documentation, user guides, deployment guides, troubleshooting runbooks. Include architecture diagrams, data flow diagrams, and integration guides. Generate automated changelog from commits."
-    - Expected output: API docs, user guides, runbooks, architecture documentation
-    - Context: All previous phases' outputs
+1. **Problem Statement**: "What problem does this feature solve? Who is the user and what's their pain point?"
+2. **Acceptance Criteria**: "What are the key acceptance criteria? When is this feature 'done'?"
+3. **Scope Boundaries**: "What is explicitly OUT of scope for this feature?"
+4. **Technical Constraints**: "Any technical constraints? (e.g., must use existing auth system, specific DB, latency requirements)"
+5. **Dependencies**: "Does this feature depend on or affect other features/services?"
 
-## Execution Parameters
+After gathering answers, write the requirements document:
 
-### Required Parameters
+**Output file:** `.feature-dev/01-requirements.md`
 
-- **--feature**: Feature name and description
-- **--methodology**: Development approach (traditional|tdd|bdd|ddd)
-- **--complexity**: Feature complexity level (simple|medium|complex|epic)
+```markdown
+# Requirements: $FEATURE
 
-### Optional Parameters
+## Problem Statement
 
-- **--deployment-strategy**: Deployment approach (direct|canary|feature-flag|blue-green|a-b-test)
-- **--test-coverage-min**: Minimum test coverage threshold (default: 80%)
-- **--performance-budget**: Performance requirements (e.g., <200ms response time)
-- **--rollout-percentage**: Initial rollout percentage for gradual deployment (default: 5%)
-- **--feature-flag-service**: Feature flag provider (launchdarkly|split|unleash|custom)
-- **--analytics-platform**: Analytics integration (segment|amplitude|mixpanel|custom)
-- **--monitoring-stack**: Observability tools (datadog|newrelic|grafana|custom)
+[From Q1]
 
-## Success Criteria
+## Acceptance Criteria
 
-- All acceptance criteria from business requirements are met
-- Test coverage exceeds minimum threshold (80% default)
-- Security scan shows no critical vulnerabilities
-- Performance meets defined budgets and SLOs
-- Feature flags configured for controlled rollout
-- Monitoring and alerting fully operational
-- Documentation complete and approved
-- Successful deployment to production with rollback capability
-- Product analytics tracking feature usage
-- A/B test metrics configured (if applicable)
+[From Q2 — formatted as checkboxes]
 
-## Rollback Strategy
+## Scope
 
-If issues arise during or after deployment:
+### In Scope
 
-1. Immediate feature flag disable (< 1 minute)
-2. Blue-green traffic switch (< 5 minutes)
-3. Full deployment rollback via CI/CD (< 15 minutes)
-4. Database migration rollback if needed (coordinate with data team)
-5. Incident post-mortem and fixes before re-deployment
+[Derived from answers]
 
-Feature description: $ARGUMENTS
+### Out of Scope
+
+[From Q3]
+
+## Technical Constraints
+
+[From Q4]
+
+## Dependencies
+
+[From Q5]
+
+## Methodology: [tdd|bdd|ddd|traditional]
+
+## Complexity: [simple|medium|complex]
+```
+
+Update `state.json`: set `current_step` to 2, add `"01-requirements.md"` to `files_created`, add step 1 to `completed_steps`.
+
+### Step 2: Architecture & Security Design
+
+Read `.feature-dev/01-requirements.md` to load requirements context.
+
+Use the Task tool to launch the architecture agent:
+
+```
+Task:
+  subagent_type: "backend-architect"
+  description: "Design architecture for $FEATURE"
+  prompt: |
+    Design the technical architecture for this feature.
+
+    ## Requirements
+    [Insert full contents of .feature-dev/01-requirements.md]
+
+    ## Deliverables
+    1. **Service/component design**: What components are needed, their responsibilities, and boundaries
+    2. **API design**: Endpoints, request/response schemas, error handling
+    3. **Data model**: Database tables/collections, relationships, migrations needed
+    4. **Security considerations**: Auth requirements, input validation, data protection, OWASP concerns
+    5. **Integration points**: How this connects to existing services/systems
+    6. **Risk assessment**: Technical risks and mitigation strategies
+
+    Write your complete architecture design as a single markdown document.
+```
+
+Save the agent's output to `.feature-dev/02-architecture.md`.
+
+Update `state.json`: set `current_step` to "checkpoint-1", add step 2 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 1 — User Approval Required
+
+You MUST stop here and present the architecture for review.
+
+Display a summary of the architecture from `.feature-dev/02-architecture.md` (key components, API endpoints, data model overview) and ask:
+
+```
+Architecture design is complete. Please review .feature-dev/02-architecture.md
+
+1. Approve — proceed to implementation
+2. Request changes — tell me what to adjust
+3. Pause — save progress and stop here
+```
+
+Do NOT proceed to Phase 2 until the user selects option 1. If they select option 2, revise the architecture and re-checkpoint. If option 3, update `state.json` status and stop.
+
+---
+
+## Phase 2: Implementation (Steps 3–5)
+
+### Step 3: Backend Implementation
+
+Read `.feature-dev/01-requirements.md` and `.feature-dev/02-architecture.md`.
+
+Use the Task tool to launch the backend architect for implementation:
+
+```
+Task:
+  subagent_type: "backend-architect"
+  description: "Implement backend for $FEATURE"
+  prompt: |
+    Implement the backend for this feature based on the approved architecture.
+
+    ## Requirements
+    [Insert contents of .feature-dev/01-requirements.md]
+
+    ## Architecture
+    [Insert contents of .feature-dev/02-architecture.md]
+
+    ## Instructions
+    1. Implement the API endpoints, business logic, and data access layer as designed
+    2. Include data layer components (models, migrations, repositories) as specified in the architecture
+    3. Add input validation and error handling
+    4. Follow the project's existing code patterns and conventions
+    5. If methodology is TDD: write failing tests first, then implement
+    6. Include inline comments only where logic is non-obvious
+
+    Write all code files. Report what files were created/modified.
+```
+
+Save a summary of what was implemented to `.feature-dev/03-backend.md` (list of files created/modified, key decisions, any deviations from architecture).
+
+Update `state.json`: set `current_step` to 4, add step 3 to `completed_steps`.
+
+### Step 4: Frontend Implementation
+
+Read `.feature-dev/01-requirements.md`, `.feature-dev/02-architecture.md`, and `.feature-dev/03-backend.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Implement frontend for $FEATURE"
+  prompt: |
+    You are a frontend developer. Implement the frontend components for this feature.
+
+    ## Requirements
+    [Insert contents of .feature-dev/01-requirements.md]
+
+    ## Architecture
+    [Insert contents of .feature-dev/02-architecture.md]
+
+    ## Backend Implementation
+    [Insert contents of .feature-dev/03-backend.md]
+
+    ## Instructions
+    1. Build UI components that integrate with the backend API endpoints
+    2. Implement state management, form handling, and error states
+    3. Add loading states and optimistic updates where appropriate
+    4. Follow the project's existing frontend patterns and component conventions
+    5. Ensure responsive design and accessibility basics (semantic HTML, ARIA labels, keyboard nav)
+
+    Write all code files. Report what files were created/modified.
+```
+
+Save a summary to `.feature-dev/04-frontend.md`.
+
+**Note:** If the feature has no frontend component (pure backend/API), skip this step — write a brief note in `04-frontend.md` explaining why it was skipped, and continue.
+
+Update `state.json`: set `current_step` to 5, add step 4 to `completed_steps`.
+
+### Step 5: Testing & Validation
+
+Read `.feature-dev/03-backend.md` and `.feature-dev/04-frontend.md`.
+
+Launch three agents in parallel using multiple Task tool calls in a single response:
+
+**5a. Test Suite Creation:**
+
+```
+Task:
+  subagent_type: "test-automator"
+  description: "Create test suite for $FEATURE"
+  prompt: |
+    Create a comprehensive test suite for this feature.
+
+    ## What was implemented
+    ### Backend
+    [Insert contents of .feature-dev/03-backend.md]
+
+    ### Frontend
+    [Insert contents of .feature-dev/04-frontend.md]
+
+    ## Instructions
+    1. Write unit tests for all new backend functions/methods
+    2. Write integration tests for API endpoints
+    3. Write frontend component tests if applicable
+    4. Cover: happy path, edge cases, error handling, boundary conditions
+    5. Follow existing test patterns and frameworks in the project
+    6. Target 80%+ code coverage for new code
+
+    Write all test files. Report what test files were created and what they cover.
+```
+
+**5b. Security Review:**
+
+```
+Task:
+  subagent_type: "security-auditor"
+  description: "Security review of $FEATURE"
+  prompt: |
+    Perform a security review of this feature implementation.
+
+    ## Architecture
+    [Insert contents of .feature-dev/02-architecture.md]
+
+    ## Backend Implementation
+    [Insert contents of .feature-dev/03-backend.md]
+
+    ## Frontend Implementation
+    [Insert contents of .feature-dev/04-frontend.md]
+
+    Review for: OWASP Top 10, authentication/authorization flaws, input validation gaps,
+    data protection issues, dependency vulnerabilities, and any security anti-patterns.
+
+    Provide findings with severity, location, and specific fix recommendations.
+```
+
+**5c. Performance Review:**
+
+```
+Task:
+  subagent_type: "performance-engineer"
+  description: "Performance review of $FEATURE"
+  prompt: |
+    Review the performance of this feature implementation.
+
+    ## Architecture
+    [Insert contents of .feature-dev/02-architecture.md]
+
+    ## Backend Implementation
+    [Insert contents of .feature-dev/03-backend.md]
+
+    ## Frontend Implementation
+    [Insert contents of .feature-dev/04-frontend.md]
+
+    Review for: N+1 queries, missing indexes, unoptimized queries, memory leaks,
+    missing caching opportunities, large payloads, slow rendering paths.
+
+    Provide findings with impact estimates and specific optimization recommendations.
+```
+
+After all three complete, consolidate results into `.feature-dev/05-testing.md`:
+
+```markdown
+# Testing & Validation: $FEATURE
+
+## Test Suite
+
+[Summary from 5a — files created, coverage areas]
+
+## Security Findings
+
+[Summary from 5b — findings by severity]
+
+## Performance Findings
+
+[Summary from 5c — findings by impact]
+
+## Action Items
+
+[List any critical/high findings that need to be addressed before delivery]
+```
+
+If there are Critical or High severity findings from security or performance review, address them now before proceeding. Apply fixes and re-validate.
+
+Update `state.json`: set `current_step` to "checkpoint-2", add step 5 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 2 — User Approval Required
+
+Display a summary of testing and validation results from `.feature-dev/05-testing.md` and ask:
+
+```
+Testing and validation complete. Please review .feature-dev/05-testing.md
+
+Test coverage: [summary]
+Security findings: [X critical, Y high, Z medium]
+Performance findings: [X critical, Y high, Z medium]
+
+1. Approve — proceed to deployment & documentation
+2. Request changes — tell me what to fix
+3. Pause — save progress and stop here
+```
+
+Do NOT proceed to Phase 3 until the user approves.
+
+---
+
+## Phase 3: Delivery (Steps 6–7)
+
+### Step 6: Deployment & Monitoring
+
+Read `.feature-dev/02-architecture.md` and `.feature-dev/05-testing.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Create deployment config for $FEATURE"
+  prompt: |
+    You are a deployment engineer. Create the deployment and monitoring configuration for this feature.
+
+    ## Architecture
+    [Insert contents of .feature-dev/02-architecture.md]
+
+    ## Testing Results
+    [Insert contents of .feature-dev/05-testing.md]
+
+    ## Instructions
+    1. Create or update CI/CD pipeline configuration for the new code
+    2. Add feature flag configuration if the feature should be gradually rolled out
+    3. Define health checks and readiness probes for new services/endpoints
+    4. Create monitoring alerts for key metrics (error rate, latency, throughput)
+    5. Write a deployment runbook with rollback steps
+    6. Follow existing deployment patterns in the project
+
+    Write all configuration files. Report what was created/modified.
+```
+
+Save output to `.feature-dev/06-deployment.md`.
+
+Update `state.json`: set `current_step` to 7, add step 6 to `completed_steps`.
+
+### Step 7: Documentation & Handoff
+
+Read all previous `.feature-dev/*.md` files.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Write documentation for $FEATURE"
+  prompt: |
+    You are a technical writer. Create documentation for this feature.
+
+    ## Feature Context
+    [Insert contents of .feature-dev/01-requirements.md]
+
+    ## Architecture
+    [Insert contents of .feature-dev/02-architecture.md]
+
+    ## Implementation Summary
+    ### Backend: [Insert contents of .feature-dev/03-backend.md]
+    ### Frontend: [Insert contents of .feature-dev/04-frontend.md]
+
+    ## Deployment
+    [Insert contents of .feature-dev/06-deployment.md]
+
+    ## Instructions
+    1. Write API documentation for new endpoints (request/response examples)
+    2. Update or create user-facing documentation if applicable
+    3. Write a brief architecture decision record (ADR) explaining key design choices
+    4. Create a handoff summary: what was built, how to test it, known limitations
+
+    Write documentation files. Report what was created/modified.
+```
+
+Save output to `.feature-dev/07-documentation.md`.
+
+Update `state.json`: set `current_step` to "complete", add step 7 to `completed_steps`.
+
+---
+
+## Completion
+
+Update `state.json`:
+
+- Set `status` to `"complete"`
+- Set `last_updated` to current timestamp
+
+Present the final summary:
+
+```
+Feature development complete: $FEATURE
+
+## Files Created
+[List all .feature-dev/ output files]
+
+## Implementation Summary
+- Requirements: .feature-dev/01-requirements.md
+- Architecture: .feature-dev/02-architecture.md
+- Backend: .feature-dev/03-backend.md
+- Frontend: .feature-dev/04-frontend.md
+- Testing: .feature-dev/05-testing.md
+- Deployment: .feature-dev/06-deployment.md
+- Documentation: .feature-dev/07-documentation.md
+
+## Next Steps
+1. Review all generated code and documentation
+2. Run the full test suite to verify everything passes
+3. Create a pull request with the implementation
+4. Deploy using the runbook in .feature-dev/06-deployment.md
+```

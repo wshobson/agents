@@ -81,7 +81,7 @@ class SQLQuery(BaseModel):
     tables_used: list[str] = Field(description="List of tables referenced")
 
 # Initialize model with structured output
-llm = ChatAnthropic(model="claude-sonnet-4-5")
+llm = ChatAnthropic(model="claude-sonnet-4-6")
 structured_llm = llm.with_structured_output(SQLQuery)
 
 # Create prompt template
@@ -124,7 +124,7 @@ async def analyze_sentiment(text: str) -> SentimentAnalysis:
     client = Anthropic()
 
     message = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-sonnet-4-6",
         max_tokens=500,
         messages=[{
             "role": "user",
@@ -427,7 +427,7 @@ client = Anthropic()
 
 # Use prompt caching for repeated system prompts
 response = client.messages.create(
-    model="claude-sonnet-4-5",
+    model="claude-sonnet-4-6",
     max_tokens=1000,
     system=[
         {

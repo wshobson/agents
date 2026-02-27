@@ -85,7 +85,7 @@ class RAGState(TypedDict):
     answer: str
 
 # Initialize components
-llm = ChatAnthropic(model="claude-sonnet-4-5")
+llm = ChatAnthropic(model="claude-sonnet-4-6")
 embeddings = VoyageAIEmbeddings(model="voyage-3-large")
 vectorstore = PineconeVectorStore(index_name="docs", embedding=embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 4})

@@ -1,129 +1,598 @@
-# Complete Git Workflow with Multi-Agent Orchestration
+---
+description: "Orchestrate git workflow from code review through PR creation with quality gates"
+argument-hint: "<target branch> [--skip-tests] [--draft-pr] [--no-push] [--squash] [--conventional] [--trunk-based]"
+---
 
-Orchestrate a comprehensive git workflow from code review through PR creation, leveraging specialized agents for quality assurance, testing, and deployment readiness. This workflow implements modern git best practices including Conventional Commits, automated testing, and structured PR creation.
+# Git Workflow Orchestrator
 
-[Extended thinking: This workflow coordinates multiple specialized agents to ensure code quality before commits are made. The code-reviewer agent performs initial quality checks, test-automator ensures all tests pass, and deployment-engineer verifies production readiness. By orchestrating these agents sequentially with context passing, we prevent broken code from entering the repository while maintaining high velocity. The workflow supports both trunk-based and feature-branch strategies with configurable options for different team needs.]
+## CRITICAL BEHAVIORAL RULES
 
-## Configuration
+You MUST follow these rules exactly. Violating any of them is a failure.
 
-**Target branch**: $ARGUMENTS (defaults to 'main' if not specified)
+1. **Execute steps in order.** Do NOT skip ahead, reorder, or merge steps.
+2. **Write output files.** Each step MUST produce its output file in `.git-workflow/` before the next step begins. Read from prior step files — do NOT rely on context window memory.
+3. **Stop at checkpoints.** When you reach a `PHASE CHECKPOINT`, you MUST stop and wait for explicit user approval before continuing. Use the AskUserQuestion tool with clear options.
+4. **Halt on failure.** If any step fails (agent error, test failure, missing dependency), STOP immediately. Present the error and ask the user how to proceed. Do NOT silently continue.
+5. **Use only local agents.** All `subagent_type` references use agents bundled with this plugin or `general-purpose`. No cross-plugin dependencies.
+6. **Never enter plan mode autonomously.** Do NOT use EnterPlanMode. This command IS the plan — execute it.
 
-**Supported flags**:
+## Pre-flight Checks
 
-- `--skip-tests`: Skip automated test execution (use with caution)
-- `--draft-pr`: Create PR as draft for work-in-progress
-- `--no-push`: Perform all checks but don't push to remote
-- `--squash`: Squash commits before pushing
-- `--conventional`: Enforce Conventional Commits format strictly
-- `--trunk-based`: Use trunk-based development workflow
-- `--feature-branch`: Use feature branch workflow (default)
+Before starting, perform these checks:
 
-## Phase 1: Pre-Commit Review and Analysis
+### 1. Check for existing session
 
-### 1. Code Quality Assessment
+Check if `.git-workflow/state.json` exists:
 
-- Use Task tool with subagent_type="code-reviewer"
-- Prompt: "Review all uncommitted changes for code quality issues. Check for: 1) Code style violations, 2) Security vulnerabilities, 3) Performance concerns, 4) Missing error handling, 5) Incomplete implementations. Generate a detailed report with severity levels (critical/high/medium/low) and provide specific line-by-line feedback. Output format: JSON with {issues: [], summary: {critical: 0, high: 0, medium: 0, low: 0}, recommendations: []}"
-- Expected output: Structured code review report for next phase
+- If it exists and `status` is `"in_progress"`: Read it, display the current step, and ask the user:
 
-### 2. Dependency and Breaking Change Analysis
+  ```
+  Found an in-progress git workflow session:
+  Target branch: [branch from state]
+  Current step: [step from state]
 
-- Use Task tool with subagent_type="code-reviewer"
-- Prompt: "Analyze the changes for: 1) New dependencies or version changes, 2) Breaking API changes, 3) Database schema modifications, 4) Configuration changes, 5) Backward compatibility issues. Context from previous review: [insert issues summary]. Identify any changes that require migration scripts or documentation updates."
-- Context from previous: Code quality issues that might indicate breaking changes
-- Expected output: Breaking change assessment and migration requirements
+  1. Resume from where we left off
+  2. Start fresh (archives existing session)
+  ```
 
-## Phase 2: Testing and Validation
+- If it exists and `status` is `"complete"`: Ask whether to archive and start fresh.
 
-### 1. Test Execution and Coverage
+### 2. Initialize state
 
-- Use Task tool with subagent_type="unit-testing::test-automator"
-- Prompt: "Execute all test suites for the modified code. Run: 1) Unit tests, 2) Integration tests, 3) End-to-end tests if applicable. Generate coverage report and identify any untested code paths. Based on review issues: [insert critical/high issues], ensure tests cover the problem areas. Provide test results in format: {passed: [], failed: [], skipped: [], coverage: {statements: %, branches: %, functions: %, lines: %}, untested_critical_paths: []}"
-- Context from previous: Critical code review issues that need test coverage
-- Expected output: Complete test results and coverage metrics
+Create `.git-workflow/` directory and `state.json`:
 
-### 2. Test Recommendations and Gap Analysis
+```json
+{
+  "target_branch": "$ARGUMENTS",
+  "status": "in_progress",
+  "flags": {
+    "skip_tests": false,
+    "draft_pr": false,
+    "no_push": false,
+    "squash": false,
+    "conventional": true,
+    "trunk_based": false
+  },
+  "current_step": 1,
+  "current_phase": 1,
+  "completed_steps": [],
+  "files_created": [],
+  "started_at": "ISO_TIMESTAMP",
+  "last_updated": "ISO_TIMESTAMP"
+}
+```
 
-- Use Task tool with subagent_type="unit-testing::test-automator"
-- Prompt: "Based on test results [insert summary] and code changes, identify: 1) Missing test scenarios, 2) Edge cases not covered, 3) Integration points needing verification, 4) Performance benchmarks needed. Generate test implementation recommendations prioritized by risk. Consider the breaking changes identified: [insert breaking changes]."
-- Context from previous: Test results, breaking changes, untested paths
-- Expected output: Prioritized list of additional tests needed
+Parse `$ARGUMENTS` for the target branch (defaults to 'main') and flags. Use defaults if not specified.
 
-## Phase 3: Commit Message Generation
+### 3. Gather git context
 
-### 1. Change Analysis and Categorization
+Run these commands and save output:
 
-- Use Task tool with subagent_type="code-reviewer"
-- Prompt: "Analyze all changes and categorize them according to Conventional Commits specification. Identify the primary change type (feat/fix/docs/style/refactor/perf/test/build/ci/chore/revert) and scope. For changes: [insert file list and summary], determine if this should be a single commit or multiple atomic commits. Consider test results: [insert test summary]."
-- Context from previous: Test results, code review summary
-- Expected output: Commit structure recommendation
+- `git status` — current working tree state
+- `git diff --stat` — summary of changes
+- `git diff` — full diff of changes
+- `git log --oneline -10` — recent commit history
+- `git branch --show-current` — current branch name
 
-### 2. Conventional Commit Message Creation
+Save this context to `.git-workflow/00-git-context.md`.
 
-- Use Task tool with subagent_type="llm-application-dev::prompt-engineer"
-- Prompt: "Create Conventional Commits format message(s) based on categorization: [insert categorization]. Format: <type>(<scope>): <subject> with blank line then <body> explaining what and why (not how), then <footer> with BREAKING CHANGE: if applicable. Include: 1) Clear subject line (50 chars max), 2) Detailed body explaining rationale, 3) References to issues/tickets, 4) Co-authors if applicable. Consider the impact: [insert breaking changes if any]."
-- Context from previous: Change categorization, breaking changes
-- Expected output: Properly formatted commit message(s)
+---
 
-## Phase 4: Branch Strategy and Push Preparation
+## Phase 1: Pre-Commit Review and Analysis (Steps 1–2)
 
-### 1. Branch Management
+### Step 1: Code Quality Assessment
 
-- Use Task tool with subagent_type="cicd-automation::deployment-engineer"
-- Prompt: "Based on workflow type [--trunk-based or --feature-branch], prepare branch strategy. For feature branch: ensure branch name follows pattern (feature|bugfix|hotfix)/<ticket>-<description>. For trunk-based: prepare for direct main push with feature flag strategy if needed. Current branch: [insert branch], target: [insert target branch]. Verify no conflicts with target branch."
-- Expected output: Branch preparation commands and conflict status
+Read `.git-workflow/00-git-context.md`.
 
-### 2. Pre-Push Validation
+Use the Task tool to launch the code reviewer:
 
-- Use Task tool with subagent_type="cicd-automation::deployment-engineer"
-- Prompt: "Perform final pre-push checks: 1) Verify all CI checks will pass, 2) Confirm no sensitive data in commits, 3) Validate commit signatures if required, 4) Check branch protection rules, 5) Ensure all review comments addressed. Test summary: [insert test results]. Review status: [insert review summary]."
-- Context from previous: All previous validation results
-- Expected output: Push readiness confirmation or blocking issues
+```
+Task:
+  subagent_type: "code-reviewer"
+  description: "Review uncommitted changes for code quality"
+  prompt: |
+    Review all uncommitted changes for code quality issues.
 
-## Phase 5: Pull Request Creation
+    ## Git Context
+    [Insert contents of .git-workflow/00-git-context.md]
 
-### 1. PR Description Generation
+    Check for:
+    1. Code style violations
+    2. Security vulnerabilities
+    3. Performance concerns
+    4. Missing error handling
+    5. Incomplete implementations
 
-- Use Task tool with subagent_type="documentation-generation::docs-architect"
-- Prompt: "Create comprehensive PR description including: 1) Summary of changes (what and why), 2) Type of change checklist, 3) Testing performed summary from [insert test results], 4) Screenshots/recordings if UI changes, 5) Deployment notes from [insert deployment considerations], 6) Related issues/tickets, 7) Breaking changes section if applicable: [insert breaking changes], 8) Reviewer checklist. Format as GitHub-flavored Markdown."
-- Context from previous: All validation results, test outcomes, breaking changes
-- Expected output: Complete PR description in Markdown
+    Generate a detailed report with severity levels (critical/high/medium/low) and provide
+    specific line-by-line feedback.
 
-### 2. PR Metadata and Automation Setup
+    ## Deliverables
+    Output format: structured report with:
+    - Issues list with severity, file, line, description
+    - Summary counts: {critical: N, high: N, medium: N, low: N}
+    - Recommendations for fixes
 
-- Use Task tool with subagent_type="cicd-automation::deployment-engineer"
-- Prompt: "Configure PR metadata: 1) Assign appropriate reviewers based on CODEOWNERS, 2) Add labels (type, priority, component), 3) Link related issues, 4) Set milestone if applicable, 5) Configure merge strategy (squash/merge/rebase), 6) Set up auto-merge if all checks pass. Consider draft status: [--draft-pr flag]. Include test status: [insert test summary]."
-- Context from previous: PR description, test results, review status
-- Expected output: PR configuration commands and automation rules
+    Write your complete review as a single markdown document.
+```
 
-## Success Criteria
+Save the agent's output to `.git-workflow/01-code-review.md`.
 
-- ✅ All critical and high-severity code issues resolved
-- ✅ Test coverage maintained or improved (target: >80%)
-- ✅ All tests passing (unit, integration, e2e)
-- ✅ Commit messages follow Conventional Commits format
-- ✅ No merge conflicts with target branch
-- ✅ PR description complete with all required sections
-- ✅ Branch protection rules satisfied
-- ✅ Security scanning completed with no critical vulnerabilities
-- ✅ Performance benchmarks within acceptable thresholds
-- ✅ Documentation updated for any API changes
+Update `state.json`: set `current_step` to 2, add step 1 to `completed_steps`.
+
+### Step 2: Dependency and Breaking Change Analysis
+
+Read `.git-workflow/00-git-context.md` and `.git-workflow/01-code-review.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "code-reviewer"
+  description: "Analyze changes for dependencies and breaking changes"
+  prompt: |
+    Analyze the changes for dependency and breaking change issues.
+
+    ## Git Context
+    [Insert contents of .git-workflow/00-git-context.md]
+
+    ## Code Review
+    [Insert contents of .git-workflow/01-code-review.md]
+
+    Check for:
+    1. New dependencies or version changes
+    2. Breaking API changes
+    3. Database schema modifications
+    4. Configuration changes
+    5. Backward compatibility issues
+
+    Identify any changes that require migration scripts or documentation updates.
+
+    ## Deliverables
+    1. Breaking change assessment
+    2. Dependency change analysis
+    3. Migration requirements
+    4. Documentation update needs
+
+    Write your complete analysis as a single markdown document.
+```
+
+Save output to `.git-workflow/02-breaking-changes.md`.
+
+Update `state.json`: set `current_step` to "checkpoint-1", add step 2 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 1 — User Approval Required
+
+Display a summary of code review and breaking change analysis and ask:
+
+```
+Pre-commit review complete. Please review:
+- .git-workflow/01-code-review.md
+- .git-workflow/02-breaking-changes.md
+
+Issues found: [X critical, Y high, Z medium, W low]
+Breaking changes: [summary]
+
+1. Approve — proceed to testing (or skip if --skip-tests)
+2. Fix issues first — I'll address the critical/high issues
+3. Pause — save progress and stop here
+```
+
+If user selects option 2, address the critical/high issues, then re-run the review and re-checkpoint.
+
+Do NOT proceed to Phase 2 until the user approves.
+
+---
+
+## Phase 2: Testing and Validation (Steps 3–4)
+
+If `--skip-tests` flag is set, skip to Phase 3. Write a note in `.git-workflow/03-test-results.md` explaining tests were skipped.
+
+### Step 3: Test Execution and Coverage
+
+Read `.git-workflow/00-git-context.md` and `.git-workflow/01-code-review.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Execute test suites for modified code"
+  prompt: |
+    You are a test automation expert. Execute all test suites for the modified code.
+
+    ## Git Context
+    [Insert contents of .git-workflow/00-git-context.md]
+
+    ## Code Review Issues
+    [Insert contents of .git-workflow/01-code-review.md]
+
+    Run:
+    1. Unit tests
+    2. Integration tests
+    3. End-to-end tests if applicable
+
+    Generate coverage report and identify untested code paths. Ensure tests cover the
+    critical/high issues identified in the code review.
+
+    ## Deliverables
+    Report with:
+    - Test results: passed, failed, skipped
+    - Coverage metrics: statements, branches, functions, lines
+    - Untested critical paths
+    - Recommendations for additional tests
+
+    Write your complete test report as a single markdown document.
+```
+
+Save output to `.git-workflow/03-test-results.md`.
+
+Update `state.json`: set `current_step` to 4, add step 3 to `completed_steps`.
+
+### Step 4: Test Recommendations and Gap Analysis
+
+Read `.git-workflow/03-test-results.md` and `.git-workflow/02-breaking-changes.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Identify test gaps and recommend additional tests"
+  prompt: |
+    You are a test automation expert. Based on test results and code changes, identify
+    testing gaps.
+
+    ## Test Results
+    [Insert contents of .git-workflow/03-test-results.md]
+
+    ## Breaking Changes
+    [Insert contents of .git-workflow/02-breaking-changes.md]
+
+    Identify:
+    1. Missing test scenarios
+    2. Edge cases not covered
+    3. Integration points needing verification
+    4. Performance benchmarks needed
+
+    Generate test implementation recommendations prioritized by risk.
+
+    ## Deliverables
+    1. Prioritized list of additional tests needed
+    2. Edge case coverage gaps
+    3. Integration test recommendations
+    4. Risk assessment for untested paths
+
+    Write your complete analysis as a single markdown document.
+```
+
+Save output to `.git-workflow/04-test-gaps.md`.
+
+Update `state.json`: set `current_step` to "checkpoint-2", add step 4 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 2 — User Approval Required
+
+Display test results summary and ask:
+
+```
+Testing complete. Please review:
+- .git-workflow/03-test-results.md
+- .git-workflow/04-test-gaps.md
+
+Test results: [X passed, Y failed, Z skipped]
+Coverage: [summary]
+Test gaps: [summary of critical gaps]
+
+1. Approve — proceed to commit message generation
+2. Fix failing tests first
+3. Pause — save progress and stop here
+```
+
+Do NOT proceed to Phase 3 until the user approves. If tests are failing, the user must address them first.
+
+---
+
+## Phase 3: Commit Message Generation (Steps 5–6)
+
+### Step 5: Change Analysis and Categorization
+
+Read `.git-workflow/00-git-context.md` and `.git-workflow/03-test-results.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "code-reviewer"
+  description: "Categorize changes for commit message"
+  prompt: |
+    Analyze all changes and categorize them according to Conventional Commits specification.
+
+    ## Git Context
+    [Insert contents of .git-workflow/00-git-context.md]
+
+    ## Test Results
+    [Insert contents of .git-workflow/03-test-results.md]
+
+    Identify the primary change type (feat/fix/docs/style/refactor/perf/test/build/ci/chore/revert)
+    and scope. Determine if this should be a single commit or multiple atomic commits.
+
+    ## Deliverables
+    1. Change type classification
+    2. Scope identification
+    3. Single vs multiple commit recommendation
+    4. Commit structure with groupings
+
+    Write your complete categorization as a single markdown document.
+```
+
+Save output to `.git-workflow/05-change-categorization.md`.
+
+Update `state.json`: set `current_step` to 6, add step 5 to `completed_steps`.
+
+### Step 6: Conventional Commit Message Creation
+
+Read `.git-workflow/05-change-categorization.md` and `.git-workflow/02-breaking-changes.md`.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Create Conventional Commits message for changes"
+  prompt: |
+    You are an expert at writing clear, well-structured Conventional Commits messages.
+    Create commit message(s) based on the change categorization.
+
+    ## Change Categorization
+    [Insert contents of .git-workflow/05-change-categorization.md]
+
+    ## Breaking Changes
+    [Insert contents of .git-workflow/02-breaking-changes.md]
+
+    Format: <type>(<scope>): <subject>
+    - Clear subject line (50 chars max)
+    - Detailed body explaining what and why (not how)
+    - Footer with BREAKING CHANGE: if applicable
+    - References to issues/tickets
+    - Co-authors if applicable
+
+    ## Deliverables
+    1. Formatted commit message(s) ready to use
+    2. Rationale for commit structure choice
+
+    Write the commit messages as a single markdown document with clear delimiters.
+```
+
+Save output to `.git-workflow/06-commit-messages.md`.
+
+Update `state.json`: set `current_step` to "checkpoint-3", add step 6 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 3 — User Approval Required
+
+Display the proposed commit message(s) and ask:
+
+```
+Commit message(s) ready. Please review .git-workflow/06-commit-messages.md
+
+[Display the commit message(s)]
+
+1. Approve — proceed to branch management and push
+2. Edit message — tell me what to change
+3. Pause — save progress and stop here
+```
+
+Do NOT proceed to Phase 4 until the user approves.
+
+---
+
+## Phase 4: Branch Strategy and Push (Steps 7–8)
+
+### Step 7: Branch Management and Pre-Push Validation
+
+Read `.git-workflow/00-git-context.md`, `.git-workflow/06-commit-messages.md`, and all previous step files.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Prepare branch strategy and validate push readiness"
+  prompt: |
+    You are a deployment engineer specializing in git workflows and CI/CD.
+
+    ## Git Context
+    [Insert contents of .git-workflow/00-git-context.md]
+
+    ## Workflow Flags
+    [Insert flags from state.json]
+
+    Based on workflow type (trunk-based or feature-branch):
+
+    For feature branch:
+    - Ensure branch name follows pattern (feature|bugfix|hotfix)/<ticket>-<description>
+    - Verify no conflicts with target branch
+
+    For trunk-based:
+    - Prepare for direct main push with feature flag strategy if needed
+
+    Perform pre-push checks:
+    1. Verify all CI checks will pass
+    2. Confirm no sensitive data in commits
+    3. Validate commit signatures if required
+    4. Check branch protection rules
+    5. Ensure all review comments addressed
+
+    ## Deliverables
+    1. Branch preparation commands
+    2. Conflict status
+    3. Pre-push validation results
+    4. Push readiness confirmation or blocking issues
+
+    Write your complete validation as a single markdown document.
+```
+
+Save output to `.git-workflow/07-branch-validation.md`.
+
+Update `state.json`: set `current_step` to 8, add step 7 to `completed_steps`.
+
+If `--no-push` flag is set, skip Step 8 and proceed to Phase 5.
+
+### Step 8: Execute Git Operations
+
+Based on the approved commit messages and branch validation:
+
+1. Stage changes: `git add` the relevant files
+2. Create commit(s) using the approved messages from `.git-workflow/06-commit-messages.md`
+3. If `--squash` flag: squash commits as configured
+4. Push to remote with appropriate flags
+
+**Important:** Before executing any git operations, display the planned commands and ask for final confirmation:
+
+```
+Ready to execute git operations:
+[List exact commands]
+
+1. Execute — run these commands
+2. Modify — adjust the commands
+3. Abort — do not execute
+```
+
+Save execution results to `.git-workflow/08-push-results.md`.
+
+Update `state.json`: set `current_step` to "checkpoint-4", add step 8 to `completed_steps`.
+
+---
+
+## PHASE CHECKPOINT 4 — User Approval Required (if not --no-push)
+
+```
+Git operations complete. Please review .git-workflow/08-push-results.md
+
+1. Approve — proceed to PR creation
+2. Pause — save progress and stop here
+```
+
+---
+
+## Phase 5: Pull Request Creation (Steps 9–10)
+
+If `--no-push` flag is set, skip this phase entirely.
+
+### Step 9: PR Description Generation
+
+Read all `.git-workflow/*.md` files.
+
+Use the Task tool:
+
+```
+Task:
+  subagent_type: "general-purpose"
+  description: "Create comprehensive PR description"
+  prompt: |
+    You are a technical writer specializing in pull request documentation.
+    Create a comprehensive PR description.
+
+    ## Code Review
+    [Insert contents of .git-workflow/01-code-review.md]
+
+    ## Breaking Changes
+    [Insert contents of .git-workflow/02-breaking-changes.md]
+
+    ## Test Results
+    [Insert contents of .git-workflow/03-test-results.md]
+
+    ## Commit Messages
+    [Insert contents of .git-workflow/06-commit-messages.md]
+
+    Include:
+    1. Summary of changes (what and why)
+    2. Type of change checklist
+    3. Testing performed summary
+    4. Screenshots/recordings note if UI changes
+    5. Deployment notes
+    6. Related issues/tickets
+    7. Breaking changes section if applicable
+    8. Reviewer checklist
+
+    Format as GitHub-flavored Markdown.
+
+    Write the complete PR description as a single markdown document.
+```
+
+Save output to `.git-workflow/09-pr-description.md`.
+
+Update `state.json`: set `current_step` to 10, add step 9 to `completed_steps`.
+
+### Step 10: PR Creation and Metadata
+
+Read `.git-workflow/09-pr-description.md` and `.git-workflow/00-git-context.md`.
+
+Create the PR using the `gh` CLI:
+
+- Use the description from `.git-workflow/09-pr-description.md`
+- Set draft status if `--draft-pr` flag is set
+- Add appropriate labels based on change categorization
+- Link related issues if referenced
+
+**Important:** Display the planned PR creation command and ask for confirmation:
+
+```
+Ready to create PR:
+Title: [proposed title]
+Target: [target branch]
+Draft: [yes/no]
+
+1. Create PR — execute now
+2. Edit — adjust title or description
+3. Skip — don't create PR
+```
+
+Save PR URL and metadata to `.git-workflow/10-pr-created.md`.
+
+Update `state.json`: set `current_step` to "complete", add step 10 to `completed_steps`.
+
+---
+
+## Completion
+
+Update `state.json`:
+
+- Set `status` to `"complete"`
+- Set `last_updated` to current timestamp
+
+Present the final summary:
+
+```
+Git workflow complete!
+
+## Files Created
+[List all .git-workflow/ output files]
+
+## Workflow Summary
+- Code Review: .git-workflow/01-code-review.md
+- Breaking Changes: .git-workflow/02-breaking-changes.md
+- Test Results: .git-workflow/03-test-results.md
+- Test Gaps: .git-workflow/04-test-gaps.md
+- Change Categorization: .git-workflow/05-change-categorization.md
+- Commit Messages: .git-workflow/06-commit-messages.md
+- Branch Validation: .git-workflow/07-branch-validation.md
+- Push Results: .git-workflow/08-push-results.md
+- PR Description: .git-workflow/09-pr-description.md
+- PR Created: .git-workflow/10-pr-created.md
+
+## Results
+- Code issues: [X critical, Y high resolved]
+- Tests: [X passed, Y failed]
+- PR: [URL if created]
 
 ## Rollback Procedures
-
-In case of issues after merge:
-
-1. **Immediate Revert**: Create revert PR with `git revert <commit-hash>`
-2. **Feature Flag Disable**: If using feature flags, disable immediately
-3. **Hotfix Branch**: For critical issues, create hotfix branch from main
-4. **Communication**: Notify team via designated channels
-5. **Root Cause Analysis**: Document issue in postmortem template
-
-## Best Practices Reference
-
-- **Commit Frequency**: Commit early and often, but ensure each commit is atomic
-- **Branch Naming**: `(feature|bugfix|hotfix|docs|chore)/<ticket-id>-<brief-description>`
-- **PR Size**: Keep PRs under 400 lines for effective review
-- **Review Response**: Address review comments within 24 hours
-- **Merge Strategy**: Squash for feature branches, merge for release branches
-- **Sign-Off**: Require at least 2 approvals for main branch changes
+1. Immediate Revert: Create revert PR with `git revert <commit-hash>`
+2. Feature Flag Disable: If using feature flags, disable immediately
+3. Hotfix Branch: For critical issues, create hotfix branch from main
+4. Communication: Notify team via designated channels
+```

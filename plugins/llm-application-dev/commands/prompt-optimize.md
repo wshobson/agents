@@ -150,7 +150,7 @@ gpt5_optimized = """
 
 ````
 
-**Claude 4.5/4**
+**Claude 4.6/4.5**
 ```python
 claude_optimized = """
 <context>
@@ -607,7 +607,7 @@ testing_recommendations:
   metrics: ["accuracy", "satisfaction", "cost"]
 
 deployment_strategy:
-  model: "GPT-5.2 for quality, Claude 4.5 for safety"
+  model: "GPT-5.2 for quality, Claude 4.6 for safety"
   temperature: 0.7
   max_tokens: 2000
   monitoring: "Track success, latency, feedback"

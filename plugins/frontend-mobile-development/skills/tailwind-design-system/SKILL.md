@@ -1,20 +1,165 @@
 ---
 name: tailwind-design-system
-description: Build scalable design systems with Tailwind CSS, design tokens, component libraries, and responsive patterns. Use when creating component libraries, implementing design systems, or standardizing UI patterns.
+description: Build scalable design systems with Tailwind CSS v4, design tokens, component libraries, and responsive patterns. Use when creating component libraries, implementing design systems, or standardizing UI patterns.
 ---
 
-# Tailwind Design System
+# Tailwind Design System (v4)
 
-Build production-ready design systems with Tailwind CSS, including design tokens, component variants, responsive patterns, and accessibility.
+Build production-ready design systems with Tailwind CSS v4, including CSS-first configuration, design tokens, component variants, responsive patterns, and accessibility.
+
+> **Note**: This skill targets Tailwind CSS v4 (2024+). For v3 projects, refer to the [upgrade guide](https://tailwindcss.com/docs/upgrade-guide).
 
 ## When to Use This Skill
 
-- Creating a component library with Tailwind
-- Implementing design tokens and theming
+- Creating a component library with Tailwind v4
+- Implementing design tokens and theming with CSS-first configuration
 - Building responsive and accessible components
 - Standardizing UI patterns across a codebase
-- Migrating to or extending Tailwind CSS
-- Setting up dark mode and color schemes
+- Migrating from Tailwind v3 to v4
+- Setting up dark mode with native CSS features
+
+## Key v4 Changes
+
+| v3 Pattern                            | v4 Pattern                                                            |
+| ------------------------------------- | --------------------------------------------------------------------- |
+| `tailwind.config.ts`                  | `@theme` in CSS                                                       |
+| `@tailwind base/components/utilities` | `@import "tailwindcss"`                                               |
+| `darkMode: "class"`                   | `@custom-variant dark (&:where(.dark, .dark *))`                      |
+| `theme.extend.colors`                 | `@theme { --color-*: value }`                                         |
+| `require("tailwindcss-animate")`      | CSS `@keyframes` in `@theme` + `@starting-style` for entry animations |
+
+## Quick Start
+
+```css
+/* app.css - Tailwind v4 CSS-first configuration */
+@import "tailwindcss";
+
+/* Define your theme with @theme */
+@theme {
+  /* Semantic color tokens using OKLCH for better color perception */
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(14.5% 0.025 264);
+
+  --color-primary: oklch(14.5% 0.025 264);
+  --color-primary-foreground: oklch(98% 0.01 264);
+
+  --color-secondary: oklch(96% 0.01 264);
+  --color-secondary-foreground: oklch(14.5% 0.025 264);
+
+  --color-muted: oklch(96% 0.01 264);
+  --color-muted-foreground: oklch(46% 0.02 264);
+
+  --color-accent: oklch(96% 0.01 264);
+  --color-accent-foreground: oklch(14.5% 0.025 264);
+
+  --color-destructive: oklch(53% 0.22 27);
+  --color-destructive-foreground: oklch(98% 0.01 264);
+
+  --color-border: oklch(91% 0.01 264);
+  --color-ring: oklch(14.5% 0.025 264);
+
+  --color-card: oklch(100% 0 0);
+  --color-card-foreground: oklch(14.5% 0.025 264);
+
+  /* Ring offset for focus states */
+  --color-ring-offset: oklch(100% 0 0);
+
+  /* Radius tokens */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+
+  /* Animation tokens - keyframes inside @theme are output when referenced by --animate-* variables */
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-fade-out: fade-out 0.2s ease-in;
+  --animate-slide-in: slide-in 0.3s ease-out;
+  --animate-slide-out: slide-out 0.3s ease-in;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateY(-0.5rem);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-0.5rem);
+      opacity: 0;
+    }
+  }
+}
+
+/* Dark mode variant - use @custom-variant for class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Dark mode theme overrides */
+.dark {
+  --color-background: oklch(14.5% 0.025 264);
+  --color-foreground: oklch(98% 0.01 264);
+
+  --color-primary: oklch(98% 0.01 264);
+  --color-primary-foreground: oklch(14.5% 0.025 264);
+
+  --color-secondary: oklch(22% 0.02 264);
+  --color-secondary-foreground: oklch(98% 0.01 264);
+
+  --color-muted: oklch(22% 0.02 264);
+  --color-muted-foreground: oklch(65% 0.02 264);
+
+  --color-accent: oklch(22% 0.02 264);
+  --color-accent-foreground: oklch(98% 0.01 264);
+
+  --color-destructive: oklch(42% 0.15 27);
+  --color-destructive-foreground: oklch(98% 0.01 264);
+
+  --color-border: oklch(22% 0.02 264);
+  --color-ring: oklch(83% 0.02 264);
+
+  --color-card: oklch(14.5% 0.025 264);
+  --color-card-foreground: oklch(98% 0.01 264);
+
+  --color-ring-offset: oklch(14.5% 0.025 264);
+}
+
+/* Base styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+```
 
 ## Core Concepts
 
@@ -26,7 +171,7 @@ Brand Tokens (abstract)
         └── Component Tokens (specific)
 
 Example:
-    blue-500 → primary → button-bg
+    oklch(45% 0.2 260) → --color-primary → bg-primary
 ```
 
 ### 2. Component Architecture
@@ -35,120 +180,25 @@ Example:
 Base styles → Variants → Sizes → States → Overrides
 ```
 
-## Quick Start
-
-```typescript
-// tailwind.config.ts
-import type { Config } from "tailwindcss";
-
-const config: Config = {
-  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        // Semantic color tokens
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        border: "hsl(var(--border))",
-        ring: "hsl(var(--ring))",
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
-    },
-  },
-  plugins: [require("tailwindcss-animate")],
-};
-
-export default config;
-```
-
-```css
-/* globals.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-  }
-}
-```
-
 ## Patterns
 
 ### Pattern 1: CVA (Class Variance Authority) Components
 
 ```typescript
 // components/ui/button.tsx
+import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  // Base styles
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  // Base styles - v4 uses native CSS variables
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        outline: 'border border-border bg-background hover:bg-accent hover:text-accent-foreground',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
@@ -157,7 +207,7 @@ const buttonVariants = cva(
         default: 'h-10 px-4 py-2',
         sm: 'h-9 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
-        icon: 'h-10 w-10',
+        icon: 'size-10',
       },
     },
     defaultVariants: {
@@ -173,21 +223,24 @@ export interface ButtonProps
   asChild?: boolean
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button'
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
-    )
-  }
-)
-Button.displayName = 'Button'
-
-export { Button, buttonVariants }
+// React 19: No forwardRef needed
+export function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  ref,
+  ...props
+}: ButtonProps & { ref?: React.Ref<HTMLButtonElement> }) {
+  const Comp = asChild ? Slot : 'button'
+  return (
+    <Comp
+      className={cn(buttonVariants({ variant, size, className }))}
+      ref={ref}
+      {...props}
+    />
+  )
+}
 
 // Usage
 <Button variant="destructive" size="lg">Delete</Button>
@@ -195,79 +248,95 @@ export { Button, buttonVariants }
 <Button asChild><Link href="/home">Home</Link></Button>
 ```
 
-### Pattern 2: Compound Components
+### Pattern 2: Compound Components (React 19)
 
 ```typescript
 // components/ui/card.tsx
 import { cn } from '@/lib/utils'
-import { forwardRef } from 'react'
 
-const Card = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+// React 19: ref is a regular prop, no forwardRef
+export function Card({
+  className,
+  ref,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       className={cn(
-        'rounded-lg border bg-card text-card-foreground shadow-sm',
+        'rounded-lg border border-border bg-card text-card-foreground shadow-sm',
         className
       )}
       {...props}
     />
   )
-)
-Card.displayName = 'Card'
+}
 
-const CardHeader = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+export function CardHeader({
+  className,
+  ref,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       className={cn('flex flex-col space-y-1.5 p-6', className)}
       {...props}
     />
   )
-)
-CardHeader.displayName = 'CardHeader'
+}
 
-const CardTitle = forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
-  ({ className, ...props }, ref) => (
+export function CardTitle({
+  className,
+  ref,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement> & { ref?: React.Ref<HTMLHeadingElement> }) {
+  return (
     <h3
       ref={ref}
       className={cn('text-2xl font-semibold leading-none tracking-tight', className)}
       {...props}
     />
   )
-)
-CardTitle.displayName = 'CardTitle'
+}
 
-const CardDescription = forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
-  ({ className, ...props }, ref) => (
+export function CardDescription({
+  className,
+  ref,
+  ...props
+}: React.HTMLAttributes<HTMLParagraphElement> & { ref?: React.Ref<HTMLParagraphElement> }) {
+  return (
     <p
       ref={ref}
       className={cn('text-sm text-muted-foreground', className)}
       {...props}
     />
   )
-)
-CardDescription.displayName = 'CardDescription'
+}
 
-const CardContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+export function CardContent({
+  className,
+  ref,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
   )
-)
-CardContent.displayName = 'CardContent'
+}
 
-const CardFooter = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+export function CardFooter({
+  className,
+  ref,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & { ref?: React.Ref<HTMLDivElement> }) {
+  return (
     <div
       ref={ref}
       className={cn('flex items-center p-6 pt-0', className)}
       {...props}
     />
   )
-)
-CardFooter.displayName = 'CardFooter'
-
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
+}
 
 // Usage
 <Card>
@@ -288,43 +357,40 @@ export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 
 ```typescript
 // components/ui/input.tsx
-import { forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string
+  ref?: React.Ref<HTMLInputElement>
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, error, ...props }, ref) => {
-    return (
-      <div className="relative">
-        <input
-          type={type}
-          className={cn(
-            'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-            error && 'border-destructive focus-visible:ring-destructive',
-            className
-          )}
-          ref={ref}
-          aria-invalid={!!error}
-          aria-describedby={error ? `${props.id}-error` : undefined}
-          {...props}
-        />
-        {error && (
-          <p
-            id={`${props.id}-error`}
-            className="mt-1 text-sm text-destructive"
-            role="alert"
-          >
-            {error}
-          </p>
+export function Input({ className, type, error, ref, ...props }: InputProps) {
+  return (
+    <div className="relative">
+      <input
+        type={type}
+        className={cn(
+          'flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+          error && 'border-destructive focus-visible:ring-destructive',
+          className
         )}
-      </div>
-    )
-  }
-)
-Input.displayName = 'Input'
+        ref={ref}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${props.id}-error` : undefined}
+        {...props}
+      />
+      {error && (
+        <p
+          id={`${props.id}-error`}
+          className="mt-1 text-sm text-destructive"
+          role="alert"
+        >
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
 
 // components/ui/label.tsx
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -333,17 +399,20 @@ const labelVariants = cva(
   'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
 )
 
-const Label = forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
-  ({ className, ...props }, ref) => (
+export function Label({
+  className,
+  ref,
+  ...props
+}: React.LabelHTMLAttributes<HTMLLabelElement> & { ref?: React.Ref<HTMLLabelElement> }) {
+  return (
     <label ref={ref} className={cn(labelVariants(), className)} {...props} />
   )
-)
-Label.displayName = 'Label'
+}
 
-// Usage with React Hook Form
+// Usage with React Hook Form + Zod
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
+import { z } from 'zod'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -459,87 +528,123 @@ export function Container({ className, size, ...props }: ContainerProps) {
 </Container>
 ```
 
-### Pattern 5: Animation Utilities
+### Pattern 5: Native CSS Animations (v4)
+
+```css
+/* In your CSS file - native @starting-style for entry animations */
+@theme {
+  --animate-dialog-in: dialog-fade-in 0.2s ease-out;
+  --animate-dialog-out: dialog-fade-out 0.15s ease-in;
+}
+
+@keyframes dialog-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes dialog-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-0.5rem);
+  }
+}
+
+/* Native popover animations using @starting-style */
+[popover] {
+  transition:
+    opacity 0.2s,
+    transform 0.2s,
+    display 0.2s allow-discrete;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+[popover]:popover-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@starting-style {
+  [popover]:popover-open {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+```
 
 ```typescript
-// lib/animations.ts - Tailwind CSS Animate utilities
-import { cn } from './utils'
-
-export const fadeIn = 'animate-in fade-in duration-300'
-export const fadeOut = 'animate-out fade-out duration-300'
-export const slideInFromTop = 'animate-in slide-in-from-top duration-300'
-export const slideInFromBottom = 'animate-in slide-in-from-bottom duration-300'
-export const slideInFromLeft = 'animate-in slide-in-from-left duration-300'
-export const slideInFromRight = 'animate-in slide-in-from-right duration-300'
-export const zoomIn = 'animate-in zoom-in-95 duration-300'
-export const zoomOut = 'animate-out zoom-out-95 duration-300'
-
-// Compound animations
-export const modalEnter = cn(fadeIn, zoomIn, 'duration-200')
-export const modalExit = cn(fadeOut, zoomOut, 'duration-200')
-export const dropdownEnter = cn(fadeIn, slideInFromTop, 'duration-150')
-export const dropdownExit = cn(fadeOut, 'slide-out-to-top', 'duration-150')
-
-// components/ui/dialog.tsx
+// components/ui/dialog.tsx - Using native popover API
 import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { cn } from '@/lib/utils'
 
-const DialogOverlay = forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay
-    ref={ref}
-    className={cn(
-      'fixed inset-0 z-50 bg-black/80',
-      'data-[state=open]:animate-in data-[state=closed]:animate-out',
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-      className
-    )}
-    {...props}
-  />
-))
+const DialogPortal = DialogPrimitive.Portal
 
-const DialogContent = forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
+export function DialogOverlay({
+  className,
+  ref,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & {
+  ref?: React.Ref<HTMLDivElement>
+}) {
+  return (
+    <DialogPrimitive.Overlay
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out',
-        'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-        'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-        'data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]',
-        'data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]',
-        'sm:rounded-lg',
+        'fixed inset-0 z-50 bg-black/80',
+        'data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out',
         className
       )}
       {...props}
-    >
-      {children}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-))
+    />
+  )
+}
+
+export function DialogContent({
+  className,
+  children,
+  ref,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+  ref?: React.Ref<HTMLDivElement>
+}) {
+  return (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(
+          'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border border-border bg-background p-6 shadow-lg sm:rounded-lg',
+          'data-[state=open]:animate-dialog-in data-[state=closed]:animate-dialog-out',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  )
+}
 ```
 
-### Pattern 6: Dark Mode Implementation
+### Pattern 6: Dark Mode with CSS (v4)
 
 ```typescript
-// providers/ThemeProvider.tsx
+// providers/ThemeProvider.tsx - Simplified for v4
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type Theme = 'dark' | 'light' | 'system'
-
-interface ThemeProviderProps {
-  children: React.ReactNode
-  defaultTheme?: Theme
-  storageKey?: string
-}
 
 interface ThemeContextType {
   theme: Theme
@@ -553,7 +658,11 @@ export function ThemeProvider({
   children,
   defaultTheme = 'system',
   storageKey = 'theme',
-}: ThemeProviderProps) {
+}: {
+  children: React.ReactNode
+  defaultTheme?: Theme
+  storageKey?: string
+}) {
   const [theme, setTheme] = useState<Theme>(defaultTheme)
   const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>('light')
 
@@ -563,34 +672,34 @@ export function ThemeProvider({
   }, [storageKey])
 
   useEffect(() => {
-    const root = window.document.documentElement
+    const root = document.documentElement
     root.classList.remove('light', 'dark')
 
-    let resolved: 'dark' | 'light'
-
-    if (theme === 'system') {
-      resolved = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-    } else {
-      resolved = theme
-    }
+    const resolved = theme === 'system'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : theme
 
     root.classList.add(resolved)
     setResolvedTheme(resolved)
+
+    // Update meta theme-color for mobile browsers
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', resolved === 'dark' ? '#09090b' : '#ffffff')
+    }
   }, [theme])
 
-  const value = {
-    theme,
-    setTheme: (newTheme: Theme) => {
-      localStorage.setItem(storageKey, newTheme)
-      setTheme(newTheme)
-    },
-    resolvedTheme,
-  }
-
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={{
+      theme,
+      setTheme: (newTheme) => {
+        localStorage.setItem(storageKey, newTheme)
+        setTheme(newTheme)
+      },
+      resolvedTheme,
+    }}>
+      {children}
+    </ThemeContext.Provider>
   )
 }
 
@@ -613,8 +722,8 @@ export function ThemeToggle() {
       size="icon"
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
     >
-      <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <Sun className="size-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute size-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   )
@@ -642,27 +751,124 @@ export const focusRing = cn(
 export const disabled = "disabled:pointer-events-none disabled:opacity-50";
 ```
 
+## Advanced v4 Patterns
+
+### Custom Utilities with `@utility`
+
+Define reusable custom utilities:
+
+```css
+/* Custom utility for decorative lines */
+@utility line-t {
+  @apply relative before:absolute before:top-0 before:-left-[100vw] before:h-px before:w-[200vw] before:bg-gray-950/5 dark:before:bg-white/10;
+}
+
+/* Custom utility for text gradients */
+@utility text-gradient {
+  @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+}
+```
+
+### Theme Modifiers
+
+```css
+/* Use @theme inline when referencing other CSS variables */
+@theme inline {
+  --font-sans: var(--font-inter), system-ui;
+}
+
+/* Use @theme static to always generate CSS variables (even when unused) */
+@theme static {
+  --color-brand: oklch(65% 0.15 240);
+}
+
+/* Import with theme options */
+@import "tailwindcss" theme(static);
+```
+
+### Namespace Overrides
+
+```css
+@theme {
+  /* Clear all default colors and define your own */
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-primary: oklch(45% 0.2 260);
+  --color-secondary: oklch(65% 0.15 200);
+
+  /* Clear ALL defaults for a minimal setup */
+  /* --*: initial; */
+}
+```
+
+### Semi-transparent Color Variants
+
+```css
+@theme {
+  /* Use color-mix() for alpha variants */
+  --color-primary-50: color-mix(in oklab, var(--color-primary) 5%, transparent);
+  --color-primary-100: color-mix(
+    in oklab,
+    var(--color-primary) 10%,
+    transparent
+  );
+  --color-primary-200: color-mix(
+    in oklab,
+    var(--color-primary) 20%,
+    transparent
+  );
+}
+```
+
+### Container Queries
+
+```css
+@theme {
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+}
+```
+
+## v3 to v4 Migration Checklist
+
+- [ ] Replace `tailwind.config.ts` with CSS `@theme` block
+- [ ] Change `@tailwind base/components/utilities` to `@import "tailwindcss"`
+- [ ] Move color definitions to `@theme { --color-*: value }`
+- [ ] Replace `darkMode: "class"` with `@custom-variant dark`
+- [ ] Move `@keyframes` inside `@theme` blocks (ensures keyframes output with theme)
+- [ ] Replace `require("tailwindcss-animate")` with native CSS animations
+- [ ] Update `h-10 w-10` to `size-10` (new utility)
+- [ ] Remove `forwardRef` (React 19 passes ref as prop)
+- [ ] Consider OKLCH colors for better color perception
+- [ ] Replace custom plugins with `@utility` directives
+
 ## Best Practices
 
 ### Do's
 
-- **Use CSS variables** - Enable runtime theming
+- **Use `@theme` blocks** - CSS-first configuration is v4's core pattern
+- **Use OKLCH colors** - Better perceptual uniformity than HSL
 - **Compose with CVA** - Type-safe variants
-- **Use semantic colors** - `primary` not `blue-500`
-- **Forward refs** - Enable composition
+- **Use semantic tokens** - `bg-primary` not `bg-blue-500`
+- **Use `size-*`** - New shorthand for `w-* h-*`
 - **Add accessibility** - ARIA attributes, focus states
 
 ### Don'ts
 
-- **Don't use arbitrary values** - Extend theme instead
-- **Don't nest @apply** - Hurts readability
-- **Don't skip focus states** - Keyboard users need them
+- **Don't use `tailwind.config.ts`** - Use CSS `@theme` instead
+- **Don't use `@tailwind` directives** - Use `@import "tailwindcss"`
+- **Don't use `forwardRef`** - React 19 passes ref as prop
+- **Don't use arbitrary values** - Extend `@theme` instead
 - **Don't hardcode colors** - Use semantic tokens
 - **Don't forget dark mode** - Test both themes
 
 ## Resources
 
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Tailwind CSS v4 Documentation](https://tailwindcss.com/docs)
+- [Tailwind v4 Beta Announcement](https://tailwindcss.com/blog/tailwindcss-v4-beta)
 - [CVA Documentation](https://cva.style/docs)
 - [shadcn/ui](https://ui.shadcn.com/)
 - [Radix Primitives](https://www.radix-ui.com/primitives)
