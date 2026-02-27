@@ -22,3 +22,4 @@ venv
 node_modules
 .sass-cache
 .claude
+.vscode
