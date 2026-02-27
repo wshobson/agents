@@ -1,29 +1,29 @@
 # Claude Code Plugins: Orchestration and Automation
 
-> **⚡ Updated for Opus 4.5, Sonnet 4.5 & Haiku 4.5** — Three-tier model strategy for optimal performance
+> **⚡ Updated for Opus 4.6, Sonnet 4.6 & Haiku 4.5** — Three-tier model strategy for optimal performance
 
 [![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
 
-> **🎯 Agent Skills Enabled** — 129 specialized skills extend Claude's capabilities across plugins with progressive disclosure
+> **🎯 Agent Skills Enabled** — 146 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **108 specialized AI agents**, **15 multi-agent workflow orchestrators**, **129 agent skills**, and **72 development tools** organized into **72 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **112 specialized AI agents**, **16 multi-agent workflow orchestrators**, **146 agent skills**, and **79 development tools** organized into **72 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
 - **72 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
-- **108 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
-- **129 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
-- **15 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
-- **72 Development Tools** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
+- **112 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
+- **146 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
+- **16 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
+- **79 Development Tools** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
 
 ### Key Features
 
 - **Granular Plugin Architecture**: 72 focused plugins optimized for minimal token usage
-- **Comprehensive Tooling**: 72 development tools including test generation, scaffolding, and security scanning
+- **Comprehensive Tooling**: 79 development tools including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
-- **Agent Skills**: 129 specialized skills following for progressive disclosure and token efficiency
+- **Agent Skills**: 146 specialized skills following for progressive disclosure and token efficiency
 - **Clear Organization**: 23 categories with 1-6 plugins each for easy discovery
 - **Efficient Design**: Average 3.4 components per plugin (follows Anthropic's 2-8 pattern)
 
@@ -37,7 +37,7 @@ Each plugin is completely isolated with its own agents, commands, and skills:
 - **Clear boundaries** - Each plugin has a single, focused purpose
 - **Progressive disclosure** - Skills load knowledge only when activated
 
-**Example**: Installing `python-development` loads 3 Python agents, 1 scaffolding tool, and makes 5 skills available (~300 tokens), not the entire marketplace.
+**Example**: Installing `python-development` loads 3 Python agents, 1 scaffolding tool, and makes 16 skills available (~1000 tokens), not the entire marketplace.
 
 ## Quick Start
 
@@ -63,7 +63,7 @@ Install the plugins you need:
 
 ```bash
 # Essential development plugins
-/plugin install python-development          # Python with 5 specialized skills
+/plugin install python-development          # Python with 16 specialized skills
 /plugin install javascript-typescript       # JS/TS with 4 specialized skills
 /plugin install backend-development         # Backend APIs with 3 architecture skills
 
@@ -73,7 +73,7 @@ Install the plugins you need:
 
 # Security & quality
 /plugin install security-scanning           # SAST with security skill
-/plugin install code-review-ai             # AI-powered code review
+/plugin install comprehensive-review       # Multi-perspective code analysis
 
 # Full-stack orchestration
 /plugin install full-stack-orchestration   # Multi-agent workflows
@@ -115,8 +115,8 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 ### Core Guides
 
 - **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 72 plugins
-- **[Agent Reference](docs/agents.md)** - All 108 agents organized by category
-- **[Agent Skills](docs/agent-skills.md)** - 129 specialized skills with progressive disclosure
+- **[Agent Reference](docs/agents.md)** - All 112 agents organized by category
+- **[Agent Skills](docs/agent-skills.md)** - 146 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
 - **[Architecture](docs/architecture.md)** - Design principles and patterns
 
@@ -130,7 +130,44 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ## What's New
 
-### Agent Skills (129 skills across 20 plugins)
+### Agent Teams Plugin (NEW)
+
+Orchestrate multi-agent teams for parallel workflows using Claude Code's experimental Agent Teams feature:
+
+```bash
+/plugin install agent-teams@claude-code-workflows
+```
+
+- **7 Team Presets** — `review`, `debug`, `feature`, `fullstack`, `research`, `security`, `migration`
+- **Parallel Code Review** — `/team-review src/ --reviewers security,performance,architecture`
+- **Hypothesis-Driven Debugging** — `/team-debug "API returns 500" --hypotheses 3`
+- **Parallel Feature Development** — `/team-feature "Add OAuth2 auth" --plan-first`
+- **Research Teams** — Parallel investigation across codebase and web sources
+- **Security Audits** — 4 reviewers covering OWASP, auth, dependencies, and secrets
+- **Migration Support** — Coordinated migration with parallel streams and correctness verification
+
+Includes 4 specialized agents, 7 commands, and 6 skills with reference documentation.
+
+[→ View agent-teams documentation](plugins/agent-teams/README.md)
+
+### Conductor Plugin — Context-Driven Development
+
+Transforms Claude Code into a project management tool with a structured **Context → Spec & Plan → Implement** workflow:
+
+```bash
+/plugin install conductor@claude-code-workflows
+```
+
+- **Interactive Setup** — `/conductor:setup` creates product vision, tech stack, workflow rules, and style guides
+- **Track-Based Development** — `/conductor:new-track` generates specifications and phased implementation plans
+- **TDD Workflow** — `/conductor:implement` executes tasks with verification checkpoints
+- **Semantic Revert** — `/conductor:revert` undoes work by logical unit (track, phase, or task)
+- **State Persistence** — Resume setup across sessions with persistent project context
+- **3 Skills** — Context-driven development, track management, workflow patterns
+
+[→ View Conductor documentation](plugins/conductor/README.md)
+
+### Agent Skills (146 skills across 21 plugins)
 
 Specialized knowledge packages following Anthropic's progressive disclosure architecture:
 
@@ -166,14 +203,14 @@ Strategic model assignment for optimal performance and cost:
 
 | Tier       | Model    | Agents | Use Case                                                                                        |
 | ---------- | -------- | ------ | ----------------------------------------------------------------------------------------------- |
-| **Tier 1** | Opus 4.5 | 42     | Critical architecture, security, ALL code review, production coding (language pros, frameworks) |
+| **Tier 1** | Opus 4.6 | 42     | Critical architecture, security, ALL code review, production coding (language pros, frameworks) |
 | **Tier 2** | Inherit  | 42     | Complex tasks - user chooses model (AI/ML, backend, frontend/mobile, specialized)               |
 | **Tier 3** | Sonnet   | 51     | Support with intelligence (docs, testing, debugging, network, API docs, DX, legacy, payments)   |
 | **Tier 4** | Haiku    | 18     | Fast operational tasks (SEO, deployment, simple docs, sales, content, search)                   |
 
-**Why Opus 4.5 for Critical Agents?**
+**Why Opus 4.6 for Critical Agents?**
 
-- 80.9% on SWE-bench (industry-leading)
+- 80.8% on SWE-bench (industry-leading)
 - 65% fewer tokens for complex tasks
 - Best for architecture decisions and security audits
 
@@ -181,14 +218,14 @@ Strategic model assignment for optimal performance and cost:
 Agents marked `inherit` use your session's default model, letting you balance cost and capability:
 
 - Set via `claude --model opus` or `claude --model sonnet` when starting a session
-- Falls back to Sonnet 4.5 if no default specified
+- Falls back to Sonnet 4.6 if no default specified
 - Perfect for frontend/mobile developers who want cost control
 - AI/ML engineers can choose Opus for complex model work
 
 **Cost Considerations:**
 
-- **Opus 4.5**: $5/$25 per million input/output tokens - Premium for critical work
-- **Sonnet 4.5**: $3/$15 per million tokens - Balanced performance/cost
+- **Opus 4.6**: $5/$25 per million input/output tokens - Premium for critical work
+- **Sonnet 4.6**: $3/$15 per million tokens - Balanced performance/cost
 - **Haiku 4.5**: $1/$5 per million tokens - Fast, cost-effective operations
 - Opus's 65% token reduction on complex tasks often offsets higher rate
 - Use `inherit` tier to control costs for high-volume use cases
@@ -246,13 +283,13 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 ## Plugin Categories
 
-**23 categories, 72 plugins:**
+**24 categories, 72 plugins:**
 
 - 🎨 **Development** (4) - debugging, backend, frontend, multi-platform
 - 📚 **Documentation** (3) - code docs, API specs, diagrams, C4 architecture
-- 🔄 **Workflows** (4) - git, full-stack, TDD, **Conductor** (context-driven development)
+- 🔄 **Workflows** (5) - git, full-stack, TDD, **Conductor** (context-driven development), **Agent Teams** (multi-agent orchestration)
 - ✅ **Testing** (2) - unit testing, TDD workflows
-- 🔍 **Quality** (3) - code review, comprehensive review, performance
+- 🔍 **Quality** (2) - comprehensive review, performance
 - 🤖 **AI & ML** (4) - LLM apps, agent orchestration, context, MLOps
 - 📊 **Data** (2) - data engineering, data validation
 - 🗄️ **Database** (2) - database design, migrations
@@ -278,7 +315,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 - **Single responsibility** - Each plugin does one thing well
 - **Minimal token usage** - Average 3.4 components per plugin
 - **Composable** - Mix and match for complex workflows
-- **100% coverage** - All 108 agents accessible across plugins
+- **100% coverage** - All 112 agents accessible across plugins
 
 ### Progressive Disclosure (Skills)
 
