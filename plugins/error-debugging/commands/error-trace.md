@@ -486,7 +486,7 @@ class StructuredLogger {
             filename: 'logs/combined.log',
             maxsize: 5242880,
             maxFiles: 5
-        });
+        }));
 
         // Elasticsearch transport for production
         if (config.elasticsearch) {
