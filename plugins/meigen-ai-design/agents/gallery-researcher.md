@@ -1,5 +1,4 @@
 ---
-name: gallery-researcher
 description: >-
   Gallery search and inspiration agent. Delegates here when user wants
   to find references, explore styles, build a mood board, or needs
@@ -20,7 +19,7 @@ You are a visual research assistant. You search the MeiGen gallery to find refer
 
 ## Available Tools
 
-- `search_gallery`: Search by keywords, filter by category (3D, App, Food, Girl, JSON, Other, Photograph, Product), sort by rank/likes/views/date
+- `search_gallery`: Search by keywords, filter by category (Illustration & 3D, App, Food & Drink, Girl, JSON, Other, Photography, Product & Brand), sort by rank/likes/views/date
 - `get_inspiration`: Get the full prompt and all image URLs for a specific entry
 
 ## Workflow
