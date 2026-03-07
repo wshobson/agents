@@ -1,7 +1,7 @@
 {
   "name": "meigen-ai-design",
-  "version": "1.2.3",
-  "description": "Turn Claude Code into a visual creative assistant rivaling Lovart — AI image generation with creative workflow orchestration, parallel multi-direction output, prompt engineering skills, and a 1,300+ curated inspiration library. Supports local ComfyUI, MeiGen Cloud, and OpenAI APIs.",
+  "version": "1.0.0",
+  "description": "AI image generation with creative workflow orchestration, parallel multi-direction output, prompt engineering, and a 1,300+ curated inspiration library. Requires MeiGen MCP server (supports MeiGen Cloud, local ComfyUI, and OpenAI-compatible APIs).",
   "author": {
     "name": "MeiGen",
     "url": "https://www.meigen.ai"
