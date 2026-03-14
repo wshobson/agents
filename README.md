@@ -347,6 +347,14 @@ claude-agents/
 
 [→ View architecture details](docs/architecture.md)
 
+## Community Projects
+
+Projects from the community that complement this plugin ecosystem:
+
+| Project | Description |
+| ------- | ----------- |
+| [Claude War Room](https://github.com/RandMelville/claude-war-room) | Sequential orchestrator of 5 specialized agents for 360° feature analysis. One command triggers reverse engineering, scalability, concurrency, chaos engineering, and executive report. |
+
 ## Contributing
 
 To add new agents, skills, or commands:
