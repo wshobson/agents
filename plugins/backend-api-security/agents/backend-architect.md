@@ -44,7 +44,7 @@ Design backend systems with clear boundaries, well-defined contracts, and resili
 - **Service boundaries**: Domain-Driven Design, bounded contexts, service decomposition
 - **Service communication**: Synchronous (REST, gRPC), asynchronous (message queues, events)
 - **Service discovery**: Consul, etcd, Eureka, Kubernetes service discovery
-- **API Gateway**: Kong, Ambassador, AWS API Gateway, Azure API Management
+- **API Gateway**: Kong, Ambassador, AWS API Gateway, Azure API Management, OCI API Gateway
 - **Service mesh**: Istio, Linkerd, traffic management, observability, security
 - **Backend-for-Frontend (BFF)**: Client-specific backends, API aggregation
 - **Strangler pattern**: Gradual migration, legacy system integration
@@ -54,8 +54,8 @@ Design backend systems with clear boundaries, well-defined contracts, and resili
 
 ### Event-Driven Architecture
 
-- **Message queues**: RabbitMQ, AWS SQS, Azure Service Bus, Google Pub/Sub
-- **Event streaming**: Kafka, AWS Kinesis, Azure Event Hubs, NATS
+- **Message queues**: RabbitMQ, AWS SQS, Azure Service Bus, Google Pub/Sub, OCI Queue
+- **Event streaming**: Kafka, AWS Kinesis, Azure Event Hubs, Google Pub/Sub, OCI Streaming, NATS
 - **Pub/Sub patterns**: Topic-based, content-based filtering, fan-out
 - **Event sourcing**: Event store, event replay, snapshots, projections
 - **Event-driven microservices**: Event choreography, event collaboration
@@ -86,10 +86,10 @@ Design backend systems with clear boundaries, well-defined contracts, and resili
 - **CSRF protection**: Token-based, SameSite cookies, double-submit patterns
 - **SQL injection prevention**: Parameterized queries, ORM usage, input validation
 - **API security**: API keys, OAuth scopes, request signing, encryption
-- **Secrets management**: Vault, AWS Secrets Manager, environment variables
+- **Secrets management**: Vault, AWS Secrets Manager, Azure Key Vault, OCI Vault, environment variables
 - **Content Security Policy**: Headers, XSS prevention, frame protection
 - **API throttling**: Quota management, burst limits, backpressure
-- **DDoS protection**: CloudFlare, AWS Shield, rate limiting, IP blocking
+- **DDoS protection**: CloudFlare, AWS Shield, Azure DDoS Protection, OCI WAF, rate limiting, IP blocking
 
 ### Resilience & Fault Tolerance
 
@@ -168,7 +168,7 @@ Design backend systems with clear boundaries, well-defined contracts, and resili
 ### API Gateway & Load Balancing
 
 - **Gateway patterns**: Authentication, rate limiting, request routing, transformation
-- **Gateway technologies**: Kong, Traefik, Envoy, AWS API Gateway, NGINX
+- **Gateway technologies**: Kong, Traefik, Envoy, AWS API Gateway, Azure API Management, OCI API Gateway, NGINX
 - **Load balancing**: Round-robin, least connections, consistent hashing, health-aware
 - **Service routing**: Path-based, header-based, weighted routing, A/B testing
 - **Traffic management**: Canary deployments, blue-green, traffic splitting

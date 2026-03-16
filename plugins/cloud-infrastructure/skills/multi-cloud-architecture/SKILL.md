@@ -1,11 +1,11 @@
 ---
 name: multi-cloud-architecture
-description: Design multi-cloud architectures using a decision framework to select and integrate services across AWS, Azure, and GCP. Use when building multi-cloud systems, avoiding vendor lock-in, or leveraging best-of-breed services from multiple providers.
+description: Design multi-cloud architectures using a decision framework to select and integrate services across AWS, Azure, GCP, and OCI. Use when building multi-cloud systems, avoiding vendor lock-in, or leveraging best-of-breed services from multiple providers.
 ---
 
 # Multi-Cloud Architecture
 
-Decision framework and patterns for architecting applications across AWS, Azure, and GCP.
+Decision framework and patterns for architecting applications across AWS, Azure, GCP, and OCI.
 
 ## Purpose
 
@@ -23,31 +23,31 @@ Design cloud-agnostic architectures and make informed decisions about service se
 
 ### Compute Services
 
-| AWS     | Azure               | GCP             | Use Case           |
-| ------- | ------------------- | --------------- | ------------------ |
-| EC2     | Virtual Machines    | Compute Engine  | IaaS VMs           |
-| ECS     | Container Instances | Cloud Run       | Containers         |
-| EKS     | AKS                 | GKE             | Kubernetes         |
-| Lambda  | Functions           | Cloud Functions | Serverless         |
-| Fargate | Container Apps      | Cloud Run       | Managed containers |
+| AWS     | Azure               | GCP             | OCI                 | Use Case           |
+| ------- | ------------------- | --------------- | ------------------- | ------------------ |
+| EC2     | Virtual Machines    | Compute Engine  | Compute             | IaaS VMs           |
+| ECS     | Container Instances | Cloud Run       | Container Instances | Containers         |
+| EKS     | AKS                 | GKE             | OKE                 | Kubernetes         |
+| Lambda  | Functions           | Cloud Functions | Functions           | Serverless         |
+| Fargate | Container Apps      | Cloud Run       | Container Instances | Managed containers |
 
 ### Storage Services
 
-| AWS     | Azure           | GCP             | Use Case       |
-| ------- | --------------- | --------------- | -------------- |
-| S3      | Blob Storage    | Cloud Storage   | Object storage |
-| EBS     | Managed Disks   | Persistent Disk | Block storage  |
-| EFS     | Azure Files     | Filestore       | File storage   |
-| Glacier | Archive Storage | Archive Storage | Cold storage   |
+| AWS     | Azure           | GCP             | OCI            | Use Case       |
+| ------- | --------------- | --------------- | -------------- | -------------- |
+| S3      | Blob Storage    | Cloud Storage   | Object Storage | Object storage |
+| EBS     | Managed Disks   | Persistent Disk | Block Volumes  | Block storage  |
+| EFS     | Azure Files     | Filestore       | File Storage   | File storage   |
+| Glacier | Archive Storage | Archive Storage | Archive Storage | Cold storage   |
 
 ### Database Services
 
-| AWS         | Azure            | GCP           | Use Case        |
-| ----------- | ---------------- | ------------- | --------------- |
-| RDS         | SQL Database     | Cloud SQL     | Managed SQL     |
-| DynamoDB    | Cosmos DB        | Firestore     | NoSQL           |
-| Aurora      | PostgreSQL/MySQL | Cloud Spanner | Distributed SQL |
-| ElastiCache | Cache for Redis  | Memorystore   | Caching         |
+| AWS         | Azure            | GCP           | OCI                 | Use Case        |
+| ----------- | ---------------- | ------------- | ------------------- | --------------- |
+| RDS         | SQL Database     | Cloud SQL     | MySQL HeatWave      | Managed SQL     |
+| DynamoDB    | Cosmos DB        | Firestore     | NoSQL Database      | NoSQL           |
+| Aurora      | PostgreSQL/MySQL | Cloud Spanner | Autonomous Database | Distributed SQL |
+| ElastiCache | Cache for Redis  | Memorystore   | OCI Cache           | Caching         |
 
 **Reference:** See `references/service-comparison.md` for complete comparison
 
@@ -65,6 +65,7 @@ Design cloud-agnostic architectures and make informed decisions about service se
 - Use best service from each provider
 - AI/ML on GCP
 - Enterprise apps on Azure
+- Regulated data platforms on OCI
 - General compute on AWS
 
 ### Pattern 3: Geographic Distribution
@@ -85,10 +86,10 @@ Design cloud-agnostic architectures and make informed decisions about service se
 
 ### Use Cloud-Native Alternatives
 
-- **Compute:** Kubernetes (EKS/AKS/GKE)
-- **Database:** PostgreSQL/MySQL (RDS/SQL Database/Cloud SQL)
-- **Message Queue:** Apache Kafka (MSK/Event Hubs/Confluent)
-- **Cache:** Redis (ElastiCache/Azure Cache/Memorystore)
+- **Compute:** Kubernetes (EKS/AKS/GKE/OKE)
+- **Database:** PostgreSQL/MySQL (RDS/SQL Database/Cloud SQL/MySQL HeatWave)
+- **Message Queue:** Apache Kafka or managed streaming (MSK/Event Hubs/Confluent/OCI Streaming)
+- **Cache:** Redis (ElastiCache/Azure Cache/Memorystore/OCI Cache)
 - **Object Storage:** S3-compatible API
 - **Monitoring:** Prometheus/Grafana
 - **Service Mesh:** Istio/Linkerd
@@ -102,7 +103,7 @@ Infrastructure Abstraction (Terraform)
     ↓
 Cloud Provider APIs
     ↓
-AWS / Azure / GCP
+AWS / Azure / GCP / OCI
 ```
 
 ## Cost Comparison
@@ -112,6 +113,7 @@ AWS / Azure / GCP
 - **AWS:** On-demand, Reserved, Spot, Savings Plans
 - **Azure:** Pay-as-you-go, Reserved, Spot
 - **GCP:** On-demand, Committed use, Preemptible
+- **OCI:** Pay-as-you-go, annual commitments, burstable/flexible shapes, preemptible instances
 
 ### Cost Optimization Strategies
 

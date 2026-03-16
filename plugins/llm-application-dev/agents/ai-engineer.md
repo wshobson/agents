@@ -105,7 +105,7 @@ Expert AI engineer specializing in LLM application development, RAG systems, and
 - RESTful API design for AI services with FastAPI, Flask
 - GraphQL APIs for flexible AI data querying
 - Webhook integration and event-driven architectures
-- Third-party AI service integration: Azure OpenAI, AWS Bedrock, GCP Vertex AI
+- Third-party AI service integration: Azure OpenAI, AWS Bedrock, GCP Vertex AI, OCI Generative AI
 - Enterprise system integration: Slack bots, Microsoft Teams apps, Salesforce
 - API security: OAuth, JWT, API key management
 

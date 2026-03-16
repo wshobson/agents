@@ -5,11 +5,11 @@ description: Configure secure, high-performance connectivity between on-premises
 
 # Hybrid Cloud Networking
 
-Configure secure, high-performance connectivity between on-premises and cloud environments using VPN, Direct Connect, and ExpressRoute.
+Configure secure, high-performance connectivity between on-premises and cloud environments using VPN, Direct Connect, ExpressRoute, Interconnect, and FastConnect.
 
 ## Purpose
 
-Establish secure, reliable network connectivity between on-premises data centers and cloud providers (AWS, Azure, GCP).
+Establish secure, reliable network connectivity between on-premises data centers and cloud providers (AWS, Azure, GCP, OCI).
 
 ## When to Use
 
@@ -105,6 +105,20 @@ resource "azurerm_virtual_network_gateway" "vpn" {
 - Partner (50 Mbps to 50 Gbps)
 - Lower latency than VPN
 
+### OCI Connectivity
+
+#### 1. IPSec VPN Connect
+
+- IPSec VPN with redundant tunnels
+- Dynamic routing through DRG
+- Good fit for branch offices and migration phases
+
+#### 2. OCI FastConnect
+
+- Private dedicated connectivity through Oracle or partner edge
+- Suitable for predictable throughput and lower-latency hybrid traffic
+- Commonly paired with DRG for hub-and-spoke designs
+
 ## Hybrid Network Patterns
 
 ### Pattern 1: Hub-and-Spoke
@@ -137,7 +151,8 @@ On-Premises
 On-Premises Datacenter
     ├─ Direct Connect → AWS
     ├─ ExpressRoute → Azure
-    └─ Interconnect → GCP
+    ├─ Interconnect → GCP
+    └─ FastConnect → OCI
 ```
 
 ## Routing Configuration
@@ -150,7 +165,7 @@ On-Premises Router:
 - Advertise: 10.0.0.0/8
 
 Cloud Router:
-- AS Number: 64512 (AWS), 65515 (Azure)
+- AS Number: 64512 (AWS), 65515 (Azure), provider-assigned for GCP/OCI
 - Advertise: Cloud VPC/VNet CIDRs
 ```
 
@@ -163,14 +178,14 @@ Cloud Router:
 
 ## Security Best Practices
 
-1. **Use private connectivity** (Direct Connect/ExpressRoute)
+1. **Use private connectivity** (Direct Connect/ExpressRoute/Interconnect/FastConnect)
 2. **Implement encryption** for VPN tunnels
 3. **Use VPC endpoints** to avoid internet routing
 4. **Configure network ACLs** and security groups
 5. **Enable VPC Flow Logs** for monitoring
 6. **Implement DDoS protection**
 7. **Use PrivateLink/Private Endpoints**
-8. **Monitor connections** with CloudWatch/Monitor
+8. **Monitor connections** with CloudWatch/Azure Monitor/Cloud Monitoring/OCI Monitoring
 9. **Implement redundancy** (dual tunnels)
 10. **Regular security audits**
 
@@ -219,6 +234,10 @@ aws ec2 get-vpn-connection-telemetry
 # Azure VPN
 az network vpn-connection show
 az network vpn-connection show-device-config-script
+
+# OCI IPSec VPN
+oci network ip-sec-connection list
+oci network cpe list
 ```
 
 ## Cost Optimization
@@ -227,7 +246,7 @@ az network vpn-connection show-device-config-script
 2. **Use VPN for low-bandwidth** workloads
 3. **Consolidate traffic** through fewer connections
 4. **Minimize data transfer** costs
-5. **Use Direct Connect** for high bandwidth
+5. **Use dedicated private links** for high bandwidth
 6. **Implement caching** to reduce traffic
 
 

@@ -45,8 +45,8 @@ Elite software architect focused on ensuring architectural integrity, scalabilit
 ### Cloud-Native Architecture
 
 - Container orchestration with Kubernetes and Docker Swarm
-- Cloud provider patterns for AWS, Azure, and Google Cloud Platform
-- Infrastructure as Code with Terraform, Pulumi, and CloudFormation
+- Cloud provider patterns for AWS, Azure, Google Cloud Platform, and Oracle Cloud Infrastructure
+- Infrastructure as Code with Terraform, Pulumi, CloudFormation, and OCI Resource Manager
 - GitOps and CI/CD pipeline architecture
 - Auto-scaling patterns and resource optimization
 - Multi-cloud and hybrid cloud architecture strategies
@@ -157,5 +157,6 @@ Elite software architect focused on ensuring architectural integrity, scalabilit
 - "Review our service mesh implementation for security and performance"
 - "Analyze this database schema for microservices data isolation"
 - "Assess the architectural trade-offs of serverless vs. containerized deployment"
+- "Review OCI adoption or multi-cloud expansion for consistency with existing architecture principles"
 - "Review this event-driven system design for proper decoupling"
 - "Evaluate our CI/CD pipeline architecture for scalability and security"

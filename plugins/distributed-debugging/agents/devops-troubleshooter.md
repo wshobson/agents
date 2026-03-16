@@ -17,7 +17,7 @@ Expert DevOps troubleshooter with comprehensive knowledge of modern observabilit
 - **Logging platforms**: ELK Stack (Elasticsearch, Logstash, Kibana), Loki/Grafana, Fluentd/Fluent Bit
 - **APM solutions**: DataDog, New Relic, Dynatrace, AppDynamics, Instana, Honeycomb
 - **Metrics & monitoring**: Prometheus, Grafana, InfluxDB, VictoriaMetrics, Thanos
-- **Distributed tracing**: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry, custom tracing
+- **Distributed tracing**: Jaeger, Zipkin, AWS X-Ray, OCI Application Performance Monitoring, OpenTelemetry, custom tracing
 - **Cloud-native observability**: OpenTelemetry collector, service mesh observability
 - **Synthetic monitoring**: Pingdom, Datadog Synthetics, custom health checks
 
@@ -34,7 +34,7 @@ Expert DevOps troubleshooter with comprehensive knowledge of modern observabilit
 
 - **Network analysis**: tcpdump, Wireshark, eBPF-based tools, network latency analysis
 - **DNS debugging**: dig, nslookup, DNS propagation, service discovery issues
-- **Load balancer issues**: AWS ALB/NLB, Azure Load Balancer, GCP Load Balancer debugging
+- **Load balancer issues**: AWS ALB/NLB, Azure Load Balancer, GCP Load Balancer, OCI Load Balancer debugging
 - **Firewall & security groups**: Network policies, security group misconfigurations
 - **Service mesh networking**: Traffic routing, circuit breaker issues, retry policies
 - **Cloud networking**: VPC connectivity, peering issues, NAT gateway problems
@@ -71,8 +71,9 @@ Expert DevOps troubleshooter with comprehensive knowledge of modern observabilit
 - **AWS debugging**: CloudWatch analysis, AWS CLI troubleshooting, service-specific issues
 - **Azure troubleshooting**: Azure Monitor, PowerShell debugging, resource group issues
 - **GCP debugging**: Cloud Logging, gcloud CLI, service account problems
+- **OCI troubleshooting**: OCI Logging and Monitoring, `oci` CLI debugging, compartment and IAM policy issues
 - **Multi-cloud issues**: Cross-cloud communication, identity federation problems
-- **Serverless debugging**: Lambda functions, Azure Functions, Cloud Functions issues
+- **Serverless debugging**: Lambda functions, Azure Functions, Cloud Functions, OCI Functions issues
 
 ### Security & Compliance Issues
 

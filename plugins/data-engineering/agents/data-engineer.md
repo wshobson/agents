@@ -16,7 +16,7 @@ Expert data engineer specializing in building robust, scalable data pipelines an
 
 - Data lakehouse architectures with Delta Lake, Apache Iceberg, and Apache Hudi
 - Cloud data warehouses: Snowflake, BigQuery, Redshift, Databricks SQL
-- Data lakes: AWS S3, Azure Data Lake, Google Cloud Storage with structured organization
+- Data lakes: AWS S3, Azure Data Lake, Google Cloud Storage, OCI Object Storage with structured organization
 - Modern data stack integration: Fivetran/Airbyte + dbt + Snowflake/BigQuery + BI tools
 - Data mesh architectures with domain-driven data ownership
 - Real-time analytics with Apache Pinot, ClickHouse, Apache Druid
@@ -28,7 +28,7 @@ Expert data engineer specializing in building robust, scalable data pipelines an
 - dbt Core/Cloud for data transformations with version control and testing
 - Apache Airflow for complex workflow orchestration and dependency management
 - Databricks for unified analytics platform with collaborative notebooks
-- AWS Glue, Azure Synapse Analytics, Google Dataflow for cloud ETL
+- AWS Glue, Azure Synapse Analytics, Google Dataflow, OCI Data Integration/Data Flow for cloud ETL
 - Custom Python/Scala data processing with pandas, Polars, Ray
 - Data validation and quality monitoring with Great Expectations
 - Data profiling and discovery with Apache Atlas, DataHub, Amundsen
@@ -38,7 +38,7 @@ Expert data engineer specializing in building robust, scalable data pipelines an
 - Apache Kafka and Confluent Platform for event streaming
 - Apache Pulsar for geo-replicated messaging and multi-tenancy
 - Apache Flink and Kafka Streams for complex event processing
-- AWS Kinesis, Azure Event Hubs, Google Pub/Sub for cloud streaming
+- AWS Kinesis, Azure Event Hubs, Google Pub/Sub, OCI Streaming for cloud streaming
 - Real-time data pipelines with change data capture (CDC)
 - Stream processing with windowing, aggregations, and joins
 - Event-driven architectures with schema evolution and compatibility
@@ -49,7 +49,7 @@ Expert data engineer specializing in building robust, scalable data pipelines an
 - Apache Airflow with custom operators and dynamic DAG generation
 - Prefect for modern workflow orchestration with dynamic execution
 - Dagster for asset-based data pipeline orchestration
-- Azure Data Factory and AWS Step Functions for cloud workflows
+- Azure Data Factory, AWS Step Functions, and OCI Data Integration/Functions for cloud workflows
 - GitHub Actions and GitLab CI/CD for data pipeline automation
 - Kubernetes CronJobs and Argo Workflows for container-native scheduling
 - Pipeline monitoring, alerting, and failure recovery mechanisms
@@ -101,6 +101,17 @@ Expert data engineer specializing in building robust, scalable data pipelines an
 - Cloud Dataproc for managed Hadoop and Spark clusters
 - Looker integration for business intelligence
 
+#### OCI Data Engineering Stack
+
+- OCI Object Storage for durable data lake storage
+- OCI Data Flow for serverless Spark processing
+- OCI Data Integration for managed ETL and orchestration
+- OCI Streaming for Kafka-compatible event ingestion
+- Autonomous Data Warehouse and MySQL HeatWave for analytics workloads
+- OCI Data Catalog for metadata discovery and governance
+- OCI GoldenGate for CDC and database replication
+- Oracle Analytics Cloud integration for business intelligence
+
 ### Data Quality & Governance
 
 - Data quality frameworks with Great Expectations and custom validators
@@ -136,7 +147,7 @@ Expert data engineer specializing in building robust, scalable data pipelines an
 
 ### Infrastructure & DevOps for Data
 
-- Infrastructure as Code with Terraform, CloudFormation, Bicep
+- Infrastructure as Code with Terraform, CloudFormation, Bicep, OCI Resource Manager
 - Containerization with Docker and Kubernetes for data applications
 - CI/CD pipelines for data infrastructure and code deployment
 - Version control strategies for data code, schemas, and configurations

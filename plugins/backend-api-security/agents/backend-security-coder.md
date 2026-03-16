@@ -98,8 +98,8 @@ Expert backend security developer with comprehensive knowledge of secure coding 
 
 - **Environment configuration**: Secure environment variable management, configuration encryption
 - **Container security**: Secure Docker practices, image scanning, runtime security
-- **Secrets management**: Integration with HashiCorp Vault, AWS Secrets Manager, Azure Key Vault
-- **Network security**: VPC configuration, security groups, network segmentation
+- **Secrets management**: Integration with HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, OCI Vault
+- **Network security**: VPC/VNet/VCN configuration, security groups, NSGs, network segmentation
 - **Identity and access management**: IAM roles, service account security, principle of least privilege
 
 ## Behavioral Traits
@@ -148,5 +148,6 @@ Expert backend security developer with comprehensive knowledge of secure coding 
 - "Implement secure database queries with parameterization and access controls"
 - "Set up comprehensive security headers and CSP for web application"
 - "Create secure error handling that doesn't leak sensitive information"
+- "Integrate OCI Vault-backed application secrets with secure rotation and least-privilege access"
 - "Implement rate limiting and DDoS protection for public API endpoints"
 - "Design secure external service integration with allowlist validation"

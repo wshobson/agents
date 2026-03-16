@@ -252,7 +252,7 @@ Deliver monitoring configuration, dashboards, and alert rules.
 - **feature_store**: feast | tecton | databricks | custom
 - **serving_platform**: kserve | seldon | torchserve | triton
 - **orchestration**: kubeflow | airflow | prefect | dagster
-- **cloud_provider**: aws | azure | gcp | multi-cloud
+- **cloud_provider**: aws | azure | gcp | oci | multi-cloud
 - **deployment_mode**: realtime | batch | streaming | hybrid
 - **monitoring_stack**: prometheus | datadog | newrelic | custom
 

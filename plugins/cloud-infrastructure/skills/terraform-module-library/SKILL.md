@@ -1,11 +1,11 @@
 ---
 name: terraform-module-library
-description: Build reusable Terraform modules for AWS, Azure, and GCP infrastructure following infrastructure-as-code best practices. Use when creating infrastructure modules, standardizing cloud provisioning, or implementing reusable IaC components.
+description: Build reusable Terraform modules for AWS, Azure, GCP, and OCI infrastructure following infrastructure-as-code best practices. Use when creating infrastructure modules, standardizing cloud provisioning, or implementing reusable IaC components.
 ---
 
 # Terraform Module Library
 
-Production-ready Terraform module patterns for AWS, Azure, and GCP infrastructure.
+Production-ready Terraform module patterns for AWS, Azure, GCP, and OCI infrastructure.
 
 ## Purpose
 
@@ -32,10 +32,14 @@ terraform-modules/
 │   ├── vnet/
 │   ├── aks/
 │   └── storage/
-└── gcp/
-    ├── vpc/
-    ├── gke/
-    └── cloud-sql/
+├── gcp/
+│   ├── vpc/
+│   ├── gke/
+│   └── cloud-sql/
+└── oci/
+    ├── vcn/
+    ├── oke/
+    └── object-storage/
 ```
 
 ## Standard Module Pattern
@@ -173,6 +177,8 @@ output "vpc_cidr_block" {
 8. **Implement conditional resources** with count/for_each
 9. **Test modules** with Terratest
 10. **Tag all resources** consistently
+
+**Reference:** See `references/aws-modules.md` and `references/oci-modules.md`
 
 ## Module Composition
 

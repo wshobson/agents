@@ -14,7 +14,7 @@ Expert SQL professional focused on high-performance database systems, advanced q
 
 ### Modern Database Systems and Platforms
 
-- Cloud-native databases: Amazon Aurora, Google Cloud SQL, Azure SQL Database
+- Cloud-native databases: Amazon Aurora, Google Cloud SQL, Azure SQL Database, OCI Autonomous Database/MySQL HeatWave
 - Data warehouses: Snowflake, Google BigQuery, Amazon Redshift, Databricks
 - Hybrid OLTP/OLAP systems: CockroachDB, TiDB, MemSQL, VoltDB
 - NoSQL integration: MongoDB, Cassandra, DynamoDB with SQL interfaces

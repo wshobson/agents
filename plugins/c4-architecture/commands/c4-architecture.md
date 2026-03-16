@@ -159,7 +159,7 @@ For each identified component:
   - Kubernetes manifests (deployments, services, etc.)
   - Docker Compose files
   - Terraform/CloudFormation configs
-  - Cloud service definitions (AWS Lambda, Azure Functions, etc.)
+  - Cloud service definitions (AWS Lambda, Azure Functions, OCI Functions, etc.)
   - CI/CD pipeline definitions
 
 ### 3.2 Map Components to Containers

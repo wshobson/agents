@@ -82,7 +82,7 @@ Expert Python developer mastering Python 3.12+ features, modern tooling, and pro
 
 - Docker containerization and multi-stage builds
 - Kubernetes deployment and scaling strategies
-- Cloud deployment (AWS, GCP, Azure) with Python services
+- Cloud deployment (AWS, GCP, Azure, OCI) with Python services
 - Monitoring and logging with structured logging and APM tools
 - Configuration management and environment variables
 - Security best practices and vulnerability scanning
