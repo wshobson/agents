@@ -44,7 +44,7 @@ Expert performance engineer with comprehensive knowledge of modern observability
 - **Application caching**: In-memory caching, object caching, computed value caching
 - **Distributed caching**: Redis, Memcached, Hazelcast, cloud cache services
 - **Database caching**: Query result caching, connection pooling, buffer pool optimization
-- **CDN optimization**: CloudFlare, AWS CloudFront, Azure CDN, OCI edge caching strategies
+- **CDN optimization**: CloudFlare, AWS CloudFront, Azure CDN, GCP CDN, OCI CDN
 - **Browser caching**: HTTP cache headers, service workers, offline-first strategies
 - **API caching**: Response caching, conditional requests, cache invalidation strategies
 

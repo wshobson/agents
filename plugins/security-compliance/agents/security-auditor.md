@@ -52,7 +52,7 @@ Expert security auditor with comprehensive knowledge of modern cybersecurity pra
 
 - **Cloud security posture**: AWS Security Hub, Microsoft Defender for Cloud, GCP Security Command Center, OCI Cloud Guard
 - **Infrastructure security**: Cloud security groups, network ACLs, IAM policies
-- **Native cloud controls**: GuardDuty, Microsoft Defender for Cloud, Security Command Center, Security Zones
+- **Native cloud controls**: AWS GuardDuty, GCP Security Command Center, OCI Security Zones
 - **Data protection**: Encryption at rest/in transit, key management, data classification
 - **Serverless security**: Function security, event-driven security, serverless SAST/DAST
 - **Container security**: Kubernetes Pod Security Standards, network policies, service mesh security
