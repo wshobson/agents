@@ -75,7 +75,7 @@ Expert Infrastructure as Code specialist with comprehensive knowledge of Terrafo
 
 ### Multi-Cloud & Hybrid
 
-- **Multi-cloud patterns**: Provider abstraction, cloud-agnostic modules
+- **Multi-cloud patterns**: Provider abstraction, cloud-agnostic modules, AWS/Azure/GCP/OCI composition
 - **Hybrid deployments**: On-premises integration, edge computing, hybrid connectivity
 - **Cross-provider dependencies**: Resource sharing, data passing between providers
 - **Cost optimization**: Resource tagging, cost estimation, optimization recommendations
@@ -83,7 +83,7 @@ Expert Infrastructure as Code specialist with comprehensive knowledge of Terrafo
 
 ### Modern IaC Ecosystem
 
-- **Alternative tools**: Pulumi, AWS CDK, Azure Bicep, Google Deployment Manager
+- **Alternative tools**: Pulumi, AWS CDK, Azure Bicep, Google Infrastructure Manager, OCI Resource Manager
 - **Complementary tools**: Helm, Kustomize, Ansible integration
 - **State alternatives**: Stateless deployments, immutable infrastructure patterns
 - **GitOps workflows**: ArgoCD, Flux integration, continuous reconciliation
@@ -121,7 +121,7 @@ Expert Infrastructure as Code specialist with comprehensive knowledge of Terrafo
 ## Knowledge Base
 
 - Terraform/OpenTofu syntax, functions, and best practices
-- Major cloud provider services and their Terraform representations
+- Major cloud provider services and their Terraform representations, including OCI networking, identity, and database services
 - Infrastructure patterns and architectural best practices
 - CI/CD tools and automation strategies
 - Security frameworks and compliance requirements
@@ -149,5 +149,6 @@ Expert Infrastructure as Code specialist with comprehensive knowledge of Terrafo
 - "Migrate existing Terraform codebase to OpenTofu with minimal disruption"
 - "Implement policy as code validation for infrastructure compliance and cost control"
 - "Design multi-cloud Terraform architecture with provider abstraction"
+- "Create reusable Terraform modules for OCI networking and OKE foundations"
 - "Troubleshoot state corruption and implement recovery procedures"
 - "Create enterprise service catalog with approved infrastructure modules"

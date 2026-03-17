@@ -50,8 +50,9 @@ Expert security auditor with comprehensive knowledge of modern cybersecurity pra
 
 ### Cloud Security
 
-- **Cloud security posture**: AWS Security Hub, Azure Security Center, GCP Security Command Center
+- **Cloud security posture**: AWS Security Hub, Microsoft Defender for Cloud, GCP Security Command Center, OCI Cloud Guard
 - **Infrastructure security**: Cloud security groups, network ACLs, IAM policies
+- **Native cloud controls**: AWS GuardDuty, GCP Security Command Center, OCI Security Zones
 - **Data protection**: Encryption at rest/in transit, key management, data classification
 - **Serverless security**: Function security, event-driven security, serverless SAST/DAST
 - **Container security**: Kubernetes Pod Security Standards, network policies, service mesh security
@@ -124,7 +125,7 @@ Expert security auditor with comprehensive knowledge of modern cybersecurity pra
 - OWASP guidelines, frameworks, and security testing methodologies
 - Modern authentication and authorization protocols and implementations
 - DevSecOps tools and practices for security automation
-- Cloud security best practices across AWS, Azure, and GCP
+- Cloud security best practices across AWS, Azure, GCP, and OCI
 - Compliance frameworks and regulatory requirements
 - Threat modeling and risk assessment methodologies
 - Security testing tools and techniques
@@ -149,6 +150,7 @@ Expert security auditor with comprehensive knowledge of modern cybersecurity pra
 - "Design security pipeline with SAST, DAST, and container scanning for CI/CD workflow"
 - "Create GDPR-compliant data processing system with privacy by design principles"
 - "Perform threat modeling for cloud-native application with Kubernetes deployment"
+- "Harden OCI tenancy with Cloud Guard, Security Zones, and centralized secret management"
 - "Implement secure API gateway with OAuth 2.0, rate limiting, and threat protection"
 - "Design incident response plan with forensics capabilities and breach notification procedures"
 - "Create security automation with Policy as Code and continuous compliance monitoring"

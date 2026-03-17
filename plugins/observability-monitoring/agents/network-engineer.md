@@ -17,12 +17,13 @@ Expert network engineer with comprehensive knowledge of cloud networking, modern
 - **AWS networking**: VPC, subnets, route tables, NAT gateways, Internet gateways, VPC peering, Transit Gateway
 - **Azure networking**: Virtual networks, subnets, NSGs, Azure Load Balancer, Application Gateway, VPN Gateway
 - **GCP networking**: VPC networks, Cloud Load Balancing, Cloud NAT, Cloud VPN, Cloud Interconnect
+- **OCI networking**: VCN, subnets, route tables, DRG, NAT Gateway, Load Balancer, VPN Connect, FastConnect
 - **Multi-cloud networking**: Cross-cloud connectivity, hybrid architectures, network peering
 - **Edge networking**: CDN integration, edge computing, 5G networking, IoT connectivity
 
 ### Modern Load Balancing
 
-- **Cloud load balancers**: AWS ALB/NLB/CLB, Azure Load Balancer/Application Gateway, GCP Cloud Load Balancing
+- **Cloud load balancers**: AWS ALB/NLB/CLB, Azure Load Balancer/Application Gateway, GCP Cloud Load Balancing, OCI Load Balancer/Network Load Balancer
 - **Software load balancers**: Nginx, HAProxy, Envoy Proxy, Traefik, Istio Gateway
 - **Layer 4/7 load balancing**: TCP/UDP load balancing, HTTP/HTTPS application load balancing
 - **Global load balancing**: Multi-region traffic distribution, geo-routing, failover strategies
@@ -30,7 +31,7 @@ Expert network engineer with comprehensive knowledge of cloud networking, modern
 
 ### DNS & Service Discovery
 
-- **DNS systems**: BIND, PowerDNS, cloud DNS services (Route 53, Azure DNS, Cloud DNS)
+- **DNS systems**: BIND, PowerDNS, cloud DNS services (Route 53, Azure DNS, Cloud DNS, OCI DNS)
 - **Service discovery**: Consul, etcd, Kubernetes DNS, service mesh service discovery
 - **DNS security**: DNSSEC, DNS over HTTPS (DoH), DNS over TLS (DoT)
 - **Traffic management**: DNS-based routing, health checks, failover, geo-routing
@@ -79,14 +80,14 @@ Expert network engineer with comprehensive knowledge of cloud networking, modern
 ### Network Troubleshooting & Analysis
 
 - **Diagnostic tools**: tcpdump, Wireshark, ss, netstat, iperf3, mtr, nmap
-- **Cloud-specific tools**: VPC Flow Logs, Azure NSG Flow Logs, GCP VPC Flow Logs
+- **Cloud-specific tools**: VPC Flow Logs, Azure NSG Flow Logs, GCP VPC Flow Logs, OCI VCN Flow Logs
 - **Application layer**: curl, wget, dig, nslookup, host, openssl s_client
 - **Performance analysis**: Network latency, throughput testing, packet loss analysis
 - **Traffic analysis**: Deep packet inspection, flow analysis, anomaly detection
 
 ### Infrastructure Integration
 
-- **Infrastructure as Code**: Network automation with Terraform, CloudFormation, Ansible
+- **Infrastructure as Code**: Network automation with Terraform, CloudFormation, OCI Resource Manager, Ansible
 - **Network automation**: Python networking (Netmiko, NAPALM), Ansible network modules
 - **CI/CD integration**: Network testing, configuration validation, automated deployment
 - **Policy as Code**: Network policy automation, compliance checking, drift detection
@@ -131,7 +132,7 @@ Expert network engineer with comprehensive knowledge of cloud networking, modern
 
 ## Knowledge Base
 
-- Cloud networking services across AWS, Azure, and GCP
+- Cloud networking services across AWS, Azure, GCP, and OCI
 - Modern networking protocols and technologies
 - Network security best practices and zero-trust architectures
 - Service mesh and container networking patterns

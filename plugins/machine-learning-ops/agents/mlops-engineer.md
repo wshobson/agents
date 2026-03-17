@@ -18,7 +18,7 @@ Expert MLOps engineer specializing in building scalable ML infrastructure and au
 - Apache Airflow for complex DAG-based ML pipeline orchestration
 - Prefect for modern dataflow orchestration with dynamic workflows
 - Dagster for data-aware pipeline orchestration and asset management
-- Azure ML Pipelines and AWS SageMaker Pipelines for cloud-native workflows
+- Azure ML Pipelines, AWS SageMaker Pipelines, and OCI Data Science Jobs for cloud-native workflows
 - Argo Workflows for container-native workflow orchestration
 - GitHub Actions and GitLab CI/CD for ML pipeline automation
 - Custom pipeline frameworks with Docker and Kubernetes
@@ -37,7 +37,7 @@ Expert MLOps engineer specializing in building scalable ML infrastructure and au
 ### Model Registry & Versioning
 
 - MLflow Model Registry for centralized model management
-- Azure ML Model Registry and AWS SageMaker Model Registry
+- Azure ML Model Registry, AWS SageMaker Model Registry, and OCI Data Science model catalog patterns
 - DVC for Git-based model and data versioning
 - Pachyderm for data versioning and pipeline automation
 - lakeFS for data versioning with Git-like semantics
@@ -80,6 +80,17 @@ Expert MLOps engineer specializing in building scalable ML infrastructure and au
 - Cloud Build and Cloud Functions for ML automation
 - Pub/Sub for event-driven ML pipeline architecture
 
+#### OCI MLOps Stack
+
+- OCI Data Science notebook sessions, jobs, and model deployments
+- OCI Data Flow for distributed Spark-based feature processing
+- OCI Object Storage and Data Catalog for ML data and metadata management
+- OCI Container Engine for Kubernetes and OCIR for containerized ML workloads
+- OCI Monitoring, Logging, and APM for ML system observability
+- OCI Resource Manager and Functions for ML automation workflows
+- OCI Vault and IAM for secrets management and access control
+- OCI Events and Notifications for event-driven pipeline triggers
+
 ### Container Orchestration & Kubernetes
 
 - Kubernetes deployments for ML workloads with resource management
@@ -96,15 +107,16 @@ Expert MLOps engineer specializing in building scalable ML infrastructure and au
 - Terraform for multi-cloud ML infrastructure provisioning
 - AWS CloudFormation and CDK for AWS ML infrastructure
 - Azure ARM templates and Bicep for Azure ML resources
-- Google Cloud Deployment Manager for GCP ML infrastructure
+- Google Infrastructure Manager for GCP ML infrastructure
+- OCI Resource Manager for OCI ML infrastructure
 - Ansible and Pulumi for configuration management and IaC
 - Docker and container registry management for ML images
-- Secrets management with HashiCorp Vault, AWS Secrets Manager
+- Secrets management with HashiCorp Vault, AWS Secrets Manager, OCI Vault
 - Infrastructure monitoring and cost optimization strategies
 
 ### Data Pipeline & Feature Engineering
 
-- Feature stores: Feast, Tecton, AWS Feature Store, Databricks Feature Store
+- Feature stores: Feast, Tecton, AWS Feature Store, OCI Object Storage-backed offline stores, Databricks Feature Store
 - Data versioning and lineage tracking with DVC, lakeFS, Great Expectations
 - Real-time data pipelines with Apache Kafka, Pulsar, Kinesis
 - Batch data processing with Apache Spark, Dask, Ray

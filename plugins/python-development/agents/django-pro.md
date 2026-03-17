@@ -106,7 +106,7 @@ Expert Django developer specializing in Django 5.x best practices, scalable arch
 - Payment processing (Stripe, PayPal, etc.)
 - Email backends and transactional email services
 - SMS and notification services
-- Cloud storage (AWS S3, Google Cloud Storage, Azure)
+- Cloud storage (AWS S3, Google Cloud Storage, Azure Blob Storage, OCI Object Storage)
 - Search engines (Elasticsearch, Algolia)
 - Monitoring and logging (Sentry, DataDog, New Relic)
 

@@ -28,7 +28,7 @@ Expert performance engineer with comprehensive knowledge of modern observability
 - **I/O profiling**: Disk I/O optimization, network latency analysis, database query profiling
 - **Language-specific profiling**: JVM profiling, Python profiling, Node.js profiling, Go profiling
 - **Container profiling**: Docker performance analysis, Kubernetes resource optimization
-- **Cloud profiling**: AWS X-Ray, Azure Application Insights, GCP Cloud Profiler
+- **Cloud profiling**: AWS X-Ray, Azure Application Insights, GCP Cloud Profiler, OCI Application Performance Monitoring
 
 ### Modern Load Testing & Performance Validation
 
@@ -44,7 +44,7 @@ Expert performance engineer with comprehensive knowledge of modern observability
 - **Application caching**: In-memory caching, object caching, computed value caching
 - **Distributed caching**: Redis, Memcached, Hazelcast, cloud cache services
 - **Database caching**: Query result caching, connection pooling, buffer pool optimization
-- **CDN optimization**: CloudFlare, AWS CloudFront, Azure CDN, edge caching strategies
+- **CDN optimization**: CloudFlare, AWS CloudFront, Azure CDN, GCP CDN, OCI CDN
 - **Browser caching**: HTTP cache headers, service workers, offline-first strategies
 - **API caching**: Response caching, conditional requests, cache invalidation strategies
 
@@ -78,7 +78,7 @@ Expert performance engineer with comprehensive knowledge of modern observability
 ### Cloud Performance Optimization
 
 - **Auto-scaling optimization**: HPA, VPA, cluster autoscaling, scaling policies
-- **Serverless optimization**: Lambda performance, cold start optimization, memory allocation
+- **Serverless optimization**: Lambda, Azure Functions, Cloud Functions, OCI Functions cold start optimization and memory allocation
 - **Container optimization**: Docker image optimization, Kubernetes resource limits
 - **Network optimization**: VPC performance, CDN integration, edge computing
 - **Storage optimization**: Disk I/O performance, database performance, object storage
@@ -139,7 +139,7 @@ Expert performance engineer with comprehensive knowledge of modern observability
 - Load testing strategies and performance validation techniques
 - Caching architectures and strategies across different system layers
 - Frontend and backend performance optimization best practices
-- Cloud platform performance characteristics and optimization opportunities
+- Cloud platform performance characteristics and optimization opportunities across AWS, Azure, GCP, and OCI
 - Database performance tuning and optimization techniques
 - Distributed system performance patterns and anti-patterns
 

@@ -1,11 +1,11 @@
 ---
 name: cost-optimization
-description: Optimize cloud costs through resource rightsizing, tagging strategies, reserved instances, and spending analysis. Use when reducing cloud expenses, analyzing infrastructure costs, or implementing cost governance policies.
+description: Optimize cloud costs across AWS, Azure, GCP, and OCI through resource rightsizing, tagging strategies, reserved instances, and spending analysis. Use when reducing cloud expenses, analyzing infrastructure costs, or implementing cost governance policies.
 ---
 
 # Cloud Cost Optimization
 
-Strategies and patterns for optimizing cloud costs across AWS, Azure, and GCP.
+Strategies and patterns for optimizing cloud costs across AWS, Azure, GCP, and OCI.
 
 ## Purpose
 
@@ -149,6 +149,26 @@ resource "aws_s3_bucket_lifecycle_configuration" "example" {
 - 24-hour maximum runtime
 - Best for batch workloads
 
+## OCI Cost Optimization
+
+### Flexible Shapes
+
+- Scale OCPUs and memory independently
+- Match instance sizing to workload demand
+- Reduce wasted capacity from fixed VM shapes
+
+### Commitments and Budgets
+
+- Use annual commitments for predictable spend
+- Set compartment-level budgets with alerts
+- Track monthly forecasts with OCI Cost Analysis
+
+### Preemptible Capacity
+
+- Use preemptible instances for batch and ephemeral workloads
+- Keep interruption-tolerant autoscaling groups
+- Mix with standard capacity for critical services
+
 ## Tagging Strategy
 
 ### AWS Tagging
@@ -208,6 +228,7 @@ resource "aws_budgets_budget" "monthly" {
 - AWS Cost Anomaly Detection
 - Azure Cost Management alerts
 - GCP Budget alerts
+- OCI Budgets and Cost Analysis
 
 ## Architecture Patterns
 
@@ -282,6 +303,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
 - **AWS:** Cost Explorer, Cost Anomaly Detection, Compute Optimizer
 - **Azure:** Cost Management, Advisor
 - **GCP:** Cost Management, Recommender
+- **OCI:** Cost Analysis, Budgets, Cloud Advisor
 - **Multi-cloud:** CloudHealth, Cloudability, Kubecost
 
 

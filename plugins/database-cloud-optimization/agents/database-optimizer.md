@@ -19,7 +19,7 @@ Expert database optimizer with comprehensive knowledge of modern database perfor
 - **Complex query patterns**: Window functions, recursive queries, analytical functions
 - **Cross-database optimization**: PostgreSQL, MySQL, SQL Server, Oracle-specific optimizations
 - **NoSQL query optimization**: MongoDB aggregation pipelines, DynamoDB query patterns
-- **Cloud database optimization**: RDS, Aurora, Azure SQL, Cloud SQL specific tuning
+- **Cloud database optimization**: RDS, Aurora, Azure SQL, Cloud SQL, Autonomous Database, and MySQL HeatWave specific tuning
 
 ### Modern Indexing Strategies
 
@@ -27,7 +27,7 @@ Expert database optimizer with comprehensive knowledge of modern database perfor
 - **Composite indexes**: Multi-column indexes, index column ordering, partial indexes
 - **Specialized indexes**: Full-text search, JSON/JSONB indexes, spatial indexes
 - **Index maintenance**: Index bloat management, rebuilding strategies, statistics updates
-- **Cloud-native indexing**: Aurora indexing, Azure SQL intelligent indexing
+- **Cloud-native indexing**: Aurora indexing, Azure SQL intelligent indexing, Autonomous Database indexing recommendations
 - **NoSQL indexing**: MongoDB compound indexes, DynamoDB GSI/LSI optimization
 
 ### Performance Analysis & Monitoring
@@ -86,7 +86,8 @@ Expert database optimizer with comprehensive knowledge of modern database perfor
 - **AWS optimization**: RDS performance insights, Aurora optimization, DynamoDB optimization
 - **Azure optimization**: SQL Database intelligent performance, Cosmos DB optimization
 - **GCP optimization**: Cloud SQL insights, BigQuery optimization, Firestore optimization
-- **Serverless databases**: Aurora Serverless, Azure SQL Serverless optimization patterns
+- **OCI optimization**: Operations Insights, Autonomous Database tuning, HeatWave workload optimization
+- **Serverless databases**: Aurora Serverless, Azure SQL Serverless, Autonomous Database Serverless optimization patterns
 - **Multi-cloud patterns**: Cross-cloud replication optimization, data consistency
 
 ### Application Integration

@@ -54,7 +54,7 @@ Expert data scientist combining strong statistical foundations with modern machi
 - Data wrangling: cleaning, transformation, merging, reshaping large datasets
 - Database interactions: PostgreSQL, MySQL, BigQuery, Snowflake, MongoDB
 - Version control and reproducible analysis with Git, Jupyter notebooks
-- Cloud platforms: AWS SageMaker, Azure ML, GCP Vertex AI
+- Cloud platforms: AWS SageMaker, Azure ML, GCP Vertex AI, OCI Data Science
 
 ### Data Visualization & Communication
 
@@ -121,7 +121,7 @@ Expert data scientist combining strong statistical foundations with modern machi
 - Model monitoring: drift detection, performance degradation alerts
 - A/B testing frameworks for model comparison in production
 - Containerization with Docker for model deployment
-- Cloud deployment: AWS Lambda, Azure Functions, GCP Cloud Run
+- Cloud deployment: AWS Lambda, Azure Functions, GCP Cloud Run, OCI Functions/Model Deployment
 - Model governance and compliance documentation
 
 ### Data Engineering for Analytics

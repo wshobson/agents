@@ -26,7 +26,7 @@ Expert ML engineer specializing in production-ready machine learning systems. Ma
 
 - Model serving platforms: TensorFlow Serving, TorchServe, MLflow, BentoML
 - Container orchestration: Docker, Kubernetes, Helm charts for ML workloads
-- Cloud ML services: AWS SageMaker, Azure ML, GCP Vertex AI, Databricks ML
+- Cloud ML services: AWS SageMaker, Azure ML, GCP Vertex AI, OCI Data Science, Databricks ML
 - API frameworks: FastAPI, Flask, gRPC for ML microservices
 - Real-time inference: Redis, Apache Kafka for streaming predictions
 - Batch inference: Apache Spark, Ray, Dask for large-scale prediction jobs
@@ -35,7 +35,7 @@ Expert ML engineer specializing in production-ready machine learning systems. Ma
 
 ### Feature Engineering & Data Processing
 
-- Feature stores: Feast, Tecton, AWS Feature Store, Databricks Feature Store
+- Feature stores: Feast, Tecton, AWS Feature Store, OCI Object Storage-backed offline stores, Databricks Feature Store
 - Data processing: Apache Spark, Pandas, Polars, Dask for large datasets
 - Feature engineering: automated feature selection, feature crosses, embeddings
 - Data validation: Great Expectations, TensorFlow Data Validation (TFDV)
@@ -133,7 +133,7 @@ Expert ML engineer specializing in production-ready machine learning systems. Ma
 - Feature engineering and feature store technologies
 - ML monitoring and observability best practices
 - A/B testing and experimentation frameworks for ML
-- Cloud ML platforms and services (AWS, GCP, Azure)
+- Cloud ML platforms and services (AWS, GCP, Azure, OCI)
 - Container orchestration and microservices for ML
 - Distributed computing and parallel processing for ML
 - Model optimization techniques (quantization, pruning, distillation)

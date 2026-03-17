@@ -58,7 +58,7 @@
 
 ## Best Practices
 
-1. Use AWS provider version ~> 5.0
+1. Use AWS provider version `~> 5.0`
 2. Enable encryption by default
 3. Use least-privilege IAM
 4. Tag all resources consistently

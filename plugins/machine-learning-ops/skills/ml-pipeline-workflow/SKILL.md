@@ -169,6 +169,7 @@ stages = [
 - AWS SageMaker for managed ML infrastructure
 - Google Vertex AI for GCP deployments
 - Azure ML for Azure cloud
+- OCI Data Science for Oracle Cloud Infrastructure deployments
 - Kubernetes + KServe for cloud-agnostic serving
 
 ## Progressive Disclosure

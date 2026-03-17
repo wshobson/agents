@@ -67,7 +67,7 @@ Design the data layer right from the start to avoid costly rework. Focus on choo
 - **Unique constraints**: Primary keys, unique indexes, compound uniqueness
 - **Index planning**: Query pattern analysis, index selectivity, cardinality considerations
 - **Index maintenance**: Bloat management, statistics updates, rebuild strategies
-- **Cloud-specific**: Aurora indexing, Azure SQL intelligent indexing, managed index recommendations
+- **Cloud-specific**: Aurora indexing, Azure SQL intelligent indexing, OCI Autonomous indexing recommendations, managed index recommendations
 - **NoSQL indexing**: MongoDB compound indexes, DynamoDB secondary indexes (GSI/LSI)
 
 ### Query Design & Optimization
@@ -144,7 +144,8 @@ Design the data layer right from the start to avoid costly rework. Focus on choo
 - **AWS databases**: RDS, Aurora, DynamoDB, DocumentDB, Neptune, Timestream
 - **Azure databases**: SQL Database, Cosmos DB, Database for PostgreSQL/MySQL, Synapse
 - **GCP databases**: Cloud SQL, Cloud Spanner, Firestore, Bigtable, BigQuery
-- **Serverless databases**: Aurora Serverless, Azure SQL Serverless, FaunaDB
+- **OCI databases**: Autonomous Database, MySQL HeatWave, NoSQL Database, GoldenGate, Object Storage for archival
+- **Serverless databases**: Aurora Serverless, Azure SQL Serverless, OCI Autonomous Database Serverless, FaunaDB
 - **Database-as-a-Service**: Managed benefits, operational overhead reduction, cost implications
 - **Cloud-native features**: Auto-scaling, automated backups, point-in-time recovery
 - **Multi-region design**: Global distribution, cross-region replication, latency optimization
