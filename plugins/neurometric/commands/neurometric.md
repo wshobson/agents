@@ -12,6 +12,32 @@ $ARGUMENTS
 
 ## Instructions
 
+### Argument Parsing
+
+First, parse `$ARGUMENTS` to extract the subcommand and any options:
+
+1. **Identify the subcommand**: The first word is the subcommand (`status`, `replay`, or `optimize`). If empty, default to `status`.
+
+2. **For `replay`**: Extract the optional count (e.g., `replay 10` → COUNT=10). If no count provided, default to 5.
+
+3. **For `optimize`**: Parse the following flags:
+   - `--days N` or `-d N`: Set DAYS to N (default: 7)
+   - `--captures`: Use captures mode (default)
+   - `--scan [path]`: Use scan mode, optionally with a path (default: current directory)
+   - `--describe "..."`: Use describe mode with the quoted description
+
+**Examples:**
+- `replay` → subcommand=replay, COUNT=5
+- `replay 20` → subcommand=replay, COUNT=20
+- `optimize` → subcommand=optimize, mode=captures, DAYS=7
+- `optimize --days 14` → subcommand=optimize, mode=captures, DAYS=14
+- `optimize --scan src/` → subcommand=optimize, mode=scan, path=src/
+- `optimize --describe "summarizing documents"` → subcommand=optimize, mode=describe
+
+---
+
+### Subcommand Execution
+
 Parse the arguments to determine the subcommand:
 
 ### 1. Status Command
@@ -43,10 +69,12 @@ Environment variables configured for: OpenAI, Anthropic, Cohere, Mistral, Groq, 
 
 ### 2. Replay Command
 
-If arguments contain `replay [count]`:
+If subcommand is `replay`:
+
+**Use the COUNT value parsed from arguments** (default: 5).
 
 ```bash
-COUNT="${1:-5}"
+# COUNT was parsed from arguments (e.g., "replay 10" → COUNT=10)
 curl -s -H "Authorization: Bearer $NEUROMETRIC_API_KEY" \
   "https://api.neurometric.ai/v1/captures?limit=$COUNT"
 ```
@@ -71,18 +99,22 @@ Latency: <latency_ms>ms
 
 ### 3. Optimize Command
 
-If arguments contain `optimize`:
+If subcommand is `optimize`:
 
-**Parse mode from arguments:**
+**Use the mode and options parsed from arguments:**
 - `--captures` (default): Analyze actual API usage
 - `--scan [path]`: Scan codebase for AI SDK patterns
 - `--describe "..."`: Analyze workflow description
+- `--days N` or `-d N`: Number of days to analyze (default: 7)
 
 **For captures mode:**
 
+**Use the DAYS value parsed from arguments** (e.g., `--days 14` → DAYS=14, default: 7).
+
 ```bash
+# DAYS was parsed from arguments (e.g., "optimize --days 14" → DAYS=14)
 curl -s -H "Authorization: Bearer $NEUROMETRIC_API_KEY" \
-  "https://api.neurometric.ai/v1/captures?days=${DAYS:-7}&limit=1000"
+  "https://api.neurometric.ai/v1/captures?days=$DAYS&limit=1000"
 ```
 
 **For scan mode:**
