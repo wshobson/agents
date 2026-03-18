@@ -1,0 +1,10 @@
+{
+  "name": "neurometric",
+  "version": "1.0.0",
+  "description": "AI observability and cost optimization - route API calls through Neurometric gateway for automatic logging, evaluation, and cost analysis",
+  "author": {
+    "name": "Neurometric",
+    "email": "support@neurometric.ai"
+  },
+  "license": "MIT"
+}

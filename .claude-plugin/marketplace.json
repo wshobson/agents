@@ -958,6 +958,19 @@
       "homepage": "https://github.com/jau123/MeiGen-AI-Design-MCP",
       "license": "MIT",
       "category": "creative"
+    },
+    {
+      "name": "neurometric",
+      "source": "./plugins/neurometric",
+      "description": "AI observability and cost optimization - route API calls through Neurometric gateway for automatic logging, evaluation, model routing, and cost analysis",
+      "version": "1.0.0",
+      "author": {
+        "name": "Neurometric",
+        "url": "https://github.com/NeurometricAI"
+      },
+      "homepage": "https://github.com/NeurometricAI/neurometric-plugin",
+      "license": "MIT",
+      "category": "ai-ml"
     }
   ]
 }
