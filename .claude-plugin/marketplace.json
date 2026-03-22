@@ -986,6 +986,19 @@
       "homepage": "https://github.com/major7apps/pensyve",
       "license": "Apache-2.0",
       "category": "ai-ml"
+    },
+    {
+      "name": "block-no-verify",
+      "source": "./plugins/block-no-verify",
+      "description": "PreToolUse hook that prevents AI agents from using --no-verify, --no-gpg-sign, and other bypass flags that skip git hooks",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "email": "seth@major7apps.com"
+      },
+      "homepage": "https://github.com/wshobson/agents",
+      "license": "MIT",
+      "category": "security"
     }
   ]
 }
