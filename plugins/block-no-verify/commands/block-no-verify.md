@@ -42,7 +42,7 @@ Add or merge the following PreToolUse hook configuration:
         "matcher": "Bash",
         "hook": {
           "type": "command",
-          "command": "if echo \"$TOOL_INPUT\" | grep -qE '\\-\\-(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
         }
       }
     ]

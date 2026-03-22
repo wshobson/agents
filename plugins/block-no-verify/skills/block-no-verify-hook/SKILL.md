@@ -46,7 +46,7 @@ Add the following to your project's `.claude/settings.json`:
         "matcher": "Bash",
         "hook": {
           "type": "command",
-          "command": "if echo \"$TOOL_INPUT\" | grep -qE '\\-\\-(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
         }
       }
     ]
@@ -57,8 +57,8 @@ Add the following to your project's `.claude/settings.json`:
 ### How It Works
 
 1. **Matcher**: The hook targets only `Bash` tool calls, so it does not interfere with other tools (Read, Edit, Grep, etc.).
-2. **Inspection**: The `$TOOL_INPUT` environment variable contains the full command the agent is about to execute. The hook checks for `--no-verify` or `--no-gpg-sign` flags using grep.
-3. **Blocking**: If a bypass flag is found, the hook exits with code 2 and prints an error message. Exit code 2 signals Claude Code to reject the tool call entirely.
+2. **Inspection**: The `$TOOL_INPUT` environment variable contains the full command the agent is about to execute. The hook uses `printf` to safely pass input (avoiding `echo` pitfalls with special characters) and checks for `--no-verify` or `--no-gpg-sign` flags only when preceded by a `git` command.
+3. **Blocking**: If a bypass flag is found in a git command, the hook exits with code 2 and prints an error message. Exit code 2 signals Claude Code to reject the tool call entirely.
 4. **Pass-through**: If no bypass flag is found, the hook exits with code 0 and the command executes normally.
 
 ### Exit Codes
@@ -92,7 +92,7 @@ cat > .claude/settings.json << 'EOF'
         "matcher": "Bash",
         "hook": {
           "type": "command",
-          "command": "if echo \"$TOOL_INPUT\" | grep -qE '\\-\\-(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
         }
       }
     ]
@@ -106,7 +106,22 @@ EOF
 To enforce across all projects, add to `~/.claude/settings.json`:
 
 ```bash
-# Edit ~/.claude/settings.json and add the hooks section
+mkdir -p ~/.claude
+cat > ~/.claude/settings.json << 'EOF'
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hook": {
+          "type": "command",
+          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+        }
+      }
+    ]
+  }
+}
+EOF
 ```
 
 ## Verification
@@ -125,7 +140,7 @@ git commit -m "test"
 
 ### Adding More Blocked Flags
 
-To block additional flags (e.g., `--no-edit`, `--force`), extend the grep pattern:
+To block additional flags (e.g., `--force`), extend the grep pattern:
 
 ```json
 {
@@ -135,7 +150,7 @@ To block additional flags (e.g., `--no-edit`, `--force`), extend the grep patter
         "matcher": "Bash",
         "hook": {
           "type": "command",
-          "command": "if echo \"$TOOL_INPUT\" | grep -qE '\\-\\-(no-verify|no-gpg-sign|force-with-lease|force)'; then echo 'BLOCKED: Bypass flags are not allowed.' >&2; exit 2; fi"
+          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign|force-with-lease|force)'; then echo 'BLOCKED: Bypass flags are not allowed.' >&2; exit 2; fi"
         }
       }
     ]
@@ -155,14 +170,14 @@ The block-no-verify hook works alongside other PreToolUse hooks:
         "matcher": "Bash",
         "hook": {
           "type": "command",
-          "command": "if echo \"$TOOL_INPUT\" | grep -qE '\\-\\-(no-verify|no-gpg-sign)'; then echo 'BLOCKED: Bypass flags not allowed.' >&2; exit 2; fi"
+          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: Bypass flags not allowed.' >&2; exit 2; fi"
         }
       },
       {
         "matcher": "Bash",
         "hook": {
           "type": "command",
-          "command": "if echo \"$TOOL_INPUT\" | grep -qE 'rm\\s+-rf\\s+/'; then echo 'BLOCKED: Dangerous rm command.' >&2; exit 2; fi"
+          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE 'rm\\s+-rf\\s+/'; then echo 'BLOCKED: Dangerous rm command.' >&2; exit 2; fi"
         }
       }
     ]
