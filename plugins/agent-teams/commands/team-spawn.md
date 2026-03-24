@@ -71,8 +71,8 @@ If "custom" is specified:
 
 ## Phase 2: Team Creation
 
-1. Use the `Teammate` tool with `operation: "spawnTeam"` to create the team
-2. For each team member, use the `Task` tool with:
+1. Use the `TeamCreate` tool to create the team with `team_name` and `description`
+2. For each team member, use the `Agent` tool with:
    - `team_name`: the team name
    - `name`: descriptive member name (e.g., "security-reviewer", "hypothesis-1")
    - `subagent_type`: "general-purpose" (teammates need full tool access)
