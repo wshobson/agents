@@ -89,9 +89,24 @@ class EvalEngine:
             judge_result = asyncio.run(judge.analyze_skill(skill_dir))
             layers.append(judge_result)
 
-        # Layer 3: Monte Carlo — will be implemented in Task 9
-        if "monte_carlo" in self.config.depth.layers:
-            pass  # placeholder
+        # Layer 3: Monte Carlo (deep+ depth)
+        mc_result = None
+        if self.config.depth in (Depth.DEEP, Depth.THOROUGH):
+            import asyncio
+
+            from plugin_eval.layers.monte_carlo import MonteCarloAnalyzer, MonteCarloConfig
+
+            n_runs = self.config.monte_carlo_n or (
+                100 if self.config.depth == Depth.THOROUGH else 50
+            )
+            mc_config = MonteCarloConfig(
+                n_runs=n_runs,
+                concurrency=self.config.concurrency,
+                auth=self.config.auth,
+            )
+            mc = MonteCarloAnalyzer(mc_config)
+            mc_result = asyncio.run(mc.analyze_skill(skill_dir))
+            layers.append(mc_result)
 
         composite = self._build_composite(layers)
 
@@ -115,10 +130,7 @@ class EvalEngine:
         if "judge" in self.config.depth.layers:
             pass  # placeholder
 
-        # Layer 3: Monte Carlo — will be implemented in Task 9
-        if "monte_carlo" in self.config.depth.layers:
-            pass  # placeholder
-
+        # Layer 3: Monte Carlo — not wired for plugin-level eval yet
         composite = self._build_composite(layers)
 
         return PluginEvalResult(
