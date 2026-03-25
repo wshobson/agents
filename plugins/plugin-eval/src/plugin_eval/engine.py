@@ -9,6 +9,7 @@ from plugin_eval.layers.static import StaticAnalyzer
 from plugin_eval.models import (
     Badge,
     CompositeResult,
+    Depth,
     DimensionScore,
     EvalConfig,
     LayerResult,
@@ -73,9 +74,20 @@ class EvalEngine:
         static_result = self._static.analyze_skill(skill_dir)
         layers.append(static_result)
 
-        # Layer 2: LLM Judge — will be implemented in Task 8
-        if "judge" in self.config.depth.layers:
-            pass  # placeholder
+        # Layer 2: Judge (standard+ depth)
+        if self.config.depth in (Depth.STANDARD, Depth.DEEP, Depth.THOROUGH):
+            import asyncio
+
+            from plugin_eval.layers.judge import JudgeAnalyzer, JudgeConfig
+
+            judge_config = JudgeConfig(
+                judges=self.config.judges,
+                auth=self.config.auth,
+                concurrency=self.config.concurrency,
+            )
+            judge = JudgeAnalyzer(judge_config)
+            judge_result = asyncio.run(judge.analyze_skill(skill_dir))
+            layers.append(judge_result)
 
         # Layer 3: Monte Carlo — will be implemented in Task 9
         if "monte_carlo" in self.config.depth.layers:
