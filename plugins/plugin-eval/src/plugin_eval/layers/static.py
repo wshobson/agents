@@ -229,8 +229,8 @@ class StaticAnalyzer:
 
     def _score_orchestration(self, skill: ParsedSkill) -> float:
         """Score orchestration wiring: output format, input/receives patterns."""
-        # Most skills are workers by default — start at 0.65 (neutral-good)
-        score = 0.65
+        # Most skills are workers by default — start at 0.70 (good baseline)
+        score = 0.70
 
         body_lower = skill.raw_content.lower()
 
@@ -342,16 +342,16 @@ class StaticAnalyzer:
 
     def _score_ecosystem_coherence(self, skill: ParsedSkill) -> float:
         """Score ecosystem coherence: cross-references, related/see-also mentions."""
-        score = 0.3  # baseline for any skill
+        score = 0.50  # baseline — most skills are standalone and that's fine
 
         # Cross-references to other skills/agents
         if skill.cross_references:
-            score += min(0.4, len(skill.cross_references) * 0.1)
+            score += min(0.25, len(skill.cross_references) * 0.08)
 
         # "related" or "see also" mentions
         body_lower = skill.raw_content.lower()
-        if re.search(r"\brelated\b|\bsee also\b", body_lower):
-            score += 0.3
+        if re.search(r"\brelated\b|\bsee also\b|\bcompanion\b|\bcomplement", body_lower):
+            score += 0.25
 
         return min(1.0, score)
 
@@ -396,17 +396,25 @@ class StaticAnalyzer:
         score = 0.0
         desc_lower = description.lower()
 
-        # "Use when" / "Use this skill when" phrases (0.35)
+        # "Use when" / "Use this skill when" phrases (0.25)
         if re.search(r"\buse\s+(this\s+skill\s+)?when\b", desc_lower):
-            score += 0.35
-
-        # "Use PROACTIVELY" or "proactively" (0.25)
-        if re.search(r"\bproactively\b", desc_lower):
             score += 0.25
 
-        # Additional trigger keywords (0.15)
-        if re.search(r"\bautomatically\b|\balways\s+use\b|\btrigger\b|\binvoke\b", desc_lower):
+        # "Use PROACTIVELY" or "proactively" (0.15)
+        if re.search(r"\bproactively\b", desc_lower):
             score += 0.15
+
+        # Additional trigger keywords (0.10)
+        if re.search(r"\bautomatically\b|\balways\s+use\b|\btrigger\b|\binvoke\b", desc_lower):
+            score += 0.10
+
+        # Specificity bonus: multiple concrete contexts listed (0.20)
+        # Count comma-separated or "or"-separated use cases in description
+        use_cases = len(re.findall(r",\s*(?:or\s+)?(?:when|for|during|implementing|building|creating|debugging|testing|deploying|configuring|setting up)", desc_lower))
+        if use_cases >= 3:
+            score += 0.20
+        elif use_cases >= 1:
+            score += 0.10
 
         # Describes specific contexts or file types (0.15)
         if re.search(r"\b(when\s+\w+ing|for\s+\w+ing|during\s+\w+ing)\b", desc_lower):
