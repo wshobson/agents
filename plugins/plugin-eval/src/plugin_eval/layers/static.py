@@ -21,6 +21,12 @@ _SKILL_WEIGHTS = {
 # MUST/NEVER/ALWAYS threshold for OVER_CONSTRAINED
 _OVER_CONSTRAINED_THRESHOLD = 15
 
+
+def anti_pattern_penalty(count: int) -> float:
+    """Return a multiplier in [0.5, 1.0] based on anti-pattern count."""
+    return max(0.5, 1.0 - 0.05 * count)
+
+
 # Line count threshold for BLOATED_SKILL (no references/ dir)
 _BLOATED_LINE_THRESHOLD = 800
 
@@ -32,9 +38,9 @@ class StaticAnalyzer:
     # Public API
     # ------------------------------------------------------------------
 
-    def analyze_skill(self, skill_dir: Path) -> LayerResult:
-        """Analyze a single skill directory and return a LayerResult."""
-        skill = parse_skill(skill_dir)
+    def analyze_skill(self, skill_or_dir: Path | ParsedSkill) -> LayerResult:
+        """Analyze a single skill directory (or pre-parsed skill) and return a LayerResult."""
+        skill = skill_or_dir if isinstance(skill_or_dir, ParsedSkill) else parse_skill(skill_or_dir)
         anti_patterns = self._detect_skill_anti_patterns(skill)
 
         sub_scores: dict[str, float] = {
@@ -47,7 +53,7 @@ class StaticAnalyzer:
         }
 
         raw_score = sum(sub_scores[name] * weight for name, weight in _SKILL_WEIGHTS.items())
-        penalty = self._anti_pattern_penalty(len(anti_patterns))
+        penalty = anti_pattern_penalty(len(anti_patterns))
         final_score = max(0.0, min(1.0, raw_score * penalty))
 
         return LayerResult(
@@ -66,7 +72,7 @@ class StaticAnalyzer:
         all_anti_patterns: list[AntiPattern] = []
 
         for skill in plugin.skills:
-            result = self.analyze_skill(skill.path)
+            result = self.analyze_skill(skill)
             skill_scores.append(result.score)
             all_anti_patterns.extend(result.anti_patterns)
 
@@ -124,7 +130,9 @@ class StaticAnalyzer:
             )
 
         # MISSING_TRIGGER: no "Use when..." or "Use this skill when..." phrasing
-        trigger_pattern = r"\buse\s+(?:this\s+skill\s+)?when\b|\buse\s+proactively\b|\btrigger\s+when\b"
+        trigger_pattern = (
+            r"\buse\s+(?:this\s+skill\s+)?when\b|\buse\s+proactively\b|\btrigger\s+when\b"
+        )
         if not re.search(trigger_pattern, skill.description, re.IGNORECASE):
             patterns.append(
                 AntiPattern(
@@ -380,8 +388,8 @@ class StaticAnalyzer:
     # ------------------------------------------------------------------
 
     def _anti_pattern_penalty(self, count: int) -> float:
-        """Return a multiplier in [0.5, 1.0] based on anti-pattern count."""
-        return max(0.5, 1.0 - 0.05 * count)
+        """Delegate to module-level anti_pattern_penalty (kept for backward compatibility)."""
+        return anti_pattern_penalty(count)
 
     def _description_pushiness(self, description: str) -> float:
         """Score how well a description guides autonomous invocation (0–1)."""

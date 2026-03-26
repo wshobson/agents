@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from plugin_eval.models import LayerResult
-from plugin_eval.parser import parse_skill
+from plugin_eval.parser import ParsedSkill, parse_skill
 from plugin_eval.stats import (
     bootstrap_ci,
     clopper_pearson_ci,
@@ -113,9 +113,9 @@ class MonteCarloAnalyzer:
     # Public API
     # ------------------------------------------------------------------
 
-    async def analyze_skill(self, skill_dir: Path) -> LayerResult:
+    async def analyze_skill(self, skill_or_dir: Path | ParsedSkill) -> LayerResult:
         """Generate prompts, run N simulations, compute statistics, return LayerResult."""
-        skill = parse_skill(skill_dir)
+        skill = skill_or_dir if isinstance(skill_or_dir, ParsedSkill) else parse_skill(skill_or_dir)
         skill_content = skill.raw_content
 
         prompts = await self._generate_prompts(skill.name, skill.description)

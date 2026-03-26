@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from plugin_eval.models import LayerResult
-from plugin_eval.parser import parse_skill
+from plugin_eval.parser import ParsedSkill, parse_skill
 
 # ---------------------------------------------------------------------------
 # Anchored rubrics
@@ -58,7 +58,11 @@ async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-4
     Raises RuntimeError if claude-agent-sdk is not installed.
     """
     try:
-        from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, query  # type: ignore[import-untyped]
+        from claude_agent_sdk import (  # type: ignore[import-untyped]
+            ClaudeAgentOptions,
+            ResultMessage,
+            query,
+        )
     except ImportError as exc:
         raise RuntimeError(
             "claude-agent-sdk is required for LLM judge. Install with: pip install plugin-eval[llm]"
@@ -123,13 +127,14 @@ class JudgeAnalyzer:
     # Public API
     # ------------------------------------------------------------------
 
-    async def analyze_skill(self, skill_dir: Path) -> LayerResult:
+    async def analyze_skill(self, skill_or_dir: Path | ParsedSkill) -> LayerResult:
         """Run all 4 assessments concurrently and return a LayerResult."""
+        skill = skill_or_dir if isinstance(skill_or_dir, ParsedSkill) else parse_skill(skill_or_dir)
         triggering, orchestration, output_quality, scope = await asyncio.gather(
-            self.assess_triggering(skill_dir),
-            self.assess_orchestration(skill_dir),
-            self.assess_output_quality(skill_dir),
-            self.assess_scope(skill_dir),
+            self.assess_triggering(skill),
+            self.assess_orchestration(skill),
+            self.assess_output_quality(skill),
+            self.assess_scope(skill),
         )
 
         # Weighted composite: triggering 0.30, orchestration 0.30, output 0.25, scope 0.15
@@ -166,9 +171,10 @@ class JudgeAnalyzer:
     # Individual assessments
     # ------------------------------------------------------------------
 
-    async def assess_triggering(self, skill_dir: Path) -> dict:
+    async def assess_triggering(self, skill: Path | ParsedSkill) -> dict:
         """Generate 10 synthetic prompts and classify triggering accuracy via Haiku."""
-        skill = parse_skill(skill_dir)
+        if isinstance(skill, Path):
+            skill = parse_skill(skill)
         model = _resolve_model("haiku")
 
         system = (
@@ -198,9 +204,10 @@ Return JSON matching this schema:
         async with self._sem:
             return await query_llm(prompt, system=system, model=model)
 
-    async def assess_orchestration(self, skill_dir: Path) -> dict:
+    async def assess_orchestration(self, skill: Path | ParsedSkill) -> dict:
         """Rate orchestration fitness using an anchored rubric via Sonnet."""
-        skill = parse_skill(skill_dir)
+        if isinstance(skill, Path):
+            skill = parse_skill(skill)
         model = _resolve_model("sonnet")
 
         system = (
@@ -230,9 +237,10 @@ Return JSON:
         async with self._sem:
             return await query_llm(prompt, system=system, model=model)
 
-    async def assess_output_quality(self, skill_dir: Path) -> dict:
+    async def assess_output_quality(self, skill: Path | ParsedSkill) -> dict:
         """Simulate 3 tasks and judge output quality via Sonnet."""
-        skill = parse_skill(skill_dir)
+        if isinstance(skill, Path):
+            skill = parse_skill(skill)
         model = _resolve_model("sonnet")
 
         system = (
@@ -258,9 +266,10 @@ Return JSON:
         async with self._sem:
             return await query_llm(prompt, system=system, model=model)
 
-    async def assess_scope(self, skill_dir: Path) -> dict:
+    async def assess_scope(self, skill: Path | ParsedSkill) -> dict:
         """Evaluate scope calibration using an anchored rubric via Sonnet."""
-        skill = parse_skill(skill_dir)
+        if isinstance(skill, Path):
+            skill = parse_skill(skill)
         model = _resolve_model("sonnet")
 
         system = (

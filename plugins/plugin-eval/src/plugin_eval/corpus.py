@@ -17,6 +17,15 @@ class CorpusEntry:
     line_count: int
     elo_rating: float = 1500.0
 
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "path": self.path,
+            "category": self.category,
+            "line_count": self.line_count,
+            "elo_rating": self.elo_rating,
+        }
+
 
 class Corpus:
     def __init__(self, corpus_dir: Path) -> None:
@@ -51,16 +60,7 @@ class Corpus:
                     except Exception:
                         continue
 
-        index = [
-            {
-                "name": e.name,
-                "path": e.path,
-                "category": e.category,
-                "line_count": e.line_count,
-                "elo_rating": e.elo_rating,
-            }
-            for e in entries
-        ]
+        index = [e.to_dict() for e in entries]
         (corpus_dir / "index.json").write_text(json.dumps(index, indent=2))
 
         corpus = cls(corpus_dir)
@@ -119,14 +119,5 @@ class Corpus:
             ]
 
     def _save(self) -> None:
-        index = [
-            {
-                "name": e.name,
-                "path": e.path,
-                "category": e.category,
-                "line_count": e.line_count,
-                "elo_rating": e.elo_rating,
-            }
-            for e in self.entries
-        ]
+        index = [e.to_dict() for e in self.entries]
         (self.corpus_dir / "index.json").write_text(json.dumps(index, indent=2))

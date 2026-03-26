@@ -116,7 +116,7 @@ def certify(
 def init(
     corpus_source: Path = typer.Argument(..., help="Path to plugins directory to index as corpus"),  # noqa: B008
     corpus_dir: Path = typer.Option(  # noqa: B008
-        Path.home() / ".plugineval" / "corpus",
+        Path.home() / ".plugineval" / "corpus",  # noqa: B008
         help="Where to store corpus index",  # noqa: B008
     ),
 ) -> None:

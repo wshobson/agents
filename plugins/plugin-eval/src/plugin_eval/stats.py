@@ -97,7 +97,7 @@ def cohens_kappa(rater1: list[int], rater2: list[int]) -> float:
         raise ValueError("Rater lists must have the same length")
 
     n = len(rater1)
-    categories = sorted(set(rater1) | set(rater2))
+    categories = set(rater1) | set(rater2)
 
     observed_agreement = sum(a == b for a, b in zip(rater1, rater2, strict=True)) / n
 

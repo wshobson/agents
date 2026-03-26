@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import UTC, datetime
 from pathlib import Path
 
-from plugin_eval.layers.static import StaticAnalyzer
+from plugin_eval.layers.static import StaticAnalyzer, anti_pattern_penalty
 from plugin_eval.models import (
     Badge,
     CompositeResult,
@@ -15,6 +16,7 @@ from plugin_eval.models import (
     LayerResult,
     PluginEvalResult,
 )
+from plugin_eval.parser import ParsedSkill, parse_skill
 
 # Top-level dimension weights (must sum to 1.0)
 DIMENSION_WEIGHTS: dict[str, float] = {
@@ -68,16 +70,15 @@ class EvalEngine:
 
     def evaluate_skill(self, skill_dir: Path) -> PluginEvalResult:
         """Run evaluation layers on a skill directory and return a result."""
+        skill = parse_skill(skill_dir)
         layers: list[LayerResult] = []
 
         # Layer 1: Static analysis (always runs)
-        static_result = self._static.analyze_skill(skill_dir)
+        static_result = self._static.analyze_skill(skill)
         layers.append(static_result)
 
         # Layer 2: Judge (standard+ depth)
         if self.config.depth in (Depth.STANDARD, Depth.DEEP, Depth.THOROUGH):
-            import asyncio
-
             from plugin_eval.layers.judge import JudgeAnalyzer, JudgeConfig
 
             judge_config = JudgeConfig(
@@ -86,27 +87,36 @@ class EvalEngine:
                 concurrency=self.config.concurrency,
             )
             judge = JudgeAnalyzer(judge_config)
-            judge_result = asyncio.run(judge.analyze_skill(skill_dir))
-            layers.append(judge_result)
 
-        # Layer 3: Monte Carlo (deep+ depth)
-        mc_result = None
-        if self.config.depth in (Depth.DEEP, Depth.THOROUGH):
-            import asyncio
+            # Layer 3: Monte Carlo (deep+ depth) — run together with judge when both active
+            if self.config.depth in (Depth.DEEP, Depth.THOROUGH):
+                from plugin_eval.layers.monte_carlo import MonteCarloAnalyzer, MonteCarloConfig
 
-            from plugin_eval.layers.monte_carlo import MonteCarloAnalyzer, MonteCarloConfig
+                n_runs = self.config.monte_carlo_n or (
+                    100 if self.config.depth == Depth.THOROUGH else 50
+                )
+                mc_config = MonteCarloConfig(
+                    n_runs=n_runs,
+                    concurrency=self.config.concurrency,
+                    auth=self.config.auth,
+                )
+                mc = MonteCarloAnalyzer(mc_config)
 
-            n_runs = self.config.monte_carlo_n or (
-                100 if self.config.depth == Depth.THOROUGH else 50
-            )
-            mc_config = MonteCarloConfig(
-                n_runs=n_runs,
-                concurrency=self.config.concurrency,
-                auth=self.config.auth,
-            )
-            mc = MonteCarloAnalyzer(mc_config)
-            mc_result = asyncio.run(mc.analyze_skill(skill_dir))
-            layers.append(mc_result)
+                async def _run_llm_layers(
+                    judge: JudgeAnalyzer,
+                    mc: MonteCarloAnalyzer,
+                    skill: ParsedSkill,
+                ) -> tuple[LayerResult, LayerResult]:
+                    judge_result = await judge.analyze_skill(skill)
+                    mc_result = await mc.analyze_skill(skill)
+                    return judge_result, mc_result
+
+                judge_result, mc_result = asyncio.run(_run_llm_layers(judge, mc, skill))
+                layers.append(judge_result)
+                layers.append(mc_result)
+            else:
+                judge_result = asyncio.run(judge.analyze_skill(skill))
+                layers.append(judge_result)
 
         composite = self._build_composite(layers)
 
@@ -129,42 +139,9 @@ class EvalEngine:
         # Plugin-level composite uses overall static score mapped to all
         # static-measurable dimensions (plugin result lacks per-dimension breakdown)
         static_overall = static_result.score
-        static_scores = {dim: static_overall for dim in STATIC_TO_DIMENSION.values()}
-
-        measured_weight_sum = sum(DIMENSION_WEIGHTS.get(d, 0.0) for d in static_scores)
-        unmeasured = set(DIMENSION_WEIGHTS) - set(static_scores)
-
-        if measured_weight_sum > 0:
-            raw = sum(
-                (DIMENSION_WEIGHTS.get(d, 0.0) / measured_weight_sum) * static_overall
-                for d in static_scores
-            )
-        else:
-            raw = 0.0
-
+        dimension_scores = {dim: static_overall for dim in STATIC_TO_DIMENSION.values()}
         anti_pattern_count = len(static_result.anti_patterns)
-        penalty = max(0.5, 1.0 - 0.05 * anti_pattern_count)
-        composite_score = min(100.0, max(0.0, raw * 100.0 * penalty))
-
-        dim_objects: list[DimensionScore] = []
-        for dim, weight in DIMENSION_WEIGHTS.items():
-            if dim in unmeasured:
-                dim_objects.append(DimensionScore(name=dim, weight=weight, score=0.0, grade="—"))
-            else:
-                dim_objects.append(DimensionScore(
-                    name=dim, weight=weight, score=static_overall,
-                    grade=self._score_to_grade(static_overall * 100.0),
-                ))
-
-        badge = Badge.from_scores(composite_score, elo=None)
-
-        composite = CompositeResult(
-            score=composite_score,
-            anti_pattern_penalty=penalty,
-            dimensions=dim_objects,
-            badge=badge,
-            confidence_label=self.config.depth.confidence_label,
-        )
+        composite = self._assemble_composite(dimension_scores, anti_pattern_count)
 
         return PluginEvalResult(
             plugin_path=str(plugin_dir),
@@ -194,13 +171,21 @@ class EvalEngine:
             mc_scores=mc_scores,
         )
 
-        # Compute anti-pattern penalty from static layer
         anti_pattern_count = len(static_result.anti_patterns) if static_result else 0
-        penalty = max(0.5, 1.0 - 0.05 * anti_pattern_count)
+        return self._assemble_composite(dimension_scores, anti_pattern_count)
+
+    def _assemble_composite(
+        self, dimension_scores: dict[str, float], anti_pattern_count: int
+    ) -> CompositeResult:
+        """Build a CompositeResult from blended dimension scores and anti-pattern count."""
+        penalty = anti_pattern_penalty(anti_pattern_count)
 
         # Split into measured vs unmeasured dimensions
+        # Dimensions absent from dimension_scores are also treated as unmeasured
         measured = {d: s for d, s in dimension_scores.items() if s >= 0.0}
-        unmeasured = {d for d, s in dimension_scores.items() if s < 0.0}
+        unmeasured = {d for d, s in dimension_scores.items() if s < 0.0} | (
+            set(DIMENSION_WEIGHTS) - set(dimension_scores)
+        )
 
         # Renormalize weights to only measured dimensions
         measured_weight_sum = sum(DIMENSION_WEIGHTS.get(d, 0.0) for d in measured)
