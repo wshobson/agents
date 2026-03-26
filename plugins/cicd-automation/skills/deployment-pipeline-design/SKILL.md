@@ -1,6 +1,6 @@
 ---
 name: deployment-pipeline-design
-description: Design multi-stage CI/CD pipelines with approval gates, security checks, and deployment orchestration. Use when architecting deployment workflows, setting up continuous delivery, or implementing GitOps practices.
+description: Design multi-stage CI/CD pipelines with approval gates, security checks, and deployment orchestration. Use this skill when building a zero-downtime deployment strategy for a high-traffic API; implementing progressive canary rollouts with automated metric-based promotion; setting up a multi-environment pipeline with mandatory security scanning between staging and production; or debugging a pipeline where deployments succeed but health checks consistently fail post-release.
 ---
 
 # Deployment Pipeline Design
@@ -351,6 +351,82 @@ kubectl rollout undo deployment/my-app --to-revision=3
     fi
 ```
 
+
+## Troubleshooting
+
+### Health check passes in pipeline but service is unhealthy in production
+
+The pipeline health check is hitting a shallow `/ping` endpoint that returns 200 even when the database is unreachable. Use a deep health check that verifies actual dependencies:
+
+```yaml
+- name: Deep health check
+  run: |
+    HEALTH=$(curl -sf https://app.example.com/health/ready | jq -r '.status')
+    if [ "$HEALTH" != "ok" ]; then
+      echo "Deep health check failed: $HEALTH"
+      exit 1
+    fi
+```
+
+```python
+# /health/ready endpoint — checks real dependencies
+@app.get("/health/ready")
+async def readiness():
+    checks = {
+        "database": await check_db_connection(),
+        "cache": await check_redis_connection(),
+        "queue": await check_queue_connection(),
+    }
+    status = "ok" if all(checks.values()) else "degraded"
+    return {"status": status, "checks": checks}
+```
+
+### Canary deployment never promotes to 100%
+
+Argo Rollouts requires a valid `AnalysisTemplate` to auto-promote. If the Prometheus query in the analysis template returns no data (e.g., metric name changed), the analysis stays inconclusive and promotion stalls. Add a `failureCondition` and `inconclusiveLimit` so the rollout fails fast rather than hanging:
+
+```yaml
+spec:
+  metrics:
+  - name: error-rate
+    failureCondition: "result[0] > 0.05"
+    inconclusiveLimit: 2   # fail after 2 inconclusive results
+    provider:
+      prometheus:
+        query: |
+          sum(rate(http_requests_total{status=~"5.."}[2m]))
+          / sum(rate(http_requests_total[2m]))
+```
+
+### Staging deploy succeeds but production job never starts
+
+Check that the production environment protection rules are configured correctly — a missing reviewer assignment means the approval gate waits indefinitely with no notification. In GitHub Actions, add `reviewers` to the environment settings and verify the user or team exists:
+
+```yaml
+# In GitHub repo settings → Environments → production:
+# Required reviewers: @your-org/release-managers
+```
+
+### Docker layer cache busted on every run causing slow builds
+
+If `COPY . .` appears before dependency installation, any source file change invalidates the dependency layer. Reorder to copy dependency manifests first:
+
+```dockerfile
+# Good: dependencies cached separately from source
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+```
+
+### Rollback leaves database migrations applied to old code
+
+A service rollback without a migration rollback causes schema/code mismatch errors. Always make migrations backward-compatible (additive only) for at least one release cycle, and keep rollback scripts versioned alongside the migration:
+
+```bash
+# migrations/V20240315__add_nullable_column.sql  (forward)
+# migrations/V20240315__add_nullable_column.undo.sql  (backward)
+```
 
 ## Related Skills
 

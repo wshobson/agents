@@ -1,6 +1,6 @@
 ---
 name: architecture-patterns
-description: Implement proven backend architecture patterns including Clean Architecture, Hexagonal Architecture, and Domain-Driven Design. Use when architecting complex backend systems or refactoring existing applications for better maintainability.
+description: Implement proven backend architecture patterns including Clean Architecture, Hexagonal Architecture, and Domain-Driven Design. Use this skill when architecting a new microservice that needs to be testable without a running database; refactoring a monolith where business logic is tangled with ORM models and HTTP concerns; establishing bounded contexts before splitting a system into services; or debugging dependency cycles where infrastructure code bleeds into the domain layer.
 ---
 
 # Architecture Patterns
@@ -463,4 +463,64 @@ class OrderRepository:
         await self._persist(order)
         await self._publish_events(order._events)
         order._events.clear()
+
+## Troubleshooting
+
+### Use case tests require a running database
+
+If your unit tests depend on a real database connection, business logic has leaked into the infrastructure layer. Move all database calls behind an `IRepository` interface and inject an in-memory implementation in tests:
+
+```python
+class InMemoryUserRepository(IUserRepository):
+    def __init__(self):
+        self._store: Dict[str, User] = {}
+
+    async def find_by_id(self, user_id: str) -> Optional[User]:
+        return self._store.get(user_id)
+
+    async def save(self, user: User) -> User:
+        self._store[user.id] = user
+        return user
+
+# In test
+repo = InMemoryUserRepository()
+use_case = CreateUserUseCase(user_repository=repo)
+response = await use_case.execute(CreateUserRequest(email="a@b.com", name="Alice"))
+assert response.success
+```
+
+### Circular imports between layers
+
+A common symptom is `ImportError: cannot import name X` between `use_cases` and `adapters`. This happens when a use case imports a concrete adapter class instead of the abstract port. Ensure `use_cases/` only imports from `domain/` (entities + interfaces) and never from `adapters/` or `infrastructure/`.
+
+### Framework decorators appearing in domain entities
+
+If SQLAlchemy `Column()` or Pydantic `Field()` annotations appear on domain entities, the entity is no longer pure. Create a separate ORM model in `adapters/repositories/` and map it to/from the domain entity in the repository `_to_entity()` method, keeping the entity file free of any framework imports.
+
+### All logic ending up in controllers
+
+When the controller grows beyond HTTP parsing and response formatting, extract the logic into a use case class. A controller method should do three things only: parse the request, call a use case, map the response.
+
+### Value objects raising errors too late
+
+Validate invariants in `__post_init__` so an invalid `Email` or `Money` value object cannot be constructed at all. This surfaces data problems at the boundary rather than deep inside business logic:
+
+```python
+@dataclass(frozen=True)
+class Money:
+    amount: int
+    currency: str
+
+    def __post_init__(self):
+        if self.amount < 0:
+            raise ValueError("Money amount cannot be negative")
+        if self.currency not in {"USD", "EUR", "GBP"}:
+            raise ValueError(f"Unsupported currency: {self.currency}")
+```
+
+## Related Skills
+
+- `microservices-patterns` - Apply these architecture patterns when decomposing a monolith into services
+- `cqrs-implementation` - Use Clean Architecture as the structural foundation for CQRS command/query separation
+- `saga-orchestration` - Sagas require well-defined aggregate boundaries, which DDD tactical patterns provide
 ```

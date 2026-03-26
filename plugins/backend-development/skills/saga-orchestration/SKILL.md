@@ -1,6 +1,6 @@
 ---
 name: saga-orchestration
-description: Implement saga patterns for distributed transactions and cross-aggregate workflows. Use when coordinating multi-step business processes, handling compensating transactions, or managing long-running workflows.
+description: Implement saga patterns for distributed transactions and cross-aggregate workflows. Use this skill when building e-commerce order fulfillment pipelines that span inventory, payment, and shipping services; implementing bank transfer workflows that require guaranteed rollback on failure; designing travel booking systems that coordinate hotel, flight, and car rental reservations; or debugging stuck sagas where compensation steps never complete.
 ---
 
 # Saga Orchestration
@@ -477,3 +477,65 @@ class TimeoutSagaOrchestrator(SagaOrchestrator):
 - **Don't skip compensation testing** - Most critical part
 - **Don't couple services** - Use async messaging
 - **Don't ignore partial failures** - Handle gracefully
+
+## Troubleshooting
+
+### Saga stuck in COMPENSATING state
+
+A saga enters compensation but never reaches FAILED. This usually means one of the compensation handlers is throwing an unhandled exception and never publishing `SagaCompensationCompleted`. Add dead-letter queue handling to your compensation consumers and ensure every compensation action publishes a result event even when the underlying operation has already been rolled back (idempotency).
+
+```python
+async def handle_release_reservation(self, command: Dict):
+    try:
+        await self.release_reservation(command["original_result"]["reservation_id"])
+    except ReservationNotFoundError:
+        # Already released — treat as success
+        pass
+    # Always publish completion
+    await self.event_publisher.publish("SagaCompensationCompleted", {
+        "saga_id": command["saga_id"],
+        "step_name": "reserve_inventory"
+    })
+```
+
+### Duplicate saga executions on restart
+
+If your service restarts mid-saga, the orchestrator may replay events and re-execute already-completed steps. Guard every step action with an idempotency key stored in the saga data:
+
+```python
+async def handle_reserve_items(self, command: Dict):
+    idempotency_key = f"reserve-{command['order_id']}"
+    existing = await self.reservation_store.find_by_key(idempotency_key)
+    if existing:
+        # Already done — return previous result
+        await self.publish_step_completed(command["saga_id"], "reserve_inventory", existing)
+        return
+    # ... proceed with reservation
+```
+
+### Choreography saga losing events
+
+In a choreography-based saga, a downstream service may miss an event if it was offline when the event was published. Use a durable message broker (Kafka, RabbitMQ with persistence) and store the current saga state in a dedicated saga log table so you can replay from the last known good step.
+
+### Timeout firing before slow but legitimate step completes
+
+If a step like `create_shipment` can take up to 10 minutes during peak load but your timeout is set to 5 minutes, you'll get spurious compensation. Make step timeouts configurable per step type rather than using a global default:
+
+```python
+STEP_TIMEOUTS = {
+    "reserve_inventory": timedelta(minutes=2),
+    "process_payment": timedelta(minutes=1),
+    "create_shipment": timedelta(minutes=15),
+    "send_confirmation": timedelta(minutes=2),
+}
+```
+
+### Compensation order not matching execution order
+
+When two steps both complete before a failure is detected, compensation must run in strict reverse order or you can leave data in an inconsistent state. Verify that `_compensate()` iterates from `current_step - 1` down to `0`, and add an integration test that deliberately fails at each step index to confirm correct rollback order.
+
+## Related Skills
+
+- `cqrs-implementation` - Pair sagas with CQRS for read-model updates after each step completes
+- `event-store-design` - Store saga events in an event store for full audit trail and replay capability
+- `workflow-orchestration-patterns` - Higher-level workflow engines (Temporal, Conductor) that build on saga concepts

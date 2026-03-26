@@ -284,31 +284,47 @@ class StaticAnalyzer:
         return min(1.0, score)
 
     def _score_structural_completeness(self, skill: ParsedSkill) -> float:
-        """Score structural completeness: headings, code blocks, examples, troubleshooting."""
+        """Score structural completeness and technical depth."""
         score = 0.0
 
-        # Headings
+        # Headings — structure
         heading_count = skill.h2_count + skill.h3_count
-        if heading_count >= 4:
-            score += 0.3
+        if heading_count >= 6:
+            score += 0.20
+        elif heading_count >= 4:
+            score += 0.15
         elif heading_count >= 2:
-            score += 0.2
-        elif heading_count >= 1:
-            score += 0.1
+            score += 0.10
 
-        # Code blocks
-        if skill.code_block_count >= 3:
-            score += 0.3
+        # Code blocks — actionability
+        if skill.code_block_count >= 5:
+            score += 0.20
+        elif skill.code_block_count >= 3:
+            score += 0.15
         elif skill.code_block_count >= 1:
-            score += 0.2
+            score += 0.10
+
+        # Multi-language depth — expert-audience signal
+        unique_langs = set(skill.code_block_languages)
+        if len(unique_langs) >= 3:
+            score += 0.15  # covers multiple languages/formats
+        elif len(unique_langs) >= 2:
+            score += 0.10
 
         # Examples section
         if skill.has_examples:
-            score += 0.2
+            score += 0.15
 
         # Troubleshooting section
         if skill.has_troubleshooting:
-            score += 0.2
+            score += 0.15
+
+        # Technical depth signal: tables, diagrams, decision matrices
+        body_lower = skill.raw_content.lower()
+        if re.search(r"\|.*\|.*\|", skill.raw_content):  # markdown tables
+            score += 0.10
+        if re.search(r"(decision|when to use|comparison|tradeoff)", body_lower):
+            score += 0.05
 
         return min(1.0, score)
 
