@@ -341,14 +341,18 @@ type UserDict = dict[str, Any]
 # Python 3.12+ type statement with generics (PEP 695)
 type Handler[T] = Callable[[Request], T]
 type AsyncHandler[T] = Callable[[Request], Awaitable[T]]
+```
 
+```python
 # Python 3.10-3.11 style (needed for broader compatibility)
 from typing import TypeAlias
 from collections.abc import Callable, Awaitable
 
 UserId: TypeAlias = str
 Handler: TypeAlias = Callable[[Request], Response]
+```
 
+```python
 # Usage
 def register_handler(path: str, handler: Handler[Response]) -> None:
     ...
