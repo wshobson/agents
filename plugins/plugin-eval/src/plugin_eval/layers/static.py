@@ -123,8 +123,9 @@ class StaticAnalyzer:
                 )
             )
 
-        # MISSING_TRIGGER: no "Use when..." phrasing
-        if not re.search(r"\buse\s+when\b", skill.description, re.IGNORECASE):
+        # MISSING_TRIGGER: no "Use when..." or "Use this skill when..." phrasing
+        trigger_pattern = r"\buse\s+(?:this\s+skill\s+)?when\b|\buse\s+proactively\b|\btrigger\s+when\b"
+        if not re.search(trigger_pattern, skill.description, re.IGNORECASE):
             patterns.append(
                 AntiPattern(
                     flag="MISSING_TRIGGER",
