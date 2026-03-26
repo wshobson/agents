@@ -58,11 +58,10 @@ async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-4
     Raises RuntimeError if claude-agent-sdk is not installed.
     """
     try:
-        import claude_agent_sdk as sdk  # type: ignore[import-untyped]
+        from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, query  # type: ignore[import-untyped]
     except ImportError as exc:
         raise RuntimeError(
-            "claude-agent-sdk is required for LLM judge. "
-            "Install with: pip install plugin-eval[llm]"
+            "claude-agent-sdk is required for LLM judge. Install with: pip install plugin-eval[llm]"
         ) from exc
 
     full_prompt = prompt
@@ -70,18 +69,29 @@ async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-4
         full_prompt = f"{system}\n\n{prompt}"
 
     result_text = ""
-    async for event in sdk.stream(full_prompt, model=model):
-        if hasattr(event, "text"):
-            result_text += event.text
+    async for message in query(
+        prompt=full_prompt,
+        options=ClaudeAgentOptions(
+            model=model,
+            allowed_tools=[],
+        ),
+    ):
+        if isinstance(message, ResultMessage):
+            # ResultMessage contains the final text
+            for block in getattr(message, "content", []):
+                if hasattr(block, "text"):
+                    result_text += block.text
 
     # Try to parse JSON — handles raw JSON or JSON inside a markdown code block
-    # Strip markdown fences if present
     stripped = result_text.strip()
     fence_match = re.search(r"```(?:json)?\s*([\s\S]+?)\s*```", stripped)
     if fence_match:
         stripped = fence_match.group(1).strip()
 
-    return json.loads(stripped)
+    try:
+        return json.loads(stripped)
+    except json.JSONDecodeError:
+        return {"raw": result_text, "score": 0.5}
 
 
 # ---------------------------------------------------------------------------

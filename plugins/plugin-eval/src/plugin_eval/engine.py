@@ -126,12 +126,45 @@ class EvalEngine:
         static_result = self._static.analyze_plugin(plugin_dir)
         layers.append(static_result)
 
-        # Layer 2: LLM Judge — will be implemented in Task 8
-        if "judge" in self.config.depth.layers:
-            pass  # placeholder
+        # Plugin-level composite uses overall static score mapped to all
+        # static-measurable dimensions (plugin result lacks per-dimension breakdown)
+        static_overall = static_result.score
+        static_scores = {dim: static_overall for dim in STATIC_TO_DIMENSION.values()}
 
-        # Layer 3: Monte Carlo — not wired for plugin-level eval yet
-        composite = self._build_composite(layers)
+        measured_weight_sum = sum(DIMENSION_WEIGHTS.get(d, 0.0) for d in static_scores)
+        unmeasured = set(DIMENSION_WEIGHTS) - set(static_scores)
+
+        if measured_weight_sum > 0:
+            raw = sum(
+                (DIMENSION_WEIGHTS.get(d, 0.0) / measured_weight_sum) * static_overall
+                for d in static_scores
+            )
+        else:
+            raw = 0.0
+
+        anti_pattern_count = len(static_result.anti_patterns)
+        penalty = max(0.5, 1.0 - 0.05 * anti_pattern_count)
+        composite_score = min(100.0, max(0.0, raw * 100.0 * penalty))
+
+        dim_objects: list[DimensionScore] = []
+        for dim, weight in DIMENSION_WEIGHTS.items():
+            if dim in unmeasured:
+                dim_objects.append(DimensionScore(name=dim, weight=weight, score=0.0, grade="—"))
+            else:
+                dim_objects.append(DimensionScore(
+                    name=dim, weight=weight, score=static_overall,
+                    grade=self._score_to_grade(static_overall * 100.0),
+                ))
+
+        badge = Badge.from_scores(composite_score, elo=None)
+
+        composite = CompositeResult(
+            score=composite_score,
+            anti_pattern_penalty=penalty,
+            dimensions=dim_objects,
+            badge=badge,
+            confidence_label=self.config.depth.confidence_label,
+        )
 
         return PluginEvalResult(
             plugin_path=str(plugin_dir),
@@ -165,24 +198,44 @@ class EvalEngine:
         anti_pattern_count = len(static_result.anti_patterns) if static_result else 0
         penalty = max(0.5, 1.0 - 0.05 * anti_pattern_count)
 
-        # Compute weighted composite score
-        raw = sum(
-            DIMENSION_WEIGHTS.get(dim, 0.0) * score for dim, score in dimension_scores.items()
-        )
+        # Split into measured vs unmeasured dimensions
+        measured = {d: s for d, s in dimension_scores.items() if s >= 0.0}
+        unmeasured = {d for d, s in dimension_scores.items() if s < 0.0}
+
+        # Renormalize weights to only measured dimensions
+        measured_weight_sum = sum(DIMENSION_WEIGHTS.get(d, 0.0) for d in measured)
+        if measured_weight_sum > 0:
+            raw = sum(
+                (DIMENSION_WEIGHTS.get(dim, 0.0) / measured_weight_sum) * score
+                for dim, score in measured.items()
+            )
+        else:
+            raw = 0.0
         composite_score = min(100.0, max(0.0, raw * 100.0 * penalty))
 
         # Build DimensionScore objects
         dim_objects: list[DimensionScore] = []
-        for dim, score in dimension_scores.items():
-            weight = DIMENSION_WEIGHTS.get(dim, 0.0)
-            dim_objects.append(
-                DimensionScore(
-                    name=dim,
-                    weight=weight,
-                    score=score,
-                    grade=self._score_to_grade(score * 100.0),
+        for dim in DIMENSION_WEIGHTS:
+            weight = DIMENSION_WEIGHTS[dim]
+            if dim in unmeasured:
+                dim_objects.append(
+                    DimensionScore(
+                        name=dim,
+                        weight=weight,
+                        score=0.0,
+                        grade="—",
+                    )
                 )
-            )
+            else:
+                score = measured.get(dim, 0.0)
+                dim_objects.append(
+                    DimensionScore(
+                        name=dim,
+                        weight=weight,
+                        score=score,
+                        grade=self._score_to_grade(score * 100.0),
+                    )
+                )
 
         badge = Badge.from_scores(composite_score, elo=None)
 
@@ -220,8 +273,8 @@ class EvalEngine:
                 available["monte_carlo"] = mc_scores[dim]
 
             if not available:
-                # No data — default to 0.5 neutral
-                blended[dim] = 0.5
+                # No data — mark as unmeasured (negative sentinel)
+                blended[dim] = -1.0
                 continue
 
             # Renormalize blend weights to only available layers
