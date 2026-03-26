@@ -15,7 +15,7 @@ Run the PluginEval quality evaluation on a plugin or skill directory.
 ### Step 1: Run Static Analysis (Layer 1)
 
 ```bash
-cd /Users/wshobson/workspace/claude-agents/plugins/plugin-eval
+cd "${CLAUDE_PLUGIN_ROOT}"
 uv run plugin-eval score {argument} --depth quick --output json
 ```
 

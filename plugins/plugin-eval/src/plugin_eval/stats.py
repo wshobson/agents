@@ -165,7 +165,9 @@ def _beta_cdf(x: float, a: float, b: float, steps: int = 200) -> float:
         return 1.0
 
     h = x / steps
-    total = _beta_pdf(0.001, a, b) + _beta_pdf(x, a, b)
+    # Endpoints: f(0) is 0 for a>=1, divergent for a<1 — use 0.0 safely
+    f_0 = 0.0 if a <= 1 else _beta_pdf(h / 2, a, b)
+    total = f_0 + _beta_pdf(x, a, b)
     for i in range(1, steps):
         xi = i * h
         if xi <= 0 or xi >= 1:

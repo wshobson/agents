@@ -123,8 +123,13 @@ def parse_agent(agent_path: Path) -> ParsedAgent:
     content = agent_path.read_text(encoding="utf-8")
     frontmatter, body = _split_frontmatter(content)
 
-    tools_str = frontmatter.get("tools", "")
-    tools = [t.strip() for t in tools_str.split(",")] if tools_str else []
+    tools_raw = frontmatter.get("tools", "")
+    if isinstance(tools_raw, list):
+        tools = [str(t).strip() for t in tools_raw]
+    elif isinstance(tools_raw, str) and tools_raw:
+        tools = [t.strip() for t in tools_raw.split(",")]
+    else:
+        tools = []
 
     description = frontmatter.get("description", "")
     has_proactive = bool(re.search(r"use proactively", description, re.IGNORECASE))

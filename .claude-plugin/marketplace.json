@@ -958,6 +958,17 @@
       "homepage": "https://github.com/jau123/MeiGen-AI-Design-MCP",
       "license": "MIT",
       "category": "creative"
+    },
+    {
+      "name": "plugin-eval",
+      "source": "./plugins/plugin-eval",
+      "description": "Three-layer quality evaluation framework for Claude Code plugins with Elo ranking",
+      "version": "0.1.0",
+      "author": {
+        "name": "Seth Hobson"
+      },
+      "license": "MIT",
+      "category": "quality"
     }
   ]
 }

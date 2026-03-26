@@ -18,7 +18,7 @@ When asked to evaluate a plugin or skill:
 ## Step 1: Run Static Analysis
 
 ```bash
-cd /Users/wshobson/workspace/claude-agents/plugins/plugin-eval
+cd "${CLAUDE_PLUGIN_ROOT}"
 uv run plugin-eval score <path> --depth quick --output json
 ```
 
