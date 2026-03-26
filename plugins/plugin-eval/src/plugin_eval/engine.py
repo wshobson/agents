@@ -129,7 +129,12 @@ class EvalEngine:
         )
 
     def evaluate_plugin(self, plugin_dir: Path) -> PluginEvalResult:
-        """Run evaluation on an entire plugin directory (all skills + agents)."""
+        """Run evaluation on an entire plugin directory (all skills + agents).
+
+        Note: Plugin-level evaluation currently only runs Layer 1 (static).
+        Judge and Monte Carlo require per-skill evaluation. The confidence
+        label is always "Estimated" regardless of requested depth.
+        """
         layers: list[LayerResult] = []
 
         # Layer 1: Static analysis of whole plugin
@@ -142,6 +147,10 @@ class EvalEngine:
         dimension_scores = {dim: static_overall for dim in STATIC_TO_DIMENSION.values()}
         anti_pattern_count = len(static_result.anti_patterns)
         composite = self._assemble_composite(dimension_scores, anti_pattern_count)
+
+        # Plugin-level eval only has static data — always "Estimated"
+        # regardless of requested depth (judge/MC are per-skill only)
+        composite.confidence_label = Depth.QUICK.confidence_label
 
         return PluginEvalResult(
             plugin_path=str(plugin_dir),
@@ -163,7 +172,7 @@ class EvalEngine:
 
         static_scores = self._map_static_to_dimensions(static_result) if static_result else None
         judge_scores = judge_result.sub_scores if judge_result else None
-        mc_scores = mc_result.sub_scores if mc_result else None
+        mc_scores = self._normalize_mc_scores(mc_result.sub_scores) if mc_result else None
 
         dimension_scores = self._blend_layer_scores(
             static_scores=static_scores,
@@ -283,6 +292,28 @@ class EvalEngine:
                 if isinstance(value, (int, float)):
                     mapped[dim_name] = float(value)
         return mapped
+
+    @staticmethod
+    def _normalize_mc_scores(sub_scores: dict) -> dict[str, float]:
+        """Extract numeric dimension scores from Monte Carlo nested sub_scores.
+
+        MC sub_scores contain nested dicts like {"triggering": {"activation_rate": 0.92, ...}}.
+        This normalizes them to flat dimension → float for blending.
+        """
+        normalized: dict[str, float] = {}
+        triggering = sub_scores.get("triggering", {})
+        if isinstance(triggering, dict):
+            normalized["triggering_accuracy"] = triggering.get("activation_rate", 0.0)
+        consistency = sub_scores.get("output_consistency", {})
+        if isinstance(consistency, dict):
+            normalized["output_quality"] = consistency.get("mean_quality", 0.0)
+        failure = sub_scores.get("failure_rate", {})
+        if isinstance(failure, dict):
+            normalized["robustness"] = 1.0 - failure.get("p_fail", 0.0)
+        token_eff = sub_scores.get("token_efficiency", {})
+        if isinstance(token_eff, dict):
+            normalized["token_efficiency"] = token_eff.get("efficiency_norm", 0.0)
+        return normalized
 
     # ------------------------------------------------------------------
     # Grading
