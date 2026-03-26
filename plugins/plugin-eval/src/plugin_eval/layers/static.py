@@ -195,46 +195,54 @@ class StaticAnalyzer:
         """Score frontmatter quality: name, description length, trigger phrases, pushiness."""
         score = 0.0
 
-        # Name present and non-trivial
+        # Name present (0.15)
         if skill.name and skill.name != skill.path.name:
-            score += 0.1
+            score += 0.15
         elif skill.name:
+            score += 0.10
+
+        # Description length (0.25)
+        desc_len = len(skill.description.strip())
+        if desc_len >= 100:
+            score += 0.25
+        elif desc_len >= 60:
+            score += 0.20
+        elif desc_len >= 30:
+            score += 0.15
+        elif desc_len >= 10:
             score += 0.05
 
-        # Description length
-        desc_len = len(skill.description.strip())
-        if desc_len >= 80:
-            score += 0.3
-        elif desc_len >= 40:
-            score += 0.2
-        elif desc_len >= 20:
-            score += 0.1
-
-        # Trigger phrase ("Use when..." or "Use PROACTIVELY")
+        # Trigger phrase quality — the primary differentiator (0.60)
         pushiness = self._description_pushiness(skill.description)
-        score += pushiness * 0.6
+        score += pushiness * 0.60
 
         return min(1.0, score)
 
     def _score_orchestration(self, skill: ParsedSkill) -> float:
         """Score orchestration wiring: output format, input/receives patterns."""
-        score = 0.5  # neutral baseline
+        # Most skills are workers by default — start at 0.65 (neutral-good)
+        score = 0.65
 
         body_lower = skill.raw_content.lower()
 
-        # Output format documentation
-        if re.search(r"\boutput\b.*\bformat\b|\bformat\b.*\boutput\b", body_lower):
-            score += 0.2
-        if re.search(r"\breturns?\b|\bproduces?\b|\boutputs?\b", body_lower):
-            score += 0.1
+        # Output format documentation (+0.10)
+        if re.search(r"\boutput\b.*\bformat\b|\bformat\b.*\boutput\b|\breturn.*json\b", body_lower):
+            score += 0.10
+        # Has return/output language (+0.05)
+        if re.search(r"\breturns?\b|\bproduces?\b|\boutputs?\b|\bgenerates?\b", body_lower):
+            score += 0.05
 
-        # Input / receives patterns
-        if re.search(r"\binput\b|\breceives?\b|\baccepts?\b|\bparameters?\b", body_lower):
-            score += 0.1
+        # Input/interface documentation (+0.10)
+        if re.search(r"\binput\b|\breceives?\b|\baccepts?\b|\bparameters?\b|\bargs?\b", body_lower):
+            score += 0.10
 
-        # Penalize if the skill declares itself an orchestrator (should be an agent)
-        if re.search(r"\borchestrat\w*\b", body_lower):
-            score -= 0.2
+        # Code examples show concrete worker behavior (+0.05)
+        if skill.code_block_count >= 2:
+            score += 0.05
+
+        # Penalize if the skill declares itself an orchestrator
+        if re.search(r"\borchestrat\w*\b|\bcoordinat\w*\b|\bdispatch\w*\b", body_lower):
+            score -= 0.15
 
         return max(0.0, min(1.0, score))
 
@@ -243,24 +251,26 @@ class StaticAnalyzer:
         score = 0.0
         lines = skill.line_count
 
-        # Sweet spot: 200–600 lines
+        # Sweet spot scoring: skills under 600 lines don't NEED refs
         if 200 <= lines <= 600:
-            score += 0.5
-        elif 100 <= lines < 200 or 600 < lines <= 800:
-            score += 0.3
+            score += 0.60  # ideal size — refs are a bonus, not required
+        elif 100 <= lines < 200:
+            score += 0.50  # concise but potentially too short
+        elif 600 < lines <= 800:
+            score += 0.40  # getting long — refs would help
         elif lines < 100:
-            score += 0.1
+            score += 0.20  # stub
         else:
-            # >800 lines
-            score += 0.1
+            # >800 lines — refs are essential at this size
+            score += 0.15
 
-        # References dir bonus
-        if skill.has_references:
-            score += 0.3
+        # References dir bonus (bigger bonus for larger skills)
+        if skill.has_references and skill.reference_files:
+            score += 0.25 if lines > 400 else 0.15
 
         # Assets dir bonus
-        if skill.has_assets:
-            score += 0.2
+        if skill.has_assets and skill.asset_files:
+            score += 0.15
 
         return min(1.0, score)
 
@@ -377,20 +387,24 @@ class StaticAnalyzer:
         score = 0.0
         desc_lower = description.lower()
 
-        # "Use when" phrase
-        if re.search(r"\buse\s+when\b", desc_lower):
-            score += 0.4
+        # "Use when" / "Use this skill when" phrases (0.35)
+        if re.search(r"\buse\s+(this\s+skill\s+)?when\b", desc_lower):
+            score += 0.35
 
-        # "Use PROACTIVELY" or "proactively"
+        # "Use PROACTIVELY" or "proactively" (0.25)
         if re.search(r"\bproactively\b", desc_lower):
-            score += 0.3
+            score += 0.25
 
-        # Additional trigger keywords
-        if re.search(r"\bautomatically\b|\balways\s+use\b|\btrigger\b", desc_lower):
-            score += 0.2
+        # Additional trigger keywords (0.15)
+        if re.search(r"\bautomatically\b|\balways\s+use\b|\btrigger\b|\binvoke\b", desc_lower):
+            score += 0.15
 
-        # Reasonable length (>= 40 chars) indicates proper explanation
+        # Describes specific contexts or file types (0.15)
+        if re.search(r"\b(when\s+\w+ing|for\s+\w+ing|during\s+\w+ing)\b", desc_lower):
+            score += 0.15
+
+        # Reasonable length (>= 40 chars) (0.10)
         if len(description.strip()) >= 40:
-            score += 0.1
+            score += 0.10
 
         return min(1.0, score)
