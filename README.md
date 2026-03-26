@@ -119,6 +119,7 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 - **[Agent Skills](docs/agent-skills.md)** - 146 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
 - **[Architecture](docs/architecture.md)** - Design principles and patterns
+- **[PluginEval](docs/plugin-eval.md)** - Quality evaluation framework (layers, dimensions, scoring)
 
 ### Quick Links
 
@@ -130,7 +131,36 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ## What's New
 
-### Agent Teams Plugin (NEW)
+### PluginEval — Quality Evaluation Framework (NEW)
+
+A three-layer evaluation framework for measuring and certifying plugin/skill quality:
+
+```bash
+/plugin install plugin-eval@claude-code-workflows
+```
+
+- **Three Evaluation Layers** — Static analysis (instant), LLM judge (semantic), Monte Carlo simulation (statistical)
+- **10 Quality Dimensions** — Triggering accuracy, orchestration fitness, output quality, scope calibration, progressive disclosure, token efficiency, robustness, structural completeness, code template quality, ecosystem coherence
+- **Quality Badges** — Platinum (★★★★★), Gold (★★★★), Silver (★★★), Bronze (★★)
+- **Anti-Pattern Detection** — OVER_CONSTRAINED, EMPTY_DESCRIPTION, MISSING_TRIGGER, BLOATED_SKILL, ORPHAN_REFERENCE, DEAD_CROSS_REF
+- **Statistical Rigor** — Wilson score CI, bootstrap CI, Clopper-Pearson exact CI, Elo ranking
+- **CLI + Claude Code** — `uv run plugin-eval score/certify/compare` or `/eval`, `/certify`, `/compare` commands
+- **CI Gate** — `--threshold` flag exits non-zero below a minimum score
+
+```bash
+# Quick evaluation (static only, instant)
+uv run plugin-eval score path/to/skill --depth quick
+
+# Standard evaluation (static + LLM judge)
+uv run plugin-eval score path/to/skill --depth standard
+
+# Full certification (all layers + Elo)
+uv run plugin-eval certify path/to/skill
+```
+
+[→ View PluginEval documentation](docs/plugin-eval.md)
+
+### Agent Teams Plugin
 
 Orchestrate multi-agent teams for parallel workflows using Claude Code's experimental Agent Teams feature:
 
