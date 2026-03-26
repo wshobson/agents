@@ -1,6 +1,6 @@
 ---
 name: team-communication-protocols
-description: Structured messaging protocols for agent team communication including message type selection, plan approval, shutdown procedures, and anti-patterns to avoid. Use this skill when establishing team communication norms, handling plan approvals, or managing team shutdown.
+description: Structured messaging protocols for agent team communication including message type selection, plan approval, shutdown procedures, and anti-patterns to avoid. Use this skill when establishing communication norms for a newly spawned team, when deciding whether to send a direct message or a broadcast, when a team-lead needs to review and approve an implementer's plan before work begins, when orchestrating a graceful team shutdown after all tasks are complete, or when debugging why teammates are not coordinating correctly at integration points.
 version: 1.0.2
 ---
 
@@ -153,3 +153,25 @@ Find team members by reading the config file:
 ```
 
 **Always use `name`** for messaging and task assignment. Never use `agentId` directly.
+
+## Troubleshooting
+
+**A teammate is not responding to messages.**
+Check the teammate's task status. If it is idle, it may have completed its task and is waiting to be assigned new work or shut down. If it is still active, it may be mid-execution and will process messages once the current operation finishes.
+
+**The lead is sending broadcasts for every status update.**
+This is a common anti-pattern. Broadcasts are expensive — each one sends N messages. Use direct messages (`type: "message"`) for point-to-point updates. Reserve broadcasts for critical shared-resource changes like an updated interface contract.
+
+**A teammate rejected a shutdown request unexpectedly.**
+The teammate is still working. Check the rejection reason in the `shutdown_response` content field, wait for the work to finish, then retry. Never force-terminate a teammate that has unsaved work.
+
+**A plan_approval_request arrived but the request_id is missing.**
+The teammate called `ExitPlanMode` without the required request context. Have the teammate re-enter plan mode, complete exploration, and call `ExitPlanMode` again. The `request_id` is generated automatically by the plan mode system.
+
+**Two teammates are waiting on each other and neither is making progress.**
+This is a deadlock: both are blocked waiting for the other to finish first. The lead should send a direct message to one teammate with a stub or partial result so it can unblock and proceed.
+
+## Related Skills
+
+- [team-composition-patterns](../team-composition-patterns/SKILL.md) — Select agent types and team size before establishing communication norms
+- [parallel-feature-development](../parallel-feature-development/SKILL.md) — Use communication protocols to coordinate integration handoffs between parallel implementers

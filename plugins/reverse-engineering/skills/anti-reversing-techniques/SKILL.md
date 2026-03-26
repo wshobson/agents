@@ -1,6 +1,6 @@
 ---
 name: anti-reversing-techniques
-description: Understand anti-reversing, obfuscation, and protection techniques encountered during software analysis. Use when analyzing protected binaries, bypassing anti-debugging for authorized analysis, or understanding software protection mechanisms.
+description: Understand anti-reversing, obfuscation, and protection techniques encountered during software analysis. Use this skill when analyzing malware evasion techniques, when implementing anti-debugging protections for CTF challenges, when reverse engineering packed binaries, or when building security research tools that need to detect virtualized environments.
 ---
 
 > **AUTHORIZED USE ONLY**: This skill contains dual-use security techniques. Before proceeding with any bypass or analysis:
@@ -14,6 +14,27 @@ description: Understand anti-reversing, obfuscation, and protection techniques e
 # Anti-Reversing Techniques
 
 Understanding protection mechanisms encountered during authorized software analysis, security research, and malware analysis. This knowledge helps analysts bypass protections to complete legitimate analysis tasks.
+
+For advanced techniques, see [references/advanced-techniques.md](references/advanced-techniques.md)
+
+---
+
+## Input / Output
+
+**What you provide:**
+
+- **Binary path or sample**: the executable, DLL, or firmware image under analysis
+- **Platform**: Windows x86/x64, Linux, macOS, ARM — affects which checks apply
+- **Goal**: bypass for dynamic analysis, identify protection type, build detection code, implement for CTF
+
+**What this skill produces:**
+
+- **Protection identification**: named technique (e.g., RDTSC timing check, PEB BeingDebugged) with location in binary
+- **Bypass strategy**: specific patch addresses, hook points, or tool commands to neutralize each check
+- **Analysis report**: structured findings listing each protection layer, severity, and recommended bypass
+- **Code artifacts**: Python/IDAPython scripts, GDB command sequences, or C stubs for bypassing or implementing checks
+
+---
 
 ## Anti-Debugging Techniques
 
@@ -58,20 +79,7 @@ NtQueryInformationProcess(
 if (debugFlags == 0) exit(1);  // 0 means being debugged
 ```
 
-**Bypass Approaches:**
-
-```python
-# x64dbg: ScyllaHide plugin
-# Patches common anti-debug checks
-
-# Manual patching in debugger:
-# - Set IsDebuggerPresent return to 0
-# - Patch PEB.BeingDebugged to 0
-# - Hook NtQueryInformationProcess
-
-# IDAPython: Patch checks
-ida_bytes.patch_byte(check_addr, 0x90)  # NOP
-```
+**Bypass:** Use ScyllaHide plugin in x64dbg (patches all common checks automatically). Manually: force `IsDebuggerPresent` return to 0, patch `PEB.BeingDebugged` to 0, hook `NtQueryInformationProcess`. In IDA: `ida_bytes.patch_byte(check_addr, 0x90)`.
 
 #### PEB-Based Detection
 
@@ -97,14 +105,7 @@ PDWORD heapFlags = (PDWORD)((PBYTE)peb->ProcessHeap + 0x70);
 if (*heapFlags & 0x50000062) exit(1);
 ```
 
-**Bypass Approaches:**
-
-```assembly
-; In debugger, modify PEB directly
-; x64dbg: dump at gs:[60] (x64) or fs:[30] (x86)
-; Set BeingDebugged (offset 2) to 0
-; Clear NtGlobalFlag (offset 0xBC for x64)
-```
+**Bypass:** In x64dbg, follow `gs:[60]` (x64) or `fs:[30]` (x86) in dump. Set `BeingDebugged` (offset +2) to 0; clear `NtGlobalFlag` (offset +0xBC on x64).
 
 #### Timing-Based Detection
 
@@ -130,38 +131,59 @@ DWORD start = GetTickCount();
 if (GetTickCount() - start > 1000) exit(1);
 ```
 
-**Bypass Approaches:**
+**Python script — timing-based anti-debug detection scanner:**
 
+```python
+#!/usr/bin/env python3
+"""Scan a binary for common timing-based anti-debug patterns."""
+import re
+import sys
+
+PATTERNS = {
+    "RDTSC":              rb"\x0f\x31",                    # RDTSC opcode
+    "RDTSCP":             rb"\x0f\x01\xf9",                # RDTSCP opcode
+    "GetTickCount":       rb"GetTickCount\x00",
+    "QueryPerfCounter":   rb"QueryPerformanceCounter\x00",
+    "NtQuerySysInfo":     rb"NtQuerySystemInformation\x00",
+}
+
+def scan(path: str) -> None:
+    data = open(path, "rb").read()
+    print(f"Scanning: {path} ({len(data)} bytes)\n")
+    for name, pattern in PATTERNS.items():
+        hits = [m.start() for m in re.finditer(re.escape(pattern), data)]
+        if hits:
+            offsets = ", ".join(hex(h) for h in hits[:5])
+            print(f"  [{name}] found at: {offsets}")
+    print("\nDone. Cross-reference offsets in IDA/Ghidra to find check logic.")
+
+if __name__ == "__main__":
+    scan(sys.argv[1])
 ```
-- Use hardware breakpoints instead of software
-- Patch timing checks
-- Use VM with controlled time
-- Hook timing APIs to return consistent values
-```
+
+**Bypass:** Use hardware breakpoints (no INT3 overhead), NOP the comparison + conditional jump, freeze RDTSC via hypervisor, or hook timing APIs to return consistent values.
 
 #### Exception-Based Detection
 
 ```c
-// SEH-based detection
-__try {
-    __asm { int 3 }  // Software breakpoint
-}
-__except(EXCEPTION_EXECUTE_HANDLER) {
-    // Normal execution: exception caught
-    return;
-}
-// Debugger ate the exception
-exit(1);
+// SEH: if debugger is attached it consumes the INT3 exception
+// and execution falls through to exit(1) instead of the __except handler
+__try { __asm { int 3 } }
+__except(EXCEPTION_EXECUTE_HANDLER) { return; }  // Clean: exception handled here
+exit(1);  // Dirty: debugger swallowed the exception
 
-// VEH-based detection
+// VEH: register handler that self-handles INT3 (increments RIP past INT3)
+// Debugger intercepts first, handler never runs → detected
 LONG CALLBACK VectoredHandler(PEXCEPTION_POINTERS ep) {
     if (ep->ExceptionRecord->ExceptionCode == EXCEPTION_BREAKPOINT) {
-        ep->ContextRecord->Rip++;  // Skip INT3
+        ep->ContextRecord->Rip++;
         return EXCEPTION_CONTINUE_EXECUTION;
     }
     return EXCEPTION_CONTINUE_SEARCH;
 }
 ```
+
+**Bypass**: In x64dbg, set "Pass exception to program" for EXCEPTION_BREAKPOINT (Options → Exceptions → add 0x80000003).
 
 ### Linux Anti-Debugging
 
@@ -188,18 +210,43 @@ if (getppid() != 1 && strcmp(get_process_name(getppid()), "bash") != 0) {
 }
 ```
 
-**Bypass Approaches:**
+**Bypass (LD_PRELOAD hook):**
 
 ```bash
-# LD_PRELOAD to hook ptrace
-# Compile: gcc -shared -fPIC -o hook.so hook.c
-long ptrace(int request, ...) {
-    return 0;  // Always succeed
-}
-
-# Usage
+# hook.c: long ptrace(int request, ...) { return 0; }
+# gcc -shared -fPIC -o hook.so hook.c
 LD_PRELOAD=./hook.so ./target
 ```
+
+**GDB bypass command sequence:**
+
+```gdb
+# 1. Make ptrace(PTRACE_TRACEME) always return 0 (success)
+catch syscall ptrace
+commands
+  silent
+  set $rax = 0
+  continue
+end
+
+# 2. Bypass check after ptrace call: find "cmp rax, 0xffffffff; je <exit>"
+#    Clear ZF so the conditional jump is not taken:
+#    set $eflags = $eflags & ~0x40
+
+# 3. Bypass /proc/self/status TracerPid check at the open() level
+catch syscall openat
+commands
+  silent
+  # If arg contains "status", patch the fd result to /dev/null equivalent
+  continue
+end
+
+# 4. Bypass parent process name check
+set follow-fork-mode child
+set detach-on-fork off
+```
+
+---
 
 ## Anti-VM Detection
 
@@ -256,14 +303,11 @@ if ((end - start) > 500) {
 }
 ```
 
-**Bypass Approaches:**
+**Bypass:** Use bare-metal environment, harden VM (remove guest tools, randomize MAC, delete artifact files), patch detection branches in the binary, or use FLARE-VM/REMnux with hardened settings.
 
-```
-- Use bare-metal analysis environment
-- Harden VM (remove guest tools, change MAC)
-- Patch detection code
-- Use specialized analysis VMs (FLARE-VM)
-```
+For advanced VM detection (RDTSC delta calibration, VMware backdoor port, hypervisor leaf enumeration, guest driver artifact checks), see [references/advanced-techniques.md](references/advanced-techniques.md).
+
+---
 
 ## Code Obfuscation
 
@@ -312,25 +356,12 @@ while (1) {
 #### Opaque Predicates
 
 ```c
-// Always true, but complex to analyze
 int x = rand();
-if ((x * x) >= 0) {  // Always true
-    real_code();
-} else {
-    junk_code();  // Dead code
-}
-
-// Always false
-if ((x * (x + 1)) % 2 == 1) {  // Product of consecutive = even
-    junk_code();
-}
+if ((x * x) >= 0) { real_code(); }   // Always true  → junk_code() is dead
+if ((x*(x+1)) % 2 == 1) { junk(); }  // Always false → consecutive product is even
 ```
 
-**Analysis Approach:**
-
-- Identify constant expressions
-- Symbolic execution to prove predicates
-- Pattern matching for known opaque predicates
+**Analysis Approach:** Identify invariant expressions via symbolic execution (angr, Triton), or pattern-match known opaque forms and prune them.
 
 ### Data Obfuscation
 
@@ -391,135 +422,22 @@ DWORD hash_api(char *name) {
 // Resolve by hash comparison instead of string
 ```
 
-**Analysis Approach:**
-
-- Identify hash algorithm
-- Build hash database of known APIs
-- Use HashDB plugin for IDA
-- Dynamic analysis to resolve at runtime
+**Analysis Approach:** Identify the hash algorithm, build a database of known API name hashes, use HashDB plugin for IDA, or run under a debugger to let the binary resolve calls at runtime.
 
 ### Instruction-Level Obfuscation
 
-#### Dead Code Insertion
-
 ```asm
-; Original
-mov eax, 1
+; Dead code insertion — semantically inert but pollutes disassembly
+push ebx / mov eax, 1 / pop ebx / xor ecx, ecx / add ecx, ecx
 
-; With dead code
-push ebx           ; Dead
-mov eax, 1
-pop ebx            ; Dead
-xor ecx, ecx       ; Dead
-add ecx, ecx       ; Dead
+; Instruction substitution — same semantics, different encoding
+xor eax, eax  →  sub eax, eax  |  mov eax, 0  |  and eax, 0
+mov eax, 1    →  xor eax, eax; inc eax  |  push 1; pop eax
 ```
 
-#### Instruction Substitution
+For advanced anti-disassembly tricks (overlapping instructions, junk byte insertion, self-modifying code, ROP as obfuscation), see [references/advanced-techniques.md](references/advanced-techniques.md).
 
-```asm
-; Original: xor eax, eax (set to 0)
-; Substitutions:
-sub eax, eax
-mov eax, 0
-and eax, 0
-lea eax, [0]
-
-; Original: mov eax, 1
-; Substitutions:
-xor eax, eax
-inc eax
-
-push 1
-pop eax
-```
-
-## Packing and Encryption
-
-### Common Packers
-
-```
-UPX          - Open source, easy to unpack
-Themida      - Commercial, VM-based protection
-VMProtect    - Commercial, code virtualization
-ASPack       - Compression packer
-PECompact    - Compression packer
-Enigma       - Commercial protector
-```
-
-### Unpacking Methodology
-
-```
-1. Identify packer (DIE, Exeinfo PE, PEiD)
-
-2. Static unpacking (if known packer):
-   - UPX: upx -d packed.exe
-   - Use existing unpackers
-
-3. Dynamic unpacking:
-   a. Find Original Entry Point (OEP)
-   b. Set breakpoint on OEP
-   c. Dump memory when OEP reached
-   d. Fix import table (Scylla, ImpREC)
-
-4. OEP finding techniques:
-   - Hardware breakpoint on stack (ESP trick)
-   - Break on common API calls (GetCommandLineA)
-   - Trace and look for typical entry patterns
-```
-
-### Manual Unpacking Example
-
-```
-1. Load packed binary in x64dbg
-2. Note entry point (packer stub)
-3. Use ESP trick:
-   - Run to entry
-   - Set hardware breakpoint on [ESP]
-   - Run until breakpoint hits (after PUSHAD/POPAD)
-4. Look for JMP to OEP
-5. At OEP, use Scylla to:
-   - Dump process
-   - Find imports (IAT autosearch)
-   - Fix dump
-```
-
-## Virtualization-Based Protection
-
-### Code Virtualization
-
-```
-Original x86 code is converted to custom bytecode
-interpreted by embedded VM at runtime.
-
-Original:     VM Protected:
-mov eax, 1    push vm_context
-add eax, 2    call vm_entry
-              ; VM interprets bytecode
-              ; equivalent to original
-```
-
-### Analysis Approaches
-
-```
-1. Identify VM components:
-   - VM entry (dispatcher)
-   - Handler table
-   - Bytecode location
-   - Virtual registers/stack
-
-2. Trace execution:
-   - Log handler calls
-   - Map bytecode to operations
-   - Understand instruction set
-
-3. Lifting/devirtualization:
-   - Map VM instructions back to native
-   - Tools: VMAttack, SATURN, NoVmp
-
-4. Symbolic execution:
-   - Analyze VM semantically
-   - angr, Triton
-```
+---
 
 ## Bypass Strategies Summary
 
@@ -552,8 +470,28 @@ This knowledge should only be used for:
 - Understanding protections for legitimate purposes
 - Educational purposes
 
-Never use to bypass protections for:
+Never use to bypass protections for: software piracy, unauthorized access, or malicious purposes.
 
-- Software piracy
-- Unauthorized access
-- Malicious purposes
+---
+
+## Troubleshooting
+
+**Detection technique works on x86 but not ARM**
+
+RDTSC and CPUID are x86-only. On ARM, use `MRS x0, PMCCNTR_EL0` (requires kernel PMU access) or `clock_gettime(CLOCK_MONOTONIC)`. PEB/TEB do not exist on ARM — replace with `/proc/self/status` (Linux) or `task_info` (macOS). Rebuild detection logic with platform-specific APIs.
+
+**False positive on legitimate debugger or analysis tool**
+
+Timing checks fire when Process Monitor or AV hooks inflate syscall latency. Calibrate the threshold at startup: measure the guarded path 3 times and use `mean + 3*stddev`. For ptrace checks, verify the TracerPid comm name via `/proc/<pid>/comm` before exiting — it may be an unrelated monitoring tool, not a debugger.
+
+**Bypass patch causes crash instead of continuing execution**
+
+Before NOPing a conditional jump, trace the "detected" branch fully. If it initializes or frees heap state needed later, patching the jump skips that setup and corrupts state. Instead, patch the comparison operand to the expected "clean" value, or use x64dbg's "Set condition to always false" on the breakpoint rather than modifying bytes.
+
+---
+
+## Related Skills
+
+- `binary-analysis-patterns` — static and dynamic analysis workflows for ELF/PE/Mach-O
+- `memory-forensics` — process memory acquisition, artifact extraction, and live analysis
+- `protocol-reverse-engineering` — decoding custom binary protocols and encrypted network traffic

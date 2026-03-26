@@ -1,6 +1,6 @@
 ---
 name: python-design-patterns
-description: Python design patterns including KISS, Separation of Concerns, Single Responsibility, and composition over inheritance. Use when making architecture decisions, refactoring code structure, or evaluating when abstractions are appropriate.
+description: Python design patterns including KISS, Separation of Concerns, Single Responsibility, and composition over inheritance. Use this skill when designing a new service or component from scratch and choosing how to layer responsibilities, when refactoring a God class or monolithic function that has grown too large, when deciding whether to add a new abstraction or live with duplication, when evaluating a pull request for structural issues like tight coupling or leaking internal types, when choosing between inheritance and composition for a new class hierarchy, or when a codebase is becoming hard to test because of entangled I/O and business logic.
 ---
 
 # Python Design Patterns
@@ -409,3 +409,25 @@ def calculate_discount(user: User, order_history: list[Order]) -> float:
 8. **Delete before abstracting** - Remove dead code, then consider patterns
 9. **Test each layer** - Isolated tests for each concern
 10. **Explicit over clever** - Readable code beats elegant code
+
+## Troubleshooting
+
+**A class is growing and seems to have multiple responsibilities, but splitting it feels wrong.**
+Apply the "reason to change" test: list every change that could require editing this class. If the list has items from different domains (e.g., HTTP parsing AND business rules AND formatting), split it. If all changes stem from the same domain concern, the class may be appropriately sized.
+
+**Injecting all dependencies through the constructor is producing constructors with 7+ parameters.**
+This is a sign of too many responsibilities in one class, not a problem with dependency injection. Split the class into smaller units first, then each constructor naturally becomes smaller.
+
+**Composition is producing deeply nested wrapper objects that are hard to trace.**
+Keep the composition shallow (2-3 levels). If wrapping is the only mechanism, consider whether a Protocol-based approach or simple function composition would be cleaner than a chain of decorator objects.
+
+**The rule of three says not to abstract yet, but the duplication is causing bugs when one copy is updated but not the other.**
+Duplication that diverges in dangerous ways should be abstracted sooner. The rule of three is a heuristic, not a law. If the copies are already diverging incorrectly, extract immediately and add a test that exercises the shared behavior.
+
+**A service layer is importing from the API layer, breaking the dependency direction.**
+This is a layering violation. The service layer must not import from handlers. Introduce a shared types/models layer that both can import from, keeping the dependency arrow pointing downward (API → Service → Repository).
+
+## Related Skills
+
+- [python-testing-patterns](../python-testing-patterns/SKILL.md) — Test each layer in isolation using the dependency injection structure established here
+- [python-project-setup](../python-project-setup/SKILL.md) — Set up project structure and tooling that enforces layer boundaries from the start

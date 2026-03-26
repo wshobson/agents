@@ -1,6 +1,6 @@
 ---
 name: parallel-feature-development
-description: Coordinate parallel feature development with file ownership strategies, conflict avoidance rules, and integration patterns for multi-agent implementation. Use this skill when decomposing features for parallel development, establishing file ownership boundaries, or managing integration between parallel work streams.
+description: Coordinate parallel feature development with file ownership strategies, conflict avoidance rules, and integration patterns for multi-agent implementation. Use this skill when decomposing a large feature into independent work streams, when two or more agents need to implement different layers of the same system simultaneously, when establishing file ownership to prevent merge conflicts in a shared codebase, when designing interface contracts so parallel implementers can build against each other's APIs before they are ready, or when deciding whether to use vertical slices versus horizontal layers for a full-stack feature.
 version: 1.0.2
 ---
 
@@ -150,3 +150,25 @@ feature/auth
 - More isolation, explicit merge points
 - Higher overhead, merge conflicts still possible in shared files
 - Best for: larger teams (4+), complex features
+
+## Troubleshooting
+
+**Implementers are blocking each other waiting for shared code.**
+Extract the shared piece into its own interface contract file owned by the team-lead and have implementers import from it. Neither implementer modifies the contract — they only implement against it.
+
+**Merge conflicts appear even with clear ownership rules.**
+A file was assigned to two agents, or a config/index file (e.g., `index.ts`, `__init__.py`) that auto-imports everything was modified by both. Designate one owner for all barrel/index files, or have the lead merge them at the end.
+
+**An implementer finishes early but the integration step is blocked.**
+Use a staging interface: the finished implementer writes a stub or mock of the downstream dependency so the other implementer can continue working. Replace with the real implementation at integration time.
+
+**The feature decomposition turned out wrong mid-stream.**
+Stop new work, have the lead redistribute files, and communicate the change via broadcast. Sunk cost on partially written code is acceptable — continuing with the wrong split is worse.
+
+**Tests written by one implementer fail against code written by another.**
+Interface contracts drifted: the implementer who owns the API changed a signature without notifying the test implementer. Enforce the rule that contract files require a broadcast before modification.
+
+## Related Skills
+
+- [team-composition-patterns](../team-composition-patterns/SKILL.md) — Choose the right team size and agent types before decomposing work
+- [team-communication-protocols](../team-communication-protocols/SKILL.md) — Coordinate integration handoffs and plan approvals between implementers
