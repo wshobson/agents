@@ -1,6 +1,6 @@
 # Project: claude-agents
 
-Claude Code plugin marketplace — 72 focused plugins, 112 agents, 146 skills, 79 tools.
+Claude Code plugin marketplace — 75 focused plugins, 182 agents, 147 skills, 95 commands.
 
 ## Repository Structure
 

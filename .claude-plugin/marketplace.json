@@ -6,8 +6,8 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 72 focused plugins, 112 specialized agents, and 146 skills - optimized for granular installation and minimal token usage",
-    "version": "1.5.6"
+    "description": "Production-ready workflow orchestration with 75 focused plugins, 182 specialized agents, and 147 skills - optimized for granular installation and minimal token usage",
+    "version": "1.5.7"
   },
   "plugins": [
     {
@@ -969,6 +969,23 @@
       },
       "license": "MIT",
       "category": "quality"
+    },
+    {
+      "name": "pensyve",
+      "source": {
+        "source": "github",
+        "repo": "major7apps/pensyve",
+        "path": "integrations/claude-code"
+      },
+      "description": "Persistent cognitive memory layer for Claude Code — stores decisions, debugging outcomes, and project context across sessions using embeddings",
+      "version": "1.0.0",
+      "author": {
+        "name": "Seth Hobson",
+        "url": "https://github.com/wshobson"
+      },
+      "homepage": "https://github.com/major7apps/pensyve",
+      "license": "Apache-2.0",
+      "category": "ai-ml"
     }
   ]
 }
