@@ -973,12 +973,12 @@
     {
       "name": "pensyve",
       "source": {
-        "source": "github",
-        "repo": "major7apps/pensyve",
+        "source": "git-subdir",
+        "url": "https://github.com/major7apps/pensyve.git",
         "path": "integrations/claude-code"
       },
-      "description": "Persistent cognitive memory layer for Claude Code — stores decisions, debugging outcomes, and project context across sessions using embeddings",
-      "version": "1.0.0",
+      "description": "Universal memory runtime — cross-session cognitive memory for Claude Code with episodic, semantic, and procedural memory",
+      "version": "1.0.4",
       "author": {
         "name": "Seth Hobson",
         "url": "https://github.com/wshobson"
