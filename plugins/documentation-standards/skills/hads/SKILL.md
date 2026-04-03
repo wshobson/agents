@@ -132,8 +132,7 @@ A valid HADS document must have:
 - All block tags bold: `**[SPEC]**` not `[SPEC]` not *[SPEC]*
 - `[BUG]` blocks contain at minimum symptom + fix
 
-Validator: `python hads/validator/validate.py <file.md>`
-Exit codes: 0=valid, 1=missing required element, 2=malformed tag, 3=BUG missing fields
+Validator: *(planned — not yet included in this release)*
 
 ---
 
