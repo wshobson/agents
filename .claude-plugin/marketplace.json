@@ -993,10 +993,9 @@
       "description": "PreToolUse hook that prevents AI agents from using --no-verify, --no-gpg-sign, and other bypass flags that skip git hooks",
       "version": "1.0.0",
       "author": {
-        "name": "Seth Hobson",
-        "email": "seth@major7apps.com"
+        "name": "cskwork"
       },
-      "homepage": "https://github.com/wshobson/agents",
+      "homepage": "https://github.com/cskwork",
       "license": "MIT",
       "category": "security"
     }

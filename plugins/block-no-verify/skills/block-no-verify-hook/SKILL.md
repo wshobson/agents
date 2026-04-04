@@ -185,11 +185,6 @@ The block-no-verify hook works alongside other PreToolUse hooks:
 }
 ```
 
-## Related Skills
-
-- [SAST Configuration](../../security-scanning/skills/sast-configuration/SKILL.md)
-- [Git Workflow](../../git-pr-workflows/commands/git-workflow.md)
-
 ## Best Practices
 
 1. **Commit the settings file** -- Add `.claude/settings.json` to version control so all team members benefit from the hook.
