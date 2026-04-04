@@ -62,9 +62,9 @@ Orchestrate parallel feature development with multiple implementer agents. Decom
    ```
    git checkout -b {branch-name}
    ```
-2. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `feature-{timestamp}`
+2. Use `TeamCreate` tool to create the team with `team_name: "feature-{timestamp}"` and `description`
 3. Spawn a `team-lead` agent to coordinate
-4. For each work stream, use `Task` tool to spawn a `team-implementer`:
+4. For each work stream, use `Agent` tool to spawn a `team-implementer`:
    - `name`: `implementer-{n}`
    - `subagent_type`: "agent-teams:team-implementer"
    - `prompt`: Include owned files, interface contracts, and implementation requirements
@@ -111,4 +111,4 @@ After all tasks complete:
    ```
 
 2. Send `shutdown_request` to all teammates
-3. Call `Teammate` cleanup
+3. Call `TeamDelete` to remove team resources

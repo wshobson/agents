@@ -26,8 +26,8 @@ Orchestrate a multi-reviewer parallel code review where each reviewer focuses on
 
 ## Phase 2: Team Spawn
 
-1. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `review-{timestamp}`
-2. For each requested dimension, use `Task` tool to spawn a teammate:
+1. Use `TeamCreate` tool to create the team with `team_name: "review-{timestamp}"` and `description`
+2. For each requested dimension, use `Agent` tool to spawn a teammate:
    - `name`: `{dimension}-reviewer` (e.g., "security-reviewer")
    - `subagent_type`: "agent-teams:team-reviewer"
    - `prompt`: Include the dimension assignment, target files, and diff content
@@ -75,4 +75,4 @@ Orchestrate a multi-reviewer parallel code review where each reviewer focuses on
    ```
 
 2. Send `shutdown_request` to all reviewers
-3. Call `Teammate` cleanup to remove team resources
+3. Call `TeamDelete` to remove team resources

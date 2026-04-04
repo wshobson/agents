@@ -78,7 +78,7 @@ Best practices for composing multi-agent teams, selecting team sizes, choosing a
 
 ## Agent Type Selection
 
-When spawning teammates with the Task tool, choose `subagent_type` based on what tools the teammate needs:
+When spawning teammates with the `Agent` tool, choose `subagent_type` based on what tools the teammate needs:
 
 | Agent Type                     | Tools Available                           | Use For                                                    |
 | ------------------------------ | ----------------------------------------- | ---------------------------------------------------------- |

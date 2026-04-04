@@ -73,13 +73,13 @@ Lead multi-agent teams through structured workflows: analyze requirements, decom
 
 ## Team Lifecycle Protocol
 
-1. **Spawn** — Create team with Teammate tool, spawn teammates with Task tool
+1. **Spawn** — Create team with TeamCreate tool, spawn teammates with Agent tool
 2. **Assign** — Create tasks with TaskCreate, assign with TaskUpdate
 3. **Monitor** — Check TaskList periodically, respond to teammate messages
 4. **Collect** — Gather results as teammates complete tasks
 5. **Synthesize** — Merge results into consolidated output
 6. **Shutdown** — Send shutdown_request to each teammate, wait for responses
-7. **Cleanup** — Call Teammate cleanup to remove team resources
+7. **Cleanup** — Call TeamDelete to remove team resources
 
 ## Behavioral Traits
 
