@@ -1,0 +1,9 @@
+{
+  "name": "task-orchestration",
+  "version": "1.0.0",
+  "description": "Multi-agent task orchestration with decomposition, anti-duplication registry, quality gates, and parallel execution coordination",
+  "author": {
+    "name": "milkomida77"
+  },
+  "license": "MIT"
+}
