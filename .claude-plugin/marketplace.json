@@ -11,6 +11,19 @@
   },
   "plugins": [
     {
+      "name": "documentation-standards",
+      "source": "./plugins/documentation-standards",
+      "description": "HADS (Human-AI Document Standard) — semantic tagging convention for writing docs that work efficiently for both humans and AI models. Reduces token consumption by separating machine-critical facts from human context.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Niksa Barlovic",
+        "url": "https://github.com/catcam"
+      },
+      "homepage": "https://github.com/catcam/hads",
+      "license": "MIT",
+      "category": "documentation"
+    },
+    {
       "name": "code-documentation",
       "source": "./plugins/code-documentation",
       "description": "Documentation generation, code explanation, and technical writing with automated doc generation and tutorial creation",

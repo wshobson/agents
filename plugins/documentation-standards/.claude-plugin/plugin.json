@@ -1,0 +1,10 @@
+{
+  "name": "documentation-standards",
+  "version": "1.0.0",
+  "description": "HADS (Human-AI Document Standard) — semantic tagging convention for writing documentation that works efficiently for both human readers and AI models. Reduces token consumption and hallucination risk by separating machine-critical facts from human context.",
+  "author": {
+    "name": "Niksa Barlovic",
+    "email": "catcam@gmail.com"
+  },
+  "license": "MIT"
+}
