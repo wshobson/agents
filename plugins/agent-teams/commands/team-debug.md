@@ -38,8 +38,8 @@ Present hypotheses to user: "Generated {N} hypotheses. Spawning investigators...
 
 ## Phase 3: Investigation
 
-1. Use `Teammate` tool with `operation: "spawnTeam"`, team name: `debug-{timestamp}`
-2. For each hypothesis, use `Task` tool to spawn a teammate:
+1. Use `TeamCreate` tool to create the team with `team_name: "debug-{timestamp}"` and `description`
+2. For each hypothesis, use `Agent` tool to spawn a teammate:
    - `name`: `investigator-{n}` (e.g., "investigator-1")
    - `subagent_type`: "agent-teams:team-debugger"
    - `prompt`: Include the hypothesis, investigation scope, and relevant context
@@ -88,4 +88,4 @@ Present hypotheses to user: "Generated {N} hypotheses. Spawning investigators...
 ## Phase 6: Cleanup
 
 1. Send `shutdown_request` to all investigators
-2. Call `Teammate` cleanup to remove team resources
+2. Call `TeamDelete` to remove team resources

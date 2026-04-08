@@ -116,7 +116,7 @@ When a teammate is spawned with `plan_mode_required`:
    - `approve: true` — Teammate saves state and exits
    - `approve: false` + reason — Teammate continues working
 4. **Lead handles rejections** — Wait for teammate to finish, then retry
-5. **After all teammates shut down** — Call `Teammate` cleanup
+5. **After all teammates shut down** — Call `TeamDelete` to remove team resources
 
 ### Handling Rejections
 
