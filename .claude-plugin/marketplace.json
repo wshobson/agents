@@ -999,6 +999,18 @@
       "homepage": "https://github.com/major7apps/pensyve",
       "license": "Apache-2.0",
       "category": "ai-ml"
+    },
+    {
+      "name": "block-no-verify",
+      "source": "./plugins/block-no-verify",
+      "description": "PreToolUse hook that prevents AI agents from using --no-verify, --no-gpg-sign, and other bypass flags that skip git hooks",
+      "version": "1.0.0",
+      "author": {
+        "name": "cskwork"
+      },
+      "homepage": "https://github.com/cskwork",
+      "license": "MIT",
+      "category": "security"
     }
   ]
 }
