@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **129 specialized skills** across 27 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **149 specialized skills** across 36 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -122,7 +122,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **pci-compliance**     | Implement PCI DSS compliance for secure payment card data handling            |
 | **billing-automation** | Build automated billing systems for recurring payments and invoicing          |
 
-### Python Development (5 skills)
+### Python Development (16 skills)
 
 | Skill                               | Description                                                                           |
 | ----------------------------------- | ------------------------------------------------------------------------------------- |
@@ -262,6 +262,74 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **track-management**           | Manage development tracks for features, bugs, chores, and refactors with specs and implementation plans |
 | **workflow-patterns**          | Implement TDD workflows, commit strategies, and verification checkpoints for systematic development     |
 
+### Agent Teams (6 skills)
+
+| Skill                              | Description                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **multi-reviewer-patterns**        | Coordinate parallel code reviews across quality dimensions with deduplication and severity calibration |
+| **parallel-debugging**             | Debug complex issues using competing hypotheses, parallel investigation, and root-cause arbitration    |
+| **parallel-feature-development**   | Coordinate parallel feature work with file ownership, conflict avoidance, and integration patterns    |
+| **task-coordination-strategies**   | Decompose complex tasks, design dependency graphs, and balance workload across multi-agent teams      |
+| **team-communication-protocols**   | Structured messaging for agent teams: message types, plan approval, and shutdown procedures           |
+| **team-composition-patterns**      | Design optimal team compositions with sizing heuristics, presets, and agent type selection            |
+
+### Reverse Engineering (4 skills)
+
+| Skill                              | Description                                                                                          |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **anti-reversing-techniques**      | Understand anti-reversing, obfuscation, and protection techniques encountered during analysis        |
+| **binary-analysis-patterns**       | Disassembly, decompilation, control flow analysis, and code pattern recognition                      |
+| **memory-forensics**               | Memory acquisition, process analysis, and artifact extraction using Volatility and related tools     |
+| **protocol-reverse-engineering**   | Network protocol reverse engineering including packet analysis and custom protocol documentation     |
+
+### Startup Business Analyst (5 skills)
+
+| Skill                              | Description                                                                                          |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **competitive-landscape**          | Competitive analysis, differentiation, and positioning using Porter's Five Forces and related models |
+| **market-sizing-analysis**         | TAM/SAM/SOM calculations using top-down, bottom-up, and value-theory methodologies                   |
+| **startup-financial-modeling**     | 3–5 year financial models with revenue, costs, cash flow, and scenario planning                      |
+| **startup-metrics-framework**      | Track and optimize key SaaS, marketplace, consumer, and B2B startup metrics from seed to Series A    |
+| **team-composition-analysis**      | Hiring plans, org structures, compensation, and equity allocation for early-stage startups           |
+
+### Shell Scripting (3 skills)
+
+| Skill                          | Description                                                                                  |
+| ------------------------------ | -------------------------------------------------------------------------------------------- |
+| **bash-defensive-patterns**    | Defensive Bash programming techniques for production-grade scripts                          |
+| **bats-testing-patterns**      | Bash Automated Testing System (Bats) for comprehensive shell script testing                 |
+| **shellcheck-configuration**   | ShellCheck static analysis configuration and usage for shell script quality                 |
+
+### Database Design (1 skill)
+
+| Skill                         | Description                                                       |
+| ----------------------------- | ----------------------------------------------------------------- |
+| **postgresql-table-design**   | Design and review PostgreSQL-specific schemas with proper modeling |
+
+### Documentation Standards (1 skill)
+
+| Skill    | Description                                                                                   |
+| -------- | --------------------------------------------------------------------------------------------- |
+| **hads** | HADS (Human-AI Document Standard) — semantic Markdown tagging for token-efficient AI reading |
+
+### .NET Contribution (1 skill)
+
+| Skill                          | Description                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| **dotnet-backend-patterns**    | C#/.NET backend patterns for robust APIs, MCP servers, and enterprise applications |
+
+### Plugin Eval (1 skill)
+
+| Skill                       | Description                                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------------ |
+| **evaluation-methodology**  | PluginEval quality methodology — dimensions, rubrics, statistical methods, scoring formulas |
+
+### Block No-Verify (1 skill)
+
+| Skill                      | Description                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| **block-no-verify-hook**   | PreToolUse hook preventing AI agents from skipping git pre-commit hooks via bypass flags         |
+
 ## How Skills Work
 
 ### Activation
@@ -306,7 +374,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 107 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
+All 149 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause

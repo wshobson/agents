@@ -133,7 +133,7 @@ Ensure tmux is installed and a session is already running before spawning teamma
 The review dimensions overlap. Redefine each reviewer's focus area: one on correctness/logic, one on security, one on performance/scalability. Overlapping coverage wastes tokens and produces duplicate findings.
 
 **A `team-lead` is spawning teammates but they are not receiving tasks.**
-Verify that the lead is using the Task tool to spawn teammates and passing complete context in the prompt. Teammates start fresh with no prior conversation history — they need all relevant information in their initial prompt.
+Verify that the lead is using the `Agent` tool to spawn teammates and passing complete context in the prompt. Teammates start fresh with no prior conversation history — they need all relevant information in their initial prompt.
 
 ## Related Skills
 

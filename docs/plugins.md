@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **71 focused, single-purpose plugins** organized by category.
+Browse all **77 focused, single-purpose plugins** organized by category.
 
 ## Quick Start - Essential Plugins
 
@@ -108,7 +108,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 
 ## Complete Plugin Catalog
 
-### 🎨 Development (5 plugins)
+### 🎨 Development (6 plugins)
 
 | Plugin                          | Description                                                  | Install                                       |
 | ------------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
@@ -118,7 +118,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **ui-design**                   | UI/UX design for mobile (iOS, Android, React Native) and web | `/plugin install ui-design`                   |
 | **multi-platform-apps**         | Cross-platform app coordination (web/iOS/Android)            | `/plugin install multi-platform-apps`         |
 
-### 📚 Documentation (3 plugins)
+### 📚 Documentation (4 plugins)
 
 | Plugin                       | Description                                                                                                                                     | Install                                    |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
@@ -126,7 +126,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **documentation-generation** | OpenAPI specs, Mermaid diagrams, tutorials                                                                                                      | `/plugin install documentation-generation` |
 | **c4-architecture**          | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture`          |
 
-### 🔄 Workflows (4 plugins)
+### 🔄 Workflows (5 plugins)
 
 | Plugin                       | Description                                                                    | Install                                    |
 | ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------ |
@@ -135,14 +135,14 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **full-stack-orchestration** | End-to-end feature orchestration                                               | `/plugin install full-stack-orchestration` |
 | **tdd-workflows**            | Test-driven development methodology                                            | `/plugin install tdd-workflows`            |
 
-### ✅ Testing (2 plugins)
+### ✅ Testing (1 plugin)
 
 | Plugin            | Description                                        | Install                         |
 | ----------------- | -------------------------------------------------- | ------------------------------- |
 | **unit-testing**  | Automated unit test generation (Python/JavaScript) | `/plugin install unit-testing`  |
 | **tdd-workflows** | Test-driven development methodology                | `/plugin install tdd-workflows` |
 
-### 🔍 Quality (2 plugins)
+### 🔍 Quality (3 plugins)
 
 | Plugin                         | Description                                   | Install                                      |
 | ------------------------------ | --------------------------------------------- | -------------------------------------------- |
@@ -158,7 +158,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **error-debugging**       | Error analysis and trace debugging         | `/plugin install error-debugging`       |
 | **team-collaboration**    | Team workflows and standup automation      | `/plugin install team-collaboration`    |
 
-### 🤖 AI & ML (4 plugins)
+### 🤖 AI & ML (5 plugins)
 
 | Plugin                   | Description                         | Install                                |
 | ------------------------ | ----------------------------------- | -------------------------------------- |
@@ -207,7 +207,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **cloud-infrastructure**  | AWS/Azure/GCP cloud architecture            | `/plugin install cloud-infrastructure`  |
 | **cicd-automation**       | CI/CD pipeline configuration                | `/plugin install cicd-automation`       |
 
-### 🔒 Security (4 plugins)
+### 🔒 Security (6 plugins)
 
 | Plugin                       | Description                              | Install                                    |
 | ---------------------------- | ---------------------------------------- | ------------------------------------------ |
@@ -239,7 +239,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **seo-analysis-monitoring**    | Content analysis and authority building | `/plugin install seo-analysis-monitoring`    |
 | **content-marketing**          | Content strategy and web research       | `/plugin install content-marketing`          |
 
-### 💼 Business (3 plugins)
+### 💼 Business (4 plugins)
 
 | Plugin                        | Description                          | Install                                     |
 | ----------------------------- | ------------------------------------ | ------------------------------------------- |
@@ -247,7 +247,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **hr-legal-compliance**       | HR policies and legal templates      | `/plugin install hr-legal-compliance`       |
 | **customer-sales-automation** | Support and sales automation         | `/plugin install customer-sales-automation` |
 
-### 💻 Languages (7 plugins)
+### 💻 Languages (10 plugins)
 
 | Plugin                          | Description                              | Install                                       |
 | ------------------------------- | ---------------------------------------- | --------------------------------------------- |
@@ -289,6 +289,12 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | ---------------------------- | ---------------------------------- | ------------------------------------------ |
 | **accessibility-compliance** | WCAG auditing and inclusive design | `/plugin install accessibility-compliance` |
 
+### 🎨 Creative (1 plugin)
+
+| Plugin               | Description                                                              | Install                            |
+| -------------------- | ------------------------------------------------------------------------ | ---------------------------------- |
+| **meigen-ai-design** | AI image generation with creative workflow orchestration and prompt MCPs | `/plugin install meigen-ai-design` |
+
 ## Plugin Structure
 
 Each plugin contains:
@@ -323,7 +329,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 67 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 77 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -348,7 +354,7 @@ Each installed plugin loads **only its specific agents and commands** into Claud
 
 - Each plugin does **one thing well** (Unix philosophy)
 - Clear, focused purposes (describable in 5-10 words)
-- Average plugin size: **3.4 components** (follows Anthropic's 2-8 pattern)
+- Average plugin size: **3.6 components** (follows Anthropic's 2-8 pattern)
 
 ### Minimal Token Usage
 
@@ -366,7 +372,7 @@ Each installed plugin loads **only its specific agents and commands** into Claud
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 107 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 149 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles

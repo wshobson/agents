@@ -4,28 +4,28 @@
 
 [![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
 
-> **🎯 Agent Skills Enabled** — 147 specialized skills extend Claude's capabilities across plugins with progressive disclosure
+> **🎯 Agent Skills Enabled** — 149 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **182 specialized AI agents**, **16 multi-agent workflow orchestrators**, **147 agent skills**, and **95 commands** organized into **75 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **182 specialized AI agents**, **16 multi-agent workflow orchestrators**, **149 agent skills**, and **96 commands** organized into **77 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **75 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
+- **77 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
 - **182 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
-- **147 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
+- **149 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **16 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
-- **95 Commands** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
+- **96 Commands** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 75 focused plugins optimized for minimal token usage
-- **Comprehensive Tooling**: 95 commands including test generation, scaffolding, and security scanning
+- **Granular Plugin Architecture**: 77 focused plugins optimized for minimal token usage
+- **Comprehensive Tooling**: 96 commands including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
-- **Agent Skills**: 147 specialized skills following for progressive disclosure and token efficiency
-- **Clear Organization**: 23 categories with 1-6 plugins each for easy discovery
-- **Efficient Design**: Average 3.4 components per plugin (follows Anthropic's 2-8 pattern)
+- **Agent Skills**: 149 specialized skills following for progressive disclosure and token efficiency
+- **Clear Organization**: 24 categories with 1-10 plugins each for easy discovery
+- **Efficient Design**: Average 3.6 components per plugin (follows Anthropic's 2-8 pattern)
 
 ### How It Works
 
@@ -49,7 +49,7 @@ Add this marketplace to Claude Code:
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 75 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 77 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Plugins
 
@@ -114,9 +114,9 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ### Core Guides
 
-- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 75 plugins
+- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 77 plugins
 - **[Agent Reference](docs/agents.md)** - All 182 agents organized by category
-- **[Agent Skills](docs/agent-skills.md)** - 147 specialized skills with progressive disclosure
+- **[Agent Skills](docs/agent-skills.md)** - 149 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
 - **[Architecture](docs/architecture.md)** - Design principles and patterns
 - **[PluginEval](docs/plugin-eval.md)** - Quality evaluation framework (layers, dimensions, scoring)
@@ -197,7 +197,7 @@ Transforms Claude Code into a project management tool with a structured **Contex
 
 [→ View Conductor documentation](plugins/conductor/README.md)
 
-### Agent Skills (147 skills across 21 plugins)
+### Agent Skills (149 skills across 36 plugins)
 
 Specialized knowledge packages following Anthropic's progressive disclosure architecture:
 
@@ -313,28 +313,32 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 ## Plugin Categories
 
-**24 categories, 75 plugins:**
+**24 categories, 77 plugins:**
 
-- 🎨 **Development** (4) - debugging, backend, frontend, multi-platform
-- 📚 **Documentation** (3) - code docs, API specs, diagrams, C4 architecture
+- 🎨 **Development** (6) - debugging, backend, frontend, multi-platform
+- 📚 **Documentation** (4) - code docs, API specs, diagrams, C4 architecture, **HADS** (Human-AI Document Standard)
 - 🔄 **Workflows** (5) - git, full-stack, TDD, **Conductor** (context-driven development), **Agent Teams** (multi-agent orchestration)
-- ✅ **Testing** (2) - unit testing, TDD workflows
-- 🔍 **Quality** (2) - comprehensive review, performance
-- 🤖 **AI & ML** (4) - LLM apps, agent orchestration, context, MLOps
+- ✅ **Testing** (1) - unit testing
+- 🔍 **Quality** (3) - comprehensive review, performance
+- 🤖 **AI & ML** (5) - LLM apps, agent orchestration, context, MLOps
 - 📊 **Data** (2) - data engineering, data validation
 - 🗄️ **Database** (2) - database design, migrations
 - 🚨 **Operations** (4) - incident response, diagnostics, distributed debugging, observability
 - ⚡ **Performance** (2) - application performance, database/cloud optimization
 - ☁️ **Infrastructure** (5) - deployment, validation, Kubernetes, cloud, CI/CD
-- 🔒 **Security** (4) - scanning, compliance, backend/API, frontend/mobile
-- 💻 **Languages** (7) - Python, JS/TS, systems, JVM, scripting, functional, embedded
+- 🔒 **Security** (6) - scanning, compliance, backend/API, frontend/mobile, **block-no-verify** (git hook bypass guard)
+- 💻 **Languages** (10) - Python, JS/TS, systems, JVM, scripting, functional, embedded
 - 🔗 **Blockchain** (1) - smart contracts, DeFi, Web3
 - 💰 **Finance** (1) - quantitative trading, risk management
 - 💳 **Payments** (1) - Stripe, PayPal, billing
 - 🎮 **Gaming** (1) - Unity, Minecraft plugins
+- 🎨 **Creative** (1) - creative tooling
+- ♿ **Accessibility** (1) - WCAG and a11y
 - 📢 **Marketing** (4) - SEO content, technical SEO, SEO analysis, content marketing
-- 💼 **Business** (3) - analytics, HR/legal, customer/sales
-- And more...
+- 💼 **Business** (4) - analytics, HR/legal, customer/sales
+- 🔌 **API** (2) - API tooling
+- 🛠️ **Utilities** (4) - general-purpose helpers
+- 🔧 **Modernization** (2) - legacy migration and refactoring
 
 [→ View complete plugin catalog](docs/plugins.md)
 
@@ -343,7 +347,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 ### Granular Design
 
 - **Single responsibility** - Each plugin does one thing well
-- **Minimal token usage** - Average 3.4 components per plugin
+- **Minimal token usage** - Average 3.6 components per plugin
 - **Composable** - Mix and match for complex workflows
 - **100% coverage** - All 182 agents accessible across plugins
 
@@ -360,7 +364,7 @@ Three-tier architecture for token efficiency:
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # 75 plugins
+│   └── marketplace.json          # 77 plugins
 ├── plugins/
 │   ├── python-development/
 │   │   ├── agents/               # 3 Python experts
@@ -370,7 +374,7 @@ claude-agents/
 │   │   ├── agents/               # K8s architect
 │   │   ├── commands/             # Deployment tools
 │   │   └── skills/               # 4 K8s skills
-│   └── ... (65 more plugins)
+│   └── ... (67 more plugins)
 ├── docs/                          # Comprehensive documentation
 └── README.md                      # This file
 ```

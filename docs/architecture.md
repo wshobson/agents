@@ -36,8 +36,8 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **67 focused plugins** optimized for specific use cases
-- **23 clear categories** with 1-6 plugins each for easy discovery
+- **77 focused plugins** optimized for specific use cases
+- **24 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 4 plugins (debugging, backend, frontend, multi-platform)
   - **Security**: 4 plugins (scanning, compliance, backend-api, frontend-mobile)
@@ -81,7 +81,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (67 plugins)
+│   └── marketplace.json          # Marketplace catalog (77 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -194,7 +194,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 107 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 149 skills.
 
 ## Model Configuration Strategy
 
@@ -391,5 +391,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 67 plugins
+- [Plugin Reference](./plugins.md) - All 77 plugins
 - [Usage Guide](./usage.md) - Commands and workflows
