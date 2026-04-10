@@ -53,7 +53,11 @@ class MonteCarloConfig:
 async def run_simulation(skill_content: str, prompt: str, auth: str) -> SimResult:
     """Run a single simulation via Agent SDK. Returns SimResult. On error, errored=True."""
     try:
-        import claude_agent_sdk as sdk  # type: ignore[import-untyped]
+        from claude_agent_sdk import (  # type: ignore[import-untyped]
+            ClaudeAgentOptions,
+            ResultMessage,
+            query,
+        )
 
         result_text = ""
         activated = False
@@ -63,15 +67,20 @@ async def run_simulation(skill_content: str, prompt: str, auth: str) -> SimResul
 
         start = time.monotonic()
 
-        async for event in sdk.stream(
-            prompt,
-            system=f"You are evaluating a skill. Apply the skill if appropriate.\n\n{skill_content}",
+        system = f"You are evaluating a skill. Apply the skill if appropriate.\n\n{skill_content}"
+        async for message in query(
+            prompt=prompt,
+            options=ClaudeAgentOptions(
+                system_prompt=system,
+                allowed_tools=[],
+                max_turns=1,
+            ),
         ):
-            if hasattr(event, "text"):
-                result_text += event.text
-                activated = True
-            if hasattr(event, "usage"):
-                tokens = getattr(event.usage, "total_tokens", 0)
+            if isinstance(message, ResultMessage):
+                for block in getattr(message, "content", []):
+                    if hasattr(block, "text"):
+                        result_text += block.text
+                        activated = True
 
         duration_ms = int((time.monotonic() - start) * 1000)
 
