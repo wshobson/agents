@@ -1041,7 +1041,8 @@
       },
       "homepage": "https://veritasacta.com",
       "license": "MIT",
-      "category": "security"
+      "category": "governance",
+      "keywords": ["cedar", "receipts", "ed25519", "policy", "governance", "audit", "compliance"]
     }
   ]
 }
