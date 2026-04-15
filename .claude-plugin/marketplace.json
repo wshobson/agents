@@ -1028,6 +1028,20 @@
       "homepage": "https://github.com/Anasss/qa-orchestra",
       "license": "MIT",
       "category": "testing"
+    },
+    {
+      "name": "protect-mcp",
+      "source": "./plugins/protect-mcp",
+      "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin — decisions are policy-gated before they run and every decision produces a tamper-evident receipt verifiable offline.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Tom Farley",
+        "email": "tommy@scopeblind.com",
+        "url": "https://github.com/tomjwxf"
+      },
+      "homepage": "https://veritasacta.com",
+      "license": "MIT",
+      "category": "security"
     }
   ]
 }
