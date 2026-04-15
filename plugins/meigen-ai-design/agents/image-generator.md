@@ -44,7 +44,8 @@ Multiple derivative images — spawn parallel agents, each with referenceImages 
 1. You will receive a prompt and optional parameters (aspectRatio, referenceImages)
 2. Call `generate_image` with EXACTLY the provided parameters
 3. Do NOT specify `model` or `provider` — let the server auto-detect
-4. Return the COMPLETE tool response text as-is
+4. If `aspectRatio` was NOT provided, OMIT it from the call — the server defaults to `"auto"` and will infer the best ratio from the prompt. Only pass an explicit value (e.g. `"16:9"`, `"1:1"`) when the caller specified one.
+5. Return the COMPLETE tool response text as-is
 
 ## Rules
 
