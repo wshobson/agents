@@ -6,13 +6,13 @@
 
 > **🎯 Agent Skills Enabled** — 150 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **184 specialized AI agents**, **16 multi-agent workflow orchestrators**, **150 agent skills**, and **98 commands** organized into **79 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **184 specialized AI agents**, **16 multi-agent workflow orchestrators**, **150 agent skills**, and **98 commands** organized into **78 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **79 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
+- **78 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
 - **184 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
 - **150 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **16 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
@@ -20,7 +20,7 @@ This unified repository provides everything needed for intelligent automation an
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 79 focused plugins optimized for minimal token usage
+- **Granular Plugin Architecture**: 78 focused plugins optimized for minimal token usage
 - **Comprehensive Tooling**: 98 commands including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
 - **Agent Skills**: 150 specialized skills following for progressive disclosure and token efficiency
@@ -49,7 +49,7 @@ Add this marketplace to Claude Code:
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 79 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 78 plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Plugins
 
@@ -114,7 +114,7 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ### Core Guides
 
-- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 79 plugins
+- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 78 plugins
 - **[Agent Reference](docs/agents.md)** - All 184 agents organized by category
 - **[Agent Skills](docs/agent-skills.md)** - 150 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
@@ -313,14 +313,14 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 ## Plugin Categories
 
-**25 categories, 79 plugins:**
+**25 categories, 78 plugins:**
 
 - 🎨 **Development** (6) - debugging, backend, frontend, multi-platform
 - 📚 **Documentation** (4) - code docs, API specs, diagrams, C4 architecture, **HADS** (Human-AI Document Standard)
 - 🔄 **Workflows** (5) - git, full-stack, TDD, **Conductor** (context-driven development), **Agent Teams** (multi-agent orchestration)
 - ✅ **Testing** (2) - unit testing, **qa-orchestra** (multi-agent QA toolkit with Chrome MCP validation)
 - 🔍 **Quality** (3) - comprehensive review, performance
-- 🤖 **AI & ML** (5) - LLM apps, agent orchestration, context, MLOps, **pensyve** (intelligent memory capture)
+- 🤖 **AI & ML** (4) - LLM apps, agent orchestration, context, MLOps
 - 📊 **Data** (2) - data engineering, data validation
 - 🗄️ **Database** (2) - database design, migrations
 - 🚨 **Operations** (4) - incident response, diagnostics, distributed debugging, observability

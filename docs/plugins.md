@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **79 focused, single-purpose plugins** organized by category. 77 plugins ship from this repo; 2 additional plugins (`pensyve`, `qa-orchestra`) are hosted in external repositories and distributed via `git-subdir` marketplace entries.
+Browse all **78 focused, single-purpose plugins** organized by category. 77 plugins ship from this repo; 1 additional plugin (`qa-orchestra`) is hosted in an external repository and distributed via a `git-subdir` marketplace entry.
 
 ## Quick Start - Essential Plugins
 
@@ -158,7 +158,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **error-debugging**       | Error analysis and trace debugging         | `/plugin install error-debugging`       |
 | **team-collaboration**    | Team workflows and standup automation      | `/plugin install team-collaboration`    |
 
-### 🤖 AI & ML (5 plugins)
+### 🤖 AI & ML (4 plugins)
 
 | Plugin                   | Description                         | Install                                |
 | ------------------------ | ----------------------------------- | -------------------------------------- |
