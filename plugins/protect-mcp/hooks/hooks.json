@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hook": {
+          "type": "command",
+          "command": "npx protect-mcp@latest evaluate --policy \"${PROTECT_MCP_POLICY:-./protect.cedar}\" --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
+        }
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hook": {
+          "type": "command",
+          "command": "npx protect-mcp@latest sign --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --output \"$TOOL_OUTPUT\" --receipts \"${PROTECT_MCP_RECEIPTS:-./receipts/}\" --key \"${PROTECT_MCP_KEY:-./protect-mcp.key}\""
+        }
+      }
+    ]
+  }
+}
