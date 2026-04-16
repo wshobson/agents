@@ -343,6 +343,17 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 [→ View complete plugin catalog](docs/plugins.md)
 
+### Related Plugins
+
+Plugins hosted in their own marketplaces — install from the source for the latest releases:
+
+- **[Pensyve](https://github.com/major7apps/pensyve)** — Universal memory runtime with cross-session cognitive memory for Claude Code. Intelligent capture, entity-aware recall, 6 commands, 4 skills, 2 agents, and 6 lifecycle hooks.
+
+  ```bash
+  /plugin marketplace add major7apps/pensyve
+  /plugin install pensyve@major7apps-pensyve
+  ```
+
 ## Architecture Highlights
 
 ### Granular Design
