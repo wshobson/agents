@@ -900,7 +900,7 @@
       "description": "Binary reverse engineering, malware analysis, firmware security, and software protection research for authorized security research, CTF competitions, and defensive security",
       "version": "1.0.0",
       "author": {
-        "name": "D\u00e1vid Balatoni",
+        "name": "Dávid Balatoni",
         "url": "https://github.com/balcsida"
       },
       "homepage": "https://github.com/wshobson/agents",
@@ -909,7 +909,7 @@
     },
     {
       "name": "conductor",
-      "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context \u2192 Spec & Plan \u2192 Implement",
+      "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context → Spec & Plan → Implement",
       "version": "1.2.1",
       "author": {
         "name": "Seth Hobson",
@@ -1011,6 +1011,23 @@
       "homepage": "https://github.com/cskwork",
       "license": "MIT",
       "category": "security"
+    },
+    {
+      "name": "qa-orchestra",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/Anasss/qa-orchestra.git",
+        "path": "."
+      },
+      "description": "Multi-agent QA toolkit with 10 specialized agents covering the full QA lifecycle — orchestrator, environment-manager, functional-reviewer, test-scenario-designer, browser-validator, automation-writer, manual-validator, bug-reporter, release-analyzer, and smart-test-selector. Stack-agnostic, output-chained, designed around live validation via Chrome MCP.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Anass Rach",
+        "url": "https://github.com/Anasss"
+      },
+      "homepage": "https://github.com/Anasss/qa-orchestra",
+      "license": "MIT",
+      "category": "testing"
     }
   ]
 }
