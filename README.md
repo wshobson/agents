@@ -1,6 +1,6 @@
 # Claude Code Plugins: Orchestration and Automation
 
-> **⚡ Updated for Opus 4.6, Sonnet 4.6 & Haiku 4.5** — Three-tier model strategy for optimal performance
+> **⚡ Updated for Opus 4.7, Sonnet 4.6 & Haiku 4.5** — Three-tier model strategy for optimal performance
 
 [![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
 
@@ -233,12 +233,12 @@ Strategic model assignment for optimal performance and cost:
 
 | Tier       | Model    | Agents | Use Case                                                                                        |
 | ---------- | -------- | ------ | ----------------------------------------------------------------------------------------------- |
-| **Tier 1** | Opus 4.6 | 42     | Critical architecture, security, ALL code review, production coding (language pros, frameworks) |
+| **Tier 1** | Opus 4.7 | 42     | Critical architecture, security, ALL code review, production coding (language pros, frameworks) |
 | **Tier 2** | Inherit  | 42     | Complex tasks - user chooses model (AI/ML, backend, frontend/mobile, specialized)               |
 | **Tier 3** | Sonnet   | 51     | Support with intelligence (docs, testing, debugging, network, API docs, DX, legacy, payments)   |
 | **Tier 4** | Haiku    | 18     | Fast operational tasks (SEO, deployment, simple docs, sales, content, search)                   |
 
-**Why Opus 4.6 for Critical Agents?**
+**Why Opus 4.7 for Critical Agents?**
 
 - 80.8% on SWE-bench (industry-leading)
 - 65% fewer tokens for complex tasks
@@ -254,7 +254,7 @@ Agents marked `inherit` use your session's default model, letting you balance co
 
 **Cost Considerations:**
 
-- **Opus 4.6**: $5/$25 per million input/output tokens - Premium for critical work
+- **Opus 4.7**: $5/$25 per million input/output tokens - Premium for critical work
 - **Sonnet 4.6**: $3/$15 per million tokens - Balanced performance/cost
 - **Haiku 4.5**: $1/$5 per million tokens - Fast, cost-effective operations
 - Opus's 65% token reduction on complex tasks often offsets higher rate
