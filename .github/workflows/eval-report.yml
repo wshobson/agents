@@ -1,0 +1,73 @@
+name: Plugin Eval Report
+
+on:
+  workflow_dispatch:
+    inputs:
+      depth:
+        description: 'Evaluation depth (quick = static only, standard = +LLM judge, deep = +Monte Carlo)'
+        required: true
+        default: 'quick'
+        type: choice
+        options:
+          - quick
+          - standard
+          - deep
+      only_changed:
+        description: 'Comma-separated plugin names to evaluate (blank = all)'
+        required: false
+        default: ''
+        type: string
+  schedule:
+    # Weekly full static sweep, Mondays at 06:00 UTC
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    name: Evaluate plugins (${{ inputs.depth || 'quick' }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      DEPTH: ${{ inputs.depth || 'quick' }}
+      ONLY_CHANGED: ${{ inputs.only_changed || '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync plugin-eval dependencies
+        working-directory: plugins/plugin-eval
+        run: uv sync --all-extras
+
+      - name: Run eval sweep
+        working-directory: plugins/plugin-eval
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          args=( --depth "$DEPTH" --output-dir "$GITHUB_WORKSPACE/eval-reports" --concurrency 4 )
+          if [ -n "$ONLY_CHANGED" ]; then
+            args+=( --only-changed "$ONLY_CHANGED" )
+          fi
+          uv run python scripts/eval_all.py "${args[@]}"
+
+      - name: Post report to job summary
+        if: always()
+        run: |
+          if [ -f eval-reports/summary.md ]; then
+            cat eval-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No summary produced." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload reports artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-reports-${{ env.DEPTH }}-${{ github.run_id }}
+          path: eval-reports/
+          retention-days: 30
