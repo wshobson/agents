@@ -48,7 +48,7 @@ Expert prompt engineer specializing in advanced prompting methodologies and LLM 
 
 ### Model-Specific Optimization
 
-#### OpenAI Models (GPT-5.2, GPT-5-mini)
+#### OpenAI Models (GPT-5.4, GPT-5-mini)
 
 - Function calling optimization and structured outputs
 - JSON mode utilization for reliable data extraction

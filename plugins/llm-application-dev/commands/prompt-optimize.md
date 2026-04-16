@@ -125,7 +125,7 @@ Final Response: [Refined]
 
 ### 5. Model-Specific Optimization
 
-**GPT-5.2**
+**GPT-5.4**
 
 ````python
 gpt5_optimized = """
@@ -607,7 +607,7 @@ testing_recommendations:
   metrics: ["accuracy", "satisfaction", "cost"]
 
 deployment_strategy:
-  model: "GPT-5.2 for quality, Claude 4.6 for safety"
+  model: "GPT-5.4 for quality, Claude 4.6 for safety"
   temperature: 0.7
   max_tokens: 2000
   monitoring: "Track success, latency, feedback"
