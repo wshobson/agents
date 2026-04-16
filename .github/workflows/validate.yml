@@ -1,0 +1,92 @@
+name: Validate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate-json:
+    name: Validate JSON files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate marketplace.json
+        run: python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
+
+      - name: Validate every plugin.json
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          failed=0
+          for f in plugins/*/.claude-plugin/plugin.json; do
+            if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
+              echo "::error file=$f::invalid JSON"
+              failed=1
+            fi
+          done
+          exit $failed
+
+      - name: Validate hooks.json files
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          failed=0
+          for f in plugins/*/hooks/*.json; do
+            if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
+              echo "::error file=$f::invalid JSON"
+              failed=1
+            fi
+          done
+          exit $failed
+
+      - name: Validate marketplace entries resolve to plugin dirs
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          with open('.claude-plugin/marketplace.json') as f:
+              mp = json.load(f)
+          errors = []
+          for p in mp.get('plugins', []):
+              src = p.get('source')
+              if isinstance(src, str) and src.startswith('./plugins/'):
+                  path = src.lstrip('./')
+                  if not os.path.isdir(path):
+                      errors.append(f"{p['name']}: source {src} does not exist")
+                  elif not os.path.isfile(os.path.join(path, '.claude-plugin', 'plugin.json')):
+                      errors.append(f"{p['name']}: missing .claude-plugin/plugin.json in {src}")
+              elif isinstance(src, dict) and src.get('source') == 'git-subdir':
+                  if not src.get('url'):
+                      errors.append(f"{p['name']}: git-subdir entry missing url")
+          if errors:
+              for e in errors:
+                  print(f"::error::{e}")
+              sys.exit(1)
+          print(f"OK: {len(mp.get('plugins', []))} marketplace entries validated")
+          PY
+
+  plugin-eval-tests:
+    name: plugin-eval pytest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/plugin-eval
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync dependencies
+        run: uv sync --all-extras
+
+      - name: Run tests
+        run: uv run pytest

@@ -1,13 +1,13 @@
 # Project: claude-agents
 
-Claude Code plugin marketplace — 75 focused plugins, 182 agents, 147 skills, 95 commands.
+Claude Code plugin marketplace — 79 plugins (77 local + 2 external via git-subdir), 184 agents, 150 skills, 98 commands.
 
 ## Repository Structure
 
 ```
 claude-agents/
 ├── .claude-plugin/marketplace.json   # Registry of all plugins
-├── plugins/                          # All 72 plugins
+├── plugins/                          # All 77 local plugins (2 more installed via git-subdir from external repos)
 │   ├── <plugin-name>/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── agents/*.md

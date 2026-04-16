@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **149 specialized skills** across 36 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **150 specialized skills** across 37 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -330,6 +330,12 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | -------------------------- | ------------------------------------------------------------------------------------------------ |
 | **block-no-verify-hook**   | PreToolUse hook preventing AI agents from skipping git pre-commit hooks via bypass flags         |
 
+### Protect MCP (1 skill)
+
+| Skill                  | Description                                                                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **protect-mcp-setup**  | Configure Cedar policy enforcement and Ed25519 signed receipts for tool calls; example policies for research/dev/production  |
+
 ## How Skills Work
 
 ### Activation
@@ -374,7 +380,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 149 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
+All 150 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause

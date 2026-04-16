@@ -36,8 +36,8 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **77 focused plugins** optimized for specific use cases
-- **24 clear categories** with 1-10 plugins each for easy discovery
+- **79 focused plugins** (77 local + 2 external via git-subdir) optimized for specific use cases
+- **25 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 4 plugins (debugging, backend, frontend, multi-platform)
   - **Security**: 4 plugins (scanning, compliance, backend-api, frontend-mobile)
@@ -194,7 +194,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 149 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 150 skills.
 
 ## Model Configuration Strategy
 
