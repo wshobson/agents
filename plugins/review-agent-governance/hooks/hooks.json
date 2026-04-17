@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hook": {
+          "type": "command",
+          "command": "if [ -f \"${REVIEW_APPROVAL_FLAG:-./.review-approved}\" ]; then exit 0; fi; npx protect-mcp@latest evaluate --policy \"${REVIEW_GOVERNANCE_POLICY:-./review-governance.cedar}\" --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
+        }
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hook": {
+          "type": "command",
+          "command": "npx protect-mcp@latest sign --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --output \"$TOOL_OUTPUT\" --receipts \"${REVIEW_GOVERNANCE_RECEIPTS:-./review-receipts/}\" --key \"${REVIEW_GOVERNANCE_KEY:-./review-governance.key}\""
+        }
+      }
+    ]
+  }
+}
