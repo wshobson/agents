@@ -1,0 +1,10 @@
+{
+  "tool_name": "Read",
+  "tool_input": {
+    "file_path": "./README.md"
+  },
+  "session_id": "test-session-allow-read",
+  "context": {
+    "path_starts_with": "./"
+  }
+}

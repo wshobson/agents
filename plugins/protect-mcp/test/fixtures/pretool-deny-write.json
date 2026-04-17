@@ -1,0 +1,11 @@
+{
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "./secrets.env",
+    "content": "dummy"
+  },
+  "session_id": "test-session-deny-write",
+  "context": {
+    "path_starts_with": "./"
+  }
+}
