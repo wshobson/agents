@@ -93,8 +93,24 @@ rm ./.review-approved
 ```
 
 The command creates `./.review-approved` with a note describing the
-approval reason and writes an approval-granted receipt before opening the
-window.
+approval reason and appends a JSON entry under
+`./review-receipts/approvals/`.
+
+**Important note on the approval log:** entries under
+`./review-receipts/approvals/*.json` are **plain JSON records, not signed
+receipts**. They do not flow through `protect-mcp sign`, so
+`@veritasacta/verify` does not cover them. The approval log is
+operator-trust; it records what the human intended to approve but can be
+edited after the fact without detection.
+
+What IS signed and tamper-evident: the `PostToolUse` tool-call receipts
+that every action (allowed or denied) produces under
+`./review-receipts/*.json`. Those are the authoritative audit trail. Use
+`npx @veritasacta/verify ./review-receipts/*.json` to verify them.
+
+If you need signed approval records as well (for regulated environments),
+run them through protect-mcp directly, or emit them as separate receipts
+via `npx protect-mcp@latest sign --tool approve-review --input ...`.
 
 ### Listing pending or denied actions
 
@@ -105,6 +121,17 @@ window.
 Walks the receipt chain at `./review-receipts/` and prints any recent
 `decision: deny` entries, so you can see what the agent tried to do that
 was blocked.
+
+### A note on what the signed chain covers
+
+When the approval flag is present, the `PreToolUse` hook short-circuits
+to `exit 0` without calling `protect-mcp evaluate`. The downstream
+`PostToolUse` receipt for that approved action will therefore have
+`decision: allow` but no `policy_digest` field, because no Cedar policy
+was evaluated. Auditors walking the chain should expect this: an approved
+tool call shows up as a signed receipt with `reason: human_approved` and
+no policy reference. Denied tool calls and non-review actions (which do
+go through Cedar) carry the `policy_digest` as usual.
 
 ## Example session
 

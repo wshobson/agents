@@ -27,14 +27,20 @@ flag file with `rm ./.review-approved` or restart the session.
 
 ## Implementation
 
-Run this in the Bash tool:
+Run this in the Bash tool. Capture the full user argument as `$ARGUMENTS`
+(the marketplace slash-command convention) so a reason with spaces is
+preserved verbatim.
 
 ```bash
-REASON="${1:-}"
+REASON="$ARGUMENTS"
 TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 FLAG="./.review-approved"
 
-# Write the flag file
+# JSON-escape the reason so quotes, backslashes, newlines do not break
+# the approval-record JSON below.
+REASON_ESCAPED="$(printf '%s' "$REASON" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')"
+
+# Write the flag file (human-readable key=value, not JSON).
 {
   echo "approved_at=$TS"
   if [ -n "$REASON" ]; then
@@ -42,12 +48,15 @@ FLAG="./.review-approved"
   fi
 } > "$FLAG"
 
-# Record the approval in the receipt-adjacent log
+# Record the approval. This is a plain JSON log file, NOT a signed
+# receipt. The README explicitly notes that approval records are not
+# signed by protect-mcp; only the PostToolUse tool-call receipts flow
+# through the signer.
 mkdir -p ./review-receipts/approvals
 cat > "./review-receipts/approvals/$TS.json" <<JSON
 {
   "approved_at": "$TS",
-  "reason": "${REASON:-(none)}",
+  "reason": $REASON_ESCAPED,
   "flag_file": "$FLAG"
 }
 JSON
