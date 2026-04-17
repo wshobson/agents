@@ -1,0 +1,10 @@
+{
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "git status"
+  },
+  "session_id": "test-session-allow-bash",
+  "context": {
+    "command_pattern": "git"
+  }
+}

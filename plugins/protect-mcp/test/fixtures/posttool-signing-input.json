@@ -1,0 +1,12 @@
+{
+  "tool_name": "Read",
+  "tool_input": {
+    "file_path": "./README.md"
+  },
+  "tool_output": {
+    "content": "# Example project\n\nTest fixture output."
+  },
+  "session_id": "test-session-sign",
+  "decision": "allow",
+  "policy_id": "protect-mcp-test-policy"
+}

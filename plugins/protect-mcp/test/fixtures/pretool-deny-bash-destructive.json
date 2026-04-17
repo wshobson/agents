@@ -1,0 +1,10 @@
+{
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "rm -rf /"
+  },
+  "session_id": "test-session-deny-destructive",
+  "context": {
+    "command_pattern": "rm -rf"
+  }
+}
