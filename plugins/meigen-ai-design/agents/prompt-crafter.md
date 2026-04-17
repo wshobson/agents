@@ -1,4 +1,5 @@
 ---
+name: prompt-crafter
 description: >-
   Batch prompt writing agent. Delegates here when you need to write
   multiple distinct prompts at once — for parallel image generation

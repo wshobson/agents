@@ -1,4 +1,5 @@
 ---
+name: gallery-researcher
 description: >-
   Gallery search and inspiration agent. Delegates here when user wants
   to find references, explore styles, build a mood board, or needs
