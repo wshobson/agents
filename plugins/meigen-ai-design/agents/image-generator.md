@@ -1,4 +1,5 @@
 ---
+name: image-generator
 description: >-
   Image generation executor agent. Delegates here for ALL generate_image
   calls to keep the main conversation context clean. Spawn one per image;
