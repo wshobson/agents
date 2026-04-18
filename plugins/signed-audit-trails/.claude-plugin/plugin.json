@@ -1,0 +1,10 @@
+{
+  "name": "signed-audit-trails",
+  "version": "0.1.0",
+  "description": "Teaching skill: signed audit trails for Claude Code tool calls. Cookbook-style walkthrough of Cedar-gated tool calls with Ed25519 receipts, offline verification, and CI/CD integration. Pairs with the protect-mcp plugin.",
+  "author": {
+    "name": "Tom Farley",
+    "email": "tommy@scopeblind.com"
+  },
+  "license": "MIT"
+}

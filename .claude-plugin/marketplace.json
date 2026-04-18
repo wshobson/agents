@@ -1026,6 +1026,21 @@
       "license": "MIT",
       "category": "governance",
       "keywords": ["cedar", "receipts", "ed25519", "policy", "governance", "audit", "compliance"]
+    },
+    {
+      "name": "signed-audit-trails",
+      "source": "./plugins/signed-audit-trails",
+      "description": "Teaching skill: cookbook-style walkthrough for signed audit trails on every Claude Code tool call. Cedar policy, Ed25519 receipts, offline verification, CI/CD integration, SLSA composition. Pairs with the protect-mcp runtime plugin.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Tom Farley",
+        "email": "tommy@scopeblind.com",
+        "url": "https://github.com/tomjwxf"
+      },
+      "homepage": "https://veritasacta.com",
+      "license": "MIT",
+      "category": "governance",
+      "keywords": ["tutorial", "skill", "recipe", "audit", "governance", "cedar", "receipts", "ed25519"]
     }
   ]
 }
