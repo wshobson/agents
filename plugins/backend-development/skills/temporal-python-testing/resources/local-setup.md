@@ -12,7 +12,7 @@ version: "3.8"
 
 services:
   temporal:
-    image: temporalio/auto-setup:latest
+    image: temporalio/auto-setup:1.26
     container_name: temporal-dev
     ports:
       - "7233:7233" # Temporal server
@@ -39,7 +39,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   temporal-ui:
-    image: temporalio/ui:latest
+    image: temporalio/ui:2.33
     container_name: temporal-ui
     depends_on:
       - temporal

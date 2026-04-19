@@ -76,7 +76,7 @@ EOF
 version: "3.8"
 services:
   jaeger:
-    image: jaegertracing/all-in-one:latest
+    image: jaegertracing/all-in-one:1.62
     ports:
       - "5775:5775/udp"
       - "6831:6831/udp"
@@ -320,7 +320,7 @@ spec:
     spec:
       containers:
         - name: tempo
-          image: grafana/tempo:latest
+          image: grafana/tempo:2.7
           args:
             - -config.file=/etc/tempo/tempo.yaml
           volumeMounts:

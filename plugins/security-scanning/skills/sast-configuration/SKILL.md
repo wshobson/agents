@@ -60,7 +60,7 @@ pip install semgrep
 semgrep --config=auto --error
 
 # SonarQube with Docker
-docker run -d --name sonarqube -p 9000:9000 sonarqube:latest
+docker run -d --name sonarqube -p 9000:9000 sonarqube:10.8-community
 
 # CodeQL CLI setup
 gh extension install github/gh-codeql

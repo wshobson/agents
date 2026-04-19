@@ -443,7 +443,7 @@ jobs:
         run: npx pa11y http://localhost:3000 --standard WCAG2AA --threshold 0
 
       - name: Upload report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: a11y-report
