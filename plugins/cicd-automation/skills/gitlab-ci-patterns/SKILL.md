@@ -62,7 +62,7 @@ test:
 
 deploy:
   stage: deploy
-  image: bitnami/kubectl:latest
+  image: bitnami/kubectl:1.31
   script:
     - kubectl apply -f k8s/
     - kubectl rollout status deployment/my-app
@@ -85,9 +85,9 @@ build-docker:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
-    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   only:
     - main
     - tags
@@ -97,7 +97,7 @@ build-docker:
 
 ```yaml
 .deploy_template: &deploy_template
-  image: bitnami/kubectl:latest
+  image: bitnami/kubectl:1.31
   before_script:
     - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
     - kubectl config set-credentials admin --token="$KUBE_TOKEN"
@@ -188,7 +188,7 @@ include:
 
 trivy-scan:
   stage: test
-  image: aquasec/trivy:latest
+  image: aquasec/trivy:0.58.0
   script:
     - trivy image --exit-code 1 --severity HIGH,CRITICAL $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
   allow_failure: true
