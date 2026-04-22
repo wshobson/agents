@@ -963,7 +963,7 @@
       "name": "meigen-ai-design",
       "source": "./plugins/meigen-ai-design",
       "description": "AI image generation with creative workflow orchestration, prompt engineering, and curated inspiration library via MCP server",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": {
         "name": "MeiGen",
         "url": "https://github.com/jau123"
