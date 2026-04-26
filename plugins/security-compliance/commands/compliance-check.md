@@ -883,7 +883,7 @@ jobs:
           python scripts/compliance/generate_report.py > compliance-report.json
 
       - name: Upload Compliance Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: compliance-report
           path: compliance-report.json

@@ -101,7 +101,7 @@ jobs:
 
 ```yaml
 deploy:
-  image: vault:latest
+  image: vault:1.17
   before_script:
     - export VAULT_ADDR=https://vault.example.com:8200
     - export VAULT_TOKEN=$VAULT_TOKEN
@@ -173,9 +173,12 @@ resource "aws_db_instance" "main" {
 
 ```yaml
 - name: Use GitHub secret
+  env:
+    API_KEY: ${{ secrets.API_KEY }}
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
   run: |
-    echo "API Key: ${{ secrets.API_KEY }}"
-    echo "Database URL: ${{ secrets.DATABASE_URL }}"
+    # Secrets are injected as env vars — never print them to logs
+    ./deploy.sh
 ```
 
 ### Environment Secrets
@@ -186,8 +189,11 @@ deploy:
   environment: production
   steps:
     - name: Deploy
+      env:
+        PROD_API_KEY: ${{ secrets.PROD_API_KEY }}
       run: |
-        echo "Deploying with ${{ secrets.PROD_API_KEY }}"
+        # Secret injected as env var — never print to logs
+        ./deploy.sh
 ```
 
 **Reference:** See `references/github-secrets.md`
@@ -319,7 +325,7 @@ spec:
 
 # Check for secrets with TruffleHog
 docker run --rm -v "$(pwd):/repo" \
-  trufflesecurity/trufflehog:latest \
+  trufflesecurity/trufflehog:3.88 \
   filesystem --directory=/repo
 
 if [ $? -ne 0 ]; then
@@ -333,7 +339,7 @@ fi
 ```yaml
 secret-scan:
   stage: security
-  image: trufflesecurity/trufflehog:latest
+  image: trufflesecurity/trufflehog:3.88
   script:
     - trufflehog filesystem .
   allow_failure: false
