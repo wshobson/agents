@@ -1,6 +1,6 @@
 {
   "name": "cloud-infrastructure",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Cloud architecture design for AWS/Azure/GCP/OCI, Kubernetes cluster configuration, Terraform infrastructure-as-code, hybrid cloud networking, and multi-cloud cost optimization",
   "author": {
     "name": "Seth Hobson",

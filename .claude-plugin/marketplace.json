@@ -338,7 +338,7 @@
     {
       "name": "cloud-infrastructure",
       "description": "Cloud architecture design for AWS/Azure/GCP/OCI, Kubernetes cluster configuration, Terraform infrastructure-as-code, hybrid cloud networking, and multi-cloud cost optimization",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
@@ -885,7 +885,7 @@
       "name": "developer-essentials",
       "source": "./plugins/developer-essentials",
       "description": "Essential developer skills including Git workflows, SQL optimization, error handling, code review, E2E testing, authentication, debugging, and monorepo management",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
