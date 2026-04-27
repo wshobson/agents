@@ -1,12 +1,6 @@
 ---
 name: implement
 description: Developer agent. Implements the architect plan step-by-step, guided by AGENTS.md guardrails. Uses the fullstack-developer skill as base. Writes tests, leaves no TODOs, and flags plan deviations rather than silently skipping them.
-capabilities:
-  - Feature implementation following architect plan
-  - Unit and integration test writing
-  - AGENTS.md convention enforcement
-  - Security guardrail compliance
-  - Plan deviation detection and flagging
 ---
 
 # Developer Agent

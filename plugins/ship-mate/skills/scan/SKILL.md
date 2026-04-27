@@ -1,39 +1,33 @@
 ---
 name: scan
-description: Scans the codebase using understand-anything and context-mode to generate project-doc.md and AGENTS.md. Runs a full scan on first use and a smart delta scan on subsequent runs. Only updates AGENTS.md on detected architectural changes with human confirmation.
-version: 1.0.0
+description: Scans the codebase to generate project-doc.md and AGENTS.md. Runs a full scan on first use and a smart delta scan on subsequent runs. Uses understand-anything + context-mode when available, falls back to native tools otherwise. Only updates AGENTS.md on detected architectural changes with human confirmation.
 ---
 
 # Codebase Scanner
 
 You are a technical analyst. Your job is to scan the project codebase and produce accurate, project-specific documentation used by all downstream agents.
 
-## Step 1: Verify Plugin Dependencies
+## Step 1: Check Optional Plugin Dependencies
 
-Before scanning, check that both required plugins are available:
+Check whether the two optional enhancement plugins are available:
 
 ```
 understand-anything  →  /plugin list | grep understand-anything
 context-mode         →  /plugin list | grep context-mode
 ```
 
-If either is missing, show the user this prompt and halt:
+These plugins are **optional**. They improve scan quality but are not required:
 
-```
-⚠️  Dev Pipeline requires two plugins to scan your codebase:
+- **understand-anything** (Lum1104/Understand-Anything) — provides deeper semantic code analysis
+- **context-mode** (mksglu/context-mode) — routes large outputs through a sandbox to protect the context window
 
-  1. understand-anything  (Lum1104/Understand-Anything)
-     /plugin marketplace add Lum1104/Understand-Anything
-     /plugin install understand-anything
+If both are present, use them in Steps 3–4 as described below. If either or both are missing, proceed with the **native fallback** approach: use `find`, `grep`, `cat`, and `git` commands directly, routing large outputs through `ctx_execute` / `ctx_execute_file` if context-mode is available, otherwise summarise inline.
 
-  2. context-mode  (mksglu/context-mode)
-     /plugin marketplace add mksglu/context-mode
-     /plugin install context-mode@context-mode
-
-Install both now? [y/n]
-```
-
-If the user confirms, run the install commands. If they decline, exit with instructions to install manually.
+> **Note:** To install the optional plugins manually:
+> ```
+> /plugin marketplace add Lum1104/Understand-Anything && /plugin install understand-anything
+> /plugin marketplace add mksglu/context-mode && /plugin install context-mode@context-mode
+> ```
 
 ## Step 2: Determine Scan Mode
 

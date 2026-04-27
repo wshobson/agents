@@ -2,63 +2,64 @@
 
 Your AI development teammate. ShipMate is a Claude Code plugin that installs a structured, multi-agent development pipeline into any project — replacing ad-hoc Claude usage with a repeatable workflow covering requirements → architecture → implementation → code review → QA → browser testing.
 
-## What This Repo Contains
+## Plugin Layout
 
 ```
-.claude/skills/          ← The pipeline skills (install these into target projects)
-  ship.md                ← Master entry point and pipeline router
-  scan.md                ← Codebase scanner (understand-anything + context-mode)
-  orchestrate.md         ← Product orchestrator agent
-  architect.md           ← Architect agent
-  implement.md           ← Developer agent
-  review.md              ← PR reviewer agent (3-tier)
-  qa.md                  ← QA agent
-  playwright.md          ← Browser test agent (FRONTEND tasks only)
-
-stories/
-  _template.md           ← Story file template
-
-.agents/skills/          ← Skills pulled from external sources (via skills-lock.json)
-extra-agents/            ← Reference agent definitions (VSCode agents, used as inspiration)
-extra-skills/            ← Reference skill definitions (used as inspiration)
-docs/plans/              ← Design documents
+plugins/ship-mate/
+├── .claude-plugin/
+│   └── plugin.json          ← Plugin manifest
+├── agents/
+│   ├── orchestrate.md       ← Product Orchestrator agent
+│   ├── architect.md         ← Architect agent
+│   ├── implement.md         ← Developer agent
+│   ├── review.md            ← PR Reviewer agent (3-tier)
+│   ├── qa.md                ← QA agent
+│   └── playwright.md        ← Browser test agent (FRONTEND tasks only)
+├── commands/
+│   ├── ship.md              ← /ship — master entry point and pipeline router
+│   └── setup.md             ← /setup — initialise pipeline state in a target project
+├── skills/
+│   └── scan/
+│       └── SKILL.md         ← Codebase scanner (full + delta, optional enhance plugins)
+├── stories/
+│   └── _template.md         ← Story file template
+└── docs/
+    └── plans/               ← Design documents
 ```
-
-## How to Install Into a Target Project
-
-Run the `setup` skill in the target project:
-```
-/setup
-```
-
-Or follow the manual steps in `INSTALL.md`.
 
 ## How to Use the Pipeline
 
 ### 1. Write a Story
+
 Copy `stories/_template.md` into your target project's `stories/` folder.
 Fill in the story title, description, acceptance criteria, and task list.
 
 ### 2. Run the Pipeline
+
 ```
 /ship stories/your-story.md
 ```
 
 ### 3. Human Checkpoints
+
 The pipeline pauses **once** per task — after the architect produces the plan:
+
 ```
 ⏸️  Architect plan ready for review.
    📄 .claude/pipeline/architect-plan.md
    Run /ship resume to begin implementation.
 ```
+
 Review the plan. If it looks right, run `/ship resume`.
 
 ### 4. Check Progress
+
 ```
 /ship status
 ```
 
 ### 5. Resume After a Pause
+
 ```
 /ship resume
 ```
@@ -123,7 +124,6 @@ As a [user], I want [goal] so that [benefit].
 
 All state is stored in `.claude/pipeline/state.json`. The pipeline can be interrupted and resumed across sessions.
 
-Stage outputs:
 | File | Written by |
 |---|---|
 | `.claude/pipeline/project-doc.md` | Scanner |
@@ -135,28 +135,25 @@ Stage outputs:
 
 ## AGENTS.md
 
-`AGENTS.md` is generated once by the scanner on first run. It is the project-specific operating manual read by every agent at the start of each stage. It is NOT updated automatically — only when an architectural change is detected and confirmed by a human.
+Generated once by the scanner on first run. It is the project-specific operating manual read by every agent at the start of each stage. Only updated when an architectural change is detected and confirmed by a human.
 
-## Required Plugins
+## Optional Enhancement Plugins
 
-These are installed automatically on first `/ship` run (with confirmation):
+The `scan` skill works without these, but they improve output quality:
 
-| Plugin | Install command |
+| Plugin | Purpose |
 |---|---|
-| `understand-anything` | `/plugin marketplace add Lum1104/Understand-Anything` then `/plugin install understand-anything` |
-| `context-mode` | `/plugin marketplace add mksglu/context-mode` then `/plugin install context-mode@context-mode` |
+| `understand-anything` (Lum1104/Understand-Anything) | Deeper semantic code analysis |
+| `context-mode` (mksglu/context-mode) | Routes large outputs through a sandbox |
+
+Install manually if desired:
+```
+/plugin marketplace add Lum1104/Understand-Anything && /plugin install understand-anything
+/plugin marketplace add mksglu/context-mode && /plugin install context-mode@context-mode
+```
 
 ## Loop Guards
 
-To prevent infinite agent loops:
 - Review loop: caps at **2 iterations** before human escalation
 - QA loop: caps at **2 iterations** before human escalation
 - Two-handoff rule: after 2 unresolved handoffs on the same issue, always escalates to human
-
-## Working on This Plugin Repo
-
-When modifying skills in `.claude/skills/`, remember:
-- Skills are read by Claude at invocation time — they are instructions, not code
-- Every skill references `AGENTS.md` and pipeline output files by path — keep paths consistent
-- The `ship.md` skill is the state machine — changes there affect all routing logic
-- Test changes against a real project with a sample story before committing

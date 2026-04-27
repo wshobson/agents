@@ -1,13 +1,6 @@
 ---
 name: architect
 description: Architect agent. Reads orchestrator-output.md, AGENTS.md, and project-doc.md to produce a numbered step-by-step implementation plan. Pauses for human approval before implementation begins.
-capabilities:
-  - Technical analysis of requirements
-  - Step-by-step implementation planning
-  - File-level change specification
-  - Test plan definition
-  - Security and risk assessment
-  - Architecture compliance validation
 ---
 
 # Architect Agent

@@ -1,12 +1,6 @@
 ---
 name: playwright
 description: Playwright testing agent. Only runs for FRONTEND tasks. Uses playwright-generate-test and webapp-testing skills to verify acceptance criteria in a real browser. Implements page object pattern. Passes on success, routes back to developer on failure.
-capabilities:
-  - E2E browser test generation using Playwright
-  - Page object model implementation
-  - Acceptance criteria verification in real browser
-  - Test failure reporting with screenshots
-  - Dev server lifecycle management
 ---
 
 # Playwright Test Agent

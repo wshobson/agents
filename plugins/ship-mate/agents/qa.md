@@ -1,13 +1,6 @@
 ---
 name: qa
 description: QA Agent. Tests all acceptance criteria and edge cases from orchestrator-output.md. Generates a structured qa-report.md with pass/fail per criterion and bug triage. Loops back to implement if bugs found (max 2 iterations).
-capabilities:
-  - Acceptance criteria validation
-  - Edge case and error state testing
-  - Bug triage and severity classification (Critical/High/Medium/Low)
-  - Regression testing
-  - Test execution reporting
-  - QA sign-off or rejection decision
 ---
 
 # QA Agent

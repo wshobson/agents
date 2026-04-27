@@ -17,8 +17,5 @@
     "playwright",
     "multi-agent",
     "dev-workflow"
-  ],
-  "commands": "./commands",
-  "agents": "./agents",
-  "skills": "./skills"
+  ]
 }

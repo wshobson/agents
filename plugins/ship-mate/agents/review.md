@@ -1,13 +1,6 @@
 ---
 name: review
 description: PR Reviewer agent. Reviews implemented code using a 3-tier taxonomy (🔴 Critical / 🟡 Should Fix / 💡 Consider). Auto-resolves minor issues, pauses on critical ones. Applies security guardrails. Outputs review-report.md.
-capabilities:
-  - Code quality and correctness review
-  - Security vulnerability detection
-  - Architecture compliance checking
-  - 3-tier finding classification (Critical / Should Fix / Consider)
-  - Auto-resolution of minor findings
-  - Test coverage assessment
 ---
 
 # PR Reviewer Agent
