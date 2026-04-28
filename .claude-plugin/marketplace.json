@@ -1041,6 +1041,21 @@
       "license": "MIT",
       "category": "governance",
       "keywords": ["tutorial", "skill", "recipe", "audit", "governance", "cedar", "receipts", "ed25519"]
+    },
+    {
+      "name": "review-agent-governance",
+      "source": "./plugins/review-agent-governance",
+      "description": "Require a human approval signal before an AI agent can post PR reviews, comments, merges, or writes to CI configuration. Joins protect-mcp and signed-audit-trails in the governance category; composes with protect-mcp for runtime enforcement.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Tom Farley",
+        "email": "tommy@scopeblind.com",
+        "url": "https://github.com/tomjwxf"
+      },
+      "homepage": "https://veritasacta.com",
+      "license": "MIT",
+      "category": "governance",
+      "keywords": ["review", "governance", "cedar", "receipts", "human-approval", "pr-review", "ci-guard"]
     }
   ]
 }

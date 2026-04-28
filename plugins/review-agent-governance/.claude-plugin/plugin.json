@@ -1,0 +1,10 @@
+{
+  "name": "review-agent-governance",
+  "version": "0.1.0",
+  "description": "Require a human approval signal before an AI agent can post PR reviews, comments, merges, or writes to CI config. Cedar-gated, receipt-signed, designed for the Hermes-style failure mode where a review bot posts without oversight.",
+  "author": {
+    "name": "Tom Farley",
+    "email": "tommy@scopeblind.com"
+  },
+  "license": "MIT"
+}
