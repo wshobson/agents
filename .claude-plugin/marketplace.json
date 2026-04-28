@@ -1068,7 +1068,7 @@
         "url": "https://github.com/gh0sty02"
       },
       "license": "MIT",
-      "category": "workflow",
+      "category": "workflows",
       "keywords": ["pipeline", "automation", "orchestration", "code-review", "qa", "playwright", "multi-agent", "dev-workflow"]
     }
   ]

@@ -38,7 +38,7 @@ Check if `.claude/pipeline/project-doc.md` exists.
 
 ## Step 3A: Full Scan
 
-Use `understand-anything` to analyse the entire codebase. Route ALL output through `context-mode` (`ctx_batch_execute` / `ctx_execute_file`) — never dump raw file contents into the main context window.
+Use `understand-anything` to analyse the entire codebase. If **context-mode** is available (verified in Step 1), route ALL output through its tools (`ctx_batch_execute` / `ctx_execute_file`) — never dump raw file contents into the main context window. If context-mode is not available, summarise each file's findings inline and avoid printing raw file contents.
 
 Produce `.claude/pipeline/project-doc.md` using the following structure (based on the architecture-blueprint-generator pattern):
 
@@ -102,7 +102,7 @@ After writing `project-doc.md`, proceed to **Step 4** to generate `AGENTS.md`.
 
 1. Run `git diff HEAD~1 --name-only` to get changed files
 2. If no changed files, report "No changes detected — project-doc.md is current" and exit
-3. Use `understand-anything` via `ctx_execute_file` to re-analyse only the changed files
+3. Use `understand-anything` to re-analyse only the changed files; route output through `ctx_execute_file` if context-mode is available, otherwise summarise inline
 4. Patch only the affected sections of `.claude/pipeline/project-doc.md`
 5. Update the `Last Scanned` and `Changed Files` fields
 6. Proceed to **Step 4B** (architectural change detection)
@@ -180,7 +180,7 @@ Example:
 [e.g. "Always test empty state, loading state, and error state for every UI feature"]
 ```
 
-If `mern-stack` skill is detected as relevant (MongoDB + Express + React + Node.js), append mern-specific instructions derived from the `mern-stack` skill's common pitfalls section.
+If the project is MERN stack (MongoDB + Express + React + Node.js — detected from package.json / requirements), append a `### MERN Stack Notes` section to AGENTS.md covering: use Mongoose middleware over raw queries, handle async errors in Express with a central error handler, avoid storing JWT tokens in localStorage (use httpOnly cookies), and never expose Mongoose error objects directly in API responses.
 
 ## Step 4B: Architectural Change Detection (Delta Runs Only)
 
