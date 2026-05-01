@@ -123,7 +123,7 @@ If a skill relies heavily on MCP servers:
 
 3. **Custom Servers**: Deploy as standalone services and communicate via HTTP/webhooks with Gemini CLI
 
-See @./docs/plugins.md for Gemini-native plugins that provide similar capabilities.
+See [docs/plugins.md](docs/plugins.md) for Gemini-native plugins that provide similar capabilities.
 
 ---
 
@@ -160,9 +160,10 @@ See @./docs/plugins.md for Gemini-native plugins that provide similar capabiliti
 
 ```bash
 # Gemini CLI pattern: Check exit code explicitly
-result = run_shell_command("git clone URL")
-if result.exit_code != 0:
-    handle_error(result.stderr)
+if ! git clone URL; then
+    echo "Clone failed" >&2
+    exit 1
+fi
 ```
 
 ---
@@ -189,53 +190,53 @@ done
 ```
 
 ✅ **Read files once, reuse in context** rather than multiple reads
-```python
+```bash
 # Good: Single read, reuse content
-file_content = read_file("config.json")
-config = json.loads(file_content)
-# Process config multiple times
+config=$(cat config.json)
+# Process config multiple times from variable
+echo "$config" | jq '.key'
 ```
 
 ✅ **Provide explicit error messages** for debugging
-```python
-try:
-    run_shell_command("npm install")
-except Exception as e:
-    print(f"Installation failed: {e}")
-    print("Workaround: Use 'npm ci' for CI environments")
+```bash
+if ! npm install; then
+    echo "Installation failed" >&2
+    echo "Workaround: Use 'npm ci' for CI environments" >&2
+    exit 1
+fi
 ```
 
 ### DON'Ts: Platform-Specific Anti-Patterns
 
 ❌ **Don't rely on subagent parallelism**
-```python
+```bash
 # Bad: Gemini can't run in parallel
-task(agent_type="explore", prompt="...")
-task(agent_type="code-review", prompt="...")
+# task(agent_type="explore", prompt="...")  # Claude Code only
+# task(agent_type="code-review", prompt="...")  # Claude Code only
 # Gemini will serialize these
 ```
 
 ❌ **Don't use per-agent model assignment**
-```python
+```bash
 # Bad: Gemini doesn't support per-task models
-task(agent_type="explore", model="haiku")
-task(agent_type="review", model="opus")
+# task(agent_type="explore", model="haiku")  # Claude Code only
+# task(agent_type="review", model="opus")  # Claude Code only
 # This pattern doesn't translate to Gemini
 ```
 
 ❌ **Don't perform partial file edits with expectation of atomicity**
-```python
+```bash
 # Bad: Gemini requires full file rewrite
-edit(file, old_str="x", new_str="y")  # Multiple edits
+# edit(file, old_str="x", new_str="y")  # Claude Code only
 # Use: read entire file, make all changes, write once
 ```
 
 ❌ **Don't assume shell features beyond POSIX basics**
 ```bash
 # Bad: Not portable across all systems
-run_shell_command("pushd /tmp && do_work && popd")  # May not work
+pushd /tmp && do_work && popd  # May not work in all shells
 # Good: Use cd with && chaining
-run_shell_command("cd /tmp && do_work && cd -")
+cd /tmp && do_work && cd -
 ```
 
 ---
@@ -309,7 +310,7 @@ done
 Or use a language-aware tool:
 ```bash
 # Using ripgrep and sed for atomic operations
-run_shell_command("find src -name '*.ts' -type f -exec sed -i 's/oldString/newString/g' {} +")
+find src -name '*.ts' -type f -exec sed -i 's/oldString/newString/g' {} +
 ```
 
 ### Pattern: Code Review Workflow
@@ -390,11 +391,11 @@ fi
 
 **A:** `read_file` → modify in memory/string processing → `write_file`:
 
-```python
-# Pseudocode for Gemini CLI
-content = read_file("config.json")
-updated = content.replace('"old_key": "old_value"', '"old_key": "new_value"')
-write_file("config.json", updated)
+```bash
+# Gemini CLI pattern: read, transform, write
+content=$(cat config.json)
+updated=$(echo "$content" | sed 's/"old_key": "old_value"/"old_key": "new_value"/g')
+echo "$updated" > config.json
 ```
 
 For multiple edits to the same file, collect all changes, then write once to minimize I/O.
@@ -432,13 +433,13 @@ gh issue list --repo owner/repo --json number,title,state
 
 1. **Use `nohup` with output redirection:**
    ```bash
-   run_shell_command("nohup npm run watch > build.log 2>&1 &")
+   nohup npm run watch > build.log 2>&1 &
    ```
 
 2. **Check status later:**
    ```bash
-   run_shell_command("ps aux | grep 'npm run watch'")
-   run_shell_command("tail -f build.log")
+   ps aux | grep 'npm run watch'
+   tail -f build.log
    ```
 
 3. **For long-running tasks**, use the skill's built-in checkpointing to allow resumption.
@@ -497,4 +498,4 @@ gemini --model=gemini-2.0-pro
 ---
 
 **Last Updated:** April 2026  
-**For more information:** See @./GEMINI.md for feature overview and @./docs/plugins.md for available plugins.
+**For more information:** See [GEMINI.md](../GEMINI.md) for feature overview and [docs/plugins.md](plugins.md) for available plugins.

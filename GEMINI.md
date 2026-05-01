@@ -5,8 +5,8 @@ You have access to **150+ specialized skills** organized across **79 plugins** i
 ## Navigation
 
 - **Skill Library**: Skills are auto-discovered by Gemini CLI. Use skills by name when the model identifies a matching task (e.g., "use the security-audit skill").
-- **Plugin Catalog**: See @./docs/gemini-plugin-guide.md for a Gemini-optimized listing with natural-language trigger examples, or @./docs/plugins.md for the full technical catalog.
-- **Tool Mapping**: Claude Code and Gemini CLI have different tool sets. See @./docs/gemini-tool-mapping.md for equivalents and platform-specific notes.
+- **Plugin Catalog**: See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for a Gemini-optimized listing with natural-language trigger examples, or [docs/plugins.md](docs/plugins.md) for the full technical catalog.
+- **Tool Mapping**: Claude Code and Gemini CLI have different tool sets. See [docs/gemini-tool-mapping.md](docs/gemini-tool-mapping.md) for equivalents and platform-specific notes.
 
 ## Key Differences from Claude Code
 
@@ -15,7 +15,7 @@ This ecosystem was originally built for **Claude Code** (Claude AI paired with a
 | Feature | Claude Code | Gemini CLI | Workaround |
 |---------|-----------|-----------|-----------|
 | **Slash Commands** | `/plan`, `/spec`, `/ship` entry points | Skills auto-trigger instead | Use skill names directly in prompts |
-| **Subagent Orchestration** | Fan-out parallel execution | Sequential task execution | Use @superpowers:executing-plans to batch tasks |
+| **Subagent Orchestration** | Fan-out parallel execution | Sequential task execution | Use the executing-plans skill to batch tasks |
 | **Model Assignment** | Per-agent model tiers (Opus/Sonnet/Haiku) | Session-level model only | Skills are model-agnostic; use session default |
 | **Plugin Installation** | Per-plugin via `/plugin install` | Per-extension via `gemini extensions install` | Install once: `gemini extensions install https://github.com/wshobson/agents` |
 
@@ -51,14 +51,14 @@ Skills are **on-demand expertise packages**. When you ask a task that matches a 
 ### Multi-Agent Workflows
 - Code review orchestration, system design, large refactors, complex troubleshooting
 
-For a complete catalog with Gemini trigger examples, see @./docs/gemini-plugin-guide.md
+For a complete catalog with Gemini trigger examples, see [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md)
 
 ## Installation & Getting Started
 
 This extension is already installed. To update it:
 
 ```bash
-gemini extensions update claude-agents
+gemini extensions update claude-code-workflows
 ```
 
 To reinstall or install from source:
@@ -71,7 +71,7 @@ gemini extensions install https://github.com/wshobson/agents
 
 - **Issues**: Report bugs or suggest skills at https://github.com/wshobson/agents/issues
 - **Skill Development**: Contribute new skills by creating a `skills/<skill-name>/SKILL.md` file
-- **Plugin Development**: Create new plugins in `plugins/` following the structure in @./CLAUDE.md
+- **Plugin Development**: Create new plugins in `plugins/` following the structure in [CLAUDE.md](CLAUDE.md)
 
 ---
 

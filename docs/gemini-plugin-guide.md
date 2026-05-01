@@ -124,7 +124,7 @@ Plugins without a skills list operate through agents directly.
 
 ---
 
-## AI & ML (4 plugins)
+## AI & ML (3 plugins)
 
 **llm-application-dev** — Skills: embedding-strategies, hybrid-search-implementation, langchain-architecture, llm-evaluation, prompt-engineering-patterns, rag-implementation, similarity-search-patterns, vector-index-tuning
 **Use when**: "Build a RAG system", "implement a LangGraph agent", "optimize prompts", "tune vector indexes"
@@ -132,8 +132,6 @@ Plugins without a skills list operate through agents directly.
 **machine-learning-ops** — Skills: ml-pipeline-workflow — **Use when**: "Set up MLOps pipelines", "automate model training and deployment"
 
 **context-management** — **Use when**: "Restore context from a previous session", "persist state across long workflows"
-
-**agent-orchestration** — **Use when**: "Improve AI agent coordination and context usage"
 
 ---
 
