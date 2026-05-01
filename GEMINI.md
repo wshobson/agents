@@ -5,7 +5,7 @@ You have access to **150+ specialized skills** organized across **79 plugins** i
 ## Navigation
 
 - **Skill Library**: Skills are auto-discovered by Gemini CLI. Use skills by name when the model identifies a matching task (e.g., "use the security-audit skill").
-- **Plugin Catalog**: See @./docs/plugins.md for a full listing of plugins, their skills, and purpose areas.
+- **Plugin Catalog**: See @./docs/gemini-plugin-guide.md for a Gemini-optimized listing with natural-language trigger examples, or @./docs/plugins.md for the full technical catalog.
 - **Tool Mapping**: Claude Code and Gemini CLI have different tool sets. See @./docs/gemini-tool-mapping.md for equivalents and platform-specific notes.
 
 ## Key Differences from Claude Code
@@ -51,7 +51,7 @@ Skills are **on-demand expertise packages**. When you ask a task that matches a 
 ### Multi-Agent Workflows
 - Code review orchestration, system design, large refactors, complex troubleshooting
 
-For a complete catalog, see @./docs/plugins.md.
+For a complete catalog with Gemini trigger examples, see @./docs/gemini-plugin-guide.md.
 
 ## Installation & Getting Started
 
