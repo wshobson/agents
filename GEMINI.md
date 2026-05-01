@@ -51,7 +51,7 @@ Skills are **on-demand expertise packages**. When you ask a task that matches a 
 ### Multi-Agent Workflows
 - Code review orchestration, system design, large refactors, complex troubleshooting
 
-For a complete catalog with Gemini trigger examples, see @./docs/gemini-plugin-guide.md.
+For a complete catalog with Gemini trigger examples, see @./docs/gemini-plugin-guide.md
 
 ## Installation & Getting Started
 
