@@ -2,7 +2,8 @@
 
 **Date:** 2026-04-30  
 **Status:** Accepted  
-**Deciders:** Project maintainers
+**Deciders:** Project maintainers  
+**Sources Verified:** 2026-05-01 — Gemini CLI official documentation checked against https://geminicli.com/docs/
 
 ---
 
@@ -71,6 +72,16 @@ commands/security-scanning/scan.toml  →  /security-scanning:scan
 ```
 
 This means the invocation gap is fully closeable. `docs/gemini-tool-mapping.md` requires correction (pending).
+
+### Command file distribution: 100 → 115 TOML files
+
+The 100 Claude Code commands map to 115 Gemini `.toml` files due to a mix of nested and flat-root commands:
+- **Nested**: `commands/backend-development/feature-development.toml` → `/backend-development:feature-development`
+- **Flat**: `commands/c4-architecture.toml` → `/c4-architecture` (also has nested variants)
+
+This creates plugin-level shortcuts that weren't present in Claude Code, providing better discoverability. Both variants are intentional and beneficial.
+
+### Gemini slash commands ARE supported
 
 ### Install granularity is a hard architectural limit
 

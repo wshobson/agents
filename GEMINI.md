@@ -19,6 +19,29 @@ This ecosystem was originally built for **Claude Code** (Claude AI paired with a
 | **Model Assignment** | Per-agent model tiers (Opus/Sonnet/Haiku) | Session-level model only | Skills are model-agnostic; use session default |
 | **Plugin Installation** | Per-plugin via `/plugin install` | Per-extension via `gemini extensions install` | Install once: `gemini extensions install https://github.com/wshobson/agents` |
 
+## Slash Commands
+
+100 slash commands are available across 50 plugins, mirroring Claude Code's `/plugin:command` namespace:
+
+```
+/security-scanning:security-sast          # SAST vulnerability scan
+/backend-development:feature-development  # End-to-end feature orchestration
+/tdd-workflows:tdd-cycle                  # Full TDD red-green-refactor
+/python-development:python-scaffold       # Python project scaffolding
+```
+
+Use `/help` in Gemini CLI to list all available commands. See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for a full catalog with trigger examples.
+
+## Per-Plugin Context Files
+
+Each plugin has a `plugins/<name>/GEMINI.md` with scoped agent, command, and skill documentation:
+
+| User type | How they load |
+|---|---|
+| **Normal extension users** | Not auto-loaded — use slash commands above |
+| **Power users** (repo cloned) | Auto-loaded when you `cd plugins/<name>/` |
+| **Future** | Will be referenceable from slash commands if Gemini adds extension-relative `@{path}` resolution |
+
 ## How to Use Skills
 
 Skills are **on-demand expertise packages**. When you ask a task that matches a skill's description, Gemini CLI will:

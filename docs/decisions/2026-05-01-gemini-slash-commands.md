@@ -2,7 +2,8 @@
 
 **Date:** 2026-05-01  
 **Status:** Accepted  
-**Deciders:** Project maintainers
+**Deciders:** Project maintainers  
+**Sources Verified:** 2026-05-01 — Gemini CLI official documentation checked against https://geminicli.com/docs/
 
 ---
 

@@ -2,7 +2,8 @@
 
 **Date:** 2026-05-01  
 **Status:** Accepted  
-**Deciders:** Project maintainers
+**Deciders:** Project maintainers  
+**Sources Verified:** 2026-05-01 — Gemini CLI official documentation checked against https://geminicli.com/docs/
 
 ---
 
@@ -58,9 +59,10 @@ Add `@./plugins/<name>/GEMINI.md` references to the root GEMINI.md to make them 
 ### Option 3 (Chosen): Keep files in the repo, no changes
 
 Files ship with the extension but serve passive roles:
-1. **Developer workflow**: Users who clone and `cd plugins/security-scanning/` get the GEMINI.md scoped context automatically via subdirectory scanning
-2. **Human reference**: Readable documentation of each plugin's capabilities directly in the extension directory
-3. **Future option**: If Gemini CLI verifies extension-relative `@{path}` resolution, slash commands could reference these files to provide richer context without embedding everything inline
+1. **Human reference**: Readable documentation of each plugin's capabilities directly in the extension directory (for developers examining the repo)
+2. **Future option**: If Gemini CLI verifies extension-relative `@{path}` resolution, slash commands could reference these files to provide richer context without embedding everything inline
+
+**Note on "Developer workflow" claim:** Initial claim that `cd plugins/security-scanning/` auto-loads context via subdirectory scanning is **INCORRECT**. Gemini CLI scans for `.gemini/GEMINI.md` (in a `.gemini/` subdirectory), not arbitrary `GEMINI.md` files at the repo root. The files are placed at `plugins/<name>/GEMINI.md`, not `plugins/<name>/.gemini/GEMINI.md`, so they are never auto-loaded even in developer workflows.
 
 ---
 
@@ -69,7 +71,7 @@ Files ship with the extension but serve passive roles:
 A concern was raised that 79 GEMINI.md files create "security and maintenance liability."
 
 - **Security**: Markdown documentation files contain no executable code, secrets, or user data. There is no security surface.
-- **Size**: 2,632 lines across 79 files ≈ 158 KB uncompressed. The "~2.6MB" figure circulating in discussion is off by roughly 16×.
+- **Size**: 2,389 lines across 79 files ≈ 142 KB uncompressed. The "~2.6MB" figure circulating in discussion is off by roughly 18×.
 - **Maintenance**: Addressed by the generator script. Running `python3 tools/generate_plugin_gemini_md.py` regenerates all 79 files from current plugin frontmatter.
 
 ---
@@ -80,7 +82,7 @@ Keep the per-plugin GEMINI.md files in the extension as-is. Do not add them to r
 
 ## Consequences
 
-- Normal extension users: files are present but dormant (no automatic loading, no harm)
-- Developer/power users: auto-loaded when working inside the repo tree
+- Normal extension users: files are present but dormant (no automatic loading)
+- Developer/power users: files serve as human-readable reference documentation only (NOT auto-loaded via subdirectory scanning, as they are at repo root, not in `.gemini/` directories)
 - Phase A slash commands: use self-contained prompts (per separate ADR); these files are not referenced by TOML commands due to the `@{path}` extension-relative resolution limitation
 - Future: if extension-relative file inclusion is ever supported or verified, these files become directly valuable to TOML command prompts
