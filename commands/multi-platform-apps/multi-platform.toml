@@ -1,0 +1,10 @@
+description = "Orchestrate cross-platform feature development across web, mobile, and desktop with API-first architecture"
+prompt = '''
+Orchestrate cross-platform feature development across web, mobile, and desktop with API-first architecture.
+
+Available agents: `backend-architect`, `flutter-expert`, `frontend-developer`, `ios-developer`, `mobile-developer`, `ui-ux-designer`.
+
+Arguments: <feature description> [--platforms web,ios,android,desktop] [--shared-code evaluate|kotlin-multiplatform|typescript]
+
+{{args}}
+'''

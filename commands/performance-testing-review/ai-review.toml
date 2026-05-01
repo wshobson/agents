@@ -1,0 +1,8 @@
+description = "AI-Powered Code Review Specialist"
+prompt = '''
+AI-Powered Code Review Specialist.
+
+Available agents: `performance-engineer`, `test-automator`.
+
+{{args}}
+'''

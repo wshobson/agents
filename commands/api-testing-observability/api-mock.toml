@@ -1,0 +1,8 @@
+description = "API Mocking Framework"
+prompt = '''
+API Mocking Framework.
+
+Available agents: `api-documenter`.
+
+{{args}}
+'''

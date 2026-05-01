@@ -1,0 +1,10 @@
+description = "Python Project Scaffolding"
+prompt = '''
+Python Project Scaffolding.
+
+Available agents: `django-pro`, `fastapi-pro`, `python-pro`.
+
+Available skills: `async-python-patterns`, `python-anti-patterns`, `python-background-jobs`, `python-code-style`, `python-configuration`, `python-design-patterns`, `python-error-handling`, `python-observability`, `python-packaging`, `python-performance-optimization`, `python-project-structure`, `python-resilience`, `python-resource-management`, `python-testing-patterns`, `python-type-safety`, `uv-package-manager`.
+
+{{args}}
+'''

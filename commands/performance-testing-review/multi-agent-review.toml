@@ -1,0 +1,10 @@
+description = "Multi-Agent Code Review Orchestration Tool"
+prompt = '''
+Multi-Agent Code Review Orchestration Tool.
+
+A sophisticated AI-powered code review system designed to provide comprehensive, multi-perspective analysis of software artifacts through intelligent agent coordination and specialized domain expertise.
+
+Available agents: `performance-engineer`, `test-automator`.
+
+{{args}}
+'''

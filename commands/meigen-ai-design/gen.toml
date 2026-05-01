@@ -1,0 +1,12 @@
+description = ">- Quick image generation. Use when user runs /meigen-ai-design:gen with a prompt. Skips intent assessment, generates directly."
+prompt = '''
+>- Quick image generation. Use when user runs /meigen-ai-design:gen with a prompt. Skips intent assessment, generates directly.
+
+Generate an image immediately from the user's description. This is the fast path — skip exploration and go straight to generation.
+
+Available agents: `gallery-researcher`, `image-generator`, `prompt-crafter`.
+
+Arguments: <prompt>
+
+{{args}}
+'''

@@ -1,0 +1,10 @@
+description = "Set up PreToolUse hook to block --no-verify and other git bypass flags in Claude Code projects"
+prompt = '''
+Set up PreToolUse hook to block --no-verify and other git bypass flags in Claude Code projects.
+
+Available skills: `block-no-verify-hook`.
+
+Arguments: [--global] [--extend <additional-flags>]
+
+{{args}}
+'''

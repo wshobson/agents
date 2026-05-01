@@ -1,0 +1,14 @@
+description = "Walk the receipt chain in ./receipts/ verifying every signature and hash link. Detects insertions, deletions, and tampering across the entire audit trail."
+prompt = '''
+Walk the receipt chain in ./receipts/ verifying every signature and hash link. Detects insertions, deletions, and tampering across the entire audit trail.
+
+Verify the integrity of an entire receipt chain, not just a single receipt. Walks every receipt in `./receipts/` (or the specified directory), verifies each signature individually, and confirms that each `parent_receipt_id` correctly links to the previous receipt.
+
+Available agents: `policy-enforcer`, `receipt-verifier`.
+
+Available skills: `protect-mcp-setup`.
+
+Arguments: [--last N] [--dir path]
+
+{{args}}
+'''

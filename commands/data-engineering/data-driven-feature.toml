@@ -1,0 +1,12 @@
+description = "Build features guided by data insights, A/B testing, and continuous measurement"
+prompt = '''
+Build features guided by data insights, A/B testing, and continuous measurement.
+
+Available agents: `backend-architect`, `data-engineer`.
+
+Available skills: `airflow-dag-patterns`, `data-quality-frameworks`, `dbt-transformation-patterns`, `spark-optimization`.
+
+Arguments: <feature description> [--experiment-type ab|multivariate|bandit] [--confidence 0.90|0.95|0.99]
+
+{{args}}
+'''

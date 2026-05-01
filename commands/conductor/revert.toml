@@ -1,0 +1,14 @@
+description = "Git-aware undo by logical work unit (track, phase, or task)"
+prompt = '''
+Git-aware undo by logical work unit (track, phase, or task).
+
+Revert changes by logical work unit with full git awareness. Supports reverting entire tracks, specific phases, or individual tasks.
+
+Available agents: `conductor-validator`.
+
+Available skills: `context-driven-development`, `track-management`, `workflow-patterns`.
+
+Arguments: [track-id | track-id:phase | track-id:task]
+
+{{args}}
+'''

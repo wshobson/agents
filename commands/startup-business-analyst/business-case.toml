@@ -1,0 +1,10 @@
+description = "Generate comprehensive investor-ready business case document with market, solution, financials, and strategy"
+prompt = '''
+Generate comprehensive investor-ready business case document with market, solution, financials, and strategy.
+
+Available agents: `startup-analyst`.
+
+Available skills: `competitive-landscape`, `market-sizing-analysis`, `startup-financial-modeling`, `startup-metrics-framework`, `team-composition-analysis`.
+
+{{args}}
+'''

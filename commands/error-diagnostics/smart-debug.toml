@@ -1,0 +1,8 @@
+description = "AI-assisted smart debugging — parse error messages, stack traces, and failure patterns to identify root causes and produce a fix with automated observability steps."
+prompt = '''
+AI-assisted smart debugging — parse error messages, stack traces, and failure patterns to identify root causes and produce a fix with automated observability steps.
+
+Available agents: `debugger`, `error-detective`.
+
+{{args}}
+'''

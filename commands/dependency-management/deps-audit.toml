@@ -1,0 +1,8 @@
+description = "Dependency Audit and Security Analysis"
+prompt = '''
+Dependency Audit and Security Analysis.
+
+Available agents: `legacy-modernizer`.
+
+{{args}}
+'''

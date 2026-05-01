@@ -1,0 +1,12 @@
+description = "Debug issues using competing hypotheses with parallel investigation by multiple agents"
+prompt = '''
+Debug issues using competing hypotheses with parallel investigation by multiple agents.
+
+Available agents: `team-debugger`, `team-implementer`, `team-lead`, `team-reviewer`.
+
+Available skills: `multi-reviewer-patterns`, `parallel-debugging`, `parallel-feature-development`, `task-coordination-strategies`, `team-communication-protocols`, `team-composition-patterns`.
+
+Arguments: <error-description-or-file> [--hypotheses N] [--scope files|module|project]
+
+{{args}}
+'''

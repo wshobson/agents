@@ -1,0 +1,12 @@
+description = "Machine Learning Pipeline - Multi-Agent MLOps Orchestration"
+prompt = '''
+Machine Learning Pipeline - Multi-Agent MLOps Orchestration.
+
+Design and implement a complete ML pipeline for: $ARGUMENTS
+
+Available agents: `data-scientist`, `ml-engineer`, `mlops-engineer`.
+
+Available skills: `ml-pipeline-workflow`.
+
+{{args}}
+'''

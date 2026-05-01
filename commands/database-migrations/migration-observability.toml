@@ -1,0 +1,8 @@
+description = "Migration monitoring, CDC, and observability infrastructure"
+prompt = '''
+Migration monitoring, CDC, and observability infrastructure.
+
+Available agents: `database-admin`, `database-optimizer`.
+
+{{args}}
+'''

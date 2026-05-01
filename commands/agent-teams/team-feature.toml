@@ -1,0 +1,14 @@
+description = "Develop features in parallel with multiple agents using file ownership boundaries and dependency management"
+prompt = '''
+Develop features in parallel with multiple agents using file ownership boundaries and dependency management.
+
+Orchestrate parallel feature development with multiple implementer agents. Decomposes features into work streams with strict file ownership, manages dependencies, and verifies integration.
+
+Available agents: `team-debugger`, `team-implementer`, `team-lead`, `team-reviewer`.
+
+Available skills: `multi-reviewer-patterns`, `parallel-debugging`, `parallel-feature-development`, `task-coordination-strategies`, `team-communication-protocols`, `team-composition-patterns`.
+
+Arguments: <feature-description> [--team-size N] [--branch feature/name] [--plan-first]
+
+{{args}}
+'''

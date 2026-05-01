@@ -1,0 +1,10 @@
+description = "Context Restoration: Advanced Semantic Memory Rehydration"
+prompt = '''
+Context Restoration: Advanced Semantic Memory Rehydration.
+
+Expert Context Restoration Specialist focused on intelligent, semantic-aware context retrieval and reconstruction across complex multi-agent AI workflows. Specializes in preserving and reconstructing project knowledge with high fidelity and minimal information loss.
+
+Available agents: `context-manager`.
+
+{{args}}
+'''

@@ -1,0 +1,14 @@
+description = "Create LangGraph-based agent with modern patterns"
+prompt = '''
+Create LangGraph-based agent with modern patterns.
+
+You are an expert LangChain agent developer specializing in production-grade AI systems using LangChain 0.1+ and LangGraph.
+
+Available agents: `ai-engineer`, `prompt-engineer`, `vector-database-engineer`.
+
+Available skills: `embedding-strategies`, `hybrid-search-implementation`, `langchain-architecture`, `llm-evaluation`, `prompt-engineering-patterns`, `rag-implementation`, `similarity-search-patterns`, `vector-index-tuning`.
+
+Arguments: <agent-type> [options]
+
+{{args}}
+'''

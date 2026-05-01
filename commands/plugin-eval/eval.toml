@@ -1,0 +1,12 @@
+description = "Evaluate a plugin or skill for quality"
+prompt = '''
+Evaluate a plugin or skill for quality.
+
+Available agents: `eval-judge`, `eval-orchestrator`.
+
+Available skills: `evaluation-methodology`.
+
+Arguments: <path> [--depth quick|standard]
+
+{{args}}
+'''

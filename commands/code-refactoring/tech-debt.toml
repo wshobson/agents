@@ -1,0 +1,8 @@
+description = "Technical Debt Analysis and Remediation"
+prompt = '''
+Technical Debt Analysis and Remediation.
+
+Available agents: `code-reviewer`, `legacy-modernizer`.
+
+{{args}}
+'''

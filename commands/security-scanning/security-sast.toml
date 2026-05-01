@@ -1,0 +1,10 @@
+description = "Static Application Security Testing (SAST) for code vulnerability analysis across multiple languages and frameworks"
+prompt = '''
+Static Application Security Testing (SAST) for code vulnerability analysis across multiple languages and frameworks.
+
+Available agents: `security-auditor`, `threat-modeling-expert`.
+
+Available skills: `attack-tree-construction`, `sast-configuration`, `security-requirement-extraction`, `stride-analysis-patterns`, `threat-mitigation-mapping`.
+
+{{args}}
+'''

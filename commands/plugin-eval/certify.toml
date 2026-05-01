@@ -1,0 +1,12 @@
+description = "Full quality certification with badge"
+prompt = '''
+Full quality certification with badge.
+
+Available agents: `eval-judge`, `eval-orchestrator`.
+
+Available skills: `evaluation-methodology`.
+
+Arguments: <path>
+
+{{args}}
+'''

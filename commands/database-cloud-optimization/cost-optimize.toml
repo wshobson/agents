@@ -1,0 +1,8 @@
+description = "Cloud Cost Optimization"
+prompt = '''
+Cloud Cost Optimization.
+
+Available agents: `backend-architect`, `cloud-architect`, `database-architect`, `database-optimizer`.
+
+{{args}}
+'''

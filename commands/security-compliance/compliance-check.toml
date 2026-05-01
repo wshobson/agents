@@ -1,0 +1,8 @@
+description = "Regulatory Compliance Check"
+prompt = '''
+Regulatory Compliance Check.
+
+Available agents: `security-auditor`.
+
+{{args}}
+'''

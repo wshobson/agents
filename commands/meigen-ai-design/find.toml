@@ -1,0 +1,12 @@
+description = ">- Quick gallery search. Use when user runs /meigen-ai-design:find with keywords to browse inspiration."
+prompt = '''
+>- Quick gallery search. Use when user runs /meigen-ai-design:find with keywords to browse inspiration.
+
+Search the curated gallery for inspiration. Show visual results immediately.
+
+Available agents: `gallery-researcher`, `image-generator`, `prompt-crafter`.
+
+Arguments: <keywords>
+
+{{args}}
+'''

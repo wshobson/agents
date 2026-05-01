@@ -1,0 +1,14 @@
+description = "Spawn an agent team using presets (review, debug, feature, fullstack, research, security, migration) or custom composition"
+prompt = '''
+Spawn an agent team using presets (review, debug, feature, fullstack, research, security, migration) or custom composition.
+
+Spawn a multi-agent team using preset configurations or custom composition. Handles team creation, teammate spawning, and initial task setup.
+
+Available agents: `team-debugger`, `team-implementer`, `team-lead`, `team-reviewer`.
+
+Available skills: `multi-reviewer-patterns`, `parallel-debugging`, `parallel-feature-development`, `task-coordination-strategies`, `team-communication-protocols`, `team-composition-patterns`.
+
+Arguments: <preset|custom> [--name team-name] [--members N] [--delegate]
+
+{{args}}
+'''

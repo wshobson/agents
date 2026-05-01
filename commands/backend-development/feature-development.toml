@@ -1,0 +1,12 @@
+description = "Orchestrate end-to-end feature development from requirements to deployment"
+prompt = '''
+Orchestrate end-to-end feature development from requirements to deployment.
+
+Available agents: `backend-architect`, `event-sourcing-architect`, `graphql-architect`, `performance-engineer`, `security-auditor`, `tdd-orchestrator`, `temporal-python-pro`, `test-automator`.
+
+Available skills: `api-design-principles`, `architecture-patterns`, `cqrs-implementation`, `event-store-design`, `microservices-patterns`, `projection-patterns`, `saga-orchestration`, `temporal-python-testing`, `workflow-orchestration-patterns`.
+
+Arguments: <feature description> [--methodology tdd|bdd|ddd] [--complexity simple|medium|complex]
+
+{{args}}
+'''

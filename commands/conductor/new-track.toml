@@ -1,0 +1,12 @@
+description = "Create a new track with specification and phased implementation plan"
+prompt = '''
+Create a new track with specification and phased implementation plan.
+
+Available agents: `conductor-validator`.
+
+Available skills: `context-driven-development`, `track-management`, `workflow-patterns`.
+
+Arguments: <feature|bug|chore|refactor> <name>
+
+{{args}}
+'''

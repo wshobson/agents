@@ -1,0 +1,12 @@
+description = "Audit UI code for WCAG compliance"
+prompt = '''
+Audit UI code for WCAG compliance.
+
+Available agents: `accessibility-expert`, `design-system-architect`, `ui-designer`.
+
+Available skills: `accessibility-compliance`, `design-system-patterns`, `interaction-design`, `mobile-android-design`, `mobile-ios-design`, `react-native-design`, `responsive-design`, `visual-design-foundations`, `web-component-design`.
+
+Arguments: [file-path|component-name|--level AA|AAA]
+
+{{args}}
+'''
