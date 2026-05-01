@@ -4,9 +4,11 @@ Complete audit of three Gemini CLI integration Architecture Decision Records, in
 
 ## Final Decision: Option C (Architecture Simplification)
 
-**Status:** IMPLEMENTED (2026-05-01)
+**Status:** IN REVIEW (2026-05-01)  
+**Branch:** feature/gemini-cli-integration (19 commits ahead of main)  
+**Merged to main:** NO
 
-Per-plugin GEMINI.md files have been removed. The power user workflow claim was false (files were never auto-loaded). The real power user feature — slash commands — is kept.
+Per-plugin GEMINI.md files have been removed from the worktree. The power user workflow claim was false (files were never auto-loaded). The real power user feature — slash commands — is kept.
 
 ### What Changed
 

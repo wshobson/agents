@@ -32,15 +32,16 @@ This ecosystem was originally built for **Claude Code** (Claude AI paired with a
 
 Use `/help` in Gemini CLI to list all available commands. See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for a full catalog with trigger examples.
 
-## Per-Plugin Context Files
+## Slash Commands for Plugin Discovery
 
-Each plugin has a `plugins/<name>/GEMINI.md` with scoped agent, command, and skill documentation:
+All 79 plugins are accessible via slash commands: `/security-scan`, `/conductor-orchestrate`, `/c4-architecture`, etc.
 
-| User type | How they load |
-|---|---|
-| **Normal extension users** | Not auto-loaded — use slash commands above |
-| **Power users** (repo cloned) | Auto-loaded when you `cd plugins/<name>/` |
-| **Future** | Will be referenceable from slash commands if Gemini adds extension-relative `@{path}` resolution |
+Slash commands provide the primary discovery mechanism:
+- Fast access: Type `/` to see all available plugins
+- Consistent UX: Works identically for all users
+- Integrated context: Each command loads its plugin's agents and skills
+
+All users (normal and power) access plugins through the same UX: either browsing the bootstrap context or using `/plugin-name` shortcuts.
 
 ## How to Use Skills
 

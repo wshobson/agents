@@ -38,20 +38,22 @@ A comprehensive guide for users migrating from Claude Code to Gemini CLI. This d
 
 The following features are **unique to Claude Code** and do not have direct Gemini CLI equivalents. Skills designed for cross-platform compatibility should avoid relying on these features.
 
-### Slash Commands (`/plan`, `/spec`, `/ship`)
-**Claude Code:** Entry points that trigger predefined workflows
+### Global Slash Commands (`/plan`, `/spec`, `/ship`)
+**Claude Code:** Global entry points that trigger predefined workflows
 ```
 /plan - Structured planning skill execution
 /spec - Specification writing and review
 /ship - Finalization and delivery checklist
 ```
 
-**Gemini CLI Workaround:** Skills auto-activate by name matching. Invoke with:
-```
-I need help planning this feature
-I need to write a specification for this module
-I'm ready to finalize and ship this work
-```
+**Gemini CLI Status:** Gemini CLI **does support custom slash commands** via TOML files. However, Gemini's commands are extension-specific and plugin-namespaced (e.g., `/security-scan`, `/conductor:orchestrate`), not global workflow shortcuts.
+
+**Gemini CLI Implementation:** Custom commands defined in `commands/` directory. Users can:
+- Type `/` to see all available commands in the current extension
+- Invoke plugin-specific commands: `/plugin-name`, `/plugin-name:command-name`
+- Skills auto-activate by name matching for tasks without explicit commands
+
+If your skill needs global triggering (like Gemini's `/plan` equivalent), structure it for auto-activation by intent matching rather than explicit command invocation.
 
 ### Subagent Orchestration (Parallel Execution)
 **Claude Code:** `task` tool dispatches parallel subagents (explore, task, code-review, general-purpose, custom agents)
