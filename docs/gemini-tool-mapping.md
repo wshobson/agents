@@ -174,18 +174,18 @@ When designing or porting skills to Gemini CLI, follow these DO's and DON'Ts to 
 ### DO's: Portable, Platform-Agnostic Skills
 
 ✅ **Use simple shell commands** instead of tool abstractions
-```python
+```bash
 # Good: Works on both platforms
-run_shell_command("find . -name '*.ts' -type f")
-run_shell_command("grep -r 'import.*auth' src/")
+find . -name '*.ts' -type f
+grep -r 'import.*auth' src/
 ```
 
 ✅ **Structure skills for sequential execution** with batched operations
-```python
+```bash
 # Good: Batch related work in one task
-tasks = ["lint", "test", "build"]
-for task in tasks:
-    run_shell_command(f"npm run {task}")
+for task in lint test build; do
+    npm run "$task"
+done
 ```
 
 ✅ **Read files once, reuse in context** rather than multiple reads
@@ -343,10 +343,10 @@ content = view("large_file.js", view_range=[100, 150])
 
 **Gemini CLI (read entire, then parse):**
 ```bash
-# Read full file into variable
-full_content=$(read_file("large_file.js"))
-# Extract lines 100-150 using shell
-lines=$(echo "$full_content" | sed -n '100,150p')
+# Invoke read_file via Gemini CLI tool
+# Read full file into variable - requires running through Gemini tool
+# Example: read the file, then extract lines in shell
+sed -n '100,150p' large_file.js
 ```
 
 ### Pattern: Conditional Shell Execution
@@ -362,8 +362,10 @@ else:
 
 **Gemini CLI (explicit error checking):**
 ```bash
-if run_shell_command("npm run test"); then
-    run_shell_command("npm run build")
+# Run npm test and check exit code
+npm run test
+if [ $? -eq 0 ]; then
+    npm run build
 else
     echo "Tests failed; skipping build"
 fi
