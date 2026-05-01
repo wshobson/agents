@@ -77,12 +77,17 @@ Gemini CLI auto-discovers commands from a `commands/` directory within the exten
 ## Consequences
 
 **Gains:**
-- 100 Gemini slash commands mirroring Claude Code's full command surface
+- 115 Gemini slash commands mirroring Claude Code's command surface
 - Identical `/<plugin>:<command>` namespace across both platforms
 - Self-contained prompts work without CWD dependency or file system assumptions
+- Real power user feature: fast plugin discovery via `/` command menu
+
+**Status as of 2026-05-01:**
+- All 115 TOML command files are generated and included in the extension
+- This is the primary (and now only) power user feature
+- Slash commands provide genuine value for both normal and power users
 
 **Limitations:**
 - TOML prompts are summaries, not the full command content. Complex multi-phase orchestration commands (e.g., `feature-development`, `tdd-cycle`) lose their detailed step sequences in the Gemini version.
-- If Gemini CLI later adds extension-relative `@{path}` resolution, prompts could be updated to reference per-plugin GEMINI.md files instead of embedding context inline.
 
-**Future option:** If the `@./` GEMINI.md inclusion syntax (confirmed for `GEMINI.md` files, path resolution ambiguous for extensions) is verified to work extension-relative, the per-plugin GEMINI.md files from Phase B could be referenced from slash command prompts to provide richer context without prompt bloat.
+**Architectural note:** Original plan included per-plugin `GEMINI.md` files as optional context references. These have been removed (see [2026-05-01 Architecture Simplification ADR](2026-05-01-architecture-simplification.md)) as they were never actually used. Slash commands remain the core power user feature.

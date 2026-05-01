@@ -1,23 +1,53 @@
-# ADR Audit & Analysis Documents
+# ADR Audit & Architecture Simplification
 
-Complete audit of three Gemini CLI integration Architecture Decision Records, including critical findings, skepticism analysis, and strategic recommendations.
+Complete audit of three Gemini CLI integration Architecture Decision Records, including critical findings, skepticism analysis, and the final decision to simplify architecture by removing per-plugin files (Option C).
 
-## Original ADRs (Revised)
+## Final Decision: Option C (Architecture Simplification)
+
+**Status:** IMPLEMENTED (2026-05-01)
+
+Per-plugin GEMINI.md files have been removed. The power user workflow claim was false (files were never auto-loaded). The real power user feature — slash commands — is kept.
+
+### What Changed
+
+- ✂️ **Deleted:** 79 per-plugin GEMINI.md files
+- ✂️ **Deleted:** `tools/generate_plugin_gemini_md.py` (per-plugin file generator)
+- ✓ **Kept:** Root GEMINI.md (comprehensive bootstrap context)
+- ✓ **Kept:** 115 TOML slash commands (`/plugin-name` shortcuts)
+- ✓ **Kept:** `tools/generate_gemini_commands.py` (command generator)
+
+### Why
+
+1. **Power user benefit was false** — Files positioned to auto-load when developers `cd plugins/<name>/`. This never worked. Gemini CLI only reads `.gemini/GEMINI.md` (in a subdirectory), not `plugins/*/GEMINI.md` (at root).
+
+2. **Real feature is slash commands** — Users get fast plugin discovery via `/` menu. Works the same for developers and end-users. No false claims.
+
+3. **Simpler architecture** — 1 root context file + commands instead of 80 context files + commands. Easier to audit, maintain, and understand.
+
+---
+
+## ADRs: Original + Revised
 
 1. **2026-04-30-gemini-cli-integration.md**
    - Main integration strategy for Gemini CLI
-   - Status: REVISED (metadata added, command distribution clarified)
-   - Key decision: Single extension with per-plugin GEMINI.md files + slash commands
+   - Status: REVISED to document Option C choice
+   - Updated: Explains why Option 4 (with per-plugin files) was rejected after audit
 
 2. **2026-05-01-per-plugin-gemini-md-distribution.md**
-   - Distribution strategy for 79 per-plugin GEMINI.md files
-   - Status: CORRECTED (power user claim removed, line count fixed)
-   - Key finding: Files don't auto-load for power users (placed at root, not in `.gemini/`)
+   - ARCHIVED (replaced by simplification ADR below)
+   - See: `archive/2026-05-01-per-plugin-gemini-md-distribution.md`
 
 3. **2026-05-01-gemini-slash-commands.md**
    - Format and context strategy for Gemini slash commands
-   - Status: REVISED (metadata added)
-   - Key decision: Self-contained prompts (no extension-relative file inclusion)
+   - Status: REVISED to clarify slash commands are the primary (and now only) power user feature
+
+4. **2026-05-01-architecture-simplification.md** ⭐ NEW
+   - Documents the decision to remove per-plugin files (Option C)
+   - Explains the false power user claim and why it was rejected
+   - Rationale for simplified architecture
+   - Lessons learned from the audit
+
+---
 
 ## Audit Reports & Analysis
 
@@ -40,14 +70,14 @@ Pattern identified: ADRs are **narrative-driven, not data-driven**
 - Weak on metrics, citations, and demonstrations
 
 ### DECISION_POINT_power_user_files.md
-Strategic decision framework for per-plugin files:
-- **Option A**: Keep as-is (current choice, future-proofing hedge)
-- **Option B**: Move to `.gemini/` subdirectories (makes power user benefit real)
-- **Option C**: Remove entirely (clean implementation)
+Strategic decision framework for per-plugin files (SUPERSEDED):
+- **Option A**: Keep as-is (future-proofing hedge) — NOT chosen
+- **Option B**: Move to `.gemini/` subdirectories (makes power user benefit real) — NOT chosen
+- **Option C**: Remove entirely (clean implementation) — ✓ CHOSEN (2026-05-01)
 
-Trade-offs and effort estimates provided for each option.
+## Archived Documents
 
-## Summary of Changes
+- **archive/2026-05-01-per-plugin-gemini-md-distribution.md** — Previous ADR 2 (superseded by simplification decision)
 
 ### Corrections Applied
 ✅ ADR 2: Removed false "developer workflow" power user claim  

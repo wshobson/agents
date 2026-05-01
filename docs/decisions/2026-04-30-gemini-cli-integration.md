@@ -48,16 +48,61 @@ Place `plugins/<name>/GEMINI.md` files and rely on Gemini CLI's subdirectory sca
 
 **Source:** Official Gemini CLI extension reference: *"If this property [contextFileName] is not used but a GEMINI.md file is present in your extension directory, then that file will be loaded."* — no mention of subdirectory scanning within the extension.
 
-### Option 4 (Chosen): Single extension + per-plugin GEMINI.md + slash commands
+### Option 4 (Initial): Single extension + per-plugin GEMINI.md + slash commands
 
 One extension install (`gemini extensions install <url>`), with:
 
 1. **`gemini-extension.json`** — manifest pointing to root `GEMINI.md`
 2. **Root `GEMINI.md`** — bootstrap context listing all 79 plugins with trigger examples
 3. **`plugins/<name>/GEMINI.md`** — per-plugin scoped context (agents + commands + skills) for each of the 79 plugins, loadable via `@{...}` inclusion
-4. **`commands/<plugin>/<cmd>.toml`** — Gemini slash commands (Phase A, pending) mapping Claude Code's `/plugin:command` pattern to Gemini's `.toml` command format
+4. **`commands/<plugin>/<cmd>.toml`** — Gemini slash commands mapping Claude Code's `/plugin:command` pattern to Gemini's `.toml` command format
 
 **Pros:** Single install, all skills matchable, per-plugin context available on demand, slash commands close the invocation gap.
+
+**Status:** REJECTED after audit (see "Critical Finding" below).
+
+---
+
+### Option C (Chosen): Single extension + slash commands (simplified)
+
+One extension install (`gemini extensions install <url>`), with:
+
+1. **`gemini-extension.json`** — manifest pointing to root `GEMINI.md`
+2. **Root `GEMINI.md`** — comprehensive bootstrap context listing all 79 plugins with full agent/skill/command details
+3. **`commands/plugin-name.toml`** — Gemini slash commands for quick plugin access (`/security-scan`, `/conductor-orchestrate`, etc.)
+4. **NO per-plugin GEMINI.md files** — removed after audit revealed false power user claim
+
+**Rationale:** Per-plugin files were positioned to support a "power user" workflow where developers would `cd plugins/security-scanning/` and Gemini CLI would auto-load the scoped context. This claim was verified to be **false**: Gemini CLI only reads `GEMINI.md` from the extension root (or `.gemini/GEMINI.md`), not from `plugins/*/GEMINI.md`. The files were never going to auto-load. The real power user feature is **slash commands**, which do work reliably and provide fast discovery (`/security-scan` vs. typing the full context path).
+
+**Consequences of simplification:**
+- Users get all 150 skills from single root context (minimal UX impact — LLMs handle context filtering well)
+- Slash commands provide the real discovery mechanism (faster than searching 79+ plugins in text)
+- 79 fewer files to maintain, cleaner repository structure
+- Generator script simplified (one less generator to run)
+
+**Pros:** Single install, all skills matchable, slash commands provide real (not fictional) power user feature, simpler architecture.
+
+---
+
+## Critical Finding (Audit 2026-05-01)
+
+**False Claim Identified:** ADR initially justified per-plugin GEMINI.md files as enabling a "power user" developer workflow:
+
+> "Developers can `cd plugins/security-scanning/` and Gemini CLI auto-loads the scoped context."
+
+**Verification Result:** INVALID
+
+Gemini CLI extension architecture loads a single context file at extension root only:
+- Checks for `gemini-extension.json` with `contextFileName` property
+- If absent, looks for `.gemini/GEMINI.md` in extension root
+- Does NOT recursively scan subdirectories
+
+Per-plugin files were at `plugins/security-scanning/GEMINI.md` (root level), not `.gemini/GEMINI.md` (required subdirectory). This means:
+1. Files were never going to auto-load
+2. Power user benefit was fictional
+3. Option 4 was justified by false reasoning
+
+**Decision:** Remove per-plugin files (Option C). Keep slash commands (real feature). Acknowledge circular reasoning in option analysis.
 
 ---
 
@@ -97,23 +142,29 @@ Claude Code's selective install (`/plugin install security-scanning@claude-code-
 
 ## Decision
 
-Implement Option 4. The per-plugin GEMINI.md files and root bootstrap context are complete. Gemini slash commands (Phase A) remain as follow-up work.
+Implement Option C (chosen 2026-05-01 after audit).
+
+The initial Option 4 was justified by a false power user workflow claim. After verification, per-plugin GEMINI.md files do not auto-load as envisioned. The real power user feature is slash commands. Option C removes the fictional per-plugin files and keeps the real discovery mechanism (commands).
 
 ---
 
 ## Consequences
 
-**Gains:**
+**Gains (Option C):**
 - All 150 skills accessible in Gemini CLI via natural language auto-activation
-- Per-plugin context available for Gemini slash commands via `@{plugins/<name>/GEMINI.md}` inclusion
+- Slash commands provide real, reliable discovery mechanism (`/security-scan` etc.)
 - Single install, low friction for end users
-- Generator script means per-plugin files stay in sync with plugin changes
+- Simpler architecture — no generator script for per-plugin files
+- Cleaner repository structure (79 fewer files)
+
+**Trade-offs:**
+- No per-plugin context files (but root context includes all plugin details)
+- All plugins loaded in single context (modern LLMs handle context filtering well)
 
 **Permanent gaps vs. Claude Code:**
 - No per-plugin selective install (Gemini architectural limit)
 - No per-agent model tier assignment (Gemini is session-level model only)
 - No parallel subagent fan-out (Gemini executes sequentially)
 
-**Pending work:**
-- Phase A: Create `commands/<plugin>/<cmd>.toml` for all 98 commands (closes invocation gap)
-- Correct `docs/gemini-tool-mapping.md` to reflect slash command support in Gemini
+**Completed work:**
+- Phase A: `commands/*.toml` files for all 115 commands (slash commands fully functional)
