@@ -110,6 +110,22 @@ You install **plugins**, which bundle agents:
 rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/installed_plugins.json
 ```
 
+## Gemini CLI Support
+
+This repository is also available as a Gemini CLI extension. Install it to access 150+ specialized skills directly in Gemini CLI:
+
+```bash
+gemini extensions install https://github.com/mhenke/agents
+```
+
+All 150+ skills are platform-agnostic and auto-activate when you describe matching tasks. See [GEMINI.md](GEMINI.md) for navigation and [docs/gemini-tool-mapping.md](docs/gemini-tool-mapping.md) for platform differences.
+
+**Platform Support:**
+- ✅ Claude Code (primary — full plugin/agent/command support)
+- ✅ Gemini CLI (skills library via extension — auto-activating skills)
+
+[Read the platform comparison](docs/gemini-tool-mapping.md) to understand differences and workarounds.
+
 ## Documentation
 
 ### Core Guides
