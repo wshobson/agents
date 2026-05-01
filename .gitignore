@@ -21,4 +21,5 @@ venv
 .venv
 node_modules
 .sass-cache
-.claude.worktrees/
+.claude
+.worktrees/

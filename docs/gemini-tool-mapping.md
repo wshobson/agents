@@ -123,7 +123,7 @@ If a skill relies heavily on MCP servers:
 
 3. **Custom Servers**: Deploy as standalone services and communicate via HTTP/webhooks with Gemini CLI
 
-See @./plugins.md for Gemini-native plugins that provide similar capabilities.
+See @./docs/plugins.md for Gemini-native plugins that provide similar capabilities.
 
 ---
 
@@ -497,4 +497,4 @@ gemini --model=gemini-2.0-pro
 ---
 
 **Last Updated:** April 2026  
-**For more information:** See @./GEMINI.md for feature overview and @./plugins.md for available plugins.
+**For more information:** See @./GEMINI.md for feature overview and @./docs/plugins.md for available plugins.

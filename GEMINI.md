@@ -17,7 +17,7 @@ This ecosystem was originally built for **Claude Code** (Claude AI paired with a
 | **Slash Commands** | `/plan`, `/spec`, `/ship` entry points | Skills auto-trigger instead | Use skill names directly in prompts |
 | **Subagent Orchestration** | Fan-out parallel execution | Sequential task execution | Use @superpowers:executing-plans to batch tasks |
 | **Model Assignment** | Per-agent model tiers (Opus/Sonnet/Haiku) | Session-level model only | Skills are model-agnostic; use session default |
-| **Plugin Installation** | Per-plugin via `/plugin install` | Per-extension via `gemini extensions install` | Install once: `gemini extensions install https://github.com/mhenke/agents` |
+| **Plugin Installation** | Per-plugin via `/plugin install` | Per-extension via `gemini extensions install` | Install once: `gemini extensions install https://github.com/wshobson/agents` |
 
 ## How to Use Skills
 
@@ -64,12 +64,12 @@ gemini extensions update claude-agents
 To reinstall or install from source:
 
 ```bash
-gemini extensions install https://github.com/mhenke/agents
+gemini extensions install https://github.com/wshobson/agents
 ```
 
 ## Support & Contribution
 
-- **Issues**: Report bugs or suggest skills at https://github.com/mhenke/agents/issues
+- **Issues**: Report bugs or suggest skills at https://github.com/wshobson/agents/issues
 - **Skill Development**: Contribute new skills by creating a `skills/<skill-name>/SKILL.md` file
 - **Plugin Development**: Create new plugins in `plugins/` following the structure in @./CLAUDE.md
 
