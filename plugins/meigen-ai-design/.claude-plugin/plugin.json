@@ -1,6 +1,6 @@
 {
   "name": "meigen-ai-design",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "AI image generation with creative workflow orchestration, parallel multi-direction output, prompt engineering, and a 1,300+ curated inspiration library. Requires MeiGen MCP server (supports MeiGen Cloud, local ComfyUI, and OpenAI-compatible APIs).",
   "author": {
     "name": "MeiGen",
