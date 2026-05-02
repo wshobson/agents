@@ -973,6 +973,18 @@
       "category": "creative"
     },
     {
+      "name": "brand-landingpage",
+      "source": "./plugins/brand-landingpage",
+      "description": "Guides developers from brand discovery through iterative design to deployment-ready HTML via Stitch.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Travis D. Elliott",
+        "url": "https://github.com/travis-d-elliott"
+      },
+      "license": "MIT",
+      "category": "creative"
+    },
+    {
       "name": "plugin-eval",
       "source": "./plugins/plugin-eval",
       "description": "Three-layer quality evaluation framework for Claude Code plugins with Elo ranking",
