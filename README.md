@@ -2,7 +2,7 @@
 
 > **⚡ Updated for Opus 4.7, Sonnet 4.6 & Haiku 4.5** — Three-tier model strategy for optimal performance
 
-[![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
+[![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md)
 
 > **🎯 Agent Skills Enabled** — 153 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
@@ -39,21 +39,7 @@ Each plugin is completely isolated with its own agents, commands, and skills:
 
 **Example**: Installing `python-development` loads 3 Python agents, 1 scaffolding tool, and makes 16 skills available (~1000 tokens), not the entire marketplace.
 
-## Gemini CLI
-
-The same 153 skills and 185 agents are available as a native Gemini CLI extension. Skills are auto-discovered and activate on-demand based on your task — no manual plugin installation needed.
-
-- **153 skills** surface automatically via `gemini-extension.json`
-- **Opt-in slash commands** — generate locally with `make sync-commands`, never committed to the repo
-- **No drift** — generated commands mirror the canonical `.md` sources at generation time
-- **Safety guardrails** — credential protection and source control safety built in (see [GEMINI.md](GEMINI.md))
-
-See the [Gemini CLI Quick Start](#quick-start) below for setup.
-
 ## Quick Start
-
-<details>
-<summary><b>Claude Code (recommended)</b></summary>
 
 ### Step 1: Add the Marketplace
 
@@ -95,60 +81,7 @@ Install the plugins you need:
 
 Each installed plugin loads **only its specific agents, commands, and skills** into Claude's context.
 
-</details>
-
-<details>
-<summary><b>Gemini CLI</b></summary>
-
-Install as native skills for auto-discovery.
-
-**Install from the repo:**
-
-```bash
-gemini extensions install https://github.com/wshobson/agents
-```
-
-**Opt-In Slash Commands:**
-
-Slash commands are generated locally to keep your global namespace clean. To enable commands for a specific plugin:
-
-```bash
-cd ~/.gemini/extensions/claude-code-workflows
-make generate-plugin PLUGIN=javascript-typescript
-```
-
-**Update & sync commands:**
-
-To update the extension and refresh your local slash commands in one step:
-
-```bash
-gemini extensions update claude-code-workflows && cd ~/.gemini/extensions/claude-code-workflows && make sync-commands
-```
-
-Restart your Gemini CLI session after syncing.
-
-**Remove generated slash commands:**
-
-To delete all locally generated TOML files without uninstalling the extension:
-
-```bash
-cd ~/.gemini/extensions/claude-code-workflows
-make clean-commands
-```
-
-**Uninstall everything:**
-
-```bash
-gemini extensions uninstall claude-code-workflows
-```
-
-This removes the extension and all its skills. Any generated TOML files in `~/.gemini/extensions/claude-code-workflows/commands/` are removed along with it.
-
-Slash commands follow an interactive **Protocol Orchestrator** model, pausing at checkpoints for your approval. See [GEMINI.md](GEMINI.md) for full details.
-
-</details>
-
-### Plugins vs Agents (Claude Code only)
+### Plugins vs Agents
 
 You install **plugins**, which bundle agents:
 
