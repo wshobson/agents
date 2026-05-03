@@ -1,8 +1,0 @@
-description = "Tdd Refactor"
-prompt = '''
-Tdd Refactor.
-
-Available agents: `code-reviewer`, `tdd-orchestrator`.
-
-{{args}}
-'''

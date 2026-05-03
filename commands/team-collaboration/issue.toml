@@ -1,8 +1,0 @@
-description = "GitHub Issue Resolution Expert"
-prompt = '''
-GitHub Issue Resolution Expert.
-
-Available agents: `dx-optimizer`.
-
-{{args}}
-'''

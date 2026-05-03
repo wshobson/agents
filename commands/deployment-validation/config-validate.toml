@@ -1,8 +1,0 @@
-description = "Configuration Validation"
-prompt = '''
-Configuration Validation.
-
-Available agents: `cloud-architect`.
-
-{{args}}
-'''

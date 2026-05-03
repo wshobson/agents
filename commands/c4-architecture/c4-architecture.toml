@@ -1,8 +1,0 @@
-description = "Generate comprehensive C4 architecture documentation (Context, Container, Component, Code) for a codebase using bottom-up analysis and four coordinated C4 agents."
-prompt = '''
-Generate comprehensive C4 architecture documentation (Context, Container, Component, Code) for a codebase using bottom-up analysis and four coordinated C4 agents.
-
-Available agents: `c4-code`, `c4-component`, `c4-container`, `c4-context`.
-
-{{args}}
-'''

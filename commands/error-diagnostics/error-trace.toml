@@ -1,8 +1,0 @@
-description = "Set up error tracking and monitoring — implement structured logging, configure alerts, and integrate with error tracking services for real-time error detection."
-prompt = '''
-Set up error tracking and monitoring — implement structured logging, configure alerts, and integrate with error tracking services for real-time error detection.
-
-Available agents: `debugger`, `error-detective`.
-
-{{args}}
-'''

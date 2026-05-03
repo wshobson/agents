@@ -5,13 +5,18 @@ PYTHON := python3
 PIP := pip3
 SCRIPT := tools/yt-design-extractor.py
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate-plugin generate-all-commands
 
 help:
-	@echo "YouTube Design Extractor"
-	@echo "========================"
+	@echo "YouTube Design Extractor & Gemini CLI Extension"
+	@echo "==============================================="
 	@echo ""
-	@echo "Setup (run in order):"
+	@echo "Gemini CLI Setup:"
+	@echo "  make generate-plugin PLUGIN=<name>  Generate commands for one plugin"
+	@echo "  make sync-commands                  Keep local commands in sync with upstream"
+	@echo "  make generate-all-commands          Generate commands for ALL plugins"
+	@echo ""
+	@echo "YouTube Design Extractor Setup (run in order):"
 	@echo "  make install-ocr     Install system tools (tesseract + ffmpeg)"
 	@echo "  make install         Install Python dependencies"
 	@echo "  make deps            Show what's installed"
@@ -118,3 +123,23 @@ endif
 clean:
 	rm -rf yt-extract-*
 	@echo "Cleaned up extraction directories"
+
+# Gemini CLI Extension targets
+GEMINI_GEN := tools/generate_gemini_commands.py
+
+generate-plugin:
+ifndef PLUGIN
+	@echo "Error: PLUGIN is required (e.g., make generate-plugin PLUGIN=javascript-typescript)"
+	@exit 1
+endif
+	$(PYTHON) $(GEMINI_GEN) --plugin $(PLUGIN)
+
+sync-commands:
+	$(PYTHON) $(GEMINI_GEN) --prune
+
+generate-all-commands:
+	$(PYTHON) $(GEMINI_GEN)
+
+clean-commands:
+	-find commands -name "*.toml" -delete 2>/dev/null || true
+	@echo "Cleaned up generated Gemini commands"

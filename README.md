@@ -110,21 +110,26 @@ You install **plugins**, which bundle agents:
 rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/installed_plugins.json
 ```
 
-## Gemini CLI Support
+## Gemini CLI Integration
 
-This repository is also available as a Gemini CLI extension. Install it to access 150+ specialized skills directly in Gemini CLI:
+This repository is optimized for the [Gemini CLI](https://github.com/google/gemini-cli) extension model. Skills are auto-discovered and represent the primary workflow.
+
+### Installation
 
 ```bash
 gemini extensions install https://github.com/wshobson/agents
 ```
 
-All 150+ skills are platform-agnostic and auto-activate when you describe matching tasks. See [GEMINI.md](GEMINI.md) for navigation and [docs/gemini-tool-mapping.md](docs/gemini-tool-mapping.md) for platform differences.
+### Opt-In Slash Commands
 
-**Platform Support:**
-- ✅ Claude Code (primary — full plugin/agent/command support)
-- ✅ Gemini CLI (skills library via extension — auto-activating skills)
+Slash commands are generated locally to keep your global namespace clean. To enable commands for a specific plugin (e.g., `javascript-typescript`):
 
-[Read the platform comparison](docs/gemini-tool-mapping.md) to understand differences and workarounds.
+```bash
+cd ~/.gemini/extensions/agents
+make generate-plugin PLUGIN=javascript-typescript
+```
+
+Restart your Gemini CLI session after generating commands. Slash commands follow an interactive **Protocol Orchestrator** model, pausing at checkpoints for your approval. See [GEMINI.md](GEMINI.md) for full details.
 
 ## Documentation
 

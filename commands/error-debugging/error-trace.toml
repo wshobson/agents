@@ -1,8 +1,0 @@
-description = "Error Tracking and Monitoring"
-prompt = '''
-Error Tracking and Monitoring.
-
-Available agents: `debugger`, `error-detective`.
-
-{{args}}
-'''

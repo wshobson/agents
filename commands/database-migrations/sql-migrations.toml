@@ -1,8 +1,0 @@
-description = "SQL database migrations with zero-downtime strategies for PostgreSQL, MySQL, SQL Server"
-prompt = '''
-SQL database migrations with zero-downtime strategies for PostgreSQL, MySQL, SQL Server.
-
-Available agents: `database-admin`, `database-optimizer`.
-
-{{args}}
-'''

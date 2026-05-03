@@ -1,12 +1,65 @@
 # Claude-Agents: Skills Ecosystem for Gemini CLI
 
-You have access to **150+ specialized skills** organized across **79 plugins** in the claude-agents marketplace. These skills are designed for progressive disclosure — they activate only when you identify a matching task, saving context tokens.
+You have access to **150+ specialized skills** organized across **79 plugins**. These skills are designed for progressive disclosure — they activate automatically when you describe a matching task, saving context tokens.
 
 ## Navigation
 
-- **Skill Library**: Skills are auto-discovered by Gemini CLI. Use skills by name when the model identifies a matching task (e.g., "use the security-audit skill").
-- **Plugin Catalog**: See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for a Gemini-optimized listing with natural-language trigger examples, or [docs/plugins.md](docs/plugins.md) for the full technical catalog.
-- **Tool Mapping**: Claude Code and Gemini CLI have different tool sets. See [docs/gemini-tool-mapping.md](docs/gemini-tool-mapping.md) for equivalents and platform-specific notes.
+- **Skill Library**: Skills are auto-discovered. Describe your task (e.g., "Set up a Kubernetes deployment"), and the relevant skill will activate.
+- **Opt-In Slash Commands**: Slash commands (e.g., `/tdd-cycle`) are optional and **not available until you generate them locally**. This keeps your namespace clean. See the **Setup** section below.
+- **Plugin Catalog**: See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for natural-language trigger examples.
+
+## Setup: Opt-In Slash Commands
+
+Slash commands are generated on-demand to avoid cluttering your CLI. To enable commands for a specific workflow:
+
+1. **Install the extension**: `gemini extensions install https://github.com/wshobson/agents`
+2. **Generate commands**: Navigate to the extension directory and run:
+   ```bash
+   make generate-plugin PLUGIN=javascript-typescript
+   ```
+   *(Note: Windows users should run this in **Git Bash** or **WSL**. Alternatively, run `python3 tools/generate_gemini_commands.py --plugin <name>` directly.)*
+
+4. **Keep in sync**: If you update the extension (`gemini extensions update`) and want to refresh your local commands or remove stale ones, run:
+   ```bash
+   make sync-commands
+   ```
+5. **Restart Gemini CLI**: You must restart your CLI session for the new commands to appear.
+
+### Interactive Execution (Protocol Orchestrator)
+
+Slash commands in this extension follow a **sequential, multi-step protocol** model. 
+
+When you run a command like `/tdd-cycle`, the agent:
+1. **Reads the full protocol** from the repository's source Markdown.
+2. **Pauses at checkpoints**: You will be asked for approval at key stages (e.g., `PHASE CHECKPOINT`) via the `ask_user` tool.
+3. **Maintains state**: Progress is tracked locally, allowing you to resume or audit the workflow.
+
+This ensures the same high-fidelity, disciplined experience as Claude Code while running within the Gemini CLI environment.
+
+To generate all 180+ commands at once (not recommended for most users): `make generate-all-commands`.
+
+## Skill Library (Grouped by Plugin)
+
+Below are the primary skills available to you. Describe your goal to trigger them.
+
+### Language Development
+- **python-development**: async-python-patterns, python-packaging, python-testing-patterns, uv-package-manager
+- **javascript-typescript**: javascript-testing-patterns, modern-javascript-patterns, nodejs-backend-patterns, typescript-advanced-types
+- **systems-programming**: go-concurrency-patterns, memory-safety-patterns, rust-async-patterns
+- **shell-scripting**: bash-defensive-patterns, bats-testing-patterns, shellcheck-configuration
+
+### Full-Stack & UI
+- **backend-development**: api-design-principles, architecture-patterns, cqrs-implementation, event-store-design, saga-orchestration, temporal-python-testing
+- **frontend-mobile-development**: nextjs-app-router-patterns, react-native-architecture, react-state-management, tailwind-design-system
+- **ui-design**: accessibility-compliance, design-system-patterns, interaction-design, mobile-ios-design, responsive-design, visual-design-foundations
+
+### Infrastructure & Security
+- **cloud-infrastructure**: cost-optimization, istio-traffic-management, multi-cloud-architecture, terraform-module-library
+- **kubernetes-operations**: gitops-workflow, helm-chart-scaffolding, k8s-manifest-generator, k8s-security-policies
+- **security-scanning**: attack-tree-construction, sast-configuration, stride-analysis-patterns, threat-mitigation-mapping
+- **reverse-engineering**: anti-reversing-techniques, binary-analysis-patterns, memory-forensics, protocol-reverse-engineering
+
+... and 50+ more. See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for the full catalog.
 
 ## Key Differences from Claude Code
 

@@ -1,8 +1,0 @@
-description = "Refactor and Clean Code"
-prompt = '''
-Refactor and Clean Code.
-
-Available agents: `code-reviewer`, `legacy-modernizer`.
-
-{{args}}
-'''

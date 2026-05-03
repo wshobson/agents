@@ -1,8 +1,0 @@
-description = "Multi-Agent Optimization Toolkit"
-prompt = '''
-Multi-Agent Optimization Toolkit.
-
-Available agents: `context-manager`.
-
-{{args}}
-'''

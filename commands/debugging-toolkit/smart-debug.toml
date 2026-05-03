@@ -1,8 +1,0 @@
-description = "Smart Debug"
-prompt = '''
-Smart Debug.
-
-Available agents: `debugger`, `dx-optimizer`.
-
-{{args}}
-'''

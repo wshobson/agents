@@ -1,8 +1,0 @@
-description = "Error Analysis and Resolution"
-prompt = '''
-Error Analysis and Resolution.
-
-Available agents: `debugger`, `error-detective`.
-
-{{args}}
-'''

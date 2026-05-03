@@ -1,8 +1,0 @@
-description = "Audit project dependencies for vulnerabilities, outdated packages, license conflicts, and supply chain risks — then provide actionable remediation strategies."
-prompt = '''
-Audit project dependencies for vulnerabilities, outdated packages, license conflicts, and supply chain risks — then provide actionable remediation strategies.
-
-Available agents: `code-reviewer`, `test-automator`.
-
-{{args}}
-'''
