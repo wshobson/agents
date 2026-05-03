@@ -20,7 +20,7 @@ This unified repository provides everything needed for intelligent automation an
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 81 focused plugins optimized for minimal token usage (Note: Gemini CLI users benefit from auto-discovery and automatic skill activation).
+- **Granular Plugin Architecture**: 80 focused plugins optimized for minimal token usage (Note: Gemini CLI users benefit from auto-discovery and automatic skill activation).
 - **Comprehensive Tooling**: 100 optional commands including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
 - **Agent Skills**: 153 specialized skills following for progressive disclosure and token efficiency
@@ -116,6 +116,16 @@ You install **plugins**, which bundle agents:
 
 # ✅ Right - install the plugin
 /plugin install javascript-typescript@claude-code-workflows
+```
+
+### Troubleshooting
+
+**"Plugin not found"** → Use plugin names, not agent names. Add `@claude-code-workflows` suffix.
+
+**Plugins not loading** → Clear cache and reinstall:
+
+```bash
+rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/installed_plugins.json
 ```
 
 ## Documentation
@@ -384,7 +394,7 @@ Three-tier architecture for token efficiency:
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # 77 plugins
+│   └── marketplace.json          # 81 plugins (80 local + 1 external)
 ├── plugins/
 │   ├── python-development/
 │   │   ├── agents/               # 3 Python experts
