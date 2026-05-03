@@ -1,0 +1,17 @@
+# Local Claude Code settings
+.claude/settings.local.json
+
+# Dev reference files (used during plugin development, not part of the plugin)
+.agents/
+extra-agents/
+extra-skills/
+
+# Duplicate local skills (canonical versions live in commands/, agents/, skills/)
+.claude/skills/
+
+# Pipeline runtime state (generated per-project, never committed)
+.claude/pipeline/
+
+# OS
+.DS_Store
+Thumbs.db
