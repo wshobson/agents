@@ -6,7 +6,7 @@ You have access to **153 specialized skills** organized across **80 plugins**. T
 
 - **Skill Library**: Skills are auto-discovered. Describe your task (e.g., "Set up a Kubernetes deployment"), and the relevant skill will activate.
 - **Opt-In Slash Commands**: Slash commands (e.g., `/tdd-cycle`) are optional and **not available until you generate them locally**. This keeps your namespace clean. See the **Setup** section below.
-- **Plugin Catalog**: See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for natural-language trigger examples.
+- **Plugin Catalog**: See [docs/plugins.md](docs/plugins.md) for the full catalog of available plugins and skills.
 
 ## Setup: Opt-In Slash Commands
 
@@ -59,7 +59,7 @@ Below are the primary skills available to you. Describe your goal to trigger the
 - **security-scanning**: attack-tree-construction, sast-configuration, stride-analysis-patterns, threat-mitigation-mapping
 - **reverse-engineering**: anti-reversing-techniques, binary-analysis-patterns, memory-forensics, protocol-reverse-engineering
 
-... and 50+ more. See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for the full catalog.
+... and 50+ more. See [docs/plugins.md](docs/plugins.md) for the full catalog.
 
 ## Key Differences from Claude Code
 
@@ -83,7 +83,7 @@ This ecosystem was originally built for **Claude Code** (Claude AI paired with a
 /python-development:python-scaffold       # Python project scaffolding
 ```
 
-Use `/help` in Gemini CLI to list all available commands. See [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md) for a full catalog with trigger examples.
+Use `/help` in Gemini CLI to list all available commands. See [docs/plugins.md](docs/plugins.md) for the full catalog.
 
 ## Slash Commands for Plugin Discovery
 
@@ -128,7 +128,7 @@ Skills are **on-demand expertise packages**. When you ask a task that matches a 
 ### Multi-Agent Workflows
 - Code review orchestration, system design, large refactors, complex troubleshooting
 
-For a complete catalog with Gemini trigger examples, see [docs/gemini-plugin-guide.md](docs/gemini-plugin-guide.md)
+For a complete catalog, see [docs/plugins.md](docs/plugins.md)
 
 ## Installation & Getting Started
 
