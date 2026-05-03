@@ -22,11 +22,13 @@ Slash commands are generated on-demand to avoid cluttering your CLI namespace.
 1. **Install the extension**: `gemini extensions install https://github.com/wshobson/agents`
 2. **Generate commands for a plugin**:
    ```bash
+   cd ~/.gemini/extensions/claude-code-workflows
    make generate-plugin PLUGIN=javascript-typescript
    ```
    *(Windows: run in Git Bash or WSL, or use `python3 tools/generate_gemini_commands.py --plugin <name>` directly.)*
 3. **Keep in sync** after updates:
    ```bash
+   cd ~/.gemini/extensions/claude-code-workflows
    make sync-commands
    ```
 4. **Restart Gemini CLI** for new commands to appear.

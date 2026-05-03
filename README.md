@@ -113,7 +113,7 @@ gemini extensions install https://github.com/wshobson/agents
 Slash commands are generated locally to keep your global namespace clean. To enable commands for a specific plugin:
 
 ```bash
-cd ~/.gemini/extensions/agents
+cd ~/.gemini/extensions/claude-code-workflows
 make generate-plugin PLUGIN=javascript-typescript
 ```
 
@@ -122,7 +122,7 @@ make generate-plugin PLUGIN=javascript-typescript
 To update the extension and refresh your local slash commands in one step:
 
 ```bash
-gemini extensions update claude-code-workflows && cd ~/.gemini/extensions/agents && make sync-commands
+gemini extensions update claude-code-workflows && cd ~/.gemini/extensions/claude-code-workflows && make sync-commands
 ```
 
 Restart your Gemini CLI session after syncing.
@@ -132,7 +132,7 @@ Restart your Gemini CLI session after syncing.
 To delete all locally generated TOML files without uninstalling the extension:
 
 ```bash
-cd ~/.gemini/extensions/agents
+cd ~/.gemini/extensions/claude-code-workflows
 make clean-commands
 ```
 
@@ -142,7 +142,7 @@ make clean-commands
 gemini extensions uninstall claude-code-workflows
 ```
 
-This removes the extension and all its skills. Any generated TOML files in `~/.gemini/extensions/agents/commands/` are removed along with it.
+This removes the extension and all its skills. Any generated TOML files in `~/.gemini/extensions/claude-code-workflows/commands/` are removed along with it.
 
 Slash commands follow an interactive **Protocol Orchestrator** model, pausing at checkpoints for your approval. See [GEMINI.md](GEMINI.md) for full details.
 
