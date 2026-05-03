@@ -35,7 +35,7 @@ Slash commands are generated on-demand to avoid cluttering your CLI namespace.
 
 ### Interactive Execution (Protocol Orchestrator)
 
-Slash commands follow a **sequential, multi-step protocol** model. When you run a command like `/tdd-cycle`, the agent:
+Slash commands follow a **sequential, multi-step protocol** model. When you run a command like `/tdd-workflows:tdd-cycle`, the agent:
 
 1. Reads the full protocol from the repository's source Markdown.
 2. Pauses at checkpoints for your approval (e.g., `PHASE CHECKPOINT`).
@@ -66,14 +66,16 @@ Below are the primary skills available to you. Describe your goal to trigger the
 
 ## Slash Commands
 
-Slash commands use flat names — no `:` namespace syntax. Use `/help` in Gemini CLI to list all available commands. Examples after generating:
+100 slash commands are available across 50 plugins, mirroring Claude Code's `/plugin:command` namespace:
 
 ```
-/security-sast          # SAST vulnerability scan
-/feature-development    # End-to-end feature orchestration
-/tdd-cycle              # Full TDD red-green-refactor
-/python-scaffold        # Python project scaffolding
+/security-scanning:security-sast          # SAST vulnerability scan
+/backend-development:feature-development  # End-to-end feature orchestration
+/tdd-workflows:tdd-cycle                  # Full TDD red-green-refactor
+/python-development:python-scaffold       # Python project scaffolding
 ```
+
+Use `/help` in Gemini CLI to list all available commands.
 
 ## Key Differences from Claude Code
 
