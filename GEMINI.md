@@ -8,6 +8,14 @@ You have access to **153 specialized skills** organized across **80 plugins**. T
 - **Opt-In Slash Commands**: Slash commands (e.g., `/tdd-cycle`) are optional and **not available until you generate them locally**. This keeps your namespace clean. See the **Setup** section below.
 - **Plugin Catalog**: See [docs/plugins.md](docs/plugins.md) for the full catalog of available plugins and skills.
 
+## Safety and System Integrity
+
+This extension adheres to the following core safety mandates:
+- **Credential Protection**: Agents will never log, print, or commit secrets, API keys, or sensitive credentials.
+- **Source Control**: Changes are never staged or committed unless specifically requested by the user.
+- **Transparent Execution**: Complex workflows use the `ask_user` tool at critical checkpoints to ensure user oversight.
+- **Isolation**: Work is confined to the project directory; system-level configurations are rigorously protected.
+
 ## Setup: Opt-In Slash Commands
 
 Slash commands are generated on-demand to avoid cluttering your CLI. To enable commands for a specific workflow:
