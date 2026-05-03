@@ -1,8 +1,8 @@
-# Gemini CLI Plugin Discovery Guide
+# Gemini CLI Skill Discovery Guide
 
-Quick reference for finding skills across 79 plugins. In Gemini CLI, skills auto-activate when you describe your task — no slash commands needed. Just describe what you want and the relevant plugin activates.
+This guide is a quick reference for finding skills across 79 plugins using natural language triggers. In Gemini CLI, skills auto-activate when you describe your task — no slash commands needed.
 
-Plugins without a skills list operate through agents directly.
+For installation and setup instructions, please refer to the main [README.md](../README.md).
 
 ---
 

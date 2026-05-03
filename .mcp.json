@@ -1,0 +1,37 @@
+{
+  "mcpServers": {
+    "stitch": {
+      "type": "http",
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "Accept": "application/json"
+      }
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer YOUR_GITHUB_PAT_HERE"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
+    },
+    "context7": {
+      "type": "local",
+      "command": "npx",
+      "tools": ["query-docs", "resolve-library-id"],
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "ctx7sk-50e8901a-8533-45c9-9d8c-2ef40ea89a39"]
+    },
+    "faker": {
+      "type": "local",
+      "command": "/home/mhenke/.bun/bin/bunx",
+      "args": [
+        "faker-mcp-server"
+      ]
+    }
+  }
+}

@@ -6,24 +6,24 @@
 
 > **🎯 Agent Skills Enabled** — 150 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **184 specialized AI agents**, **16 multi-agent workflow orchestrators**, **150 agent skills**, and **98 commands** organized into **79 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **185 specialized AI agents**, **16 multi-agent workflow orchestrators**, **153 agent skills**, and **100 Optional Commands** organized into **81 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **79 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
-- **184 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
-- **150 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
+- **81 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability (Note: Gemini CLI discovers and activates skills automatically).
+- **185 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
+- **153 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **16 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
-- **98 Commands** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
+- **100 Optional Commands** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 79 focused plugins optimized for minimal token usage
-- **Comprehensive Tooling**: 98 commands including test generation, scaffolding, and security scanning
+- **Granular Plugin Architecture**: 81 focused plugins optimized for minimal token usage (Note: Gemini CLI users benefit from auto-discovery and automatic skill activation).
+- **Comprehensive Tooling**: 100 optional commands including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
-- **Agent Skills**: 150 specialized skills following for progressive disclosure and token efficiency
+- **Agent Skills**: 153 specialized skills following for progressive disclosure and token efficiency
 - **Clear Organization**: 25 categories with 1-10 plugins each for easy discovery
 - **Efficient Design**: Average 3.6 components per plugin (follows Anthropic's 2-8 pattern)
 
@@ -31,7 +31,8 @@ This unified repository provides everything needed for intelligent automation an
 
 Each plugin is completely isolated with its own agents, commands, and skills:
 
-- **Install only what you need** - Each plugin loads only its specific agents, commands, and skills
+- **Claude Code**: Install only what you need - Each plugin loads only its specific agents, commands, and skills
+- **Gemini CLI**: Skills are auto-discovered and activate on-demand based on your task description.
 - **Minimal token usage** - No unnecessary resources loaded into context
 - **Mix and match** - Compose multiple plugins for complex workflows
 - **Clear boundaries** - Each plugin has a single, focused purpose
@@ -41,45 +42,62 @@ Each plugin is completely isolated with its own agents, commands, and skills:
 
 ## Quick Start
 
-### Step 1: Add the Marketplace
+<details>
+<summary><b>Claude Code (recommended)</b></summary>
 
-Add this marketplace to Claude Code:
+**Marketplace install:**
 
 ```bash
 /plugin marketplace add wshobson/agents
+/plugin install <plugin-name>
 ```
 
-This makes all 79 plugins available for installation, but **does not load any agents or tools** into your context.
-
-### Step 2: Install Plugins
-
-Browse available plugins:
+**Local / development:**
 
 ```bash
-/plugin
+git clone https://github.com/wshobson/agents.git
+claude --plugin-dir /path/to/agents
 ```
 
-Install the plugins you need:
+</details>
+
+<details>
+<summary><b>Gemini CLI</b></summary>
+
+Install as native skills for auto-discovery.
+
+**Install from the repo:**
 
 ```bash
-# Essential development plugins
-/plugin install python-development          # Python with 16 specialized skills
-/plugin install javascript-typescript       # JS/TS with 4 specialized skills
-/plugin install backend-development         # Backend APIs with 3 architecture skills
-
-# Infrastructure & operations
-/plugin install kubernetes-operations       # K8s with 4 deployment skills
-/plugin install cloud-infrastructure        # AWS/Azure/GCP with 4 cloud skills
-
-# Security & quality
-/plugin install security-scanning           # SAST with security skill
-/plugin install comprehensive-review       # Multi-perspective code analysis
-
-# Full-stack orchestration
-/plugin install full-stack-orchestration   # Multi-agent workflows
+gemini extensions install https://github.com/wshobson/agents
 ```
 
-Each installed plugin loads **only its specific agents, commands, and skills** into Claude's context.
+**Uninstall:**
+
+```bash
+gemini extensions uninstall claude-code-workflows
+```
+
+**Opt-In Slash Commands:**
+
+Slash commands are generated locally to keep your global namespace clean. To enable commands for a specific plugin:
+
+```bash
+cd ~/.gemini/extensions/agents
+make generate-plugin PLUGIN=javascript-typescript
+```
+
+**Keep in sync:**
+
+If you update the extension and want to refresh your local commands:
+
+```bash
+make sync-commands
+```
+
+Restart your Gemini CLI session after generating commands. Slash commands follow an interactive **Protocol Orchestrator** model, pausing at checkpoints for your approval. See [GEMINI.md](GEMINI.md) for full details.
+
+</details>
 
 ### Plugins vs Agents
 
@@ -99,37 +117,6 @@ You install **plugins**, which bundle agents:
 # ✅ Right - install the plugin
 /plugin install javascript-typescript@claude-code-workflows
 ```
-
-### Troubleshooting
-
-**"Plugin not found"** → Use plugin names, not agent names. Add `@claude-code-workflows` suffix.
-
-**Plugins not loading** → Clear cache and reinstall:
-
-```bash
-rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/installed_plugins.json
-```
-
-## Gemini CLI Integration
-
-This repository is optimized for the [Gemini CLI](https://github.com/google/gemini-cli) extension model. Skills are auto-discovered and represent the primary workflow.
-
-### Installation
-
-```bash
-gemini extensions install https://github.com/wshobson/agents
-```
-
-### Opt-In Slash Commands
-
-Slash commands are generated locally to keep your global namespace clean. To enable commands for a specific plugin (e.g., `javascript-typescript`):
-
-```bash
-cd ~/.gemini/extensions/agents
-make generate-plugin PLUGIN=javascript-typescript
-```
-
-Restart your Gemini CLI session after generating commands. Slash commands follow an interactive **Protocol Orchestrator** model, pausing at checkpoints for your approval. See [GEMINI.md](GEMINI.md) for full details.
 
 ## Documentation
 
