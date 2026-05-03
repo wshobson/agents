@@ -1,7 +1,5 @@
 ---
-name: setup
 description: Initialises the ShipMate pipeline in the current project. Creates the stories folder, sets up the pipeline state directory, and runs the initial codebase scan to generate project-doc.md and AGENTS.md.
-user-invocable: true
 ---
 
 # ShipMate Setup

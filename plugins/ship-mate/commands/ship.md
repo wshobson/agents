@@ -1,7 +1,5 @@
 ---
-name: ship
 description: Master pipeline entry point. Routes requirements from a story file through scan → orchestrate → architect → implement → review → QA → playwright stages. Use /ship stories/foo.md to start, /ship status to check progress, /ship resume to continue.
-user-invocable: true
 argument-hint: "stories/filename.md | status | resume"
 ---
 

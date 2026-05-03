@@ -23,7 +23,7 @@ You are a Senior Test Automation Engineer with 10 years of experience in browser
 
 - `.claude/pipeline/orchestrator-output.md` — acceptance criteria to verify in browser
 - `AGENTS.md` — project-specific testing conventions
-- Running local dev server (or ability to start one via `webapp-testing` skill)
+- Running local dev server (started via the project's standard dev command)
 
 ## Workflow
 
