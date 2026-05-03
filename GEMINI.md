@@ -1,6 +1,6 @@
 # Claude-Agents: Skills Ecosystem for Gemini CLI
 
-You have access to **153 specialized skills** organized across **80 plugins**. These skills are designed for progressive disclosure — they activate automatically when you describe a matching task, saving context tokens.
+You have access to **153 specialized skills**, **185 specialized agents**, and **100 commands** organized across **80 plugins**. These skills are designed for progressive disclosure — they activate automatically when you describe a matching task, saving context tokens.
 
 ## Navigation
 
@@ -40,6 +40,42 @@ Slash commands follow a **sequential, multi-step protocol** model. When you run 
 1. Reads the full protocol from the repository's source Markdown.
 2. Pauses at checkpoints for your approval (e.g., `PHASE CHECKPOINT`).
 3. Tracks progress locally, allowing you to resume or audit the workflow.
+
+## Skill Library (Grouped by Plugin)
+
+Below are the primary skills available to you. Describe your goal to trigger them.
+
+### Language Development
+- **python-development**: async-python-patterns, python-packaging, python-testing-patterns, uv-package-manager
+- **javascript-typescript**: javascript-testing-patterns, modern-javascript-patterns, nodejs-backend-patterns, typescript-advanced-types
+- **systems-programming**: go-concurrency-patterns, memory-safety-patterns, rust-async-patterns
+- **shell-scripting**: bash-defensive-patterns, bats-testing-patterns, shellcheck-configuration
+
+### Full-Stack & UI
+- **backend-development**: api-design-principles, architecture-patterns, cqrs-implementation, event-store-design, saga-orchestration, temporal-python-testing
+- **frontend-mobile-development**: nextjs-app-router-patterns, react-native-architecture, react-state-management, tailwind-design-system
+- **ui-design**: accessibility-compliance, design-system-patterns, interaction-design, mobile-ios-design, responsive-design, visual-design-foundations
+
+### Infrastructure & Security
+- **cloud-infrastructure**: cost-optimization, istio-traffic-management, multi-cloud-architecture, terraform-module-library
+- **kubernetes-operations**: gitops-workflow, helm-chart-scaffolding, k8s-manifest-generator, k8s-security-policies
+- **security-scanning**: attack-tree-construction, sast-configuration, stride-analysis-patterns, threat-mitigation-mapping
+- **reverse-engineering**: anti-reversing-techniques, binary-analysis-patterns, memory-forensics, protocol-reverse-engineering
+
+... and 50+ more. See [docs/plugins.md](docs/plugins.md) for the full catalog.
+
+## Slash Commands
+
+100 slash commands are available across 50 plugins, mirroring Claude Code's `/plugin:command` namespace:
+
+```
+/security-scanning:security-sast          # SAST vulnerability scan
+/backend-development:feature-development  # End-to-end feature orchestration
+/tdd-workflows:tdd-cycle                  # Full TDD red-green-refactor
+/python-development:python-scaffold       # Python project scaffolding
+```
+
+Use `/help` in Gemini CLI to list all available commands.
 
 ## Key Differences from Claude Code
 
