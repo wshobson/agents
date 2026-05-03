@@ -35,7 +35,7 @@ Slash commands are generated on-demand to avoid cluttering your CLI namespace.
 
 ### Interactive Execution (Protocol Orchestrator)
 
-Slash commands follow a **sequential, multi-step protocol** model. When you run a command like `/tdd-cycle`, the agent:
+Slash commands follow a **sequential, multi-step protocol** model. When you run a command like `/tdd-workflows:tdd-cycle`, the agent:
 
 1. Reads the full protocol from the repository's source Markdown.
 2. Pauses at checkpoints for your approval (e.g., `PHASE CHECKPOINT`).
