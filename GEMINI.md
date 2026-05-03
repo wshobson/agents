@@ -4,7 +4,7 @@ You have access to **153 specialized skills** organized across **80 plugins**. T
 
 ## Navigation
 
-- **Skill Discovery**: Describe your task (e.g., "Set up a Kubernetes deployment") and the relevant skill activates automatically.
+- **Skill Discovery**: Describe your task (e.g., "Set up a Kubernetes deployment") and Gemini CLI will identify the matching skill and ask to activate it.
 - **Opt-In Slash Commands**: Slash commands are optional and **not available until you generate them locally**. This keeps your namespace clean. See **Setup** below.
 - **Plugin Catalog**: See [docs/plugins.md](docs/plugins.md) for the full catalog of all 80 plugins and 153 skills.
 
