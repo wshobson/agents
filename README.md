@@ -147,7 +147,7 @@ gemini extensions install https://github.com/wshobson/agents
 - **Zero changes** to existing agents, skills, or commands — all markdown files are platform-agnostic
 - **Protocol Orchestrator** — slash commands pause at checkpoints for user approval, same disciplined flow as Claude Code
 
-See [GEMINI.md](GEMINI.md) for full setup and usage details.
+[→ View Gemini CLI setup and usage](GEMINI.md)
 
 ### PluginEval — Quality Evaluation Framework (NEW)
 
