@@ -34,6 +34,12 @@ help:
 	@echo "  make run URL='https://youtu.be/eVnQFWGDEdY'"
 	@echo "  make run-full URL='https://youtu.be/eVnQFWGDEdY' INTERVAL=15"
 	@echo "  make generate-plugin PLUGIN=javascript-typescript"
+	@echo ""
+	@echo "Options (pass as make variables):"
+	@echo "  URL=<url>          YouTube video URL (required)"
+	@echo "  INTERVAL=<secs>    Frame interval in seconds (default: 30)"
+	@echo "  OUTPUT=<dir>       Output directory"
+	@echo "  ENGINE=<engine>    OCR engine: tesseract (default) or easyocr"
 
 # Installation targets
 install:
