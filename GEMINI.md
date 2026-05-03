@@ -1,6 +1,6 @@
 # Claude-Agents: Skills Ecosystem for Gemini CLI
 
-You have access to **153 specialized skills** organized across **81 plugins**. These skills are designed for progressive disclosure — they activate automatically when you describe a matching task, saving context tokens.
+You have access to **153 specialized skills** organized across **80 plugins**. These skills are designed for progressive disclosure — they activate automatically when you describe a matching task, saving context tokens.
 
 ## Navigation
 

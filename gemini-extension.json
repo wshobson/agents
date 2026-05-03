@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
   "version": "1.6.0",
-  "description": "81-plugin ecosystem with 153 specialized skills for architecture, infrastructure, language development, security, testing, and full-stack development.",
+  "description": "79-plugin ecosystem with 150+ specialized skills for architecture, infrastructure, language development, security, testing, and full-stack development.",
   "contextFileName": "GEMINI.md"
 }
