@@ -45,19 +45,45 @@ Each plugin is completely isolated with its own agents, commands, and skills:
 <details>
 <summary><b>Claude Code (recommended)</b></summary>
 
-**Marketplace install:**
+### Step 1: Add the Marketplace
+
+Add this marketplace to Claude Code:
 
 ```bash
 /plugin marketplace add wshobson/agents
-/plugin install <plugin-name>
 ```
 
-**Local / development:**
+This makes all 80 plugins available for installation, but **does not load any agents or tools** into your context.
+
+### Step 2: Install Plugins
+
+Browse available plugins:
 
 ```bash
-git clone https://github.com/wshobson/agents.git
-claude --plugin-dir /path/to/agents
+/plugin
 ```
+
+Install the plugins you need:
+
+```bash
+# Essential development plugins
+/plugin install python-development          # Python with 16 specialized skills
+/plugin install javascript-typescript       # JS/TS with 4 specialized skills
+/plugin install backend-development         # Backend APIs with 3 architecture skills
+
+# Infrastructure & operations
+/plugin install kubernetes-operations       # K8s with 4 deployment skills
+/plugin install cloud-infrastructure        # AWS/Azure/GCP with 4 cloud skills
+
+# Security & quality
+/plugin install security-scanning           # SAST with security skill
+/plugin install comprehensive-review       # Multi-perspective code analysis
+
+# Full-stack orchestration
+/plugin install full-stack-orchestration   # Multi-agent workflows
+```
+
+Each installed plugin loads **only its specific agents, commands, and skills** into Claude's context.
 
 </details>
 
