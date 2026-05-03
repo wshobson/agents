@@ -11,7 +11,7 @@ This plugin requires the **meigen** MCP server. Install it by adding to your pro
   "mcpServers": {
     "meigen": {
       "command": "npx",
-      "args": ["-y", "meigen@1.2.10"]
+      "args": ["-y", "meigen@1.2.13"]
     }
   }
 }

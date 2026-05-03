@@ -963,12 +963,24 @@
       "name": "meigen-ai-design",
       "source": "./plugins/meigen-ai-design",
       "description": "AI image generation with creative workflow orchestration, prompt engineering, and curated inspiration library via MCP server",
-      "version": "1.0.2",
+      "version": "1.0.5",
       "author": {
         "name": "MeiGen",
         "url": "https://github.com/jau123"
       },
       "homepage": "https://github.com/jau123/MeiGen-AI-Design-MCP",
+      "license": "MIT",
+      "category": "creative"
+    },
+    {
+      "name": "brand-landingpage",
+      "source": "./plugins/brand-landingpage",
+      "description": "Guides developers from brand discovery through iterative design to deployment-ready HTML via Stitch.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Travis D. Elliott",
+        "url": "https://github.com/travis-d-elliott"
+      },
       "license": "MIT",
       "category": "creative"
     },
