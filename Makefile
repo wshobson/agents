@@ -1,17 +1,22 @@
-# YouTube Design Extractor - Setup and Usage
-# ==========================================
+# YouTube Design Extractor & Gemini CLI Extension
+# ===============================================
 
 PYTHON := python3
 PIP := pip3
 SCRIPT := tools/yt-design-extractor.py
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate-plugin sync-commands generate-all-commands clean-commands
 
 help:
-	@echo "YouTube Design Extractor"
-	@echo "========================"
+	@echo "YouTube Design Extractor & Gemini CLI Extension"
+	@echo "==============================================="
 	@echo ""
-	@echo "Setup (run in order):"
+	@echo "Gemini CLI Extension Setup:"
+	@echo "  make generate-plugin PLUGIN=<name>  Generate commands for one plugin"
+	@echo "  make sync-commands                  Keep local commands in sync with upstream"
+	@echo "  make generate-all-commands          Generate commands for ALL plugins"
+	@echo ""
+	@echo "YouTube Design Extractor Setup (run in order):"
 	@echo "  make install-ocr     Install system tools (tesseract + ffmpeg)"
 	@echo "  make install         Install Python dependencies"
 	@echo "  make deps            Show what's installed"
@@ -19,7 +24,7 @@ help:
 	@echo "Optional:"
 	@echo "  make install-easyocr Install EasyOCR + PyTorch (~2GB, for stylized text)"
 	@echo ""
-	@echo "Usage:"
+	@echo "Usage (YouTube Extractor):"
 	@echo "  make run URL=<youtube-url>           Basic extraction"
 	@echo "  make run-full URL=<youtube-url>      Full extraction (OCR + colors + scene)"
 	@echo "  make run-ocr URL=<youtube-url>       With OCR only"
@@ -28,6 +33,7 @@ help:
 	@echo "Examples:"
 	@echo "  make run URL='https://youtu.be/eVnQFWGDEdY'"
 	@echo "  make run-full URL='https://youtu.be/eVnQFWGDEdY' INTERVAL=15"
+	@echo "  make generate-plugin PLUGIN=javascript-typescript"
 	@echo ""
 	@echo "Options (pass as make variables):"
 	@echo "  URL=<url>          YouTube video URL (required)"
@@ -88,7 +94,7 @@ ifndef URL
 	@echo "Usage: make run URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) "$(URL)" --interval $(INTERVAL) $(if $(OUTPUT),-o $(OUTPUT))
+	$(PYTHON) $(SCRIPT) '$(URL)' --interval '$(INTERVAL)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-full:
 ifndef URL
@@ -96,7 +102,7 @@ ifndef URL
 	@echo "Usage: make run-full URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) "$(URL)" --full --interval $(INTERVAL) --ocr-engine $(ENGINE) $(if $(OUTPUT),-o $(OUTPUT))
+	$(PYTHON) $(SCRIPT) '$(URL)' --full --interval '$(INTERVAL)' --ocr-engine '$(ENGINE)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-ocr:
 ifndef URL
@@ -104,7 +110,7 @@ ifndef URL
 	@echo "Usage: make run-ocr URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) "$(URL)" --ocr --interval $(INTERVAL) --ocr-engine $(ENGINE) $(if $(OUTPUT),-o $(OUTPUT))
+	$(PYTHON) $(SCRIPT) '$(URL)' --ocr --interval '$(INTERVAL)' --ocr-engine '$(ENGINE)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-transcript:
 ifndef URL
@@ -112,9 +118,31 @@ ifndef URL
 	@echo "Usage: make run-transcript URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) "$(URL)" --transcript-only $(if $(OUTPUT),-o $(OUTPUT))
+	$(PYTHON) $(SCRIPT) '$(URL)' --transcript-only $(if $(OUTPUT),-o '$(OUTPUT)')
 
 # Cleanup
 clean:
 	rm -rf yt-extract-*
 	@echo "Cleaned up extraction directories"
+
+# Gemini CLI Extension targets
+# ===========================
+
+GEMINI_GEN := tools/generate_gemini_commands.py
+
+generate-plugin:
+ifndef PLUGIN
+	@echo "Error: PLUGIN is required (e.g., make generate-plugin PLUGIN=javascript-typescript)"
+	@exit 1
+endif
+	$(PYTHON) $(GEMINI_GEN) --plugin '$(PLUGIN)'
+
+sync-commands:
+	$(PYTHON) $(GEMINI_GEN) --prune
+
+generate-all-commands:
+	$(PYTHON) $(GEMINI_GEN) --all
+
+clean-commands:
+	-rm -rf commands/*
+	@echo "Cleaned up generated Gemini commands"

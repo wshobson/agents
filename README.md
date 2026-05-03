@@ -2,11 +2,14 @@
 
 > **⚡ Updated for Opus 4.7, Sonnet 4.6 & Haiku 4.5** — Three-tier model strategy for optimal performance
 
-[![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
+[![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md)
 
 > **🎯 Agent Skills Enabled** — 153 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
 A comprehensive production-ready system combining **185 specialized AI agents**, **16 multi-agent workflow orchestrators**, **153 agent skills**, and **100 commands** organized into **80 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+
+> [!NOTE]
+> **Gemini CLI users:** This ecosystem is also available as a native Gemini CLI extension — 153 skills discoverable on-demand, no plugin installation required. See [GEMINI.md](GEMINI.md) for setup.
 
 ## Overview
 
@@ -130,6 +133,21 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 - [Model Configuration](docs/agents.md#model-configuration) - Haiku/Sonnet hybrid orchestration
 
 ## What's New
+
+### Gemini CLI Extension Support (NEW)
+
+The full skills ecosystem is now available as a native Gemini CLI extension:
+
+```bash
+gemini extensions install https://github.com/wshobson/agents
+```
+
+- **153 skills** discoverable on-demand — describe your task and Gemini CLI identifies the matching skill
+- **Opt-in slash commands** — generate locally per plugin via `make generate-plugin PLUGIN=<name>`, never committed to the repo
+- **Zero changes** to existing agents, skills, or commands — all markdown files are platform-agnostic
+- **Protocol Orchestrator** — slash commands pause at checkpoints for user approval, same disciplined flow as Claude Code
+
+[→ View Gemini CLI setup and usage](GEMINI.md)
 
 ### PluginEval — Quality Evaluation Framework (NEW)
 

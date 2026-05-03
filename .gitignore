@@ -22,3 +22,7 @@ venv
 node_modules
 .sass-cache
 .claude
+.worktrees/
+
+# Gemini CLI generated commands
+commands/**/*.toml
