@@ -1,6 +1,6 @@
 # Gemini CLI Skill Discovery Guide
 
-This guide is a quick reference for finding skills across 79 plugins using natural language triggers. In Gemini CLI, skills auto-activate when you describe your task — no slash commands needed.
+This guide is a quick reference for finding skills across 81 plugins using natural language triggers. In Gemini CLI, skills auto-activate when you describe your task — no slash commands needed.
 
 For installation and setup instructions, please refer to the main [README.md](../README.md).
 
@@ -230,4 +230,4 @@ For installation and setup instructions, please refer to the main [README.md](..
 
 ---
 
-*79 plugins total: 77 local + 2 external (qa-orchestra via git-subdir, pensyve via separate marketplace). All skills auto-activate in Gemini CLI — describe your task naturally.*
+*81 plugins total: 80 local + 1 external (qa-orchestra via git-subdir). All skills auto-activate in Gemini CLI — describe your task naturally.*
