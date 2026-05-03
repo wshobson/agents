@@ -274,8 +274,6 @@ Gemini CLI auto-discovers skills by name and description. Update your SKILL.md:
 - Now uses sequential execution instead of parallel subagents
 - File operations use read/write instead of partial edits
 - Shell commands are synchronous only
-
-## Usage
 ```
 
 ### Step 4: Test Both Platforms
