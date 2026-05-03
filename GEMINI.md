@@ -44,11 +44,12 @@ Slash commands follow a **sequential, multi-step protocol** model. When you run 
 ## Key Differences from Claude Code
 
 | Feature | Claude Code | Gemini CLI | Workaround |
-|---------|-------------|------------|------------|
-| **Slash Commands** | `/plan`, `/spec`, `/ship` entry points | Skills auto-trigger instead | Use skill names directly in prompts |
-| **Subagent Orchestration** | Fan-out parallel execution | Sequential task execution | Use the executing-plans skill to batch tasks |
-| **Model Assignment** | Per-agent model tiers (Opus/Sonnet/Haiku) | Session-level model only | Skills are model-agnostic; use session default |
+|---------|-----------|-----------|-----------|
+| **Slash Commands** | Built-in `/plan`, `/spec`, `/ship` | No built-in IDE commands | Use opt-in extension commands (see Setup) |
+| **Subagent Orchestration** | Fan-out parallel execution | Sequential execution | Use the `executing-plans` skill to batch tasks |
+| **Model Assignment** | Per-agent model tiers (Opus/Sonnet/Haiku) | Session-level model selection | Skills are model-agnostic; use session default |
 | **Plugin Installation** | Per-plugin via `/plugin install` | Per-extension via `gemini extensions install` | Install once: `gemini extensions install https://github.com/wshobson/agents` |
+
 
 ## Support & Contribution
 
