@@ -134,6 +134,21 @@ rm -rf ~/.claude/plugins/cache/claude-code-workflows && rm ~/.claude/plugins/ins
 
 ## What's New
 
+### Gemini CLI Extension Support (NEW)
+
+The full skills ecosystem is now available as a native Gemini CLI extension:
+
+```bash
+gemini extensions install https://github.com/wshobson/agents
+```
+
+- **153 skills** discoverable on-demand — describe your task and Gemini CLI identifies the matching skill
+- **Opt-in slash commands** — generate locally per plugin via `make generate-plugin PLUGIN=<name>`, never committed to the repo
+- **Zero changes** to existing agents, skills, or commands — all markdown files are platform-agnostic
+- **Protocol Orchestrator** — slash commands pause at checkpoints for user approval, same disciplined flow as Claude Code
+
+See [GEMINI.md](GEMINI.md) for full setup and usage details.
+
 ### PluginEval — Quality Evaluation Framework (NEW)
 
 A three-layer evaluation framework for measuring and certifying plugin/skill quality:
