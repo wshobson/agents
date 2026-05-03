@@ -4,7 +4,7 @@
 
 [![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge)
 
-> **🎯 Agent Skills Enabled** — 150 specialized skills extend Claude's capabilities across plugins with progressive disclosure
+> **🎯 Agent Skills Enabled** — 153 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
 A comprehensive production-ready system combining **185 specialized AI agents**, **16 multi-agent workflow orchestrators**, **153 agent skills**, and **100 Optional Commands** organized into **81 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
@@ -83,7 +83,6 @@ gemini extensions uninstall claude-code-workflows
 Slash commands are generated locally to keep your global namespace clean. To enable commands for a specific plugin:
 
 ```bash
-cd ~/.gemini/extensions/agents
 make generate-plugin PLUGIN=javascript-typescript
 ```
 
@@ -122,9 +121,9 @@ You install **plugins**, which bundle agents:
 
 ### Core Guides
 
-- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 79 plugins
-- **[Agent Reference](docs/agents.md)** - All 184 agents organized by category
-- **[Agent Skills](docs/agent-skills.md)** - 150 specialized skills with progressive disclosure
+- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 81 plugins
+- **[Agent Reference](docs/agents.md)** - All 185 agents organized by category
+- **[Agent Skills](docs/agent-skills.md)** - 153 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
 - **[Architecture](docs/architecture.md)** - Design principles and patterns
 - **[PluginEval](docs/plugin-eval.md)** - Quality evaluation framework (layers, dimensions, scoring)
@@ -205,7 +204,7 @@ Transforms Claude Code into a project management tool with a structured **Contex
 
 [→ View Conductor documentation](plugins/conductor/README.md)
 
-### Agent Skills (150 skills across 37 plugins)
+### Agent Skills (153 skills across 40 plugins)
 
 Specialized knowledge packages following Anthropic's progressive disclosure architecture:
 
@@ -321,7 +320,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 ## Plugin Categories
 
-**25 categories, 79 plugins:**
+**25 categories, 81 plugins:**
 
 - 🎨 **Development** (6) - debugging, backend, frontend, multi-platform
 - 📚 **Documentation** (4) - code docs, API specs, diagrams, C4 architecture, **HADS** (Human-AI Document Standard)
@@ -331,7 +330,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 - 🤖 **AI & ML** (4) - LLM apps, agent orchestration, context, MLOps
 - 📊 **Data** (2) - data engineering, data validation
 - 🗄️ **Database** (2) - database design, migrations
-- 🚨 **Operations** (4) - incident response, diagnostics, distributed debugging, observability
+- 🚨 **Operations** (4) - incident response, triage workflows, observability
 - ⚡ **Performance** (2) - application performance, database/cloud optimization
 - ☁️ **Infrastructure** (5) - deployment, validation, Kubernetes, cloud, CI/CD
 - 🔒 **Security** (6) - scanning, compliance, backend/API, frontend/mobile, **block-no-verify** (git hook bypass guard)
@@ -369,7 +368,7 @@ Plugins hosted in their own marketplaces — install from the source for the lat
 - **Single responsibility** - Each plugin does one thing well
 - **Minimal token usage** - Average 3.6 components per plugin
 - **Composable** - Mix and match for complex workflows
-- **100% coverage** - All 184 agents accessible across plugins
+- **100% coverage** - All 185 agents accessible across plugins
 
 ### Progressive Disclosure (Skills)
 
@@ -384,7 +383,7 @@ Three-tier architecture for token efficiency:
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # 77 plugins
+│   └── marketplace.json          # 81 plugins (80 local + 1 external)
 ├── plugins/
 │   ├── python-development/
 │   │   ├── agents/               # 3 Python experts
