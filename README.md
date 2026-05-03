@@ -8,6 +8,9 @@
 
 A comprehensive production-ready system combining **185 specialized AI agents**, **16 multi-agent workflow orchestrators**, **153 agent skills**, and **100 commands** organized into **80 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
+> [!NOTE]
+> **Gemini CLI users:** This ecosystem is also available as a native Gemini CLI extension — all 153 skills auto-discovered, no plugin installation required. See [GEMINI.md](GEMINI.md) for setup.
+
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
