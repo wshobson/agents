@@ -53,7 +53,7 @@ See the [Gemini CLI Quick Start](#quick-start) below for setup.
 ## Quick Start
 
 <details>
-<summary><b>Claude Code (recommended)</b></summary>
+<summary>**Claude Code (recommended)**</summary>
 
 ### Step 1: Add the Marketplace
 
@@ -98,7 +98,7 @@ Each installed plugin loads **only its specific agents, commands, and skills** i
 </details>
 
 <details>
-<summary><b>Gemini CLI</b></summary>
+<summary>**Gemini CLI**</summary>
 
 Install as native skills for auto-discovery.
 
