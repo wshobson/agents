@@ -195,9 +195,6 @@ def build_entry_prompt(
         parts.append("")
         parts.append("Available skills: " + ", ".join(f"`{s}`" for s in skills) + ".")
 
-    if arg_hint := "": # placeholder for symmetry
-        pass
-
     parts.append("")
     parts.append("{{args}}")
     return "\n".join(parts)
@@ -222,23 +219,13 @@ def generate_toml(description: str, prompt: str) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sync Gemini CLI TOML commands.")
     parser.add_argument("--plugin", help="Only sync commands for the specified plugin.")
+    parser.add_argument("--all", action="store_true", help="Generate commands for ALL plugins.")
     parser.add_argument("--prune", action="store_true", help="Delete TOMLs that no longer have a source .md file.")
     args = parser.parse_args()
 
     created = 0
     deleted = 0
     errors: list[str] = []
-
-    if args.plugin:
-        plugins = [args.plugin]
-        if not (PLUGINS_DIR / args.plugin).is_dir():
-            print(f"Error: Plugin directory not found: {args.plugin}", file=sys.stderr)
-            sys.exit(1)
-    else:
-        plugins = sorted(
-            p.name for p in PLUGINS_DIR.iterdir()
-            if p.is_dir()
-        )
 
     # ── Pruning ─────────────────────────────────────────────────────────────
     if args.prune and COMMANDS_OUT.is_dir():
@@ -269,8 +256,33 @@ def main() -> None:
                 deleted += 1
                 print(f"  pruned commands/{rel_path}")
 
+    # ── Identify plugins to sync ────────────────────────────────────────────
+    plugins_to_sync = []
+    if args.plugin:
+        if (PLUGINS_DIR / args.plugin).is_dir():
+            plugins_to_sync = [args.plugin]
+        else:
+            print(f"Error: Plugin directory not found: {args.plugin}", file=sys.stderr)
+            sys.exit(1)
+    elif args.all:
+        plugins_to_sync = sorted(p.name for p in PLUGINS_DIR.iterdir() if p.is_dir())
+    elif COMMANDS_OUT.is_dir():
+        # Smart Sync: Only update plugins that are already present in commands/
+        existing_plugin_configs = set()
+        for p in COMMANDS_OUT.iterdir():
+            if p.is_file() and p.suffix == ".toml":
+                existing_plugin_configs.add(p.stem)
+            elif p.is_dir() and any(p.iterdir()):
+                existing_plugin_configs.add(p.name)
+        
+        plugins_to_sync = sorted([p for p in existing_plugin_configs if (PLUGINS_DIR / p).is_dir()])
+    
+    if not plugins_to_sync and not args.prune:
+        print("No plugins to sync. Use --plugin <name> or --all.")
+        return
+
     # ── Generation/Sync ─────────────────────────────────────────────────────
-    for plugin_name in plugins:
+    for plugin_name in plugins_to_sync:
         plugin_dir = PLUGINS_DIR / plugin_name
         
         agents = agent_names(plugin_dir)

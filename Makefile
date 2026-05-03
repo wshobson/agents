@@ -141,8 +141,8 @@ sync-commands:
 	$(PYTHON) $(GEMINI_GEN) --prune
 
 generate-all-commands:
-	$(PYTHON) $(GEMINI_GEN)
+	$(PYTHON) $(GEMINI_GEN) --all
 
 clean-commands:
-	-find commands -name "*.toml" -delete 2>/dev/null || true
+	-rm -rf commands/*
 	@echo "Cleaned up generated Gemini commands"
