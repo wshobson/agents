@@ -12,16 +12,16 @@ A comprehensive production-ready system combining **185 specialized AI agents**,
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **80 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability (Note: Gemini CLI discovers and activates skills automatically).
+- **80 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability
 - **185 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
 - **153 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **16 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
-- **100 Optional Commands** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
+- **100 Commands** - Optimized utilities including project scaffolding, security scanning, test automation, and infrastructure setup
 
 ### Key Features
 
-- **Granular Plugin Architecture**: 80 focused plugins optimized for minimal token usage (Note: Gemini CLI users benefit from auto-discovery and automatic skill activation).
-- **Comprehensive Tooling**: 100 optional commands including test generation, scaffolding, and security scanning
+- **Granular Plugin Architecture**: 80 focused plugins optimized for minimal token usage
+- **Comprehensive Tooling**: 100 commands including test generation, scaffolding, and security scanning
 - **100% Agent Coverage**: All plugins include specialized agents
 - **Agent Skills**: 153 specialized skills following for progressive disclosure and token efficiency
 - **Clear Organization**: 25 categories with 1-10 plugins each for easy discovery
@@ -31,14 +31,24 @@ This unified repository provides everything needed for intelligent automation an
 
 Each plugin is completely isolated with its own agents, commands, and skills:
 
-- **Claude Code**: Install only what you need - Each plugin loads only its specific agents, commands, and skills
-- **Gemini CLI**: Skills are auto-discovered and activate on-demand based on your task description.
+- **Install only what you need** - Each plugin loads only its specific agents, commands, and skills
 - **Minimal token usage** - No unnecessary resources loaded into context
 - **Mix and match** - Compose multiple plugins for complex workflows
 - **Clear boundaries** - Each plugin has a single, focused purpose
 - **Progressive disclosure** - Skills load knowledge only when activated
 
 **Example**: Installing `python-development` loads 3 Python agents, 1 scaffolding tool, and makes 16 skills available (~1000 tokens), not the entire marketplace.
+
+## Gemini CLI
+
+The same 153 skills and 185 agents are available as a native Gemini CLI extension. Skills are auto-discovered and activate on-demand based on your task — no manual plugin installation needed.
+
+- **153 skills** surface automatically via `gemini-extension.json`
+- **Opt-in slash commands** — generate locally with `make sync-commands`, never committed to the repo
+- **No drift** — generated commands mirror the canonical `.md` sources at generation time
+- **Safety guardrails** — credential protection and source control safety built in (see [GEMINI.md](GEMINI.md))
+
+See the [Gemini CLI Quick Start](#quick-start) below for setup.
 
 ## Quick Start
 
@@ -138,7 +148,7 @@ Slash commands follow an interactive **Protocol Orchestrator** model, pausing at
 
 </details>
 
-### Plugins vs Agents
+### Plugins vs Agents (Claude Code only)
 
 You install **plugins**, which bundle agents:
 
