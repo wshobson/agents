@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **81 focused, single-purpose plugins** organized by category. 80 plugins ship from this repo; 1 additional plugin (`qa-orchestra`) is hosted in an external repository and distributed via a `git-subdir` marketplace entry.
+Browse all **78 focused, single-purpose plugins** organized by category. 77 plugins ship from this repo; 1 additional plugin (`qa-orchestra`) is hosted in an external repository and distributed via a `git-subdir` marketplace entry.
 
 > 💡 **Also recommended:** [Pensyve](https://github.com/major7apps/pensyve) — universal memory runtime for Claude Code. Distributed from its own marketplace (`major7apps/pensyve`) so updates ship directly from the source. Install with `/plugin marketplace add major7apps/pensyve` then `/plugin install pensyve@major7apps-pensyve`.
 

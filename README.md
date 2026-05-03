@@ -6,13 +6,13 @@
 
 > **🎯 Agent Skills Enabled** — 153 specialized skills extend Claude's capabilities across plugins with progressive disclosure
 
-A comprehensive production-ready system combining **185 specialized AI agents**, **16 multi-agent workflow orchestrators**, **153 agent skills**, and **100 Optional Commands** organized into **81 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
+A comprehensive production-ready system combining **185 specialized AI agents**, **16 multi-agent workflow orchestrators**, **153 agent skills**, and **100 commands** organized into **80 focused, single-purpose plugins** for [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
 ## Overview
 
 This unified repository provides everything needed for intelligent automation and multi-agent orchestration across modern software development:
 
-- **81 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability (Note: Gemini CLI discovers and activates skills automatically).
+- **80 Focused Plugins** - Granular, single-purpose plugins optimized for minimal token usage and composability (Note: Gemini CLI discovers and activates skills automatically).
 - **185 Specialized Agents** - Domain experts with deep knowledge across architecture, languages, infrastructure, quality, data/AI, documentation, business operations, and SEO
 - **153 Agent Skills** - Modular knowledge packages with progressive disclosure for specialized expertise
 - **16 Workflow Orchestrators** - Multi-agent coordination systems for complex operations like full-stack development, security hardening, ML pipelines, and incident response
@@ -122,7 +122,7 @@ You install **plugins**, which bundle agents:
 
 ### Core Guides
 
-- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 81 plugins
+- **[Plugin Reference](docs/plugins.md)** - Complete catalog of all 80 plugins
 - **[Agent Reference](docs/agents.md)** - All 185 agents organized by category
 - **[Agent Skills](docs/agent-skills.md)** - 153 specialized skills with progressive disclosure
 - **[Usage Guide](docs/usage.md)** - Commands, workflows, and best practices
@@ -321,7 +321,7 @@ Uses kubernetes-architect agent with 4 specialized skills for production-grade c
 
 ## Plugin Categories
 
-**25 categories, 81 plugins:**
+**25 categories, 80 plugins:**
 
 - 🎨 **Development** (6) - debugging, backend, frontend, multi-platform
 - 📚 **Documentation** (4) - code docs, API specs, diagrams, C4 architecture, **HADS** (Human-AI Document Standard)

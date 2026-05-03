@@ -1,6 +1,6 @@
 # Claude-Agents: Skills Ecosystem for Gemini CLI
 
-You have access to **153 specialized skills** organized across **81 plugins**. These skills are designed for progressive disclosure — they activate automatically when you describe a matching task, saving context tokens.
+You have access to **153 specialized skills** organized across **80 plugins**. These skills are designed for progressive disclosure — they activate automatically when you describe a matching task, saving context tokens.
 
 ## Navigation
 
@@ -87,7 +87,7 @@ Use `/help` in Gemini CLI to list all available commands. See [docs/gemini-plugi
 
 ## Slash Commands for Plugin Discovery
 
-All 81 plugins are accessible via slash commands: `/security-scan`, `/conductor-orchestrate`, `/c4-architecture`, etc.
+All 80 plugins are accessible via slash commands: `/security-scan`, `/conductor-orchestrate`, `/c4-architecture`, etc.
 
 Slash commands provide the primary discovery mechanism:
 - Fast access: Type `/` to see all available plugins
@@ -154,5 +154,5 @@ gemini extensions install https://github.com/wshobson/agents
 
 **Last Updated**: April 2026
 **Skills**: 153
-**Plugins**: 81
+**Plugins**: 80
 **Platform**: Gemini CLI 3.0+
