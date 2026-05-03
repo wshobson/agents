@@ -6,24 +6,26 @@ import json
 import os
 import re
 import sys
+from pathlib import Path
 
-WORKTREE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PLUGINS_DIR = os.path.join(WORKTREE, "plugins")
-COMMANDS_OUT = os.path.join(WORKTREE, "commands")
+WORKTREE = Path(__file__).resolve().parent.parent
+PLUGINS_DIR = WORKTREE / "plugins"
+COMMANDS_OUT = WORKTREE / "commands"
 
 
 # ── Parsing helpers ──────────────────────────────────────────────────────────
 
-def read_file(path: str) -> str:
+def read_file(path: Path) -> str:
+    """Read file content as UTF-8 string."""
     try:
-        with open(path, encoding="utf-8") as f:
-            return f.read()
+        return path.read_text(encoding="utf-8")
     except OSError:
         return ""
 
 
-def read_plugin_json(plugin_dir: str) -> dict:
-    path = os.path.join(plugin_dir, ".claude-plugin", "plugin.json")
+def read_plugin_json(plugin_dir: Path) -> dict:
+    """Read and parse plugin.json from plugin directory."""
+    path = plugin_dir / ".claude-plugin" / "plugin.json"
     try:
         with open(path, encoding="utf-8") as f:
             return json.load(f)
@@ -68,6 +70,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
 
 
 def h1_from_body(body: str) -> str:
+    """Extract the first H1 heading from Markdown body."""
     for line in body.splitlines():
         line = line.strip()
         if line.startswith("# "):
@@ -109,21 +112,23 @@ def context_paragraph(body: str) -> str:
     return text
 
 
-def skill_names(plugin_dir: str) -> list[str]:
-    skills_dir = os.path.join(plugin_dir, "skills")
-    if not os.path.isdir(skills_dir):
+def skill_names(plugin_dir: Path) -> list[str]:
+    """Return sorted list of skill names in plugin directory."""
+    skills_dir = plugin_dir / "skills"
+    if not skills_dir.is_dir():
         return []
     return sorted(
-        d for d in os.listdir(skills_dir)
-        if os.path.isfile(os.path.join(skills_dir, d, "SKILL.md"))
+        d.name for d in skills_dir.iterdir()
+        if d.is_dir() and (d / "SKILL.md").is_file()
     )
 
 
-def agent_names(plugin_dir: str) -> list[str]:
-    agents_dir = os.path.join(plugin_dir, "agents")
-    if not os.path.isdir(agents_dir):
+def agent_names(plugin_dir: Path) -> list[str]:
+    """Return sorted list of agent names in plugin directory."""
+    agents_dir = plugin_dir / "agents"
+    if not agents_dir.is_dir():
         return []
-    return [f.removesuffix(".md") for f in sorted(os.listdir(agents_dir)) if f.endswith(".md")]
+    return [f.name.removesuffix(".md") for f in sorted(agents_dir.iterdir()) if f.name.endswith(".md")]
 
 
 # ── TOML generation ──────────────────────────────────────────────────────────
@@ -131,15 +136,6 @@ def agent_names(plugin_dir: str) -> list[str]:
 def escape_toml_string(s: str) -> str:
     """Escape for TOML basic string (double-quoted)."""
     return s.replace('\\', '\\\\').replace('"', '\\"')
-
-
-def _similar(a: str, b: str) -> bool:
-    """True if strings share more than half their words (dedup check)."""
-    wa = set(a.lower().split())
-    wb = set(b.lower().split())
-    if not wa or not wb:
-        return False
-    return len(wa & wb) / min(len(wa), len(wb)) > 0.55
 
 
 def build_prompt(
@@ -151,6 +147,7 @@ def build_prompt(
     skills: list[str],
     agents: list[str],
 ) -> str:
+    """Build the Gemini CLI command prompt."""
     parts: list[str] = []
 
     parts.append(f"You are the Orchestrator for the {description.rstrip('.')}.")
@@ -184,6 +181,7 @@ def build_entry_prompt(
     skills: list[str],
     agents: list[str],
 ) -> str:
+    """Build the top-level plugin entry point prompt."""
     parts: list[str] = []
     parts.append(description.rstrip(".") + ".")
     parts.append("")
@@ -197,6 +195,9 @@ def build_entry_prompt(
         parts.append("")
         parts.append("Available skills: " + ", ".join(f"`{s}`" for s in skills) + ".")
 
+    if arg_hint := "": # placeholder for symmetry
+        pass
+
     parts.append("")
     parts.append("{{args}}")
     return "\n".join(parts)
@@ -208,6 +209,7 @@ def escape_toml_prompt(s: str) -> str:
 
 
 def generate_toml(description: str, prompt: str) -> str:
+    """Generate the full TOML content for a command."""
     lines = ['description = "' + escape_toml_string(description) + '"', 'prompt = """']
     lines.append(escape_toml_prompt(prompt))
     lines.append('"""')
@@ -229,47 +231,47 @@ def main() -> None:
 
     if args.plugin:
         plugins = [args.plugin]
-        if not os.path.isdir(os.path.join(PLUGINS_DIR, args.plugin)):
+        if not (PLUGINS_DIR / args.plugin).is_dir():
             print(f"Error: Plugin directory not found: {args.plugin}", file=sys.stderr)
             sys.exit(1)
     else:
         plugins = sorted(
-            p for p in os.listdir(PLUGINS_DIR)
-            if os.path.isdir(os.path.join(PLUGINS_DIR, p))
+            p.name for p in PLUGINS_DIR.iterdir()
+            if p.is_dir()
         )
 
     # ── Pruning ─────────────────────────────────────────────────────────────
-    if args.prune and os.path.isdir(COMMANDS_OUT):
-        for root, dirs, files in os.walk(COMMANDS_OUT):
-            for f in files:
-                if not f.endswith(".toml"):
-                    continue
-                
-                toml_path = os.path.join(root, f)
-                rel_to_out = os.path.relpath(toml_path, COMMANDS_OUT)
-                
-                # Check top-level plugin toml
-                if "/" not in rel_to_out:
-                    plugin_name = f.removesuffix(".toml")
-                    source_dir = os.path.join(PLUGINS_DIR, plugin_name)
-                    if not os.path.isdir(source_dir):
-                        os.remove(toml_path)
-                        deleted += 1
-                        print(f"  pruned commands/{f}")
-                else:
-                    # Check sub-command toml
-                    parts = rel_to_out.split("/")
-                    plugin_name = parts[0]
-                    cmd_name = parts[1].removesuffix(".toml")
-                    source_md = os.path.join(PLUGINS_DIR, plugin_name, "commands", f"{cmd_name}.md")
-                    if not os.path.isfile(source_md):
-                        os.remove(toml_path)
-                        deleted += 1
-                        print(f"  pruned commands/{rel_to_out}")
+    if args.prune and COMMANDS_OUT.is_dir():
+        for toml_path in COMMANDS_OUT.rglob("*.toml"):
+            # Security: Ensure we are only deleting inside COMMANDS_OUT
+            if not toml_path.resolve().is_relative_to(COMMANDS_OUT.resolve()):
+                continue
+
+            rel_path = toml_path.relative_to(COMMANDS_OUT)
+            parts = rel_path.parts
+            
+            should_delete = False
+            if len(parts) == 1:
+                # Top-level plugin toml
+                plugin_name = toml_path.stem
+                if not (PLUGINS_DIR / plugin_name).is_dir():
+                    should_delete = True
+            elif len(parts) == 2:
+                # Sub-command toml
+                plugin_name = parts[0]
+                cmd_name = toml_path.stem
+                source_md = PLUGINS_DIR / plugin_name / "commands" / f"{cmd_name}.md"
+                if not source_md.is_file():
+                    should_delete = True
+            
+            if should_delete:
+                toml_path.unlink()
+                deleted += 1
+                print(f"  pruned commands/{rel_path}")
 
     # ── Generation/Sync ─────────────────────────────────────────────────────
     for plugin_name in plugins:
-        plugin_dir = os.path.join(PLUGINS_DIR, plugin_name)
+        plugin_dir = PLUGINS_DIR / plugin_name
         
         agents = agent_names(plugin_dir)
         skills = skill_names(plugin_dir)
@@ -281,32 +283,31 @@ def main() -> None:
         entry_prompt = build_entry_prompt(plugin_name, plugin_desc, skills, agents)
         entry_toml = generate_toml(plugin_desc, entry_prompt)
         
-        os.makedirs(COMMANDS_OUT, exist_ok=True)
-        entry_path = os.path.join(COMMANDS_OUT, plugin_name + ".toml")
+        COMMANDS_OUT.mkdir(exist_ok=True)
+        entry_path = COMMANDS_OUT / f"{plugin_name}.toml"
         try:
-            with open(entry_path, "w", encoding="utf-8") as f:
-                f.write(entry_toml)
+            entry_path.write_text(entry_toml, encoding="utf-8")
             created += 1
             print(f"  wrote commands/{plugin_name}.toml")
         except OSError as e:
             errors.append(f"{plugin_name} entry: {e}")
 
         # ── Generate sub-commands ────────────────────────────────────────────
-        cmds_dir = os.path.join(plugin_dir, "commands")
-        if not os.path.isdir(cmds_dir):
+        cmds_dir = plugin_dir / "commands"
+        if not cmds_dir.is_dir():
             continue
 
-        cmd_files = sorted(f for f in os.listdir(cmds_dir) if f.endswith(".md"))
+        cmd_files = sorted(f for f in cmds_dir.iterdir() if f.name.endswith(".md"))
         if not cmd_files:
             continue
 
-        out_dir = os.path.join(COMMANDS_OUT, plugin_name)
-        os.makedirs(out_dir, exist_ok=True)
+        out_dir = COMMANDS_OUT / plugin_name
+        out_dir.mkdir(exist_ok=True)
 
-        for cmd_file in cmd_files:
-            cmd_name = cmd_file.removesuffix(".md")
-            cmd_rel_path = f"plugins/{plugin_name}/commands/{cmd_file}"
-            content = read_file(os.path.join(cmds_dir, cmd_file))
+        for cmd_file_path in cmd_files:
+            cmd_name = cmd_file_path.stem
+            cmd_rel_path = f"plugins/{plugin_name}/commands/{cmd_file_path.name}"
+            content = read_file(cmd_file_path)
             fm, body = parse_frontmatter(content)
 
             description = (
@@ -319,10 +320,9 @@ def main() -> None:
             prompt = build_prompt(plugin_name, cmd_name, cmd_rel_path, description, arg_hint, skills, agents)
             toml_content = generate_toml(description, prompt)
 
-            out_path = os.path.join(out_dir, cmd_name + ".toml")
+            out_path = out_dir / f"{cmd_name}.toml"
             try:
-                with open(out_path, "w", encoding="utf-8") as f:
-                    f.write(toml_content)
+                out_path.write_text(toml_content, encoding="utf-8")
                 created += 1
                 print(f"  wrote commands/{plugin_name}/{cmd_name}.toml")
             except OSError as e:

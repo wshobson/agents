@@ -19,11 +19,11 @@ Slash commands are generated on-demand to avoid cluttering your CLI. To enable c
    ```
    *(Note: Windows users should run this in **Git Bash** or **WSL**. Alternatively, run `python3 tools/generate_gemini_commands.py --plugin <name>` directly.)*
 
-4. **Keep in sync**: If you update the extension (`gemini extensions update`) and want to refresh your local commands or remove stale ones, run:
+3. **Keep in sync**: If you update the extension (`gemini extensions update`) and want to refresh your local commands or remove stale ones, run:
    ```bash
    make sync-commands
    ```
-5. **Restart Gemini CLI**: You must restart your CLI session for the new commands to appear.
+4. **Restart Gemini CLI**: You must restart your CLI session for the new commands to appear.
 
 ### Interactive Execution (Protocol Orchestrator)
 

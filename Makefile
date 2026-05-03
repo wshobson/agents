@@ -94,7 +94,7 @@ ifndef URL
 	@echo "Usage: make run URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) "$(URL)" --interval $(INTERVAL) $(if $(OUTPUT),-o $(OUTPUT))
+	$(PYTHON) $(SCRIPT) '$(URL)' --interval '$(INTERVAL)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-full:
 ifndef URL
@@ -102,7 +102,7 @@ ifndef URL
 	@echo "Usage: make run-full URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) "$(URL)" --full --interval $(INTERVAL) --ocr-engine $(ENGINE) $(if $(OUTPUT),-o $(OUTPUT))
+	$(PYTHON) $(SCRIPT) '$(URL)' --full --interval '$(INTERVAL)' --ocr-engine '$(ENGINE)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-ocr:
 ifndef URL
@@ -110,7 +110,7 @@ ifndef URL
 	@echo "Usage: make run-ocr URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) "$(URL)" --ocr --interval $(INTERVAL) --ocr-engine $(ENGINE) $(if $(OUTPUT),-o $(OUTPUT))
+	$(PYTHON) $(SCRIPT) '$(URL)' --ocr --interval '$(INTERVAL)' --ocr-engine '$(ENGINE)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-transcript:
 ifndef URL
@@ -118,7 +118,7 @@ ifndef URL
 	@echo "Usage: make run-transcript URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) "$(URL)" --transcript-only $(if $(OUTPUT),-o $(OUTPUT))
+	$(PYTHON) $(SCRIPT) '$(URL)' --transcript-only $(if $(OUTPUT),-o '$(OUTPUT)')
 
 # Cleanup
 clean:
@@ -135,7 +135,7 @@ ifndef PLUGIN
 	@echo "Error: PLUGIN is required (e.g., make generate-plugin PLUGIN=javascript-typescript)"
 	@exit 1
 endif
-	$(PYTHON) $(GEMINI_GEN) --plugin "$(PLUGIN)"
+	$(PYTHON) $(GEMINI_GEN) --plugin '$(PLUGIN)'
 
 sync-commands:
 	$(PYTHON) $(GEMINI_GEN) --prune
