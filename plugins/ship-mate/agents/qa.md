@@ -142,7 +142,7 @@ Write `.claude/pipeline/qa-report.md`:
 
 ### 5. Determine Outcome
 
-**If all Critical and High bugs found:**
+**If any Critical or High bugs are found:**
 - Set `flags.qa_bugs_pending = true` in state.json
 - Print bug list to developer agent for fixing
 - The `ship` skill handles routing back to implement
