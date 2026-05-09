@@ -227,11 +227,12 @@ Agents are assigned to specific Claude models based on task complexity and compu
 
 ### Model Distribution Summary
 
-| Model  | Agent Count | Use Case                                                        |
-| ------ | ----------- | --------------------------------------------------------------- |
-| Opus   | 42          | Critical architecture, security, code review, production coding |
-| Sonnet | 39          | Complex tasks, support with intelligence                        |
-| Haiku  | 18          | Fast operational tasks                                          |
+| Model   | Agent Count | Use Case                                                        |
+| ------- | ----------- | --------------------------------------------------------------- |
+| Opus    | 54          | Critical architecture, security, code review, production coding |
+| Sonnet  | 62          | Complex tasks, support with intelligence                        |
+| Haiku   | 20          | Fast operational tasks                                          |
+| Inherit | 49          | Complex tasks where the user chooses the model at runtime       |
 
 ### Model Selection Criteria
 

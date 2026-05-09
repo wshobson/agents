@@ -8,7 +8,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 - Each plugin does **one thing well** (Unix philosophy)
 - Clear, focused purposes (describable in 5-10 words)
-- Average plugin size: **3.4 components** (follows Anthropic's 2-8 pattern)
+- Average plugin size: **5.5 components** (follows Anthropic's 2-8 pattern)
 - **Zero bloated plugins** - all plugins focused and purposeful
 
 ### Composability Over Bundling
@@ -198,15 +198,16 @@ See [Agent Skills](./agent-skills.md) for complete details on the 153 skills.
 
 ## Model Configuration Strategy
 
-### Two-Tier Architecture
+### Four-Tier Architecture
 
-The system uses Claude Opus and Sonnet models strategically:
+The system uses Claude Opus, Sonnet, Haiku, and Inherit assignments strategically:
 
-| Model  | Count     | Use Case                                     |
-| ------ | --------- | -------------------------------------------- |
-| Opus   | 42 agents | Critical architecture, security, code review |
-| Sonnet | 39 agents | Complex tasks, support with intelligence     |
-| Haiku  | 18 agents | Fast operational tasks                       |
+| Model   | Count     | Use Case                                     |
+| ------- | --------- | -------------------------------------------- |
+| Opus    | 54 agents | Critical architecture, security, code review |
+| Sonnet  | 62 agents | Complex tasks, support with intelligence     |
+| Haiku   | 20 agents | Fast operational tasks                       |
+| Inherit | 49 agents | Defers model choice to the user at runtime   |
 
 ### Selection Criteria
 
@@ -262,7 +263,7 @@ code-reviewer (Sonnet) validates architecture
 
 - **100% agent coverage** - all plugins include at least one agent
 - **100% component availability** - all 185 agents accessible across plugins
-- **Efficient distribution** - 3.4 components per plugin average
+- **Efficient distribution** - 5.5 components per plugin average
 
 ### Discoverability
 
