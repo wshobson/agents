@@ -36,7 +36,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **79 focused plugins** (77 local + 2 external via git-subdir) optimized for specific use cases
+- **81 focused plugins** (80 local + 1 external via git-subdir) optimized for specific use cases
 - **25 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 4 plugins (debugging, backend, frontend, multi-platform)
@@ -48,7 +48,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Component Breakdown
 
-**99 Specialized Agents**
+**185 Specialized Agents**
 
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
@@ -194,7 +194,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 150 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 153 skills.
 
 ## Model Configuration Strategy
 
@@ -261,7 +261,7 @@ code-reviewer (Sonnet) validates architecture
 ### Component Coverage
 
 - **100% agent coverage** - all plugins include at least one agent
-- **100% component availability** - all 99 agents accessible across plugins
+- **100% component availability** - all 185 agents accessible across plugins
 - **Efficient distribution** - 3.4 components per plugin average
 
 ### Discoverability
