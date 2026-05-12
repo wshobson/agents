@@ -1082,6 +1082,21 @@
       "license": "MIT",
       "category": "workflows",
       "keywords": ["pipeline", "automation", "orchestration", "code-review", "qa", "playwright", "multi-agent", "dev-workflow"]
+    },
+    {
+      "name": "mutagent",
+      "source": "./plugins/mutagent",
+      "description": "Eval-driven prompt and agent optimization for AI engineers — capture traces, curate datasets, score against rubrics, and optimize prompts against measurable targets. Native tracing adapters for Mastra, LangChain, LangGraph, and Vercel AI SDK. Backed by the open-source @mutagent/cli (MIT).",
+      "version": "0.1.185",
+      "author": {
+        "name": "Mutagent",
+        "email": "bcyb@mutagent.io",
+        "url": "https://github.com/mutagent-io"
+      },
+      "homepage": "https://github.com/mutagent-io/skills",
+      "license": "MIT",
+      "category": "ai-ml",
+      "keywords": ["mutagent", "prompt-optimization", "evaluation", "evals", "tracing", "observability", "agent-engineering", "rubric-scoring"]
     }
   ]
 }
