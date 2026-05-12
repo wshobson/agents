@@ -4,10 +4,12 @@ description: |
   MutagenT CLI - AI Prompt Optimization Platform CLI.
   Guides coding agents through prompt upload, evaluation creation,
   dataset curation, optimization, and framework integration.
-  Triggers: "mutagent", "optimize prompt", "upload prompt", "integrate tracing",
-  "create evaluation", "upload dataset", "explore prompts", "mutagent cli",
-  "eval", "dataset", "guided", "how do I optimize", "improve my prompt",
-  "set up tracing", "add observability".
+  Use this skill when the user wants to optimize a prompt, upload a prompt,
+  create an evaluation, integrate tracing, upload a dataset, explore prompts,
+  or run the mutagent CLI. Trigger phrases: "mutagent", "optimize prompt",
+  "upload prompt", "integrate tracing", "create evaluation", "upload dataset",
+  "explore prompts", "mutagent cli", "eval", "dataset", "guided",
+  "how do I optimize", "improve my prompt", "set up tracing", "add observability".
 SKILL_VERSION: 0.1.178
 SKILL_MIN_CLI_VERSION: 0.1.163
 ---
@@ -158,7 +160,7 @@ The `_directive.askUserQuestions` schema is described in
 
 ---
 
-## 5 Core Rules -- NON-NEGOTIABLE
+## 6 Core Rules -- NON-NEGOTIABLE
 
 1. **`--json` on EVERY command.** No exceptions. Agents use JSON mode exclusively.
 2. **`<command> --help` BEFORE first use of any command.** The CLI is the source of truth for flags -- this SKILL never inlines them.
