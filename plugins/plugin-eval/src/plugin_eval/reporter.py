@@ -2,7 +2,20 @@
 
 from __future__ import annotations
 
-from plugin_eval.models import PluginEvalResult
+from plugin_eval.models import Depth, PluginEvalResult
+
+
+_LAYER_TO_DEPTH: dict[frozenset[str], Depth] = {
+    frozenset({"static", "judge", "monte_carlo"}): Depth.DEEP,
+    frozenset({"static", "judge"}): Depth.STANDARD,
+    frozenset({"static"}): Depth.QUICK,
+}
+
+
+def _effective_depth(result: PluginEvalResult) -> Depth:
+    """Return the deepest depth actually covered by the layers that ran."""
+    layer_names = frozenset(layer.layer for layer in result.layers)
+    return _LAYER_TO_DEPTH.get(layer_names, Depth.QUICK)
 
 
 class Reporter:
@@ -27,8 +40,28 @@ class Reporter:
         lines.append("")
         lines.append(f"**Path:** `{result.plugin_path}`")
         lines.append(f"**Timestamp:** {result.timestamp}")
-        lines.append(f"**Depth:** {result.config.depth}")
+        requested = Depth(result.config.depth)
+        effective = _effective_depth(result)
+        if effective is requested:
+            lines.append(f"**Depth:** {requested.value}")
+        else:
+            lines.append(
+                f"**Depth:** {requested.value} (requested) → "
+                f"{effective.value} (effective)"
+            )
         lines.append("")
+
+        if effective is not requested:
+            lines.append(
+                "> **Note:** Requested depth `"
+                f"{requested.value}` was downgraded to `{effective.value}` "
+                "because plugin-level evaluation only runs the static layer. "
+                "Judge and Monte Carlo layers require per-skill evaluation — "
+                "point at an individual skill directory to use the deeper "
+                "layers. Composite score and confidence reflect the layers "
+                "actually run."
+            )
+            lines.append("")
 
         # Overall Score
         lines.append("## Overall Score")

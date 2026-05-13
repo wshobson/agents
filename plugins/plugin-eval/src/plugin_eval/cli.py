@@ -17,6 +17,7 @@ app = typer.Typer(
     add_completion=False,
 )
 console = Console()
+stderr_console = Console(stderr=True)
 
 
 def _detect_target(path: Path) -> str:
@@ -55,6 +56,15 @@ def _run_score(
     if target == "skill":
         result = engine.evaluate_skill(path)
     elif target == "plugin":
+        if depth != Depth.QUICK:
+            stderr_console.print(
+                f"[yellow]warning:[/yellow] plugin-level evaluation only runs the "
+                f"static layer; judge and Monte Carlo layers require per-skill "
+                f"evaluation. Requested depth [bold]{depth.value}[/bold] will be "
+                f"served from the static layer only — confidence label will be "
+                f"[bold]Estimated[/bold] regardless. To use the deeper layers, "
+                f"point at an individual skill directory."
+            )
         result = engine.evaluate_plugin(path)
     else:
         # Attempt skill evaluation as fallback
