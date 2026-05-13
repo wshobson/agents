@@ -30,6 +30,25 @@ def anti_pattern_penalty(count: int) -> float:
 # Line count threshold for BLOATED_SKILL (no references/ dir)
 _BLOATED_LINE_THRESHOLD = 800
 
+# Canonical trigger phrasings the model can use to decide when to invoke a skill.
+# Matches:
+#   - Imperative second-person: "Use when …", "Use this skill when …"
+#   - Third-person canonical (Anthropic plugin-dev recommends this form):
+#     "This skill should be used when …", "Used when …"
+#   - Prepositional temporal triggers commonly used in self-audit / hook-adjacent
+#     skills: "Use after …", "Use before …", "Use immediately before …",
+#     "Use whenever …", "Used after …", etc.
+#   - Explicit auto-load self-documentation: "Auto-loads when …"
+#   - Existing explicit markers: "Use proactively", "Trigger when …"
+_TRIGGER_PATTERN = re.compile(
+    r"\b(?:should\s+be\s+)?used?\s+(?:this\s+skill\s+)?(?:immediately\s+)?"
+    r"(?:when|after|before|whenever)\b"
+    r"|\buse\s+proactively\b"
+    r"|\btrigger(?:s)?\s+(?:when|on)\b"
+    r"|\bauto[-\s]?loads?\s+(?:when|on)\b",
+    re.IGNORECASE,
+)
+
 
 class StaticAnalyzer:
     """Deterministic structural analysis of plugin/skill quality."""
@@ -129,17 +148,18 @@ class StaticAnalyzer:
                 )
             )
 
-        # MISSING_TRIGGER: no "Use when..." or "Use this skill when..." phrasing
-        trigger_pattern = (
-            r"\buse\s+(?:this\s+skill\s+)?when\b|\buse\s+proactively\b|\btrigger\s+when\b"
-        )
-        if not re.search(trigger_pattern, skill.description, re.IGNORECASE):
+        # MISSING_TRIGGER: no recognised trigger phrasing in the description.
+        # See `_TRIGGER_PATTERN` for the full list of accepted forms (imperative,
+        # third-person canonical, prepositional, auto-load, etc.).
+        if not _TRIGGER_PATTERN.search(skill.description):
             patterns.append(
                 AntiPattern(
                     flag="MISSING_TRIGGER",
                     description=(
-                        'Skill description lacks a "Use when..." trigger phrase. '
-                        "Without it, the model cannot determine when to invoke the skill."
+                        "Skill description lacks a recognised trigger phrase "
+                        '(e.g. "Use when …", "This skill should be used when …", '
+                        '"Use after …", "Auto-loads when …"). '
+                        "Without one, the model cannot determine when to invoke the skill."
                     ),
                     severity=0.15,
                 )
@@ -412,8 +432,9 @@ class StaticAnalyzer:
         score = 0.0
         desc_lower = description.lower()
 
-        # "Use when" / "Use this skill when" phrases (0.25)
-        if re.search(r"\buse\s+(this\s+skill\s+)?when\b", desc_lower):
+        # Canonical trigger phrasings (0.25). Shares the module-level pattern
+        # used by MISSING_TRIGGER so that broadening one broadens both.
+        if _TRIGGER_PATTERN.search(description):
             score += 0.25
 
         # "Use PROACTIVELY" or "proactively" (0.15)
