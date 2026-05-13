@@ -142,7 +142,7 @@ If your runtime has no interactive-question tool, fall back to:
 3. Do NOT auto-fill answers from context (Rule 3)
 
 The `_directive.askUserQuestions` schema is described in
-[`concepts/eval-criteria.md`](./concepts/eval-criteria.md) §
+[`references/concepts/eval-criteria.md`](./references/concepts/eval-criteria.md) §
 "Per-field rubric collection" and follows
 [Claude Code's AskUserQuestion tool shape](https://docs.claude.com/en/docs/claude-code/sdk).
 
@@ -164,7 +164,7 @@ The `_directive.askUserQuestions` schema is described in
 
 1. **`--json` on EVERY command.** No exceptions. Agents use JSON mode exclusively.
 2. **`<command> --help` BEFORE first use of any command.** The CLI is the source of truth for flags -- this SKILL never inlines them.
-3. **NEVER auto-generate eval criteria -- collect from user.** Ask the user for each rubric field. See [concepts/eval-criteria.md](./concepts/eval-criteria.md) for the rubric format.
+3. **NEVER auto-generate eval criteria -- collect from user.** Ask the user for each rubric field. See [references/concepts/eval-criteria.md](./references/concepts/eval-criteria.md) for the rubric format.
 4. **Explore-before-modify.** Run `mutagent explore --json` before any write operation. Present findings, get user confirmation. Never mutate without discovery first.
 5. **Cost transparency before `optimize start`.** Run `mutagent usage --json` and show the result to the user. Get explicit confirmation before any optimization job.
 6. **Before optimizing, run `mutagent providers list --models` to verify available models.** This calls `/providers/catalog` and shows which models are available per provider. Use the output to pick valid `--exec-model` and `--eval-model` values.
@@ -175,8 +175,8 @@ The `_directive.askUserQuestions` schema is described in
 
 | Signal | Use | CLI surface | Skill workflow |
 |---|---|---|---|
-| Single LLM call -> text/JSON output | Prompt Optimization | `mutagent prompts *` | [workflows/optimization.md](./workflows/optimization.md) |
-| Multi-turn / tool-calling / state graph | Agent (WIP) | `mutagent agents *` (CRUD only) | [workflows/agents.md](./workflows/agents.md) (stub) |
+| Single LLM call -> text/JSON output | Prompt Optimization | `mutagent prompts *` | [references/workflows/optimization.md](./references/workflows/optimization.md) |
+| Multi-turn / tool-calling / state graph | Agent (WIP) | `mutagent agents *` (CRUD only) | [references/workflows/agents.md](./references/workflows/agents.md) (stub) |
 
 When in doubt: run `mutagent explore --json` (it classifies discovered code under `prompts[]` vs `agents[]`).
 
@@ -194,16 +194,16 @@ Match the user's first request. Load ONLY the matching subfile(s) per the table.
 
 | User said / signal detected | Load subfile(s) | Why |
 |---|---|---|
-| "trace", "observe", "integrate", "add framework" | [workflows/tracing.md](./workflows/tracing.md) | Non-destructive, fastest first-value path |
-| "optimize", "improve", "tune", "upload prompt" | [workflows/optimization.md](./workflows/optimization.md) | Full create->dataset->eval->optimize loop (orchestrator) |
-| "create dataset", "add examples", "test cases", "edge cases", "hard cases", "expand dataset", "dataset items" | [workflows/dataset-curation.md](./workflows/dataset-curation.md) (HOW) + [concepts/dataset-design.md](./concepts/dataset-design.md) (WHY) | Standalone dataset curation (no optimization context needed) |
-| "create evaluation", "create rubric", "evaluate prompt", "judge", "score this prompt", "rubric design", "MVC", "Output Standards" | [workflows/eval-creation.md](./workflows/eval-creation.md) (HOW) + [concepts/eval-criteria.md](./concepts/eval-criteria.md) (WHY) | Standalone evaluation rubric creation (no optimization context needed) |
-| "explore", "scan", "find prompts", "what prompts", "discover" | [workflows/exploration.md](./workflows/exploration.md) | Read-only discovery + taxonomy |
-| `AgentExecutor`, `StateGraph`, `createReactAgent`, `tool_calls`, `@tool`, `langgraph`, `crewai`, `autogen`, `openai/agents`, multi-turn | [workflows/agents.md](./workflows/agents.md) | WIP path -- surface partnership link |
-| "how do variables work", "single vs double braces", delimiter | [concepts/prompt-variables.md](./concepts/prompt-variables.md) | Delimiter inference contract (concept-only; prompt creation lives inline in optimization.md step 4) |
-| "what makes a good eval" (concept question only, no creation intent) | [concepts/eval-criteria.md](./concepts/eval-criteria.md) | INPUT MVC + OUTPUT Standards (no workflow load) |
-| "what makes a good dataset" (concept question only, no creation intent) | [concepts/dataset-design.md](./concepts/dataset-design.md) | Dataset curation principles + case categories (no workflow load) |
-| "scorecard", "interpret results", "what does X score mean" | [concepts/scorecard-output.md](./concepts/scorecard-output.md) | Interpretation only (no workflow needed) |
+| "trace", "observe", "integrate", "add framework" | [references/workflows/tracing.md](./references/workflows/tracing.md) | Non-destructive, fastest first-value path |
+| "optimize", "improve", "tune", "upload prompt" | [references/workflows/optimization.md](./references/workflows/optimization.md) | Full create->dataset->eval->optimize loop (orchestrator) |
+| "create dataset", "add examples", "test cases", "edge cases", "hard cases", "expand dataset", "dataset items" | [references/workflows/dataset-curation.md](./references/workflows/dataset-curation.md) (HOW) + [references/concepts/dataset-design.md](./references/concepts/dataset-design.md) (WHY) | Standalone dataset curation (no optimization context needed) |
+| "create evaluation", "create rubric", "evaluate prompt", "judge", "score this prompt", "rubric design", "MVC", "Output Standards" | [references/workflows/eval-creation.md](./references/workflows/eval-creation.md) (HOW) + [references/concepts/eval-criteria.md](./references/concepts/eval-criteria.md) (WHY) | Standalone evaluation rubric creation (no optimization context needed) |
+| "explore", "scan", "find prompts", "what prompts", "discover" | [references/workflows/exploration.md](./references/workflows/exploration.md) | Read-only discovery + taxonomy |
+| `AgentExecutor`, `StateGraph`, `createReactAgent`, `tool_calls`, `@tool`, `langgraph`, `crewai`, `autogen`, `openai/agents`, multi-turn | [references/workflows/agents.md](./references/workflows/agents.md) | WIP path -- surface partnership link |
+| "how do variables work", "single vs double braces", delimiter | [references/concepts/prompt-variables.md](./references/concepts/prompt-variables.md) | Delimiter inference contract (concept-only; prompt creation lives inline in optimization.md step 4) |
+| "what makes a good eval" (concept question only, no creation intent) | [references/concepts/eval-criteria.md](./references/concepts/eval-criteria.md) | INPUT MVC + OUTPUT Standards (no workflow load) |
+| "what makes a good dataset" (concept question only, no creation intent) | [references/concepts/dataset-design.md](./references/concepts/dataset-design.md) | Dataset curation principles + case categories (no workflow load) |
+| "scorecard", "interpret results", "what does X score mean" | [references/concepts/scorecard-output.md](./references/concepts/scorecard-output.md) | Interpretation only (no workflow needed) |
 | "check models", "what models", "available models", "which models" | run `mutagent providers list --models --json` | Discovery: shows catalog per provider before model selection |
 | Unclear / first time | run `mutagent explore --json` first, then reroute | Discovery before action |
 
@@ -213,15 +213,15 @@ Match the user's first request. Load ONLY the matching subfile(s) per the table.
 
 | File | WHEN to load | WHY | ENFORCEMENT |
 |---|---|---|---|
-| [workflows/tracing.md](./workflows/tracing.md) | User wants to add framework tracing / observability | Non-destructive append-only integration sequence | Must run explore first (Rule 4) |
-| [workflows/optimization.md](./workflows/optimization.md) | User wants to optimize or evaluate a prompt | Full loop: explore -> upload -> dataset -> eval -> optimize -> apply | Must check usage before optimize (Rule 5); must collect rubrics from user (Rule 3) |
-| [workflows/dataset-curation.md](./workflows/dataset-curation.md) | User wants to create/expand a dataset (standalone) | Focused dataset curation without full optimization context | Hard cases first; ask per-field questions |
-| [workflows/eval-creation.md](./workflows/eval-creation.md) | User wants to create/edit evaluation rubric (standalone) | Focused per-field rubric collection without full optimization context | INPUT MVC + OUTPUT Standards split; ask per-field questions; collect from user (Rule 3) |
-| [workflows/exploration.md](./workflows/exploration.md) | User wants to scan codebase, identify prompts vs agents | Read-only discovery; output taxonomy to user | Run only; no writes |
-| [workflows/agents.md](./workflows/agents.md) | Multi-turn / tool-calling code detected | WIP -- do NOT attempt optimizer, surface partnership link | Show WIP card to user verbatim |
-| [concepts/prompt-variables.md](./concepts/prompt-variables.md) | Any question about `{var}` vs `{{var}}`, delimiter inference | Brace convention + conversion rules | Load before `prompts create` in optimization workflow |
-| [concepts/eval-criteria.md](./concepts/eval-criteria.md) | Any question about rubric design, MVC, Output Standards | granular rubric format -- INPUT-param vs OUTPUT-param scope | Load before `evaluation create --guided` in optimization workflow |
-| [concepts/dataset-design.md](./concepts/dataset-design.md) | Any question about dataset quality, case categories, hard cases | Dataset design principles -- parallel structure to eval-criteria.md | Load before `dataset add --guided` |
+| [references/workflows/tracing.md](./references/workflows/tracing.md) | User wants to add framework tracing / observability | Non-destructive append-only integration sequence | Must run explore first (Rule 4) |
+| [references/workflows/optimization.md](./references/workflows/optimization.md) | User wants to optimize or evaluate a prompt | Full loop: explore -> upload -> dataset -> eval -> optimize -> apply | Must check usage before optimize (Rule 5); must collect rubrics from user (Rule 3) |
+| [references/workflows/dataset-curation.md](./references/workflows/dataset-curation.md) | User wants to create/expand a dataset (standalone) | Focused dataset curation without full optimization context | Hard cases first; ask per-field questions |
+| [references/workflows/eval-creation.md](./references/workflows/eval-creation.md) | User wants to create/edit evaluation rubric (standalone) | Focused per-field rubric collection without full optimization context | INPUT MVC + OUTPUT Standards split; ask per-field questions; collect from user (Rule 3) |
+| [references/workflows/exploration.md](./references/workflows/exploration.md) | User wants to scan codebase, identify prompts vs agents | Read-only discovery; output taxonomy to user | Run only; no writes |
+| [references/workflows/agents.md](./references/workflows/agents.md) | Multi-turn / tool-calling code detected | WIP -- do NOT attempt optimizer, surface partnership link | Show WIP card to user verbatim |
+| [references/concepts/prompt-variables.md](./references/concepts/prompt-variables.md) | Any question about `{var}` vs `{{var}}`, delimiter inference | Brace convention + conversion rules | Load before `prompts create` in optimization workflow |
+| [references/concepts/eval-criteria.md](./references/concepts/eval-criteria.md) | Any question about rubric design, MVC, Output Standards | granular rubric format -- INPUT-param vs OUTPUT-param scope | Load before `evaluation create --guided` in optimization workflow |
+| [references/concepts/dataset-design.md](./references/concepts/dataset-design.md) | Any question about dataset quality, case categories, hard cases | Dataset design principles -- parallel structure to eval-criteria.md | Load before `dataset add --guided` |
 
 ---
 
