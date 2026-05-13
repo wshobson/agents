@@ -122,3 +122,86 @@ class TestTriggerPattern:
         result = analyzer.analyze_skill(skill_dir)
         flags = [ap.flag for ap in result.anti_patterns]
         assert "MISSING_TRIGGER" not in flags
+
+
+def _make_skill_with_frontmatter(
+    tmp_path: Path, frontmatter_lines: list[str], name: str = "test-skill"
+) -> Path:
+    skill_dir = tmp_path / name
+    skill_dir.mkdir()
+    frontmatter = "\n".join(frontmatter_lines)
+    (skill_dir / "SKILL.md").write_text(
+        f"---\n{frontmatter}\n---\n\n# Skill\n\n## Overview\n\nBody.\n"
+    )
+    return skill_dir
+
+
+class TestTriggerExemptions:
+    """`disable-model-invocation: true` and `paths:` frontmatter should exempt
+    a skill from the MISSING_TRIGGER check, because those skills are not
+    auto-invoked from the description.
+    """
+
+    def test_disable_model_invocation_exempts_skill(self, tmp_path: Path) -> None:
+        skill_dir = _make_skill_with_frontmatter(
+            tmp_path,
+            [
+                "name: setup",
+                "description: One-time setup that adds .claude/state/ to the project's .gitignore.",
+                "disable-model-invocation: true",
+            ],
+        )
+        analyzer = StaticAnalyzer()
+        result = analyzer.analyze_skill(skill_dir)
+        flags = [ap.flag for ap in result.anti_patterns]
+        assert "MISSING_TRIGGER" not in flags, (
+            "Slash-only skills should not be flagged for missing description trigger"
+        )
+
+    def test_paths_auto_load_exempts_skill(self, tmp_path: Path) -> None:
+        skill_dir = _make_skill_with_frontmatter(
+            tmp_path,
+            [
+                "name: self-evaluate",
+                "description: Self-critical evaluation guard for test/spec files.",
+                'paths: "**/*test*,**/*spec*"',
+            ],
+        )
+        analyzer = StaticAnalyzer()
+        result = analyzer.analyze_skill(skill_dir)
+        flags = [ap.flag for ap in result.anti_patterns]
+        assert "MISSING_TRIGGER" not in flags, (
+            "Path-triggered skills should not be flagged for missing description trigger"
+        )
+
+    def test_disable_model_invocation_false_still_checks_trigger(
+        self, tmp_path: Path
+    ) -> None:
+        skill_dir = _make_skill_with_frontmatter(
+            tmp_path,
+            [
+                "name: model-invocable",
+                "description: A description without a trigger phrase whatsoever.",
+                "disable-model-invocation: false",
+            ],
+        )
+        analyzer = StaticAnalyzer()
+        result = analyzer.analyze_skill(skill_dir)
+        flags = [ap.flag for ap in result.anti_patterns]
+        assert "MISSING_TRIGGER" in flags, (
+            "Model-invocable skills without a trigger phrase must still be flagged"
+        )
+
+    def test_empty_paths_value_still_checks_trigger(self, tmp_path: Path) -> None:
+        skill_dir = _make_skill_with_frontmatter(
+            tmp_path,
+            [
+                "name: bad-paths",
+                "description: Some skill description that lacks the trigger phrase.",
+                'paths: ""',
+            ],
+        )
+        analyzer = StaticAnalyzer()
+        result = analyzer.analyze_skill(skill_dir)
+        flags = [ap.flag for ap in result.anti_patterns]
+        assert "MISSING_TRIGGER" in flags
