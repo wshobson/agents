@@ -1,0 +1,10 @@
+{
+  "name": "pluginpool",
+  "version": "0.1.0",
+  "description": "Ten focused developer productivity commands wrapped as Claude Code slash commands — semantic commits, PR stories, test coverage gaps, dependency audits, env-key parity, secret scanning, standup notes, TODO harvest, flakiness detection, and changelog forging. Each command's core is a deterministic Python helper (stdlib only at runtime).",
+  "author": {
+    "name": "Mehmet Turac",
+    "email": "noreply@github.com"
+  },
+  "license": "MIT"
+}
