@@ -74,9 +74,10 @@ If "custom" is specified:
 1. Use the `TeamCreate` tool to create the team with `team_name` and `description`
 2. For each team member, use the `Agent` tool with:
    - `team_name`: the team name
-   - `name`: descriptive member name (e.g., "security-reviewer", "hypothesis-1")
-   - `subagent_type`: "general-purpose" (teammates need full tool access)
+   - `name`: unique descriptive member name (e.g., "fullstack-lead", "frontend-impl", "security-reviewer")
+   - `subagent_type`: the selected role (for example, `agent-teams:team-lead`, `agent-teams:team-implementer`, `agent-teams:team-reviewer`, `agent-teams:team-debugger`, or `general-purpose` for research)
    - `prompt`: Role-specific instructions referencing the appropriate agent definition
+3. Do not use the role name `team-lead` as the spawned member name. Team creation can reserve role-like names, so use a unique member name and address the teammate by the actual name returned by `Agent` or listed in `~/.claude/teams/{team-name}/config.json`.
 
 ## Phase 3: Initial Setup
 

@@ -68,6 +68,9 @@ jobs:
           print(f"OK: {len(mp.get('plugins', []))} marketplace entries validated")
           PY
 
+      - name: Check agent name collision baseline
+        run: python3 tools/check_agent_name_collisions.py --max-duplicate-names 30 --max-colliding-files 95
+
   plugin-eval-tests:
     name: plugin-eval pytest
     runs-on: ubuntu-latest

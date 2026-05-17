@@ -5,30 +5,30 @@ Decision matrix for choosing the right `subagent_type` when spawning teammates.
 ## Decision Matrix
 
 ```
-Does the teammate need to modify files?
-├── YES → Does it need a specialized role?
-│         ├── YES → Which role?
-│         │         ├── Code review → agent-teams:team-reviewer
-│         │         ├── Bug investigation → agent-teams:team-debugger
-│         │         ├── Feature building → agent-teams:team-implementer
-│         │         └── Team coordination → agent-teams:team-lead
-│         └── NO → general-purpose
-└── NO → Does it need deep codebase exploration?
-          ├── YES → Explore
-          └── NO → Plan (for architecture/design tasks)
+Does the teammate need a specialized Agent Teams role?
+├── YES → Which role?
+│         ├── Team coordination → agent-teams:team-lead
+│         ├── Feature building → agent-teams:team-implementer
+│         ├── Code review → agent-teams:team-reviewer
+│         └── Bug investigation → agent-teams:team-debugger
+└── NO → Does it need to modify files?
+          ├── YES → general-purpose
+          └── NO → Does it need deep codebase exploration?
+                    ├── YES → Explore
+                    └── NO → Plan (for architecture/design tasks)
 ```
 
 ## Agent Type Comparison
 
-| Agent Type                   | Can Read | Can Write | Can Edit | Can Bash | Specialized        |
-| ---------------------------- | -------- | --------- | -------- | -------- | ------------------ |
-| general-purpose              | Yes      | Yes       | Yes      | Yes      | No                 |
-| Explore                      | Yes      | No        | No       | No       | Search/explore     |
-| Plan                         | Yes      | No        | No       | No       | Architecture       |
-| agent-teams:team-lead        | Yes      | Yes       | Yes      | Yes      | Team orchestration |
-| agent-teams:team-reviewer    | Yes      | Yes       | Yes      | Yes      | Code review        |
-| agent-teams:team-debugger    | Yes      | Yes       | Yes      | Yes      | Bug investigation  |
-| agent-teams:team-implementer | Yes      | Yes       | Yes      | Yes      | Feature building   |
+| Agent Type                   | Can Read | Can Write | Can Edit | Can Bash | Team Tools | Specialized        |
+| ---------------------------- | -------- | --------- | -------- | -------- | ---------- | ------------------ |
+| general-purpose              | Yes      | Yes       | Yes      | Yes      | No         | No                 |
+| Explore                      | Yes      | No        | No       | No       | No         | Search/explore     |
+| Plan                         | Yes      | No        | No       | No       | No         | Architecture       |
+| agent-teams:team-lead        | Yes      | No        | No       | Yes      | Yes        | Team orchestration |
+| agent-teams:team-reviewer    | Yes      | No        | No       | Yes      | Yes        | Code review        |
+| agent-teams:team-debugger    | Yes      | No        | No       | Yes      | Yes        | Bug investigation  |
+| agent-teams:team-implementer | Yes      | Yes       | Yes      | Yes      | Yes        | Feature building   |
 
 ## Common Mistakes
 

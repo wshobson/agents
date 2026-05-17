@@ -152,12 +152,15 @@ Find team members by reading the config file:
 }
 ```
 
-**Always use `name`** for messaging and task assignment. Never use `agentId` directly.
+**Always use `name`** for messaging and task assignment. Never use `agentId`, role names, or unsuffixed aliases directly. If a teammate was spawned as `team-lead-2`, send to `team-lead-2`, not `team-lead`.
 
 ## Troubleshooting
 
 **A teammate is not responding to messages.**
 Check the teammate's task status. If it is idle, it may have completed its task and is waiting to be assigned new work or shut down. If it is still active, it may be mid-execution and will process messages once the current operation finishes.
+
+**A teammate says it cannot see SendMessage.**
+Check the teammate agent's `tools:` frontmatter. Agent Teams communication tools such as `SendMessage`, `TaskList`, `TaskGet`, and `TaskUpdate` must be listed explicitly when an agent uses a restricted tool allowlist.
 
 **The lead is sending broadcasts for every status update.**
 This is a common anti-pattern. Broadcasts are expensive — each one sends N messages. Use direct messages (`type: "message"`) for point-to-point updates. Reserve broadcasts for critical shared-resource changes like an updated interface contract.
