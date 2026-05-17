@@ -16,7 +16,7 @@ NAME_RE = re.compile(r"^name:\s*(?P<name>.+?)\s*$", re.MULTILINE)
 
 def _read_agent_name(path: Path) -> str | None:
     """Extract the top-level frontmatter name from an agent file."""
-    content = path.read_text(encoding="utf-8")
+    content = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
     frontmatter_match = FRONTMATTER_RE.search(content)
     if not frontmatter_match:
         return None
@@ -40,6 +40,7 @@ def find_agent_names(root: Path) -> dict[str, list[Path]]:
 
 
 def main() -> int:
+    """Run the duplicate agent-name checker CLI."""
     parser = argparse.ArgumentParser(
         description="Report duplicate agent frontmatter names across plugins."
     )
