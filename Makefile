@@ -1,14 +1,22 @@
 # claude-agents marketplace — multi-harness build & adapters
 # ==========================================================
+#
+# All Python tooling runs through `uv`. No `pip`, no `requirements.txt`.
+#
+# Two uv-managed projects live in this repo:
+#   - plugins/plugin-eval/        — adapter framework + plugin-eval suite
+#                                   (extra-paths config makes tools/adapters/* importable)
+#   - tools/yt-design-extractor/  — standalone YouTube extractor (heavy + optional)
 
-PYTHON := python3
-PIP := pip3
-SCRIPT := tools/yt-design-extractor.py
 GENERATE := tools/generate.py
+EVAL_PROJECT := --project plugins/plugin-eval
+YTX_DIR := tools/yt-design-extractor
+YTX_SCRIPT := yt-design-extractor.py
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean \
-        generate generate-all clean-generated validate garden test smoke-test \
-        generate-plugin sync-commands generate-all-commands clean-commands
+# `uv run` against the plugin-eval venv — has pyyaml + extra-paths to tools/adapters/
+UV_TOOLS := uv run $(EVAL_PROJECT) python
+
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated validate garden test smoke-test generate-plugin sync-commands generate-all-commands clean-commands
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
@@ -30,7 +38,7 @@ help:
 	@echo ""
 	@echo "YouTube Design Extractor Setup (run in order):"
 	@echo "  make install-ocr     Install system tools (tesseract + ffmpeg)"
-	@echo "  make install         Install Python dependencies"
+	@echo "  make install         Install Python dependencies via uv"
 	@echo "  make deps            Show what's installed"
 	@echo ""
 	@echo "Optional:"
@@ -53,9 +61,9 @@ help:
 	@echo "  OUTPUT=<dir>       Output directory"
 	@echo "  ENGINE=<engine>    OCR engine: tesseract (default) or easyocr"
 
-# Installation targets
+# Installation targets — yt-design-extractor uses its own uv project
 install:
-	$(PIP) install -r tools/requirements.txt
+	cd $(YTX_DIR) && uv sync
 
 install-ocr:
 	@echo "Installing Tesseract OCR + ffmpeg..."
@@ -72,8 +80,7 @@ install-ocr:
 
 install-easyocr:
 	@echo "Installing PyTorch (CPU) + EasyOCR (~2GB download)..."
-	$(PIP) install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-	$(PIP) install easyocr
+	cd $(YTX_DIR) && uv sync --extra easyocr
 
 deps:
 	@echo "Checking dependencies..."
@@ -82,18 +89,18 @@ deps:
 	@command -v ffmpeg >/dev/null 2>&1 && echo "  ✓ ffmpeg" || echo "  ✗ ffmpeg (run: make install-ocr)"
 	@command -v tesseract >/dev/null 2>&1 && echo "  ✓ tesseract" || echo "  ✗ tesseract (run: make install-ocr)"
 	@echo ""
-	@echo "Python packages (required):"
-	@$(PYTHON) -c "import yt_dlp; print('  ✓ yt-dlp', yt_dlp.version.__version__)" 2>/dev/null || echo "  ✗ yt-dlp (run: make install)"
-	@$(PYTHON) -c "from youtube_transcript_api import YouTubeTranscriptApi; print('  ✓ youtube-transcript-api')" 2>/dev/null || echo "  ✗ youtube-transcript-api (run: make install)"
-	@$(PYTHON) -c "from PIL import Image; print('  ✓ Pillow')" 2>/dev/null || echo "  ✗ Pillow (run: make install)"
-	@$(PYTHON) -c "import pytesseract; print('  ✓ pytesseract')" 2>/dev/null || echo "  ✗ pytesseract (run: make install)"
-	@$(PYTHON) -c "from colorthief import ColorThief; print('  ✓ colorthief')" 2>/dev/null || echo "  ✗ colorthief (run: make install)"
+	@echo "Python packages (managed by uv in $(YTX_DIR)):"
+	@cd $(YTX_DIR) && uv run python -c "import yt_dlp; print('  ✓ yt-dlp', yt_dlp.version.__version__)" 2>/dev/null || echo "  ✗ yt-dlp (run: make install)"
+	@cd $(YTX_DIR) && uv run python -c "from youtube_transcript_api import YouTubeTranscriptApi; print('  ✓ youtube-transcript-api')" 2>/dev/null || echo "  ✗ youtube-transcript-api (run: make install)"
+	@cd $(YTX_DIR) && uv run python -c "from PIL import Image; print('  ✓ Pillow')" 2>/dev/null || echo "  ✗ Pillow (run: make install)"
+	@cd $(YTX_DIR) && uv run python -c "import pytesseract; print('  ✓ pytesseract')" 2>/dev/null || echo "  ✗ pytesseract (run: make install)"
+	@cd $(YTX_DIR) && uv run python -c "from colorthief import ColorThief; print('  ✓ colorthief')" 2>/dev/null || echo "  ✗ colorthief (run: make install)"
 	@echo ""
 	@echo "Optional (for stylized text OCR):"
-	@$(PYTHON) -c "import easyocr; print('  ✓ easyocr')" 2>/dev/null || echo "  ○ easyocr (run: make install-easyocr)"
+	@cd $(YTX_DIR) && uv run python -c "import easyocr; print('  ✓ easyocr')" 2>/dev/null || echo "  ○ easyocr (run: make install-easyocr)"
 
 check:
-	@$(PYTHON) $(SCRIPT) --help >/dev/null && echo "✓ Script is working" || echo "✗ Script failed"
+	@cd $(YTX_DIR) && uv run python $(YTX_SCRIPT) --help >/dev/null && echo "✓ Script is working" || echo "✗ Script failed"
 
 # Run targets
 INTERVAL ?= 30
@@ -106,7 +113,7 @@ ifndef URL
 	@echo "Usage: make run URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) '$(URL)' --interval '$(INTERVAL)' $(if $(OUTPUT),-o '$(OUTPUT)')
+	cd $(YTX_DIR) && uv run python $(YTX_SCRIPT) '$(URL)' --interval '$(INTERVAL)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-full:
 ifndef URL
@@ -114,7 +121,7 @@ ifndef URL
 	@echo "Usage: make run-full URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) '$(URL)' --full --interval '$(INTERVAL)' --ocr-engine '$(ENGINE)' $(if $(OUTPUT),-o '$(OUTPUT)')
+	cd $(YTX_DIR) && uv run python $(YTX_SCRIPT) '$(URL)' --full --interval '$(INTERVAL)' --ocr-engine '$(ENGINE)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-ocr:
 ifndef URL
@@ -122,7 +129,7 @@ ifndef URL
 	@echo "Usage: make run-ocr URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) '$(URL)' --ocr --interval '$(INTERVAL)' --ocr-engine '$(ENGINE)' $(if $(OUTPUT),-o '$(OUTPUT)')
+	cd $(YTX_DIR) && uv run python $(YTX_SCRIPT) '$(URL)' --ocr --interval '$(INTERVAL)' --ocr-engine '$(ENGINE)' $(if $(OUTPUT),-o '$(OUTPUT)')
 
 run-transcript:
 ifndef URL
@@ -130,7 +137,7 @@ ifndef URL
 	@echo "Usage: make run-transcript URL='https://youtu.be/VIDEO_ID'"
 	@exit 1
 endif
-	$(PYTHON) $(SCRIPT) '$(URL)' --transcript-only $(if $(OUTPUT),-o '$(OUTPUT)')
+	cd $(YTX_DIR) && uv run python $(YTX_SCRIPT) '$(URL)' --transcript-only $(if $(OUTPUT),-o '$(OUTPUT)')
 
 # Cleanup
 clean:
@@ -139,7 +146,11 @@ clean:
 
 # Multi-harness adapter targets
 # =============================
-
+#
+# All scripts run through plugin-eval's uv venv — it has pyyaml + extra-paths to
+# tools/adapters, so the adapter framework and its dependencies are managed in
+# one place (plugins/plugin-eval/pyproject.toml + uv.lock).
+#
 # Usage:
 #   make generate HARNESS=codex PLUGIN=javascript-typescript   # one plugin
 #   make generate HARNESS=cursor                               # all plugins (default)
@@ -157,31 +168,30 @@ ifndef HARNESS
 	@exit 1
 endif
 ifdef PLUGIN
-	$(PYTHON) $(GENERATE) --harness '$(HARNESS)' --plugin '$(PLUGIN)'
+	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --plugin '$(PLUGIN)'
 else
-	$(PYTHON) $(GENERATE) --harness '$(HARNESS)' --all
+	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --all
 endif
 
 generate-all:
 	@for h in $(HARNESSES); do \
 		echo "--- $$h ---"; \
-		$(PYTHON) $(GENERATE) --harness $$h --all || exit 1; \
+		$(UV_TOOLS) $(GENERATE) --harness $$h --all || exit 1; \
 	done
 
 validate:
 ifdef HARNESS
-	$(PYTHON) tools/validate_generated.py --harness '$(HARNESS)' $(if $(STRICT),--strict)
+	$(UV_TOOLS) tools/validate_generated.py --harness '$(HARNESS)' $(if $(STRICT),--strict)
 else
-	$(PYTHON) tools/validate_generated.py $(if $(STRICT),--strict)
+	$(UV_TOOLS) tools/validate_generated.py $(if $(STRICT),--strict)
 endif
 
 garden:
-	$(PYTHON) tools/doc_gardener.py $(if $(STRICT),--strict)
+	$(UV_TOOLS) tools/doc_gardener.py $(if $(STRICT),--strict)
 
 # Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
-# Run from plugins/plugin-eval so uv picks up the venv.
 test:
-	cd plugins/plugin-eval && uv run pytest -q . ../../tools/tests/
+	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
 # of opencode / gemini / codex / claude are on PATH. Per-CLI tests skip gracefully
@@ -192,14 +202,14 @@ smoke-test:
 		echo "Generating harness artifacts first..."; \
 		$(MAKE) generate-all; \
 	fi
-	cd plugins/plugin-eval && uv run pytest -v ../../tools/tests/test_cli_smoke.py
+	uv run $(EVAL_PROJECT) pytest -v tools/tests/test_cli_smoke.py
 
 clean-generated:
 ifdef HARNESS
-	$(PYTHON) $(GENERATE) --harness '$(HARNESS)' --clean
+	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --clean
 else
 	@for h in $(HARNESSES); do \
-		$(PYTHON) $(GENERATE) --harness $$h --clean; \
+		$(UV_TOOLS) $(GENERATE) --harness $$h --clean; \
 	done
 endif
 
@@ -209,13 +219,13 @@ ifndef PLUGIN
 	@echo "Error: PLUGIN is required (e.g., make generate-plugin PLUGIN=javascript-typescript)"
 	@exit 1
 endif
-	$(PYTHON) $(GENERATE) --harness gemini --plugin '$(PLUGIN)'
+	$(UV_TOOLS) $(GENERATE) --harness gemini --plugin '$(PLUGIN)'
 
 sync-commands:
-	$(PYTHON) $(GENERATE) --harness gemini --all --prune
+	$(UV_TOOLS) $(GENERATE) --harness gemini --all --prune
 
 generate-all-commands:
-	$(PYTHON) $(GENERATE) --harness gemini --all
+	$(UV_TOOLS) $(GENERATE) --harness gemini --all
 
 clean-commands:
 	-rm -rf commands/

@@ -6,28 +6,21 @@ Extracts transcript + keyframes from a YouTube video and produces
 a structured markdown reference document ready for agent consumption.
 
 Usage:
-    python3 tools/yt-design-extractor.py <youtube_url> [options]
+    # From repo root via Make (preferred):
+    make run URL='https://youtu.be/VIDEO_ID'
+    make run-full URL='https://youtu.be/VIDEO_ID' INTERVAL=15
+    make run-ocr URL='https://youtu.be/VIDEO_ID' ENGINE=easyocr
 
-Examples:
-    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY"
-    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --interval 30
-    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --scene-detect --ocr
-    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --full  # all features
-    python3 tools/yt-design-extractor.py "https://youtu.be/eVnQFWGDEdY" --ocr --ocr-engine easyocr
+    # Direct invocation:
+    cd tools/yt-design-extractor && uv run python yt-design-extractor.py <youtube_url> [options]
 
 Requirements:
-    pip install yt-dlp youtube-transcript-api
-    apt install ffmpeg
+    # Python deps are managed by uv (this directory is a uv project).
+    make install        # syncs pyproject.toml deps
+    make install-ocr    # installs ffmpeg + tesseract via apt/brew/dnf
 
-    Optional (OCR via Tesseract):
-    pip install Pillow pytesseract
-    apt install tesseract-ocr
-
-    Optional (better OCR for stylized text):
-    pip install easyocr
-
-    Optional (color palette extraction):
-    pip install colorthief
+    Optional (better OCR for stylized text — pulls in PyTorch, ~2 GB):
+    make install-easyocr    # uv sync --extra easyocr
 """
 
 import argparse
@@ -310,8 +303,7 @@ def run_ocr_on_frames(
         if not EASYOCR_AVAILABLE:
             sys.exit(
                 "EasyOCR was explicitly requested but is not installed.\n"
-                "  Install: pip install torch torchvision --index-url "
-                "https://download.pytorch.org/whl/cpu && pip install easyocr\n"
+                "  Install: make install-easyocr (uv sync --extra easyocr)\n"
                 "  Or use: --ocr-engine tesseract"
             )
         else:
@@ -693,7 +685,7 @@ def main():
     # Upfront dependency checks
     if not shutil.which("yt-dlp"):
         sys.exit(
-            "Required tool 'yt-dlp' not found on PATH. Install with: pip install yt-dlp"
+            "Required tool 'yt-dlp' not found on PATH. Install with: make install (from repo root)"
         )
     if not args.transcript_only and not shutil.which("ffmpeg"):
         sys.exit(

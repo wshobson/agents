@@ -19,12 +19,12 @@ jobs:
       run:
         working-directory: plugins/plugin-eval
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5
         with:
           enable-cache: true
 
@@ -70,12 +70,12 @@ jobs:
     name: Markdown (markdownlint-cli2)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
         with:
           node-version: '20'
 
@@ -86,7 +86,7 @@ jobs:
         # to spec, but lint enforcement happens at the plugin-author layer, not at
         # the framework PR layer.
         # Config in .markdownlint.json keeps the ruleset narrow and pragmatic.
-        uses: DavidAnson/markdownlint-cli2-action@v18
+        uses: DavidAnson/markdownlint-cli2-action@eb5ca3ab411449c66620fe7f1b3c9e10547144b0  # v18
         with:
           globs: |
             *.md
@@ -97,14 +97,17 @@ jobs:
     name: JSON / TOML / YAML syntax
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           persist-credentials: false
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5
         with:
-          python-version: '3.12'
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
 
       - name: Validate every JSON file
         run: |
@@ -116,7 +119,7 @@ jobs:
             case "$f" in
               .codex/*|.cursor/*|.cursor-plugin/*|.opencode/*|node_modules/*|skills/*|agents/*|commands/*) continue ;;
             esac
-            if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
+            if ! uv run python -m json.tool "$f" > /dev/null 2>&1; then
               echo "::error file=$f::invalid JSON"
               failed=1
             fi
@@ -132,7 +135,7 @@ jobs:
             case "$f" in
               .codex/*|.cursor/*|.cursor-plugin/*|.opencode/*|node_modules/*|commands/*) continue ;;
             esac
-            if ! python3 -c "import tomllib, sys; tomllib.loads(open(sys.argv[1]).read())" "$f" 2>/dev/null; then
+            if ! uv run python -c "import tomllib, sys; tomllib.loads(open(sys.argv[1]).read())" "$f" 2>/dev/null; then
               echo "::error file=$f::invalid TOML"
               failed=1
             fi
@@ -141,7 +144,6 @@ jobs:
 
       - name: Validate every YAML file
         run: |
-          pip install pyyaml --quiet
           set -e
           shopt -s globstar nullglob
           failed=0
@@ -152,7 +154,7 @@ jobs:
             # Use safe_load_all to handle multi-document YAML (e.g. Kubernetes manifests
             # with `---` document separators — valid YAML, but safe_load only reads the
             # first doc and would mis-flag the file as invalid).
-            if ! python3 -c "import yaml, sys; list(yaml.safe_load_all(open(sys.argv[1]).read()))" "$f" 2>/dev/null; then
+            if ! uv run --with pyyaml python -c "import yaml, sys; list(yaml.safe_load_all(open(sys.argv[1]).read()))" "$f" 2>/dev/null; then
               echo "::error file=$f::invalid YAML"
               failed=1
             fi
