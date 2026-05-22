@@ -6,7 +6,11 @@ on:
   pull_request_review_comment:
     types: [created]
   issues:
-    types: [opened, assigned]
+    # `edited` (not `assigned`) is the actionable event here: the `if:`
+    # block below checks `github.event.issue.body` / `.title` for
+    # `@claude`, which only changes on edit. Reassignment would fire
+    # the workflow without any matching body/title change.
+    types: [opened, edited]
   pull_request_review:
     types: [submitted]
 
@@ -52,7 +56,7 @@ jobs:
 
       - name: Run Claude Code
         id: claude
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@4481e6d3c7bbb88db2a928ca3444c536f589c7c1  # v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 

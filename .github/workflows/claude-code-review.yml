@@ -26,7 +26,7 @@ jobs:
 
       - name: Run Claude Code Review
         id: claude-review
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@4481e6d3c7bbb88db2a928ca3444c536f589c7c1  # v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           track_progress: true
@@ -126,8 +126,10 @@ jobs:
               specific issues tied to a line of code.
             - Use `gh pr comment` for a short summary (≤ 10 lines) at
               the end.
-            - If no critical issues are found, approve with a one-line
-              summary.
+            - If no critical issues are found, post a single one-line
+              ✅ summary via `gh pr comment` and stop — do NOT attempt to
+              submit a formal review approval (no review-submission tool
+              is exposed).
             - Do NOT comment on formatting, import order, or naming
               style — `ruff` and `ty` handle that.
             - Do NOT suggest documentation or comment additions unless a
