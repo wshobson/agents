@@ -394,14 +394,17 @@ To add a skill to a plugin:
 
 1. Create `plugins/{plugin-name}/skills/{skill-name}/SKILL.md`
 2. Add YAML frontmatter:
+
    ```yaml
    ---
    name: skill-name
    description: What the skill does. Use when [activation trigger].
    ---
    ```
+
 3. Write comprehensive skill content using progressive disclosure
 4. Add skill path to `marketplace.json`:
+
    ```json
    {
      "name": "plugin-name",
