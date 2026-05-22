@@ -5,24 +5,24 @@ description = "Three-layer quality evaluation framework for Claude Code plugins"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "pydantic>=2.0",
-    "typer>=0.15",
+    "pydantic>=2.13.4",
+    "typer>=0.25.1",
     "rich>=13.0",
     "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
 llm = [
-    "claude-agent-sdk>=0.1.50",
+    "claude-agent-sdk>=0.2.85",
 ]
 api = [
-    "anthropic>=0.45",
+    "anthropic>=0.104.1",
 ]
 dev = [
     "pytest>=9.0.3",
     "pytest-asyncio>=0.24",
     "pytest-cov>=6.0",
-    "ruff>=0.9",
+    "ruff>=0.15.14",
     "ty>=0.0.38",
 ]
 
