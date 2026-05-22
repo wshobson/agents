@@ -66,9 +66,14 @@ jobs:
 
           # Tools tailored to this repo's uv-native Python toolchain.
           # See AGENTS.md for the canonical command reference.
-          # `git` is enumerated (not wildcarded) so destructive ops
-          # outside this list — `reset`, `clean`, `rebase`,
-          # `filter-branch`, `branch -D`, etc. — are not callable.
+          #
+          # Both `gh` and `git` are enumerated to safe subcommands only.
+          # Writes that need a commit/branch are handled by the action
+          # itself via the GitHub API (see action.yml `branch_prefix` /
+          # `branch_name_template` inputs) — local `git add/commit/push`
+          # is not in the allowlist, so destructive variants
+          # (`push --force`, `reset --hard`, `branch -D`, `tag -d`,
+          # `checkout -- .`, `clean -fd`) are unreachable.
           claude_args: |
             --model claude-opus-4-7
-            --allowedTools "Edit,Write,Read,Bash(uv:*),Bash(make:*),Bash(python:*),Bash(python3:*),Bash(ruff:*),Bash(ty:*),Bash(pytest:*),Bash(gh:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git rev-parse:*),Bash(git branch:*),Bash(git tag:*),Bash(git ls-files:*),Bash(git add:*),Bash(git commit:*),Bash(git checkout:*),Bash(git switch:*),Bash(git fetch:*),Bash(git pull:*),Bash(git push:*),Bash(git stash:*),mcp__github_inline_comment__create_inline_comment"
+            --allowedTools "Edit,Write,Read,Bash(uv:*),Bash(make:*),Bash(python:*),Bash(python3:*),Bash(ruff:*),Bash(ty:*),Bash(pytest:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr list:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr checks:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh issue comment:*),Bash(gh issue edit:*),Bash(gh api:*),Bash(gh run view:*),Bash(gh workflow view:*),Bash(gh search:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git rev-parse:*),Bash(git ls-files:*),mcp__github_inline_comment__create_inline_comment"
