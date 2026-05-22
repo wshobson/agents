@@ -65,7 +65,7 @@ async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-4
         )
     except ImportError as exc:
         raise RuntimeError(
-            "claude-agent-sdk is required for LLM judge. Install with: pip install plugin-eval[llm]"
+            "claude-agent-sdk is required for LLM judge. Install with: uv sync --extra llm"
         ) from exc
 
     full_prompt = prompt

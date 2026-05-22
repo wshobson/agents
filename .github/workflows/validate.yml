@@ -7,12 +7,17 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   validate-json:
     name: Validate JSON files
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Validate marketplace.json
         run: python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
@@ -79,6 +84,8 @@ jobs:
         working-directory: plugins/plugin-eval
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -102,6 +109,8 @@ jobs:
         working-directory: plugins/plugin-eval
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -122,11 +131,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
 
       - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+        run: uv python install 3.12
+
+      - name: Sync plugin-eval venv (provides pyyaml + adapter imports)
+        working-directory: plugins/plugin-eval
+        run: uv sync --all-extras
 
       - name: Generate all harness artifacts
         run: make generate-all
@@ -164,6 +182,8 @@ jobs:
     # version drift, schema-loader surprises, plugin discovery bugs).
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js (for Gemini CLI)
         uses: actions/setup-node@v4

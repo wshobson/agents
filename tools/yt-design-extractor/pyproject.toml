@@ -1,0 +1,25 @@
+[project]
+name = "yt-design-extractor"
+version = "0.1.0"
+description = "Extract design tokens (colors, OCR text, transcripts) from YouTube videos"
+requires-python = ">=3.10"
+dependencies = [
+    "yt-dlp>=2024.0.0",
+    "youtube-transcript-api>=0.6.0",
+    "Pillow>=10.0.0",
+    "pytesseract>=0.3.10",
+    "colorthief>=0.2.1",
+]
+
+[project.optional-dependencies]
+# EasyOCR pulls in torch (~2 GB). Install with: uv sync --extra easyocr
+easyocr = [
+    "torch>=2.0",
+    "torchvision>=0.15",
+    "easyocr>=1.7",
+]
+
+[tool.uv]
+# Dependency-only project — the script (yt-design-extractor.py) is executed via
+# `uv run yt-design-extractor.py`, not installed as a package.
+package = false
