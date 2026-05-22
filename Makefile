@@ -16,9 +16,7 @@ YTX_SCRIPT := yt-design-extractor.py
 # `uv run` against the plugin-eval venv — has pyyaml + extra-paths to tools/adapters/
 UV_TOOLS := uv run $(EVAL_PROJECT) python
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean \
-        generate generate-all clean-generated validate garden test smoke-test \
-        generate-plugin sync-commands generate-all-commands clean-commands
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated validate garden test smoke-test generate-plugin sync-commands generate-all-commands clean-commands
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
