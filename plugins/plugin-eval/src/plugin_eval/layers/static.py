@@ -5,17 +5,22 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from plugin_eval.layers.harness_portability import (
+    score_skill_portability,
+)
 from plugin_eval.models import AntiPattern, LayerResult
 from plugin_eval.parser import ParsedAgent, ParsedSkill, parse_plugin, parse_skill
 
-# Weights for skill sub-scores
+# Weights for skill sub-scores. Rebalanced from original to make room for
+# harness_portability (~6% weight) without changing relative order.
 _SKILL_WEIGHTS = {
-    "frontmatter_quality": 0.35,
-    "orchestration_wiring": 0.25,
-    "progressive_disclosure": 0.15,
+    "frontmatter_quality": 0.32,
+    "orchestration_wiring": 0.23,
+    "progressive_disclosure": 0.14,
     "structural_completeness": 0.10,
-    "token_efficiency": 0.10,
-    "ecosystem_coherence": 0.05,
+    "token_efficiency": 0.09,
+    "ecosystem_coherence": 0.06,
+    "harness_portability": 0.06,
 }
 
 # MUST/NEVER/ALWAYS threshold for OVER_CONSTRAINED
@@ -69,7 +74,11 @@ class StaticAnalyzer:
             "structural_completeness": self._score_structural_completeness(skill),
             "token_efficiency": self._score_token_efficiency(skill),
             "ecosystem_coherence": self._score_ecosystem_coherence(skill),
+            "harness_portability": score_skill_portability(skill),
         }
+        # Portability findings drive the sub-score above; we deliberately do NOT also
+        # push them into `anti_patterns` to avoid double-counting (sub-score loss +
+        # multiplicative anti-pattern penalty for the same defect).
 
         raw_score = sum(sub_scores[name] * weight for name, weight in _SKILL_WEIGHTS.items())
         penalty = anti_pattern_penalty(len(anti_patterns))

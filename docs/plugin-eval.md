@@ -146,16 +146,17 @@ The `evaluation-methodology` skill provides the full scoring methodology referen
 
 **Speed:** < 2 seconds. **Cost:** Free (no LLM calls). **Deterministic.**
 
-Runs six structural sub-checks against the parsed SKILL.md:
+Runs seven structural sub-checks against the parsed SKILL.md:
 
 | Sub-check                 | Weight | What it measures                                                                  |
 | ------------------------- | ------ | --------------------------------------------------------------------------------- |
-| `frontmatter_quality`     | 35%    | Name, description length, trigger-phrase quality ("Use when…", "Use PROACTIVELY") |
-| `orchestration_wiring`    | 25%    | Output/input documentation, code examples, orchestrator anti-pattern              |
-| `progressive_disclosure`  | 15%    | Line count vs. sweet spot (200–600 lines), references/ and assets/ directories    |
+| `frontmatter_quality`     | 32%    | Name, description length, trigger-phrase quality ("Use when…", "Use PROACTIVELY") |
+| `orchestration_wiring`    | 23%    | Output/input documentation, code examples, orchestrator anti-pattern              |
+| `progressive_disclosure`  | 14%    | Line count vs. sweet spot (200–600 lines), references/ and assets/ directories    |
 | `structural_completeness` | 10%    | Heading density, code blocks, examples section, troubleshooting section           |
-| `token_efficiency`        | 10%    | MUST/NEVER/ALWAYS density, duplicate-line detection                               |
-| `ecosystem_coherence`     | 5%     | Cross-references to other skills/agents, "related"/"see also" mentions            |
+| `token_efficiency`        | 9%     | MUST/NEVER/ALWAYS density, duplicate-line detection                               |
+| `ecosystem_coherence`     | 6%     | Cross-references to other skills/agents, "related"/"see also" mentions            |
+| `harness_portability`     | 6%     | Codex/Cursor/OpenCode/Gemini portability — body cap, tool refs, model aliases, name collisions |
 
 Also detects anti-patterns (see below) and applies a multiplicative penalty.
 
@@ -258,12 +259,20 @@ The static analyzer detects these anti-patterns, each with a severity that contr
 
 | Flag                | Severity | Trigger                                       |
 | ------------------- | -------- | --------------------------------------------- |
-| `OVER_CONSTRAINED`  | 10%      | > 15 MUST/ALWAYS/NEVER directives             |
-| `EMPTY_DESCRIPTION` | 10%      | Description < 20 characters                   |
-| `MISSING_TRIGGER`   | 15%      | No "Use when…" trigger phrase in description  |
-| `BLOATED_SKILL`     | 10%      | > 800 lines without a references/ directory   |
-| `ORPHAN_REFERENCE`  | 5%       | Dead link to a file in references/            |
-| `DEAD_CROSS_REF`    | 5%       | Cross-reference to a non-existent skill/agent |
+| `OVER_CONSTRAINED`     | 10%      | > 15 MUST/ALWAYS/NEVER directives                                   |
+| `EMPTY_DESCRIPTION`    | 10%      | Description < 20 characters                                         |
+| `MISSING_TRIGGER`      | 15%      | No "Use when…" trigger phrase in description                        |
+| `BLOATED_SKILL`        | 10%      | > 800 lines without a references/ directory                         |
+| `ORPHAN_REFERENCE`     | 5%       | Dead link to a file in references/                                  |
+| `DEAD_CROSS_REF`       | 5%       | Cross-reference to a non-existent skill/agent                       |
+| `SKILL_OVER_CODEX_CAP` | 15%      | Skill body > 8 KB without references/ (Codex hard-truncates)        |
+| `CLAUDE_TOOL_REFS`     | 2–10%    | Backticked CamelCase tool names (`` `Read` ``, `` `Bash` ``)        |
+| `CLAUDE_TOOL_PROSE`    | 5%       | Prose like "use the Read tool" (Codex prefers action verbs)         |
+| `AGENT_NAME_COLLISION` | 10%      | Agent named `default`/`worker`/`explorer` (Codex built-ins)         |
+| `BARE_MODEL_ALIAS`     | 3%       | Bare `opus`/`sonnet`/`haiku` (use `inherit` for portability)        |
+
+Each `harness_portability` finding carries a `remediation` string surfaced via the
+AntiPattern description, so the fix is in-context when the lint fires.
 
 **Penalty formula:** `penalty = max(0.5, 1.0 − 0.05 × count)` — each anti-pattern reduces the score by 5%, flooring at 50%.
 
