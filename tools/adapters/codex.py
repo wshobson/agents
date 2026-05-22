@@ -17,6 +17,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from tools.adapters.base import (
+    WORKTREE,
     AgentSource,
     EmitResult,
     HarnessAdapter,
@@ -327,6 +328,16 @@ class CodexAdapter(HarnessAdapter):
     SKILL_BODY_CAP = 7400
     AGENTS_MD_LINE_CAP = 150
 
+    def __init__(
+        self,
+        output_root: Path | None = None,
+        repo_root: Path | None = None,
+    ) -> None:
+        super().__init__(output_root=output_root)
+        # AGENTS.md is committed at the repo root, not under output_root.
+        # Tests override repo_root to point at a temp dir.
+        self.repo_root = repo_root if repo_root is not None else WORKTREE
+
     def emit_plugin(self, plugin: PluginSource) -> EmitResult:
         result = EmitResult()
 
@@ -375,12 +386,16 @@ class CodexAdapter(HarnessAdapter):
         `.gemini/settings.json`). The adapter's job is just to validate that the
         committed file fits Codex's constraints (32 KiB hard cap, ~150-line table-of-
         contents convention).
+
+        Validation reads from `self.repo_root` (defaulting to `WORKTREE`), not
+        `self.output_root` — the canonical file lives in the source tree, and
+        `--output-root` may point at a scratch directory for snapshot/round-trip tests.
         """
         result = EmitResult()
-        agents_md = self.output_root / "AGENTS.md"
+        agents_md = self.repo_root / "AGENTS.md"
         if not agents_md.is_file():
             result.warnings.append(
-                "AGENTS.md is missing at output_root — commit one. It's the canonical "
+                "AGENTS.md is missing at the repo root — commit one. It's the canonical "
                 "context file for Codex/Cursor/OpenCode; CLAUDE.md imports it via "
                 "`@AGENTS.md`; Gemini CLI redirects via `.gemini/settings.json`."
             )

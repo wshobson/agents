@@ -563,14 +563,10 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "ty" },
 ]
 llm = [
     { name = "claude-agent-sdk" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ty" },
 ]
 
 [package.metadata]
@@ -584,12 +580,10 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "rich", specifier = ">=13.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9" },
+    { name = "ty", marker = "extra == 'dev'", specifier = ">=0.0.38" },
     { name = "typer", specifier = ">=0.15" },
 ]
 provides-extras = ["llm", "api", "dev"]
-
-[package.metadata.requires-dev]
-dev = [{ name = "ty", specifier = ">=0.0.38" }]
 
 [[package]]
 name = "pycparser"

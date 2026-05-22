@@ -23,6 +23,7 @@ dev = [
     "pytest-asyncio>=0.24",
     "pytest-cov>=6.0",
     "ruff>=0.9",
+    "ty>=0.0.38",
 ]
 
 [project.scripts]
@@ -59,8 +60,3 @@ possibly-missing-import = "error"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
-
-[dependency-groups]
-dev = [
-    "ty>=0.0.38",
-]
