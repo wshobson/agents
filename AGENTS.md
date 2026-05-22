@@ -4,7 +4,7 @@ Production-ready agentic-workflow building blocks: **82 plugins** (81 local + 1 
 
 This file is the canonical context file. Codex / Cursor / OpenCode read it directly. Claude Code reads it via `@AGENTS.md` import in `CLAUDE.md`. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`).
 
-> **Read this file like a table of contents.** Detail lives in `docs/`. Authoring conventions live in `docs/authoring.md`. Per-harness setup guides live in `CODEX.md` / `CURSOR.md` / `OPENCODE.md` / `GEMINI.md`. This file should never grow beyond ~150 lines (per OpenAI's [harness-engineering](https://openai.com/index/harness-engineering/) practice).
+> **Read this file like a table of contents.** Detail lives in `docs/`. Authoring conventions live in `docs/authoring.md`. Per-harness setup and capability deltas live in [`docs/harnesses.md`](docs/harnesses.md). Gemini-specific setup is in `GEMINI.md` (also auto-loaded by Gemini CLI). This file should never grow beyond ~150 lines (per OpenAI's [harness-engineering](https://openai.com/index/harness-engineering/) practice).
 
 ## Map
 

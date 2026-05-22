@@ -4,7 +4,7 @@
 > **155 skills**, **102 commands** — built for Claude Code and consumed natively by
 > OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI from a single Markdown source.
 
-[![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge) [![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](CODEX.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](CURSOR.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](OPENCODE.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md)
+[![Run in Smithery](https://smithery.ai/badge/skills/wshobson)](https://smithery.ai/skills?ns=wshobson&utm_source=github&utm_medium=badge) [![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md)
 
 > [!NOTE]
 > One source-of-truth (`plugins/`), five harnesses. Each harness gets idiomatic,
@@ -32,7 +32,7 @@ cd ~/agents
 make generate HARNESS=<codex|cursor|opencode|gemini>
 ```
 
-Per-harness setup guides: [CODEX.md](CODEX.md) · [CURSOR.md](CURSOR.md) · [OPENCODE.md](OPENCODE.md) · [GEMINI.md](GEMINI.md)
+Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). Gemini-specific setup: [GEMINI.md](GEMINI.md) (also auto-loaded by Gemini CLI).
 
 ## What's inside
 
@@ -122,7 +122,7 @@ Detail lives in `docs/`. Read in this order:
 - **[docs/plugin-eval.md](docs/plugin-eval.md)** — quality evaluation framework
 - **[docs/round-trip-results.md](docs/round-trip-results.md)** — real-CLI verification recipes
 
-Per-harness guides: [CODEX.md](CODEX.md) · [CURSOR.md](CURSOR.md) · [OPENCODE.md](OPENCODE.md) · [GEMINI.md](GEMINI.md)
+Gemini-specific setup: [GEMINI.md](GEMINI.md). All other harness setup, capability deltas, and gotchas live in [docs/harnesses.md](docs/harnesses.md).
 
 Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · Authoring: [docs/authoring.md](docs/authoring.md)
 

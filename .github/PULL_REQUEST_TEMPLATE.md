@@ -18,7 +18,7 @@ Thanks for the PR. A few quick orientation pointers:
 - [ ] Plugin authoring (new or modified `plugins/<name>/...`)
 - [ ] Adapter framework (`tools/adapters/`)
 - [ ] Quality tooling (validators, gardener, plugin-eval)
-- [ ] Per-harness setup or docs (CODEX.md / CURSOR.md / OPENCODE.md / GEMINI.md)
+- [ ] Per-harness setup or docs (GEMINI.md / docs/harnesses.md)
 - [ ] AGENTS.md / ARCHITECTURE.md / docs/
 - [ ] CI / build / release
 - [ ] Other

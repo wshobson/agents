@@ -22,7 +22,7 @@ claude-agents/
 ├── CLAUDE.md                       # @AGENTS.md + Claude-specific addenda
 ├── ARCHITECTURE.md                 # This file
 ├── README.md                       # User-facing GitHub landing page
-├── CODEX.md / CURSOR.md / OPENCODE.md / GEMINI.md  # Per-harness setup guides
+├── GEMINI.md                       # Gemini-specific setup (auto-loaded by Gemini CLI)
 ├── CONTRIBUTING.md                 # Contributor entry point
 ├── .claude-plugin/marketplace.json # Plugin registry (source of truth)
 ├── .gemini/settings.json           # Gemini CLI → AGENTS.md redirect

@@ -268,9 +268,6 @@ class TestContextFileBudgets:
         [
             ("CLAUDE.md", 200),  # slightly looser; project source-of-truth
             ("CONTRIBUTING.md", 150),
-            ("CODEX.md", 150),
-            ("CURSOR.md", 150),
-            ("OPENCODE.md", 150),
             ("GEMINI.md", 150),
             ("AGENTS.md", 150),
         ],

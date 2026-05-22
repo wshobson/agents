@@ -3,7 +3,7 @@
 
 Per the OpenAI harness engineering pattern, a recurring task scans for:
 1. Generated artifacts whose source file is newer (regenerate needed)
-2. Context files (AGENTS.md, GEMINI.md, CODEX.md, CURSOR.md, OPENCODE.md) above ~150 lines
+2. Context files (AGENTS.md, GEMINI.md, CLAUDE.md) above ~150 lines
 3. Dead links from docs/ into plugins/ or other docs/
 4. Skills above 8 KB body without `references/` (Codex hard cap)
 5. Plugin entries in marketplace.json without a corresponding plugins/<name>/ directory
@@ -37,9 +37,6 @@ MARKETPLACE_JSON = WORKTREE / ".claude-plugin" / "marketplace.json"
 CONTEXT_FILES = {
     "AGENTS.md": 150,
     "GEMINI.md": 150,
-    "CODEX.md": 150,
-    "CURSOR.md": 150,
-    "OPENCODE.md": 150,
     "CLAUDE.md": 200,  # slightly larger since it documents the source-of-truth
 }
 
@@ -231,9 +228,6 @@ def check_dead_links(report: Report) -> None:
         "CLAUDE.md",
         "AGENTS.md",
         "GEMINI.md",
-        "CODEX.md",
-        "CURSOR.md",
-        "OPENCODE.md",
     ):
         p = WORKTREE / top_file
         if p.is_file():

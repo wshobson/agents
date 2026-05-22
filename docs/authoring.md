@@ -9,8 +9,8 @@ do, and what to avoid, so the work you do for Claude Code translates cleanly eve
 ## The principles (from OpenAI's harness-engineering post)
 
 1. **Context file is a table of contents, not an encyclopedia.** Keep `AGENTS.md`,
-   `CLAUDE.md`, `GEMINI.md`, and `CURSOR.md` under ~150 lines / ~500 tokens. Detail
-   belongs in `docs/` or in a skill's `references/`.
+   `CLAUDE.md`, and `GEMINI.md` under ~150 lines / ~500 tokens. Detail belongs in
+   `docs/` or in a skill's `references/`.
 2. **Repository is the system of record.** If it's not in `plugins/` or `docs/`, the
    agent can't see it. No Slack threads, no Google Docs, no Notion. Push knowledge into
    the repo so every harness can ground on it.
