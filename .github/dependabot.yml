@@ -18,7 +18,6 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps(yt-design-extractor)"
-      include: "scope"
     groups:
       python-minor-and-patch:
         update-types:
@@ -36,7 +35,6 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps(plugin-eval)"
-      include: "scope"
     groups:
       python-minor-and-patch:
         update-types:
