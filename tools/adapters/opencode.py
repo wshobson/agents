@@ -14,6 +14,7 @@ Sources: research summary by `a8a6c57414dc1ba23` synthesized into the plan.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from tools.adapters.base import (
@@ -24,6 +25,11 @@ from tools.adapters.base import (
     PluginSource,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
+
+
+# Detects orchestration intent in command bodies. Word-boundary match so identifiers
+# like `PerformanceReviewAgent` or `useragent` don't trip it.
+_SUBAGENT_KEYWORD_RE = re.compile(r"\b(?:agent|subagent)s?\b", re.IGNORECASE)
 
 
 _OPENCODE_PERMISSIONS = [
@@ -60,31 +66,45 @@ def _rewrite_body_lowercase_tools(body: str) -> str:
     return out
 
 
-def _build_permission_block(tools: list[str]) -> dict:
+def _build_permission_block(tools: list[str], *, has_tools_field: bool = True) -> dict:
     """Convert source `tools:` allowlist to OpenCode permission block.
 
-    Skip emission (return {}) in two cases — leaving the agent with default permissive:
-    1. `tools:` field is missing entirely (no list, no key).
-    2. `tools:` lists only MCP (`mcp__*`) or otherwise unmappable tools — emitting a
-       deny-everything block in that case would break the agent. The MCP tools come
-       in via the MCP server config, not the OpenCode `permission:` block.
+    `has_tools_field` lets the caller distinguish "tools: key missing entirely" from
+    "tools: present with an empty list". The two carry opposite semantics in Claude
+    Code and we must preserve that distinction or we leak privilege:
 
-    If `tools:` is a non-empty list with at least one mappable Claude tool, emit a
-    deny-everything-else block where mapped tools are `allow` and the rest are `deny`.
+    | source frontmatter         | meaning in Claude          | what we emit            |
+    |----------------------------|----------------------------|--------------------------|
+    | (no tools: key)            | unrestricted (default)     | no permission block      |
+    | `tools: []` (explicit)     | NO tools allowed (locked)  | deny-everything block    |
+    | `tools: Read, Grep`        | only those tools           | allow those, deny others |
+    | `tools: [mcp__x]`          | MCP only, no Claude tools  | no permission block (MCP via MCP config) |
 
-    Base capabilities `skill` and `task` are ALWAYS allowed: Claude Code authors never
-    list these in `tools:` (Skill isn't a tool name, Task is the spawn tool implicit to
-    every agent). Denying them would silently strip subagent delegation and skill
-    invocation from every restricted agent.
+    Base capabilities `skill` and `task` are ALWAYS allowed even on locked agents —
+    Claude Code authors don't list these in `tools:` (Skill isn't a tool name, Task is
+    the spawn tool implicit to every agent). Denying them would silently strip subagent
+    delegation and skill invocation from every restricted agent.
     """
-    if not tools:
+    if not has_tools_field:
+        # Source author didn't set `tools:` at all — Claude default is unrestricted.
         return {}
+
+    base_capabilities = {"skill", "task"}
+
+    if not tools:
+        # Explicit `tools: []` — the author wants the agent locked down.
+        # Allow only base capabilities (skill, task); deny all Claude tools.
+        block = {}
+        for perm in _OPENCODE_PERMISSIONS:
+            block[perm] = "allow" if perm in base_capabilities else "deny"
+        return block
+
     granted = {_TOOL_TO_PERMISSION[t] for t in tools if t in _TOOL_TO_PERMISSION}
     if not granted:
-        # All tools are MCP or unmappable — leave permissive so the agent functions.
+        # All tools are MCP / unmappable — MCP runs through its own server config,
+        # not the permission block. Leave permissive so the agent functions.
         return {}
-    # Base capabilities every Claude Code agent has implicitly.
-    granted.update({"skill", "task"})
+    granted.update(base_capabilities)
     block = {}
     for perm in _OPENCODE_PERMISSIONS:
         block[perm] = "allow" if perm in granted else "deny"
@@ -154,7 +174,8 @@ class OpenCodeAdapter(HarnessAdapter):
             "model": model,
         }
 
-        permission = _build_permission_block(agent.tools)
+        has_tools_field = "tools" in agent.frontmatter
+        permission = _build_permission_block(agent.tools, has_tools_field=has_tools_field)
         if permission:
             fm["permission"] = permission
 
@@ -172,7 +193,9 @@ class OpenCodeAdapter(HarnessAdapter):
         if cmd.argument_hint:
             fm["argument-hint"] = cmd.argument_hint
         # Heuristic: if command orchestrates subagents, force isolation.
-        if "agent" in cmd.body.lower() or "subagent" in cmd.body.lower():
+        # Word-boundary match avoids false positives on substrings like
+        # `PerformanceReviewAgent` (class name in a code snippet) or `useragent`.
+        if _SUBAGENT_KEYWORD_RE.search(cmd.body):
             fm["subtask"] = True
 
         body = _rewrite_body_lowercase_tools(cmd.body).rstrip() + "\n"

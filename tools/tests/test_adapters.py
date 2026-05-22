@@ -545,6 +545,93 @@ class TestOpenCodeAdapter:
         skills_dir = output_root / ".opencode" / "skills"
         assert not skills_dir.exists() or not any(skills_dir.iterdir())
 
+    def test_explicit_empty_tools_yields_locked_permission_block(
+        self, tmp_path: Path, output_root: Path
+    ):
+        """`tools: []` (explicit empty allowlist) MUST emit a deny-everything permission
+        block (with skill/task base capabilities). Returning {} would silently upgrade a
+        locked-down agent to OpenCode's permissive default — Codex PR-541 P1 finding."""
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "locked-advisor",
+            "name: locked-advisor\ndescription: Use when locked.\ntools: []",
+            "# Locked advisor\n",
+        )
+        plugin = PluginSource(name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent])
+        OpenCodeAdapter(output_root=output_root).emit_plugin(plugin)
+
+        content = (output_root / ".opencode" / "agents" / "demo__locked-advisor.md").read_text()
+        # Permission block MUST be present (locked agent), with skill/task allow + all else deny.
+        assert "permission:" in content
+        assert re.search(r"read:\s*deny", content)
+        assert re.search(r"edit:\s*deny", content)
+        assert re.search(r"write:\s*deny", content)
+        assert re.search(r"bash:\s*deny", content)
+        # Base capabilities preserved.
+        assert re.search(r"skill:\s*allow", content)
+        assert re.search(r"task:\s*allow", content)
+
+    def test_missing_tools_field_yields_no_permission_block(
+        self, tmp_path: Path, output_root: Path
+    ):
+        """Absent `tools:` (Claude default) → no permission block → permissive (Claude semantics)."""
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "open-agent",
+            "name: open-agent\ndescription: Use when unrestricted.",
+            "# Open agent\n",
+        )
+        plugin = PluginSource(name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent])
+        OpenCodeAdapter(output_root=output_root).emit_plugin(plugin)
+
+        content = (output_root / ".opencode" / "agents" / "demo__open-agent.md").read_text()
+        assert "permission:" not in content
+
+    def test_subtask_inference_word_boundary(self, tmp_path: Path, output_root: Path):
+        """Word-boundary subtask inference: `PerformanceReviewAgent` (substring inside a
+        class name) must NOT trigger `subtask: true` — Codex PR-541 P2 finding."""
+        from tools.tests.conftest import _make_command
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+
+        # Body mentions 'Agent' only as a substring (class name in code) — no actual orchestration.
+        no_orchestration = _make_command(
+            plugin_dir, "lint", 'description: "Lint code"',
+            "# Lint\n\nReview the `PerformanceReviewAgent` class definition. Check `useragent` headers.",
+        )
+        # Body explicitly mentions `subagent` as a standalone word — IS orchestration.
+        orchestration = _make_command(
+            plugin_dir, "delegate", 'description: "Delegate work"',
+            "# Delegate\n\nSpawn a subagent to handle each task.",
+        )
+
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"},
+            commands=[no_orchestration, orchestration],
+        )
+        OpenCodeAdapter(output_root=output_root).emit_plugin(plugin)
+
+        lint = (output_root / ".opencode" / "commands" / "demo__lint.md").read_text()
+        delegate = (output_root / ".opencode" / "commands" / "demo__delegate.md").read_text()
+
+        assert "subtask:" not in lint  # NO false positive on substring matches
+        assert "subtask: true" in delegate  # genuine orchestration still detected
+
 
 # ── Gemini ───────────────────────────────────────────────────────────────────
 
