@@ -1,18 +1,24 @@
 ---
-name: New Subagent Proposal
-description: Propose a new specialized subagent for the collection
-title: "[NEW AGENT] "
-labels: ["new-subagent"]
+name: New Component Proposal
+description: >-
+  Propose a new plugin, agent, skill, or command for the marketplace
+title: "[NEW] "
+labels: ["new-component"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for proposing a new subagent! Quality subagents
-        require careful design and clear specialization.
+        Thank you for proposing a new component! Quality components require
+        careful design, clear specialization, and cross-harness portability.
 
-        **Important**: Only propose subagents for legitimate,
-        constructive use cases. Proposals for malicious or harmful
-        capabilities will be rejected and may result in moderation action.
+        Read [docs/authoring.md](https://github.com/wshobson/agents/blob/main/docs/authoring.md)
+        before submitting — it covers the portable-content style guide that
+        keeps your component working across Claude Code, Codex CLI, Cursor,
+        OpenCode, and Gemini CLI.
+
+        **Important**: Only propose components for legitimate, constructive
+        use cases. Proposals for malicious or harmful capabilities will be
+        rejected and may result in moderation action.
 
   - type: checkboxes
     id: preliminary-checks
@@ -20,107 +26,131 @@ body:
       label: Preliminary Checks
       description: Please confirm you have completed these steps
       options:
-        - label: I have read the [Code of Conduct](https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md)
+        - label: >-
+            I have read the [Code of
+            Conduct](https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md)
           required: true
         - label: >-
-            I have reviewed existing subagents to ensure this is not a duplicate
+            I have read
+            [docs/authoring.md](https://github.com/wshobson/agents/blob/main/docs/authoring.md)
+          required: true
+        - label: >-
+            I have reviewed
+            [docs/plugins.md](https://github.com/wshobson/agents/blob/main/docs/plugins.md)
+            to ensure this isn't a duplicate
           required: true
         - label: This proposal is for legitimate, constructive use cases only
           required: true
         - label: I have domain expertise in the proposed area
           required: true
 
-  - type: input
-    id: agent-name
+  - type: dropdown
+    id: component-type
     attributes:
-      label: Proposed Agent Name
-      description: What should this subagent be called?
-      placeholder: e.g., blockchain-developer, devops-security, etc.
+      label: Component type
+      description: What kind of component are you proposing?
+      options:
+        - New plugin (bundles multiple agents / skills / commands)
+        - New agent (under an existing plugin)
+        - New skill (under an existing plugin)
+        - New command (under an existing plugin)
+        - New harness adapter (for an additional CLI / IDE)
     validations:
       required: true
+
+  - type: input
+    id: component-name
+    attributes:
+      label: Proposed name
+      description: lowercase, hyphen-separated; no `__` (adapter namespace separator)
+      placeholder: e.g., devops-security, llm-quantization, k8s-architect
+    validations:
+      required: true
+
+  - type: input
+    id: parent-plugin
+    attributes:
+      label: Parent plugin (if adding an agent / skill / command)
+      description: >-
+        Existing plugin directory name. Leave blank if proposing a new plugin
+        or harness adapter.
+      placeholder: e.g., python-development, security-scanning
+    validations:
+      required: false
 
   - type: textarea
     id: domain-expertise
     attributes:
-      label: Domain Expertise
-      description: >-
-        What specific domain or technology does this agent specialize in?
-      placeholder: This agent specializes in...
+      label: Domain & expertise
+      description: What domain does this component specialize in?
+      placeholder: This component specializes in...
     validations:
       required: true
 
   - type: textarea
     id: unique-value
     attributes:
-      label: Unique Value Proposition
+      label: Unique value proposition
       description: >-
-        How is this different from existing subagents?
-        What unique capabilities does it provide?
-      placeholder: Unlike existing agents, this one would...
+        How is this different from existing components? What gap does it fill?
+      placeholder: Unlike existing components, this one would...
     validations:
       required: true
 
   - type: textarea
     id: use-cases
     attributes:
-      label: Primary Use Cases
-      description: What specific tasks would this agent handle?
+      label: Primary use cases
+      description: Concrete tasks this component handles.
       placeholder: |
         1. Design and implement...
         2. Optimize performance for...
         3. Debug issues related to...
-        4. Review code for...
     validations:
       required: true
 
   - type: textarea
-    id: tools-capabilities
+    id: portability-notes
     attributes:
-      label: Required Tools & Capabilities
-      description: What tools and capabilities would this agent need?
+      label: Cross-harness portability notes
+      description: >-
+        Are there features unique to one harness this component relies on
+        (e.g., TodoWrite, MCP, parallel Task tool)? How does it degrade
+        gracefully on harnesses without those features?
       placeholder: |
-        - File manipulation for...
-        - Bash commands for...
-        - Specialized knowledge of...
-        - Integration with...
+        - Works on all 5 harnesses; uses only file ops and shell commands.
+        - OR: uses `Task` (Claude/Cursor/OpenCode/Gemini), degrades to
+          sequential execution on Codex.
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: examples
     attributes:
-      label: Example Interactions
-      description: >-
-        Provide 2-3 example interactions showing how users would
-        work with this agent
+      label: Example interactions
+      description: 2-3 example user prompts → agent / skill behavior
       placeholder: |
         **Example 1:**
         User: "Implement a smart contract for..."
-        Agent response: "I'll create a secure smart contract with..."
+        Response: "I'll create a secure smart contract with..."
 
         **Example 2:**
         User: "Optimize this blockchain query..."
-        Agent response: "Let me analyze the query and suggest optimizations..."
+        Response: "Let me analyze the query..."
     validations:
       required: true
 
   - type: textarea
     id: expertise-evidence
     attributes:
-      label: Your Expertise
-      description: >-
-        What experience or credentials do you have in this domain?
-      placeholder: >-
-        I have X years of experience in... I've worked with...
-        I hold certifications in...
+      label: Your expertise
+      description: Experience or credentials in this domain.
     validations:
       required: true
 
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional Context
+      label: Additional context
       description: >-
-        Any other relevant information, resources, or considerations
-      placeholder: >-
-        Relevant documentation, similar tools, potential challenges...
+        Links to docs, similar tools, potential portability challenges.

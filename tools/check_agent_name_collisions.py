@@ -9,7 +9,6 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-
 FRONTMATTER_RE = re.compile(r"\A---\n(?P<frontmatter>.*?)\n---", re.DOTALL)
 NAME_RE = re.compile(r"^name:\s*(?P<name>.+?)\s*$", re.MULTILINE)
 

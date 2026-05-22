@@ -20,8 +20,19 @@ _CODEX_SKILL_BYTE_CAP = 8 * 1024
 _CODEX_BUILTIN_AGENT_NAMES = {"default", "worker", "explorer"}
 
 _CLAUDE_TOOLS = (
-    "Read", "Edit", "Write", "Bash", "Grep", "Glob", "Agent", "Task",
-    "TodoWrite", "WebFetch", "WebSearch", "LS", "LSP",
+    "Read",
+    "Edit",
+    "Write",
+    "Bash",
+    "Grep",
+    "Glob",
+    "Agent",
+    "Task",
+    "TodoWrite",
+    "WebFetch",
+    "WebSearch",
+    "LS",
+    "LSP",
 )
 _TOOL_ALTERNATION = "|".join(_CLAUDE_TOOLS)
 
@@ -40,9 +51,7 @@ _CAMEL_TOOL_PATTERN = re.compile(
 # The leading article ("the" / "The" / "THE") is matched case-insensitively, but the
 # tool name itself must match exact CamelCase — otherwise generic English like
 # "the bash tool" (referring to the shell, not Claude's Bash) false-positives.
-_TOOL_PROSE_PATTERN = re.compile(
-    rf"(?i:\bthe)\s+(?:`)?({_TOOL_ALTERNATION})(?:`)?\s+tool\b"
-)
+_TOOL_PROSE_PATTERN = re.compile(rf"(?i:\bthe)\s+(?:`)?({_TOOL_ALTERNATION})(?:`)?\s+tool\b")
 
 # Bare model aliases that don't map cleanly (Cursor/OpenCode/Gemini need full IDs)
 _BARE_MODEL_ALIAS_PATTERN = re.compile(r"^(opus|sonnet|haiku)$")
@@ -150,9 +159,7 @@ def detect_agent_findings(agent: ParsedAgent) -> list[PortabilityFinding]:
                     f"Agent name '{name}' collides with a Codex built-in role "
                     "(default/worker/explorer). The Codex adapter will namespace-rename it."
                 ),
-                remediation=(
-                    f"Rename to something plugin-scoped, e.g. `<plugin>-{name}`."
-                ),
+                remediation=(f"Rename to something plugin-scoped, e.g. `<plugin>-{name}`."),
             )
         )
 

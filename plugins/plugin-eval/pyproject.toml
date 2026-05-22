@@ -46,6 +46,11 @@ ignore = ["E501"]
 [tool.ruff.format]
 quote-style = "double"
 
+[tool.ty.environment]
+# Make `tools.adapters.*` importable when ty runs from plugins/plugin-eval/.
+# The repo-root layout puts the adapter framework outside this package.
+extra-paths = ["../.."]
+
 [tool.ty.rules]
 possibly-unresolved-reference = "error"
 possibly-missing-attribute = "error"
@@ -54,3 +59,8 @@ possibly-missing-import = "error"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[dependency-groups]
+dev = [
+    "ty>=0.0.38",
+]

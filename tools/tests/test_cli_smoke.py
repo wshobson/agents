@@ -36,7 +36,9 @@ def _has(cli: str) -> bool:
     return shutil.which(cli) is not None
 
 
-def _run(args: list[str], cwd: Path | None = None, env: dict | None = None) -> subprocess.CompletedProcess:
+def _run(
+    args: list[str], cwd: Path | None = None, env: dict | None = None
+) -> subprocess.CompletedProcess:
     """Run a subprocess with a tight timeout and capture stdout/stderr."""
     return subprocess.run(
         args,

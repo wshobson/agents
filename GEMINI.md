@@ -1,11 +1,8 @@
-# claude-agents for Gemini CLI
+# Gemini CLI — setup guide
 
-Multi-harness plugin marketplace consumed as a Gemini CLI extension. Native skills,
-subagents, and slash commands — auto-discovered from the extension root.
+> The canonical context file is [`AGENTS.md`](AGENTS.md) at the repo root. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`). This guide covers Gemini-specific setup only.
 
-> This file is a table of contents, not an encyclopedia. Detail lives in `docs/`.
-
-## Setup
+## Install
 
 ```bash
 gemini extensions install https://github.com/wshobson/agents
@@ -16,39 +13,31 @@ make generate HARNESS=gemini
 
 ## What you get
 
-- **Skills**: 153 skills under `skills/<plugin>__<skill>/SKILL.md`. Describe a task to activate.
-- **Subagents**: 185 subagents under `agents/<plugin>__<agent>.md`. Invoke with `@<agent>`.
-- **Slash commands**: 100 commands at `/<plugin>:<command>`. Use `/help` to list.
+- **155 skills** at `skills/<plugin>__<skill>/SKILL.md` — described in `AGENTS.md`. Describe a task to activate.
+- **191 subagents** at `agents/<plugin>__<agent>.md` — invoke with `@<agent>`.
+- **102 slash commands** at `/<plugin>:<command>` — use `/help` to list.
 
-## Map
-
-- [`docs/plugins.md`](docs/plugins.md) — full catalog of all 82 plugins
-- [`docs/harnesses.md`](docs/harnesses.md) — per-harness capability matrix
-- [`docs/authoring.md`](docs/authoring.md) — portable content style guide
-- [`docs/architecture.md`](docs/architecture.md) — design principles
-
-## Different from Claude Code
+## Gemini-specific differences
 
 | Capability | Claude Code | Gemini CLI |
 |---|---|---|
 | Plugin installation | `/plugin install` | `gemini extensions install <url>` |
-| Per-agent tool allowlist | `tools:` (always) | `tools:` (honored) |
+| Context file | reads CLAUDE.md natively | reads via `.gemini/settings.json` redirect to AGENTS.md |
+| Per-agent tool allowlist | `tools:` (always) | `tools:` (honored — remapped to Gemini-native names) |
 | Skill / agent discovery | native | native (skills/, agents/ at extension root) |
 | Model assignment | per-agent | session-level (override via `model:` frontmatter) |
-| `TodoWrite` | yes | no equivalent |
-
-Plugin source content stays Claude-Code-optimized — the adapter handles per-harness mechanics.
+| `TodoWrite` tool | yes | no equivalent |
 
 ## Regenerating
 
 ```bash
-make generate HARNESS=gemini
-make generate HARNESS=gemini PLUGIN=javascript-typescript
-make clean-generated HARNESS=gemini && make generate HARNESS=gemini
+make generate HARNESS=gemini                            # all plugins
+make generate HARNESS=gemini PLUGIN=javascript-typescript   # one plugin
+make clean-generated HARNESS=gemini                     # remove output
 ```
 
-## Safety
+## See also
 
-Agents in this marketplace follow standard safety conventions: no secret logging, no
-unrequested commits, explicit user approval at checkpoints, isolation to the project
-directory. See `docs/architecture.md` for the full safety model.
+- [`AGENTS.md`](AGENTS.md) — canonical context (cross-harness conventions)
+- [`docs/harnesses.md`](docs/harnesses.md) — full capability matrix
+- [`docs/round-trip-results.md`](docs/round-trip-results.md) — Gemini round-trip verification recipe

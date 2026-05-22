@@ -26,16 +26,28 @@ from tools.adapters.base import (
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 
-
 # Detects orchestration intent in command bodies. Word-boundary match so identifiers
 # like `PerformanceReviewAgent` or `useragent` don't trip it.
 _SUBAGENT_KEYWORD_RE = re.compile(r"\b(?:agent|subagent)s?\b", re.IGNORECASE)
 
 
 _OPENCODE_PERMISSIONS = [
-    "read", "edit", "write", "bash", "grep", "glob", "list",
-    "task", "skill", "lsp", "webfetch", "websearch",
-    "external_directory", "todowrite", "question", "doom_loop",
+    "read",
+    "edit",
+    "write",
+    "bash",
+    "grep",
+    "glob",
+    "list",
+    "task",
+    "skill",
+    "lsp",
+    "webfetch",
+    "websearch",
+    "external_directory",
+    "todowrite",
+    "question",
+    "doom_loop",
 ]
 
 # Map Claude Code tool name -> OpenCode permission key
@@ -152,9 +164,7 @@ class OpenCodeAdapter(HarnessAdapter):
         config = {
             "$schema": "https://opencode.ai/config.json",
         }
-        result.written.append(
-            self.write("opencode.json", json.dumps(config, indent=2) + "\n")
-        )
+        result.written.append(self.write("opencode.json", json.dumps(config, indent=2) + "\n"))
         return result
 
     # ── Internals ──────────────────────────────────────────────────────────

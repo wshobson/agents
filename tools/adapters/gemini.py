@@ -163,9 +163,13 @@ class GeminiAdapter(HarnessAdapter):
         parts.append("")
         parts.append("{{args}}")
 
-        result.written.append(self.write(rel, _generate_command_toml(description, "\n".join(parts))))
+        result.written.append(
+            self.write(rel, _generate_command_toml(description, "\n".join(parts)))
+        )
 
-    def _inline_command_prompt(self, plugin: PluginSource, cmd: CommandSource, description: str) -> str:
+    def _inline_command_prompt(
+        self, plugin: PluginSource, cmd: CommandSource, description: str
+    ) -> str:
         """Self-contained prompt with the command body inlined (small commands)."""
         lines = [
             f"You are running the `{cmd.name}` command from the `{plugin.name}` plugin.",
@@ -181,7 +185,9 @@ class GeminiAdapter(HarnessAdapter):
         lines.append("{{args}}")
         return "\n".join(lines)
 
-    def _inject_command_prompt(self, plugin: PluginSource, cmd: CommandSource, description: str) -> str:
+    def _inject_command_prompt(
+        self, plugin: PluginSource, cmd: CommandSource, description: str
+    ) -> str:
         """Use @{path} file injection — fixes the broken 'READ the protocol at X' pattern.
 
         Gemini resolves @{} paths relative to the extension root at evaluation time.

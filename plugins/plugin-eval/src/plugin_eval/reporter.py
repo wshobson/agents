@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from plugin_eval.models import Depth, PluginEvalResult
 
-
 _LAYER_TO_DEPTH: dict[frozenset[str], Depth] = {
     frozenset({"static", "judge", "monte_carlo"}): Depth.DEEP,
     frozenset({"static", "judge"}): Depth.STANDARD,
@@ -46,8 +45,7 @@ class Reporter:
             lines.append(f"**Depth:** {requested.value}")
         else:
             lines.append(
-                f"**Depth:** {requested.value} (requested) → "
-                f"{effective.value} (effective)"
+                f"**Depth:** {requested.value} (requested) → {effective.value} (effective)"
             )
         lines.append("")
 

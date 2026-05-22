@@ -19,10 +19,10 @@ import re
 from pathlib import Path
 
 from tools.adapters.base import (
+    WORKTREE,
     EmitResult,
     HarnessAdapter,
     PluginSource,
-    WORKTREE,
     read_file,
 )
 
@@ -163,7 +163,8 @@ class CursorAdapter(HarnessAdapter):
         if marketplace["plugins"]:
             top_manifest = {
                 "name": marketplace["name"],
-                "displayName": marketplace.get("metadata", {}).get("description") or marketplace["name"],
+                "displayName": marketplace.get("metadata", {}).get("description")
+                or marketplace["name"],
                 "version": marketplace.get("metadata", {}).get("version", "0.0.0"),
                 "description": marketplace.get("metadata", {}).get("description", ""),
                 "author": {

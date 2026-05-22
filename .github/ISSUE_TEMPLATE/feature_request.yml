@@ -1,6 +1,8 @@
 ---
 name: Feature Request
-description: Suggest an improvement or new feature for existing subagents
+description: >-
+  Suggest an improvement to a plugin / agent / skill / command, the adapter
+  framework, or harness support
 title: "[FEATURE] "
 labels: ["enhancement"]
 body:
@@ -10,8 +12,8 @@ body:
         Thank you for suggesting a feature! Please provide detailed
         information to help us understand your request.
 
-        **Note**: For new subagent proposals, please use the
-        "New Subagent Proposal" template instead.
+        **Note**: For new plugins or new agents, use the "New Component
+        Proposal" template instead.
 
   - type: checkboxes
     id: preliminary-checks
@@ -19,7 +21,9 @@ body:
       label: Preliminary Checks
       description: Please confirm you have completed these steps
       options:
-        - label: I have read the [Code of Conduct](https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md)
+        - label: >-
+            I have read the [Code of
+            Conduct](https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md)
           required: true
         - label: >-
             I have searched existing issues to ensure this is not a duplicate
@@ -27,19 +31,39 @@ body:
         - label: This is a constructive feature request for legitimate use cases
           required: true
 
-  - type: input
-    id: subagent
+  - type: dropdown
+    id: scope
     attributes:
-      label: Target Subagent
-      description: Which subagent would this feature enhance?
-      placeholder: e.g., python-pro, frontend-developer, etc.
+      label: Scope
+      description: What part of the marketplace would this feature affect?
+      options:
+        - Existing plugin / agent / skill / command (improvement)
+        - Adapter framework (Codex / Cursor / OpenCode / Gemini)
+        - New harness support
+        - Quality tooling (validators, gardener, plugin-eval)
+        - Documentation
+        - CI / build / release
+        - Other
     validations:
       required: true
+
+  - type: input
+    id: affected-component
+    attributes:
+      label: Target component (if scope is plugin/agent/skill/command)
+      description: >-
+        Which marketplace component would this enhance? Use the source path
+        or namespaced name. Leave blank for framework-wide features.
+      placeholder: >-
+        e.g., python-development,
+        plugins/backend-development/agents/backend-architect.md
+    validations:
+      required: false
 
   - type: textarea
     id: problem-description
     attributes:
-      label: Problem Description
+      label: Problem description
       description: What problem does this feature solve?
       placeholder: Currently, users need to... This is frustrating because...
     validations:
@@ -48,34 +72,35 @@ body:
   - type: textarea
     id: proposed-solution
     attributes:
-      label: Proposed Solution
-      description: Describe your preferred solution
-      placeholder: I would like the subagent to be able to...
+      label: Proposed solution
+      description: Describe your preferred solution.
     validations:
       required: true
 
   - type: textarea
     id: use-cases
     attributes:
-      label: Use Cases
-      description: Provide specific examples of how this would be used
-      placeholder: |
-        1. When developing...
-        2. For projects that...
-        3. To help with...
+      label: Use cases
+      description: Concrete scenarios where this feature would be valuable.
     validations:
       required: true
 
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternatives Considered
-      description: Other solutions you've considered
-      placeholder: I also considered... but this wouldn't work because...
+      label: Alternatives considered
+      description: >-
+        Other approaches you considered. Cross-harness implications:
+        which harnesses benefit / are unaffected / would need changes?
+      placeholder: |
+        - Approach A: ...
+        - Approach B: ...
+        - Harness impact: works for Claude Code natively, would need ...
+    validations:
+      required: false
 
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional Context
-      description: Any other relevant information
-      placeholder: Add any other context, examples, or screenshots here...
+      label: Additional context
+      description: Links to docs, examples, or related issues.

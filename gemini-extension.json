@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "1.6.0",
-  "description": "80-plugin ecosystem with 153 specialized skills for architecture, infrastructure, language development, security, testing, and full-stack development.",
-  "contextFileName": "GEMINI.md"
+  "version": "1.7.0",
+  "description": "Multi-harness agentic plugin marketplace — 82 plugins, 191 agents, 155 skills, 102 commands across architecture, infrastructure, languages, security, testing, ML, and full-stack development. Native to Claude Code; also consumable by Codex CLI, Cursor, OpenCode, and Gemini CLI.",
+  "contextFileName": "AGENTS.md"
 }

@@ -42,7 +42,6 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 # Optional imports - gracefully degrade if not available
 PILLOW_AVAILABLE = False
@@ -128,8 +127,8 @@ def get_transcript(video_id: str) -> list[dict] | None:
     try:
         from youtube_transcript_api import YouTubeTranscriptApi
         from youtube_transcript_api._errors import (
-            TranscriptsDisabled,
             NoTranscriptFound,
+            TranscriptsDisabled,
             VideoUnavailable,
         )
     except ImportError:
@@ -449,8 +448,8 @@ def build_markdown(
     scene_frames: list[Path],
     out_dir: Path,
     interval: int,
-    ocr_results: Optional[dict[Path, str]] = None,
-    color_analysis: Optional[dict] = None,
+    ocr_results: dict[Path, str] | None = None,
+    color_analysis: dict | None = None,
 ) -> Path:
     """Assemble the final reference markdown document."""
     title = meta.get("title", "Untitled Video")

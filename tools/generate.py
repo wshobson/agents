@@ -27,10 +27,10 @@ from tools.adapters.base import (
 )
 from tools.adapters.capabilities import supported_harnesses
 
-
 # Per-harness output targets used by both `--clean` and `--prune`.
 _HARNESS_TARGETS = {
-    "codex": [".codex", "AGENTS.md"],
+    # AGENTS.md is the committed canonical context file — never delete it from clean.
+    "codex": [".codex"],
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
     "gemini": ["commands", "agents", "skills"],
@@ -72,7 +72,12 @@ def _validate_output_root(output_root: Path) -> str | None:
     if os.environ.get("CLAUDE_AGENTS_ALLOW_ANY_ROOT") == "1":
         return None
     repo = WORKTREE.resolve()
-    tmp_prefixes = (Path("/tmp"), Path("/var/folders"), Path("/private/tmp"), Path("/private/var/folders"))
+    tmp_prefixes = (
+        Path("/tmp"),
+        Path("/var/folders"),
+        Path("/private/tmp"),
+        Path("/private/var/folders"),
+    )
 
     # Compare case-insensitively on Darwin/Windows; Path.is_relative_to is byte-exact,
     # but APFS / NTFS are case-insensitive case-preserving — a user-typed wrong case
@@ -118,9 +123,7 @@ def clean_output(harness_id: str, output_root: Path) -> int:
     return cleaned
 
 
-def prune_orphans(
-    harness_id: str, output_root: Path, written: set[Path]
-) -> list[Path]:
+def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> list[Path]:
     """Remove generated artifacts whose source is gone.
 
     `written` is the set of paths the current run produced. Anything inside the per-harness
@@ -230,7 +233,9 @@ def main() -> int:
             return 0
 
     if not args.plugin and not args.all:
-        print("No --plugin or --all specified. Use --all to generate every plugin.", file=sys.stderr)
+        print(
+            "No --plugin or --all specified. Use --all to generate every plugin.", file=sys.stderr
+        )
         return 1
 
     if not PLUGINS_DIR.is_dir():
@@ -299,7 +304,9 @@ def main() -> int:
         for p in pruned:
             print(f"  - pruned: {p.relative_to(output_root)}")
     elif args.prune and not args.all:
-        print("  ! --prune ignored without --all (need full view to detect orphans)", file=sys.stderr)
+        print(
+            "  ! --prune ignored without --all (need full view to detect orphans)", file=sys.stderr
+        )
 
     print(
         f"\nDone ({args.harness}): {len(total.written)} written, "

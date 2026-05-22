@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from tools.validate_generated import (
     Report,
     validate_codex,
@@ -35,7 +34,9 @@ class TestCodexValidator:
         )
         sk = tmp_path / ".codex" / "skills" / "demo"
         sk.mkdir(parents=True)
-        (sk / "SKILL.md").write_text("---\nname: demo\ndescription: Use when testing.\n---\n\nBody.\n")
+        (sk / "SKILL.md").write_text(
+            "---\nname: demo\ndescription: Use when testing.\n---\n\nBody.\n"
+        )
         (tmp_path / "AGENTS.md").write_text("# Map\n" + "\n".join(["line"] * 50))
 
         report = Report()
@@ -85,14 +86,18 @@ class TestCodexValidator:
 
         report = Report()
         validate_codex(report)
-        assert any("AGENTS.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings())
+        assert any(
+            "AGENTS.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings()
+        )
 
 
 # ── Cursor ───────────────────────────────────────────────────────────────────
 
 
 class TestCursorValidator:
-    def test_marketplace_missing_owner_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_marketplace_missing_owner_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_worktree(monkeypatch, tmp_path)
         (tmp_path / ".cursor-plugin").mkdir()
         (tmp_path / ".cursor-plugin" / "marketplace.json").write_text(
@@ -215,17 +220,16 @@ class TestOpenCodeValidator:
 
         report = Report()
         validate_opencode(report)
-        assert any(
-            "permission.read" in f.message and "maybe" in f.message
-            for f in report.errors()
-        )
+        assert any("permission.read" in f.message and "maybe" in f.message for f in report.errors())
 
 
 # ── Gemini ───────────────────────────────────────────────────────────────────
 
 
 class TestGeminiValidator:
-    def test_command_toml_missing_keys_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_command_toml_missing_keys_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_worktree(monkeypatch, tmp_path)
         cmds = tmp_path / "commands"
         cmds.mkdir()
@@ -239,9 +243,7 @@ class TestGeminiValidator:
         _patch_worktree(monkeypatch, tmp_path)
         cmds = tmp_path / "commands"
         cmds.mkdir()
-        (cmds / "no_args.toml").write_text(
-            'description = "Test"\nprompt = """Run this."""\n'
-        )
+        (cmds / "no_args.toml").write_text('description = "Test"\nprompt = """Run this."""\n')
 
         report = Report()
         validate_gemini(report)
@@ -265,4 +267,6 @@ class TestGeminiValidator:
 
         report = Report()
         validate_gemini(report)
-        assert any("GEMINI.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings())
+        assert any(
+            "GEMINI.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings()
+        )

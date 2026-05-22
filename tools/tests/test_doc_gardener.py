@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 import json
-import time
 from pathlib import Path
 
 import pytest
-
 from tools.doc_gardener import (
     Report,
     check_codex_skill_caps,
@@ -48,12 +46,11 @@ class TestStaleArtifacts:
         gen_dir = tmp_path / ".codex" / "agents"
         gen_dir.mkdir(parents=True)
         gen = gen_dir / "demo__greeter.toml"
-        gen.write_text(
-            'name = "demo__greeter"\ndescription = "x"\ndeveloper_instructions = "y"\n'
-        )
+        gen.write_text('name = "demo__greeter"\ndescription = "x"\ndeveloper_instructions = "y"\n')
         # Force gen mtime to be after source
         future = src.stat().st_mtime + 100
         import os
+
         os.utime(gen, (future, future))
 
         report = Report()
@@ -69,11 +66,10 @@ class TestStaleArtifacts:
         gen_dir = tmp_path / ".codex" / "agents"
         gen_dir.mkdir(parents=True)
         gen = gen_dir / "demo__greeter.toml"
-        gen.write_text(
-            'name = "demo__greeter"\ndescription = "x"\ndeveloper_instructions = "y"\n'
-        )
+        gen.write_text('name = "demo__greeter"\ndescription = "x"\ndeveloper_instructions = "y"\n')
         # Force src to be much newer
         import os
+
         past = gen.stat().st_mtime - 100
         os.utime(gen, (past, past))
 
@@ -109,9 +105,7 @@ class TestDeadLinks:
     def test_valid_links_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_paths(monkeypatch, tmp_path)
         (tmp_path / "docs").mkdir()
-        (tmp_path / "docs" / "a.md").write_text(
-            "[link to b](b.md)\n"
-        )
+        (tmp_path / "docs" / "a.md").write_text("[link to b](b.md)\n")
         (tmp_path / "docs" / "b.md").write_text("# B\n")
         report = Report()
         check_dead_links(report)

@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 import tomllib
 from dataclasses import dataclass, field
@@ -25,7 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from tools.adapters.base import WORKTREE, parse_frontmatter
-from tools.adapters.capabilities import CAPABILITIES, supported_harnesses
+from tools.adapters.capabilities import supported_harnesses
 
 # ── Findings ─────────────────────────────────────────────────────────────────
 
@@ -76,7 +75,9 @@ def validate_codex(report: Report) -> None:
             data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
         except tomllib.TOMLDecodeError as e:
             report.add(
-                severity="error", harness="codex", path=toml_path,
+                severity="error",
+                harness="codex",
+                path=toml_path,
                 message=f"TOML parse error: {e}",
                 remediation="Regenerate via `make generate HARNESS=codex PLUGIN=<name>`.",
             )
@@ -84,13 +85,21 @@ def validate_codex(report: Report) -> None:
         missing = required_agent_fields - set(data.keys())
         if missing:
             report.add(
-                severity="error", harness="codex", path=toml_path,
+                severity="error",
+                harness="codex",
+                path=toml_path,
                 message=f"missing required TOML fields: {sorted(missing)}",
                 remediation="The source agent markdown is missing fields. Check `description:` in frontmatter.",
             )
-        if "sandbox_mode" in data and data["sandbox_mode"] not in {"read-only", "workspace-write", "danger-full-access"}:
+        if "sandbox_mode" in data and data["sandbox_mode"] not in {
+            "read-only",
+            "workspace-write",
+            "danger-full-access",
+        }:
             report.add(
-                severity="error", harness="codex", path=toml_path,
+                severity="error",
+                harness="codex",
+                path=toml_path,
                 message=f"invalid sandbox_mode: {data['sandbox_mode']!r}",
                 remediation="Must be one of: read-only, workspace-write, danger-full-access.",
             )
@@ -103,20 +112,26 @@ def validate_codex(report: Report) -> None:
             fm, body = parse_frontmatter(content)
             if not fm:
                 report.add(
-                    severity="error", harness="codex", path=skill_md,
+                    severity="error",
+                    harness="codex",
+                    path=skill_md,
                     message="missing or invalid frontmatter",
                     remediation="SKILL.md must start with `---\\nname: ...\\ndescription: ...\\n---`.",
                 )
                 continue
             if fm.get("name") != skill_md.parent.name:
                 report.add(
-                    severity="error", harness="codex", path=skill_md,
+                    severity="error",
+                    harness="codex",
+                    path=skill_md,
                     message=f"frontmatter name {fm.get('name')!r} != directory name {skill_md.parent.name!r}",
                     remediation="Codex requires the name field to match the skill directory exactly.",
                 )
             if not fm.get("description"):
                 report.add(
-                    severity="error", harness="codex", path=skill_md,
+                    severity="error",
+                    harness="codex",
+                    path=skill_md,
                     message="empty description in frontmatter",
                     remediation="Add a description with a trigger phrase (e.g. 'Use when ...').",
                 )
@@ -127,7 +142,9 @@ def validate_codex(report: Report) -> None:
             file_bytes = len(content.encode("utf-8"))
             if file_bytes > 8 * 1024:
                 report.add(
-                    severity="error", harness="codex", path=skill_md,
+                    severity="error",
+                    harness="codex",
+                    path=skill_md,
                     message=f"file size {file_bytes} B exceeds Codex 8192 B injection cap",
                     remediation="Push detail into references/details.md and shorten the SKILL.md body or description.",
                 )
@@ -136,7 +153,9 @@ def validate_codex(report: Report) -> None:
     agents_md = WORKTREE / "AGENTS.md"
     if not agents_md.is_file():
         report.add(
-            severity="warning", harness="codex", path=agents_md,
+            severity="warning",
+            harness="codex",
+            path=agents_md,
             message="AGENTS.md not generated",
             remediation="Run `make generate HARNESS=codex --all` (or include a global pass).",
         )
@@ -144,7 +163,9 @@ def validate_codex(report: Report) -> None:
         line_count = len(agents_md.read_text().splitlines())
         if line_count > 150:
             report.add(
-                severity="warning", harness="codex", path=agents_md,
+                severity="warning",
+                harness="codex",
+                path=agents_md,
                 message=f"AGENTS.md is {line_count} lines (cap: 150 — table-of-contents pattern)",
                 remediation="Move detail into docs/; keep AGENTS.md as a navigation index.",
             )
@@ -168,21 +189,27 @@ def validate_cursor(report: Report) -> None:
             data = json.loads(marketplace.read_text())
         except json.JSONDecodeError as e:
             report.add(
-                severity="error", harness="cursor", path=marketplace,
+                severity="error",
+                harness="cursor",
+                path=marketplace,
                 message=f"JSON parse error: {e}",
                 remediation="Regenerate via `make generate HARNESS=cursor --all`.",
             )
             return
         if "owner" not in data:
             report.add(
-                severity="error", harness="cursor", path=marketplace,
+                severity="error",
+                harness="cursor",
+                path=marketplace,
                 message="marketplace.json missing required `owner` field",
                 remediation="Cursor 2.5+ requires owner.name in marketplace.json.",
             )
         for entry in data.get("plugins", []):
             if "source" not in entry:
                 report.add(
-                    severity="error", harness="cursor", path=marketplace,
+                    severity="error",
+                    harness="cursor",
+                    path=marketplace,
                     message=f"plugin entry {entry.get('name', '<unnamed>')} missing `source`",
                     remediation="Cursor uses `source` (not `path` or `url`) per plugin entry.",
                 )
@@ -195,14 +222,18 @@ def validate_cursor(report: Report) -> None:
                 data = json.loads(manifest.read_text())
             except json.JSONDecodeError as e:
                 report.add(
-                    severity="error", harness="cursor", path=manifest,
+                    severity="error",
+                    harness="cursor",
+                    path=manifest,
                     message=f"JSON parse error: {e}",
                     remediation="Regenerate via `make generate HARNESS=cursor`.",
                 )
                 continue
             if "name" not in data:
                 report.add(
-                    severity="error", harness="cursor", path=manifest,
+                    severity="error",
+                    harness="cursor",
+                    path=manifest,
                     message="missing required `name` field",
                     remediation="Every Cursor plugin.json needs a name.",
                 )
@@ -215,7 +246,9 @@ def validate_cursor(report: Report) -> None:
             fm, _ = parse_frontmatter(content)
             if not fm:
                 report.add(
-                    severity="error", harness="cursor", path=mdc,
+                    severity="error",
+                    harness="cursor",
+                    path=mdc,
                     message="missing or invalid frontmatter",
                     remediation="MDC files need YAML frontmatter with at least `description:`.",
                 )
@@ -223,7 +256,9 @@ def validate_cursor(report: Report) -> None:
             invalid = set(fm.keys()) - _ALLOWED_MDC_KEYS
             if invalid:
                 report.add(
-                    severity="error", harness="cursor", path=mdc,
+                    severity="error",
+                    harness="cursor",
+                    path=mdc,
                     message=f"invalid MDC keys: {sorted(invalid)}",
                     remediation=(
                         "Cursor only supports description/globs/alwaysApply. "
@@ -236,9 +271,22 @@ def validate_cursor(report: Report) -> None:
 
 
 _OPENCODE_PERMISSION_KEYS = {
-    "read", "edit", "write", "bash", "grep", "glob", "list",
-    "task", "skill", "lsp", "webfetch", "websearch",
-    "external_directory", "todowrite", "question", "doom_loop",
+    "read",
+    "edit",
+    "write",
+    "bash",
+    "grep",
+    "glob",
+    "list",
+    "task",
+    "skill",
+    "lsp",
+    "webfetch",
+    "websearch",
+    "external_directory",
+    "todowrite",
+    "question",
+    "doom_loop",
 }
 _OPENCODE_PERMISSION_VALUES = {"allow", "ask", "deny"}
 _OPENCODE_MODES = {"primary", "subagent", "all"}
@@ -293,14 +341,18 @@ def validate_opencode(report: Report) -> None:
             data = json.loads(cfg.read_text())
         except json.JSONDecodeError as e:
             report.add(
-                severity="error", harness="opencode", path=cfg,
+                severity="error",
+                harness="opencode",
+                path=cfg,
                 message=f"JSON parse error: {e}",
                 remediation="Regenerate via `make generate HARNESS=opencode`.",
             )
         else:
             if "$schema" not in data:
                 report.add(
-                    severity="info", harness="opencode", path=cfg,
+                    severity="info",
+                    harness="opencode",
+                    path=cfg,
                     message="missing $schema reference",
                     remediation='Add "$schema": "https://opencode.ai/config.json" for editor tooling.',
                 )
@@ -313,21 +365,27 @@ def validate_opencode(report: Report) -> None:
             fm, _ = parse_frontmatter(content)
             if not fm:
                 report.add(
-                    severity="error", harness="opencode", path=agent_md,
+                    severity="error",
+                    harness="opencode",
+                    path=agent_md,
                     message="missing or invalid frontmatter",
                     remediation="Regenerate via `make generate HARNESS=opencode`.",
                 )
                 continue
             if fm.get("mode") not in _OPENCODE_MODES:
                 report.add(
-                    severity="error", harness="opencode", path=agent_md,
+                    severity="error",
+                    harness="opencode",
+                    path=agent_md,
                     message=f"mode {fm.get('mode')!r} not in {sorted(_OPENCODE_MODES)}",
                     remediation="Set mode: subagent on transpiled agents.",
                 )
             model = fm.get("model", "")
             if model and "/" not in model:
                 report.add(
-                    severity="warning", harness="opencode", path=agent_md,
+                    severity="warning",
+                    harness="opencode",
+                    path=agent_md,
                     message=f"model {model!r} is not provider-prefixed (e.g. 'anthropic/claude-...')",
                     remediation="OpenCode requires `provider/model-id`; check MODEL_ALIASES in capabilities.py.",
                 )
@@ -339,7 +397,9 @@ def validate_opencode(report: Report) -> None:
                 unknown_keys = set(perm.keys()) - _OPENCODE_PERMISSION_KEYS
                 if unknown_keys:
                     report.add(
-                        severity="error", harness="opencode", path=agent_md,
+                        severity="error",
+                        harness="opencode",
+                        path=agent_md,
                         message=f"unknown permission keys: {sorted(unknown_keys)}",
                         remediation=(
                             f"Valid keys: {sorted(_OPENCODE_PERMISSION_KEYS)}. "
@@ -349,7 +409,9 @@ def validate_opencode(report: Report) -> None:
                 for k, v in perm.items():
                     if v not in _OPENCODE_PERMISSION_VALUES:
                         report.add(
-                            severity="error", harness="opencode", path=agent_md,
+                            severity="error",
+                            harness="opencode",
+                            path=agent_md,
                             message=f"permission.{k} = {v!r} not in {sorted(_OPENCODE_PERMISSION_VALUES)}",
                             remediation="Values must be allow/ask/deny.",
                         )
@@ -370,20 +432,26 @@ def validate_gemini(report: Report) -> None:
                 data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
             except tomllib.TOMLDecodeError as e:
                 report.add(
-                    severity="error", harness="gemini", path=toml_path,
+                    severity="error",
+                    harness="gemini",
+                    path=toml_path,
                     message=f"TOML parse error: {e}",
                     remediation="Likely a quoting issue in the command body. Regenerate or escape triple-quotes.",
                 )
                 continue
             if "description" not in data or "prompt" not in data:
                 report.add(
-                    severity="error", harness="gemini", path=toml_path,
+                    severity="error",
+                    harness="gemini",
+                    path=toml_path,
                     message=f"missing keys (have: {sorted(data.keys())})",
                     remediation="Gemini TOML requires both `description` and `prompt`.",
                 )
             if "prompt" in data and "{{args}}" not in data["prompt"]:
                 report.add(
-                    severity="warning", harness="gemini", path=toml_path,
+                    severity="warning",
+                    harness="gemini",
+                    path=toml_path,
                     message="prompt does not include {{args}} placeholder",
                     remediation="Append {{args}} so user input is appended to the prompt.",
                 )
@@ -395,7 +463,9 @@ def validate_gemini(report: Report) -> None:
             fm, _ = parse_frontmatter(content)
             if fm.get("name") != skill_md.parent.name:
                 report.add(
-                    severity="error", harness="gemini", path=skill_md,
+                    severity="error",
+                    harness="gemini",
+                    path=skill_md,
                     message=f"frontmatter name {fm.get('name')!r} != directory {skill_md.parent.name!r}",
                     remediation="Gemini auto-discovers by directory; name must match.",
                 )
@@ -408,7 +478,9 @@ def validate_gemini(report: Report) -> None:
             model = fm.get("model", "")
             if model and not model.startswith(valid_model_prefixes):
                 report.add(
-                    severity="warning", harness="gemini", path=agent_md,
+                    severity="warning",
+                    harness="gemini",
+                    path=agent_md,
                     message=f"model {model!r} doesn't look like a Gemini model id",
                     remediation="Gemini wants names like 'gemini-2.5-pro' / 'gemini-2.5-flash'.",
                 )
@@ -419,7 +491,9 @@ def validate_gemini(report: Report) -> None:
         line_count = len(gemini_md.read_text().splitlines())
         if line_count > 150:
             report.add(
-                severity="warning", harness="gemini", path=gemini_md,
+                severity="warning",
+                harness="gemini",
+                path=gemini_md,
                 message=f"GEMINI.md is {line_count} lines (cap: 150 — table of contents pattern)",
                 remediation="Move detail to docs/.",
             )
@@ -438,7 +512,9 @@ _VALIDATORS = {
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate generated harness artifacts.")
-    parser.add_argument("--harness", choices=supported_harnesses(), help="Only validate one harness.")
+    parser.add_argument(
+        "--harness", choices=supported_harnesses(), help="Only validate one harness."
+    )
     parser.add_argument("--strict", action="store_true", help="Exit nonzero on any warning.")
     args = parser.parse_args()
 
