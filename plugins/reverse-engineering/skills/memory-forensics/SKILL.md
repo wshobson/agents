@@ -7,6 +7,14 @@ description: Master memory forensics techniques including memory acquisition, pr
 
 Comprehensive techniques for acquiring, analyzing, and extracting artifacts from memory dumps for incident response and malware analysis.
 
+## When to Use This Skill
+
+- Performing memory analysis during incident response or breach investigation
+- Extracting malware artifacts (processes, injected code, network connections) from a RAM capture
+- Acquiring volatile memory from a live Windows/Linux/macOS system before shutdown
+- Using Volatility 3 / Rekall to triage memory dumps
+- Recovering credentials, browser sessions, or open files from process memory
+
 ## Memory Acquisition
 
 ### Live Acquisition Tools

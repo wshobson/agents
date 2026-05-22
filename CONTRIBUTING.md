@@ -33,7 +33,13 @@ shapes, directory layout, `marketplace.json` entries, model tiers).
 
 - `make validate STRICT=1` — structural validation across all harness outputs
 - `make garden STRICT=1` — drift / dead-link / stale-artifact detection
-- `cd plugins/plugin-eval && uv run pytest` — the evaluation framework's test suite
+- `make test` — full pytest suite (plugin-eval + tools/tests/)
+- `make smoke-test` — invokes whichever harness CLIs are on your PATH (OpenCode, Gemini,
+  Codex, Claude Code) against the generated artifacts. Each per-CLI test skips
+  gracefully when its binary is missing. CI installs OpenCode + Gemini + Codex and
+  turns those skips into hard gates.
+
+The CI pipeline runs all four (`validate`, `garden`, `test`, `smoke-test`) on every PR.
 
 ## Cross-harness compatibility
 

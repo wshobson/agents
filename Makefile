@@ -7,7 +7,7 @@ SCRIPT := tools/yt-design-extractor.py
 GENERATE := tools/generate.py
 
 .PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean \
-        generate generate-all clean-generated validate garden \
+        generate generate-all clean-generated validate garden test smoke-test \
         generate-plugin sync-commands generate-all-commands clean-commands
 
 help:
@@ -20,6 +20,8 @@ help:
 	@echo "  make clean-generated [HARNESS=<h>]               Remove generated artifacts"
 	@echo "  make validate [HARNESS=<h>] [STRICT=1]           Structural validation of generated artifacts"
 	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
+	@echo "  make test                                        Full pytest suite (plugin-eval + tools)"
+	@echo "  make smoke-test                                  Real-CLI smoke test (skips CLIs not on PATH)"
 	@echo ""
 	@echo "Legacy Gemini CLI targets (kept for compatibility — wrap make generate):"
 	@echo "  make generate-plugin PLUGIN=<name>  Generate Gemini commands for one plugin"
@@ -175,6 +177,22 @@ endif
 
 garden:
 	$(PYTHON) tools/doc_gardener.py $(if $(STRICT),--strict)
+
+# Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
+# Run from plugins/plugin-eval so uv picks up the venv.
+test:
+	cd plugins/plugin-eval && uv run pytest -q . ../../tools/tests/
+
+# Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
+# of opencode / gemini / codex / claude are on PATH. Per-CLI tests skip gracefully
+# when the binary is missing — so local devs only exercise what they have installed.
+# CI installs OpenCode + Gemini + Codex and turns those skips into hard requirements.
+smoke-test:
+	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d commands ]; then \
+		echo "Generating harness artifacts first..."; \
+		$(MAKE) generate-all; \
+	fi
+	cd plugins/plugin-eval && uv run pytest -v ../../tools/tests/test_cli_smoke.py
 
 clean-generated:
 ifdef HARNESS
