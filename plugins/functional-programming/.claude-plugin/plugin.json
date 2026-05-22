@@ -1,6 +1,6 @@
 {
   "name": "functional-programming",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Functional programming with Elixir, OTP patterns, Phoenix framework, and distributed systems",
   "author": {
     "name": "Seth Hobson",

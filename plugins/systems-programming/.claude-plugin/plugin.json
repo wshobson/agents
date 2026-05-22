@@ -1,6 +1,6 @@
 {
   "name": "systems-programming",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Systems programming with Rust, Go, C, and C++ for performance-critical and low-level development",
   "author": {
     "name": "Seth Hobson",

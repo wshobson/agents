@@ -1,6 +1,6 @@
 {
   "name": "error-debugging",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Error analysis, trace debugging, and multi-agent problem diagnosis",
   "author": {
     "name": "Seth Hobson",

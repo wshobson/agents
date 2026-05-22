@@ -1,6 +1,6 @@
 {
   "name": "deployment-validation",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Pre-deployment checks, configuration validation, and deployment readiness assessment",
   "author": {
     "name": "Seth Hobson",

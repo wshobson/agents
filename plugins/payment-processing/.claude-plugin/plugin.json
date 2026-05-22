@@ -1,6 +1,6 @@
 {
   "name": "payment-processing",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Payment gateway integration with Stripe, PayPal, checkout flow implementation, subscription billing, and PCI compliance",
   "author": {
     "name": "Seth Hobson",
