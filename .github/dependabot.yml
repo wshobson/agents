@@ -1,0 +1,42 @@
+# Dependabot config for the uv-managed Python projects in this repo.
+# See AGENTS.md for the canonical toolchain (uv + ruff + ty).
+#
+# Native uv support landed in GitHub Dependabot in 2024; the ecosystem
+# key is "uv" and Dependabot will update both pyproject.toml and uv.lock
+# in lock-step.
+
+version: 2
+updates:
+  # tools/yt-design-extractor — internal tooling
+  - package-ecosystem: "uv"
+    directory: "/tools/yt-design-extractor"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps(yt-design-extractor)"
+    groups:
+      python-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # plugins/plugin-eval — plugin quality evaluation framework
+  - package-ecosystem: "uv"
+    directory: "/plugins/plugin-eval"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps(plugin-eval)"
+    groups:
+      python-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
