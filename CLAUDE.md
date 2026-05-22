@@ -1,153 +1,60 @@
 # Project: claude-agents
 
-Claude Code plugin marketplace — 81 plugins (80 local + 1 external via git-subdir), 185 agents, 153 skills, 100 commands.
+Multi-harness agentic plugin marketplace — **82 plugins (81 local + 1 external via git-subdir)**, 191 agents, 155 skills, 102 commands. Native source-of-truth for Claude Code; also supports OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI via per-harness adapters under `tools/adapters/`.
 
-## Repository Structure
+## Map
 
-```
-claude-agents/
-├── .claude-plugin/marketplace.json   # Registry of all plugins
-├── plugins/                          # All 80 local plugins (1 more installed via git-subdir from external repo)
-│   ├── <plugin-name>/
-│   │   ├── .claude-plugin/plugin.json
-│   │   ├── agents/*.md
-│   │   ├── commands/*.md
-│   │   └── skills/<skill-name>/SKILL.md
-│   └── ...
-├── docs/                             # Documentation
-│   ├── plugins.md                    # Plugin catalog
-│   ├── agents.md                     # Agent reference
-│   ├── agent-skills.md               # Skills reference
-│   ├── usage.md                      # Usage guide
-│   ├── architecture.md               # Design principles
-│   └── plugin-eval.md                # Evaluation framework
-└── tools/                            # Development utilities
-```
+- **[docs/architecture.md](docs/architecture.md)** — design principles
+- **[docs/plugins.md](docs/plugins.md)** — full plugin catalog
+- **[docs/agents.md](docs/agents.md)** — agent reference (by category, with model tiers)
+- **[docs/agent-skills.md](docs/agent-skills.md)** — skill reference
+- **[docs/usage.md](docs/usage.md)** — commands and workflows
+- **[docs/authoring.md](docs/authoring.md)** — plugin authoring + portability guide
+- **[docs/plugin-eval.md](docs/plugin-eval.md)** — quality evaluation framework
+- **[docs/harnesses.md](docs/harnesses.md)** — cross-harness capability matrix
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — how to contribute
 
-## Plugin Authoring Conventions
+Per-harness setup guides: [CODEX.md](CODEX.md) · [CURSOR.md](CURSOR.md) · [OPENCODE.md](OPENCODE.md) · [GEMINI.md](GEMINI.md)
 
-### Agent frontmatter
-
-```yaml
----
-name: agent-name
-description: "What this agent does. Use PROACTIVELY when [trigger conditions]."
-model: opus|sonnet|haiku|inherit
-color: blue|green|red|yellow|cyan|magenta # optional
-tools: Read, Grep, Glob # optional — restricts available tools
----
-```
-
-### Skill structure
+## Repository structure
 
 ```
-skills/<skill-name>/
-├── SKILL.md              # Required — frontmatter + content
-├── references/           # Optional — supporting material
-│   └── *.md
-└── assets/               # Optional — templates, configs
+.claude-plugin/marketplace.json   # SOURCE OF TRUTH (committed)
+plugins/                          # SOURCE OF TRUTH (committed) — 81 local plugins
+docs/                             # All documentation
+tools/                            # Adapters, generators, validators, gardener
+plugins/plugin-eval/              # Three-layer quality evaluation framework
+
+# Generated (gitignored, regenerated via `make generate HARNESS=<x>`):
+.codex/   AGENTS.md               # Codex CLI artifacts
+.cursor-plugin/   .cursor/        # Cursor artifacts
+.opencode/   opencode.json        # OpenCode artifacts
+commands/   agents/   skills/     # Gemini CLI artifacts (at extension root)
 ```
 
-Skill frontmatter:
+## Plugin authoring (canonical reference)
 
-```yaml
----
-name: skill-name
-description: "Use this skill when [specific trigger conditions]."
----
-```
+Full conventions, frontmatter shapes, and cross-harness portability rules live in
+**[docs/authoring.md](docs/authoring.md)**. The 60-second summary:
 
-### Command frontmatter
-
-```yaml
----
-description: What this command does
-argument-hint: <path> [--flag]
----
-```
-
-### plugin.json
-
-Only `name` is required. Agents, commands, and skills are auto-discovered from directory structure.
-
-```json
-{ "name": "plugin-name" }
-```
-
-### marketplace.json
-
-Lists all plugin component paths for the registry. Agents as `./agents/name.md`, skills as `./skills/skill-name` (directory, not SKILL.md).
-
-## Model Tiers
-
-| Tier   | Model   | Use Case                                               |
-| ------ | ------- | ------------------------------------------------------ |
-| Tier 1 | Opus    | Architecture, security, code review, production coding |
-| Tier 2 | Inherit | Complex tasks — user chooses model                     |
-| Tier 3 | Sonnet  | Docs, testing, debugging, support                      |
-| Tier 4 | Haiku   | Fast ops, SEO, deployment, simple tasks                |
-
-## PluginEval — Quality Evaluation Framework
-
-Three-layer evaluation system in `plugins/plugin-eval/`. Full docs: [docs/plugin-eval.md](docs/plugin-eval.md).
-
-### Quick Reference
-
-```bash
-cd plugins/plugin-eval
-
-# Run tests
-uv run pytest
-
-# Evaluate a skill (static only)
-uv run plugin-eval score path/to/skill --depth quick --output json
-
-# Evaluate with LLM judge
-uv run plugin-eval score path/to/skill --depth standard
-
-# Full certification (all 3 layers)
-uv run plugin-eval certify path/to/skill
-
-# Compare two skills
-uv run plugin-eval compare path/to/skill-a path/to/skill-b
-
-# Build corpus for Elo ranking
-uv run plugin-eval init plugins/
-```
-
-### Evaluation Layers
-
-1. **Static** (Layer 1) — Deterministic structural analysis. < 2 seconds, free, always runs.
-2. **LLM Judge** (Layer 2) — Semantic evaluation via Claude (Haiku + Sonnet). ~30s, 4 LLM calls.
-3. **Monte Carlo** (Layer 3) — Statistical reliability via N simulated runs. ~2–5 min, 50–100 calls.
-
-### 10 Dimensions (weights)
-
-triggering_accuracy (25%), orchestration_fitness (20%), output_quality (15%), scope_calibration (12%), progressive_disclosure (10%), token_efficiency (6%), robustness (5%), structural_completeness (3%), code_template_quality (2%), ecosystem_coherence (2%)
-
-### Badges
-
-Platinum ≥90, Gold ≥80, Silver ≥70, Bronze ≥60
-
-### Anti-Patterns
-
-OVER_CONSTRAINED (>15 MUST/ALWAYS/NEVER), EMPTY_DESCRIPTION (<20 chars), MISSING_TRIGGER (no "Use when…"), BLOATED_SKILL (>800 lines no refs), ORPHAN_REFERENCE (dead link), DEAD_CROSS_REF (missing skill)
-
-### Tech Stack
-
-- Python ≥ 3.12, uv, ruff, ty, pytest
-- Dependencies: pydantic, typer, rich, pyyaml
-- Optional: claude-agent-sdk (LLM layers), anthropic (API alternative)
+- Plugin = `plugins/<name>/` with `.claude-plugin/plugin.json` (only `name` required)
+- Agents in `agents/*.md`, commands in `commands/*.md`, skills in `skills/<n>/SKILL.md`
+- Auto-discovered; no need to enumerate in `plugin.json`
+- Plugin names: lowercase, hyphen-separated, **no `__`** (adapter namespace separator)
 
 ## Development
 
-### Python Tooling
+- **Python tooling**: `uv` (package manager), `ruff` (lint/format), `ty` (type check).
+  Do not use pip, mypy, or black.
+- **Quality gates**: `make validate` (structural), `make garden` (drift detection),
+  `cd plugins/plugin-eval && uv run pytest` (test suite).
+- **Cross-harness regeneration**: `make generate-all` (all four target harnesses).
 
-Use the Astral Rust toolchain: `uv` (package manager), `ruff` (linter/formatter), `ty` (type checker). Do not use pip, mypy, or black.
+## Model tiers
 
-### Adding a Plugin
-
-1. Create `plugins/<name>/` with `.claude-plugin/plugin.json`
-2. Add agents in `agents/`, commands in `commands/`, skills in `skills/`
-3. Update `.claude-plugin/marketplace.json`
-4. Follow naming conventions: lowercase, hyphen-separated
+| Tier | Model | Use |
+|---|---|---|
+| 1 | Opus | Architecture, security, code review, production coding |
+| 2 | inherit | User-chosen — complex tasks, AI/ML, frontend/mobile, specialized |
+| 3 | Sonnet | Docs, testing, debugging, support |
+| 4 | Haiku | Fast ops, SEO, deployment, simple tasks |

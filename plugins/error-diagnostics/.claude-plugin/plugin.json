@@ -1,6 +1,6 @@
 {
   "name": "error-diagnostics",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Error tracing, root cause analysis, and smart debugging for production systems",
   "author": {
     "name": "Seth Hobson",

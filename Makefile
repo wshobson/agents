@@ -1,20 +1,32 @@
-# YouTube Design Extractor & Gemini CLI Extension
-# ===============================================
+# claude-agents marketplace — multi-harness build & adapters
+# ==========================================================
 
 PYTHON := python3
 PIP := pip3
 SCRIPT := tools/yt-design-extractor.py
+GENERATE := tools/generate.py
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate-plugin sync-commands generate-all-commands clean-commands
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean \
+        generate generate-all clean-generated validate garden test smoke-test \
+        generate-plugin sync-commands generate-all-commands clean-commands
 
 help:
-	@echo "YouTube Design Extractor & Gemini CLI Extension"
-	@echo "==============================================="
+	@echo "claude-agents — multi-harness plugin marketplace"
+	@echo "================================================="
 	@echo ""
-	@echo "Gemini CLI Extension Setup:"
-	@echo "  make generate-plugin PLUGIN=<name>  Generate commands for one plugin"
-	@echo "  make sync-commands                  Keep local commands in sync with upstream"
-	@echo "  make generate-all-commands          Generate commands for ALL plugins"
+	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Gemini):"
+	@echo "  make generate HARNESS=<h> [PLUGIN=<p>]           Generate per-harness artifacts (defaults to all plugins)"
+	@echo "  make generate-all                                Generate for ALL harnesses + ALL plugins"
+	@echo "  make clean-generated [HARNESS=<h>]               Remove generated artifacts"
+	@echo "  make validate [HARNESS=<h>] [STRICT=1]           Structural validation of generated artifacts"
+	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
+	@echo "  make test                                        Full pytest suite (plugin-eval + tools)"
+	@echo "  make smoke-test                                  Real-CLI smoke test (skips CLIs not on PATH)"
+	@echo ""
+	@echo "Legacy Gemini CLI targets (kept for compatibility — wrap make generate):"
+	@echo "  make generate-plugin PLUGIN=<name>  Generate Gemini commands for one plugin"
+	@echo "  make sync-commands                  Keep Gemini commands in sync"
+	@echo "  make generate-all-commands          Generate Gemini commands for ALL plugins"
 	@echo ""
 	@echo "YouTube Design Extractor Setup (run in order):"
 	@echo "  make install-ocr     Install system tools (tesseract + ffmpeg)"
@@ -125,24 +137,86 @@ clean:
 	rm -rf yt-extract-*
 	@echo "Cleaned up extraction directories"
 
-# Gemini CLI Extension targets
-# ===========================
+# Multi-harness adapter targets
+# =============================
 
-GEMINI_GEN := tools/generate_gemini_commands.py
+# Usage:
+#   make generate HARNESS=codex PLUGIN=javascript-typescript   # one plugin
+#   make generate HARNESS=cursor                               # all plugins (default)
+#   make generate-all
+#   make clean-generated HARNESS=opencode
 
+HARNESSES := codex cursor opencode gemini
+
+generate:
+ifndef HARNESS
+	@echo "Error: HARNESS is required (one of: $(HARNESSES))"
+	@echo "Examples:"
+	@echo "  make generate HARNESS=codex                       # all plugins"
+	@echo "  make generate HARNESS=codex PLUGIN=python-development   # one plugin"
+	@exit 1
+endif
+ifdef PLUGIN
+	$(PYTHON) $(GENERATE) --harness '$(HARNESS)' --plugin '$(PLUGIN)'
+else
+	$(PYTHON) $(GENERATE) --harness '$(HARNESS)' --all
+endif
+
+generate-all:
+	@for h in $(HARNESSES); do \
+		echo "--- $$h ---"; \
+		$(PYTHON) $(GENERATE) --harness $$h --all || exit 1; \
+	done
+
+validate:
+ifdef HARNESS
+	$(PYTHON) tools/validate_generated.py --harness '$(HARNESS)' $(if $(STRICT),--strict)
+else
+	$(PYTHON) tools/validate_generated.py $(if $(STRICT),--strict)
+endif
+
+garden:
+	$(PYTHON) tools/doc_gardener.py $(if $(STRICT),--strict)
+
+# Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
+# Run from plugins/plugin-eval so uv picks up the venv.
+test:
+	cd plugins/plugin-eval && uv run pytest -q . ../../tools/tests/
+
+# Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
+# of opencode / gemini / codex / claude are on PATH. Per-CLI tests skip gracefully
+# when the binary is missing — so local devs only exercise what they have installed.
+# CI installs OpenCode + Gemini + Codex and turns those skips into hard requirements.
+smoke-test:
+	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d commands ]; then \
+		echo "Generating harness artifacts first..."; \
+		$(MAKE) generate-all; \
+	fi
+	cd plugins/plugin-eval && uv run pytest -v ../../tools/tests/test_cli_smoke.py
+
+clean-generated:
+ifdef HARNESS
+	$(PYTHON) $(GENERATE) --harness '$(HARNESS)' --clean
+else
+	@for h in $(HARNESSES); do \
+		$(PYTHON) $(GENERATE) --harness $$h --clean; \
+	done
+endif
+
+# Legacy Gemini wrappers (delegate to the unified CLI)
 generate-plugin:
 ifndef PLUGIN
 	@echo "Error: PLUGIN is required (e.g., make generate-plugin PLUGIN=javascript-typescript)"
 	@exit 1
 endif
-	$(PYTHON) $(GEMINI_GEN) --plugin '$(PLUGIN)'
+	$(PYTHON) $(GENERATE) --harness gemini --plugin '$(PLUGIN)'
 
 sync-commands:
-	$(PYTHON) $(GEMINI_GEN) --prune
+	$(PYTHON) $(GENERATE) --harness gemini --all --prune
 
 generate-all-commands:
-	$(PYTHON) $(GEMINI_GEN) --all
+	$(PYTHON) $(GENERATE) --harness gemini --all
 
 clean-commands:
-	-rm -rf commands/*
-	@echo "Cleaned up generated Gemini commands"
+	-rm -rf commands/
+	@echo "Cleaned up commands/ (top-level Gemini TOMLs)"

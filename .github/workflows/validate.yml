@@ -93,3 +93,118 @@ jobs:
 
       - name: Run tests
         run: uv run pytest
+
+  tools-tests:
+    name: tools pytest (adapters + validators + gardener)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/plugin-eval
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync dependencies
+        run: uv sync --all-extras
+
+      - name: Run tools test suite
+        run: uv run pytest -q ../../tools/tests/
+
+  multi-harness-generate:
+    name: Cross-harness generation + validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate all harness artifacts
+        run: make generate-all
+
+      - name: Structural validation (strict)
+        run: make validate STRICT=1
+
+      - name: Doc-gardener (no errors allowed)
+        # Errors fail this step; warnings (e.g. oversized source skills with no
+        # references/) are surfaced but don't block. Use STRICT=1 to gate on warnings too.
+        run: make garden
+
+      - name: Upload generated artifacts for inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multi-harness-output
+          path: |
+            .codex/
+            .cursor/
+            .cursor-plugin/
+            .opencode/
+            opencode.json
+            commands/
+            agents/
+            skills/
+            AGENTS.md
+          retention-days: 7
+
+  cli-smoke-test:
+    name: Real-CLI smoke test (OpenCode + Gemini)
+    runs-on: ubuntu-latest
+    # Real-CLI subprocess tests: invokes the actual harness binaries against our
+    # generated artifacts to catch issues that pure-Python parsing misses (CLI
+    # version drift, schema-loader surprises, plugin discovery bugs).
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js (for Gemini CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Bun (for OpenCode CLI)
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install OpenCode CLI
+        run: |
+          curl -fsSL https://opencode.ai/install | bash
+          echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
+
+      - name: Install Gemini CLI
+        # Pinned to the released line we developed against; bump alongside any
+        # gemini-extension.json schema changes.
+        run: npm install -g @google/gemini-cli@latest
+
+      - name: Verify CLI versions
+        run: |
+          opencode --version
+          gemini --version
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync plugin-eval dependencies
+        working-directory: plugins/plugin-eval
+        run: uv sync --all-extras
+
+      - name: Generate all harness artifacts
+        run: make generate-all
+
+      - name: Run real-CLI smoke tests
+        working-directory: plugins/plugin-eval
+        run: uv run pytest -v ../../tools/tests/test_cli_smoke.py

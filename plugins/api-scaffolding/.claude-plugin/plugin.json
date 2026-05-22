@@ -1,6 +1,6 @@
 {
   "name": "api-scaffolding",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "REST and GraphQL API scaffolding, framework selection, backend architecture, and API generation",
   "author": {
     "name": "Seth Hobson",

@@ -1,94 +1,54 @@
-# Claude-Agents: Skills Ecosystem for Gemini CLI
+# claude-agents for Gemini CLI
 
-You have access to **153 specialized skills**, **185 specialized agents**, and **100 commands** organized across **80 plugins**. These skills are designed for progressive disclosure — they activate automatically when you describe a matching task, saving context tokens.
+Multi-harness plugin marketplace consumed as a Gemini CLI extension. Native skills,
+subagents, and slash commands — auto-discovered from the extension root.
 
-## Navigation
+> This file is a table of contents, not an encyclopedia. Detail lives in `docs/`.
 
-- **Skill Discovery**: Describe your task (e.g., "Set up a Kubernetes deployment") and Gemini CLI will identify the matching skill and ask to activate it.
-- **Opt-In Slash Commands**: Slash commands are optional and **not available until you generate them locally**. This keeps your namespace clean. See **Setup** below.
-- **Plugin Catalog**: See [docs/plugins.md](docs/plugins.md) for the full catalog of all 80 plugins and 153 skills.
+## Setup
 
-## Safety and System Integrity
-
-- **Credential Protection**: Agents will never log, print, or commit secrets, API keys, or sensitive credentials.
-- **Source Control**: Changes are never staged or committed unless specifically requested by the user.
-- **Transparent Execution**: Complex workflows pause at critical checkpoints for user approval.
-- **Isolation**: Work is confined to the project directory; system-level configurations are protected.
-
-## Setup: Opt-In Slash Commands
-
-Slash commands are generated on-demand to avoid cluttering your CLI namespace.
-
-1. **Install the extension**: `gemini extensions install https://github.com/wshobson/agents`
-2. **Generate commands for a plugin**:
-   ```bash
-   cd ~/.gemini/extensions/claude-code-workflows
-   make generate-plugin PLUGIN=javascript-typescript
-   ```
-   *(Windows: run in Git Bash or WSL, or use `python3 tools/generate_gemini_commands.py --plugin <name>` directly.)*
-3. **Keep in sync** after updates:
-   ```bash
-   cd ~/.gemini/extensions/claude-code-workflows
-   make sync-commands
-   ```
-4. **Restart Gemini CLI** for new commands to appear.
-
-### Interactive Execution (Protocol Orchestrator)
-
-Slash commands follow a **sequential, multi-step protocol** model. When you run a command like `/tdd-workflows:tdd-cycle`, the agent:
-
-1. Reads the full protocol from the repository's source Markdown.
-2. Pauses at checkpoints for your approval (e.g., `PHASE CHECKPOINT`).
-3. Tracks progress locally, allowing you to resume or audit the workflow.
-
-## Skill Library (Grouped by Plugin)
-
-Below are the primary skills available to you. Describe your goal to trigger them.
-
-### Language Development
-- **python-development**: async-python-patterns, python-packaging, python-testing-patterns, uv-package-manager
-- **javascript-typescript**: javascript-testing-patterns, modern-javascript-patterns, nodejs-backend-patterns, typescript-advanced-types
-- **systems-programming**: go-concurrency-patterns, memory-safety-patterns, rust-async-patterns
-- **shell-scripting**: bash-defensive-patterns, bats-testing-patterns, shellcheck-configuration
-
-### Full-Stack & UI
-- **backend-development**: api-design-principles, architecture-patterns, cqrs-implementation, event-store-design, saga-orchestration, temporal-python-testing
-- **frontend-mobile-development**: nextjs-app-router-patterns, react-native-architecture, react-state-management, tailwind-design-system
-- **ui-design**: accessibility-compliance, design-system-patterns, interaction-design, mobile-ios-design, responsive-design, visual-design-foundations
-
-### Infrastructure & Security
-- **cloud-infrastructure**: cost-optimization, istio-traffic-management, multi-cloud-architecture, terraform-module-library
-- **kubernetes-operations**: gitops-workflow, helm-chart-scaffolding, k8s-manifest-generator, k8s-security-policies
-- **security-scanning**: attack-tree-construction, sast-configuration, stride-analysis-patterns, threat-mitigation-mapping
-- **reverse-engineering**: anti-reversing-techniques, binary-analysis-patterns, memory-forensics, protocol-reverse-engineering
-
-... and 50+ more. See [docs/plugins.md](docs/plugins.md) for the full catalog.
-
-## Slash Commands
-
-100 slash commands are available across 50 plugins, mirroring Claude Code's `/plugin:command` namespace:
-
-```
-/security-scanning:security-sast          # SAST vulnerability scan
-/backend-development:feature-development  # End-to-end feature orchestration
-/tdd-workflows:tdd-cycle                  # Full TDD red-green-refactor
-/python-development:python-scaffold       # Python project scaffolding
+```bash
+gemini extensions install https://github.com/wshobson/agents
+cd ~/.gemini/extensions/claude-code-workflows
+make generate HARNESS=gemini
+# restart Gemini CLI
 ```
 
-Use `/help` in Gemini CLI to list all available commands.
+## What you get
 
-## Key Differences from Claude Code
+- **Skills**: 153 skills under `skills/<plugin>__<skill>/SKILL.md`. Describe a task to activate.
+- **Subagents**: 185 subagents under `agents/<plugin>__<agent>.md`. Invoke with `@<agent>`.
+- **Slash commands**: 100 commands at `/<plugin>:<command>`. Use `/help` to list.
 
-| Feature | Claude Code | Gemini CLI | Workaround |
-|---------|-----------|-----------|-----------|
-| **Slash Commands** | Built-in `/plan`, `/spec`, `/ship` | No built-in IDE commands | Use opt-in extension commands (see Setup) |
-| **Subagent Orchestration** | Fan-out parallel execution | Sequential execution | Use the `executing-plans` skill to batch tasks |
-| **Model Assignment** | Per-agent model tiers (Opus/Sonnet/Haiku) | Session-level model selection | Skills are model-agnostic; use session default |
-| **Plugin Installation** | Per-plugin via `/plugin install` | Per-extension via `gemini extensions install` | Install once: `gemini extensions install https://github.com/wshobson/agents` |
+## Map
 
+- [`docs/plugins.md`](docs/plugins.md) — full catalog of all 82 plugins
+- [`docs/harnesses.md`](docs/harnesses.md) — per-harness capability matrix
+- [`docs/authoring.md`](docs/authoring.md) — portable content style guide
+- [`docs/architecture.md`](docs/architecture.md) — design principles
 
-## Support & Contribution
+## Different from Claude Code
 
-- **Issues**: Report bugs or suggest skills at https://github.com/wshobson/agents/issues
-- **Skill Development**: Contribute new skills by creating a `skills/<skill-name>/SKILL.md` file
-- **Plugin Development**: Create new plugins in `plugins/` following the structure in [CLAUDE.md](CLAUDE.md)
+| Capability | Claude Code | Gemini CLI |
+|---|---|---|
+| Plugin installation | `/plugin install` | `gemini extensions install <url>` |
+| Per-agent tool allowlist | `tools:` (always) | `tools:` (honored) |
+| Skill / agent discovery | native | native (skills/, agents/ at extension root) |
+| Model assignment | per-agent | session-level (override via `model:` frontmatter) |
+| `TodoWrite` | yes | no equivalent |
+
+Plugin source content stays Claude-Code-optimized — the adapter handles per-harness mechanics.
+
+## Regenerating
+
+```bash
+make generate HARNESS=gemini
+make generate HARNESS=gemini PLUGIN=javascript-typescript
+make clean-generated HARNESS=gemini && make generate HARNESS=gemini
+```
+
+## Safety
+
+Agents in this marketplace follow standard safety conventions: no secret logging, no
+unrequested commits, explicit user approval at checkpoints, isolation to the project
+directory. See `docs/architecture.md` for the full safety model.

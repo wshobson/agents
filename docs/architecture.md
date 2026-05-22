@@ -36,7 +36,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **81 focused plugins** (80 local + 1 external via git-subdir) optimized for specific use cases
+- **82 focused plugins** (81 local + 1 external via git-subdir) optimized for specific use cases
 - **25 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 4 plugins (debugging, backend, frontend, multi-platform)

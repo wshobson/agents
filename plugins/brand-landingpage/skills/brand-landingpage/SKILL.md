@@ -1,21 +1,13 @@
 ---
 name: brand-landingpage
 description: >
-  Brand-first landing page designer — interviews the user to discover brand identity
-  (adjectives, colors, typography, shape language), then generates and iterates on a
-  polished landing page via Stitch with deployment-ready HTML output. Preferred
-  over frontend-design for standalone landing/marketing pages where the user hasn't
-  established visual direction yet.
-
-  TRIGGER when: user asks to "create/design/build a landing page", "make a homepage
-  for my project/product/service", "build a marketing page", or wants to promote an
-  app/side project. Especially when they haven't defined brand colors, fonts, or
-  visual style — the guided brand interview is the core value.
-
-  DO NOT TRIGGER when: user has a specific design mockup to implement, wants a
-  dashboard or app UI, needs component-level frontend work (buttons, forms, navbars),
-  is building a multi-page application, or is restyling an existing page with known
-  design tokens. Use frontend-design for those cases.
+  Brand-first landing page designer — runs a brand-identity interview (colors,
+  typography, shape language), then generates and iterates on a polished landing
+  page via Stitch with deployment-ready HTML. Use when the user asks to create,
+  design, or build a landing page, homepage, or marketing page and has no
+  established visual direction. Skip when they have a design mockup, need a
+  dashboard or app UI, are working at component level, building a multi-page
+  app, or restyling with known design tokens — use frontend-design instead.
 ---
 
 # Brand Landing Page Designer

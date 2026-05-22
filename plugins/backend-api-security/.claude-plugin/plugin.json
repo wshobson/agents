@@ -1,6 +1,6 @@
 {
   "name": "backend-api-security",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "API security hardening, authentication implementation, authorization patterns, rate limiting, and input validation",
   "author": {
     "name": "Seth Hobson",

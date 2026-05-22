@@ -12,6 +12,7 @@ Thumbs.db
 
 # Compiled Python files
 *.pyc
+__pycache__/
 
 # Compiled C++ files
 *.out
@@ -24,5 +25,23 @@ node_modules
 .claude
 .worktrees/
 
-# Gemini CLI generated commands
+# Generated harness artifacts (all gitignored — regenerate via `make generate HARNESS=<x>`)
+# Source-of-truth lives under plugins/. See docs/harnesses.md.
+
+# Codex CLI
+.codex/
+AGENTS.md
+
+# Cursor
+.cursor/
+.cursor-plugin/
+
+# OpenCode
+.opencode/
+opencode.json
+
+# Gemini CLI (legacy paths kept for compatibility)
 commands/**/*.toml
+/commands/
+/agents/
+/skills/
