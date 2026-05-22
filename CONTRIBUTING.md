@@ -2,59 +2,71 @@
 
 Thanks for your interest in contributing. This marketplace ships to five agentic
 harnesses (Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI) from a single
-Markdown source. The guidance below points at the canonical references.
+Markdown source.
 
-## Where to start
+## Start here
 
-- **[docs/architecture.md](docs/architecture.md)** — design principles and overall
-  layout of the marketplace.
-- **[docs/authoring.md](docs/authoring.md)** — portable-content style guide for
-  agents, skills, and commands. Read this before adding new content.
-- **[docs/harnesses.md](docs/harnesses.md)** — per-harness capability matrix and what
-  each adapter does with your source.
-- **[docs/plugin-eval.md](docs/plugin-eval.md)** — the evaluation framework. Run
-  `uv run plugin-eval score path/to/your-skill` before submitting.
-
-## Plugin authoring conventions
-
-See [CLAUDE.md](CLAUDE.md) for the canonical plugin-format reference (frontmatter
-shapes, directory layout, `marketplace.json` entries, model tiers).
+- **[AGENTS.md](AGENTS.md)** — canonical context (table of contents)
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — top-level architectural map
+- **[docs/authoring.md](docs/authoring.md)** — portable-content style guide
+  (read this before adding new components)
+- **[docs/harnesses.md](docs/harnesses.md)** — per-harness capability matrix
+- **[docs/plugin-eval.md](docs/plugin-eval.md)** — quality evaluation framework
 
 ## Adding a plugin
 
 1. Create `plugins/<name>/` with `.claude-plugin/plugin.json`.
 2. Add agents in `agents/`, commands in `commands/`, skills in `skills/`.
 3. Update `.claude-plugin/marketplace.json` with your entry.
-4. Follow naming conventions: lowercase, hyphen-separated. Do not use `__` in plugin
-   names (it's the adapter namespace separator).
+4. Naming: lowercase, hyphen-separated. Never use `__` (the adapter namespace separator).
 5. Run `make validate` and `make garden` to surface any issues before submitting.
 
-## Quality checks
+Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
 
-- `make validate STRICT=1` — structural validation across all harness outputs
-- `make garden STRICT=1` — drift / dead-link / stale-artifact detection
-- `make test` — full pytest suite (plugin-eval + tools/tests/)
-- `make smoke-test` — invokes whichever harness CLIs are on your PATH (OpenCode, Gemini,
-  Codex, Claude Code) against the generated artifacts. Each per-CLI test skips
-  gracefully when its binary is missing. CI installs OpenCode + Gemini + Codex and
-  turns those skips into hard gates.
+## Quality gates
 
-The CI pipeline runs all four (`validate`, `garden`, `test`, `smoke-test`) on every PR.
+Every PR runs these on CI (`.github/workflows/`); run them locally before pushing:
 
-## Cross-harness compatibility
+```bash
+make validate STRICT=1     # structural validation across all harness outputs
+make garden STRICT=1       # drift, dead-link, stale-artifact detection
+make test                  # full pytest suite (plugin-eval + tools/tests/)
+make smoke-test            # real-CLI subprocess tests (OpenCode, Gemini, Codex, Claude)
+```
 
-Your content ships to five harnesses; some have stricter conventions than Claude Code:
+Code-quality checks (also in CI):
 
-- **Codex** hard-truncates skill bodies at 8 KB — keep `SKILL.md` short and push detail
+```bash
+cd plugins/plugin-eval
+uv run ruff check ../../tools/ src/plugin_eval/
+uv run ruff format --check ../../tools/ src/plugin_eval/
+uv run ty check ../../tools/ src/plugin_eval/
+```
+
+## Cross-harness portability checklist
+
+Your content ships to five harnesses — some have stricter conventions than Claude Code:
+
+- **Codex** hard-truncates skill bodies at 8 KB. Keep `SKILL.md` short; push detail
   into `references/details.md`.
-- **OpenCode** requires lowercase tool names — don't write `` `Read` `` inline, write
-  *"open the file"* or `` `read` ``.
-- **Cursor** doesn't honor `tools:` allowlists on agents.
-- All harnesses use ≤150-line context files — don't bloat `CLAUDE.md` / `AGENTS.md`.
+- **OpenCode** requires lowercase tool names. Don't write `` `Read` `` inline — write
+  *"open the file"* or use the lowercase form.
+- **Cursor** doesn't honor per-agent `tools:` allowlists — use it as a hint only.
+- All harnesses use ≤150-line context files. Don't bloat `AGENTS.md` / `CLAUDE.md`.
 
-See [docs/authoring.md](docs/authoring.md) for the full guide and the lint dimensions
-that catch each issue.
+`plugin-eval`'s `harness_portability` dimension catches most of these mechanically;
+read [`docs/authoring.md`](docs/authoring.md) for the full guide.
 
-## Reporting bugs / requesting features
+## Workflow
 
-Open an issue at <https://github.com/wshobson/agents/issues>.
+1. Open an issue first (template-driven). Use the appropriate issue template.
+2. Fork the repo, branch from `main`.
+3. Make changes; run quality gates.
+4. Open a PR referencing the issue.
+5. CI must pass; reviewers approve; squash merge.
+
+## Reporting
+
+- **Bugs / features / new components**: use the GitHub issue templates.
+- **Code of Conduct violations**: see [`.github/CODE_OF_CONDUCT.md`](.github/CODE_OF_CONDUCT.md).
+- **Discussions**: <https://github.com/wshobson/agents/discussions>.

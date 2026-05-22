@@ -3,10 +3,26 @@ blank_issues_enabled: false
 contact_links:
   - name: GitHub Discussions
     url: https://github.com/wshobson/agents/discussions
-    about: For questions, brainstorming, and general discussions about subagents
-  - name: Community Guidelines
+    about: >-
+      Questions, brainstorming, and general discussion about plugins,
+      agents, skills, and the multi-harness adapter framework.
+  - name: AGENTS.md (canonical context)
+    url: https://github.com/wshobson/agents/blob/main/AGENTS.md
+    about: >-
+      Start here — table of contents for the whole repo, read natively by
+      Codex / Cursor / OpenCode and imported by Claude Code / Gemini CLI.
+  - name: Authoring guide (cross-harness style guide)
+    url: https://github.com/wshobson/agents/blob/main/docs/authoring.md
+    about: >-
+      Read before adding new plugins or components — covers portability
+      across Claude Code, Codex CLI, Cursor, OpenCode, and Gemini CLI.
+  - name: Per-harness setup
+    url: https://github.com/wshobson/agents/blob/main/docs/harnesses.md
+    about: >-
+      Capability matrix and setup guides for each supported harness.
+  - name: Contributing guide
+    url: https://github.com/wshobson/agents/blob/main/CONTRIBUTING.md
+    about: How to contribute — branching, PRs, tests, quality gates.
+  - name: Community guidelines (Code of Conduct)
     url: https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md
-    about: Read our Code of Conduct and community standards
-  - name: Contributing Guide
-    url: https://github.com/wshobson/agents/blob/main/.github/CONTRIBUTING.md
-    about: Learn how to contribute effectively to this project
+    about: Community standards for all interactions.

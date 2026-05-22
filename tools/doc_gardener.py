@@ -62,7 +62,9 @@ class Finding:
             rel = self.path.relative_to(WORKTREE)
         except ValueError:
             rel = self.path
-        return f"[{self.severity:7}] {self.kind:24} {rel}: {self.message}\n           Fix: {self.fix}"
+        return (
+            f"[{self.severity:7}] {self.kind:24} {rel}: {self.message}\n           Fix: {self.fix}"
+        )
 
 
 @dataclass
@@ -123,10 +125,10 @@ def check_stale_artifacts(report: Report) -> None:
                 pairs.append((real_skill_src, skill_md))
                 continue
             if leaf.endswith("__command"):
-                src = PLUGINS_DIR / plugin / "commands" / f"{leaf[:-len('__command')]}.md"
+                src = PLUGINS_DIR / plugin / "commands" / f"{leaf[: -len('__command')]}.md"
             elif leaf.endswith("__cmd"):
                 # Second-order collision suffix
-                src = PLUGINS_DIR / plugin / "commands" / f"{leaf[:-len('__cmd')]}.md"
+                src = PLUGINS_DIR / plugin / "commands" / f"{leaf[: -len('__cmd')]}.md"
             else:
                 src = PLUGINS_DIR / plugin / "commands" / f"{leaf}.md"
             if src.is_file():
@@ -224,7 +226,15 @@ def check_oversized_context_files(report: Report) -> None:
 def check_dead_links(report: Report) -> None:
     """Find markdown links from docs/ and top-level guides that point at missing files."""
     targets = [DOCS_DIR] if DOCS_DIR.is_dir() else []
-    for top_file in ("README.md", "CLAUDE.md", "AGENTS.md", "GEMINI.md", "CODEX.md", "CURSOR.md", "OPENCODE.md"):
+    for top_file in (
+        "README.md",
+        "CLAUDE.md",
+        "AGENTS.md",
+        "GEMINI.md",
+        "CODEX.md",
+        "CURSOR.md",
+        "OPENCODE.md",
+    ):
         p = WORKTREE / top_file
         if p.is_file():
             targets.append(p)
@@ -232,10 +242,7 @@ def check_dead_links(report: Report) -> None:
     link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+)\)")
 
     for target in targets:
-        if target.is_dir():
-            files = list(target.rglob("*.md"))
-        else:
-            files = [target]
+        files = list(target.rglob("*.md")) if target.is_dir() else [target]
         for md in files:
             try:
                 content = md.read_text()
@@ -373,6 +380,7 @@ def main() -> int:
     # Print a per-kind summary up front so triage is one scroll.
     if not args.quiet:
         from collections import Counter
+
         kind_counts = Counter((f.severity, f.kind) for f in report.findings)
         if kind_counts:
             print("Summary:")

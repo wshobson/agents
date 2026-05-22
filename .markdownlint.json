@@ -1,0 +1,16 @@
+{
+  "default": true,
+  "MD013": false,
+  "MD024": { "siblings_only": true },
+  "MD025": false,
+  "MD026": { "punctuation": ".,;:" },
+  "MD033": false,
+  "MD034": false,
+  "MD036": false,
+  "MD040": false,
+  "MD041": false,
+  "MD045": false,
+  "MD046": false,
+  "MD051": false,
+  "MD060": false
+}

@@ -6,14 +6,14 @@ in the adapter, behavior lives in the source.
 """
 
 from tools.adapters.base import (
+    AgentSource,
+    CommandSource,
     HarnessAdapter,
     PluginSource,
-    AgentSource,
     SkillSource,
-    CommandSource,
-    parse_frontmatter,
-    h1_from_body,
     context_paragraph,
+    h1_from_body,
+    parse_frontmatter,
     token_estimate,
 )
 from tools.adapters.capabilities import CAPABILITIES, Capability

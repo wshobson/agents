@@ -24,7 +24,6 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from tools.adapters.base import (  # noqa: E402
-    PLUGINS_DIR,
     WORKTREE,
     list_plugins,
     load_plugin,

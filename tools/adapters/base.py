@@ -51,7 +51,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
         return fields, content
 
     block = content[3:end].strip()
-    body = content[end + 4:].lstrip("\n")
+    body = content[end + 4 :].lstrip("\n")
 
     current_key = None
     in_list = False
@@ -91,7 +91,11 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
             else:
                 fields[current_key] = val
                 in_list = False
-        elif in_block_scalar and current_key and (line.startswith("  ") or line.startswith("\t") or line == ""):
+        elif (
+            in_block_scalar
+            and current_key
+            and (line.startswith("  ") or line.startswith("\t") or line == "")
+        ):
             text = line.strip()
             if text:
                 existing = fields.get(current_key) or ""
@@ -396,7 +400,8 @@ class HarnessAdapter(ABC):
             self.output_root = output_root
 
     @property
-    def capabilities(self) -> dict:
+    def capabilities(self):
+        """Return this harness's Capability dataclass (see capabilities.py)."""
         from tools.adapters.capabilities import CAPABILITIES
 
         return CAPABILITIES[self.harness_id]

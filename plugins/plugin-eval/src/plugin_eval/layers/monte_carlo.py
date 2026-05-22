@@ -53,12 +53,13 @@ class MonteCarloConfig:
 async def run_simulation(skill_content: str, prompt: str, auth: str) -> SimResult:
     """Run a single simulation via Agent SDK. Returns SimResult. On error, errored=True."""
     try:
+        import time
+
         from claude_agent_sdk import (  # type: ignore[import-untyped]
             ClaudeAgentOptions,
             ResultMessage,
             query,
         )
-        import time
 
         full_prompt = (
             f"You are evaluating a skill. Apply the skill if appropriate.\n\n"

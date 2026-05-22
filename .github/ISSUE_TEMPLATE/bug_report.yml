@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-description: Report a bug or issue with an existing subagent
+description: Report a bug in a plugin, agent, skill, command, or harness adapter
 title: "[BUG] "
 labels: ["bug"]
 body:
@@ -20,27 +20,58 @@ body:
       label: Preliminary Checks
       description: Please confirm you have completed these steps
       options:
-        - label: I have read the [Code of Conduct](https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md)
+        - label: >-
+            I have read the [Code of
+            Conduct](https://github.com/wshobson/agents/blob/main/.github/CODE_OF_CONDUCT.md)
           required: true
         - label: >-
             I have searched existing issues to ensure this is not a duplicate
           required: true
         - label: This report contains only technical information about a bug
+          required: true
+
+  - type: dropdown
+    id: harness
+    attributes:
+      label: Harness
+      description: Which harness exhibits the bug? Pick "Multiple" if cross-cutting.
+      options:
+        - Claude Code
+        - OpenAI Codex CLI
+        - Cursor
+        - OpenCode
+        - Gemini CLI
+        - Multiple harnesses
+        - Adapter framework / tooling (not a specific harness)
+    validations:
+      required: true
 
   - type: input
-    id: subagent
+    id: harness-version
     attributes:
-      label: Affected Subagent
-      description: Which subagent is experiencing the issue?
-      placeholder: e.g., python-pro, frontend-developer, etc.
+      label: Harness version
+      description: Output of `<cli> --version` (e.g., `claude --version`, `opencode --version`).
+      placeholder: e.g., Claude Code 2.1.148, OpenCode 1.15.7
+    validations:
+      required: false
+
+  - type: input
+    id: affected-component
+    attributes:
+      label: Affected plugin / agent / skill / command
+      description: >-
+        Which marketplace component is broken? Use the source path
+        (`plugins/<name>/skills/<n>/SKILL.md`) or the namespaced name
+        (`backend-development__backend-architect`).
+      placeholder: e.g., python-development, plugins/agent-teams/skills/parallel-debugging
     validations:
       required: true
 
   - type: textarea
     id: bug-description
     attributes:
-      label: Bug Description
-      description: A clear and concise description of what the bug is
+      label: Bug description
+      description: A clear and concise description of what the bug is.
       placeholder: Describe the unexpected behavior...
     validations:
       required: true
@@ -48,28 +79,36 @@ body:
   - type: textarea
     id: reproduction-steps
     attributes:
-      label: Steps to Reproduce
-      description: Steps to reproduce the behavior
+      label: Steps to reproduce
+      description: Reproduction recipe — include the exact commands you ran.
       placeholder: |
-        1. Use subagent for...
-        2. Provide input...
-        3. Observe output...
-        4. See error...
+        1. `/plugin install python-development` (or equivalent for your harness)
+        2. Trigger the skill / invoke the agent...
+        3. Observe...
     validations:
       required: true
 
   - type: textarea
     id: expected-behavior
     attributes:
-      label: Expected Behavior
-      description: What you expected to happen
-      placeholder: The subagent should have...
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: What actually happened. Paste any error output verbatim.
     validations:
       required: true
 
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional Context
-      description: Any other context, screenshots, or examples
+      label: Additional context
+      description: >-
+        Any other context, screenshots, logs, output from `make validate` /
+        `make garden`, or environment details.
       placeholder: Add any other context about the problem here...

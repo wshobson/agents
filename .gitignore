@@ -30,7 +30,9 @@ node_modules
 
 # Codex CLI
 .codex/
-AGENTS.md
+# AGENTS.md is committed as the canonical context file (per OpenAI harness engineering).
+# Codex/Cursor/OpenCode read it directly; Claude Code reads it via @AGENTS.md import
+# in CLAUDE.md; Gemini CLI reads it via .gemini/settings.json `context.fileName`.
 
 # Cursor
 .cursor/

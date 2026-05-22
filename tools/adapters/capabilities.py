@@ -18,25 +18,25 @@ class Capability:
     display_name: str
 
     # Core component support
-    skills_native: bool          # Reads SKILL.md as a first-class skill
-    agents_native: bool          # Has a first-class subagent concept
-    commands_native: bool        # Has a slash-command concept
-    plugin_marketplace: bool     # Has a marketplace.json-style registry
+    skills_native: bool  # Reads SKILL.md as a first-class skill
+    agents_native: bool  # Has a first-class subagent concept
+    commands_native: bool  # Has a slash-command concept
+    plugin_marketplace: bool  # Has a marketplace.json-style registry
 
     # Capability-level flags
-    parallel_agents: bool        # Can run subagents in parallel
+    parallel_agents: bool  # Can run subagents in parallel
     tool_allowlist_per_agent: bool  # Honors per-agent tool restrictions
-    todowrite: bool              # Has a TodoWrite-equivalent tool
-    task_spawn: bool             # Has a Task/Agent spawn tool
-    mcp_servers: bool            # Supports MCP server bundling
-    hooks: bool                  # Supports lifecycle hooks
+    todowrite: bool  # Has a TodoWrite-equivalent tool
+    task_spawn: bool  # Has a Task/Agent spawn tool
+    mcp_servers: bool  # Supports MCP server bundling
+    hooks: bool  # Supports lifecycle hooks
 
     # Format / convention
     context_file_name: str | None
     context_file_max_lines: int  # Authoring cap (CI enforces)
-    skill_body_max_bytes: int    # Hard truncation cap (0 = no cap)
-    tool_name_case: str          # 'CamelCase', 'lowercase', or 'none'
-    bare_model_aliases: bool     # True if `opus`/`sonnet`/`haiku` accepted bare
+    skill_body_max_bytes: int  # Hard truncation cap (0 = no cap)
+    tool_name_case: str  # 'CamelCase', 'lowercase', or 'none'
+    bare_model_aliases: bool  # True if `opus`/`sonnet`/`haiku` accepted bare
 
     # Free-form notes for docs/harnesses.md
     notes: str
@@ -132,8 +132,8 @@ CAPABILITIES: dict[str, Capability] = {
     "gemini": Capability(
         harness_id="gemini",
         display_name="Gemini CLI",
-        skills_native=True,   # Dec 2025
-        agents_native=True,   # April 2026
+        skills_native=True,  # Dec 2025
+        agents_native=True,  # April 2026
         commands_native=True,
         plugin_marketplace=False,  # direct GitHub URL install only
         parallel_agents=True,  # April 2026

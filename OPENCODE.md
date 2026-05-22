@@ -36,7 +36,7 @@ target project). Skills work automatically because OpenCode honors `.claude/skil
 | Tool name case | `Read`, `Bash`, `Grep` (CamelCase) | `read`, `bash`, `grep` (lowercase, strict) |
 | Per-agent tool allowlist | `tools: Read, Grep` | `permission:` block (allow/ask/deny per key) |
 | Model alias | `opus`/`sonnet`/`haiku` | `anthropic/claude-opus-4-7` (full provider path) |
-| Agent mode | implicit | required: `mode: primary|subagent|all` |
+| Agent mode | implicit | required: `mode:` one of `primary` / `subagent` / `all` |
 | `TodoWrite` | yes | yes |
 | `Task`/`Agent` spawn | yes | yes (as `task`) |
 

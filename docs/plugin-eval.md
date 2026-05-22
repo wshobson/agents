@@ -84,6 +84,7 @@ uv run plugin-eval score path/to/skill --threshold 70
 ```
 
 **Options:**
+
 | Option | Default | Description |
 |--------|---------|-------------|
 | `--depth` | `standard` | `quick`, `standard`, `deep`, `thorough` |

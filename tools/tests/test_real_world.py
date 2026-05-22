@@ -84,7 +84,10 @@ class TestMarketplaceConsistency:
             pj_version = json.loads(pj_path.read_text()).get("version", "")
             if mp_version != pj_version:
                 mismatches.append(f"{name}: marketplace={mp_version} vs plugin.json={pj_version}")
-        assert not mismatches, "Version drift between marketplace.json and per-plugin plugin.json:\n  " + "\n  ".join(mismatches)
+        assert not mismatches, (
+            "Version drift between marketplace.json and per-plugin plugin.json:\n  "
+            + "\n  ".join(mismatches)
+        )
 
 
 # ── Plugin source integrity ─────────────────────────────────────────────────
@@ -203,8 +206,8 @@ class TestProgressiveDisclosureIntegrity:
             body = skill_md.read_text()
             if not any(marker in body for marker in nav_markers):
                 missing.append(f"{plugin_name}/{skill_md.relative_to(PLUGINS_DIR)}")
-        assert not missing, (
-            "Refactored skills missing navigation-tier section:\n  " + "\n  ".join(missing)
+        assert not missing, "Refactored skills missing navigation-tier section:\n  " + "\n  ".join(
+            missing
         )
 
     def test_no_refactored_skill_is_stub_only(self):

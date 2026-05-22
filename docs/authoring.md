@@ -87,6 +87,7 @@ from every command. If your plugin has a skill **and** a command sharing the sam
 
 To prevent silent overwrite, the adapter detects this collision and namespaces the
 command-derived skill with a `__command` suffix:
+
 - `plugins/<p>/skills/review/SKILL.md` → `.codex/skills/<plugin>__review/SKILL.md`
 - `plugins/<p>/commands/review.md` → `.codex/skills/<plugin>__review__command/SKILL.md`
 

@@ -1,0 +1,160 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Read-only lint workflow — no writes back to the repo, no deployments.
+permissions:
+  contents: read
+
+jobs:
+  python-lint:
+    name: Python (ruff + ty)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/plugin-eval
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync plugin-eval dev dependencies
+        run: uv sync --all-extras
+
+      - name: ruff check (lint)
+        # Scope: adapter framework + plugin-eval. yt-design-extractor.py is legacy
+        # and out of scope for the multi-harness work; not gated.
+        run: |
+          uv run ruff check \
+            ../../tools/adapters/ \
+            ../../tools/generate.py \
+            ../../tools/validate_generated.py \
+            ../../tools/doc_gardener.py \
+            ../../tools/tests/ \
+            src/plugin_eval/
+
+      - name: ruff format --check
+        run: |
+          uv run ruff format --check \
+            ../../tools/adapters/ \
+            ../../tools/generate.py \
+            ../../tools/validate_generated.py \
+            ../../tools/doc_gardener.py \
+            ../../tools/tests/ \
+            src/plugin_eval/
+
+      - name: ty type-check
+        run: |
+          uv run ty check \
+            ../../tools/adapters/ \
+            ../../tools/generate.py \
+            ../../tools/validate_generated.py \
+            ../../tools/doc_gardener.py \
+            ../../tools/tests/ \
+            src/plugin_eval/
+
+  markdown-lint:
+    name: Markdown (markdownlint-cli2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: markdownlint
+        # Lints top-level guides (README, AGENTS, ARCHITECTURE, CLAUDE, per-harness
+        # setup, CONTRIBUTING) and our authored docs/. Per-plugin READMEs are owned
+        # by their plugin authors and not lint-gated here — they should be authored
+        # to spec, but lint enforcement happens at the plugin-author layer, not at
+        # the framework PR layer.
+        # Config in .markdownlint.json keeps the ruleset narrow and pragmatic.
+        uses: DavidAnson/markdownlint-cli2-action@v18
+        with:
+          globs: |
+            *.md
+            docs/*.md
+          config: .markdownlint.json
+
+  json-lint:
+    name: JSON / TOML / YAML syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate every JSON file
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          failed=0
+          for f in **/*.json; do
+            # Skip generated trees and node_modules
+            case "$f" in
+              .codex/*|.cursor/*|.cursor-plugin/*|.opencode/*|node_modules/*|skills/*|agents/*|commands/*) continue ;;
+            esac
+            if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
+              echo "::error file=$f::invalid JSON"
+              failed=1
+            fi
+          done
+          exit $failed
+
+      - name: Validate every TOML file
+        run: |
+          set -e
+          shopt -s globstar nullglob
+          failed=0
+          for f in **/*.toml; do
+            case "$f" in
+              .codex/*|.cursor/*|.cursor-plugin/*|.opencode/*|node_modules/*|commands/*) continue ;;
+            esac
+            if ! python3 -c "import tomllib, sys; tomllib.loads(open(sys.argv[1]).read())" "$f" 2>/dev/null; then
+              echo "::error file=$f::invalid TOML"
+              failed=1
+            fi
+          done
+          exit $failed
+
+      - name: Validate every YAML file
+        run: |
+          pip install pyyaml --quiet
+          set -e
+          shopt -s globstar nullglob
+          failed=0
+          for f in **/*.yml **/*.yaml; do
+            case "$f" in
+              .codex/*|.cursor/*|.cursor-plugin/*|.opencode/*|node_modules/*) continue ;;
+            esac
+            # Use safe_load_all to handle multi-document YAML (e.g. Kubernetes manifests
+            # with `---` document separators — valid YAML, but safe_load only reads the
+            # first doc and would mis-flag the file as invalid).
+            if ! python3 -c "import yaml, sys; list(yaml.safe_load_all(open(sys.argv[1]).read()))" "$f" 2>/dev/null; then
+              echo "::error file=$f::invalid YAML"
+              failed=1
+            fi
+          done
+          exit $failed

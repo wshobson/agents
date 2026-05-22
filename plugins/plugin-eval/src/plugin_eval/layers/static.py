@@ -456,7 +456,12 @@ class StaticAnalyzer:
 
         # Specificity bonus: multiple concrete contexts listed (0.20)
         # Count comma-separated or "or"-separated use cases in description
-        use_cases = len(re.findall(r",\s*(?:or\s+)?(?:when|for|during|implementing|building|creating|debugging|testing|deploying|configuring|setting up)", desc_lower))
+        use_cases = len(
+            re.findall(
+                r",\s*(?:or\s+)?(?:when|for|during|implementing|building|creating|debugging|testing|deploying|configuring|setting up)",
+                desc_lower,
+            )
+        )
         if use_cases >= 3:
             score += 0.20
         elif use_cases >= 1:
