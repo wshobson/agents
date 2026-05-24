@@ -57,14 +57,23 @@ def _build_tools_list(agent_tools: list[str]) -> list[str]:
 
 
 class CopilotAdapter(HarnessAdapter):
+    """Emit Copilot agent profiles (.agent.md) and skills (SKILL.md) to a local output tree.
+
+    Agents go to ``agents/<plugin>__<agent>.agent.md``, skills to
+    ``skills/<plugin>__<skill>/SKILL.md``.  Tool names are rewritten from
+    Claude Code CamelCase to Copilot lowercase.  Model aliases are mapped to
+    the GPT-5 family (same as Codex CLI).
+    """
     harness_id = "copilot"
 
     def __init__(self, output_root: Path | None = None, repo_root: Path | None = None) -> None:
-        super().__init__(output_root=WORKTREE / ".github")
+        """Set output root (defaults to WORKTREE / .github) and optional repo root."""
+        super().__init__(output_root=output_root or WORKTREE / ".github")
         if repo_root is not None:
             self.repo_root = repo_root
 
     def emit_plugin(self, plugin: PluginSource) -> EmitResult:
+        """Emit agent profiles and skill files for one plugin."""
         result = EmitResult()
         for agent in plugin.agents:
             self._emit_agent(plugin, agent, result)
@@ -73,9 +82,15 @@ class CopilotAdapter(HarnessAdapter):
         return result
 
     def emit_global(self, plugins: list[PluginSource]) -> EmitResult:
+        """No cross-plugin artifacts needed for Copilot."""
         return EmitResult()
 
     def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
+        """Emit one .agent.md profile into the agents/ directory.
+
+        Builds frontmatter (name, description, model, tools), rewrites tool
+        names, and resolves model aliases before writing.
+        """
         agent_id = f"{plugin.name}__{agent.name}"
         rel = Path("agents") / f"{agent_id}.agent.md"
 
@@ -99,6 +114,11 @@ class CopilotAdapter(HarnessAdapter):
         result.written.append(self.write(rel, content))
 
     def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
+        """Emit one SKILL.md into the skills/ directory.
+
+        Preserves the source skill's frontmatter (name, description, trigger
+        phrases) and body verbatim, wrapped in YAML frontmatter.
+        """
         skill_id = f"{plugin.name}__{skill.name}"
         skill_dir = Path("skills") / skill_id
 
