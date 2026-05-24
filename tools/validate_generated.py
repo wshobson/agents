@@ -65,12 +65,6 @@ class Report:
 
 
 def validate_codex(report: Report) -> None:
-    """Validate Codex harness artifacts under WORKTREE/.codex.
-
-    Performs multiple checks: TOML parsing for agent manifests, SKILL.md
-    frontmatter and size caps, and existence/size checks for AGENTS.md.
-    Findings are appended to the provided Report.
-    """
     root = WORKTREE / ".codex"
     if not root.is_dir():
         return  # nothing generated yet
@@ -185,11 +179,6 @@ _ALLOWED_MDC_KEYS = {"description", "globs", "alwaysApply"}
 
 
 def validate_cursor(report: Report) -> None:
-    """Validate Cursor harness outputs under WORKTREE/.cursor-plugin and .cursor.
-
-    Checks include marketplace.json structure, per-plugin manifest parsing, and
-    validation of MDC rule frontmatter keys.
-    """
     root = WORKTREE / ".cursor-plugin"
     if not root.is_dir():
         return
@@ -344,11 +333,6 @@ def _extract_permission_block(raw: str) -> dict | None:
 
 
 def validate_opencode(report: Report) -> None:
-    """Validate OpenCode harness artifacts under WORKTREE/.opencode.
-
-    Validates opencode.json, per-agent markdown frontmatter, modes, and permission
-    blocks (using `_extract_permission_block` to preserve nested structure).
-    """
     root = WORKTREE / ".opencode"
     if not root.is_dir():
         return
@@ -493,12 +477,6 @@ def validate_opencode(report: Report) -> None:
 
 
 def validate_gemini(report: Report) -> None:
-    """Validate Gemini CLI artifacts under WORKTREE/commands, agents, and skills.
-
-    Ensures TOML command files parse with required keys, native SKILL.md
-    frontmatter matches directory names, and agent model identifiers look like
-    Gemini model IDs. Findings are appended to Report.
-    """
     skills_dir = WORKTREE / "skills"
     agents_dir = WORKTREE / "agents"
     commands_dir = WORKTREE / "commands"
@@ -649,12 +627,6 @@ _VALIDATORS = {
 
 
 def main() -> int:
-    """CLI entrypoint for validate_generated.
-
-    Parses args, runs per-harness validators, and prints a sorted report. Returns
-    exit code 0 on success (no errors), non-zero on validation errors or when
-    --strict is provided and warnings exist.
-    """
     parser = argparse.ArgumentParser(description="Validate generated harness artifacts.")
     parser.add_argument(
         "--harness", choices=supported_harnesses(), help="Only validate one harness."
