@@ -561,9 +561,14 @@ def validate_gemini(report: Report) -> None:
 
 
 def validate_copilot(report: Report) -> None:
+    """Validate Copilot agent markdown files under WORKTREE/.copilot/agents.
+
+    Checks include presence of frontmatter and required fields (`name`,
+    `description`). Committed artifact validation (e.g. `.github/agents`) is
+    intentionally out-of-scope for this tooling-only change and should be
+    handled in a separate governance + CI PR.
+    """
     # Validate only the canonical local-generation cache (WORKTREE/.copilot/agents).
-    # Committed artifact validation (e.g., .github/agents) is out of scope for this
-    # tooling-only change and should be handled in a separate governance + CI PR.
     candidate_roots = [WORKTREE / ".copilot"]
     found_any = False
     for root in candidate_roots:
