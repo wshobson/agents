@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from tools.adapters.base import (
@@ -13,9 +14,6 @@ from tools.adapters.base import (
     SkillSource,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
-
-
-import re
 
 
 def _needs_yaml_quoting(value: str) -> bool:
