@@ -158,11 +158,7 @@ class TestPluginSourceIntegrity:
                 if name:
                     by_name.setdefault(name, []).append(f"{plugin_name}/agents/{agent.name}.md")
 
-        duplicates = {
-            name: paths
-            for name, paths in sorted(by_name.items())
-            if len(paths) > 1
-        }
+        duplicates = {name: paths for name, paths in sorted(by_name.items()) if len(paths) > 1}
         assert not duplicates, "Duplicate agent frontmatter names:\n  " + "\n  ".join(
             f"{name}: {', '.join(paths)}" for name, paths in duplicates.items()
         )
