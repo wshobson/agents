@@ -27,7 +27,10 @@ node_modules
 
 # Generated harness artifacts (all gitignored — regenerate via `make generate HARNESS=<x>`)
 # Source-of-truth lives under plugins/. See docs/harnesses.md.
-# Copilot writes to .github/agents/ and .github/skills/ (committed, not gitignored).
+
+# Copilot
+.github/agents/
+.github/skills/
 
 # Codex CLI
 .codex/
