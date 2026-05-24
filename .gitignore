@@ -51,3 +51,5 @@ commands/**/*.toml
 /commands/
 /agents/
 /skills/
+# .agent.md files belong in .github/agents/ – guard Gemini output from pollution
+agents/*.agent.md
