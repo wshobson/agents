@@ -19,7 +19,12 @@ from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 def _needs_yaml_quoting(value: str) -> bool:
     """Check if a string value needs YAML quoting to prevent type coercion."""
     return bool(re.match(r"^\d+(\.\d+)?$", value)) or value.lower() in (
-        "true", "false", "yes", "no", "null", "~",
+        "true",
+        "false",
+        "yes",
+        "no",
+        "null",
+        "~",
     )
 
 
@@ -64,6 +69,7 @@ class CopilotAdapter(HarnessAdapter):
     Claude Code CamelCase to Copilot lowercase.  Model aliases are mapped to
     the GPT-5 family (same as Codex CLI).
     """
+
     harness_id = "copilot"
 
     def __init__(self, output_root: Path | None = None, repo_root: Path | None = None) -> None:
