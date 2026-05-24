@@ -168,9 +168,9 @@ ifndef HARNESS
 	@exit 1
 endif
 ifdef PLUGIN
-	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --plugin '$(PLUGIN)' $(if $(COMMIT),--output-root '$(CURDIR)/.github',)
+	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --plugin '$(PLUGIN)'
 else
-	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --all $(if $(COMMIT),--output-root '$(CURDIR)/.github',)
+	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --all
 endif
 
 generate-all:

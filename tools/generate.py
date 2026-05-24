@@ -34,10 +34,7 @@ _HARNESS_TARGETS = {
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
     "gemini": ["commands", "agents", "skills"],
-    # Copilot may emit locally to .copilot (default) or committed artifacts under
-    # .github/agents when running in ``--commit`` mode. Both locations are valid
-    # candidates for validation/cleanup.
-    "copilot": [".copilot", ".github/agents"],
+    "copilot": [".copilot"],
 }
 
 
@@ -216,22 +213,9 @@ def main() -> int:
         default=str(WORKTREE),
         help="Root directory for output (default: repo root).",
     )
-    parser.add_argument(
-        "--commit",
-        action="store_true",
-        help="When set for copilot, write committed artifacts under .github/agents instead of local .copilot (default: local .copilot).",
-    )
     args = parser.parse_args()
 
     output_root = Path(args.output_root).resolve()
-
-    # For Copilot, default to a local-generation cache (.copilot) unless the user
-    # explicitly requests commit-mode (or passes an explicit --output-root).
-    if args.harness == "copilot" and args.output_root == str(WORKTREE):
-        if args.commit:
-            output_root = WORKTREE / ".github"
-        else:
-            output_root = WORKTREE / ".copilot"
 
     # Containment guard before any destructive operation.
     if args.clean or args.prune:
