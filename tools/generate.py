@@ -34,7 +34,7 @@ _HARNESS_TARGETS = {
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
     "gemini": ["commands", "agents", "skills"],
-    # copilot writes to .github/agents/ (committed, not cleaned)
+    "copilot": [".github/agents", ".github/skills"],
 }
 
 
@@ -161,9 +161,12 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
             if d.is_dir():
                 candidates.extend(p for p in d.rglob("*") if p.is_file())
     elif harness_id == "copilot":
-        d = output_root / ".copilot"
-        if d.is_dir():
-            candidates.extend(p for p in d.rglob("*") if p.is_file())
+        for sub_path in (
+            output_root / ".github" / "agents",
+            output_root / ".github" / "skills",
+        ):
+            if sub_path.is_dir():
+                candidates.extend(p for p in sub_path.rglob("*") if p.is_file())
     elif harness_id == "cursor":
         # Both .cursor-plugin/plugins/*.json and .cursor/rules/*.mdc are adapter outputs.
         for sub_path in (
