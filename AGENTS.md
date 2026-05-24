@@ -46,7 +46,7 @@ make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
 make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/
 make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
 make generate HARNESS=copilot    # emits .github/agents/, .github/skills/
-make generate-all                # all five (claude-code is source, not generated)
+make generate-all                # all six (claude-code is source, not generated)
 ```
 
 Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored — never hand-edit them.
