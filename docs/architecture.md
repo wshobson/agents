@@ -73,7 +73,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 - Modular knowledge packages
 - Progressive disclosure architecture
-- Domain-specific expertise across 40 plugins
+- Domain-specific expertise across 41 plugins
 - Spec-compliant (Anthropic Agent Skills Specification)
 
 ## Repository Structure
