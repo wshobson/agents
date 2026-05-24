@@ -210,7 +210,7 @@ Use the Task tool with the local code-reviewer agent:
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "tdd-workflows-code-reviewer"
   description: "Verify tests fail correctly for $FEATURE"
   prompt: |
     Verify that all tests for: $FEATURE are failing correctly.
@@ -356,7 +356,7 @@ Use the Task tool with the local code-reviewer agent:
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "tdd-workflows-code-reviewer"
   description: "Refactor implementation for $FEATURE"
   prompt: |
     Refactor the implementation for: $FEATURE while keeping all tests green.
@@ -538,7 +538,7 @@ Use the Task tool with the local code-reviewer agent:
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "tdd-workflows-code-reviewer"
   description: "Final TDD review of $FEATURE"
   prompt: |
     Perform comprehensive final review of: $FEATURE

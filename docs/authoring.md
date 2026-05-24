@@ -72,6 +72,15 @@ Link from `SKILL.md` like ``See `references/details.md` for the full algorithm.`
 link target as backticked path text so the gardener's dead-link checker doesn't false-positive
 on illustrative examples.
 
+### Use globally unique agent names
+
+Claude Code keys installed agents by the YAML frontmatter `name`, so two plugins that
+ship the same agent name can silently overwrite each other when installed together. Use
+plugin-scoped names for common roles (`backend-development-test-automator`, not
+`test-automator`) and update any bundled command `subagent_type` references to match.
+CI runs `tools/check_agent_name_collisions.py --fail-on-duplicates` to keep the source
+tree collision-free.
+
 ### Don't collide with Codex built-in agent names
 
 `default`, `worker`, and `explorer` are built-in Codex subagent roles. If you name a custom

@@ -146,6 +146,27 @@ class TestPluginSourceIntegrity:
             f"Agent names colliding with Codex built-ins (default/worker/explorer): {collisions}"
         )
 
+    def test_agent_frontmatter_names_are_unique_across_plugins(self):
+        """Claude Code keys subagents by frontmatter `name`; cross-plugin duplicates collide."""
+        by_name: dict[str, list[str]] = {}
+        for plugin_name in list_plugins():
+            plugin = load_plugin(plugin_name)
+            if not plugin:
+                continue
+            for agent in plugin.agents:
+                name = (agent.frontmatter.get("name") or "").strip()
+                if name:
+                    by_name.setdefault(name, []).append(f"{plugin_name}/agents/{agent.name}.md")
+
+        duplicates = {
+            name: paths
+            for name, paths in sorted(by_name.items())
+            if len(paths) > 1
+        }
+        assert not duplicates, "Duplicate agent frontmatter names:\n  " + "\n  ".join(
+            f"{name}: {', '.join(paths)}" for name, paths in duplicates.items()
+        )
+
 
 # ── Progressive-disclosure refactor integrity ────────────────────────────────
 

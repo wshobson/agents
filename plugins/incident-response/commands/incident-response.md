@@ -188,7 +188,7 @@ Read `.incident-response/02-observability.md` and `.incident-response/03-mitigat
 
 ```
 Task:
-  subagent_type: "debugger"
+  subagent_type: "incident-response-debugger"
   description: "Deep debugging for: $INCIDENT"
   prompt: |
     Conduct deep debugging for this incident using observability data.
@@ -350,7 +350,7 @@ Read `.incident-response/06-fix.md`.
 
 ```
 Task:
-  subagent_type: "devops-troubleshooter"
+  subagent_type: "incident-response-devops-troubleshooter"
   description: "Deploy and validate fix for: $INCIDENT"
   prompt: |
     Execute emergency deployment for incident fix.

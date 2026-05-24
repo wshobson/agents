@@ -72,7 +72,7 @@ Use the Task tool to launch the performance engineer:
 
 ```
 Task:
-  subagent_type: "performance-engineer"
+  subagent_type: "application-performance-performance-engineer"
   description: "Profile application performance for $TARGET"
   prompt: |
     Profile application performance comprehensively for: $TARGET.
@@ -104,7 +104,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "observability-engineer"
+  subagent_type: "application-performance-observability-engineer"
   description: "Assess observability setup for $TARGET"
   prompt: |
     Assess current observability setup for: $TARGET.
@@ -138,7 +138,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "performance-engineer"
+  subagent_type: "application-performance-performance-engineer"
   description: "Analyze user experience metrics for $TARGET"
   prompt: |
     Analyze user experience metrics for: $TARGET.
@@ -275,7 +275,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "performance-engineer"
+  subagent_type: "application-performance-performance-engineer"
   description: "Optimize distributed system performance for $TARGET"
   prompt: |
     Optimize distributed system performance for: $TARGET.
@@ -335,7 +335,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "frontend-developer"
+  subagent_type: "application-performance-frontend-developer"
   description: "Optimize frontend performance for $TARGET"
   prompt: |
     Optimize frontend performance for: $TARGET targeting Core Web Vitals improvements.
@@ -469,7 +469,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "performance-engineer"
+  subagent_type: "application-performance-performance-engineer"
   description: "Conduct comprehensive load testing for $TARGET"
   prompt: |
     Conduct comprehensive load testing for: $TARGET using k6/Gatling/Artillery.
@@ -565,7 +565,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "observability-engineer"
+  subagent_type: "application-performance-observability-engineer"
   description: "Implement production performance monitoring for $TARGET"
   prompt: |
     Implement production performance monitoring for: $TARGET.
@@ -603,7 +603,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "performance-engineer"
+  subagent_type: "application-performance-performance-engineer"
   description: "Establish continuous optimization process for $TARGET"
   prompt: |
     Establish continuous optimization process for: $TARGET.

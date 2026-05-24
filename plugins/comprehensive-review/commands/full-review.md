@@ -111,7 +111,7 @@ Run both agents in parallel using multiple Task tool calls in a single response.
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "comprehensive-review-code-reviewer"
   description: "Code quality analysis for $ARGUMENTS"
   prompt: |
     Perform a comprehensive code quality review.
@@ -141,7 +141,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "architect-review"
+  subagent_type: "comprehensive-review-architect-review"
   description: "Architecture review for $ARGUMENTS"
   prompt: |
     Review the architectural design and structural integrity of the target code.
@@ -198,7 +198,7 @@ Run both agents in parallel using multiple Task tool calls in a single response.
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "comprehensive-review-security-auditor"
   description: "Security audit for $ARGUMENTS"
   prompt: |
     Execute a comprehensive security audit on the target code.

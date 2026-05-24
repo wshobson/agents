@@ -348,7 +348,7 @@ Launch three agents in parallel using multiple Task tool calls in a single respo
 
 ```
 Task:
-  subagent_type: "test-automator"
+  subagent_type: "full-stack-orchestration-test-automator"
   description: "Create test suite for $FEATURE"
   prompt: |
     Create a comprehensive test suite for this full-stack feature.
@@ -379,7 +379,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "full-stack-orchestration-security-auditor"
   description: "Security review of $FEATURE"
   prompt: |
     Perform a security review of this full-stack feature implementation.
@@ -407,7 +407,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "performance-engineer"
+  subagent_type: "full-stack-orchestration-performance-engineer"
   description: "Performance review of $FEATURE"
   prompt: |
     Review the performance of this full-stack feature implementation.
@@ -489,7 +489,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "deployment-engineer"
+  subagent_type: "full-stack-orchestration-deployment-engineer"
   description: "Create deployment config for $FEATURE"
   prompt: |
     Create the deployment and infrastructure configuration for this full-stack feature.

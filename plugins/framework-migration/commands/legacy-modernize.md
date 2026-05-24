@@ -67,11 +67,11 @@ Extract the target description from `$ARGUMENTS` (everything before the flags). 
 
 ### Step 1: Comprehensive Legacy System Analysis
 
-Use the Task tool with subagent_type="legacy-modernizer":
+Use the Task tool with subagent_type="framework-migration-legacy-modernizer":
 
 ```
 Task:
-  subagent_type: "legacy-modernizer"
+  subagent_type: "framework-migration-legacy-modernizer"
   description: "Analyze legacy codebase for modernization readiness"
   prompt: |
     Analyze the legacy codebase at $TARGET. Document a technical debt inventory including:
@@ -96,11 +96,11 @@ Update `state.json`: set `current_step` to 2, add `"01-legacy-assessment.md"` to
 
 Read `.legacy-modernize/01-legacy-assessment.md` to load assessment context.
 
-Use the Task tool with subagent_type="architect-review":
+Use the Task tool with subagent_type="framework-migration-architect-review":
 
 ```
 Task:
-  subagent_type: "architect-review"
+  subagent_type: "framework-migration-architect-review"
   description: "Create dependency graph and integration point catalog"
   prompt: |
     Based on the legacy assessment report below, create a comprehensive dependency graph.
@@ -548,11 +548,11 @@ Do NOT proceed to Phase 5 until the user approves.
 
 Read `.legacy-modernize/01-legacy-assessment.md`, `.legacy-modernize/08-first-wave.md`, and `.legacy-modernize/11-rollout.md`.
 
-Use the Task tool with subagent_type="legacy-modernizer":
+Use the Task tool with subagent_type="framework-migration-legacy-modernizer":
 
 ```
 Task:
-  subagent_type: "legacy-modernizer"
+  subagent_type: "framework-migration-legacy-modernizer"
   description: "Plan safe decommissioning of replaced legacy components"
   prompt: |
     Plan safe decommissioning of replaced legacy components.
