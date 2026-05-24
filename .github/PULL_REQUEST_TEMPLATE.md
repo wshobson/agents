@@ -44,6 +44,10 @@ Thanks for the PR. A few quick orientation pointers:
 - [ ] `make smoke-test` (real-CLI subprocess tests)
 - [ ] Ran ruff + ty in `plugins/plugin-eval/`
 - [ ] Spot-checked behavior in a real harness (which?): ____________
+- [ ] If this touches Copilot artifacts:
+  - [ ] Generation was run with `--commit` or `COMMIT=1`.
+  - [ ] `.github/agents/` changes included and validated.
+  - [ ] CODEOWNERS reviewers assigned and COPILOT_POLICY.md compliance confirmed.
 
 ## Cross-harness portability notes
 

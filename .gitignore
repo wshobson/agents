@@ -42,8 +42,13 @@ node_modules
 .opencode/
 opencode.json
 
+# Copilot / GitHub
+.copilot/
+
 # Gemini CLI (legacy paths kept for compatibility)
 commands/**/*.toml
 /commands/
 /agents/
 /skills/
+docs/superpowers/
+research/

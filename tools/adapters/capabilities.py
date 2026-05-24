@@ -149,6 +149,26 @@ CAPABILITIES: dict[str, Capability] = {
         bare_model_aliases=False,
         notes="Auto-discovers skills/ and agents/ at extension root. TOML commands at commands/. Use @{path} for file injection in prompts. GEMINI.md is injected every prompt — keep tight.",
     ),
+    "copilot": Capability(
+        harness_id="copilot",
+        display_name="GitHub Copilot",
+        skills_native=True,
+        agents_native=True,
+        commands_native=False,
+        plugin_marketplace=False,
+        parallel_agents=True,
+        tool_allowlist_per_agent=True,
+        todowrite=False,
+        task_spawn=True,
+        mcp_servers=True,
+        hooks=False,
+        context_file_name=None,
+        context_file_max_lines=_CONTEXT_LINES_CAP,
+        skill_body_max_bytes=_NO_CAP,
+        tool_name_case="lowercase",
+        bare_model_aliases=False,
+        notes="Discovers .claude/skills/ + .github/skills/ natively. Agents at .github/agents/ (project) or ~/.copilot/agents/ (user). Cloud Agent reads .github/agents/ from default branch.",
+    ),
 }
 
 
@@ -208,6 +228,20 @@ TOOL_NAME_MAPS: dict[str, dict[str, str]] = {
         "Agent": "@agent",
         "Task": "@agent",
     },
+    "copilot": {
+        "Read": "read",
+        "Edit": "edit",
+        "Write": "write",
+        "Bash": "bash",
+        "Grep": "grep",
+        "Glob": "glob",
+        "WebFetch": "webfetch",
+        "WebSearch": "websearch",
+        "TodoWrite": "todo",
+        "Agent": "task",
+        "Task": "task",
+        "Skill": "skill",
+    },
 }
 
 
@@ -242,6 +276,12 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
         "sonnet": "gemini-2.5-pro",
         "haiku": "gemini-2.5-flash",
         "inherit": "gemini-2.5-pro",
+    },
+    "copilot": {
+        "opus": "claude-opus-4",
+        "sonnet": "claude-sonnet-4",
+        "haiku": "claude-haiku-4-5-20251001",
+        "inherit": "claude-sonnet-4",
     },
 }
 

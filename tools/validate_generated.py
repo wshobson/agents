@@ -502,11 +502,65 @@ def validate_gemini(report: Report) -> None:
 # ── Driver ───────────────────────────────────────────────────────────────────
 
 
+
+
+def validate_copilot(report: Report) -> None:
+    # Support both the local-generation cache (WORKTREE/.copilot/agents)
+    # and the committed, reviewable location (WORKTREE/.github/agents).
+    candidate_roots = [WORKTREE / ".copilot", WORKTREE / ".github"]
+    found_any = False
+    for root in candidate_roots:
+        agents_dir = root / "agents"
+        if not agents_dir.is_dir():
+            continue
+        found_any = True
+        for agent_md in agents_dir.glob("*.agent.md"):
+            content = agent_md.read_text(encoding="utf-8")
+            fm, _ = parse_frontmatter(content)
+            if not fm:
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=agent_md,
+                    message="missing or invalid frontmatter",
+                    remediation="Regenerate via `make generate HARNESS=copilot`.",
+                )
+                continue
+            if "name" not in fm:
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=agent_md,
+                    message="missing required `name` field in frontmatter",
+                    remediation="Each Copilot agent needs a name.",
+                )
+            if "description" not in fm:
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=agent_md,
+                    message="missing required `description` field in frontmatter",
+                    remediation="Copilot requires `description` in agent frontmatter. Check the source agent file.",
+                )
+            elif not fm["description"].strip():
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=agent_md,
+                    message="`description` field is empty",
+                    remediation="Copilot requires a non-empty `description` in agent frontmatter.",
+                )
+    # If no candidate directories existed, behave like previous implementation — no-op.
+    if not found_any:
+        return
+
+
 _VALIDATORS = {
     "codex": validate_codex,
     "cursor": validate_cursor,
     "opencode": validate_opencode,
     "gemini": validate_gemini,
+    "copilot": validate_copilot,
 }
 
 
