@@ -45,6 +45,13 @@ _TRIGGER_PATTERN = re.compile(
 # Codex built-in agent names that custom agents must NOT collide with.
 _CODEX_BUILTIN_AGENTS = {"default", "worker", "explorer"}
 
+# Multi-agent command workflows use phase placeholders such as
+# `{phase3.agent-name.output}`. The task key must match the producing
+# `subagent_type`, otherwise later phases cannot read earlier outputs.
+_PHASE_HEADING_PATTERN = re.compile(r"^##\s+Phase\s+(\d+)\b")
+_TASK_SUBAGENT_PATTERN = re.compile(r'^\s*subagent_type:\s*"?([^"\n]+?)"?\s*$')
+_PHASE_OUTPUT_REF_PATTERN = re.compile(r"\{phase(?P<phase>\d+)\.(?P<task>[^{}.]+)\.output\}")
+
 
 # ── Marketplace consistency ─────────────────────────────────────────────────
 
@@ -162,6 +169,36 @@ class TestPluginSourceIntegrity:
         assert not duplicates, "Duplicate agent frontmatter names:\n  " + "\n  ".join(
             f"{name}: {', '.join(paths)}" for name, paths in duplicates.items()
         )
+
+    def test_command_phase_output_references_match_task_keys(self):
+        """Phase output placeholders must match a task key from the referenced phase."""
+        problems = []
+        for command_path in sorted(PLUGINS_DIR.glob("*/commands/*.md")):
+            current_phase: int | None = None
+            phase_tasks: dict[int, set[str]] = {}
+            references: list[tuple[int, int, str]] = []
+
+            for lineno, line in enumerate(command_path.read_text().splitlines(), 1):
+                if match := _PHASE_HEADING_PATTERN.match(line):
+                    current_phase = int(match.group(1))
+                    phase_tasks.setdefault(current_phase, set())
+
+                if (match := _TASK_SUBAGENT_PATTERN.match(line)) and current_phase is not None:
+                    phase_tasks.setdefault(current_phase, set()).add(match.group(1).strip())
+
+                for match in _PHASE_OUTPUT_REF_PATTERN.finditer(line):
+                    references.append((lineno, int(match.group("phase")), match.group("task")))
+
+            for lineno, phase, task_key in references:
+                available = phase_tasks.get(phase, set())
+                if task_key not in available:
+                    problems.append(
+                        f"{command_path.relative_to(PLUGINS_DIR)}:{lineno}: "
+                        f"phase{phase}.{task_key}.output has no matching subagent_type "
+                        f"in Phase {phase} (available: {sorted(available)})"
+                    )
+
+        assert not problems, "Broken command phase output references:\n  " + "\n  ".join(problems)
 
 
 # ── Progressive-disclosure refactor integrity ────────────────────────────────

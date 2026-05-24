@@ -209,7 +209,7 @@ Provide Kubernetes manifests and Helm charts for entire ML platform.
 subagent_type: observability-monitoring-observability-engineer
 prompt: |
   Implement comprehensive monitoring for ML system deployed in: {phase3.mlops-engineer.output}
-  Using Kubernetes infrastructure: {phase3.kubernetes-architect.output}
+  Using Kubernetes infrastructure: {phase3.kubernetes-operations-kubernetes-architect.output}
 
 Monitoring framework:
 
