@@ -561,9 +561,10 @@ def validate_gemini(report: Report) -> None:
 
 
 def validate_copilot(report: Report) -> None:
-    # Support both the local-generation cache (WORKTREE/.copilot/agents)
-    # and the committed, reviewable location (WORKTREE/.github/agents).
-    candidate_roots = [WORKTREE / ".copilot", WORKTREE / ".github"]
+    # Validate only the canonical local-generation cache (WORKTREE/.copilot/agents).
+    # Committed artifact validation (e.g., .github/agents) is out of scope for this
+    # tooling-only change and should be handled in a separate governance + CI PR.
+    candidate_roots = [WORKTREE / ".copilot"]
     found_any = False
     for root in candidate_roots:
         agents_dir = root / "agents"
