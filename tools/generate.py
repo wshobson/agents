@@ -2,7 +2,7 @@
 """Unified CLI for emitting per-harness artifacts from claude-agents plugin sources.
 
 Usage:
-    python tools/generate.py --harness <codex|cursor|opencode|gemini> [--plugin <name>] [--all] [--clean] [--prune] [--strict]
+    python tools/generate.py --harness <codex|copilot|cursor|opencode|gemini> [--plugin <name>] [--all] [--clean] [--prune] [--strict]
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ _HARNESS_TARGETS = {
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
     "gemini": ["commands", "agents", "skills"],
-    "copilot": [".copilot"],
+    # copilot writes to .github/agents/ (committed, not cleaned)
 }
 
 
@@ -188,7 +188,7 @@ def main() -> int:
         "--harness",
         required=True,
         choices=supported_harnesses(),
-        help="Target harness (codex, cursor, opencode, or gemini).",
+        help="Target harness (codex, copilot, cursor, opencode, or gemini).",
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--plugin", help="Generate only for the named plugin.")

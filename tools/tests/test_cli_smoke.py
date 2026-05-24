@@ -133,7 +133,9 @@ class TestCodexSmoke:
             # emits "stdin is not a terminal" in stderr and returns 1. Treat that as
             # an environment limitation and skip the test rather than failing the PR.
             if proc.stderr and "stdin is not a terminal" in proc.stderr:
-                pytest.skip(f"codex doctor not runnable in non-interactive env: {proc.stderr.strip()}")
+                pytest.skip(
+                    f"codex doctor not runnable in non-interactive env: {proc.stderr.strip()}"
+                )
             # Otherwise, a real failure — surface it.
             assert proc.returncode == 0, (
                 f"codex doctor failed (rc={proc.returncode}):\n"
