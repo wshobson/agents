@@ -1,8 +1,8 @@
 # claude-agents — multi-harness agentic plugin marketplace
 
-Production-ready agentic-workflow building blocks: **82 plugins** (81 local + 1 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI from a single Markdown source.
+Production-ready agentic-workflow building blocks: **82 plugins** (81 local + 1 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
 
-This file is the canonical context file. Codex / Cursor / OpenCode read it directly. Claude Code reads it via `@AGENTS.md` import in `CLAUDE.md`. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`).
+This file is the canonical context file. Codex / Cursor / OpenCode / Copilot read it directly. Claude Code reads it via `@AGENTS.md` import in `CLAUDE.md`. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`).
 
 > **Read this file like a table of contents.** Detail lives in `docs/`. Authoring conventions live in `docs/authoring.md`. Per-harness setup and capability deltas live in [`docs/harnesses.md`](docs/harnesses.md). Gemini-specific setup is in `GEMINI.md` (also auto-loaded by Gemini CLI). This file should never grow beyond ~150 lines (per OpenAI's [harness-engineering](https://openai.com/index/harness-engineering/) practice).
 
@@ -45,7 +45,8 @@ make generate HARNESS=codex      # emits .codex/skills, .codex/agents
 make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
 make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/
 make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
-make generate-all                # all four
+make generate HARNESS=copilot    # emits .github/agents/, .github/skills/
+make generate-all                # all five (claude-code is source, not generated)
 ```
 
 Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored — never hand-edit them.
@@ -59,6 +60,7 @@ Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored 
 - **OpenCode**: reads `.claude/skills/` directly (no re-emit)
 - **Cursor**: reads `.claude/skills/` directly (no re-emit)
 - **Gemini CLI**: native skills at `skills/<plugin>__<skill>/SKILL.md`
+- **Copilot**: agent profiles to `.github/agents/`, skills to `.github/skills/`
 
 ## Subagents (cross-harness)
 
@@ -68,6 +70,7 @@ Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored 
 - **OpenCode**: `.opencode/agents/<plugin>__<agent>.md` with `mode: subagent` + `permission:` block (locked agents — those with source `tools: []` — get deny-everything except base `skill`/`task`)
 - **Gemini**: `agents/<plugin>__<agent>.md` (April 2026 subagent spec)
 - **Cursor**: reads `.claude/agents/` directly
+- **Copilot**: `.github/agents/<plugin>__<agent>.agent.md` (Markdown profiles, model mapped to GPT-5 family)
 
 ## Why this file is short
 

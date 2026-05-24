@@ -9,6 +9,7 @@ import pytest
 from tools.validate_generated import (
     Report,
     validate_codex,
+    validate_copilot,
     validate_cursor,
     validate_gemini,
     validate_opencode,
@@ -143,6 +144,21 @@ class TestCursorValidator:
             "agentRequested" in f.message or "invalid MDC keys" in f.message
             for f in report.errors()
         )
+
+
+# ── Copilot ──────────────────────────────────────────────────────────────────
+
+
+class TestCopilotValidator:
+    def test_non_string_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        agents = tmp_path / ".github" / "agents"
+        agents.mkdir(parents=True)
+        (agents / "bad.agent.md").write_text("---\nname: bad\ndescription: [oops]\n---\n\nBody.\n")
+
+        report = Report()
+        validate_copilot(report)
+        assert any("description" in f.message and "string" in f.message for f in report.errors())
 
 
 # ── OpenCode ─────────────────────────────────────────────────────────────────

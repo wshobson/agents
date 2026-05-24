@@ -4,7 +4,7 @@ Top-level architectural map for the claude-agents marketplace. Detail lives in [
 
 ## Invariants
 
-1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. Never hand-edit generated files.
+1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `.github/agents/`, `.github/skills/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. Never hand-edit generated files.
 
 2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. `CLAUDE.md` imports it via `@AGENTS.md`. Gemini CLI reads it via `.gemini/settings.json` `context.fileName`. Codex / Cursor / OpenCode read `AGENTS.md` natively.
 
@@ -36,7 +36,7 @@ claude-agents/
 │   ├── adapters/                   # Per-harness adapter framework
 │   │   ├── base.py                 # Parser, HarnessAdapter ABC, helpers
 │   │   ├── capabilities.py         # Capability matrix; consumed by every adapter
-│   │   ├── codex.py / cursor.py / opencode.py / gemini.py
+│   │   ├── codex.py / cursor.py / opencode.py / gemini.py / copilot.py
 │   │   └── cursor_rules/           # Hand-curated .mdc rules
 │   ├── generate.py                 # Unified CLI: `make generate HARNESS=<x>`
 │   ├── validate_generated.py       # Structural validation
@@ -83,7 +83,7 @@ Each plugin is a directory under `plugins/`. Three component types, all auto-dis
 - **Skills** (`skills/<n>/SKILL.md`) — modular knowledge with progressive disclosure. Frontmatter: `name`, `description` (must include a recognized trigger phrase like "Use when …"). Supporting material in `references/`, templates in `assets/`.
 - **Commands** (`commands/<n>.md`) — slash commands. Frontmatter: `description`, `argument-hint`.
 
-Full conventions in [`docs/authoring.md`](docs/authoring.md). Authoring for portability across all five harnesses is the main concern; the adapter framework handles per-harness mechanics.
+Full conventions in [`docs/authoring.md`](docs/authoring.md). Authoring for portability across all six harnesses is the main concern; the adapter framework handles per-harness mechanics.
 
 ## Model tiers
 

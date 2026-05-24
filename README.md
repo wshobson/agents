@@ -2,12 +2,12 @@
 
 > Production-ready agentic workflow building blocks: **82 plugins**, **191 agents**,
 > **155 skills**, **102 commands** — built for Claude Code and consumed natively by
-> OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI from a single Markdown source.
+> OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
 
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md) [![Copilot](https://img.shields.io/badge/Copilot-supported-lightgrey)](docs/harnesses.md)
 
 > [!NOTE]
-> One source-of-truth (`plugins/`), five harnesses. Each harness gets idiomatic,
+> One source-of-truth (`plugins/`), six harnesses. Each harness gets idiomatic,
 > harness-native artifacts — not lowest-common-denominator translations.
 > See [docs/harnesses.md](docs/harnesses.md) for the capability matrix.
 
@@ -24,12 +24,12 @@ Pick your harness:
 
 [→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
 
-### Codex CLI · Cursor · OpenCode · Gemini CLI
+### Codex CLI · Cursor · OpenCode · Gemini CLI · Copilot
 
 ```bash
 gh repo clone wshobson/agents ~/agents
 cd ~/agents
-make generate HARNESS=<codex|cursor|opencode|gemini>
+make generate HARNESS=<codex|cursor|opencode|gemini|copilot>
 ```
 
 Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). Gemini-specific setup: [GEMINI.md](GEMINI.md) (also auto-loaded by Gemini CLI).
@@ -76,16 +76,17 @@ Three-tier model strategy:
 This marketplace ships to five agentic harnesses from one Markdown source. Each adapter
 emits harness-native artifacts (not lowest-common-denominator translations):
 
-| Harness | Generates | Notes |
+| Harness | Output path | Notes |
 |---|---|---|
-| **Claude Code** | (source-of-truth) | Native `marketplace.json` + `plugins/` |
-| **Codex CLI** | `.codex/skills/`, `.codex/agents/`, `AGENTS.md` | 8 KB skill cap respected; commands → skills |
+| **Claude Code** | `plugins/` (source-of-truth) | Native `marketplace.json` + per-plugin `plugin.json` |
+| **Codex CLI** | `.codex/skills/`, `.codex/agents/` | 8 KB skill cap respected; commands → skills |
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/` | `permission:` block from `tools:` allowlist |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
+| **Copilot** | `.github/agents/`, `.github/skills/` | Markdown agent profiles + SKILL.md skills; model maps to GPT-5 family |
 
 ```bash
-make generate-all                        # all four
+make generate-all                        # all six (claude-code is source, not generated)
 make validate                            # structural checks
 make garden                              # drift / dead-link / cap detection
 ```

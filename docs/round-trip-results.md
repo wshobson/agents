@@ -105,7 +105,7 @@ The `tools/validate_generated.py` script approximates round-trip without install
 harnesses:
 
 ```bash
-make validate                 # all four harnesses
+make validate                 # all six harnesses
 make validate HARNESS=codex   # one only
 ```
 

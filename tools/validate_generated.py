@@ -502,18 +502,13 @@ def validate_gemini(report: Report) -> None:
 # ── Driver ───────────────────────────────────────────────────────────────────
 
 
-
-
 def validate_copilot(report: Report) -> None:
-    """Validate Copilot agent markdown files under WORKTREE/.copilot/agents.
+    """Validate Copilot agent markdown files under WORKTREE/.github/agents.
 
-    Checks include presence of frontmatter and required fields (`name`,
-    `description`). Committed artifact validation (e.g. `.github/agents`) is
-    intentionally out-of-scope for this tooling-only change and should be
-    handled in a separate governance + CI PR.
+    Checks that every .agent.md file has valid frontmatter with required fields.
     """
-    # Validate only the canonical local-generation cache (WORKTREE/.copilot/agents).
-    candidate_roots = [WORKTREE / ".copilot"]
+    # Validate repository-level agents (WORKTREE/.github/agents).
+    candidate_roots = [WORKTREE / ".github"]
     found_any = False
     for root in candidate_roots:
         agents_dir = root / "agents"
@@ -540,6 +535,22 @@ def validate_copilot(report: Report) -> None:
                     message="missing required `name` field in frontmatter",
                     remediation="Each Copilot agent needs a name.",
                 )
+            elif not isinstance(fm["name"], str):
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=agent_md,
+                    message="`name` field must be a string",
+                    remediation="Set `name` to a plain string in the agent frontmatter.",
+                )
+            elif not fm["name"].strip():
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=agent_md,
+                    message="`name` field must not be empty",
+                    remediation="Provide a non-empty `name` in the agent frontmatter.",
+                )
             if "description" not in fm:
                 report.add(
                     severity="error",
@@ -547,6 +558,14 @@ def validate_copilot(report: Report) -> None:
                     path=agent_md,
                     message="missing required `description` field in frontmatter",
                     remediation="Copilot requires `description` in agent frontmatter. Check the source agent file.",
+                )
+            elif not isinstance(fm.get("description"), str):
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=agent_md,
+                    message="`description` field must be a string",
+                    remediation="Set `description` to a plain string; Copilot agent frontmatter does not accept other types.",
                 )
             elif not fm["description"].strip():
                 report.add(
