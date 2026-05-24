@@ -51,7 +51,8 @@ jobs:
       - name: Validate marketplace entries resolve to plugin dirs
         run: |
           python3 - <<'PY'
-          import json, os, sys
+          import json, os, posixpath, sys
+          from urllib.parse import urlparse
           with open('.claude-plugin/marketplace.json') as f:
               mp = json.load(f)
           errors = []
@@ -63,9 +64,37 @@ jobs:
                       errors.append(f"{p['name']}: source {src} does not exist")
                   elif not os.path.isfile(os.path.join(path, '.claude-plugin', 'plugin.json')):
                       errors.append(f"{p['name']}: missing .claude-plugin/plugin.json in {src}")
-              elif isinstance(src, dict) and src.get('source') == 'git-subdir':
-                  if not src.get('url'):
+              elif isinstance(src, dict):
+                  if src.get('source') != 'git-subdir':
+                      errors.append(f"{p['name']}: unsupported source object {src.get('source')!r}")
+                      continue
+
+                  extra_keys = set(src) - {'source', 'url', 'path'}
+                  if extra_keys:
+                      errors.append(f"{p['name']}: git-subdir entry has unsupported keys: {sorted(extra_keys)}")
+
+                  url = src.get('url')
+                  path = src.get('path')
+
+                  if not url:
                       errors.append(f"{p['name']}: git-subdir entry missing url")
+                  else:
+                      parsed = urlparse(url)
+                      if parsed.scheme != 'https' or parsed.netloc != 'github.com' or not parsed.path.endswith('.git'):
+                          errors.append(f"{p['name']}: git-subdir url must be an https://github.com/*.git URL")
+
+                  if not path:
+                      errors.append(f"{p['name']}: git-subdir entry missing path")
+                  elif path != '.':
+                      normalized = posixpath.normpath(path)
+                      if (
+                          path.startswith('/')
+                          or '\\' in path
+                          or normalized != path
+                          or normalized == '..'
+                          or normalized.startswith('../')
+                      ):
+                          errors.append(f"{p['name']}: git-subdir path must be a normalized relative path")
           if errors:
               for e in errors:
                   print(f"::error::{e}")

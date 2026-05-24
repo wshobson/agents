@@ -1,8 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **81 focused, single-purpose plugins** organized by category, plus 1 externally-hosted plugin (`qa-orchestra`) distributed via a `git-subdir` marketplace entry — **82 plugins total**.
-
-> 💡 **Also recommended:** [Pensyve](https://github.com/major7apps/pensyve) — universal memory runtime for Claude Code. Distributed from its own marketplace (`major7apps/pensyve`) so updates ship directly from the source. Install with `/plugin marketplace add major7apps/pensyve` then `/plugin install pensyve@major7apps-pensyve`.
+Browse all **83 marketplace plugins** organized by category: 81 local plugins plus 2 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`).
 
 ## Quick Start - Essential Plugins
 
@@ -119,16 +117,18 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **frontend-mobile-development** | Frontend UI and mobile development                           | `/plugin install frontend-mobile-development` |
 | **ui-design**                   | UI/UX design for mobile (iOS, Android, React Native) and web | `/plugin install ui-design`                   |
 | **multi-platform-apps**         | Cross-platform app coordination (web/iOS/Android)            | `/plugin install multi-platform-apps`         |
+| **developer-essentials**        | Essential Git, SQL, code review, auth, debugging, and monorepo skills | `/plugin install developer-essentials`        |
 
 ### 📚 Documentation (4 plugins)
 
 | Plugin                       | Description                                                                                                                                     | Install                                    |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **documentation-standards**  | HADS semantic tagging conventions for human- and AI-friendly documentation                                                                       | `/plugin install documentation-standards`  |
 | **code-documentation**       | Documentation generation and code explanation                                                                                                   | `/plugin install code-documentation`       |
 | **documentation-generation** | OpenAPI specs, Mermaid diagrams, tutorials                                                                                                      | `/plugin install documentation-generation` |
 | **c4-architecture**          | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture`          |
 
-### 🔄 Workflows (5 plugins)
+### 🔄 Workflows (6 plugins)
 
 | Plugin                       | Description                                                                    | Install                                    |
 | ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------ |
@@ -136,6 +136,8 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **git-pr-workflows**         | Git automation and PR enhancement                                              | `/plugin install git-pr-workflows`         |
 | **full-stack-orchestration** | End-to-end feature orchestration                                               | `/plugin install full-stack-orchestration` |
 | **tdd-workflows**            | Test-driven development methodology                                            | `/plugin install tdd-workflows`            |
+| **agent-teams**              | Parallel code review, debugging, feature, and research teams                   | `/plugin install agent-teams`              |
+| **ship-mate**                | Story-file to reviewed, tested PR workflow orchestration                       | `/plugin install ship-mate`                |
 
 ### ✅ Testing (2 plugins)
 
@@ -150,6 +152,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | ------------------------------ | --------------------------------------------- | -------------------------------------------- |
 | **comprehensive-review**       | Multi-perspective code analysis               | `/plugin install comprehensive-review`       |
 | **performance-testing-review** | Performance analysis and test coverage review | `/plugin install performance-testing-review` |
+| **plugin-eval**                | Three-layer quality evaluation framework for Claude Code plugins | `/plugin install plugin-eval`                |
 
 ### 🛠️ Utilities (4 plugins)
 
@@ -168,6 +171,12 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **agent-orchestration**  | Multi-agent system optimization     | `/plugin install agent-orchestration`  |
 | **context-management**   | Context persistence and restoration | `/plugin install context-management`   |
 | **machine-learning-ops** | ML training pipelines and MLOps     | `/plugin install machine-learning-ops` |
+
+### 🧠 Memory (1 external plugin)
+
+| Plugin      | Description                                                                                  | Install                   |
+| ----------- | -------------------------------------------------------------------------------------------- | ------------------------- |
+| **pensyve** | Cross-session memory runtime with MCP-backed recall, skills, commands, agents, and hooks     | `/plugin install pensyve` |
 
 ### 📊 Data (2 plugins)
 
@@ -220,11 +229,13 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **reverse-engineering**      | Binary analysis, malware triage, firmware security (authorized) | `/plugin install reverse-engineering`      |
 | **block-no-verify**          | PreToolUse hook blocking `--no-verify` and hook-bypass flags    | `/plugin install block-no-verify`          |
 
-### 🛡️ Governance (1 plugin)
+### 🛡️ Governance (3 plugins)
 
-| Plugin           | Description                                                                                                             | Install                        |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| **protect-mcp**  | Cedar policy enforcement + Ed25519 signed receipts for every tool call; offline-verifiable audit trail via hash chaining | `/plugin install protect-mcp`  |
+| Plugin                      | Description                                                                                                             | Install                                   |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **protect-mcp**             | Cedar policy enforcement + Ed25519 signed receipts for every tool call; offline-verifiable audit trail via hash chaining | `/plugin install protect-mcp`             |
+| **signed-audit-trails**     | Cookbook-style signed audit trail patterns for Claude Code tool calls                                                   | `/plugin install signed-audit-trails`     |
+| **review-agent-governance** | Human approval governance before AI agents post reviews, comments, merges, or CI writes                                 | `/plugin install review-agent-governance` |
 
 ### 🔄 Modernization (2 plugins)
 
@@ -254,6 +265,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | Plugin                        | Description                          | Install                                     |
 | ----------------------------- | ------------------------------------ | ------------------------------------------- |
 | **business-analytics**        | KPI tracking and financial reporting | `/plugin install business-analytics`        |
+| **startup-business-analyst**  | Market sizing, financial modeling, team planning, and strategic research for startups | `/plugin install startup-business-analyst`  |
 | **hr-legal-compliance**       | HR policies and legal templates      | `/plugin install hr-legal-compliance`       |
 | **customer-sales-automation** | Support and sales automation         | `/plugin install customer-sales-automation` |
 
@@ -267,7 +279,10 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **jvm-languages**               | Java, Scala, C# with enterprise patterns | `/plugin install jvm-languages`               |
 | **web-scripting**               | PHP and Ruby for web applications        | `/plugin install web-scripting`               |
 | **functional-programming**      | Elixir with OTP and Phoenix              | `/plugin install functional-programming`      |
+| **julia-development**           | Julia scientific computing and high-performance numerical code | `/plugin install julia-development`           |
 | **arm-cortex-microcontrollers** | ARM Cortex-M firmware and drivers        | `/plugin install arm-cortex-microcontrollers` |
+| **shell-scripting**             | Production-grade Bash and POSIX shell scripting | `/plugin install shell-scripting`             |
+| **dotnet-contribution**         | C#/.NET backend development with ASP.NET Core, EF Core, and Dapper | `/plugin install dotnet-contribution`         |
 
 ### 🔗 Blockchain (1 plugin)
 
@@ -299,11 +314,12 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | ---------------------------- | ---------------------------------- | ------------------------------------------ |
 | **accessibility-compliance** | WCAG auditing and inclusive design | `/plugin install accessibility-compliance` |
 
-### 🎨 Creative (1 plugin)
+### 🎨 Creative (2 plugins)
 
 | Plugin               | Description                                                              | Install                            |
 | -------------------- | ------------------------------------------------------------------------ | ---------------------------------- |
 | **meigen-ai-design** | AI image generation with creative workflow orchestration and prompt MCPs | `/plugin install meigen-ai-design` |
+| **brand-landingpage** | Brand discovery through deployment-ready landing page HTML              | `/plugin install brand-landingpage` |
 
 ## Plugin Structure
 
@@ -339,7 +355,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 77 plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 83 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -382,7 +398,7 @@ Each installed plugin loads **only its specific agents and commands** into Claud
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 153 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 155 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles

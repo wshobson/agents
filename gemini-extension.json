@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "1.7.0",
-  "description": "Multi-harness agentic plugin marketplace — 82 plugins, 191 agents, 155 skills, 102 commands across architecture, infrastructure, languages, security, testing, ML, and full-stack development. Native to Claude Code; also consumable by Codex CLI, Cursor, OpenCode, and Gemini CLI.",
+  "version": "1.7.1",
+  "description": "Multi-harness agentic plugin marketplace — 83 plugins, 191 agents, 155 skills, 102 commands across architecture, infrastructure, languages, security, testing, ML, and full-stack development. Native to Claude Code; also consumable by Codex CLI, Cursor, OpenCode, and Gemini CLI.",
   "contextFileName": "AGENTS.md"
 }

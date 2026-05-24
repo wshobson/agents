@@ -74,6 +74,19 @@ make generate HARNESS=gemini
 make generate-all
 ```
 
+## External Pensyve integrations
+
+The Claude Code marketplace includes Pensyve as an external `git-subdir` plugin.
+For generated harnesses, use Pensyve's upstream harness-native integration:
+
+| Harness | Upstream integration |
+|---|---|
+| Claude Code | `https://github.com/major7apps/pensyve.git`, path `integrations/claude-code` |
+| Codex CLI | `integrations/codex-plugin` |
+| Cursor | `integrations/cursor` |
+| OpenCode | `integrations/opencode-plugin` |
+| Gemini CLI | `gemini extensions install https://github.com/major7apps/pensyve` |
+
 ## See also
 
 - [`authoring.md`](authoring.md) — portable-content style guide for plugin authors
