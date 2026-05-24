@@ -6,8 +6,8 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 80 focused plugins, 185 specialized agents, and 153 skills - optimized for granular installation and minimal token usage",
-    "version": "1.7.0"
+    "description": "Production-ready workflow orchestration with 83 marketplace plugins, 191 local specialized agents, and 155 local skills - optimized for granular installation and minimal token usage",
+    "version": "1.7.1"
   },
   "plugins": [
     {
@@ -1006,6 +1006,24 @@
       "homepage": "https://github.com/cskwork",
       "license": "MIT",
       "category": "security"
+    },
+    {
+      "name": "pensyve",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/major7apps/pensyve.git",
+        "path": "integrations/claude-code"
+      },
+      "description": "Universal memory runtime for Claude Code with cross-session memory, entity-aware recall, lifecycle hooks, skills, commands, and memory-curator agents",
+      "version": "1.3.0",
+      "author": {
+        "name": "Major7 Apps",
+        "email": "seth@major7apps.com",
+        "url": "https://github.com/major7apps/pensyve"
+      },
+      "homepage": "https://github.com/major7apps/pensyve",
+      "license": "Apache-2.0",
+      "category": "memory"
     },
     {
       "name": "qa-orchestra",

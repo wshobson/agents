@@ -36,31 +36,31 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **82 focused plugins** (81 local + 1 external via git-subdir) optimized for specific use cases
-- **25 clear categories** with 1-10 plugins each for easy discovery
+- **83 marketplace plugins** (81 local + 2 external via git-subdir) optimized for specific use cases
+- **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
-  - **Development**: 4 plugins (debugging, backend, frontend, multi-platform)
-  - **Security**: 4 plugins (scanning, compliance, backend-api, frontend-mobile)
+  - **Development**: 6 plugins (debugging, backend, frontend, UI, multi-platform, essentials)
+  - **Security**: 6 plugins (scanning, compliance, API, frontend/mobile, reverse engineering, hook policy)
   - **Operations**: 4 plugins (incident, diagnostics, distributed, observability)
-  - **Languages**: 7 plugins (Python, JS/TS, systems, JVM, scripting, functional, embedded)
+  - **Languages**: 10 plugins (Python, JS/TS, systems, JVM, scripting, functional, embedded, and more)
   - **Infrastructure**: 5 plugins (deployment, validation, K8s, cloud, CI/CD)
-  - And 18 more specialized categories
+  - And 21 more specialized categories
 
 ### Component Breakdown
 
-**185 Specialized Agents**
+**191 Local Specialized Agents**
 
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
 - Model-optimized with three-tier strategy (Opus, Sonnet, Haiku) for performance and cost
 
-**15 Workflow Orchestrators**
+**16 Workflow Orchestrators**
 
 - Multi-agent coordination systems
 - Complex operations like full-stack development, security hardening, ML pipelines, incident response
 - Pre-configured agent workflows
 
-**71 Development Tools**
+**102 Local Commands**
 
 - Optimized utilities including:
   - Project scaffolding (Python, TypeScript, Rust)
@@ -69,11 +69,11 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**107 Agent Skills**
+**155 Local Agent Skills**
 
 - Modular knowledge packages
 - Progressive disclosure architecture
-- Domain-specific expertise across 18 plugins
+- Domain-specific expertise across 41 plugins
 - Spec-compliant (Anthropic Agent Skills Specification)
 
 ## Repository Structure
@@ -81,7 +81,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (77 plugins)
+│   └── marketplace.json          # Marketplace catalog (83 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -124,7 +124,7 @@ claude-agents/
 │   │   │   └── c4-context.md
 │   │   └── commands/
 │   │       └── c4-architecture.md
-│   └── ... (62 more isolated plugins)
+│   └── ... (77 more isolated plugins)
 ├── docs/                          # Documentation
 │   ├── agent-skills.md           # Agent Skills guide
 │   ├── agents.md                 # Agent reference
@@ -194,7 +194,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 153 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 155 skills.
 
 ## Model Configuration Strategy
 
@@ -262,13 +262,13 @@ code-reviewer (Sonnet) validates architecture
 ### Component Coverage
 
 - **100% agent coverage** - all plugins include at least one agent
-- **100% component availability** - all 185 agents accessible across plugins
+- **100% component availability** - all 191 local agents accessible across plugins
 - **Efficient distribution** - 5.5 components per plugin average
 
 ### Discoverability
 
 - **Clear plugin names** convey purpose immediately
-- **Logical categorization** with 23 well-defined categories
+- **Logical categorization** with 26 well-defined categories
 - **Searchable documentation** with cross-references
 - **Easy to find** the right tool for the job
 
@@ -392,5 +392,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 77 plugins
+- [Plugin Reference](./plugins.md) - All 83 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows
