@@ -72,7 +72,7 @@ Use the Task tool to launch the security auditor agent:
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "security-scanning-security-auditor"
   description: "Comprehensive vulnerability scan of $TARGET"
   prompt: |
     Perform a comprehensive security assessment on: $TARGET.
@@ -196,7 +196,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "security-scanning-security-auditor"
   description: "Remediate critical vulnerabilities for $TARGET"
   prompt: |
     Coordinate immediate remediation of critical vulnerabilities (CVSS 7+) in: $TARGET.
@@ -369,7 +369,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "security-scanning-security-auditor"
   description: "Enhance authentication and authorization for $TARGET"
   prompt: |
     Implement a modern authentication system for: $TARGET.
@@ -499,7 +499,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "security-scanning-security-auditor"
   description: "Penetration testing and validation for $TARGET"
   prompt: |
     Execute comprehensive penetration testing for: $TARGET.
@@ -537,7 +537,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "security-scanning-security-auditor"
   description: "Compliance verification for $TARGET"
   prompt: |
     Verify compliance with security frameworks for: $TARGET.

@@ -187,7 +187,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "backend-architect"
+  subagent_type: "data-engineering-backend-architect"
   description: "Design feature architecture for $FEATURE with A/B testing capability"
   prompt: |
     Design the feature architecture for: $FEATURE with A/B testing capability.
@@ -310,7 +310,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "backend-architect"
+  subagent_type: "data-engineering-backend-architect"
   description: "Implement backend for $FEATURE with full instrumentation"
   prompt: |
     Implement the backend for feature: $FEATURE with full instrumentation.

@@ -176,7 +176,7 @@ Provide complete deployment configuration and automation scripts.
 </Task>
 
 <Task>
-subagent_type: kubernetes-architect
+subagent_type: kubernetes-operations-kubernetes-architect
 prompt: |
   Design Kubernetes infrastructure for ML workloads from: {phase3.mlops-engineer.output}
 
@@ -206,10 +206,10 @@ Provide Kubernetes manifests and Helm charts for entire ML platform.
 ## Phase 4: Monitoring & Continuous Improvement
 
 <Task>
-subagent_type: observability-engineer
+subagent_type: observability-monitoring-observability-engineer
 prompt: |
   Implement comprehensive monitoring for ML system deployed in: {phase3.mlops-engineer.output}
-  Using Kubernetes infrastructure: {phase3.kubernetes-architect.output}
+  Using Kubernetes infrastructure: {phase3.kubernetes-operations-kubernetes-architect.output}
 
 Monitoring framework:
 

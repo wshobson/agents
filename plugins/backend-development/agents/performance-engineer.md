@@ -1,5 +1,5 @@
 ---
-name: performance-engineer
+name: backend-development-performance-engineer
 description: Profile and optimize application performance including response times, memory usage, query efficiency, and scalability. Use for performance review during feature development.
 model: sonnet
 ---

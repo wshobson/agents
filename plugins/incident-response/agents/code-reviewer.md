@@ -1,5 +1,5 @@
 ---
-name: code-reviewer
+name: incident-response-code-reviewer
 description: Reviews code for logic flaws, type safety gaps, error handling issues, architectural concerns, and similar vulnerability patterns. Provides fix design recommendations.
 model: sonnet
 ---

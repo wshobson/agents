@@ -21,7 +21,7 @@ Parse for:
 
 ### 1. Initial Triage
 
-Use Task tool (subagent_type="debugger") for AI-powered analysis:
+Use Task tool (subagent_type="error-diagnostics-debugger") for AI-powered analysis:
 
 - Error pattern recognition
 - Stack trace analysis with probable causes
