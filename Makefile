@@ -159,7 +159,7 @@ clean:
 #   make generate-all
 #   make clean-generated HARNESS=opencode
 
-HARNESSES := codex cursor opencode gemini
+HARNESSES := codex copilot cursor opencode gemini
 
 generate:
 ifndef HARNESS
@@ -170,9 +170,9 @@ ifndef HARNESS
 	@exit 1
 endif
 ifdef PLUGIN
-	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --plugin '$(PLUGIN)'
+	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --plugin '$(PLUGIN)' $(if $(COMMIT),--output-root '$(CURDIR)/.github',)
 else
-	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --all
+	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --all $(if $(COMMIT),--output-root '$(CURDIR)/.github',)
 endif
 
 generate-all:

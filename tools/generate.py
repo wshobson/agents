@@ -34,6 +34,10 @@ _HARNESS_TARGETS = {
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
     "gemini": ["commands", "agents", "skills"],
+    # Copilot may emit locally to .copilot (default) or committed artifacts under
+    # .github/agents when running in ``--commit`` mode. Both locations are valid
+    # candidates for validation/cleanup.
+    "copilot": [".copilot", ".github/agents"],
 }
 
 
@@ -55,6 +59,10 @@ def get_adapter(harness_id: str, output_root: Path) -> HarnessAdapter:
         from tools.adapters.gemini import GeminiAdapter
 
         return GeminiAdapter(output_root=output_root)
+    if harness_id == "copilot":
+        from tools.adapters.copilot import CopilotAdapter
+
+        return CopilotAdapter(output_root=output_root)
     raise ValueError(f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}")
 
 
@@ -155,6 +163,10 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
             d = output_root / sub
             if d.is_dir():
                 candidates.extend(p for p in d.rglob("*") if p.is_file())
+    elif harness_id == "copilot":
+        d = output_root / ".copilot"
+        if d.is_dir():
+            candidates.extend(p for p in d.rglob("*") if p.is_file())
     elif harness_id == "cursor":
         # Both .cursor-plugin/plugins/*.json and .cursor/rules/*.mdc are adapter outputs.
         for sub_path in (
@@ -204,9 +216,22 @@ def main() -> int:
         default=str(WORKTREE),
         help="Root directory for output (default: repo root).",
     )
+    parser.add_argument(
+        "--commit",
+        action="store_true",
+        help="When set for copilot, write committed artifacts under .github/agents instead of local .copilot (default: local .copilot).",
+    )
     args = parser.parse_args()
 
     output_root = Path(args.output_root).resolve()
+
+    # For Copilot, default to a local-generation cache (.copilot) unless the user
+    # explicitly requests commit-mode (or passes an explicit --output-root).
+    if args.harness == "copilot" and args.output_root == str(WORKTREE):
+        if args.commit:
+            output_root = WORKTREE / ".github"
+        else:
+            output_root = WORKTREE / ".copilot"
 
     # Containment guard before any destructive operation.
     if args.clean or args.prune:
