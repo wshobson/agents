@@ -9,8 +9,10 @@ from tools.adapters.base import (
     AgentSource,
     EmitResult,
     HarnessAdapter,
+    CommandSource,
     PluginSource,
     SkillSource,
+    h1_from_body,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 
@@ -61,12 +63,13 @@ def _build_tools_list(agent_tools: list[str]) -> list[str]:
 
 
 class CopilotAdapter(HarnessAdapter):
-    """Emit Copilot agent profiles (.agent.md) and skills (SKILL.md) to repo output tree.
+    """Emit Copilot agent profiles, skills, and slash-command prompt files.
 
     Agents go to ``.copilot/agents/<plugin>__<agent>.agent.md``, skills to
-    ``.copilot/skills/<plugin>__<skill>/SKILL.md``.  Tool names are rewritten from
-    Claude Code CamelCase to Copilot lowercase.  Model aliases are mapped to
-    the GPT-5 family (same as Codex CLI).
+    ``.copilot/skills/<plugin>__<skill>/SKILL.md``, and commands to
+    ``.copilot/commands/<plugin>/<command>.md`` with a plugin ``index.md`` entry
+    point. Tool names are rewritten from Claude Code CamelCase to Copilot lowercase.
+    Model aliases are mapped to the GPT-5 family (same as Codex CLI).
 
     Run ``make install-copilot`` to symlink artifacts to ``~/.copilot/``
     for user-level discovery.
@@ -81,12 +84,15 @@ class CopilotAdapter(HarnessAdapter):
             self.repo_root = repo_root
 
     def emit_plugin(self, plugin: PluginSource) -> EmitResult:
-        """Emit agent profiles and skill files for one plugin."""
+        """Emit agent profiles, skills, and command prompt files for one plugin."""
         result = EmitResult()
         for agent in plugin.agents:
             self._emit_agent(plugin, agent, result)
         for skill in plugin.skills:
             self._emit_skill(plugin, skill, result)
+        self._emit_command_index(plugin, result)
+        for command in plugin.commands:
+            self._emit_command(plugin, command, result)
         return result
 
     def emit_global(self, plugins: list[PluginSource]) -> EmitResult:
@@ -132,3 +138,46 @@ class CopilotAdapter(HarnessAdapter):
 
         content = _copilot_frontmatter(skill.frontmatter) + "\n\n" + skill.body.rstrip() + "\n"
         result.written.append(self.write(skill_dir / "SKILL.md", content))
+
+    def _emit_command_index(self, plugin: PluginSource, result: EmitResult) -> None:
+        """Emit a plugin entrypoint command that points at the plugin's subcommands."""
+        command_dir = Path(".copilot") / "commands" / plugin.name
+        command_names = ", ".join(f"`/{plugin.name}:{cmd.name}`" for cmd in plugin.commands) or "none"
+        agent_names = ", ".join(f"`{plugin.name}__{agent.name}`" for agent in plugin.agents)
+        skill_names = ", ".join(f"`{plugin.name}__{skill.name}`" for skill in plugin.skills)
+
+        parts = [
+            (plugin.description or f"{plugin.name.replace('-', ' ').title()} plugin").rstrip(".")
+            + ".",
+            "",
+            f"This is the entry point for the `{plugin.name}` plugin.",
+        ]
+        if plugin.agents:
+            parts.extend(["", f"Agents: {agent_names}."])
+        if plugin.skills:
+            parts.extend(["", f"Skills: {skill_names}."])
+        if plugin.commands:
+            parts.extend(["", f"Commands: {command_names}."])
+        parts.extend(["", "{{args}}"])
+
+        fm: dict = {"description": plugin.description or f"{plugin.name} plugin"}
+        result.written.append(self.write(command_dir / "index.md", _copilot_frontmatter(fm) + "\n\n" + "\n".join(parts) + "\n"))
+
+    def _emit_command(self, plugin: PluginSource, command: CommandSource, result: EmitResult) -> None:
+        """Emit one slash-command prompt file for the plugin.
+
+        Ensure minimal frontmatter required by Copilot (description) is present.
+        If the source command lacks a description, synthesize one from the
+        first H1 in the body or fall back to the command name.
+        """
+        command_dir = Path(".copilot") / "commands" / plugin.name
+        body = self.strip_claude_tool_refs(command.body, tool_case="lower")
+
+        # Start from source frontmatter but ensure a non-empty description
+        fm = dict(command.frontmatter or {})
+        if not fm.get("description"):
+            title = h1_from_body(command.body) or command.name.replace("-", " ").title()
+            fm["description"] = title
+
+        content = _copilot_frontmatter(fm) + "\n\n" + body.rstrip() + "\n"
+        result.written.append(self.write(command_dir / f"{command.name}.md", content))
