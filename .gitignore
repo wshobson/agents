@@ -28,10 +28,6 @@ node_modules
 # Generated harness artifacts (all gitignored — regenerate via `make generate HARNESS=<x>`)
 # Source-of-truth lives under plugins/. See docs/harnesses.md.
 
-# Copilot
-.github/agents/
-.github/skills/
-
 # Codex CLI
 .codex/
 # AGENTS.md is committed as the canonical context file (per OpenAI harness engineering).
@@ -51,5 +47,5 @@ commands/**/*.toml
 /commands/
 /agents/
 /skills/
-# .agent.md files belong in .github/agents/ – guard Gemini output from pollution
+# Guard Gemini output from pollution (generated .agent.md files in root agents/)
 agents/*.agent.md

@@ -34,7 +34,8 @@ _HARNESS_TARGETS = {
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
     "gemini": ["commands", "agents", "skills"],
-    "copilot": [".github/agents", ".github/skills"],
+    # Copilot writes directly to ~/.copilot/ — no repo-local output to clean.
+    "copilot": [],
 }
 
 
@@ -59,7 +60,7 @@ def get_adapter(harness_id: str, output_root: Path) -> HarnessAdapter:
     if harness_id == "copilot":
         from tools.adapters.copilot import CopilotAdapter
 
-        return CopilotAdapter(output_root=output_root)
+        return CopilotAdapter(output_root=output_root or Path.home() / ".copilot")
     raise ValueError(f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}")
 
 
@@ -160,13 +161,6 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
             d = output_root / sub
             if d.is_dir():
                 candidates.extend(p for p in d.rglob("*") if p.is_file())
-    elif harness_id == "copilot":
-        for sub_path in (
-            output_root / ".github" / "agents",
-            output_root / ".github" / "skills",
-        ):
-            if sub_path.is_dir():
-                candidates.extend(p for p in sub_path.rglob("*") if p.is_file())
     elif harness_id == "cursor":
         # Both .cursor-plugin/plugins/*.json and .cursor/rules/*.mdc are adapter outputs.
         for sub_path in (
