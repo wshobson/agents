@@ -293,8 +293,10 @@ class TestCopilotRoundTrip:
 
     def test_copilot_skill_count_matches_source(self):
         n = len(list((WORKTREE / ".copilot" / "skills").glob("*/SKILL.md")))
-        assert n == _source_skill_count(), (
-            f"skill count mismatch: source={_source_skill_count()} copilot={n}"
+        expected = _source_skill_count() + _source_command_count()
+        assert n == expected, (
+            f"skill count mismatch: source_skills={_source_skill_count()} "
+            f"source_commands={_source_command_count()} expected={expected} copilot={n}"
         )
 
     def test_copilot_command_count_matches_source(self):

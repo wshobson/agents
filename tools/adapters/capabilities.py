@@ -94,7 +94,7 @@ CAPABILITIES: dict[str, Capability] = {
         display_name="GitHub Copilot",
         skills_native=True,
         agents_native=True,
-        commands_native=True,
+        commands_native=False,  # commands map to SKILL.md skills with user-invocable: true
         plugin_marketplace=False,
         parallel_agents=False,
         tool_allowlist_per_agent=True,
@@ -107,7 +107,7 @@ CAPABILITIES: dict[str, Capability] = {
         skill_body_max_bytes=_NO_CAP,
         tool_name_case="lowercase",
         bare_model_aliases=False,
-        notes="Emits Markdown agent profiles to .copilot/agents/, SKILL.md skills to .copilot/skills/, and slash-command prompt files to .copilot/commands/. Copilot discovers from the repo or from ~/.copilot/ at user level.",
+        notes="Emits agent profiles to .copilot/agents/, SKILL.md skills to .copilot/skills/. Plugin commands are emitted as runnable skills (user-invocable: true, disable-model-invocation: true) for VS Code /-menu and CLI auto-discovery.",
     ),
     "cursor": Capability(
         harness_id="cursor",

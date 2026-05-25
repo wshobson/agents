@@ -53,9 +53,7 @@ def _generated_artifacts(repo_root: Path) -> list[tuple[str, Path]]:
     for subdir, pattern in ARTIFACT_GLOBS.items():
         source_dir = generated_root / subdir
         if not source_dir.is_dir():
-            raise FileNotFoundError(
-                f"{source_dir} does not exist; run `make generate HARNESS=copilot` first"
-            )
+            continue  # optional dir (commands, etc.) — may not exist
         for src in sorted(source_dir.glob(pattern)):
             if subdir == "skills" and not src.is_dir():
                 continue
@@ -64,6 +62,11 @@ def _generated_artifacts(repo_root: Path) -> list[tuple[str, Path]]:
             if subdir in {"commands"} and not src.is_dir():
                 continue
             artifacts.append((subdir, src.resolve()))
+    if not artifacts:
+        raise FileNotFoundError(
+            f"No artifacts found under {generated_root}; "
+            "run `make generate HARNESS=copilot` first"
+        )
     return artifacts
 
 
@@ -140,6 +143,18 @@ def uninstall(
     report = InstallReport()
 
     for subdir in ARTIFACT_GLOBS:
+        if subdir == "commands":
+            # commands are installed at config/<plugin>/commands/ (not config/commands/)
+            for candidate in sorted(config_dir.iterdir()):
+                commands_dir = candidate / "commands"
+                if commands_dir.is_symlink():
+                    target = commands_dir.resolve(strict=False)
+                    if _is_relative_to(target, generated_root):
+                        commands_dir.unlink()
+                        report.removed += 1
+                    else:
+                        report.skipped += 1
+            continue
         target_dir = config_dir / subdir
         if not target_dir.is_dir():
             continue
