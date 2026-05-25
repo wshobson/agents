@@ -83,7 +83,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
-| **Copilot** | `.copilot/agents/`, `.copilot/skills/` | Markdown agent profiles + SKILL.md skills; model maps to GPT-5 family |
+| **Copilot** | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |
 
 ```bash
 make generate-all                        # all five

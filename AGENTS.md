@@ -45,7 +45,7 @@ make generate HARNESS=codex      # emits .codex/skills, .codex/agents
 make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
 make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/, .opencode/skills/
 make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
-make generate HARNESS=copilot    # emits .copilot/agents/, .copilot/skills/
+make generate HARNESS=copilot    # emits .copilot/agents/, .copilot/skills/, .copilot/commands/
 make generate-all                # all 5 generated harnesses (claude-code is source, not generated)
 make install-opencode            # symlink generated OpenCode artifacts into global config
 make install-copilot             # symlink generated Copilot artifacts into ~/.copilot/

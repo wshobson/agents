@@ -61,6 +61,7 @@ Each adapter consumes the canonical `plugins/` source and emits harness-native a
 | `codex.py` | `.codex/skills/`, `.codex/agents/*.toml` | Markdown → TOML transform, 8 KB body cap with `references/` overflow, sandbox_mode heuristic, collision detection |
 | `cursor.py` | `.cursor-plugin/`, `.cursor/rules/*.mdc` | Marketplace manifests + hand-curated rules. Cursor reads `.claude/` directly for skills/agents |
 | `opencode.py` | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | Permission block from `tools:` allowlist (locked agents preserve intent); strict lowercase tool names; OpenCode-safe skill names |
+| `copilot.py` | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |
 | `gemini.py` | `skills/`, `agents/`, `commands/*.toml` at extension root | Native skills + April-2026 subagents; `@{path}` injection for large command bodies |
 
 Detail in [`docs/harnesses.md`](docs/harnesses.md) (capability matrix per harness) and [`docs/architecture.md`](docs/architecture.md) (full design rationale).
