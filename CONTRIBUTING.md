@@ -45,7 +45,7 @@ uv run ty check ../../tools/ src/plugin_eval/
 
 ## Cross-harness portability checklist
 
-Your content ships to six harnesses — some have stricter conventions than Claude Code:
+Your content ships to five harnesses — some have stricter conventions than Claude Code:
 
 - **Codex** hard-truncates skill bodies at 8 KB. Keep `SKILL.md` short; push detail
   into `references/details.md`.

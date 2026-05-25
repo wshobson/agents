@@ -45,9 +45,10 @@ make generate HARNESS=codex      # emits .codex/skills, .codex/agents
 make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
 make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/, .opencode/skills/
 make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
-make generate HARNESS=copilot    # emits ~/.copilot/agents/, ~/.copilot/skills/
+make generate HARNESS=copilot    # emits .copilot/agents/, .copilot/skills/
 make generate-all                # all 5 generated harnesses (claude-code is source, not generated)
 make install-opencode            # symlink generated OpenCode artifacts into global config
+make install-copilot             # symlink generated Copilot artifacts into ~/.copilot/
 ```
 
 Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored — never hand-edit them.
@@ -61,7 +62,7 @@ Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored 
 - **OpenCode**: mirrored to `.opencode/skills/<plugin>-<skill>/` using hyphenated names for global install
 - **Cursor**: reads `.claude/skills/` directly (no re-emit)
 - **Gemini CLI**: native skills at `skills/<plugin>__<skill>/SKILL.md`
-- **Copilot**: agent profiles to `.github/agents/`, skills to `.github/skills/`
+- **Copilot**: agent profiles to `.copilot/agents/`, skills to `.copilot/skills/`
 
 Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 
@@ -73,7 +74,7 @@ Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 - **OpenCode**: `.opencode/agents/<plugin>__<agent>.md` with `mode: subagent` + `permission:` block (locked agents — those with source `tools: []` — get deny-everything except base `skill`/`task`)
 - **Gemini**: `agents/<plugin>__<agent>.md` (April 2026 subagent spec)
 - **Cursor**: reads `.claude/agents/` directly
-- **Copilot**: `.github/agents/<plugin>__<agent>.agent.md` (Markdown profiles, model mapped to GPT-5 family)
+- **Copilot**: `.copilot/agents/<plugin>__<agent>.agent.md` (Markdown profiles, model mapped to GPT-5 family)
 
 ## Why this file is short
 

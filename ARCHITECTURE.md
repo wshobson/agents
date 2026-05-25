@@ -83,7 +83,7 @@ Each plugin is a directory under `plugins/`. Three component types, all auto-dis
 - **Skills** (`skills/<n>/SKILL.md`) — modular knowledge with progressive disclosure. Frontmatter: `name`, `description` (must include a recognized trigger phrase like "Use when …"). Supporting material in `references/`, templates in `assets/`.
 - **Commands** (`commands/<n>.md`) — slash commands. Frontmatter: `description`, `argument-hint`.
 
-Full conventions in [`docs/authoring.md`](docs/authoring.md). Authoring for portability across all six harnesses is the main concern; the adapter framework handles per-harness mechanics.
+Full conventions in [`docs/authoring.md`](docs/authoring.md). Authoring for portability across all five harnesses is the main concern; the adapter framework handles per-harness mechanics.
 
 ## Model tiers
 
