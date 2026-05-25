@@ -26,7 +26,7 @@ do, and what to avoid, so the work you do for Claude Code translates cleanly eve
 |---|---|---|---|
 | `agents/<name>.md` | `name`, `description` | `model`, optional `tools:`, optional `color:` | `tools:` allowlist becomes a per-harness permission block where supported, dropped otherwise. |
 | `skills/<name>/SKILL.md` | `name`, `description` | (none) | Other Anthropic SKILL.md fields work on Claude Code only. |
-| `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills; Copilot emits `.copilot/commands/<plugin>/<name>.md` slash-command prompts. |
+| `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills (it deprecated `~/.codex/prompts/`). Copilot emits `.copilot/commands/<plugin>/<name>.md` slash-command prompts. |
 
 **Description triggers.** Include a recognized phrase: `Use when …`, `Use this skill when …`,
 `Use PROACTIVELY when …`, `Use after …`, `Trigger when …`, `Auto-loads when …`. The

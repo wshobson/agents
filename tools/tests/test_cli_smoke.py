@@ -128,19 +128,10 @@ class TestCodexSmoke:
         a battery of structural checks and surfaces drift in the local install."""
         proc = _run(["codex", "doctor"])
         # Codex doctor returns 0 on healthy install; warnings are inline but don't fail.
-        if proc.returncode != 0:
-            # Some environments (CI containers) cannot provide a TTY; Codex doctor
-            # emits "stdin is not a terminal" in stderr and returns 1. Treat that as
-            # an environment limitation and skip the test rather than failing the PR.
-            if proc.stderr and "stdin is not a terminal" in proc.stderr:
-                pytest.skip(
-                    f"codex doctor not runnable in non-interactive env: {proc.stderr.strip()}"
-                )
-            # Otherwise, a real failure — surface it.
-            assert proc.returncode == 0, (
-                f"codex doctor failed (rc={proc.returncode}):\n"
-                f"--- stdout ---\n{proc.stdout[:2000]}\n--- stderr ---\n{proc.stderr}"
-            )
+        assert proc.returncode == 0, (
+            f"codex doctor failed (rc={proc.returncode}):\n"
+            f"--- stdout ---\n{proc.stdout[:2000]}\n--- stderr ---\n{proc.stderr}"
+        )
 
     @pytest.mark.skipif(
         not (WORKTREE / ".codex").is_dir(),

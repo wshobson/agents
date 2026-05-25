@@ -70,7 +70,8 @@ Claude Code automatically selects and coordinates the appropriate agents based o
 
 | Command                             | Description                |
 | ----------------------------------- | -------------------------- |
-| `/comprehensive-review:full-review` | Run the comprehensive review workflow |
+| `/comprehensive-review:full-review` | Multi-perspective analysis |
+| `/comprehensive-review:pr-enhance`  | Enhance pull requests      |
 
 ### Debugging & Troubleshooting
 

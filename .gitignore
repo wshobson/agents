@@ -50,5 +50,4 @@ commands/**/*.toml
 /commands/
 /agents/
 /skills/
-# Guard Gemini output from pollution (generated .agent.md files in root agents/)
-agents/*.agent.md
+
