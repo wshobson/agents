@@ -13,6 +13,7 @@ GENERATED_ROOT = REPO_ROOT / ".copilot"
 ARTIFACT_GLOBS = {
     "agents": "*.agent.md",
     "skills": "*",
+    "commands": "*",
 }
 
 
@@ -58,7 +59,9 @@ def _generated_artifacts(repo_root: Path) -> list[tuple[str, Path]]:
         for src in sorted(source_dir.glob(pattern)):
             if subdir == "skills" and not src.is_dir():
                 continue
-            if subdir != "skills" and not src.is_file():
+            if subdir in {"agents"} and not src.is_file():
+                continue
+            if subdir in {"commands"} and not src.is_dir():
                 continue
             artifacts.append((subdir, src.resolve()))
     return artifacts
@@ -100,8 +103,15 @@ def install(
         return report
 
     for subdir, src in artifacts:
-        dst = config_dir / subdir / src.name
-        _link_one(src, dst, force=force, report=report)
+        if subdir == "commands":
+            # For commands, extract plugin name and symlink to ~/.copilot/<plugin>/commands/
+            # src is like .copilot/commands/comprehensive-review, symlink to ~/.copilot/comprehensive-review/commands
+            plugin_name = src.name
+            dst = config_dir / plugin_name / "commands"
+            _link_one(src, dst, force=force, report=report)
+        else:
+            dst = config_dir / subdir / src.name
+            _link_one(src, dst, force=force, report=report)
     return report
 
 

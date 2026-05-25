@@ -297,6 +297,26 @@ class TestCopilotRoundTrip:
             f"skill count mismatch: source={_source_skill_count()} copilot={n}"
         )
 
+    def test_copilot_command_count_matches_source(self):
+        n = len(
+            [
+                p
+                for p in (WORKTREE / ".copilot" / "commands").rglob("*.md")
+                if p.name != "index.md"
+            ]
+        )
+        assert n == _source_command_count(), (
+            f"command count mismatch: source={_source_command_count()} copilot={n}"
+        )
+
+    def test_copilot_command_entrypoints_exist_for_every_plugin(self):
+        missing = []
+        for plugin_name in list_plugins():
+            entry = WORKTREE / ".copilot" / "commands" / plugin_name / "index.md"
+            if not entry.is_file():
+                missing.append(plugin_name)
+        assert not missing, f"missing Copilot command entrypoints for: {sorted(missing)}"
+
     def test_every_copilot_agent_has_required_frontmatter(self):
         required = {"name", "description"}
         problems = []

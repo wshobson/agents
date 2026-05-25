@@ -559,9 +559,10 @@ def validate_gemini(report: Report) -> None:
 
 
 def validate_copilot(report: Report) -> None:
-    """Validate Copilot agent markdown files under WORKTREE/.copilot/agents.
+    """Validate Copilot agent, skill, and command markdown files under WORKTREE/.copilot.
 
-    Checks that every .agent.md file has valid frontmatter with required fields.
+    Checks that generated agent, skill, and command markdown files have valid
+    frontmatter and the minimum metadata Copilot needs to discover them.
     """
     candidate_roots = [WORKTREE / ".copilot"]
     found_any = False
@@ -677,6 +678,39 @@ def validate_copilot(report: Report) -> None:
                     path=skill_md,
                     message="`description` must be a non-empty string",
                     remediation="Set `description` to a non-empty string in the skill frontmatter.",
+                )
+
+    commands_dir = WORKTREE / ".copilot" / "commands"
+    if commands_dir.is_dir():
+        found_any = True
+        for command_md in commands_dir.rglob("*.md"):
+            content = command_md.read_text(encoding="utf-8")
+            fm, body = parse_frontmatter(content)
+            if not fm:
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=command_md,
+                    message="missing or invalid frontmatter",
+                    remediation="Regenerate via `make generate HARNESS=copilot`.",
+                )
+                continue
+            description = fm.get("description")
+            if not isinstance(description, str) or not description.strip():
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=command_md,
+                    message="missing required `description` field in frontmatter",
+                    remediation="Copilot command prompt files need a non-empty description.",
+                )
+            if command_md.name != "index.md" and not body.strip():
+                report.add(
+                    severity="warning",
+                    harness="copilot",
+                    path=command_md,
+                    message="command body is empty",
+                    remediation="Keep the prompt body in the source command markdown.",
                 )
 
     if not found_any:
