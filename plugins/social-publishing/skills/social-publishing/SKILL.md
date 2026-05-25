@@ -7,7 +7,7 @@ description: >
   media content programmatically. Requires SOCIALCLAW_API_KEY.
 license: MIT
 metadata:
-  version: "1.0"
+  version: "1.0.0"
   source: https://github.com/ndesv21/socialclaw
   homepage: https://getsocialclaw.com
 ---
