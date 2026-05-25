@@ -105,6 +105,21 @@ def install(
     return report
 
 
+def _clear_copilot_cache(config_dir: Path) -> list[str]:
+    """Clear Copilot CLI caches to force artifact discovery reload."""
+    cache_dirs = [
+        config_dir / "pkg",
+        config_dir / "marketplace-cache",
+    ]
+    cleared = []
+    for cache_dir in cache_dirs:
+        if cache_dir.exists():
+            import shutil
+            shutil.rmtree(cache_dir, ignore_errors=True)
+            cleared.append(str(cache_dir))
+    return cleared
+
+
 def uninstall(
     *,
     repo_root: Path = REPO_ROOT,
@@ -131,11 +146,13 @@ def uninstall(
     return report
 
 
-def _print_report(action: str, config_dir: Path, report: InstallReport) -> None:
+def _print_report(action: str, config_dir: Path, report: InstallReport, *, cache_cleared: list[str] | None = None) -> None:
     print(
         f"{action}: config={config_dir} linked={report.linked} unchanged={report.unchanged} "
         f"removed={report.removed} skipped={report.skipped}"
     )
+    if cache_cleared:
+        print(f"cache: cleared {len(cache_cleared)} cache dir(s)")
     for error in report.errors:
         print(f"error: {error}")
 
@@ -149,11 +166,13 @@ def main() -> int:
     args = parser.parse_args()
 
     config_dir = (args.config_dir or default_config_dir()).expanduser()
+    cache_cleared = None
     if args.action == "install":
         report = install(repo_root=args.repo_root, config_dir=config_dir, force=args.force)
+        cache_cleared = _clear_copilot_cache(config_dir)
     else:
         report = uninstall(repo_root=args.repo_root, config_dir=config_dir)
-    _print_report(args.action, config_dir, report)
+    _print_report(args.action, config_dir, report, cache_cleared=cache_cleared)
     return 0 if report.ok else 1
 
 
