@@ -1,7 +1,6 @@
 # Authoring portable plugin content
 
-Plugin content in this repo ships to **five** harnesses: Claude Code (source of truth),
-OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI. The adapter framework handles per-harness
+Plugin content in this repo ships to **five** harnesses: OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot. Claude Code is the source-of-truth. The adapter framework handles per-harness
 mechanics (frontmatter rewrites, format transforms, output paths) so you author one set of
 markdown files. But content choices still affect portability — this guide tells you what to
 do, and what to avoid, so the work you do for Claude Code translates cleanly everywhere.
@@ -106,12 +105,12 @@ clean naming — pick distinct names for skill/command pairs within a plugin.
 
 ### Model aliases
 
-| Source field | Codex | Cursor | OpenCode | Gemini |
-|---|---|---|---|---|
-| `model: opus` | `gpt-5` | `inherit` | `anthropic/claude-opus-4-7` | `gemini-2.5-pro` |
-| `model: sonnet` | `gpt-5-mini` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` |
-| `model: haiku` | `gpt-5-nano` | `inherit` | `anthropic/claude-haiku-4-5-20251001` | `gemini-2.5-flash` |
-| `model: inherit` | `gpt-5` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` |
+| Source field | Codex | Cursor | OpenCode | Gemini | Copilot |
+|---|---|---|---|---|---|---|
+| `model: opus` | `gpt-5` | `inherit` | `anthropic/claude-opus-4-7` | `gemini-2.5-pro` | `gpt-5` |
+| `model: sonnet` | `gpt-5-mini` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `gpt-5-mini` |
+| `model: haiku` | `gpt-5-nano` | `inherit` | `anthropic/claude-haiku-4-5-20251001` | `gemini-2.5-flash` | `gpt-5-nano` |
+| `model: inherit` | `gpt-5` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `gpt-5` |
 
 The adapter handles mapping. The `BARE_MODEL_ALIAS` lint is informational — it just notes
 that the mapping is implicit. If you want explicit, use `inherit`.

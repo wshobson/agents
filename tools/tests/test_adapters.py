@@ -1050,7 +1050,12 @@ class TestCopilotAdapter:
         assert _needs_yaml_quoting("3.14")
         assert _needs_yaml_quoting("true")
         assert _needs_yaml_quoting("false")
+        assert _needs_yaml_quoting("yes")
+        assert _needs_yaml_quoting("no")
+        assert _needs_yaml_quoting("on")
+        assert _needs_yaml_quoting("off")
         assert _needs_yaml_quoting("null")
+        assert _needs_yaml_quoting("~")
         assert not _needs_yaml_quoting("hello world")
         assert not _needs_yaml_quoting("Use when testing.")
 
@@ -1161,7 +1166,7 @@ class TestCapabilities:
     def test_every_adapter_id_has_capabilities_entry(self):
         from tools.adapters.capabilities import CAPABILITIES
 
-        for adapter_cls in (CodexAdapter, CopilotAdapter, CursorAdapter, OpenCodeAdapter, GeminiAdapter):
+        for adapter_cls in (CodexAdapter, CopilotAdapter, CursorAdapter, GeminiAdapter, OpenCodeAdapter):
             assert adapter_cls.harness_id in CAPABILITIES
 
     def test_model_aliases_complete(self):

@@ -178,7 +178,7 @@ class TestCopilotValidator:
 
         report = Report()
         validate_copilot(report)
-        assert any("must not be empty" in f.message for f in report.errors())
+        assert any("is empty" in f.message for f in report.errors())
 
     def test_missing_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)

@@ -4,7 +4,7 @@ Top-level architectural map for the claude-agents marketplace. Detail lives in [
 
 ## Invariants
 
-1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `.github/agents/`, `.github/skills/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. Never hand-edit generated files.
+1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `.copilot/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. Never hand-edit generated files.
 
 2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. `CLAUDE.md` imports it via `@AGENTS.md`. Gemini CLI reads it via `.gemini/settings.json` `context.fileName`. Codex / Cursor / OpenCode read `AGENTS.md` natively.
 

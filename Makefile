@@ -161,7 +161,7 @@ clean:
 #   make generate-all
 #   make clean-generated HARNESS=opencode
 
-HARNESSES := codex copilot cursor opencode gemini
+HARNESSES := codex copilot cursor gemini opencode
 
 generate:
 ifndef HARNESS
@@ -195,7 +195,7 @@ garden:
 
 # Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
 test:
-	uv run $(EVAL_PROJECT) --extra dev pytest -q plugins/plugin-eval/ tools/tests/
+	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
 # of opencode / gemini / codex / claude are on PATH. Per-CLI tests skip gracefully
@@ -206,7 +206,7 @@ smoke-test:
 		echo "Generating harness artifacts first..."; \
 		$(MAKE) generate-all; \
 	fi
-	uv run $(EVAL_PROJECT) --extra dev pytest -v tools/tests/test_cli_smoke.py
+	uv run $(EVAL_PROJECT) pytest -v tools/tests/test_cli_smoke.py
 
 clean-generated:
 ifdef HARNESS

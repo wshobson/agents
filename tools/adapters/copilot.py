@@ -24,6 +24,8 @@ def _needs_yaml_quoting(value: str) -> bool:
         "false",
         "yes",
         "no",
+        "on",
+        "off",
         "null",
         "~",
     )
