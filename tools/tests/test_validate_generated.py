@@ -246,9 +246,7 @@ class TestOpenCodeValidator:
         validate_opencode(report)
         assert any("OpenCode-safe" in f.message for f in report.errors())
 
-    def test_empty_skill_description_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_empty_skill_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         skill = tmp_path / ".opencode" / "skills" / "demo-hello"
         skill.mkdir(parents=True)

@@ -158,8 +158,7 @@ def _opencode_skill_id(plugin: PluginSource, skill: SkillSource) -> str:
         )
     if not _OPENCODE_SKILL_NAME_RE.fullmatch(skill_id):
         raise ValueError(
-            f"OpenCode skill id `{skill_id}` must match "
-            f"{_OPENCODE_SKILL_NAME_RE.pattern}"
+            f"OpenCode skill id `{skill_id}` must match {_OPENCODE_SKILL_NAME_RE.pattern}"
         )
     return skill_id
 
