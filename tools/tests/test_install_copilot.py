@@ -48,7 +48,7 @@ def test_install_creates_idempotent_symlinks(tmp_path: Path):
     assert second.unchanged == 3
     assert (config_dir / "agents" / "demo__agent.agent.md").is_symlink()
     assert (config_dir / "skills" / "demo-hello").is_symlink()
-    assert (config_dir / "commands" / "demo").is_symlink()
+    assert (config_dir / "demo" / "commands").is_symlink()
 
 
 def test_install_refuses_to_overwrite_real_files(tmp_path: Path):
