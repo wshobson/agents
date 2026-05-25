@@ -61,6 +61,53 @@ class Report:
         return [f for f in self.findings if f.severity == "info"]
 
 
+# ── Helpers ──────────────────────────────────────────────────────────────────
+
+
+def _check_nonempty_str_field(
+    report: Report,
+    fm: dict,
+    field: str,
+    harness: str,
+    path: Path,
+    label: str = "",
+) -> bool:
+    """Validate that `field` exists in `fm`, is a str, and is non-empty.
+
+    Adds one Finding per violation. Returns True if the field passes all checks.
+    ``label`` is only used in remediation hints (defaults to ``field``).
+    """
+    label = label or field
+    if field not in fm:
+        report.add(
+            severity="error",
+            harness=harness,
+            path=path,
+            message=f"missing required `{field}` field in frontmatter",
+            remediation=f"Each {harness} {label} needs a `{field}`.",
+        )
+        return False
+    if not isinstance(fm[field], str):
+        report.add(
+            severity="error",
+            harness=harness,
+            path=path,
+            message=f"`{field}` field must be a string",
+            remediation=f"Set `{field}` to a plain string in the {label} frontmatter.",
+        )
+        return False
+    if not fm[field].strip():
+        report.add(
+            severity="error",
+            harness=harness,
+            path=path,
+            message=f"`{field}` field is empty",
+            remediation=f"Provide a non-empty `{field}` in the {label} frontmatter.",
+        )
+        return False
+    return True
+
+
 # ── Codex validators ─────────────────────────────────────────────────────────
 
 
@@ -583,54 +630,8 @@ def validate_copilot(report: Report) -> None:
                     remediation="Regenerate via `make generate HARNESS=copilot`.",
                 )
                 continue
-            if "name" not in fm:
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=agent_md,
-                    message="missing required `name` field in frontmatter",
-                    remediation="Each Copilot agent needs a name.",
-                )
-            elif not isinstance(fm["name"], str):
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=agent_md,
-                    message="`name` field must be a string",
-                    remediation="Set `name` to a plain string in the agent frontmatter.",
-                )
-            elif not fm["name"].strip():
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=agent_md,
-                    message="`name` field must not be empty",
-                    remediation="Provide a non-empty `name` in the agent frontmatter.",
-                )
-            if "description" not in fm:
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=agent_md,
-                    message="missing required `description` field in frontmatter",
-                    remediation="Copilot requires `description` in agent frontmatter. Check the source agent file.",
-                )
-            elif not isinstance(fm.get("description"), str):
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=agent_md,
-                    message="`description` field must be a string",
-                    remediation="Set `description` to a plain string; Copilot agent frontmatter does not accept other types.",
-                )
-            elif not fm["description"].strip():
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=agent_md,
-                    message="`description` field is empty",
-                    remediation="Copilot requires a non-empty `description` in agent frontmatter.",
-                )
+            _check_nonempty_str_field(report, fm, "name", "copilot", agent_md, label="agent")
+            _check_nonempty_str_field(report, fm, "description", "copilot", agent_md, label="agent")
     # 3. Skills: validate .copilot/skills/*/SKILL.md exists and has valid frontmatter.
     skills_dir = (WORKTREE / ".copilot" / "skills")
     if skills_dir.is_dir():
@@ -647,38 +648,8 @@ def validate_copilot(report: Report) -> None:
                     remediation="Regenerate via `make generate HARNESS=copilot`.",
                 )
                 continue
-            if "name" not in fm:
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=skill_md,
-                    message="missing required `name` field in frontmatter",
-                    remediation="Each Copilot skill needs a name.",
-                )
-            elif not isinstance(fm["name"], str) or not fm["name"].strip():
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=skill_md,
-                    message="`name` must be a non-empty string",
-                    remediation="Set `name` to a non-empty string in the skill frontmatter.",
-                )
-            if "description" not in fm:
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=skill_md,
-                    message="missing required `description` field in frontmatter",
-                    remediation="Each Copilot skill needs a description.",
-                )
-            elif not isinstance(fm.get("description"), str) or not fm["description"].strip():
-                report.add(
-                    severity="error",
-                    harness="copilot",
-                    path=skill_md,
-                    message="`description` must be a non-empty string",
-                    remediation="Set `description` to a non-empty string in the skill frontmatter.",
-                )
+            _check_nonempty_str_field(report, fm, "name", "copilot", skill_md, label="skill")
+            _check_nonempty_str_field(report, fm, "description", "copilot", skill_md, label="skill")
 
     commands_dir = WORKTREE / ".copilot" / "commands"
     if commands_dir.is_dir():
@@ -719,10 +690,10 @@ def validate_copilot(report: Report) -> None:
 
 _VALIDATORS = {
     "codex": validate_codex,
-    "cursor": validate_cursor,
-    "opencode": validate_opencode,
-    "gemini": validate_gemini,
     "copilot": validate_copilot,
+    "cursor": validate_cursor,
+    "gemini": validate_gemini,
+    "opencode": validate_opencode,
 }
 
 
