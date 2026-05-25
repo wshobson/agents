@@ -43,9 +43,10 @@ CI (`.github/workflows/validate.yml`) runs all four on every PR plus installs Op
 ```bash
 make generate HARNESS=codex      # emits .codex/skills, .codex/agents
 make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
-make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/
+make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/, .opencode/skills/
 make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
 make generate-all                # all four
+make install-opencode            # symlink generated OpenCode artifacts into global config
 ```
 
 Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored — never hand-edit them.
@@ -56,9 +57,11 @@ Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored 
 
 - **Claude Code**: auto-discovery via Anthropic's SKILL.md spec
 - **Codex CLI**: mirrored to `.codex/skills/<plugin>__<skill>/` (8 KB body cap; detail in `references/details.md`)
-- **OpenCode**: reads `.claude/skills/` directly (no re-emit)
+- **OpenCode**: mirrored to `.opencode/skills/<plugin>-<skill>/` using hyphenated names for global install
 - **Cursor**: reads `.claude/skills/` directly (no re-emit)
 - **Gemini CLI**: native skills at `skills/<plugin>__<skill>/SKILL.md`
+
+Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 
 ## Subagents (cross-harness)
 

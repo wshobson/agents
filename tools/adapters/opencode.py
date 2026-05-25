@@ -1,12 +1,13 @@
 """OpenCode adapter.
 
-OpenCode reads `.claude/skills/` directly, so the adapter focuses on the parts that
-need real transpilation:
+OpenCode can read Claude-compatible skills, but global installs need OpenCode-safe
+skill names, so this adapter emits native OpenCode artifacts:
 
 1. `.opencode/agents/<plugin>__<agent>.md` — agents with `mode: subagent` + `permission:`
    block (replacing Claude Code's `tools:` allowlist), full provider-prefixed model IDs.
 2. `.opencode/commands/<plugin>__<command>.md` — commands with lowercased tool refs.
-3. `opencode.json` at root with `"$schema": "https://opencode.ai/config.json"`.
+3. `.opencode/skills/<plugin>-<skill>/SKILL.md` — skills with OpenCode-valid names.
+4. `opencode.json` at root with `"$schema": "https://opencode.ai/config.json"`.
 
 Sources: research summary by `a8a6c57414dc1ba23` synthesized into the plan.
 """
@@ -23,12 +24,15 @@ from tools.adapters.base import (
     EmitResult,
     HarnessAdapter,
     PluginSource,
+    SkillSource,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 
 # Detects orchestration intent in command bodies. Word-boundary match so identifiers
 # like `PerformanceReviewAgent` or `useragent` don't trip it.
 _SUBAGENT_KEYWORD_RE = re.compile(r"\b(?:agent|subagent)s?\b", re.IGNORECASE)
+_OPENCODE_SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+_OPENCODE_SKILL_NAME_MAX = 64
 
 
 _OPENCODE_PERMISSIONS = [
@@ -145,16 +149,32 @@ def _opencode_frontmatter(fm: dict) -> str:
     return "\n".join(lines)
 
 
+def _opencode_skill_id(plugin: PluginSource, skill: SkillSource) -> str:
+    skill_id = f"{plugin.name}-{skill.name}"
+    if len(skill_id) > _OPENCODE_SKILL_NAME_MAX:
+        raise ValueError(
+            f"OpenCode skill id `{skill_id}` is {len(skill_id)} chars; "
+            f"limit is {_OPENCODE_SKILL_NAME_MAX}"
+        )
+    if not _OPENCODE_SKILL_NAME_RE.fullmatch(skill_id):
+        raise ValueError(
+            f"OpenCode skill id `{skill_id}` must match "
+            f"{_OPENCODE_SKILL_NAME_RE.pattern}"
+        )
+    return skill_id
+
+
 class OpenCodeAdapter(HarnessAdapter):
     harness_id = "opencode"
 
     def emit_plugin(self, plugin: PluginSource) -> EmitResult:
         result = EmitResult()
+        for skill in plugin.skills:
+            self._emit_skill(plugin, skill, result)
         for agent in plugin.agents:
             self._emit_agent(plugin, agent, result)
         for cmd in plugin.commands:
             self._emit_command(plugin, cmd, result)
-        # Skills are read directly from .claude/skills/ — no emission.
         return result
 
     def emit_global(self, plugins: list[PluginSource]) -> EmitResult:
@@ -168,6 +188,24 @@ class OpenCodeAdapter(HarnessAdapter):
         return result
 
     # ── Internals ──────────────────────────────────────────────────────────
+
+    def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
+        skill_id = _opencode_skill_id(plugin, skill)
+        skill_dir = Path(".opencode") / "skills" / skill_id
+
+        fm = dict(skill.frontmatter)
+        fm["name"] = skill_id
+
+        content = _opencode_frontmatter(fm) + "\n\n" + skill.body.rstrip() + "\n"
+        result.written.append(self.write(skill_dir / "SKILL.md", content))
+
+        # Mirror all support files (references/, assets/, scripts/, examples/, etc.)
+        # without decoding so binary assets keep working.
+        for src in sorted(skill.dir.rglob("*")):
+            if not src.is_file() or src.name == "SKILL.md":
+                continue
+            rel = src.relative_to(skill.dir)
+            result.written.append(self.mirror_file(src, skill_dir / rel))
 
     def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
         agent_id = f"{plugin.name}__{agent.name}"

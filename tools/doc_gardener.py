@@ -153,6 +153,20 @@ def check_stale_artifacts(report: Report) -> None:
                 if src.is_file():
                     pairs.append((src, md))
 
+    # OpenCode skills (.opencode/skills/<plugin>-<skill>/SKILL.md)
+    opencode_skills = WORKTREE / ".opencode" / "skills"
+    if opencode_skills.is_dir():
+        skill_sources: dict[str, Path] = {}
+        for plugin_dir in PLUGINS_DIR.iterdir():
+            if not plugin_dir.is_dir():
+                continue
+            for skill_file in (plugin_dir / "skills").glob("*/SKILL.md"):
+                skill_sources[f"{plugin_dir.name}-{skill_file.parent.name}"] = skill_file
+        for skill_md in opencode_skills.glob("*/SKILL.md"):
+            src = skill_sources.get(skill_md.parent.name)
+            if src and src.is_file():
+                pairs.append((src, skill_md))
+
     # Gemini skills and agents at root
     for top_dir in ("skills", "agents"):
         root = WORKTREE / top_dir

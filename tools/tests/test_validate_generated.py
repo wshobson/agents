@@ -222,6 +222,42 @@ class TestOpenCodeValidator:
         validate_opencode(report)
         assert any("permission.read" in f.message and "maybe" in f.message for f in report.errors())
 
+    def test_skill_name_mismatch_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        skill = tmp_path / ".opencode" / "skills" / "demo-hello"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            "---\nname: wrong-name\ndescription: Use when testing.\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        validate_opencode(report)
+        assert any("directory" in f.message for f in report.errors())
+
+    def test_invalid_skill_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        skill = tmp_path / ".opencode" / "skills" / "demo__hello"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            "---\nname: demo__hello\ndescription: Use when testing.\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        validate_opencode(report)
+        assert any("OpenCode-safe" in f.message for f in report.errors())
+
+    def test_empty_skill_description_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        skill = tmp_path / ".opencode" / "skills" / "demo-hello"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text("---\nname: demo-hello\n---\n\nBody.\n")
+
+        report = Report()
+        validate_opencode(report)
+        assert any("empty description" in f.message for f in report.errors())
+
 
 # ── Gemini ───────────────────────────────────────────────────────────────────
 

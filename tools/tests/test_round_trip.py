@@ -124,6 +124,12 @@ class TestOpenCodeRoundTrip:
             f"command count mismatch: source={_source_command_count()} opencode={n}"
         )
 
+    def test_opencode_skill_count_matches_source(self):
+        n = len(list((WORKTREE / ".opencode" / "skills").glob("*/SKILL.md")))
+        assert n == _source_skill_count(), (
+            f"skill count mismatch: source={_source_skill_count()} opencode={n}"
+        )
+
     def test_every_opencode_agent_has_required_frontmatter(self):
         modes = {"primary", "subagent", "all"}
         problems = []
@@ -170,6 +176,22 @@ class TestOpenCodeRoundTrip:
                 if not re.search(r"read:\s*deny", content):
                     problems.append(f"{agent_id}: read should be denied for locked agent")
         assert not problems, "Locked-agent permission regressions:\n  " + "\n  ".join(problems)
+
+    def test_every_opencode_skill_has_valid_frontmatter(self):
+        name_re = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+        problems = []
+        for skill_md in (WORKTREE / ".opencode" / "skills").glob("*/SKILL.md"):
+            fm, _ = parse_frontmatter(skill_md.read_text())
+            name = str(fm.get("name") or "")
+            if name != skill_md.parent.name:
+                problems.append(f"{skill_md}: name {name!r} != directory {skill_md.parent.name!r}")
+            if not name_re.fullmatch(name):
+                problems.append(f"{skill_md}: invalid OpenCode skill name {name!r}")
+            if len(name) > 64:
+                problems.append(f"{skill_md}: OpenCode skill name exceeds 64 chars")
+            if not str(fm.get("description") or "").strip():
+                problems.append(f"{skill_md}: missing description")
+        assert not problems, "OpenCode skill issues:\n  " + "\n  ".join(problems[:20])
 
 
 @pytest.mark.skipif(
