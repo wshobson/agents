@@ -215,8 +215,8 @@ def check_stale_artifacts(report: Report) -> None:
                 if src.is_file():
                     pairs.append((src, toml_path))
 
-    # Copilot agents (.agent.md) and skills (SKILL.md) at ~/.copilot/
-    copilot_root = Path.home() / ".copilot"
+    # Copilot agents (.agent.md) and skills (SKILL.md) at .copilot/
+    copilot_root = WORKTREE / ".copilot"
     copilot_agents = copilot_root / "agents"
     if copilot_agents.is_dir():
         for agent_md in copilot_agents.glob("*.agent.md"):

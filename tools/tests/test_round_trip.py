@@ -279,6 +279,38 @@ class TestGeminiRoundTrip:
         assert len(lines) <= 150, f"GEMINI.md is {len(lines)} lines (cap: 150)"
 
 
+
+@pytest.mark.skipif(
+    not (WORKTREE / ".copilot").is_dir(),
+    reason="Copilot artifacts not generated (run `make generate HARNESS=copilot` first)",
+)
+class TestCopilotRoundTrip:
+    def test_copilot_agent_count_matches_source(self):
+        n = len(list((WORKTREE / ".copilot" / "agents").glob("*.agent.md")))
+        assert n == _source_agent_count(), (
+            f"agent count mismatch: source={_source_agent_count()} copilot={n}"
+        )
+
+    def test_copilot_skill_count_matches_source(self):
+        n = len(list((WORKTREE / ".copilot" / "skills").glob("*/SKILL.md")))
+        assert n == _source_skill_count(), (
+            f"skill count mismatch: source={_source_skill_count()} copilot={n}"
+        )
+
+    def test_every_copilot_agent_has_required_frontmatter(self):
+        required = {"name", "description"}
+        problems = []
+        for agent_md in (WORKTREE / ".copilot" / "agents").glob("*.agent.md"):
+            fm, _ = parse_frontmatter(agent_md.read_text())
+            if not fm:
+                problems.append(f"{agent_md.name}: no frontmatter")
+                continue
+            missing = required - set(fm.keys())
+            if missing:
+                problems.append(f"{agent_md.name}: missing {sorted(missing)}")
+        assert not problems, "Copilot agent frontmatter issues:\n  " + "\n  ".join(problems[:20])
+
+
 # ── Context file size budgets (always run) ───────────────────────────────────
 
 

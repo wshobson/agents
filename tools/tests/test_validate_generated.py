@@ -152,13 +152,85 @@ class TestCursorValidator:
 class TestCopilotValidator:
     def test_non_string_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
-        agents = tmp_path / ".github" / "agents"
+        agents = tmp_path / ".copilot" / "agents"
         agents.mkdir(parents=True)
         (agents / "bad.agent.md").write_text("---\nname: bad\ndescription: [oops]\n---\n\nBody.\n")
 
         report = Report()
         validate_copilot(report)
         assert any("description" in f.message and "string" in f.message for f in report.errors())
+
+    def test_missing_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        agents = tmp_path / ".copilot" / "agents"
+        agents.mkdir(parents=True)
+        (agents / "noname.agent.md").write_text("---\ndescription: Use when testing.\n---\n\nBody.\n")
+
+        report = Report()
+        validate_copilot(report)
+        assert any("name" in f.message for f in report.errors())
+
+    def test_empty_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        agents = tmp_path / ".copilot" / "agents"
+        agents.mkdir(parents=True)
+        (agents / "emptyname.agent.md").write_text('---\nname: ""\ndescription: Use when testing.\n---\n\nBody.\n')
+
+        report = Report()
+        validate_copilot(report)
+        assert any("must not be empty" in f.message for f in report.errors())
+
+    def test_missing_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        agents = tmp_path / ".copilot" / "agents"
+        agents.mkdir(parents=True)
+        (agents / "nodesc.agent.md").write_text("---\nname: nodesc\n---\n\nBody.\n")
+
+        report = Report()
+        validate_copilot(report)
+        assert any("description" in f.message for f in report.errors())
+
+    def test_empty_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        agents = tmp_path / ".copilot" / "agents"
+        agents.mkdir(parents=True)
+        (agents / "emptydesc.agent.md").write_text('---\nname: emptydesc\ndescription: ""\n---\n\nBody.\n')
+
+        report = Report()
+        validate_copilot(report)
+        assert any("field is empty" in f.message for f in report.errors())
+
+    def test_valid_agent_passes(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        agents = tmp_path / ".copilot" / "agents"
+        agents.mkdir(parents=True)
+        (agents / "good.agent.md").write_text(
+            "---\nname: good\ndescription: Use when testing.\nmodel: gpt-5\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        validate_copilot(report)
+        assert not report.errors()
+
+    def test_skill_missing_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        skill_dir = tmp_path / ".copilot" / "skills" / "test__skill"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text("---\ndescription: Use when testing.\n---\n\nBody.\n")
+
+        report = Report()
+        validate_copilot(report)
+        assert any("name" in f.message for f in report.errors())
+
+    def test_skill_missing_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        skill_dir = tmp_path / ".copilot" / "skills" / "test__skill"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text("---\nname: test__skill\n---\n\nBody.\n")
+
+        report = Report()
+        validate_copilot(report)
+        assert any("description" in f.message for f in report.errors())
 
 
 # ── OpenCode ─────────────────────────────────────────────────────────────────
