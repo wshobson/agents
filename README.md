@@ -76,9 +76,9 @@ Three-tier model strategy:
 This marketplace ships to five agentic harnesses from one Markdown source. Each adapter
 emits harness-native artifacts (not lowest-common-denominator translations):
 
-| Harness | Output path | Notes |
+| Harness | Generates | Notes |
 |---|---|---|
-| **Claude Code** | `plugins/` (source-of-truth) | Native `marketplace.json` + per-plugin `plugin.json` |
+| **Claude Code** | (source-of-truth) | Native `marketplace.json` + `plugins/` |
 | **Codex CLI** | `.codex/skills/`, `.codex/agents/` | 8 KB skill cap respected; commands → skills |
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
@@ -86,7 +86,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **Copilot** | `.copilot/agents/`, `.copilot/skills/` | Markdown agent profiles + SKILL.md skills; model maps to GPT-5 family |
 
 ```bash
-make generate-all                        # all 5 generated harnesses (claude-code is source, not generated)
+make generate-all                        # all five
 make validate                            # structural checks
 make garden                              # drift / dead-link / cap detection
 ```
