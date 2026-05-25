@@ -157,11 +157,25 @@ def check_stale_artifacts(report: Report) -> None:
     opencode_skills = WORKTREE / ".opencode" / "skills"
     if opencode_skills.is_dir():
         skill_sources: dict[str, Path] = {}
-        for plugin_dir in PLUGINS_DIR.iterdir():
+        for plugin_dir in sorted(PLUGINS_DIR.iterdir()):
             if not plugin_dir.is_dir():
                 continue
-            for skill_file in (plugin_dir / "skills").glob("*/SKILL.md"):
-                skill_sources[f"{plugin_dir.name}-{skill_file.parent.name}"] = skill_file
+            for skill_file in sorted((plugin_dir / "skills").glob("*/SKILL.md")):
+                skill_id = f"{plugin_dir.name}-{skill_file.parent.name}"
+                existing = skill_sources.get(skill_id)
+                if existing and existing != skill_file:
+                    report.add(
+                        kind="opencode-skill-id-collision",
+                        severity="error",
+                        path=skill_file,
+                        message=(
+                            f"OpenCode skill id `{skill_id}` also maps to "
+                            f"{existing.relative_to(WORKTREE)}"
+                        ),
+                        fix="Rename the plugin or skill so OpenCode's hyphenated skill id is unique.",
+                    )
+                    continue
+                skill_sources[skill_id] = skill_file
         for skill_md in opencode_skills.glob("*/SKILL.md"):
             src = skill_sources.get(skill_md.parent.name)
             if src and src.is_file():

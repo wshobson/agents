@@ -613,6 +613,10 @@ class TestOpenCodeAdapter:
         assert fm["name"] == "demo-hello"
         assert fm["description"] == "Use when greeting users."
         assert "# Hello" in body
+        assert "`read`" in body
+        assert "`bash`" in body
+        assert "`Read`" not in body
+        assert "`Bash`" not in body
 
     def test_emits_opencode_skill_support_files(self, tmp_path: Path, output_root: Path):
         from tools.tests.conftest import _make_skill
@@ -688,6 +692,56 @@ class TestOpenCodeAdapter:
             assert "limit" in str(exc)
         else:
             raise AssertionError("too-long OpenCode skill id was accepted")
+
+    def test_rejects_ambiguous_opencode_skill_id_collision(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_skill
+
+        first_dir = tmp_path / "data-analysis"
+        second_dir = tmp_path / "data"
+        first_dir.mkdir()
+        second_dir.mkdir()
+        for plugin_dir in (first_dir, second_dir):
+            (plugin_dir / ".claude-plugin").mkdir()
+            (plugin_dir / ".claude-plugin" / "plugin.json").write_text(
+                f'{{"name": "{plugin_dir.name}"}}'
+            )
+
+        first_skill = _make_skill(
+            first_dir,
+            "report",
+            "name: report\ndescription: Use when testing.",
+            "# Report\n\nBody.\n",
+        )
+        second_skill = _make_skill(
+            second_dir,
+            "analysis-report",
+            "name: analysis-report\ndescription: Use when testing.",
+            "# Analysis Report\n\nBody.\n",
+        )
+        first = PluginSource(
+            name="data-analysis",
+            dir=first_dir,
+            plugin_json={"name": "data-analysis"},
+            skills=[first_skill],
+        )
+        second = PluginSource(
+            name="data",
+            dir=second_dir,
+            plugin_json={"name": "data"},
+            skills=[second_skill],
+        )
+
+        adapter = OpenCodeAdapter(output_root=output_root)
+        adapter.emit_plugin(first)
+
+        try:
+            adapter.emit_plugin(second)
+        except ValueError as exc:
+            assert "collision" in str(exc)
+            assert "data-analysis/report" in str(exc)
+            assert "data/analysis-report" in str(exc)
+        else:
+            raise AssertionError("ambiguous OpenCode skill id collision was accepted")
 
     def test_explicit_empty_tools_yields_locked_permission_block(
         self, tmp_path: Path, output_root: Path

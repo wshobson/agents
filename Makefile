@@ -216,7 +216,7 @@ else
 endif
 
 install-opencode:
-	$(MAKE) generate HARNESS=opencode
+	$(UV_TOOLS) $(GENERATE) --harness opencode --all --prune
 	$(UV_TOOLS) tools/install_opencode.py install $(if $(filter 1 true TRUE yes YES,$(FORCE)),--force)
 
 uninstall-opencode:

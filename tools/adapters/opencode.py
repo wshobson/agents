@@ -166,6 +166,10 @@ def _opencode_skill_id(plugin: PluginSource, skill: SkillSource) -> str:
 class OpenCodeAdapter(HarnessAdapter):
     harness_id = "opencode"
 
+    def __init__(self, output_root: Path | None = None) -> None:
+        super().__init__(output_root=output_root)
+        self._seen_skill_ids: dict[str, str] = {}
+
     def emit_plugin(self, plugin: PluginSource) -> EmitResult:
         result = EmitResult()
         for skill in plugin.skills:
@@ -190,12 +194,21 @@ class OpenCodeAdapter(HarnessAdapter):
 
     def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
         skill_id = _opencode_skill_id(plugin, skill)
+        source_id = f"{plugin.name}/{skill.name}"
+        existing_source = self._seen_skill_ids.get(skill_id)
+        if existing_source and existing_source != source_id:
+            raise ValueError(
+                f"OpenCode skill id collision for `{skill_id}`: {existing_source} and {source_id}"
+            )
+        self._seen_skill_ids[skill_id] = source_id
+
         skill_dir = Path(".opencode") / "skills" / skill_id
 
         fm = dict(skill.frontmatter)
         fm["name"] = skill_id
 
-        content = _opencode_frontmatter(fm) + "\n\n" + skill.body.rstrip() + "\n"
+        body = _rewrite_body_lowercase_tools(skill.body).rstrip() + "\n"
+        content = _opencode_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(skill_dir / "SKILL.md", content))
 
         # Mirror all support files (references/, assets/, scripts/, examples/, etc.)
