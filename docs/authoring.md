@@ -26,7 +26,7 @@ do, and what to avoid, so the work you do for Claude Code translates cleanly eve
 |---|---|---|---|
 | `agents/<name>.md` | `name`, `description` | `model`, optional `tools:`, optional `color:` | `tools:` allowlist becomes a per-harness permission block where supported, dropped otherwise. |
 | `skills/<name>/SKILL.md` | `name`, `description` | (none) | Other Anthropic SKILL.md fields work on Claude Code only. |
-| `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills (it deprecated `~/.codex/prompts/`). |
+| `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills; Copilot emits `.copilot/commands/<plugin>/<name>.md` slash-command prompts. |
 
 **Description triggers.** Include a recognized phrase: `Use when …`, `Use this skill when …`,
 `Use PROACTIVELY when …`, `Use after …`, `Trigger when …`, `Auto-loads when …`. The
@@ -141,7 +141,7 @@ Things that work in Claude Code but degrade across harnesses:
 | Hooks (`hooks:` frontmatter) | Only Claude Code and OpenCode (via TS plugins). |
 | `color:` on agents | Cosmetic; dropped everywhere except Claude Code. |
 | Per-agent tool allowlist | Honored only on Claude Code/Gemini/OpenCode. Cursor and Codex have coarser models. |
-| Slash commands | Codex converts to skills. Gemini transpiles to TOML. |
+| Slash commands | Codex converts to skills. Gemini transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. |
 | Marketplace registry | Only Claude Code and Cursor have one. Gemini installs by URL; Codex/OpenCode have no marketplace. |
 
 When you must use a feature with no equivalent, the `harness_portability` lint won't fire

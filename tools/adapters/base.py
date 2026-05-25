@@ -466,6 +466,7 @@ class HarnessAdapter(ABC):
             "WebFetch": "fetch",
             "WebSearch": "search",
             "TodoWrite": "todo",
+            "AskUserQuestion": "question",
         }
         out = body
         for camel, replacement in replacements.items():

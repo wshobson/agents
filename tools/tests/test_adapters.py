@@ -1015,6 +1015,22 @@ class TestCopilotAdapter:
         assert fm["description"] == "Use when greeting users."
         assert "# Hello" in body
 
+    def test_emits_command_prompt_files(self, synthetic_plugin: PluginSource, output_root: Path):
+        CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+
+        entry = output_root / ".copilot" / "commands" / "demo" / "index.md"
+        cmd = output_root / ".copilot" / "commands" / "demo" / "say-hi.md"
+
+        assert entry.is_file()
+        assert cmd.is_file()
+
+        entry_fm, entry_body = parse_frontmatter(entry.read_text())
+        cmd_fm, cmd_body = parse_frontmatter(cmd.read_text())
+        assert entry_fm["description"] == "Demo plugin for tests"
+        assert "/demo:say-hi" in entry_body
+        assert cmd_fm["description"] == "Send a greeting"
+        assert "Greet the user named $ARGUMENTS." in cmd_body
+
     def test_emit_global_returns_empty(
         self, synthetic_plugin: PluginSource, output_root: Path
     ):

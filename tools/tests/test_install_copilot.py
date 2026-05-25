@@ -10,10 +10,14 @@ from tools.install_copilot import default_config_dir, install, uninstall
 def _write_generated_copilot(repo_root: Path) -> None:
     agents = repo_root / ".copilot" / "agents"
     skills = repo_root / ".copilot" / "skills" / "demo-hello"
+    commands = repo_root / ".copilot" / "commands" / "demo"
     agents.mkdir(parents=True)
     skills.mkdir(parents=True)
+    commands.mkdir(parents=True)
     (agents / "demo__agent.agent.md").write_text("agent\n")
     (skills / "SKILL.md").write_text("---\nname: demo-hello\n---\n\nBody.\n")
+    (commands / "index.md").write_text("---\ndescription: demo\n---\n\nEntry.\n")
+    (commands / "say-hi.md").write_text("---\ndescription: hi\n---\n\nHi.\n")
 
 
 def test_default_config_dir_prefers_copilot_config_dir(tmp_path: Path):
@@ -39,11 +43,12 @@ def test_install_creates_idempotent_symlinks(tmp_path: Path):
     second = install(repo_root=repo_root, config_dir=config_dir)
 
     assert first.ok
-    assert first.linked == 2
+    assert first.linked == 3
     assert second.ok
-    assert second.unchanged == 2
+    assert second.unchanged == 3
     assert (config_dir / "agents" / "demo__agent.agent.md").is_symlink()
     assert (config_dir / "skills" / "demo-hello").is_symlink()
+    assert (config_dir / "commands" / "demo").is_symlink()
 
 
 def test_install_refuses_to_overwrite_real_files(tmp_path: Path):
@@ -95,7 +100,7 @@ def test_uninstall_removes_only_repo_owned_symlinks(tmp_path: Path):
     report = uninstall(repo_root=repo_root, config_dir=config_dir)
 
     assert report.ok
-    assert report.removed == 2
+    assert report.removed == 3
     assert not (config_dir / "agents" / "demo__agent.agent.md").exists()
     assert unrelated.is_symlink()
     assert real_file.read_text() == "user\n"

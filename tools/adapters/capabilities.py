@@ -94,7 +94,7 @@ CAPABILITIES: dict[str, Capability] = {
         display_name="GitHub Copilot",
         skills_native=True,
         agents_native=True,
-        commands_native=False,
+        commands_native=True,
         plugin_marketplace=False,
         parallel_agents=False,
         tool_allowlist_per_agent=True,
@@ -107,7 +107,7 @@ CAPABILITIES: dict[str, Capability] = {
         skill_body_max_bytes=_NO_CAP,
         tool_name_case="lowercase",
         bare_model_aliases=False,
-        notes="Emits Markdown agent profiles to .github/agents/ and SKILL.md skills to .github/skills/. Copilot discovers from any clone (files are committed). Also discovers from ~/.copilot/agents/ (user-level) and .github-private/ (org-level).",
+        notes="Emits Markdown agent profiles to .copilot/agents/, SKILL.md skills to .copilot/skills/, and slash-command prompt files to .copilot/commands/. Copilot discovers from the repo or from ~/.copilot/ at user level.",
     ),
     "cursor": Capability(
         harness_id="cursor",
