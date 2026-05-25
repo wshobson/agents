@@ -86,7 +86,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **Copilot** | `.github/agents/`, `.github/skills/` | Markdown agent profiles + SKILL.md skills; model maps to GPT-5 family |
 
 ```bash
-make generate-all                        # all six (claude-code is source, not generated)
+make generate-all                        # all 5 generated harnesses (claude-code is source, not generated)
 make validate                            # structural checks
 make garden                              # drift / dead-link / cap detection
 ```
