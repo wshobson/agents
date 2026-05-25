@@ -96,6 +96,24 @@ For generated harnesses, use Pensyve's upstream harness-native integration:
 | Cursor | `integrations/cursor` |
 | OpenCode | `integrations/opencode-plugin` |
 | Gemini CLI | `gemini extensions install https://github.com/major7apps/pensyve` |
+| Copilot | `.copilot/` (repo-level) or `~/.copilot/` (global install via `make install-copilot`) |
+
+## Global install
+
+OpenCode and Copilot support installing generated artifacts globally for user-level discovery:
+
+```bash
+make install-opencode    # symlink .opencode/ → ~/.config/opencode/
+make uninstall-opencode
+
+make install-copilot     # symlink .copilot/ → ~/.copilot/
+make uninstall-copilot
+
+# Force-replace conflicting symlinks:
+make install-copilot FORCE=1
+```
+
+> Copilot discovers agents from `.copilot/agents/` and skills from `.copilot/skills/` at the repo level, and from `~/.copilot/agents/` and `~/.copilot/skills/` at the user level. The adapter emits to `.copilot/`; use `make install-copilot` for user-level discovery.
 
 ## See also
 
