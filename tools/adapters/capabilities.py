@@ -127,7 +127,7 @@ CAPABILITIES: dict[str, Capability] = {
         skill_body_max_bytes=_NO_CAP,
         tool_name_case="lowercase",
         bare_model_aliases=False,  # use full provider/model-id
-        notes="Reads .claude/skills/ verbatim (toggle via OPENCODE_DISABLE_CLAUDE_CODE_SKILLS). Agent frontmatter uses permission: block (not tools:). Tool names are strictly lowercase.",
+        notes="Emits .opencode/skills/ with OpenCode-safe names for install. Agent frontmatter uses permission: block (not tools:). Tool names are strictly lowercase.",
     ),
     "gemini": Capability(
         harness_id="gemini",

@@ -81,7 +81,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **Claude Code** | (source-of-truth) | Native `marketplace.json` + `plugins/` |
 | **Codex CLI** | `.codex/skills/`, `.codex/agents/`, `AGENTS.md` | 8 KB skill cap respected; commands → skills |
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
-| **OpenCode** | `.opencode/agents/`, `.opencode/commands/` | `permission:` block from `tools:` allowlist |
+| **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
 
 ```bash

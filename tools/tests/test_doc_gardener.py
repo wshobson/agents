@@ -77,6 +77,42 @@ class TestStaleArtifacts:
         check_stale_artifacts(report)
         assert [f for f in report.findings if f.kind == "STALE_ARTIFACT"]
 
+    def test_opencode_skill_id_collision_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        first = tmp_path / "plugins" / "data-analysis" / "skills" / "report"
+        second = tmp_path / "plugins" / "data" / "skills" / "analysis-report"
+        first.mkdir(parents=True)
+        second.mkdir(parents=True)
+        for skill in (first, second):
+            (skill / "SKILL.md").write_text(
+                "---\nname: test\ndescription: Use when testing.\n---\n\nBody.\n"
+            )
+        (tmp_path / ".opencode" / "skills" / "data-analysis-report").mkdir(parents=True)
+
+        report = Report()
+        check_stale_artifacts(report)
+
+        findings = [f for f in report.findings if f.kind == "opencode-skill-id-collision"]
+        assert findings
+        assert "data-analysis-report" in findings[0].message
+
+    def test_missing_plugins_dir_does_not_crash_for_opencode_skills(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        skill = tmp_path / ".opencode" / "skills" / "demo-greeter"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            "---\nname: demo-greeter\ndescription: Use when greeting.\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        check_stale_artifacts(report)
+
+        assert [f for f in report.findings if f.kind == "opencode-skill-id-collision"] == []
+
 
 # ── Context file size ────────────────────────────────────────────────────────
 
