@@ -256,6 +256,19 @@ class TestOpenCodeValidator:
         validate_opencode(report)
         assert any("empty description" in f.message for f in report.errors())
 
+    def test_too_long_skill_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        name = "x" * 65
+        skill = tmp_path / ".opencode" / "skills" / name
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            f"---\nname: {name}\ndescription: Use when testing.\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        validate_opencode(report)
+        assert any("64" in f.message for f in report.errors())
+
 
 # ── Gemini ───────────────────────────────────────────────────────────────────
 
