@@ -61,19 +61,21 @@ def _build_tools_list(agent_tools: list[str]) -> list[str]:
 
 
 class CopilotAdapter(HarnessAdapter):
-    """Emit Copilot agent profiles (.agent.md) and skills (SKILL.md) to a local output tree.
+    """Emit Copilot agent profiles (.agent.md) and skills (SKILL.md) to Copilot config dir.
 
-    Agents go to ``.github/agents/<plugin>__<agent>.agent.md``, skills to
-    ``.github/skills/<plugin>__<skill>/SKILL.md``.  Tool names are rewritten from
-    Claude Code CamelCase to Copilot lowercase.  Model aliases are mapped to
-    the GPT-5 family (same as Codex CLI).
+    Agents go to ``agents/<plugin>__<agent>.agent.md``, skills to
+    ``skills/<plugin>__<skill>/SKILL.md`` under the Copilot config directory
+    (default ``~/.copilot/``).  Tool names are rewritten from Claude Code
+    CamelCase to Copilot lowercase.  Model aliases are mapped to the GPT-5
+    family (same as Codex CLI).
     """
 
     harness_id = "copilot"
+    COPILOT_CONFIG_DIR = Path.home() / ".copilot"
 
     def __init__(self, output_root: Path | None = None, repo_root: Path | None = None) -> None:
-        """Set output root (defaults to WORKTREE / .github) and optional repo root."""
-        super().__init__(output_root=output_root)
+        """Set output root (defaults to ~/.copilot) and optional repo root."""
+        super().__init__(output_root=output_root or self.COPILOT_CONFIG_DIR)
         if repo_root is not None:
             self.repo_root = repo_root
 
@@ -97,7 +99,7 @@ class CopilotAdapter(HarnessAdapter):
         names, and resolves model aliases before writing.
         """
         agent_id = f"{plugin.name}__{agent.name}"
-        rel = Path(".github") / "agents" / f"{agent_id}.agent.md"
+        rel = Path("agents") / f"{agent_id}.agent.md"
 
         model, warning = resolve_model("copilot", agent.model)
         if warning:
@@ -125,7 +127,7 @@ class CopilotAdapter(HarnessAdapter):
         phrases) and body verbatim, wrapped in YAML frontmatter.
         """
         skill_id = f"{plugin.name}__{skill.name}"
-        skill_dir = Path(".github") / "skills" / skill_id
+        skill_dir = Path("skills") / skill_id
 
         content = _copilot_frontmatter(skill.frontmatter) + "\n\n" + skill.body.rstrip() + "\n"
         result.written.append(self.write(skill_dir / "SKILL.md", content))

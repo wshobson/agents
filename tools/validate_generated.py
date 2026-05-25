@@ -503,12 +503,12 @@ def validate_gemini(report: Report) -> None:
 
 
 def validate_copilot(report: Report) -> None:
-    """Validate Copilot agent markdown files under WORKTREE/.github/agents.
+    """Validate Copilot agent markdown files under ~/.copilot/agents.
 
     Checks that every .agent.md file has valid frontmatter with required fields.
+    Also checks WORKTREE/.github/ as a fallback for local dev / test compatibility.
     """
-    # Validate repository-level agents (WORKTREE/.github/agents).
-    candidate_roots = [WORKTREE / ".github"]
+    candidate_roots = [Path.home() / ".copilot", WORKTREE / ".github"]
     found_any = False
     for root in candidate_roots:
         agents_dir = root / "agents"

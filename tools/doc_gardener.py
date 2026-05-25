@@ -186,6 +186,28 @@ def check_stale_artifacts(report: Report) -> None:
                 if src.is_file():
                     pairs.append((src, toml_path))
 
+    # Copilot agents (.agent.md) and skills (SKILL.md) at ~/.copilot/
+    copilot_root = Path.home() / ".copilot"
+    copilot_agents = copilot_root / "agents"
+    if copilot_agents.is_dir():
+        for agent_md in copilot_agents.glob("*.agent.md"):
+            name = agent_md.stem
+            if "__" in name:
+                plugin, agent = name.split("__", 1)
+                src = PLUGINS_DIR / plugin / "agents" / f"{agent}.md"
+                if src.is_file():
+                    pairs.append((src, agent_md))
+
+    copilot_skills = copilot_root / "skills"
+    if copilot_skills.is_dir():
+        for skill_md in copilot_skills.glob("*/SKILL.md"):
+            name = skill_md.parent.name
+            if "__" in name:
+                plugin, leaf = name.split("__", 1)
+                src = PLUGINS_DIR / plugin / "skills" / leaf / "SKILL.md"
+                if src.is_file():
+                    pairs.append((src, skill_md))
+
     for src, gen in pairs:
         if src.stat().st_mtime > gen.stat().st_mtime + 1:  # 1s grace
             # Derive the plugin name correctly regardless of source layout.
