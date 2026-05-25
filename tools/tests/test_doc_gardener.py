@@ -98,6 +98,21 @@ class TestStaleArtifacts:
         assert findings
         assert "data-analysis-report" in findings[0].message
 
+    def test_missing_plugins_dir_does_not_crash_for_opencode_skills(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        skill = tmp_path / ".opencode" / "skills" / "demo-greeter"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            "---\nname: demo-greeter\ndescription: Use when greeting.\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        check_stale_artifacts(report)
+
+        assert [f for f in report.findings if f.kind == "opencode-skill-id-collision"] == []
+
 
 # ── Context file size ────────────────────────────────────────────────────────
 
