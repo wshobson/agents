@@ -7,7 +7,7 @@
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md) [![Copilot](https://img.shields.io/badge/Copilot-supported-lightgrey)](docs/harnesses.md)
 
 > [!NOTE]
-> One source-of-truth (`plugins/`), six harnesses. Each harness gets idiomatic,
+> One source-of-truth (`plugins/`), five harnesses. Each harness gets idiomatic,
 > harness-native artifacts — not lowest-common-denominator translations.
 > See [docs/harnesses.md](docs/harnesses.md) for the capability matrix.
 
@@ -83,7 +83,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
-| **Copilot** | `.github/agents/`, `.github/skills/` | Markdown agent profiles + SKILL.md skills; model maps to GPT-5 family |
+| **Copilot** | `.copilot/agents/`, `.copilot/skills/` | Markdown agent profiles + SKILL.md skills; model maps to GPT-5 family |
 
 ```bash
 make generate-all                        # all 5 generated harnesses (claude-code is source, not generated)
