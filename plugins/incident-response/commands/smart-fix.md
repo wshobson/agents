@@ -72,7 +72,7 @@ Use the Task tool to launch the error detective agent:
 
 ```
 Task:
-  subagent_type: "error-detective"
+  subagent_type: "incident-response-error-detective"
   description: "Analyze error context for: $ISSUE"
   prompt: |
     Analyze error traces, logs, and observability data for: $ISSUE
@@ -112,7 +112,7 @@ Use the Task tool to launch the debugger agent:
 
 ```
 Task:
-  subagent_type: "debugger"
+  subagent_type: "incident-response-debugger"
   description: "Identify root cause for: $ISSUE"
   prompt: |
     Perform root cause investigation using error-detective output:
@@ -179,7 +179,7 @@ Use the Task tool to launch the debugger agent:
 
 ```
 Task:
-  subagent_type: "debugger"
+  subagent_type: "incident-response-debugger"
   description: "Deep code analysis for: $ISSUE"
   prompt: |
     Perform deep code analysis and bisect investigation:
@@ -213,7 +213,7 @@ Use the Task tool to launch the code reviewer agent:
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "incident-response-code-reviewer"
   description: "Review code logic for: $ISSUE"
   prompt: |
     Review code logic and identify design issues:
@@ -325,7 +325,7 @@ Use the Task tool to launch the test automator:
 
 ```
 Task:
-  subagent_type: "test-automator"
+  subagent_type: "incident-response-test-automator"
   description: "Regression testing for: $ISSUE fix"
   prompt: |
     Run comprehensive regression testing and verify fix quality:
@@ -448,7 +448,7 @@ Read `.smart-fix/05-implementation.md` and `.smart-fix/06-verification.md`.
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "incident-response-code-reviewer"
   description: "Final review for: $ISSUE fix"
   prompt: |
     Perform final code review and approve for deployment:

@@ -1,5 +1,5 @@
 ---
-name: docs-architect
+name: documentation-generation-docs-architect
 description: Creates comprehensive technical documentation from existing codebases. Analyzes architecture, design patterns, and implementation details to produce long-form technical manuals and ebooks. Use PROACTIVELY for system documentation, architecture guides, or technical deep-dives.
 model: sonnet
 ---

@@ -94,7 +94,7 @@ make generate HARNESS=cursor
 # 1. Open Cursor 2.5+
 # 2. Settings → Plugins → Add Local Plugin Source
 # 3. Point at /path/to/claude-agents/
-# 4. Verify the marketplace browser lists all 82 plugins
+# 4. Verify the marketplace browser lists all 81 local plugins
 # 5. Verify .cursor/rules/*.mdc files activate per their `globs`
 # 6. Skills under .claude/skills/ should auto-trigger from descriptions
 ```

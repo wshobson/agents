@@ -126,7 +126,7 @@ Use the Task tool to launch the architecture agent:
 
 ```
 Task:
-  subagent_type: "backend-architect"
+  subagent_type: "backend-development-backend-architect"
   description: "Design architecture for $FEATURE"
   prompt: |
     Design the technical architecture for this feature.
@@ -179,7 +179,7 @@ Use the Task tool to launch the backend architect for implementation:
 
 ```
 Task:
-  subagent_type: "backend-architect"
+  subagent_type: "backend-development-backend-architect"
   description: "Implement backend for $FEATURE"
   prompt: |
     Implement the backend for this feature based on the approved architecture.
@@ -253,7 +253,7 @@ Launch three agents in parallel using multiple Task tool calls in a single respo
 
 ```
 Task:
-  subagent_type: "test-automator"
+  subagent_type: "backend-development-test-automator"
   description: "Create test suite for $FEATURE"
   prompt: |
     Create a comprehensive test suite for this feature.
@@ -280,7 +280,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "security-auditor"
+  subagent_type: "backend-development-security-auditor"
   description: "Security review of $FEATURE"
   prompt: |
     Perform a security review of this feature implementation.
@@ -304,7 +304,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "performance-engineer"
+  subagent_type: "backend-development-performance-engineer"
   description: "Performance review of $FEATURE"
   prompt: |
     Review the performance of this feature implementation.

@@ -16,7 +16,7 @@ YTX_SCRIPT := yt-design-extractor.py
 # `uv run` against the plugin-eval venv — has pyyaml + extra-paths to tools/adapters/
 UV_TOOLS := uv run $(EVAL_PROJECT) python
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated validate garden test smoke-test generate-plugin sync-commands generate-all-commands clean-commands
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode validate garden test smoke-test generate-plugin sync-commands generate-all-commands clean-commands
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
@@ -26,6 +26,8 @@ help:
 	@echo "  make generate HARNESS=<h> [PLUGIN=<p>]           Generate per-harness artifacts (defaults to all plugins)"
 	@echo "  make generate-all                                Generate for ALL harnesses + ALL plugins"
 	@echo "  make clean-generated [HARNESS=<h>]               Remove generated artifacts"
+	@echo "  make install-opencode [FORCE=1]                  Symlink OpenCode artifacts into global config"
+	@echo "  make uninstall-opencode                          Remove repo-owned OpenCode symlinks"
 	@echo "  make validate [HARNESS=<h>] [STRICT=1]           Structural validation of generated artifacts"
 	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
 	@echo "  make test                                        Full pytest suite (plugin-eval + tools)"
@@ -212,6 +214,13 @@ else
 		$(UV_TOOLS) $(GENERATE) --harness $$h --clean; \
 	done
 endif
+
+install-opencode:
+	$(UV_TOOLS) $(GENERATE) --harness opencode --all --prune
+	$(UV_TOOLS) tools/install_opencode.py install $(if $(filter 1 true TRUE yes YES,$(FORCE)),--force)
+
+uninstall-opencode:
+	$(UV_TOOLS) tools/install_opencode.py uninstall
 
 # Legacy Gemini wrappers (delegate to the unified CLI)
 generate-plugin:

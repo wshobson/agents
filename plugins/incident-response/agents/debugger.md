@@ -1,5 +1,5 @@
 ---
-name: debugger
+name: incident-response-debugger
 description: Performs deep root cause analysis through code path tracing, git bisect automation, dependency analysis, and systematic hypothesis testing for production bugs.
 model: sonnet
 ---

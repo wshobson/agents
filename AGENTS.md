@@ -1,6 +1,6 @@
 # claude-agents — multi-harness agentic plugin marketplace
 
-Production-ready agentic-workflow building blocks: **82 plugins** (81 local + 1 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
+Production-ready agentic-workflow building blocks: **83 plugins** (81 local + 2 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
 
 This file is the canonical context file. Codex / Cursor / OpenCode / Copilot read it directly. Claude Code reads it via `@AGENTS.md` import in `CLAUDE.md`. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`).
 
@@ -10,7 +10,7 @@ This file is the canonical context file. Codex / Cursor / OpenCode / Copilot rea
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — top-level architectural overview (adapter framework, source-of-truth invariant, capability matrix summary)
 - **[docs/architecture.md](docs/architecture.md)** — detailed design principles
-- **[docs/plugins.md](docs/plugins.md)** — full plugin catalog (82 plugins by category)
+- **[docs/plugins.md](docs/plugins.md)** — full plugin catalog (83 plugins by category)
 - **[docs/agents.md](docs/agents.md)** — agent reference (191 agents, model tiers)
 - **[docs/agent-skills.md](docs/agent-skills.md)** — skill reference (progressive disclosure model)
 - **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
@@ -43,10 +43,11 @@ CI (`.github/workflows/validate.yml`) runs all four on every PR plus installs Op
 ```bash
 make generate HARNESS=codex      # emits .codex/skills, .codex/agents
 make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
-make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/
+make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/, .opencode/skills/
 make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
-make generate HARNESS=copilot    # emits .github/agents/, .github/skills/
+make generate HARNESS=copilot    # emits ~/.copilot/agents/, ~/.copilot/skills/
 make generate-all                # all six (claude-code is source, not generated)
+make install-opencode            # symlink generated OpenCode artifacts into global config
 ```
 
 Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored — never hand-edit them.
@@ -57,10 +58,12 @@ Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored 
 
 - **Claude Code**: auto-discovery via Anthropic's SKILL.md spec
 - **Codex CLI**: mirrored to `.codex/skills/<plugin>__<skill>/` (8 KB body cap; detail in `references/details.md`)
-- **OpenCode**: reads `.claude/skills/` directly (no re-emit)
+- **OpenCode**: mirrored to `.opencode/skills/<plugin>-<skill>/` using hyphenated names for global install
 - **Cursor**: reads `.claude/skills/` directly (no re-emit)
 - **Gemini CLI**: native skills at `skills/<plugin>__<skill>/SKILL.md`
 - **Copilot**: agent profiles to `.github/agents/`, skills to `.github/skills/`
+
+Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 
 ## Subagents (cross-harness)
 

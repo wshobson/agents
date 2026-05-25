@@ -1,6 +1,6 @@
 # Agentic Plugin Marketplace
 
-> Production-ready agentic workflow building blocks: **82 plugins**, **191 agents**,
+> Production-ready agentic workflow building blocks: **83 plugins**, **191 agents**,
 > **155 skills**, **102 commands** — built for Claude Code and consumed natively by
 > OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
 
@@ -19,7 +19,7 @@ Pick your harness:
 
 ```bash
 /plugin marketplace add wshobson/agents
-/plugin install python-development          # or any of 82 plugins
+/plugin install python-development          # or any of 83 plugins
 ```
 
 [→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
@@ -38,7 +38,7 @@ Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). G
 
 | | Count | What it is |
 |---|---:|---|
-| **Plugins** | 82 | Granular, single-purpose installable units (81 local + 1 external via git-subdir) |
+| **Plugins** | 83 | Granular, single-purpose installable units (81 local + 2 external via git-subdir) |
 | **Agents** | 191 | Domain experts (architecture, languages, infra, security, data, ML, docs, business, SEO) |
 | **Skills** | 155 | Modular knowledge packages with progressive disclosure (load when activated) |
 | **Commands** | 102 | Slash commands: scaffolding, security scans, test gen, infrastructure setup |
@@ -81,7 +81,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **Claude Code** | `plugins/` (source-of-truth) | Native `marketplace.json` + per-plugin `plugin.json` |
 | **Codex CLI** | `.codex/skills/`, `.codex/agents/` | 8 KB skill cap respected; commands → skills |
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
-| **OpenCode** | `.opencode/agents/`, `.opencode/commands/` | `permission:` block from `tools:` allowlist |
+| **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
 | **Copilot** | `.github/agents/`, `.github/skills/` | Markdown agent profiles + SKILL.md skills; model maps to GPT-5 family |
 
@@ -113,7 +113,7 @@ uv run plugin-eval certify path/to/skill
 
 Detail lives in `docs/`. Read in this order:
 
-- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 82 plugins
+- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 83 plugins
 - **[docs/agents.md](docs/agents.md)** — all 191 agents by category
 - **[docs/agent-skills.md](docs/agent-skills.md)** — 155 skills with progressive disclosure
 - **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
@@ -127,15 +127,19 @@ Gemini-specific setup: [GEMINI.md](GEMINI.md). All other harness setup, capabili
 
 Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · Authoring: [docs/authoring.md](docs/authoring.md)
 
-## Related plugins (external sources)
+## External Memory Integration
 
-- **[Pensyve](https://github.com/major7apps/pensyve)** — universal memory runtime with
-  cross-session cognitive memory for Claude Code.
+[Pensyve](https://github.com/major7apps/pensyve) is included as an external
+`git-subdir` entry for Claude Code. Pensyve also maintains direct upstream
+integrations for this marketplace's other supported harnesses.
 
-  ```bash
-  /plugin marketplace add major7apps/pensyve
-  /plugin install pensyve@major7apps-pensyve
-  ```
+| Harness | Pensyve integration |
+|---|---|
+| Claude Code | `/plugin install pensyve` from this marketplace (`integrations/claude-code`) |
+| Codex CLI | [integrations/codex-plugin](https://github.com/major7apps/pensyve/tree/main/integrations/codex-plugin) |
+| Cursor | [integrations/cursor](https://github.com/major7apps/pensyve/tree/main/integrations/cursor) |
+| OpenCode | [integrations/opencode-plugin](https://github.com/major7apps/pensyve/tree/main/integrations/opencode-plugin) |
+| Gemini CLI | `gemini extensions install https://github.com/major7apps/pensyve` |
 
 ## License
 

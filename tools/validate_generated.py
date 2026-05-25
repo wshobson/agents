@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import tomllib
 from dataclasses import dataclass, field
@@ -290,6 +291,8 @@ _OPENCODE_PERMISSION_KEYS = {
 }
 _OPENCODE_PERMISSION_VALUES = {"allow", "ask", "deny"}
 _OPENCODE_MODES = {"primary", "subagent", "all"}
+_OPENCODE_SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+_OPENCODE_SKILL_NAME_MAX = 64
 
 
 def _extract_permission_block(raw: str) -> dict | None:
@@ -415,6 +418,59 @@ def validate_opencode(report: Report) -> None:
                             message=f"permission.{k} = {v!r} not in {sorted(_OPENCODE_PERMISSION_VALUES)}",
                             remediation="Values must be allow/ask/deny.",
                         )
+
+    # 3. Every skill has OpenCode-valid frontmatter with name matching directory.
+    skills_dir = root / "skills"
+    if skills_dir.is_dir():
+        for skill_md in skills_dir.glob("*/SKILL.md"):
+            content = skill_md.read_text()
+            fm, _ = parse_frontmatter(content)
+            if not fm:
+                report.add(
+                    severity="error",
+                    harness="opencode",
+                    path=skill_md,
+                    message="missing or invalid frontmatter",
+                    remediation="Regenerate via `make generate HARNESS=opencode`.",
+                )
+                continue
+
+            name = str(fm.get("name") or "")
+            if name != skill_md.parent.name:
+                report.add(
+                    severity="error",
+                    harness="opencode",
+                    path=skill_md,
+                    message=f"frontmatter name {name!r} != directory {skill_md.parent.name!r}",
+                    remediation="OpenCode skill names must match their directory.",
+                )
+            if not _OPENCODE_SKILL_NAME_RE.fullmatch(name):
+                report.add(
+                    severity="error",
+                    harness="opencode",
+                    path=skill_md,
+                    message=f"skill name {name!r} is not OpenCode-safe",
+                    remediation="Use lowercase alphanumeric names with single hyphen separators.",
+                )
+            if len(name) > _OPENCODE_SKILL_NAME_MAX:
+                report.add(
+                    severity="error",
+                    harness="opencode",
+                    path=skill_md,
+                    message=(
+                        f"skill name {name!r} is {len(name)} chars; "
+                        f"limit is {_OPENCODE_SKILL_NAME_MAX}"
+                    ),
+                    remediation="Shorten the plugin or skill name before generating OpenCode skills.",
+                )
+            if not str(fm.get("description") or "").strip():
+                report.add(
+                    severity="error",
+                    harness="opencode",
+                    path=skill_md,
+                    message="empty description in frontmatter",
+                    remediation="OpenCode skills require a description.",
+                )
 
 
 # ── Gemini validators ────────────────────────────────────────────────────────

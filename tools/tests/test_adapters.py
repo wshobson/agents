@@ -16,7 +16,7 @@ from tools.adapters.base import PluginSource, parse_frontmatter
 from tools.adapters.codex import CodexAdapter, _split_body_if_oversized
 from tools.adapters.cursor import CursorAdapter
 from tools.adapters.gemini import _INLINE_BODY_THRESHOLD, GeminiAdapter
-from tools.adapters.opencode import OpenCodeAdapter
+from tools.adapters.opencode import OpenCodeAdapter, _opencode_skill_id
 
 # ── Codex ────────────────────────────────────────────────────────────────────
 
@@ -590,8 +590,7 @@ class TestOpenCodeAdapter:
 
     def test_lowercases_tool_refs_in_body(self, synthetic_plugin: PluginSource, output_root: Path):
         OpenCodeAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
-        # Body of the skill references `Read` and `Bash` — but OpenCode doesn't emit
-        # skills (it reads .claude/). So check the command body instead:
+        # Commands and agents need OpenCode's lowercase tool vocabulary.
         cmd_md = output_root / ".opencode" / "commands" / "demo__say-hi.md"
         assert cmd_md.is_file()
 
@@ -604,11 +603,145 @@ class TestOpenCodeAdapter:
         data = json.loads(cfg.read_text())
         assert data["$schema"] == "https://opencode.ai/config.json"
 
-    def test_no_skills_emitted(self, synthetic_plugin: PluginSource, output_root: Path):
-        """OpenCode reads .claude/skills/ directly — adapter should NOT mirror skills."""
+    def test_emits_opencode_skill_with_hyphenated_name(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
         OpenCodeAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
-        skills_dir = output_root / ".opencode" / "skills"
-        assert not skills_dir.exists() or not any(skills_dir.iterdir())
+        skill_md = output_root / ".opencode" / "skills" / "demo-hello" / "SKILL.md"
+        assert skill_md.is_file()
+        fm, body = parse_frontmatter(skill_md.read_text())
+        assert fm["name"] == "demo-hello"
+        assert fm["description"] == "Use when greeting users."
+        assert "# Hello" in body
+        assert "`read`" in body
+        assert "`bash`" in body
+        assert "`Read`" not in body
+        assert "`Bash`" not in body
+
+    def test_emits_opencode_skill_support_files(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        skill = _make_skill(
+            plugin_dir,
+            "with-assets",
+            "name: with-assets\ndescription: Use when testing assets.",
+            "# With Assets\n\nBody.\n",
+        )
+        (skill.dir / "references").mkdir()
+        (skill.dir / "references" / "details.md").write_text("More detail.\n")
+        (skill.dir / "assets").mkdir()
+        (skill.dir / "assets" / "icon.bin").write_bytes(b"\x00\x01")
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
+        )
+
+        OpenCodeAdapter(output_root=output_root).emit_plugin(plugin)
+
+        skill_dir = output_root / ".opencode" / "skills" / "demo-with-assets"
+        assert (skill_dir / "references" / "details.md").read_text() == "More detail.\n"
+        assert (skill_dir / "assets" / "icon.bin").read_bytes() == b"\x00\x01"
+
+    def test_rejects_invalid_opencode_skill_id(self, tmp_path: Path):
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "bad_plugin"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "bad_plugin"}')
+        skill = _make_skill(
+            plugin_dir,
+            "hello",
+            "name: hello\ndescription: Use when testing.",
+            "# Hello\n\nBody.\n",
+        )
+        plugin = PluginSource(
+            name="bad_plugin", dir=plugin_dir, plugin_json={"name": "bad_plugin"}, skills=[skill]
+        )
+
+        try:
+            _opencode_skill_id(plugin, skill)
+        except ValueError as exc:
+            assert "must match" in str(exc)
+        else:
+            raise AssertionError("invalid OpenCode skill id was accepted")
+
+    def test_rejects_too_long_opencode_skill_id(self, tmp_path: Path):
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        skill = _make_skill(
+            plugin_dir,
+            "x" * 80,
+            "name: long\ndescription: Use when testing.",
+            "# Long\n\nBody.\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
+        )
+
+        try:
+            _opencode_skill_id(plugin, skill)
+        except ValueError as exc:
+            assert "limit" in str(exc)
+        else:
+            raise AssertionError("too-long OpenCode skill id was accepted")
+
+    def test_rejects_ambiguous_opencode_skill_id_collision(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_skill
+
+        first_dir = tmp_path / "data-analysis"
+        second_dir = tmp_path / "data"
+        first_dir.mkdir()
+        second_dir.mkdir()
+        for plugin_dir in (first_dir, second_dir):
+            (plugin_dir / ".claude-plugin").mkdir()
+            (plugin_dir / ".claude-plugin" / "plugin.json").write_text(
+                f'{{"name": "{plugin_dir.name}"}}'
+            )
+
+        first_skill = _make_skill(
+            first_dir,
+            "report",
+            "name: report\ndescription: Use when testing.",
+            "# Report\n\nBody.\n",
+        )
+        second_skill = _make_skill(
+            second_dir,
+            "analysis-report",
+            "name: analysis-report\ndescription: Use when testing.",
+            "# Analysis Report\n\nBody.\n",
+        )
+        first = PluginSource(
+            name="data-analysis",
+            dir=first_dir,
+            plugin_json={"name": "data-analysis"},
+            skills=[first_skill],
+        )
+        second = PluginSource(
+            name="data",
+            dir=second_dir,
+            plugin_json={"name": "data"},
+            skills=[second_skill],
+        )
+
+        adapter = OpenCodeAdapter(output_root=output_root)
+        adapter.emit_plugin(first)
+
+        try:
+            adapter.emit_plugin(second)
+        except ValueError as exc:
+            assert "collision" in str(exc)
+            assert "data-analysis/report" in str(exc)
+            assert "data/analysis-report" in str(exc)
+        else:
+            raise AssertionError("ambiguous OpenCode skill id collision was accepted")
 
     def test_explicit_empty_tools_yields_locked_permission_block(
         self, tmp_path: Path, output_root: Path

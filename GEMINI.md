@@ -17,6 +17,15 @@ make generate HARNESS=gemini
 - **191 subagents** at `agents/<plugin>__<agent>.md` — invoke with `@<agent>`.
 - **102 slash commands** at `/<plugin>:<command>` — use `/help` to list.
 
+## Companion Memory Extension
+
+Pensyve is maintained upstream as a separate Gemini CLI extension with MCP-backed
+memory and context injection:
+
+```bash
+gemini extensions install https://github.com/major7apps/pensyve
+```
+
 ## Gemini-specific differences
 
 | Capability | Claude Code | Gemini CLI |

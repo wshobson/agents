@@ -1,5 +1,5 @@
 ---
-name: backend-security-coder
+name: data-validation-suite-backend-security-coder
 description: Expert in secure backend coding practices specializing in input validation, authentication, and API security. Use PROACTIVELY for backend security implementations or security code reviews.
 model: sonnet
 ---

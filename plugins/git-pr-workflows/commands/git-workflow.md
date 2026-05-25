@@ -88,7 +88,7 @@ Use the Task tool to launch the code reviewer:
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "git-pr-workflows-code-reviewer"
   description: "Review uncommitted changes for code quality"
   prompt: |
     Review all uncommitted changes for code quality issues.
@@ -127,7 +127,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "git-pr-workflows-code-reviewer"
   description: "Analyze changes for dependencies and breaking changes"
   prompt: |
     Analyze the changes for dependency and breaking change issues.
@@ -305,7 +305,7 @@ Use the Task tool:
 
 ```
 Task:
-  subagent_type: "code-reviewer"
+  subagent_type: "git-pr-workflows-code-reviewer"
   description: "Categorize changes for commit message"
   prompt: |
     Analyze all changes and categorize them according to Conventional Commits specification.

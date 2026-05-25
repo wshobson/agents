@@ -26,7 +26,7 @@ claude-agents/
 ├── CONTRIBUTING.md                 # Contributor entry point
 ├── .claude-plugin/marketplace.json # Plugin registry (source of truth)
 ├── .gemini/settings.json           # Gemini CLI → AGENTS.md redirect
-├── plugins/                        # SOURCE OF TRUTH (82 plugins)
+├── plugins/                        # SOURCE OF TRUTH (81 local plugins; 2 externals in marketplace)
 │   └── <name>/
 │       ├── .claude-plugin/plugin.json
 │       ├── agents/*.md
@@ -60,7 +60,7 @@ Each adapter consumes the canonical `plugins/` source and emits harness-native a
 |---|---|---|
 | `codex.py` | `.codex/skills/`, `.codex/agents/*.toml` | Markdown → TOML transform, 8 KB body cap with `references/` overflow, sandbox_mode heuristic, collision detection |
 | `cursor.py` | `.cursor-plugin/`, `.cursor/rules/*.mdc` | Marketplace manifests + hand-curated rules. Cursor reads `.claude/` directly for skills/agents |
-| `opencode.py` | `.opencode/agents/`, `.opencode/commands/` | Permission block from `tools:` allowlist (locked agents preserve intent); strict lowercase tool names |
+| `opencode.py` | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | Permission block from `tools:` allowlist (locked agents preserve intent); strict lowercase tool names; OpenCode-safe skill names |
 | `gemini.py` | `skills/`, `agents/`, `commands/*.toml` at extension root | Native skills + April-2026 subagents; `@{path}` injection for large command bodies |
 
 Detail in [`docs/harnesses.md`](docs/harnesses.md) (capability matrix per harness) and [`docs/architecture.md`](docs/architecture.md) (full design rationale).

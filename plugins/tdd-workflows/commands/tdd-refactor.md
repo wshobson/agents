@@ -4,7 +4,7 @@ Refactor code with confidence using comprehensive test safety net:
 
 ## Usage
 
-Use Task tool with subagent_type="tdd-orchestrator" to perform safe refactoring.
+Use Task tool with subagent_type="tdd-workflows-tdd-orchestrator" to perform safe refactoring.
 
 Prompt: "Refactor this code while keeping all tests green: $ARGUMENTS. Apply TDD refactor phase:
 
