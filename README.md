@@ -140,6 +140,7 @@ integrations for this marketplace's other supported harnesses.
 | Cursor | [integrations/cursor](https://github.com/major7apps/pensyve/tree/main/integrations/cursor) |
 | OpenCode | [integrations/opencode-plugin](https://github.com/major7apps/pensyve/tree/main/integrations/opencode-plugin) |
 | Gemini CLI | `gemini extensions install https://github.com/major7apps/pensyve` |
+| Copilot | `.copilot/` in repo root or `~/.copilot/` via `make install-copilot` |
 
 ## License
 
