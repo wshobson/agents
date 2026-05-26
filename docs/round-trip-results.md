@@ -13,6 +13,7 @@ load the generated artifacts and report what it found.
 | **Gemini CLI** | 0.42.0 | ✅ pass | `gemini extensions validate .` returns "successfully validated" | Native skills + subagents at extension root recognized. |
 | **Codex CLI** | 0.133.0 | ✅ pass (structural) | All 191 agent TOMLs parse via Python `tomllib`; AGENTS.md within budget (43 lines / 500 tokens) | Codex doctor surfaces no errors; deeper "did the model actually load the skill" requires interactive verification. |
 | **Cursor** | (editor-only) | n/a | n/a | No CLI; manual verification recipe below. |
+| **Copilot** | (structural) | ✅ pass | 191 agent profiles, 155 skills, 25 commands all validated | No CLI round-trip tool yet; structural validation via `make validate` passes. |
 
 ## Issues surfaced and fixed during round-trip
 
@@ -99,13 +100,35 @@ make generate HARNESS=cursor
 # 6. Skills under .claude/skills/ should auto-trigger from descriptions
 ```
 
+### Copilot (no CLI round-trip yet)
+
+```bash
+# Generate
+make generate HARNESS=copilot
+
+# Structural validation (parses every generated artifact)
+make validate
+
+# Verify artifact tree
+ls .copilot/agents/   # 191 agent profiles (*.agent.md)
+ls .copilot/skills/   # 155 skill dirs (each with SKILL.md)
+ls .copilot/commands/ # command-prompt files
+
+# Global install (optional)
+make install-copilot   # symlinks .copilot/ -> ~/.copilot/
+```
+
+Copilot currently lacks a CLI verification tool. Manual testing: open VS
+Code, open the Copilot Chat (Ctrl+Shift+I), and verify agents appear in the
+agent selector and skills auto-trigger from matching prompts.
+
 ## Automated structural checks (no CLI needed)
 
 The `tools/validate_generated.py` script approximates round-trip without installing the
 harnesses:
 
 ```bash
-make validate                 # all four harnesses
+make validate                 # all five harnesses
 make validate HARNESS=codex   # one only
 ```
 
@@ -133,6 +156,8 @@ the artifacts at runtime. Specifically untested by the automated suite:
   editor; can't be scripted).
 - Whether Gemini's `@<agent>` invocation runs our generated subagent against a real
   prompt.
+- Whether Copilot's agent profile and skill discovery actually loads our artifacts
+  end-to-end (no CLI; requires VS Code editor).
 
 These require interactive use and API-token-burning runs. The recipes above show how
 to perform them manually.

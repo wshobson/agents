@@ -1,7 +1,6 @@
 # Authoring portable plugin content
 
-Plugin content in this repo ships to **five** harnesses: Claude Code (source of truth),
-OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI. The adapter framework handles per-harness
+Plugin content in this repo ships to **five** harnesses: OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot. Claude Code is the source-of-truth. The adapter framework handles per-harness
 mechanics (frontmatter rewrites, format transforms, output paths) so you author one set of
 markdown files. But content choices still affect portability — this guide tells you what to
 do, and what to avoid, so the work you do for Claude Code translates cleanly everywhere.
@@ -26,7 +25,7 @@ do, and what to avoid, so the work you do for Claude Code translates cleanly eve
 |---|---|---|---|
 | `agents/<name>.md` | `name`, `description` | `model`, optional `tools:`, optional `color:` | `tools:` allowlist becomes a per-harness permission block where supported, dropped otherwise. |
 | `skills/<name>/SKILL.md` | `name`, `description` | (none) | Other Anthropic SKILL.md fields work on Claude Code only. |
-| `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills (it deprecated `~/.codex/prompts/`). |
+| `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills (it deprecated `~/.codex/prompts/`). Copilot emits `.copilot/commands/<plugin>/<name>.md` slash-command prompts. |
 
 **Description triggers.** Include a recognized phrase: `Use when …`, `Use this skill when …`,
 `Use PROACTIVELY when …`, `Use after …`, `Trigger when …`, `Auto-loads when …`. The
@@ -106,12 +105,12 @@ clean naming — pick distinct names for skill/command pairs within a plugin.
 
 ### Model aliases
 
-| Source field | Codex | Cursor | OpenCode | Gemini |
-|---|---|---|---|---|
-| `model: opus` | `gpt-5` | `inherit` | `anthropic/claude-opus-4-7` | `gemini-2.5-pro` |
-| `model: sonnet` | `gpt-5-mini` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` |
-| `model: haiku` | `gpt-5-nano` | `inherit` | `anthropic/claude-haiku-4-5-20251001` | `gemini-2.5-flash` |
-| `model: inherit` | `gpt-5` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` |
+| Source field | Codex | Cursor | OpenCode | Gemini | Copilot |
+|---|---|---|---|---|---|---|
+| `model: opus` | `gpt-5` | `inherit` | `anthropic/claude-opus-4-7` | `gemini-2.5-pro` | `gpt-5` |
+| `model: sonnet` | `gpt-5-mini` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `gpt-5-mini` |
+| `model: haiku` | `gpt-5-nano` | `inherit` | `anthropic/claude-haiku-4-5-20251001` | `gemini-2.5-flash` | `gpt-5-nano` |
+| `model: inherit` | `gpt-5` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `gpt-5` |
 
 The adapter handles mapping. The `BARE_MODEL_ALIAS` lint is informational — it just notes
 that the mapping is implicit. If you want explicit, use `inherit`.
@@ -141,7 +140,7 @@ Things that work in Claude Code but degrade across harnesses:
 | Hooks (`hooks:` frontmatter) | Only Claude Code and OpenCode (via TS plugins). |
 | `color:` on agents | Cosmetic; dropped everywhere except Claude Code. |
 | Per-agent tool allowlist | Honored only on Claude Code/Gemini/OpenCode. Cursor and Codex have coarser models. |
-| Slash commands | Codex converts to skills. Gemini transpiles to TOML. |
+| Slash commands | Codex converts to skills. Gemini transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. |
 | Marketplace registry | Only Claude Code and Cursor have one. Gemini installs by URL; Codex/OpenCode have no marketplace. |
 
 When you must use a feature with no equivalent, the `harness_portability` lint won't fire

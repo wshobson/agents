@@ -2,9 +2,9 @@
 
 > Production-ready agentic workflow building blocks: **84 plugins**, **192 agents**,
 > **156 skills**, **102 commands** — built for Claude Code and consumed natively by
-> OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI from a single Markdown source.
+> OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
 
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md) [![Copilot](https://img.shields.io/badge/Copilot-supported-lightgrey)](docs/harnesses.md)
 
 > [!NOTE]
 > One source-of-truth (`plugins/`), five harnesses. Each harness gets idiomatic,
@@ -24,12 +24,12 @@ Pick your harness:
 
 [→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
 
-### Codex CLI · Cursor · OpenCode · Gemini CLI
+### Codex CLI · Cursor · OpenCode · Gemini CLI · Copilot
 
 ```bash
 gh repo clone wshobson/agents ~/agents
 cd ~/agents
-make generate HARNESS=<codex|cursor|opencode|gemini>
+make generate HARNESS=<codex|cursor|opencode|gemini|copilot>
 ```
 
 Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). Gemini-specific setup: [GEMINI.md](GEMINI.md) (also auto-loaded by Gemini CLI).
@@ -79,13 +79,14 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | Harness | Generates | Notes |
 |---|---|---|
 | **Claude Code** | (source-of-truth) | Native `marketplace.json` + `plugins/` |
-| **Codex CLI** | `.codex/skills/`, `.codex/agents/`, `AGENTS.md` | 8 KB skill cap respected; commands → skills |
+| **Codex CLI** | `.codex/skills/`, `.codex/agents/` | 8 KB skill cap respected; commands → skills |
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
+| **Copilot** | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |
 
 ```bash
-make generate-all                        # all four
+make generate-all                        # all five
 make validate                            # structural checks
 make garden                              # drift / dead-link / cap detection
 ```
@@ -139,6 +140,7 @@ integrations for this marketplace's other supported harnesses.
 | Cursor | [integrations/cursor](https://github.com/major7apps/pensyve/tree/main/integrations/cursor) |
 | OpenCode | [integrations/opencode-plugin](https://github.com/major7apps/pensyve/tree/main/integrations/opencode-plugin) |
 | Gemini CLI | `gemini extensions install https://github.com/major7apps/pensyve` |
+| Copilot | `.copilot/` in repo root or `~/.copilot/` via `make install-copilot` |
 
 ## License
 
