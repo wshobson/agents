@@ -221,6 +221,8 @@ def check_stale_artifacts(report: Report) -> None:
     if copilot_agents.is_dir():
         for agent_md in copilot_agents.glob("*.agent.md"):
             name = agent_md.stem
+            if name.endswith(".agent"):
+                name = name[: -len(".agent")]
             if "__" in name:
                 plugin, agent = name.split("__", 1)
                 src = PLUGINS_DIR / plugin / "agents" / f"{agent}.md"

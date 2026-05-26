@@ -145,6 +145,8 @@ def uninstall(
     for subdir in ARTIFACT_GLOBS:
         if subdir == "commands":
             # commands are installed at config/<plugin>/commands/ (not config/commands/)
+            if not config_dir.is_dir():
+                continue
             for candidate in sorted(config_dir.iterdir()):
                 commands_dir = candidate / "commands"
                 if commands_dir.is_symlink():

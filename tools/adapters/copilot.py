@@ -7,9 +7,9 @@ from pathlib import Path
 
 from tools.adapters.base import (
     AgentSource,
+    CommandSource,
     EmitResult,
     HarnessAdapter,
-    CommandSource,
     PluginSource,
     SkillSource,
     h1_from_body,
@@ -143,7 +143,7 @@ class CopilotAdapter(HarnessAdapter):
         skill_id = f"{plugin.name}__{skill.name}"
         skill_dir = Path(".copilot") / "skills" / skill_id
 
-        content = _copilot_frontmatter(skill.frontmatter) + "\n\n" + skill.body.rstrip() + "\n"
+        content = _copilot_frontmatter(skill.frontmatter) + "\n\n" + _rewrite_body_lowercase_tools(skill.body).rstrip() + "\n"
         result.written.append(self.write(skill_dir / "SKILL.md", content))
 
     def _emit_command_as_skill(self, plugin: PluginSource, command: CommandSource, result: EmitResult) -> None:

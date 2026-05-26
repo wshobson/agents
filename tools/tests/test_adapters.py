@@ -14,10 +14,14 @@ from pathlib import Path
 # tools.adapters.* imports happen via the conftest sys.path injection
 from tools.adapters.base import PluginSource, parse_frontmatter
 from tools.adapters.codex import CodexAdapter, _split_body_if_oversized
+from tools.adapters.copilot import (
+    CopilotAdapter,
+    _build_tools_list,
+    _needs_yaml_quoting,
+)
 from tools.adapters.cursor import CursorAdapter
 from tools.adapters.gemini import _INLINE_BODY_THRESHOLD, GeminiAdapter
 from tools.adapters.opencode import OpenCodeAdapter, _opencode_skill_id
-from tools.adapters.copilot import CopilotAdapter, _build_tools_list, _needs_yaml_quoting
 
 # ── Codex ────────────────────────────────────────────────────────────────────
 

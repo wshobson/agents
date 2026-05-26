@@ -17,9 +17,10 @@ import argparse
 import json
 import re
 import sys
-import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
+
+import tomllib
 
 # Allow `python tools/validate_generated.py` from repo root.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))

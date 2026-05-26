@@ -14,10 +14,10 @@ from __future__ import annotations
 import json
 import re
 import sys
-import tomllib
 from pathlib import Path
 
 import pytest
+import tomllib
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(_REPO_ROOT) not in sys.path:
