@@ -81,7 +81,9 @@ class CopilotAdapter(HarnessAdapter):
 
     harness_id = "copilot"
 
-    def __init__(self, output_root: Path | None = None, repo_root: Path | None = None) -> None:
+    def __init__(
+        self, output_root: Path | None = None, repo_root: Path | None = None
+    ) -> None:
         """Set output root (defaults to WORKTREE) and optional repo root."""
         super().__init__(output_root=output_root)
         if repo_root is not None:
@@ -106,7 +108,9 @@ class CopilotAdapter(HarnessAdapter):
         """No cross-plugin artifacts needed for Copilot."""
         return EmitResult()
 
-    def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
+    def _emit_agent(
+        self, plugin: PluginSource, agent: AgentSource, result: EmitResult
+    ) -> None:
         """Emit one .agent.md profile into the agents/ directory.
 
         Builds frontmatter (name, description, model, tools), rewrites tool
@@ -134,7 +138,9 @@ class CopilotAdapter(HarnessAdapter):
         content = _copilot_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(rel, content))
 
-    def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
+    def _emit_skill(
+        self, plugin: PluginSource, skill: SkillSource, result: EmitResult
+    ) -> None:
         """Emit one SKILL.md into the skills/ directory.
 
         Preserves the source skill's frontmatter (name, description, trigger
@@ -143,10 +149,17 @@ class CopilotAdapter(HarnessAdapter):
         skill_id = f"{plugin.name}__{skill.name}"
         skill_dir = Path(".copilot") / "skills" / skill_id
 
-        content = _copilot_frontmatter(skill.frontmatter) + "\n\n" + _rewrite_body_lowercase_tools(skill.body).rstrip() + "\n"
+        content = (
+            _copilot_frontmatter(skill.frontmatter)
+            + "\n\n"
+            + _rewrite_body_lowercase_tools(skill.body).rstrip()
+            + "\n"
+        )
         result.written.append(self.write(skill_dir / "SKILL.md", content))
 
-    def _emit_command_as_skill(self, plugin: PluginSource, command: CommandSource, result: EmitResult) -> None:
+    def _emit_command_as_skill(
+        self, plugin: PluginSource, command: CommandSource, result: EmitResult
+    ) -> None:
         """Emit one command as a Copilot skill (VS Code ``/``-invocable).
 
         Uses a hyphenated name (``<plugin>-<command>``) per the VS Code Agent Skills
@@ -176,12 +189,21 @@ class CopilotAdapter(HarnessAdapter):
 
     def _emit_command_index(self, plugin: PluginSource, result: EmitResult) -> None:
         """Emit a plugin entrypoint command that points at the plugin's subcommands."""
-        command_names = ", ".join(f"`/{plugin.name}:{cmd.name}`" for cmd in plugin.commands) or "none"
-        agent_names = ", ".join(f"`{plugin.name}__{agent.name}`" for agent in plugin.agents)
-        skill_names = ", ".join(f"`{plugin.name}__{skill.name}`" for skill in plugin.skills)
+        command_names = (
+            ", ".join(f"`/{plugin.name}:{cmd.name}`" for cmd in plugin.commands)
+            or "none"
+        )
+        agent_names = ", ".join(
+            f"`{plugin.name}__{agent.name}`" for agent in plugin.agents
+        )
+        skill_names = ", ".join(
+            f"`{plugin.name}__{skill.name}`" for skill in plugin.skills
+        )
 
         parts = [
-            (plugin.description or f"{plugin.name.replace('-', ' ').title()} plugin").rstrip(".")
+            (
+                plugin.description or f"{plugin.name.replace('-', ' ').title()} plugin"
+            ).rstrip(".")
             + ".",
             "",
             f"This is the entry point for the `{plugin.name}` plugin.",
@@ -196,12 +218,16 @@ class CopilotAdapter(HarnessAdapter):
 
         fm: dict = {"description": plugin.description or f"{plugin.name} plugin"}
         # Emit as <plugin>/index.md inside .copilot/commands/
-        result.written.append(self.write(
-            Path(".copilot") / "commands" / plugin.name / "index.md",
-            _copilot_frontmatter(fm) + "\n\n" + "\n".join(parts) + "\n"
-        ))
+        result.written.append(
+            self.write(
+                Path(".copilot") / "commands" / plugin.name / "index.md",
+                _copilot_frontmatter(fm) + "\n\n" + "\n".join(parts) + "\n",
+            )
+        )
 
-    def _emit_command(self, plugin: PluginSource, command: CommandSource, result: EmitResult) -> None:
+    def _emit_command(
+        self, plugin: PluginSource, command: CommandSource, result: EmitResult
+    ) -> None:
         """Emit one slash-command prompt file for the plugin.
 
         Emit as <plugin>/<command>.md inside .copilot/commands/. Copilot CLI
@@ -218,7 +244,9 @@ class CopilotAdapter(HarnessAdapter):
 
         content = _copilot_frontmatter(fm) + "\n\n" + body.rstrip() + "\n"
         # Emit as <plugin>/<command>.md inside .copilot/commands/
-        result.written.append(self.write(
-            Path(".copilot") / "commands" / plugin.name / f"{command.name}.md",
-            content
-        ))
+        result.written.append(
+            self.write(
+                Path(".copilot") / "commands" / plugin.name / f"{command.name}.md",
+                content,
+            )
+        )

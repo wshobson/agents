@@ -31,11 +31,11 @@ class InstallReport:
 
 
 def default_config_dir(env: dict[str, str] | None = None) -> Path:
-    env = env or os.environ
-    if env.get("COPILOT_CONFIG_DIR"):
-        return Path(env["COPILOT_CONFIG_DIR"]).expanduser()
-    if env.get("XDG_CONFIG_HOME"):
-        return Path(env["XDG_CONFIG_HOME"]).expanduser() / "copilot"
+    resolved: dict[str, str] = env if env is not None else dict(os.environ)
+    if resolved.get("COPILOT_CONFIG_DIR"):
+        return Path(resolved["COPILOT_CONFIG_DIR"]).expanduser()
+    if resolved.get("XDG_CONFIG_HOME"):
+        return Path(resolved["XDG_CONFIG_HOME"]).expanduser() / "copilot"
     return Path.home() / ".copilot"
 
 
@@ -83,7 +83,9 @@ def _link_one(src: Path, dst: Path, *, force: bool, report: InstallReport) -> No
             return
         dst.unlink()
     elif dst.exists():
-        report.errors.append(f"{dst} already exists and is not a symlink; refusing to overwrite")
+        report.errors.append(
+            f"{dst} already exists and is not a symlink; refusing to overwrite"
+        )
         return
 
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -128,6 +130,7 @@ def _clear_copilot_cache(config_dir: Path) -> list[str]:
     for cache_dir in cache_dirs:
         if cache_dir.exists():
             import shutil
+
             shutil.rmtree(cache_dir, ignore_errors=True)
             cleared.append(str(cache_dir))
     return cleared
@@ -173,7 +176,13 @@ def uninstall(
     return report
 
 
-def _print_report(action: str, config_dir: Path, report: InstallReport, *, cache_cleared: list[str] | None = None) -> None:
+def _print_report(
+    action: str,
+    config_dir: Path,
+    report: InstallReport,
+    *,
+    cache_cleared: list[str] | None = None,
+) -> None:
     print(
         f"{action}: config={config_dir} linked={report.linked} unchanged={report.unchanged} "
         f"removed={report.removed} skipped={report.skipped}"
@@ -189,13 +198,17 @@ def main() -> int:
     parser.add_argument("action", choices=("install", "uninstall"))
     parser.add_argument("--config-dir", type=Path, default=None)
     parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
-    parser.add_argument("--force", action="store_true", help="Replace conflicting symlinks only")
+    parser.add_argument(
+        "--force", action="store_true", help="Replace conflicting symlinks only"
+    )
     args = parser.parse_args()
 
     config_dir = (args.config_dir or default_config_dir()).expanduser()
     cache_cleared = None
     if args.action == "install":
-        report = install(repo_root=args.repo_root, config_dir=config_dir, force=args.force)
+        report = install(
+            repo_root=args.repo_root, config_dir=config_dir, force=args.force
+        )
         cache_cleared = _clear_copilot_cache(config_dir)
     else:
         report = uninstall(repo_root=args.repo_root, config_dir=config_dir)

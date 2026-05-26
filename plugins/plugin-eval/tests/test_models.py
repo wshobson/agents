@@ -4,15 +4,11 @@ from pydantic import ValidationError
 from plugin_eval.models import (
     AntiPattern,
     Badge,
-    CompositeResult,
     Depth,
     DimensionScore,
     EloMatchup,
-    EloResult,
     EvalConfig,
     LayerResult,
-    PluginEvalResult,
-    StaticSubScore,
 )
 
 

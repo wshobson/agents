@@ -81,7 +81,10 @@ def test_force_replaces_conflicting_symlink_only(tmp_path: Path):
 
     assert not blocked.ok
     assert forced.ok
-    assert target.resolve() == (repo_root / ".copilot" / "agents" / "demo__agent.agent.md").resolve()
+    assert (
+        target.resolve()
+        == (repo_root / ".copilot" / "agents" / "demo__agent.agent.md").resolve()
+    )
 
 
 def test_uninstall_removes_only_repo_owned_symlinks(tmp_path: Path):

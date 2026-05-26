@@ -60,7 +60,9 @@ def get_adapter(harness_id: str, output_root: Path) -> HarnessAdapter:
         from tools.adapters.copilot import CopilotAdapter
 
         return CopilotAdapter(output_root=output_root)
-    raise ValueError(f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}")
+    raise ValueError(
+        f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}"
+    )
 
 
 def _validate_output_root(output_root: Path) -> str | None:
@@ -247,7 +249,8 @@ def main() -> int:
 
     if not args.plugin and not args.all:
         print(
-            "No --plugin or --all specified. Use --all to generate every plugin.", file=sys.stderr
+            "No --plugin or --all specified. Use --all to generate every plugin.",
+            file=sys.stderr,
         )
         return 1
 
@@ -318,7 +321,8 @@ def main() -> int:
             print(f"  - pruned: {p.relative_to(output_root)}")
     elif args.prune and not args.all:
         print(
-            "  ! --prune ignored without --all (need full view to detect orphans)", file=sys.stderr
+            "  ! --prune ignored without --all (need full view to detect orphans)",
+            file=sys.stderr,
         )
 
     print(

@@ -40,7 +40,11 @@ class Finding:
     remediation: str = ""
 
     def render(self) -> str:
-        rel = self.path.relative_to(WORKTREE) if self.path.is_relative_to(WORKTREE) else self.path
+        rel = (
+            self.path.relative_to(WORKTREE)
+            if self.path.is_relative_to(WORKTREE)
+            else self.path
+        )
         tail = f"\n    fix: {self.remediation}" if self.remediation else ""
         return f"[{self.severity}] {self.harness}: {rel}: {self.message}{tail}"
 
@@ -119,7 +123,9 @@ def validate_codex(report: Report) -> None:
 
     # 1. Every agent .toml parses and has required fields.
     required_agent_fields = {"name", "description", "developer_instructions"}
-    for toml_path in (root / "agents").glob("*.toml") if (root / "agents").is_dir() else []:
+    for toml_path in (
+        (root / "agents").glob("*.toml") if (root / "agents").is_dir() else []
+    ):
         try:
             data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
         except tomllib.TOMLDecodeError as e:
@@ -631,10 +637,14 @@ def validate_copilot(report: Report) -> None:
                     remediation="Regenerate via `make generate HARNESS=copilot`.",
                 )
                 continue
-            _check_nonempty_str_field(report, fm, "name", "copilot", agent_md, label="agent")
-            _check_nonempty_str_field(report, fm, "description", "copilot", agent_md, label="agent")
+            _check_nonempty_str_field(
+                report, fm, "name", "copilot", agent_md, label="agent"
+            )
+            _check_nonempty_str_field(
+                report, fm, "description", "copilot", agent_md, label="agent"
+            )
     # 3. Skills: validate .copilot/skills/*/SKILL.md exists and has valid frontmatter.
-    skills_dir = (WORKTREE / ".copilot" / "skills")
+    skills_dir = WORKTREE / ".copilot" / "skills"
     if skills_dir.is_dir():
         found_any = True
         for skill_md in skills_dir.glob("*/SKILL.md"):
@@ -649,8 +659,12 @@ def validate_copilot(report: Report) -> None:
                     remediation="Regenerate via `make generate HARNESS=copilot`.",
                 )
                 continue
-            _check_nonempty_str_field(report, fm, "name", "copilot", skill_md, label="skill")
-            _check_nonempty_str_field(report, fm, "description", "copilot", skill_md, label="skill")
+            _check_nonempty_str_field(
+                report, fm, "name", "copilot", skill_md, label="skill"
+            )
+            _check_nonempty_str_field(
+                report, fm, "description", "copilot", skill_md, label="skill"
+            )
 
     commands_dir = WORKTREE / ".copilot" / "commands"
     if commands_dir.is_dir():
@@ -699,11 +713,15 @@ _VALIDATORS = {
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate generated harness artifacts.")
+    parser = argparse.ArgumentParser(
+        description="Validate generated harness artifacts."
+    )
     parser.add_argument(
         "--harness", choices=supported_harnesses(), help="Only validate one harness."
     )
-    parser.add_argument("--strict", action="store_true", help="Exit nonzero on any warning.")
+    parser.add_argument(
+        "--strict", action="store_true", help="Exit nonzero on any warning."
+    )
     args = parser.parse_args()
 
     targets = [args.harness] if args.harness else supported_harnesses()
@@ -729,7 +747,9 @@ def main() -> int:
         print(f.render())
 
     print()
-    print(f"Total: {len(errors)} error(s), {len(warnings)} warning(s), {len(infos)} info.")
+    print(
+        f"Total: {len(errors)} error(s), {len(warnings)} warning(s), {len(infos)} info."
+    )
     if errors:
         return 1
     if args.strict and warnings:

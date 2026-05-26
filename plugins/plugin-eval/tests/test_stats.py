@@ -3,8 +3,8 @@ import pytest
 from plugin_eval.stats import (
     bootstrap_ci,
     clopper_pearson_ci,
-    cohens_kappa,
     coefficient_of_variation,
+    cohens_kappa,
     wilson_score_ci,
 )
 

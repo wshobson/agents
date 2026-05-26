@@ -54,3 +54,8 @@ commands/**/*.toml
 /agents/
 /skills/
 
+# Local agent caches
+.agent/
+.agents/
+.antigravity/
+
