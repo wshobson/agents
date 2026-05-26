@@ -147,13 +147,27 @@ def main() -> int:
     parser.add_argument("--force", action="store_true", help="Replace conflicting symlinks only")
     args = parser.parse_args()
 
-    config_dir = (args.config_dir or default_config_dir()).expanduser()
-    if args.action == "install":
-        report = install(repo_root=args.repo_root, config_dir=config_dir, force=args.force)
+    if args.config_dir:
+        targets = [args.config_dir.expanduser()]
     else:
-        report = uninstall(repo_root=args.repo_root, config_dir=config_dir)
-    _print_report(args.action, config_dir, report)
-    return 0 if report.ok else 1
+        home = Path.home()
+        targets = [
+            home / ".gemini" / "antigravity-cli",
+            home / ".gemini" / "antigravity-ide",
+            home / ".gemini" / "antigravity",
+        ]
+
+    ok = True
+    for target in targets:
+        if args.action == "install":
+            report = install(repo_root=args.repo_root, config_dir=target, force=args.force)
+        else:
+            report = uninstall(repo_root=args.repo_root, config_dir=target)
+        _print_report(args.action, target, report)
+        if not report.ok:
+            ok = False
+
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":
