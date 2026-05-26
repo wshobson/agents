@@ -44,9 +44,7 @@ def _skill_uses_description_trigger(skill: ParsedSkill) -> bool:
     if fm.get("disable-model-invocation") is True:
         return False
     paths = fm.get("paths")
-    if paths is not None and paths != "":
-        return False
-    return True
+    return not (isinstance(paths, str) and paths != "")
 
 
 # Line count threshold for BLOATED_SKILL (no references/ dir)
@@ -182,20 +180,21 @@ class StaticAnalyzer:
         # true`) or path-triggered (`paths:` frontmatter) use a different
         # invocation mechanism and should not be penalised for lacking a
         # description-level trigger phrase.
-        if _skill_uses_description_trigger(skill):
-            if not _TRIGGER_PATTERN.search(skill.description):
-                patterns.append(
-                    AntiPattern(
-                        flag="MISSING_TRIGGER",
-                        description=(
-                            "Skill description lacks a recognised trigger phrase "
-                            '(e.g. "Use when …", "This skill should be used when …", '
-                            '"Use after …", "Auto-loads when …"). '
-                            "Without one, the model cannot determine when to invoke the skill."
-                        ),
-                        severity=0.15,
-                    )
+        if _skill_uses_description_trigger(skill) and not _TRIGGER_PATTERN.search(
+            skill.description
+        ):
+            patterns.append(
+                AntiPattern(
+                    flag="MISSING_TRIGGER",
+                    description=(
+                        "Skill description lacks a recognised trigger phrase "
+                        '(e.g. "Use when …", "This skill should be used when …", '
+                        '"Use after …", "Auto-loads when …"). '
+                        "Without one, the model cannot determine when to invoke the skill."
+                    ),
+                    severity=0.15,
                 )
+            )
 
         # BLOATED_SKILL: >800 lines without a references/ directory
         if skill.line_count > _BLOATED_LINE_THRESHOLD and not skill.has_references:
