@@ -10,3 +10,6 @@
 - [x] 8. Add Makefile targets for generation, validation, and installation
 - [x] 9. Create unit tests for the adapter and installer
 - [x] 10. Verify generation, validation, installation, and pytest suite run successfully
+- [x] 11. Fix Antigravity version smoke test timeout and verify it passes
+- [x] 12. Commit and push the test changes
+- [x] 13. Create/update the Pull Request using the official template

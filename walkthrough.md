@@ -47,3 +47,9 @@ Running the installer linked all agents, skills, and command-as-skill files into
 make install-antigravity
 install: config=/home/mhenke/.gemini/antigravity-cli linked=102 unchanged=346 removed=0 skipped=0
 ```
+
+### 4. Smoke Test Fix & PR Alignment
+- Modified `test_antigravity_version_runs` in `tools/tests/test_cli_smoke.py` to run with a shorter 5-second timeout and verify the CLI's daemon startup messages (`"Starting app"` / `"Local:"`) instead of waiting for process termination that never happens.
+- Staged, committed, and pushed these test changes to `origin/feature/antigravity-agents`.
+- Updated Pull Request #561 description to align exactly with the project PR template (`.github/PULL_REQUEST_TEMPLATE.md`), linking it to Issue #560.
+
