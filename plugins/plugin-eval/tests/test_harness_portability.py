@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from plugin_eval.layers.harness_portability import (
     detect_agent_findings,
     detect_skill_findings,
