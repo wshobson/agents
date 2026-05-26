@@ -27,9 +27,7 @@ def _patch_worktree(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
 
 
 class TestCodexValidator:
-    def test_clean_output_no_findings(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_clean_output_no_findings(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         (tmp_path / ".codex" / "agents").mkdir(parents=True)
         (tmp_path / ".codex" / "agents" / "demo.toml").write_text(
@@ -47,22 +45,16 @@ class TestCodexValidator:
         errors = report.errors()
         assert errors == [], [e.render() for e in errors]
 
-    def test_malformed_toml_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_malformed_toml_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         (tmp_path / ".codex" / "agents").mkdir(parents=True)
-        (tmp_path / ".codex" / "agents" / "bad.toml").write_text(
-            "not valid = toml = anywhere"
-        )
+        (tmp_path / ".codex" / "agents" / "bad.toml").write_text("not valid = toml = anywhere")
 
         report = Report()
         validate_codex(report)
         assert any("TOML parse" in f.message for f in report.errors())
 
-    def test_skill_name_mismatch_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_skill_name_mismatch_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         sk = tmp_path / ".codex" / "skills" / "demo"
         sk.mkdir(parents=True)
@@ -72,13 +64,9 @@ class TestCodexValidator:
 
         report = Report()
         validate_codex(report)
-        assert any(
-            "name" in f.message and "directory" in f.message for f in report.errors()
-        )
+        assert any("name" in f.message and "directory" in f.message for f in report.errors())
 
-    def test_oversized_skill_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_oversized_skill_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Codex skill exceeding 8 KB injection cap is an ERROR (was warning before round 4)."""
         _patch_worktree(monkeypatch, tmp_path)
         sk = tmp_path / ".codex" / "skills" / "demo"
@@ -91,9 +79,7 @@ class TestCodexValidator:
         validate_codex(report)
         assert any("8192" in f.message for f in report.errors())
 
-    def test_oversized_agents_md_warns(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_oversized_agents_md_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         (tmp_path / "AGENTS.md").write_text("\n".join(["line"] * 200))
         # Force the directory check to pass (validate_codex returns early if no .codex/)
@@ -102,8 +88,7 @@ class TestCodexValidator:
         report = Report()
         validate_codex(report)
         assert any(
-            "AGENTS.md" in str(f.path) and "cap: 150" in f.message
-            for f in report.warnings()
+            "AGENTS.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings()
         )
 
 
@@ -143,9 +128,7 @@ class TestCursorValidator:
         validate_cursor(report)
         assert any("source" in f.message for f in report.errors())
 
-    def test_invalid_mdc_keys_error(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_invalid_mdc_keys_error(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         rules = tmp_path / ".cursor" / "rules"
         rules.mkdir(parents=True)
@@ -167,22 +150,15 @@ class TestCursorValidator:
 
 
 class TestCopilotValidator:
-    def test_non_string_description_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_non_string_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         agents = tmp_path / ".copilot" / "agents"
         agents.mkdir(parents=True)
-        (agents / "bad.agent.md").write_text(
-            "---\nname: bad\ndescription: [oops]\n---\n\nBody.\n"
-        )
+        (agents / "bad.agent.md").write_text("---\nname: bad\ndescription: [oops]\n---\n\nBody.\n")
 
         report = Report()
         validate_copilot(report)
-        assert any(
-            "description" in f.message and "string" in f.message
-            for f in report.errors()
-        )
+        assert any("description" in f.message and "string" in f.message for f in report.errors())
 
     def test_missing_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
@@ -208,9 +184,7 @@ class TestCopilotValidator:
         validate_copilot(report)
         assert any("is empty" in f.message for f in report.errors())
 
-    def test_missing_description_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_missing_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         agents = tmp_path / ".copilot" / "agents"
         agents.mkdir(parents=True)
@@ -220,9 +194,7 @@ class TestCopilotValidator:
         validate_copilot(report)
         assert any("description" in f.message for f in report.errors())
 
-    def test_empty_description_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_empty_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         agents = tmp_path / ".copilot" / "agents"
         agents.mkdir(parents=True)
@@ -246,15 +218,11 @@ class TestCopilotValidator:
         validate_copilot(report)
         assert not report.errors()
 
-    def test_skill_missing_name_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_skill_missing_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         skill_dir = tmp_path / ".copilot" / "skills" / "test__skill"
         skill_dir.mkdir(parents=True)
-        (skill_dir / "SKILL.md").write_text(
-            "---\ndescription: Use when testing.\n---\n\nBody.\n"
-        )
+        (skill_dir / "SKILL.md").write_text("---\ndescription: Use when testing.\n---\n\nBody.\n")
 
         report = Report()
         validate_copilot(report)
@@ -289,9 +257,7 @@ class TestOpenCodeValidator:
         validate_opencode(report)
         assert any("mode" in f.message for f in report.errors())
 
-    def test_bare_model_alias_warns(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_bare_model_alias_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         agents = tmp_path / ".opencode" / "agents"
         agents.mkdir(parents=True)
@@ -303,9 +269,7 @@ class TestOpenCodeValidator:
         validate_opencode(report)
         assert any("provider-prefixed" in f.message for f in report.warnings())
 
-    def test_unknown_permission_key_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_unknown_permission_key_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         agents = tmp_path / ".opencode" / "agents"
         agents.mkdir(parents=True)
@@ -341,9 +305,7 @@ class TestOpenCodeValidator:
         # The nested permission's `fly_drone` must NOT show up as an invalid top-level key.
         assert not any("fly_drone" in f.message for f in report.errors())
 
-    def test_invalid_permission_value_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_invalid_permission_value_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         agents = tmp_path / ".opencode" / "agents"
         agents.mkdir(parents=True)
@@ -354,14 +316,9 @@ class TestOpenCodeValidator:
 
         report = Report()
         validate_opencode(report)
-        assert any(
-            "permission.read" in f.message and "maybe" in f.message
-            for f in report.errors()
-        )
+        assert any("permission.read" in f.message and "maybe" in f.message for f in report.errors())
 
-    def test_skill_name_mismatch_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_skill_name_mismatch_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         skill = tmp_path / ".opencode" / "skills" / "demo-hello"
         skill.mkdir(parents=True)
@@ -373,9 +330,7 @@ class TestOpenCodeValidator:
         validate_opencode(report)
         assert any("directory" in f.message for f in report.errors())
 
-    def test_invalid_skill_name_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_invalid_skill_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         skill = tmp_path / ".opencode" / "skills" / "demo__hello"
         skill.mkdir(parents=True)
@@ -387,9 +342,7 @@ class TestOpenCodeValidator:
         validate_opencode(report)
         assert any("OpenCode-safe" in f.message for f in report.errors())
 
-    def test_empty_skill_description_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_empty_skill_description_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         skill = tmp_path / ".opencode" / "skills" / "demo-hello"
         skill.mkdir(parents=True)
@@ -399,9 +352,7 @@ class TestOpenCodeValidator:
         validate_opencode(report)
         assert any("empty description" in f.message for f in report.errors())
 
-    def test_too_long_skill_name_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_too_long_skill_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         name = "x" * 65
         skill = tmp_path / ".opencode" / "skills" / name
@@ -425,31 +376,23 @@ class TestGeminiValidator:
         _patch_worktree(monkeypatch, tmp_path)
         cmds = tmp_path / "commands"
         cmds.mkdir()
-        (cmds / "incomplete.toml").write_text(
-            'description = "Just a desc, no prompt"\n'
-        )
+        (cmds / "incomplete.toml").write_text('description = "Just a desc, no prompt"\n')
 
         report = Report()
         validate_gemini(report)
         assert any("missing keys" in f.message for f in report.errors())
 
-    def test_prompt_without_args_warns(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_prompt_without_args_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         cmds = tmp_path / "commands"
         cmds.mkdir()
-        (cmds / "no_args.toml").write_text(
-            'description = "Test"\nprompt = """Run this."""\n'
-        )
+        (cmds / "no_args.toml").write_text('description = "Test"\nprompt = """Run this."""\n')
 
         report = Report()
         validate_gemini(report)
         assert any("{{args}}" in f.message for f in report.warnings())
 
-    def test_non_gemini_model_warns(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_non_gemini_model_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         agents = tmp_path / "agents"
         agents.mkdir()
@@ -461,15 +404,12 @@ class TestGeminiValidator:
         validate_gemini(report)
         assert any("Gemini model id" in f.message for f in report.warnings())
 
-    def test_oversized_gemini_md_warns(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
+    def test_oversized_gemini_md_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         (tmp_path / "GEMINI.md").write_text("\n".join(["line"] * 200))
 
         report = Report()
         validate_gemini(report)
         assert any(
-            "GEMINI.md" in str(f.path) and "cap: 150" in f.message
-            for f in report.warnings()
+            "GEMINI.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings()
         )
