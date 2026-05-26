@@ -61,6 +61,53 @@ class Report:
         return [f for f in self.findings if f.severity == "info"]
 
 
+# ── Helpers ──────────────────────────────────────────────────────────────────
+
+
+def _check_nonempty_str_field(
+    report: Report,
+    fm: dict,
+    field: str,
+    harness: str,
+    path: Path,
+    label: str = "",
+) -> bool:
+    """Validate that `field` exists in `fm`, is a str, and is non-empty.
+
+    Adds one Finding per violation. Returns True if the field passes all checks.
+    ``label`` is only used in remediation hints (defaults to ``field``).
+    """
+    label = label or field
+    if field not in fm:
+        report.add(
+            severity="error",
+            harness=harness,
+            path=path,
+            message=f"missing required `{field}` field in frontmatter",
+            remediation=f"Each {harness} {label} needs a `{field}`.",
+        )
+        return False
+    if not isinstance(fm[field], str):
+        report.add(
+            severity="error",
+            harness=harness,
+            path=path,
+            message=f"`{field}` field must be a string",
+            remediation=f"Set `{field}` to a plain string in the {label} frontmatter.",
+        )
+        return False
+    if not fm[field].strip():
+        report.add(
+            severity="error",
+            harness=harness,
+            path=path,
+            message=f"`{field}` field is empty",
+            remediation=f"Provide a non-empty `{field}` in the {label} frontmatter.",
+        )
+        return False
+    return True
+
+
 # ── Codex validators ─────────────────────────────────────────────────────────
 
 
@@ -558,11 +605,95 @@ def validate_gemini(report: Report) -> None:
 # ── Driver ───────────────────────────────────────────────────────────────────
 
 
+def validate_copilot(report: Report) -> None:
+    """Validate Copilot agent, skill, and command markdown files under WORKTREE/.copilot.
+
+    Checks that generated agent, skill, and command markdown files have valid
+    frontmatter and the minimum metadata Copilot needs to discover them.
+    """
+    candidate_roots = [WORKTREE / ".copilot"]
+    found_any = False
+    for root in candidate_roots:
+        agents_dir = root / "agents"
+        if not agents_dir.is_dir():
+            continue
+        found_any = True
+        for agent_md in agents_dir.glob("*.agent.md"):
+            content = agent_md.read_text(encoding="utf-8")
+            fm, _ = parse_frontmatter(content)
+            if not fm:
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=agent_md,
+                    message="missing or invalid frontmatter",
+                    remediation="Regenerate via `make generate HARNESS=copilot`.",
+                )
+                continue
+            _check_nonempty_str_field(report, fm, "name", "copilot", agent_md, label="agent")
+            _check_nonempty_str_field(report, fm, "description", "copilot", agent_md, label="agent")
+    # 3. Skills: validate .copilot/skills/*/SKILL.md exists and has valid frontmatter.
+    skills_dir = WORKTREE / ".copilot" / "skills"
+    if skills_dir.is_dir():
+        found_any = True
+        for skill_md in skills_dir.glob("*/SKILL.md"):
+            content = skill_md.read_text(encoding="utf-8")
+            fm, _ = parse_frontmatter(content)
+            if not fm:
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=skill_md,
+                    message="missing or invalid frontmatter",
+                    remediation="Regenerate via `make generate HARNESS=copilot`.",
+                )
+                continue
+            _check_nonempty_str_field(report, fm, "name", "copilot", skill_md, label="skill")
+            _check_nonempty_str_field(report, fm, "description", "copilot", skill_md, label="skill")
+
+    commands_dir = WORKTREE / ".copilot" / "commands"
+    if commands_dir.is_dir():
+        found_any = True
+        for command_md in commands_dir.rglob("*.md"):
+            content = command_md.read_text(encoding="utf-8")
+            fm, body = parse_frontmatter(content)
+            if not fm:
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=command_md,
+                    message="missing or invalid frontmatter",
+                    remediation="Regenerate via `make generate HARNESS=copilot`.",
+                )
+                continue
+            description = fm.get("description")
+            if not isinstance(description, str) or not description.strip():
+                report.add(
+                    severity="error",
+                    harness="copilot",
+                    path=command_md,
+                    message="missing required `description` field in frontmatter",
+                    remediation="Copilot command prompt files need a non-empty description.",
+                )
+            if command_md.name != "index.md" and not body.strip():
+                report.add(
+                    severity="warning",
+                    harness="copilot",
+                    path=command_md,
+                    message="command body is empty",
+                    remediation="Keep the prompt body in the source command markdown.",
+                )
+
+    if not found_any:
+        return
+
+
 _VALIDATORS = {
     "codex": validate_codex,
+    "copilot": validate_copilot,
     "cursor": validate_cursor,
-    "opencode": validate_opencode,
     "gemini": validate_gemini,
+    "opencode": validate_opencode,
 }
 
 

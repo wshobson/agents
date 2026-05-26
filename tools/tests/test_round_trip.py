@@ -95,7 +95,11 @@ class TestCodexRoundTrip:
             if missing:
                 invalid.append(f"{toml_path.name}: missing {sorted(missing)}")
             sandbox = data.get("sandbox_mode")
-            if sandbox and sandbox not in {"read-only", "workspace-write", "danger-full-access"}:
+            if sandbox and sandbox not in {
+                "read-only",
+                "workspace-write",
+                "danger-full-access",
+            }:
                 invalid.append(f"{toml_path.name}: invalid sandbox_mode {sandbox!r}")
         assert not invalid, "Invalid Codex agent TOMLs:\n  " + "\n  ".join(invalid[:20])
 
@@ -277,6 +281,55 @@ class TestGeminiRoundTrip:
             pytest.skip("GEMINI.md missing")
         lines = gemini_md.read_text().splitlines()
         assert len(lines) <= 150, f"GEMINI.md is {len(lines)} lines (cap: 150)"
+
+
+@pytest.mark.skipif(
+    not (WORKTREE / ".copilot").is_dir(),
+    reason="Copilot artifacts not generated (run `make generate HARNESS=copilot` first)",
+)
+class TestCopilotRoundTrip:
+    def test_copilot_agent_count_matches_source(self):
+        n = len(list((WORKTREE / ".copilot" / "agents").glob("*.agent.md")))
+        assert n == _source_agent_count(), (
+            f"agent count mismatch: source={_source_agent_count()} copilot={n}"
+        )
+
+    def test_copilot_skill_count_matches_source(self):
+        n = len(list((WORKTREE / ".copilot" / "skills").glob("*/SKILL.md")))
+        expected = _source_skill_count() + _source_command_count()
+        assert n == expected, (
+            f"skill count mismatch: source_skills={_source_skill_count()} "
+            f"source_commands={_source_command_count()} expected={expected} copilot={n}"
+        )
+
+    def test_copilot_command_count_matches_source(self):
+        n = len(
+            [p for p in (WORKTREE / ".copilot" / "commands").rglob("*.md") if p.name != "index.md"]
+        )
+        assert n == _source_command_count(), (
+            f"command count mismatch: source={_source_command_count()} copilot={n}"
+        )
+
+    def test_copilot_command_entrypoints_exist_for_every_plugin(self):
+        missing = []
+        for plugin_name in list_plugins():
+            entry = WORKTREE / ".copilot" / "commands" / plugin_name / "index.md"
+            if not entry.is_file():
+                missing.append(plugin_name)
+        assert not missing, f"missing Copilot command entrypoints for: {sorted(missing)}"
+
+    def test_every_copilot_agent_has_required_frontmatter(self):
+        required = {"name", "description"}
+        problems = []
+        for agent_md in (WORKTREE / ".copilot" / "agents").glob("*.agent.md"):
+            fm, _ = parse_frontmatter(agent_md.read_text())
+            if not fm:
+                problems.append(f"{agent_md.name}: no frontmatter")
+                continue
+            missing = required - set(fm.keys())
+            if missing:
+                problems.append(f"{agent_md.name}: missing {sorted(missing)}")
+        assert not problems, "Copilot agent frontmatter issues:\n  " + "\n  ".join(problems[:20])
 
 
 # ── Context file size budgets (always run) ───────────────────────────────────

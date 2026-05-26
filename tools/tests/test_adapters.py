@@ -14,6 +14,11 @@ from pathlib import Path
 # tools.adapters.* imports happen via the conftest sys.path injection
 from tools.adapters.base import PluginSource, parse_frontmatter
 from tools.adapters.codex import CodexAdapter, _split_body_if_oversized
+from tools.adapters.copilot import (
+    CopilotAdapter,
+    _build_tools_list,
+    _needs_yaml_quoting,
+)
 from tools.adapters.cursor import CursorAdapter
 from tools.adapters.gemini import _INLINE_BODY_THRESHOLD, GeminiAdapter
 from tools.adapters.opencode import OpenCodeAdapter, _opencode_skill_id
@@ -239,7 +244,10 @@ class TestCodexAdapter:
         (plugin_dir / ".claude-plugin").mkdir()
         (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
         skill = _make_skill(
-            plugin_dir, "review", "name: review\ndescription: Use when reviewing.", "# Skill\nbody"
+            plugin_dir,
+            "review",
+            "name: review\ndescription: Use when reviewing.",
+            "# Skill\nbody",
         )
         command = _make_command(
             plugin_dir, "review", 'description: "Review command"', "# Command\nbody"
@@ -659,7 +667,10 @@ class TestOpenCodeAdapter:
             "# Hello\n\nBody.\n",
         )
         plugin = PluginSource(
-            name="bad_plugin", dir=plugin_dir, plugin_json={"name": "bad_plugin"}, skills=[skill]
+            name="bad_plugin",
+            dir=plugin_dir,
+            plugin_json={"name": "bad_plugin"},
+            skills=[skill],
         )
 
         try:
@@ -919,6 +930,204 @@ class TestGeminiAdapter:
         assert "demo__hello" in content
 
 
+# ── Copilot ──────────────────────────────────────────────────────────────────
+
+
+class TestCopilotAdapter:
+    def test_emits_agent_profile(self, synthetic_plugin: PluginSource, output_root: Path):
+        adapter = CopilotAdapter(output_root=output_root)
+        result = adapter.emit_plugin(synthetic_plugin)
+
+        agent_path = output_root / ".copilot" / "agents" / "demo__greeter.agent.md"
+        assert agent_path in result.written
+        assert agent_path.is_file()
+
+        fm, body = parse_frontmatter(agent_path.read_text())
+        assert fm["name"] == "demo__greeter"
+        assert fm["description"] == "Use when delegating greetings."
+        assert fm["model"] == "gpt-5"
+        assert fm["tools"] == ["read", "search"]
+        assert "color" not in fm
+
+    def test_tool_name_rewriting(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "tool-user",
+            "name: tool-user\ndescription: Use when tooling.\ntools: Read, Write, Bash",
+            "# Tool User\n\nUse the `Read` tool to read and `Bash` to execute.\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+        CopilotAdapter(output_root=output_root).emit_plugin(plugin)
+
+        content = (output_root / ".copilot" / "agents" / "demo__tool-user.agent.md").read_text()
+        fm, body = parse_frontmatter(content)
+        assert fm["tools"] == ["read", "edit", "execute"]
+        assert "`read`" in body
+        assert "`execute`" in body
+        assert "`Read`" not in body
+        assert "`Bash`" not in body
+
+    def test_model_alias_resolution(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+
+        agents = []
+        for name, model in [
+            ("sonnet-agent", "sonnet"),
+            ("haiku-agent", "haiku"),
+            ("inherit-agent", "inherit"),
+        ]:
+            agents.append(
+                _make_agent(
+                    plugin_dir,
+                    name,
+                    f"name: {name}\ndescription: Use for {name}.\nmodel: {model}",
+                    f"# {name}\n",
+                )
+            )
+        default_agent = _make_agent(
+            plugin_dir,
+            "default-model",
+            "name: default-model\ndescription: Use with default.",
+            "# Default\n",
+        )
+        agents.append(default_agent)
+
+        plugin = PluginSource(
+            name="demo",
+            dir=plugin_dir,
+            plugin_json={"name": "demo"},
+            agents=agents,
+        )
+        CopilotAdapter(output_root=output_root).emit_plugin(plugin)
+
+        expected = {
+            "sonnet-agent": "gpt-5-mini",
+            "haiku-agent": "gpt-5-nano",
+            "inherit-agent": "gpt-5",
+            "default-model": "gpt-5",
+        }
+        for name, exp_model in expected.items():
+            fm, _ = parse_frontmatter(
+                (output_root / ".copilot" / "agents" / f"demo__{name}.agent.md").read_text()
+            )
+            assert fm["model"] == exp_model, f"{name}: expected {exp_model}, got {fm['model']}"
+
+    def test_emits_skill(self, synthetic_plugin: PluginSource, output_root: Path):
+        CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        skill_path = output_root / ".copilot" / "skills" / "demo__hello" / "SKILL.md"
+        assert skill_path.is_file()
+
+        fm, body = parse_frontmatter(skill_path.read_text())
+        assert fm["name"] == "hello"
+        assert fm["description"] == "Use when greeting users."
+        assert "# Hello" in body
+
+    def test_emits_command_prompt_files(self, synthetic_plugin: PluginSource, output_root: Path):
+        CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+
+        entry = output_root / ".copilot" / "commands" / "demo" / "index.md"
+        cmd = output_root / ".copilot" / "commands" / "demo" / "say-hi.md"
+
+        assert entry.is_file()
+        assert cmd.is_file()
+
+        entry_fm, entry_body = parse_frontmatter(entry.read_text())
+        cmd_fm, cmd_body = parse_frontmatter(cmd.read_text())
+        assert entry_fm["description"] == "Demo plugin for tests"
+        assert "/demo:say-hi" in entry_body
+        assert cmd_fm["description"] == "Send a greeting"
+        assert "Greet the user named $ARGUMENTS." in cmd_body
+
+    def test_emit_global_returns_empty(self, synthetic_plugin: PluginSource, output_root: Path):
+        adapter = CopilotAdapter(output_root=output_root)
+        result = adapter.emit_global([synthetic_plugin])
+        assert result.written == []
+
+    def test_build_tools_list(self):
+        assert _build_tools_list(["Read", "Grep"]) == ["read", "search"]
+        assert _build_tools_list(["Write", "Edit"]) == ["edit", "edit"]
+        assert _build_tools_list(["Bash", "Glob"]) == ["execute", "search"]
+        assert _build_tools_list(["CustomTool"]) == ["CustomTool"]
+        assert _build_tools_list([]) == []
+
+    def test_yaml_quoting(self):
+        assert _needs_yaml_quoting("123")
+        assert _needs_yaml_quoting("3.14")
+        assert _needs_yaml_quoting("true")
+        assert _needs_yaml_quoting("false")
+        assert _needs_yaml_quoting("yes")
+        assert _needs_yaml_quoting("no")
+        assert _needs_yaml_quoting("on")
+        assert _needs_yaml_quoting("off")
+        assert _needs_yaml_quoting("null")
+        assert _needs_yaml_quoting("~")
+        assert not _needs_yaml_quoting("hello world")
+        assert not _needs_yaml_quoting("Use when testing.")
+
+    def test_explicit_empty_tools(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "advisory",
+            "name: advisory\ndescription: Use when advising.\nmodel: sonnet\ntools: []",
+            "# Advisory\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+        CopilotAdapter(output_root=output_root).emit_plugin(plugin)
+
+        content = (output_root / ".copilot" / "agents" / "demo__advisory.agent.md").read_text()
+        fm, body = parse_frontmatter(content)
+        assert fm["name"] == "demo__advisory"
+        assert fm["description"] == "Use when advising."
+        assert fm["model"] == "gpt-5-mini"
+        assert "tools:" in content
+
+    def test_no_tools_field(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "unrestricted",
+            "name: unrestricted\ndescription: Use when unrestricted.\nmodel: opus",
+            "# Unrestricted\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+        CopilotAdapter(output_root=output_root).emit_plugin(plugin)
+
+        content = (output_root / ".copilot" / "agents" / "demo__unrestricted.agent.md").read_text()
+        fm, body = parse_frontmatter(content)
+        assert fm["name"] == "demo__unrestricted"
+        assert fm["description"] == "Use when unrestricted."
+        assert fm["model"] == "gpt-5"
+        assert "tools" not in fm
+
+
 # ── Cross-cutting: capabilities consistency ──────────────────────────────────
 
 
@@ -977,7 +1186,13 @@ class TestCapabilities:
     def test_every_adapter_id_has_capabilities_entry(self):
         from tools.adapters.capabilities import CAPABILITIES
 
-        for adapter_cls in (CodexAdapter, CursorAdapter, OpenCodeAdapter, GeminiAdapter):
+        for adapter_cls in (
+            CodexAdapter,
+            CopilotAdapter,
+            CursorAdapter,
+            GeminiAdapter,
+            OpenCodeAdapter,
+        ):
             assert adapter_cls.harness_id in CAPABILITIES
 
     def test_model_aliases_complete(self):

@@ -42,8 +42,20 @@ node_modules
 .opencode/
 opencode.json
 
+# OpenCode session continuation artifacts
+.omo/
+
+# Copilot
+.copilot/
+
 # Gemini CLI (legacy paths kept for compatibility)
 commands/**/*.toml
 /commands/
 /agents/
 /skills/
+
+# Local agent caches
+.agent/
+.agents/
+.antigravity/
+
