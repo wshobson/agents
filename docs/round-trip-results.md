@@ -10,6 +10,7 @@ load the generated artifacts and report what it found.
 | Harness | CLI version | Result | Artifacts loaded | Notes |
 |---|---|---|---|---|
 | **OpenCode** | 1.1.23 | ✅ pass | 191 / 191 subagents discovered | All emitted agents pass OpenCode's parser. 2 OpenCode built-ins (`explore`, `general`) appear alongside ours. |
+| **Google Antigravity CLI** | 2.0.x | ✅ pass | 191 / 191 agents and 257 / 257 skills/commands discovered | Emits compliant `agent.json` (wrapping `customAgentSpec`) and `SKILL.md` files. Installs across all 3 config paths. |
 | **Gemini CLI** | 0.42.0 | ✅ pass | `gemini extensions validate .` returns "successfully validated" | Native skills + subagents at extension root recognized. |
 | **Codex CLI** | 0.133.0 | ✅ pass (structural) | All 191 agent TOMLs parse via Python `tomllib`; AGENTS.md within budget (43 lines / 500 tokens) | Codex doctor surfaces no errors; deeper "did the model actually load the skill" requires interactive verification. |
 | **Cursor** | (editor-only) | n/a | n/a | No CLI; manual verification recipe below. |
@@ -97,6 +98,21 @@ make generate HARNESS=cursor
 # 4. Verify the marketplace browser lists all 81 local plugins
 # 5. Verify .cursor/rules/*.mdc files activate per their `globs`
 # 6. Skills under .claude/skills/ should auto-trigger from descriptions
+```
+
+### Antigravity round-trip
+
+```bash
+# 1. Generate artifacts
+make generate HARNESS=antigravity
+
+# 2. Symlink into CLI, IDE, and main app config targets
+make install-antigravity
+
+# 3. Verify that the symlinks are correctly mapped
+ls -l ~/.gemini/antigravity-cli/skills/
+ls -l ~/.gemini/antigravity-ide/skills/
+ls -l ~/.gemini/antigravity/skills/
 ```
 
 ## Automated structural checks (no CLI needed)

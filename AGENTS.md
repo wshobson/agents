@@ -1,8 +1,8 @@
 # claude-agents — multi-harness agentic plugin marketplace
 
-Production-ready agentic-workflow building blocks: **83 plugins** (81 local + 2 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
+Production-ready agentic-workflow building blocks: **83 plugins** (81 local + 2 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by Google Antigravity CLI, OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
 
-This file is the canonical context file. Codex / Cursor / OpenCode / Copilot read it directly. Claude Code reads it via `@AGENTS.md` import in `CLAUDE.md`. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`).
+This file is the canonical context file. Codex / Cursor / OpenCode / Copilot / Antigravity read it directly. Claude Code reads it via `@AGENTS.md` import in `CLAUDE.md`. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`).
 
 > **Read this file like a table of contents.** Detail lives in `docs/`. Authoring conventions live in `docs/authoring.md`. Per-harness setup and capability deltas live in [`docs/harnesses.md`](docs/harnesses.md). Gemini-specific setup is in `GEMINI.md` (also auto-loaded by Gemini CLI). This file should never grow beyond ~150 lines (per OpenAI's [harness-engineering](https://openai.com/index/harness-engineering/) practice).
 
@@ -41,12 +41,14 @@ CI (`.github/workflows/validate.yml`) runs all four on every PR plus installs Op
 ## Regenerating per-harness artifacts
 
 ```bash
+make generate HARNESS=antigravity # emits .antigravity/skills, .antigravity/agents
 make generate HARNESS=codex      # emits .codex/skills, .codex/agents
 make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
 make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/, .opencode/skills/
 make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
 make generate HARNESS=copilot    # emits .copilot/agents/, .copilot/skills/, .copilot/commands/
-make generate-all                # all 5 generated harnesses (claude-code is source, not generated)
+make generate-all                # all 6 generated harnesses (claude-code is source, not generated)
+make install-antigravity         # symlink generated Antigravity artifacts into global config
 make install-opencode            # symlink generated OpenCode artifacts into global config
 make install-copilot             # symlink generated Copilot artifacts into ~/.copilot/
 ```
@@ -58,6 +60,7 @@ Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored 
 155 skills under `plugins/*/skills/<n>/SKILL.md` — discoverable by every harness:
 
 - **Claude Code**: auto-discovery via Anthropic's SKILL.md spec
+- **Antigravity**: skills and commands under `.antigravity/skills/` (using hyphenated name format for commands)
 - **Codex CLI**: mirrored to `.codex/skills/<plugin>__<skill>/` (8 KB body cap; detail in `references/details.md`)
 - **OpenCode**: mirrored to `.opencode/skills/<plugin>-<skill>/` using hyphenated names for global install
 - **Cursor**: reads `.claude/skills/` directly (no re-emit)
@@ -70,6 +73,7 @@ Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 
 191 subagents under `plugins/*/agents/<name>.md`. Per-harness transpilation:
 
+- **Antigravity**: `.antigravity/agents/<plugin>__<agent>/agent.json` (JSON profile wrapping `customAgentSpec`)
 - **Codex**: `.codex/agents/<plugin>__<agent>.toml` (drop `tools:`, map model alias to GPT-5 family, infer `sandbox_mode`)
 - **OpenCode**: `.opencode/agents/<plugin>__<agent>.md` with `mode: subagent` + `permission:` block (locked agents — those with source `tools: []` — get deny-everything except base `skill`/`task`)
 - **Gemini**: `agents/<plugin>__<agent>.md` (April 2026 subagent spec)
@@ -79,3 +83,4 @@ Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 ## Why this file is short
 
 Per OpenAI's harness-engineering practice: this file is a **map**, not an encyclopedia. Procedural detail lives in skills (loaded on demand by agents). Reference material lives in `docs/` (loaded when an agent navigates). A single bloated AGENTS.md crowds out the task, rots quickly, and is hard to verify mechanically. Keep it lean; push detail elsewhere.
+
