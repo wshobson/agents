@@ -50,6 +50,61 @@ def _run(
     )
 
 
+def _run_pty(
+    args: list[str], cwd: Path | None = None, env: dict | None = None
+) -> subprocess.CompletedProcess:
+    """Run a subprocess under a simulated pseudo-terminal (PTY) to satisfy TTY checks."""
+    import pty
+    import os
+    import select
+
+    master_fd, slave_fd = pty.openpty()
+    try:
+        proc = subprocess.Popen(
+            args,
+            stdin=slave_fd,
+            stdout=slave_fd,
+            stderr=slave_fd,
+            cwd=str(cwd) if cwd else None,
+            env=env,
+            text=True,
+        )
+        os.close(slave_fd)
+
+        output = []
+        while True:
+            r, _, _ = select.select([master_fd], [], [], 0.1)
+            if not r:
+                if proc.poll() is not None:
+                    break
+                continue
+            try:
+                data = os.read(master_fd, 1024)
+                if not data:
+                    break
+                output.append(data.decode("utf-8", errors="ignore"))
+            except OSError:
+                break
+
+        try:
+            proc.wait(timeout=_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait()
+
+        return subprocess.CompletedProcess(
+            args=args,
+            returncode=proc.returncode,
+            stdout="".join(output),
+            stderr="",
+        )
+    finally:
+        try:
+            os.close(master_fd)
+        except OSError:
+            pass
+
+
 # ── OpenCode CLI ─────────────────────────────────────────────────────────────
 
 
@@ -79,14 +134,15 @@ class TestOpenCodeSmoke:
 
     def test_opencode_discovers_every_source_agent(self, opencode_workdir: Path):
         """Every source agent in plugins/*/agents/ must show up in `opencode agent list`."""
+        import re
         proc = _run(["opencode", "agent", "list"], cwd=opencode_workdir)
         assert proc.returncode == 0
         listed = set()
+        pattern = re.compile(r"^\s{3}(\S+)\s+\((?:primary|subagent)\)$")
         for line in proc.stdout.splitlines():
-            # Lines look like `<plugin>__<agent> (subagent)` or `<name> (primary)`
-            line = line.strip()
-            if "(" in line:
-                listed.add(line.split("(", 1)[0].strip())
+            m = pattern.match(line)
+            if m:
+                listed.add(m.group(1))
 
         expected = set()
         for plugin_name in list_plugins():
@@ -99,6 +155,17 @@ class TestOpenCodeSmoke:
             f"OpenCode failed to discover {len(missing)} agents — likely a frontmatter "
             f"or permission-block bug. Missing: {sorted(missing)[:10]}{'...' if len(missing) > 10 else ''}"
         )
+
+
+# ── Antigravity CLI ──────────────────────────────────────────────────────────
+
+
+@pytest.mark.skipif(not _has("antigravity"), reason="antigravity CLI not installed")
+class TestAntigravitySmoke:
+    def test_antigravity_version_runs(self):
+        """Sanity check that the Antigravity CLI is invokable."""
+        proc = _run(["antigravity", "--version"])
+        assert proc.returncode == 0
 
 
 # ── Gemini CLI ───────────────────────────────────────────────────────────────
@@ -126,11 +193,11 @@ class TestCodexSmoke:
     def test_codex_doctor_passes_overall(self):
         """`codex doctor` is the only no-API health check Codex CLI provides. It runs
         a battery of structural checks and surfaces drift in the local install."""
-        proc = _run(["codex", "doctor"])
+        proc = _run_pty(["codex", "doctor"])
         # Codex doctor returns 0 on healthy install; warnings are inline but don't fail.
         assert proc.returncode == 0, (
             f"codex doctor failed (rc={proc.returncode}):\n"
-            f"--- stdout ---\n{proc.stdout[:2000]}\n--- stderr ---\n{proc.stderr}"
+            f"--- stdout ---\n{proc.stdout[:2000]}\n"
         )
 
     @pytest.mark.skipif(

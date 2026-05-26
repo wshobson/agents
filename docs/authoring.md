@@ -25,7 +25,7 @@ do, and what to avoid, so the work you do for Claude Code translates cleanly eve
 |---|---|---|---|
 | `agents/<name>.md` | `name`, `description` | `model`, optional `tools:`, optional `color:` | `tools:` allowlist becomes a per-harness permission block where supported, dropped otherwise. |
 | `skills/<name>/SKILL.md` | `name`, `description` | (none) | Other Anthropic SKILL.md fields work on Claude Code only. |
-| `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills (it deprecated `~/.codex/prompts/`). Copilot emits `.copilot/commands/<plugin>/<name>.md` slash-command prompts. |
+| `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills (it deprecated `~/.codex/prompts/`). Copilot emits `.copilot/commands/<plugin>/<name>.md` slash-command prompts. Antigravity maps commands to runnable skills (`user-invocable: true`) under `.antigravity/skills/`. |
 
 **Description triggers.** Include a recognized phrase: `Use when …`, `Use this skill when …`,
 `Use PROACTIVELY when …`, `Use after …`, `Trigger when …`, `Auto-loads when …`. The
@@ -139,8 +139,8 @@ Things that work in Claude Code but degrade across harnesses:
 | `TodoWrite` references | Only Claude Code and OpenCode support it. |
 | Hooks (`hooks:` frontmatter) | Only Claude Code and OpenCode (via TS plugins). |
 | `color:` on agents | Cosmetic; dropped everywhere except Claude Code. |
-| Per-agent tool allowlist | Honored only on Claude Code/Gemini/OpenCode. Cursor and Codex have coarser models. |
-| Slash commands | Codex converts to skills. Gemini transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. |
+| Per-agent tool allowlist | Honored on Claude Code/Gemini/OpenCode/Antigravity. Cursor and Codex have coarser models. |
+| Slash commands | Codex converts to skills. Gemini transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. Antigravity maps commands to runnable skills under `.antigravity/skills/`. |
 | Marketplace registry | Only Claude Code and Cursor have one. Gemini installs by URL; Codex/OpenCode have no marketplace. |
 
 When you must use a feature with no equivalent, the `harness_portability` lint won't fire

@@ -24,12 +24,12 @@ Pick your harness:
 
 [→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
 
-### Codex CLI · Cursor · OpenCode · Gemini CLI · Copilot
+### Antigravity · Codex CLI · Cursor · OpenCode · Gemini CLI · Copilot
 
 ```bash
 gh repo clone wshobson/agents ~/agents
 cd ~/agents
-make generate HARNESS=<codex|cursor|opencode|gemini|copilot>
+make generate HARNESS=<antigravity|codex|cursor|opencode|gemini|copilot>
 ```
 
 Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). Gemini-specific setup: [GEMINI.md](GEMINI.md) (also auto-loaded by Gemini CLI).
@@ -73,12 +73,13 @@ Three-tier model strategy:
 
 ## Multi-harness support
 
-This marketplace ships to five agentic harnesses from one Markdown source. Each adapter
+This marketplace ships to six agentic harnesses from one Markdown source. Each adapter
 emits harness-native artifacts (not lowest-common-denominator translations):
 
 | Harness | Generates | Notes |
 |---|---|---|
 | **Claude Code** | (source-of-truth) | Native `marketplace.json` + `plugins/` |
+| **Antigravity** | `.antigravity/agents/`, `.antigravity/skills/` | Custom JSON agent spec + SKILL.md skills + commands mapped as runnable skills; model maps to `gemini-2.5-*` |
 | **Codex CLI** | `.codex/skills/`, `.codex/agents/` | 8 KB skill cap respected; commands → skills |
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
@@ -86,7 +87,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **Copilot** | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |
 
 ```bash
-make generate-all                        # all five
+make generate-all                        # all six
 make validate                            # structural checks
 make garden                              # drift / dead-link / cap detection
 ```

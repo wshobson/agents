@@ -688,7 +688,114 @@ def validate_copilot(report: Report) -> None:
         return
 
 
+def validate_antigravity(report: Report) -> None:
+    """Validate Antigravity agent and skill files under WORKTREE/.antigravity."""
+    skills_dir = WORKTREE / ".antigravity" / "skills"
+    agents_dir = WORKTREE / ".antigravity" / "agents"
+
+    # 1. Every native skill has frontmatter name matching directory
+    if skills_dir.is_dir():
+        for skill_md in skills_dir.glob("*/SKILL.md"):
+            content = skill_md.read_text(encoding="utf-8")
+            fm, _ = parse_frontmatter(content)
+            if fm.get("name") != skill_md.parent.name:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=skill_md,
+                    message=f"frontmatter name {fm.get('name')!r} != directory {skill_md.parent.name!r}",
+                    remediation="Antigravity auto-discovers by directory; name must match.",
+                )
+
+    # 2. Every custom agent has a valid agent.json file
+    if agents_dir.is_dir():
+        for agent_json_path in agents_dir.glob("*/agent.json"):
+            try:
+                data = json.loads(agent_json_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as e:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message=f"JSON parse error: {e}",
+                    remediation="Provide a valid JSON file for the custom agent.",
+                )
+                continue
+
+            # Check mandatory keys
+            for key in ("name", "displayName", "description", "customAgentSpec"):
+                if key not in data:
+                    report.add(
+                        severity="error",
+                        harness="antigravity",
+                        path=agent_json_path,
+                        message=f"missing required `{key}` field in agent.json",
+                        remediation=f"Add a `{key}` field to the custom agent config.",
+                    )
+
+            if "name" in data and data["name"] != agent_json_path.parent.name:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message=f"agent name {data['name']!r} != directory {agent_json_path.parent.name!r}",
+                    remediation="Agent name must match its parent directory.",
+                )
+
+            # Check customAgentSpec schema
+            spec = data.get("customAgentSpec")
+            if isinstance(spec, dict):
+                custom_agent = spec.get("customAgent")
+                if isinstance(custom_agent, dict):
+                    sections = custom_agent.get("systemPromptSections")
+                    if not isinstance(sections, list):
+                        report.add(
+                            severity="error",
+                            harness="antigravity",
+                            path=agent_json_path,
+                            message="`systemPromptSections` must be an array of objects",
+                            remediation="Set `systemPromptSections` to an array in `customAgentSpec.customAgent`.",
+                        )
+                    else:
+                        for s in sections:
+                            if not isinstance(s, dict) or "title" not in s or "content" not in s:
+                                report.add(
+                                    severity="error",
+                                    harness="antigravity",
+                                    path=agent_json_path,
+                                    message="prompt section must contain `title` and `content` keys",
+                                    remediation="Each section in `systemPromptSections` needs both `title` and `content` fields.",
+                                )
+                else:
+                    report.add(
+                        severity="error",
+                        harness="antigravity",
+                        path=agent_json_path,
+                        message="missing `customAgent` dict inside `customAgentSpec`",
+                        remediation="Add `customAgent` object to `customAgentSpec`.",
+                    )
+            elif spec is not None:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message="`customAgentSpec` must be an object",
+                    remediation="Set `customAgentSpec` to an object in agent.json.",
+                )
+
+            model = data.get("model", "")
+            if model and not model.startswith("gemini-"):
+                report.add(
+                    severity="warning",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message=f"model {model!r} doesn't look like a Gemini model id",
+                    remediation="Antigravity uses Gemini models (e.g. 'gemini-2.5-pro').",
+                )
+
+
 _VALIDATORS = {
+    "antigravity": validate_antigravity,
     "codex": validate_codex,
     "copilot": validate_copilot,
     "cursor": validate_cursor,

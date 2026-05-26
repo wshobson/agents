@@ -48,6 +48,12 @@ opencode.json
 # Copilot
 .copilot/
 
+# Antigravity
+.antigravity/
+
+# Scratch directory
+scratch/
+
 # Gemini CLI (legacy paths kept for compatibility)
 commands/**/*.toml
 /commands/

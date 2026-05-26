@@ -18,6 +18,7 @@ from tools.adapters.cursor import CursorAdapter
 from tools.adapters.gemini import _INLINE_BODY_THRESHOLD, GeminiAdapter
 from tools.adapters.opencode import OpenCodeAdapter, _opencode_skill_id
 from tools.adapters.copilot import CopilotAdapter, _build_tools_list, _needs_yaml_quoting
+from tools.adapters.antigravity import AntigravityAdapter
 
 # ── Codex ────────────────────────────────────────────────────────────────────
 
@@ -1162,11 +1163,137 @@ class TestFrontmatterParser:
         assert fm["description"] == "multi line"
 
 
+class TestAntigravityAdapter:
+    def test_emits_agent_profile(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        adapter = AntigravityAdapter(output_root=output_root)
+        result = adapter.emit_plugin(synthetic_plugin)
+
+        agent_path = output_root / ".antigravity" / "agents" / "demo__greeter" / "agent.json"
+        assert agent_path in result.written
+        assert agent_path.is_file()
+
+        data = json.loads(agent_path.read_text(encoding="utf-8"))
+        assert data["name"] == "demo__greeter"
+        assert data["displayName"] == "Greeter"
+        assert data["description"] == "Use when delegating greetings."
+        assert data["model"] == "gemini-2.5-pro"
+        assert data["hidden"] is False
+        spec = data["customAgentSpec"]["customAgent"]
+        assert spec["toolNames"] == ["view_file", "grep_search"]
+        assert len(spec["systemPromptSections"]) == 1
+        assert spec["systemPromptSections"][0]["title"] == "Instructions"
+        assert "Delegate greeting tasks here." in spec["systemPromptSections"][0]["content"]
+
+    def test_tool_name_rewriting(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "tool-user",
+            "name: tool-user\ndescription: Use when tooling.\ntools: Read, Write, Bash",
+            "# Tool User\n\nUse the `Read` tool to read and `Bash` to execute.\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        content = (
+            output_root / ".antigravity" / "agents" / "demo__tool-user" / "agent.json"
+        ).read_text(encoding="utf-8")
+        data = json.loads(content)
+        spec = data["customAgentSpec"]["customAgent"]
+        assert spec["toolNames"] == ["view_file", "write_to_file", "run_command"]
+        body = spec["systemPromptSections"][0]["content"]
+        assert "`view_file`" in body
+        assert "`run_command`" in body
+        assert "`Read`" not in body
+        assert "`Bash`" not in body
+
+    def test_explicit_empty_tools(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir, "advisory",
+            "name: advisory\ndescription: Use when advising.\nmodel: sonnet\ntools: []",
+            "# Advisory\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        content = (output_root / ".antigravity" / "agents" / "demo__advisory" / "agent.json").read_text(encoding="utf-8")
+        data = json.loads(content)
+        assert data["name"] == "demo__advisory"
+        spec = data["customAgentSpec"]["customAgent"]
+        assert spec["toolNames"] == []
+
+    def test_no_tools_field(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir, "unrestricted",
+            "name: unrestricted\ndescription: Use when unrestricted.\nmodel: opus",
+            "# Unrestricted\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        content = (output_root / ".antigravity" / "agents" / "demo__unrestricted" / "agent.json").read_text(encoding="utf-8")
+        data = json.loads(content)
+        spec = data["customAgentSpec"]["customAgent"]
+        assert "toolNames" not in spec
+
+    def test_emits_skill(self, synthetic_plugin: PluginSource, output_root: Path):
+        adapter = AntigravityAdapter(output_root=output_root)
+        result = adapter.emit_plugin(synthetic_plugin)
+
+        skill_path = output_root / ".antigravity" / "skills" / "demo__hello" / "SKILL.md"
+        assert skill_path in result.written
+        assert skill_path.is_file()
+
+        fm, body = parse_frontmatter(skill_path.read_text(encoding="utf-8"))
+        assert fm["name"] == "demo__hello"
+        assert "Use the `view_file` tool to open files. Run `run_command` to greet." in body
+
+    def test_emits_command_as_skill(self, synthetic_plugin: PluginSource, output_root: Path):
+        adapter = AntigravityAdapter(output_root=output_root)
+        result = adapter.emit_plugin(synthetic_plugin)
+
+        command_path = output_root / ".antigravity" / "skills" / "demo-say-hi" / "SKILL.md"
+        assert command_path in result.written
+        assert command_path.is_file()
+
+        fm, body = parse_frontmatter(command_path.read_text(encoding="utf-8"))
+        assert fm["name"] == "demo-say-hi"
+        assert fm["description"] == "Send a greeting"
+        assert fm["argument-hint"] == "<name>"
+        assert fm["user-invocable"] == "true"
+        assert fm["disable-model-invocation"] == "true"
+
+
 class TestCapabilities:
     def test_every_adapter_id_has_capabilities_entry(self):
         from tools.adapters.capabilities import CAPABILITIES
 
-        for adapter_cls in (CodexAdapter, CopilotAdapter, CursorAdapter, GeminiAdapter, OpenCodeAdapter):
+        for adapter_cls in (AntigravityAdapter, CodexAdapter, CopilotAdapter, CursorAdapter, GeminiAdapter, OpenCodeAdapter):
             assert adapter_cls.harness_id in CAPABILITIES
 
     def test_model_aliases_complete(self):

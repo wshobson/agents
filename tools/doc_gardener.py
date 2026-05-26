@@ -237,6 +237,35 @@ def check_stale_artifacts(report: Report) -> None:
                 if src.is_file():
                     pairs.append((src, skill_md))
 
+    antigravity_root = WORKTREE / ".antigravity"
+    antigravity_agents = antigravity_root / "agents"
+    if antigravity_agents.is_dir():
+        for agent_json in antigravity_agents.glob("*/agent.json"):
+            name = agent_json.parent.name
+            if "__" in name:
+                plugin, agent = name.split("__", 1)
+                src = PLUGINS_DIR / plugin / "agents" / f"{agent}.md"
+                if src.is_file():
+                    pairs.append((src, agent_json))
+
+    antigravity_skills = antigravity_root / "skills"
+    if antigravity_skills.is_dir():
+        for skill_md in antigravity_skills.glob("*/SKILL.md"):
+            name = skill_md.parent.name
+            if "__" in name:
+                plugin, leaf = name.split("__", 1)
+                src = PLUGINS_DIR / plugin / "skills" / leaf / "SKILL.md"
+                if src.is_file():
+                    pairs.append((src, skill_md))
+            elif "-" in name:
+                for plugin_name in list_plugins():
+                    if name.startswith(f"{plugin_name}-"):
+                        cmd_name = name[len(plugin_name) + 1 :]
+                        src = PLUGINS_DIR / plugin_name / "commands" / f"{cmd_name}.md"
+                        if src.is_file():
+                            pairs.append((src, skill_md))
+                            break
+
     for src, gen in pairs:
         if src.stat().st_mtime > gen.stat().st_mtime + 1:  # 1s grace
             # Derive the plugin name correctly regardless of source layout.
