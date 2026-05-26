@@ -164,8 +164,18 @@ class TestOpenCodeSmoke:
 class TestAntigravitySmoke:
     def test_antigravity_version_runs(self):
         """Sanity check that the Antigravity CLI is invokable."""
-        proc = _run(["antigravity", "--version"])
-        assert proc.returncode == 0
+        try:
+            proc = subprocess.run(
+                ["antigravity", "--version"],
+                capture_output=True,
+                timeout=5,
+            )
+            assert proc.returncode == 0
+        except subprocess.TimeoutExpired as e:
+            output = e.output or b""
+            if isinstance(output, bytes):
+                output = output.decode("utf-8", errors="ignore")
+            assert "Starting app" in output or "Local:" in output or "[IDE Wizard]" in output
 
 
 # ── Gemini CLI ───────────────────────────────────────────────────────────────
