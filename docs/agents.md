@@ -1,6 +1,6 @@
 # Agent Reference
 
-Complete reference for all **191 local specialized AI agents** organized by category with model assignments.
+Complete reference for all **192 local specialized AI agents** organized by category with model assignments.
 
 ## Agent Categories
 
@@ -186,6 +186,7 @@ Complete reference for all **191 local specialized AI agents** organized by cate
 | Agent                                                                             | Model  | Description                                  |
 | --------------------------------------------------------------------------------- | ------ | -------------------------------------------- |
 | [content-marketer](../plugins/content-marketing/agents/content-marketer.md)       | sonnet | Blog posts, social media, email campaigns    |
+| [social-publishing-publisher](../plugins/social-publishing/agents/social-publishing-publisher.md) | haiku | Multi-platform social media publishing via SocialClaw |
 | [sales-automator](../plugins/customer-sales-automation/agents/sales-automator.md) | haiku  | Cold emails, follow-ups, proposal generation |
 
 #### Support & Legal

@@ -1,11 +1,12 @@
 ---
-name: social-publisher
+name: social-publishing-publisher
 description: >
   Agent-first social media publishing specialist. Use this agent to schedule and publish
   posts across 13 platforms (X, LinkedIn, Instagram, Facebook Pages, TikTok, Discord,
   Telegram, YouTube, Reddit, WordPress, Pinterest) via the SocialClaw API. Invoke for
   multi-platform campaigns, content scheduling, media upload, and post analytics. Requires
   a SocialClaw workspace API key (SOCIALCLAW_API_KEY).
+model: haiku
 tools: Read, Write, Bash, WebFetch
 ---
 
