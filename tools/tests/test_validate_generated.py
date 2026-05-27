@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 from tools.validate_generated import (
     Report,
+    validate_antigravity,
     validate_codex,
     validate_copilot,
     validate_cursor,
@@ -413,3 +414,85 @@ class TestGeminiValidator:
         assert any(
             "GEMINI.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings()
         )
+
+
+# ── Antigravity ──────────────────────────────────────────────────────────────
+
+
+class TestAntigravityValidator:
+    def test_clean_output_no_findings(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        (tmp_path / ".antigravity" / "skills" / "demo-hello").mkdir(parents=True)
+        (tmp_path / ".antigravity" / "skills" / "demo-hello" / "SKILL.md").write_text(
+            "---\nname: demo-hello\n---\n\nBody.\n"
+        )
+        (tmp_path / ".antigravity" / "agents" / "demo-agent").mkdir(parents=True)
+        agent_json = {
+            "name": "demo-agent",
+            "displayName": "Demo Agent",
+            "description": "Just a demo agent.",
+            "hidden": False,
+            "model": "gemini-2.5-pro",
+            "customAgentSpec": {
+                "customAgent": {
+                    "systemPromptSections": [
+                        {
+                            "title": "Instructions",
+                            "content": "Do work.",
+                        }
+                    ]
+                }
+            }
+        }
+        (tmp_path / ".antigravity" / "agents" / "demo-agent" / "agent.json").write_text(
+            json.dumps(agent_json)
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert report.errors() == []
+
+    def test_skill_name_mismatch_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        (tmp_path / ".antigravity" / "skills" / "demo-hello").mkdir(parents=True)
+        (tmp_path / ".antigravity" / "skills" / "demo-hello" / "SKILL.md").write_text(
+            "---\nname: WRONG-NAME\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("frontmatter name" in f.message for f in report.errors())
+
+    def test_invalid_json_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        (tmp_path / ".antigravity" / "agents" / "demo-agent").mkdir(parents=True)
+        (tmp_path / ".antigravity" / "agents" / "demo-agent" / "agent.json").write_text(
+            "not json"
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("JSON parse error" in f.message for f in report.errors())
+
+    def test_missing_required_fields_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        (tmp_path / ".antigravity" / "agents" / "demo-agent").mkdir(parents=True)
+        (tmp_path / ".antigravity" / "agents" / "demo-agent" / "agent.json").write_text(
+            '{"name": "demo-agent"}'
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("missing required" in f.message and "customAgentSpec" in f.message for f in report.errors())
+
+    def test_agent_name_mismatch_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        (tmp_path / ".antigravity" / "agents" / "demo-agent").mkdir(parents=True)
+        (tmp_path / ".antigravity" / "agents" / "demo-agent" / "agent.json").write_text(
+            '{"name": "wrong-agent", "displayName": "Demo", "description": "Desc", "customAgentSpec": {}}'
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("agent name" in f.message and "directory" in f.message for f in report.errors())
+

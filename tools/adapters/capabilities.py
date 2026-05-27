@@ -169,6 +169,26 @@ CAPABILITIES: dict[str, Capability] = {
         bare_model_aliases=False,
         notes="Auto-discovers skills/ and agents/ at extension root. TOML commands at commands/. Use @{path} for file injection in prompts. GEMINI.md is injected every prompt — keep tight.",
     ),
+    "antigravity": Capability(
+        harness_id="antigravity",
+        display_name="Google Antigravity CLI",
+        skills_native=True,
+        agents_native=True,
+        commands_native=False,
+        plugin_marketplace=False,
+        parallel_agents=True,
+        tool_allowlist_per_agent=True,
+        todowrite=False,
+        task_spawn=True,
+        mcp_servers=True,
+        hooks=False,
+        context_file_name="AGENTS.md",
+        context_file_max_lines=_CONTEXT_LINES_CAP,
+        skill_body_max_bytes=_NO_CAP,
+        tool_name_case="lowercase",
+        bare_model_aliases=False,
+        notes="Emits agent.json to .antigravity/agents/<name>/, SKILL.md to .antigravity/skills/<name>/, and workflow .md to .antigravity/workflows/ (plus extra-writes to .agent/ and .agents/ for IDE/2.0 discovery).",
+    ),
 }
 
 
@@ -241,6 +261,19 @@ TOOL_NAME_MAPS: dict[str, dict[str, str]] = {
         "Agent": "@agent",
         "Task": "@agent",
     },
+    "antigravity": {
+        "Read": "view_file",
+        "Edit": "replace_file_content",
+        "Write": "write_to_file",
+        "Bash": "run_command",
+        "Grep": "grep_search",
+        "Glob": "list_dir",
+        "WebFetch": "read_url_content",
+        "WebSearch": "search_web",
+        "TodoWrite": "todo",
+        "Agent": "invoke_subagent",
+        "Task": "invoke_subagent",
+    },
 }
 
 
@@ -277,6 +310,12 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
         "inherit": "anthropic/claude-sonnet-4-6",
     },
     "gemini": {
+        "opus": "gemini-2.5-pro",
+        "sonnet": "gemini-2.5-pro",
+        "haiku": "gemini-2.5-flash",
+        "inherit": "gemini-2.5-pro",
+    },
+    "antigravity": {
         "opus": "gemini-2.5-pro",
         "sonnet": "gemini-2.5-pro",
         "haiku": "gemini-2.5-flash",

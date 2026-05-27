@@ -30,9 +30,6 @@ node_modules
 
 # Codex CLI
 .codex/
-# AGENTS.md is committed as the canonical context file (per OpenAI harness engineering).
-# Codex/Cursor/OpenCode read it directly; Claude Code reads it via @AGENTS.md import
-# in CLAUDE.md; Gemini CLI reads it via .gemini/settings.json `context.fileName`.
 
 # Cursor
 .cursor/
@@ -41,9 +38,6 @@ node_modules
 # OpenCode
 .opencode/
 opencode.json
-
-# OpenCode session continuation artifacts
-.omo/
 
 # Copilot
 .copilot/
@@ -54,8 +48,9 @@ commands/**/*.toml
 /agents/
 /skills/
 
-# Local agent caches
-.agent/
-.agents/
+# Antigravity CLI
 .antigravity/
 
+# Local agent runtime caches (IDE/2.0 discovery)
+.agent/
+.agents/

@@ -286,6 +286,15 @@ class CommandSource:
     def argument_hint(self) -> str:
         return (self.frontmatter.get("argument-hint") or "").strip()
 
+    @property
+    def aliases(self) -> list[str]:
+        raw = self.frontmatter.get("aliases")
+        if isinstance(raw, list):
+            return raw
+        if isinstance(raw, str):
+            return [a.strip() for a in raw.split(",") if a.strip()]
+        return []
+
 
 @dataclass
 class PluginSource:

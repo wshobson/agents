@@ -562,7 +562,7 @@ def build_markdown(
         lines.append("Searchable index of all text detected in video frames.\n")
         lines.append("| Timestamp | Key Text (preview) |")
         lines.append("|-----------|-------------------|")
-        for ts, rel, txt in frames_with_text:
+        for ts, _rel, txt in frames_with_text:
             # First line or first 80 chars as preview
             preview = txt.split("\n")[0][:80].replace("|", "\\|")
             if len(txt) > 80:
@@ -573,7 +573,7 @@ def build_markdown(
         # Full text dump for searchability
         lines.append("### All Detected Text (Full)\n")
         lines.append("<details><summary>Click to expand full OCR text</summary>\n")
-        for ts, rel, txt in frames_with_text:
+        for ts, _rel, txt in frames_with_text:
             lines.append(f"**[{ts}]**")
             lines.append(f"```\n{txt}\n```\n")
         lines.append("</details>\n")

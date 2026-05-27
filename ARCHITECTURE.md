@@ -4,7 +4,7 @@ Top-level architectural map for the claude-agents marketplace. Detail lives in [
 
 ## Invariants
 
-1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `.copilot/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. Never hand-edit generated files.
+1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `.copilot/`, `.antigravity/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. Never hand-edit generated files.
 
 2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. `CLAUDE.md` imports it via `@AGENTS.md`. Gemini CLI reads it via `.gemini/settings.json` `context.fileName`. Codex / Cursor / OpenCode read `AGENTS.md` natively.
 
@@ -36,7 +36,7 @@ claude-agents/
 │   ├── adapters/                   # Per-harness adapter framework
 │   │   ├── base.py                 # Parser, HarnessAdapter ABC, helpers
 │   │   ├── capabilities.py         # Capability matrix; consumed by every adapter
-│   │   ├── codex.py / cursor.py / opencode.py / gemini.py / copilot.py
+│   │   ├── codex.py / cursor.py / opencode.py / gemini.py / copilot.py / antigravity.py
 │   │   └── cursor_rules/           # Hand-curated .mdc rules
 │   ├── generate.py                 # Unified CLI: `make generate HARNESS=<x>`
 │   ├── validate_generated.py       # Structural validation
@@ -62,6 +62,7 @@ Each adapter consumes the canonical `plugins/` source and emits harness-native a
 | `cursor.py` | `.cursor-plugin/`, `.cursor/rules/*.mdc` | Marketplace manifests + hand-curated rules. Cursor reads `.claude/` directly for skills/agents |
 | `opencode.py` | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | Permission block from `tools:` allowlist (locked agents preserve intent); strict lowercase tool names; OpenCode-safe skill names |
 | `copilot.py` | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |
+| `antigravity.py` | `.antigravity/agents/`, `.antigravity/skills/`, `.antigravity/commands/` | Lowercase agent.json per agent + SKILL.md skills + commands-as-skills; model maps to Gemini 2.5 family |
 | `gemini.py` | `skills/`, `agents/`, `commands/*.toml` at extension root | Native skills + April-2026 subagents; `@{path}` injection for large command bodies |
 
 Detail in [`docs/harnesses.md`](docs/harnesses.md) (capability matrix per harness) and [`docs/architecture.md`](docs/architecture.md) (full design rationale).
@@ -84,7 +85,7 @@ Each plugin is a directory under `plugins/`. Three component types, all auto-dis
 - **Skills** (`skills/<n>/SKILL.md`) — modular knowledge with progressive disclosure. Frontmatter: `name`, `description` (must include a recognized trigger phrase like "Use when …"). Supporting material in `references/`, templates in `assets/`.
 - **Commands** (`commands/<n>.md`) — slash commands. Frontmatter: `description`, `argument-hint`.
 
-Full conventions in [`docs/authoring.md`](docs/authoring.md). Authoring for portability across all five harnesses is the main concern; the adapter framework handles per-harness mechanics.
+Full conventions in [`docs/authoring.md`](docs/authoring.md). Authoring for portability across all six harnesses is the main concern; the adapter framework handles per-harness mechanics.
 
 ## Model tiers
 
