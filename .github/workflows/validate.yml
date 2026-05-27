@@ -204,7 +204,7 @@ jobs:
           retention-days: 7
 
   cli-smoke-test:
-    name: Real-CLI smoke test (OpenCode + Gemini)
+    name: Real-CLI smoke test (OpenCode + Gemini + Antigravity)
     runs-on: ubuntu-latest
     # Real-CLI subprocess tests: invokes the actual harness binaries against our
     # generated artifacts to catch issues that pure-Python parsing misses (CLI
@@ -234,10 +234,17 @@ jobs:
         # gemini-extension.json schema changes.
         run: npm install -g @google/gemini-cli@latest
 
+      - name: Install Antigravity CLI
+        # agy plugin import validates our Gemini-format artifacts end-to-end.
+        run: |
+          curl -fsSL https://antigravity.google/cli/install.sh | bash
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
       - name: Verify CLI versions
         run: |
           opencode --version
           gemini --version
+          agy --help | head -2
 
       - name: Install uv
         uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5

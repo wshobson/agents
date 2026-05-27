@@ -14,7 +14,7 @@ load the generated artifacts and report what it found.
 | **Codex CLI** | 0.133.0 | ✅ pass (structural) | All 191 agent TOMLs parse via Python `tomllib`; AGENTS.md within budget (43 lines / 500 tokens) | Codex doctor surfaces no errors; deeper "did the model actually load the skill" requires interactive verification. |
 | **Cursor** | (editor-only) | n/a | n/a | No CLI; manual verification recipe below. |
 | **Copilot** | (structural) | ✅ pass | 191 agent profiles, 155 skills, 25 commands all validated | No CLI round-trip tool yet; structural validation via `make validate` passes. |
-| **Antigravity CLI** | (structural) | ✅ pass | 191 agent.json profiles, 155 skills, 25 commands all validated | No CLI round-trip tool yet; structural validation via `make validate` passes. |
+| **Antigravity CLI** | 1.0.2 | ✅ pass | 191 / 191 agents, 155 / 155 skills, 183 / 183 commands imported | `agy plugin import .` detects and processes all artifacts. Structural validation via `make validate` passes. |
 
 ## Issues surfaced and fixed during round-trip
 
@@ -101,11 +101,14 @@ make generate HARNESS=cursor
 # 6. Skills under .claude/skills/ should auto-trigger from descriptions
 ```
 
-### Antigravity CLI (no CLI round-trip yet)
+### Antigravity CLI round-trip
 
 ```bash
 # Generate
 make generate HARNESS=antigravity
+
+# CLI import verification — detects all generated artifacts (no config pollution)
+HOME=/tmp/agy-verify agy plugin import .
 
 # Structural validation (parses every generated artifact)
 make validate
@@ -119,8 +122,7 @@ ls .antigravity/workflows/ # 25 workflow .md files (command-as-workflow)
 make install-antigravity   # symlinks artifacts to ~/.gemini/antigravity-cli/
 ```
 
-Antigravity CLI currently lacks a CLI verification tool. Manual testing requires
-opening the Antigravity editor and verifying agents and skills load correctly.
+Smoke test: `pytest tools/tests/test_cli_smoke.py::TestAntigravitySmoke`.
 
 ### Copilot (no CLI round-trip yet)
 
@@ -180,8 +182,8 @@ the artifacts at runtime. Specifically untested by the automated suite:
   prompt.
 - Whether Copilot's agent profile and skill discovery actually loads our artifacts
   end-to-end (no CLI; requires VS Code editor).
-- Whether Antigravity CLI's agent.json and skill discovery actually loads our artifacts
-  end-to-end (no CLI; requires Antigravity editor).
+- Whether Antigravity CLI's agent.json imports our artifacts into a usable session
+  end-to-end (the smoke test verifies import counts but not runtime invocation).
 
 These require interactive use and API-token-burning runs. The recipes above show how
 to perform them manually.
