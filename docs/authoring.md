@@ -140,7 +140,7 @@ Things that work in Claude Code but degrade across harnesses:
 | Hooks (`hooks:` frontmatter) | Only Claude Code and OpenCode (via TS plugins). |
 | `color:` on agents | Cosmetic; dropped everywhere except Claude Code. |
 | Per-agent tool allowlist | Honored only on Claude Code/Gemini/OpenCode. Cursor and Codex have coarser models. |
-| Slash commands | Codex converts to skills. Gemini transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. Antigravity emits `.antigravity/commands/` SKILL.md files. |
+| Slash commands | Codex converts to skills. Gemini transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. Antigravity emits `.antigravity/workflows/<name>.md` workflow files. |
 | Marketplace registry | Only Claude Code and Cursor have one. Gemini installs by URL; Codex/OpenCode have no marketplace. |
 
 When you must use a feature with no equivalent, the `harness_portability` lint won't fire

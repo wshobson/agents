@@ -201,9 +201,9 @@ test:
 	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
-# of opencode / gemini / codex / claude are on PATH. Per-CLI tests skip gracefully
+# of opencode / gemini / codex / claude / agy are on PATH. Per-CLI tests skip gracefully
 # when the binary is missing — so local devs only exercise what they have installed.
-# CI installs OpenCode + Gemini + Codex and turns those skips into hard requirements.
+# CI installs OpenCode + Gemini + Antigravity and turns those skips into hard requirements.
 smoke-test:
 	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d commands ]; then \
 		echo "Generating harness artifacts first..."; \

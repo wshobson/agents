@@ -31,7 +31,7 @@ Every PR runs these on CI (`.github/workflows/`); run them locally before pushin
 make validate STRICT=1     # structural validation across all harness outputs
 make garden STRICT=1       # drift, dead-link, stale-artifact detection
 make test                  # full pytest suite (plugin-eval + tools/tests/)
-make smoke-test            # real-CLI subprocess tests (OpenCode, Gemini, Codex, Claude)
+make smoke-test            # real-CLI subprocess tests (OpenCode, Gemini, Antigravity, Codex, Claude)
 ```
 
 Code-quality checks (also in CI):

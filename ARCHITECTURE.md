@@ -62,7 +62,7 @@ Each adapter consumes the canonical `plugins/` source and emits harness-native a
 | `cursor.py` | `.cursor-plugin/`, `.cursor/rules/*.mdc` | Marketplace manifests + hand-curated rules. Cursor reads `.claude/` directly for skills/agents |
 | `opencode.py` | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | Permission block from `tools:` allowlist (locked agents preserve intent); strict lowercase tool names; OpenCode-safe skill names |
 | `copilot.py` | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |
-| `antigravity.py` | `.antigravity/agents/`, `.antigravity/skills/`, `.antigravity/commands/` | Lowercase agent.json per agent + SKILL.md skills + commands-as-skills; model maps to Gemini 2.5 family |
+| `antigravity.py` | `.antigravity/agents/`, `.antigravity/skills/`, `.antigravity/workflows/` | Lowercase agent.json per agent + SKILL.md skills + commands-as-workflows; model maps to Gemini 2.5 family |
 | `gemini.py` | `skills/`, `agents/`, `commands/*.toml` at extension root | Native skills + April-2026 subagents; `@{path}` injection for large command bodies |
 
 Detail in [`docs/harnesses.md`](docs/harnesses.md) (capability matrix per harness) and [`docs/architecture.md`](docs/architecture.md) (full design rationale).
@@ -75,7 +75,7 @@ Three mechanical gates, each runnable as a make target and wired into CI:
 2. **`make garden`** — drift detection (dead links, stale artifacts, oversize skills, marketplace orphans). Sorted by severity with per-kind summary.
 3. **`make test`** — full pytest suite (386 tests: adapters + validators + gardener + real-source + round-trip + real-CLI smoke).
 
-CI workflow: [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs all three on every PR, plus a `cli-smoke-test` job that installs OpenCode + Gemini and exercises them against the generated artifacts.
+CI workflow: [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs all three on every PR, plus a `cli-smoke-test` job that installs OpenCode + Gemini + Antigravity and exercises them against the generated artifacts.
 
 ## Plugin component model
 
