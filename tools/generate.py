@@ -38,10 +38,6 @@ _HARNESS_TARGETS = {
         ".antigravity/agents",
         ".antigravity/skills",
         ".antigravity/workflows",
-        ".agent/workflows",
-        ".agent/skills",
-        ".agents/workflows",
-        ".agents/skills",
     ],
     "copilot": [".copilot/agents", ".copilot/skills", ".copilot/commands"],
 }

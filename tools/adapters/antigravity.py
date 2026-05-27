@@ -83,7 +83,7 @@ class AntigravityAdapter(HarnessAdapter):
 
     Subagents go to ``.antigravity/agents/<plugin>__<agent>/agent.json`` as JSON configuration files.
     Skills go to ``.antigravity/skills/<plugin>__<skill>/SKILL.md``.
-    Workflows go to ``.antigravity/workflows/<plugin>-<command>.md`` (IDE/2.0 slash commands).
+    Workflows go to ``.antigravity/workflows/<plugin>-<command>.md``.
     Tool names are rewritten from Claude Code CamelCase to Antigravity names.
 
     Run ``make install-antigravity`` to symlink artifacts to ``~/.gemini/antigravity-cli/``
@@ -196,12 +196,6 @@ class AntigravityAdapter(HarnessAdapter):
         content = _antigravity_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(skill_dir / "SKILL.md", content))
 
-        # Also write to workspace-level .agent/skills/ and .agents/skills/ for IDE/2.0 discovery
-        # (mirrors the workflow approach which writes to both .agent/ and .agents/)
-        for skill_parent in (Path(".agent"), Path(".agents")):
-            extra_skill_dir = skill_parent / "skills" / skill_id
-            result.written.append(self.write(extra_skill_dir / "SKILL.md", content))
-
     def _emit_command_as_workflow(
         self, plugin: PluginSource, command: CommandSource, result: EmitResult
     ) -> None:
@@ -222,10 +216,3 @@ class AntigravityAdapter(HarnessAdapter):
             fm["aliases"] = command.aliases
         content = _antigravity_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(rel_file, content))
-
-        # Also write real files to `.agent/workflows/` and `.agents/workflows/`
-        # (IDE/2.0 discovery paths). Real files avoid symlink issues with gitignored dirs.
-        for workflow_parent in (Path(".agent"), Path(".agents")):
-            extra_dir = workflow_parent / "workflows"
-            extra_file = extra_dir / f"{name}.md"
-            result.written.append(self.write(extra_file, content))

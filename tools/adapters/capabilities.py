@@ -187,7 +187,7 @@ CAPABILITIES: dict[str, Capability] = {
         skill_body_max_bytes=_NO_CAP,
         tool_name_case="lowercase",
         bare_model_aliases=False,
-        notes="Emits agent.json to .antigravity/agents/<name>/, SKILL.md to .antigravity/skills/<name>/, and workflow .md to .antigravity/workflows/ (plus extra-writes to .agent/ and .agents/ for IDE/2.0 discovery).",
+        notes="Emits agent.json to .antigravity/agents/<name>/, SKILL.md to .antigravity/skills/<name>/, and workflow .md to .antigravity/workflows/.",
     ),
 }
 

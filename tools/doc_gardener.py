@@ -285,26 +285,6 @@ def check_stale_artifacts(report: Report) -> None:
                         pairs.append((src, workflow_md))
                     break
 
-    # Stale detection for extra-write paths (.agent/workflows/, .agents/workflows/,
-    # .agent/skills/, .agents/skills/)
-    plugin_names = list_plugins()
-    for extra_root in (WORKTREE / ".agent", WORKTREE / ".agents"):
-        for sub in ("workflows", "skills"):
-            extra_dir = extra_root / sub
-            if not extra_dir.is_dir():
-                continue
-            for f in extra_dir.rglob("*"):
-                if not f.is_file():
-                    continue
-                name = f.stem if sub == "workflows" else f.parent.name
-                for plugin_name in sorted(plugin_names, key=len, reverse=True):
-                    if name.startswith(f"{plugin_name}-"):
-                        cmd_name = name[len(plugin_name) + 1 :]
-                        src = PLUGINS_DIR / plugin_name / "commands" / f"{cmd_name}.md"
-                        if src.is_file():
-                            pairs.append((src, f))
-                        break
-
     for src, gen in pairs:
         if src.stat().st_mtime > gen.stat().st_mtime + 1:  # 1s grace
             # Derive the plugin name correctly regardless of source layout.
