@@ -172,6 +172,31 @@ class TestClaudeCodeSmoke:
         assert mp.get("metadata", {}).get("version"), "marketplace.json missing metadata.version"
 
 
+# ── Antigravity CLI ───────────────────────────────────────────────────────────
+
+
+@pytest.mark.skipif(not _has("agy"), reason="agy CLI not installed")
+class TestAntigravitySmoke:
+    def test_antigravity_import_validates_all_artifacts(self, monkeypatch):
+        """`agy plugin import .` must detect and process all skills, agents, and
+        commands from the Gemini-format artifacts at the project root."""
+        tmp_home = Path("/tmp/agy-smoke-" + str(id(self)))
+        tmp_home.mkdir(parents=True, exist_ok=True)
+        monkeypatch.setenv("HOME", str(tmp_home))
+        try:
+            proc = _run(["agy", "plugin", "import", "."])
+            out = proc.stdout
+            assert proc.returncode == 0, (
+                f"agy plugin import failed (rc={proc.returncode}):\n"
+                f"--- stdout ---\n{out}\n--- stderr ---\n{proc.stderr}"
+            )
+            assert "skills      : 155 processed" in out
+            assert "agents      : 191 processed" in out
+            assert "commands    : 183 processed (converted to skills)" in out
+        finally:
+            shutil.rmtree(tmp_home, ignore_errors=True)
+
+
 # ── Cross-CLI sanity: marketplace + adapter agreement ────────────────────────
 
 

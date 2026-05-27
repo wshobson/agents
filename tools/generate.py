@@ -34,6 +34,11 @@ _HARNESS_TARGETS = {
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
     "gemini": ["commands", "agents", "skills"],
+    "antigravity": [
+        ".antigravity/agents",
+        ".antigravity/skills",
+        ".antigravity/workflows",
+    ],
     "copilot": [".copilot/agents", ".copilot/skills", ".copilot/commands"],
 }
 
@@ -56,11 +61,17 @@ def get_adapter(harness_id: str, output_root: Path) -> HarnessAdapter:
         from tools.adapters.gemini import GeminiAdapter
 
         return GeminiAdapter(output_root=output_root)
+    if harness_id == "antigravity":
+        from tools.adapters.antigravity import AntigravityAdapter
+
+        return AntigravityAdapter(output_root=output_root)
     if harness_id == "copilot":
         from tools.adapters.copilot import CopilotAdapter
 
         return CopilotAdapter(output_root=output_root)
-    raise ValueError(f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}")
+    raise ValueError(
+        f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}"
+    )
 
 
 def _validate_output_root(output_root: Path) -> str | None:
@@ -160,6 +171,16 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
             d = output_root / sub
             if d.is_dir():
                 candidates.extend(p for p in d.rglob("*") if p.is_file())
+    elif harness_id == "antigravity":
+        for sub in ("agents", "skills", "workflows"):
+            d = output_root / ".antigravity" / sub
+            if d.is_dir():
+                candidates.extend(p for p in d.rglob("*") if p.is_file())
+        for extra in (".agent", ".agents"):
+            for sub in ("workflows", "skills"):
+                d = output_root / extra / sub
+                if d.is_dir():
+                    candidates.extend(p for p in d.rglob("*") if p.is_file())
     elif harness_id == "copilot":
         for sub in ("agents", "skills"):
             d = output_root / ".copilot" / sub
@@ -192,7 +213,7 @@ def main() -> int:
         "--harness",
         required=True,
         choices=supported_harnesses(),
-        help="Target harness (codex, copilot, cursor, opencode, or gemini).",
+        help="Target harness (antigravity, codex, copilot, cursor, opencode, or gemini).",
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--plugin", help="Generate only for the named plugin.")

@@ -39,7 +39,11 @@ class Finding:
     remediation: str = ""
 
     def render(self) -> str:
-        rel = self.path.relative_to(WORKTREE) if self.path.is_relative_to(WORKTREE) else self.path
+        rel = (
+            self.path.relative_to(WORKTREE)
+            if self.path.is_relative_to(WORKTREE)
+            else self.path
+        )
         tail = f"\n    fix: {self.remediation}" if self.remediation else ""
         return f"[{self.severity}] {self.harness}: {rel}: {self.message}{tail}"
 
@@ -118,7 +122,9 @@ def validate_codex(report: Report) -> None:
 
     # 1. Every agent .toml parses and has required fields.
     required_agent_fields = {"name", "description", "developer_instructions"}
-    for toml_path in (root / "agents").glob("*.toml") if (root / "agents").is_dir() else []:
+    for toml_path in (
+        (root / "agents").glob("*.toml") if (root / "agents").is_dir() else []
+    ):
         try:
             data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
         except tomllib.TOMLDecodeError as e:
@@ -630,8 +636,12 @@ def validate_copilot(report: Report) -> None:
                     remediation="Regenerate via `make generate HARNESS=copilot`.",
                 )
                 continue
-            _check_nonempty_str_field(report, fm, "name", "copilot", agent_md, label="agent")
-            _check_nonempty_str_field(report, fm, "description", "copilot", agent_md, label="agent")
+            _check_nonempty_str_field(
+                report, fm, "name", "copilot", agent_md, label="agent"
+            )
+            _check_nonempty_str_field(
+                report, fm, "description", "copilot", agent_md, label="agent"
+            )
     # 3. Skills: validate .copilot/skills/*/SKILL.md exists and has valid frontmatter.
     skills_dir = WORKTREE / ".copilot" / "skills"
     if skills_dir.is_dir():
@@ -648,8 +658,12 @@ def validate_copilot(report: Report) -> None:
                     remediation="Regenerate via `make generate HARNESS=copilot`.",
                 )
                 continue
-            _check_nonempty_str_field(report, fm, "name", "copilot", skill_md, label="skill")
-            _check_nonempty_str_field(report, fm, "description", "copilot", skill_md, label="skill")
+            _check_nonempty_str_field(
+                report, fm, "name", "copilot", skill_md, label="skill"
+            )
+            _check_nonempty_str_field(
+                report, fm, "description", "copilot", skill_md, label="skill"
+            )
 
     commands_dir = WORKTREE / ".copilot" / "commands"
     if commands_dir.is_dir():
@@ -688,7 +702,172 @@ def validate_copilot(report: Report) -> None:
         return
 
 
+def validate_antigravity(report: Report) -> None:
+    """Validate Antigravity agent and skill files under WORKTREE/.antigravity."""
+    skills_dir = WORKTREE / ".antigravity" / "skills"
+    agents_dir = WORKTREE / ".antigravity" / "agents"
+
+    if skills_dir.is_dir():
+        for skill_md in skills_dir.glob("*/SKILL.md"):
+            content = skill_md.read_text(encoding="utf-8")
+            fm, _ = parse_frontmatter(content)
+            if fm.get("name") != skill_md.parent.name:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=skill_md,
+                    message=f"frontmatter name {fm.get('name')!r} != directory {skill_md.parent.name!r}",
+                    remediation="Antigravity auto-discovers by directory; name must match.",
+                )
+
+    if agents_dir.is_dir():
+        for agent_json_path in agents_dir.glob("*/agent.json"):
+            try:
+                data = json.loads(agent_json_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as e:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message=f"JSON parse error: {e}",
+                    remediation="Provide a valid JSON file for the custom agent.",
+                )
+                continue
+
+            for key in (
+                "name",
+                "displayName",
+                "description",
+                "model",
+                "customAgentSpec",
+            ):
+                if key not in data or data[key] is None:
+                    report.add(
+                        severity="error",
+                        harness="antigravity",
+                        path=agent_json_path,
+                        message=f"missing required `{key}` field in agent.json",
+                        remediation=f"Add a non-null `{key}` field to the custom agent config.",
+                    )
+
+            desc = data.get("description")
+            if not isinstance(desc, str) or not desc.strip():
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message="`description` must be a non-empty string",
+                    remediation="Set a non-empty description in agent.json.",
+                )
+
+            hidden = data.get("hidden")
+            if not isinstance(hidden, bool):
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message="`hidden` must be a boolean",
+                    remediation="Set `hidden` to false (or true) in agent.json.",
+                )
+
+            if "name" in data and data["name"] != agent_json_path.parent.name:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message=f"agent name {data['name']!r} != directory {agent_json_path.parent.name!r}",
+                    remediation="Agent name must match its parent directory.",
+                )
+
+            spec = data.get("customAgentSpec")
+            if isinstance(spec, dict):
+                custom_agent = spec.get("customAgent")
+                if isinstance(custom_agent, dict):
+                    sections = custom_agent.get("systemPromptSections")
+                    if not isinstance(sections, list):
+                        report.add(
+                            severity="error",
+                            harness="antigravity",
+                            path=agent_json_path,
+                            message="`systemPromptSections` must be an array of objects",
+                            remediation="Set `systemPromptSections` to an array in `customAgentSpec.customAgent`.",
+                        )
+                    else:
+                        for s in sections:
+                            if (
+                                not isinstance(s, dict)
+                                or "title" not in s
+                                or "content" not in s
+                            ):
+                                report.add(
+                                    severity="error",
+                                    harness="antigravity",
+                                    path=agent_json_path,
+                                    message="prompt section must contain `title` and `content` keys",
+                                    remediation="Each section in `systemPromptSections` needs both `title` and `content` fields.",
+                                )
+                else:
+                    report.add(
+                        severity="error",
+                        harness="antigravity",
+                        path=agent_json_path,
+                        message="missing `customAgent` dict inside `customAgentSpec`",
+                        remediation="Add `customAgent` object to `customAgentSpec`.",
+                    )
+            elif spec is not None:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message="`customAgentSpec` must be an object",
+                    remediation="Set `customAgentSpec` to an object in agent.json.",
+                )
+
+            model = data.get("model", "")
+            if model and not model.startswith("gemini-"):
+                report.add(
+                    severity="warning",
+                    harness="antigravity",
+                    path=agent_json_path,
+                    message=f"model {model!r} doesn't look like a Gemini model id",
+                    remediation="Antigravity uses Gemini models (e.g. 'gemini-2.5-pro').",
+                )
+
+    workflows_dir = WORKTREE / ".antigravity" / "workflows"
+    if workflows_dir.is_dir():
+        for workflow_md in workflows_dir.glob("*.md"):
+            content = workflow_md.read_text(encoding="utf-8")
+            fm, body = parse_frontmatter(content)
+            if not fm:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=workflow_md,
+                    message="missing or invalid frontmatter",
+                    remediation="Regenerate via `make generate HARNESS=antigravity`.",
+                )
+                continue
+            description = fm.get("description")
+            if not isinstance(description, str) or not description.strip():
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=workflow_md,
+                    message="missing required `description` field in frontmatter",
+                    remediation="Antigravity workflow files need a non-empty description.",
+                )
+            if not body.strip():
+                report.add(
+                    severity="warning",
+                    harness="antigravity",
+                    path=workflow_md,
+                    message="workflow body is empty",
+                    remediation="Keep the prompt body in the source command markdown.",
+                )
+
+
 _VALIDATORS = {
+    "antigravity": validate_antigravity,
     "codex": validate_codex,
     "copilot": validate_copilot,
     "cursor": validate_cursor,
@@ -698,11 +877,15 @@ _VALIDATORS = {
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate generated harness artifacts.")
+    parser = argparse.ArgumentParser(
+        description="Validate generated harness artifacts."
+    )
     parser.add_argument(
         "--harness", choices=supported_harnesses(), help="Only validate one harness."
     )
-    parser.add_argument("--strict", action="store_true", help="Exit nonzero on any warning.")
+    parser.add_argument(
+        "--strict", action="store_true", help="Exit nonzero on any warning."
+    )
     args = parser.parse_args()
 
     targets = [args.harness] if args.harness else supported_harnesses()
@@ -728,7 +911,9 @@ def main() -> int:
         print(f.render())
 
     print()
-    print(f"Total: {len(errors)} error(s), {len(warnings)} warning(s), {len(infos)} info.")
+    print(
+        f"Total: {len(errors)} error(s), {len(warnings)} warning(s), {len(infos)} info."
+    )
     if errors:
         return 1
     if args.strict and warnings:

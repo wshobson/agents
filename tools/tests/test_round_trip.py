@@ -331,6 +331,39 @@ class TestCopilotRoundTrip:
                 problems.append(f"{agent_md.name}: missing {sorted(missing)}")
         assert not problems, "Copilot agent frontmatter issues:\n  " + "\n  ".join(problems[:20])
 
+@pytest.mark.skipif(
+    not (WORKTREE / ".antigravity").is_dir(),
+    reason="Antigravity artifacts not generated (run `make generate HARNESS=antigravity` first)",
+)
+class TestAntigravityRoundTrip:
+    def test_antigravity_agent_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "agents").glob("*/agent.json")))
+        assert n == _source_agent_count(), (
+            f"agent count mismatch: source={_source_agent_count()} antigravity={n}"
+        )
+
+    def test_antigravity_skill_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "skills").glob("*/SKILL.md")))
+        expected = _source_skill_count() + _source_command_count()
+        assert n == expected, (
+            f"skill count mismatch: source_skills={_source_skill_count()} "
+            f"source_commands={_source_command_count()} expected={expected} antigravity={n}"
+        )
+
+    def test_every_antigravity_agent_has_required_fields(self):
+        required = {"name", "displayName", "description", "hidden", "model", "customAgentSpec"}
+        problems = []
+        for agent_json in (WORKTREE / ".antigravity" / "agents").glob("*/agent.json"):
+            try:
+                data = json.loads(agent_json.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as e:
+                problems.append(f"{agent_json.name}: invalid JSON - {e}")
+                continue
+            missing = required - set(data.keys())
+            if missing:
+                problems.append(f"{agent_json.name}: missing keys {sorted(missing)}")
+        assert not problems, "Antigravity agent JSON issues:\n  " + "\n  ".join(problems[:20])
+
 
 # ── Context file size budgets (always run) ───────────────────────────────────
 

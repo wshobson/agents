@@ -16,13 +16,13 @@ YTX_SCRIPT := yt-design-extractor.py
 # `uv run` against the plugin-eval venv — has pyyaml + extra-paths to tools/adapters/
 UV_TOOLS := uv run $(EVAL_PROJECT) python
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot validate garden test smoke-test generate-plugin sync-commands generate-all-commands clean-commands
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity validate garden test smoke-test generate-plugin sync-commands generate-all-commands clean-commands
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
 	@echo "================================================="
 	@echo ""
-	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Gemini):"
+	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Gemini / Copilot / Antigravity):"
 	@echo "  make generate HARNESS=<h> [PLUGIN=<p>]           Generate per-harness artifacts (defaults to all plugins)"
 	@echo "  make generate-all                                Generate for ALL harnesses + ALL plugins"
 	@echo "  make clean-generated [HARNESS=<h>]               Remove generated artifacts"
@@ -30,6 +30,9 @@ help:
 	@echo "  make uninstall-opencode                          Remove repo-owned OpenCode symlinks"
 	@echo "  make install-copilot [FORCE=1]                   Symlink Copilot artifacts into global config"
 	@echo "  make uninstall-copilot                           Remove repo-owned Copilot symlinks"
+
+	@echo "  make install-antigravity [FORCE=1]               Symlink Antigravity artifacts into global config"
+	@echo "  make uninstall-antigravity                       Remove repo-owned Antigravity symlinks"
 	@echo "  make validate [HARNESS=<h>] [STRICT=1]           Structural validation of generated artifacts"
 	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
 	@echo "  make test                                        Full pytest suite (plugin-eval + tools)"
@@ -161,7 +164,7 @@ clean:
 #   make generate-all
 #   make clean-generated HARNESS=opencode
 
-HARNESSES := codex copilot cursor gemini opencode
+HARNESSES := antigravity codex copilot cursor gemini opencode
 
 generate:
 ifndef HARNESS
@@ -198,9 +201,9 @@ test:
 	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
-# of opencode / gemini / codex / claude are on PATH. Per-CLI tests skip gracefully
+# of opencode / gemini / codex / claude / agy are on PATH. Per-CLI tests skip gracefully
 # when the binary is missing — so local devs only exercise what they have installed.
-# CI installs OpenCode + Gemini + Codex and turns those skips into hard requirements.
+# CI installs OpenCode + Gemini + Antigravity and turns those skips into hard requirements.
 smoke-test:
 	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d commands ]; then \
 		echo "Generating harness artifacts first..."; \
@@ -230,6 +233,13 @@ install-copilot:
 
 uninstall-copilot:
 	$(UV_TOOLS) tools/install_copilot.py uninstall
+
+install-antigravity:
+	$(UV_TOOLS) $(GENERATE) --harness antigravity --all --prune
+	$(UV_TOOLS) tools/install_antigravity.py install $(if $(filter 1 true TRUE yes YES,$(FORCE)),--force)
+
+uninstall-antigravity:
+	$(UV_TOOLS) tools/install_antigravity.py uninstall
 
 # Legacy Gemini wrappers (delegate to the unified CLI)
 generate-plugin:

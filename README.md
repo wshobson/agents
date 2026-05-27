@@ -2,12 +2,12 @@
 
 > Production-ready agentic workflow building blocks: **83 plugins**, **191 agents**,
 > **155 skills**, **102 commands** — built for Claude Code and consumed natively by
-> OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
+> OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, GitHub Copilot, and Antigravity CLI from a single Markdown source.
 
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md) [![Copilot](https://img.shields.io/badge/Copilot-supported-lightgrey)](docs/harnesses.md)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-supported-blue)](GEMINI.md) [![Copilot](https://img.shields.io/badge/Copilot-supported-lightgrey)](docs/harnesses.md) [![Antigravity CLI](https://img.shields.io/badge/Antigravity%20CLI-supported-orange)](docs/harnesses.md)
 
 > [!NOTE]
-> One source-of-truth (`plugins/`), five harnesses. Each harness gets idiomatic,
+> One source-of-truth (`plugins/`), six harnesses. Each harness gets idiomatic,
 > harness-native artifacts — not lowest-common-denominator translations.
 > See [docs/harnesses.md](docs/harnesses.md) for the capability matrix.
 
@@ -24,12 +24,12 @@ Pick your harness:
 
 [→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
 
-### Codex CLI · Cursor · OpenCode · Gemini CLI · Copilot
+### Codex CLI · Cursor · OpenCode · Gemini CLI · Copilot · Antigravity CLI
 
 ```bash
 gh repo clone wshobson/agents ~/agents
 cd ~/agents
-make generate HARNESS=<codex|cursor|opencode|gemini|copilot>
+make generate HARNESS=<codex|cursor|opencode|gemini|copilot|antigravity>
 ```
 
 Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). Gemini-specific setup: [GEMINI.md](GEMINI.md) (also auto-loaded by Gemini CLI).
@@ -73,7 +73,7 @@ Three-tier model strategy:
 
 ## Multi-harness support
 
-This marketplace ships to five agentic harnesses from one Markdown source. Each adapter
+This marketplace ships to six agentic harnesses from one Markdown source. Each adapter
 emits harness-native artifacts (not lowest-common-denominator translations):
 
 | Harness | Generates | Notes |
@@ -84,9 +84,10 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
 | **Copilot** | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |
+| **Antigravity CLI** | `.antigravity/agents/`, `.antigravity/skills/`, `.antigravity/workflows/` | Lowercase agent.json per agent + SKILL.md skills + workflows (commands); model maps to Gemini 2.5 family |
 
 ```bash
-make generate-all                        # all five
+make generate-all                        # all six
 make validate                            # structural checks
 make garden                              # drift / dead-link / cap detection
 ```
@@ -141,6 +142,7 @@ integrations for this marketplace's other supported harnesses.
 | OpenCode | [integrations/opencode-plugin](https://github.com/major7apps/pensyve/tree/main/integrations/opencode-plugin) |
 | Gemini CLI | `gemini extensions install https://github.com/major7apps/pensyve` |
 | Copilot | `.copilot/` in repo root or `~/.copilot/` via `make install-copilot` |
+| Antigravity CLI | `.antigravity/` in repo root or `~/.gemini/antigravity-cli/` via `make install-antigravity` |
 
 ## License
 

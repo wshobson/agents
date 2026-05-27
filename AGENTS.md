@@ -1,6 +1,6 @@
 # claude-agents — multi-harness agentic plugin marketplace
 
-Production-ready agentic-workflow building blocks: **83 plugins** (81 local + 2 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI from a single Markdown source.
+Production-ready agentic-workflow building blocks: **83 plugins** (81 local + 2 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, GitHub Copilot, and Antigravity CLI from a single Markdown source.
 
 This file is the canonical context file. Codex / Cursor / OpenCode read it directly. Claude Code reads it via `@AGENTS.md` import in `CLAUDE.md`. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`).
 
@@ -36,7 +36,7 @@ make test                  # full pytest suite (plugin-eval + tools/tests/)
 make smoke-test            # real-CLI subprocess tests against generated artifacts
 ```
 
-CI (`.github/workflows/validate.yml`) runs all four on every PR plus installs OpenCode + Gemini CLI for live verification.
+CI (`.github/workflows/validate.yml`) runs all four on every PR plus installs OpenCode + Gemini CLI + Antigravity CLI for live verification.
 
 ## Regenerating per-harness artifacts
 
@@ -45,7 +45,8 @@ make generate HARNESS=codex      # emits .codex/skills, .codex/agents
 make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
 make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/, .opencode/skills/
 make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
-make generate-all                # all four
+make generate HARNESS=antigravity # emits .antigravity/agents/, .antigravity/skills/, .antigravity/workflows/
+make generate-all                # all six
 make install-opencode            # symlink generated OpenCode artifacts into global config
 ```
 
@@ -60,6 +61,7 @@ Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored 
 - **OpenCode**: mirrored to `.opencode/skills/<plugin>-<skill>/` using hyphenated names for global install
 - **Cursor**: reads `.claude/skills/` directly (no re-emit)
 - **Gemini CLI**: native skills at `skills/<plugin>__<skill>/SKILL.md`
+- **Antigravity CLI**: `.antigravity/skills/<plugin>__<skill>/SKILL.md` (lowercase, double-underscore namespacing)
 
 Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 
@@ -71,6 +73,7 @@ Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 - **OpenCode**: `.opencode/agents/<plugin>__<agent>.md` with `mode: subagent` + `permission:` block (locked agents — those with source `tools: []` — get deny-everything except base `skill`/`task`)
 - **Gemini**: `agents/<plugin>__<agent>.md` (April 2026 subagent spec)
 - **Cursor**: reads `.claude/agents/` directly
+- **Antigravity**: `.antigravity/agents/<plugin>__<agent>/agent.json` (Gemini model aliases, lowercase tool names)
 
 ## Why this file is short
 

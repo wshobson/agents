@@ -59,9 +59,7 @@ class Finding:
             rel = self.path.relative_to(WORKTREE)
         except ValueError:
             rel = self.path
-        return (
-            f"[{self.severity:7}] {self.kind:24} {rel}: {self.message}\n           Fix: {self.fix}"
-        )
+        return f"[{self.severity:7}] {self.kind:24} {rel}: {self.message}\n           Fix: {self.fix}"
 
 
 @dataclass
@@ -122,7 +120,12 @@ def check_stale_artifacts(report: Report) -> None:
                 pairs.append((real_skill_src, skill_md))
                 continue
             if leaf.endswith("__command"):
-                src = PLUGINS_DIR / plugin / "commands" / f"{leaf[: -len('__command')]}.md"
+                src = (
+                    PLUGINS_DIR
+                    / plugin
+                    / "commands"
+                    / f"{leaf[: -len('__command')]}.md"
+                )
             elif leaf.endswith("__cmd"):
                 # Second-order collision suffix
                 src = PLUGINS_DIR / plugin / "commands" / f"{leaf[: -len('__cmd')]}.md"
@@ -238,6 +241,49 @@ def check_stale_artifacts(report: Report) -> None:
                 src = PLUGINS_DIR / plugin / "skills" / leaf / "SKILL.md"
                 if src.is_file():
                     pairs.append((src, skill_md))
+
+    antigravity_root = WORKTREE / ".antigravity"
+    antigravity_agents = antigravity_root / "agents"
+    if antigravity_agents.is_dir():
+        for agent_json in antigravity_agents.glob("*/agent.json"):
+            name = agent_json.parent.name
+            if "__" in name:
+                plugin, agent = name.split("__", 1)
+                src = PLUGINS_DIR / plugin / "agents" / f"{agent}.md"
+                if src.is_file():
+                    pairs.append((src, agent_json))
+
+    antigravity_skills = antigravity_root / "skills"
+    if antigravity_skills.is_dir():
+        plugin_names = list_plugins()
+        for skill_md in antigravity_skills.glob("*/SKILL.md"):
+            name = skill_md.parent.name
+            if "__" in name:
+                plugin, leaf = name.split("__", 1)
+                src = PLUGINS_DIR / plugin / "skills" / leaf / "SKILL.md"
+                if src.is_file():
+                    pairs.append((src, skill_md))
+            elif "-" in name:
+                for plugin_name in sorted(plugin_names, key=len, reverse=True):
+                    if name.startswith(f"{plugin_name}-"):
+                        cmd_name = name[len(plugin_name) + 1 :]
+                        src = PLUGINS_DIR / plugin_name / "commands" / f"{cmd_name}.md"
+                        if src.is_file():
+                            pairs.append((src, skill_md))
+                        break
+
+    antigravity_workflows = antigravity_root / "workflows"
+    if antigravity_workflows.is_dir():
+        plugin_names = list_plugins()
+        for workflow_md in antigravity_workflows.glob("*.md"):
+            name = workflow_md.stem
+            for plugin_name in sorted(plugin_names, key=len, reverse=True):
+                if name.startswith(f"{plugin_name}-"):
+                    cmd_name = name[len(plugin_name) + 1 :]
+                    src = PLUGINS_DIR / plugin_name / "commands" / f"{cmd_name}.md"
+                    if src.is_file():
+                        pairs.append((src, workflow_md))
+                    break
 
     for src, gen in pairs:
         if src.stat().st_mtime > gen.stat().st_mtime + 1:  # 1s grace
@@ -396,15 +442,21 @@ CHECKS = {
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Recurring drift detection (doc-gardener).")
-    parser.add_argument("--strict", action="store_true", help="Exit nonzero on any finding.")
+    parser = argparse.ArgumentParser(
+        description="Recurring drift detection (doc-gardener)."
+    )
+    parser.add_argument(
+        "--strict", action="store_true", help="Exit nonzero on any finding."
+    )
     parser.add_argument(
         "--check",
         choices=list(CHECKS.keys()),
         action="append",
         help="Run only the named check (repeat for multiple). Default: all.",
     )
-    parser.add_argument("--quiet", action="store_true", help="Only print findings, no summary.")
+    parser.add_argument(
+        "--quiet", action="store_true", help="Only print findings, no summary."
+    )
     args = parser.parse_args()
 
     selected = args.check or list(CHECKS.keys())
@@ -446,7 +498,9 @@ def main() -> int:
         warnings = report.by_severity("warning")
         infos = report.by_severity("info")
         print()
-        print(f"Totals: {len(errors)} error(s), {len(warnings)} warning(s), {len(infos)} info.")
+        print(
+            f"Totals: {len(errors)} error(s), {len(warnings)} warning(s), {len(infos)} info."
+        )
 
     if report.by_severity("error"):
         return 1
