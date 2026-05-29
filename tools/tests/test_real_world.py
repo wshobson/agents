@@ -50,9 +50,7 @@ _CODEX_BUILTIN_AGENTS = {"default", "worker", "explorer"}
 # `subagent_type`, otherwise later phases cannot read earlier outputs.
 _PHASE_HEADING_PATTERN = re.compile(r"^##\s+Phase\s+(\d+)\b")
 _TASK_SUBAGENT_PATTERN = re.compile(r'^\s*subagent_type:\s*"?([^"\n]+?)"?\s*$')
-_PHASE_OUTPUT_REF_PATTERN = re.compile(
-    r"\{phase(?P<phase>\d+)\.(?P<task>[^{}.]+)\.output\}"
-)
+_PHASE_OUTPUT_REF_PATTERN = re.compile(r"\{phase(?P<phase>\d+)\.(?P<task>[^{}.]+)\.output\}")
 
 
 # ── Marketplace consistency ─────────────────────────────────────────────────
@@ -65,18 +63,14 @@ class TestMarketplaceConsistency:
             source = entry.get("source")
             if isinstance(source, str) and source.startswith("./plugins/"):
                 plugin_path = WORKTREE / source.removeprefix("./")
-                assert plugin_path.is_dir(), (
-                    f"{entry['name']}: source {source} does not exist"
-                )
+                assert plugin_path.is_dir(), f"{entry['name']}: source {source} does not exist"
                 assert (plugin_path / ".claude-plugin" / "plugin.json").is_file(), (
                     f"{entry['name']}: missing .claude-plugin/plugin.json"
                 )
 
     def test_every_local_plugin_dir_appears_in_marketplace(self):
         mp = json.loads((WORKTREE / ".claude-plugin" / "marketplace.json").read_text())
-        listed = {
-            e["name"] for e in mp.get("plugins", []) if isinstance(e.get("source"), str)
-        }
+        listed = {e["name"] for e in mp.get("plugins", []) if isinstance(e.get("source"), str)}
         actual = set(list_plugins())
         missing = actual - listed
         assert not missing, f"plugins/ dirs not in marketplace.json: {sorted(missing)}"
@@ -91,16 +85,12 @@ class TestMarketplaceConsistency:
                 continue
             name = entry["name"]
             mp_version = entry.get("version", "")
-            pj_path = (
-                WORKTREE / source.removeprefix("./") / ".claude-plugin" / "plugin.json"
-            )
+            pj_path = WORKTREE / source.removeprefix("./") / ".claude-plugin" / "plugin.json"
             if not pj_path.is_file():
                 continue
             pj_version = json.loads(pj_path.read_text()).get("version", "")
             if mp_version != pj_version:
-                mismatches.append(
-                    f"{name}: marketplace={mp_version} vs plugin.json={pj_version}"
-                )
+                mismatches.append(f"{name}: marketplace={mp_version} vs plugin.json={pj_version}")
         assert not mismatches, (
             "Version drift between marketplace.json and per-plugin plugin.json:\n  "
             + "\n  ".join(mismatches)
@@ -131,12 +121,8 @@ class TestPluginSourceIntegrity:
                 if not agent.frontmatter.get("name"):
                     problems.append(f"{plugin_name}/agents/{agent.name}: missing name")
                 if not agent.description:
-                    problems.append(
-                        f"{plugin_name}/agents/{agent.name}: missing description"
-                    )
-        assert not problems, "Agents missing required frontmatter:\n  " + "\n  ".join(
-            problems
-        )
+                    problems.append(f"{plugin_name}/agents/{agent.name}: missing description")
+        assert not problems, "Agents missing required frontmatter:\n  " + "\n  ".join(problems)
 
     def test_every_skill_has_trigger_phrase(self):
         """Per plugin-eval's MISSING_TRIGGER check: every description must include a recognized phrase."""
@@ -151,9 +137,7 @@ class TestPluginSourceIntegrity:
                         f"{plugin_name}/skills/{skill.name}: description has no trigger phrase "
                         f"(saw: {skill.description[:80]!r})"
                     )
-        assert not problems, "Skills with missing trigger phrases:\n  " + "\n  ".join(
-            problems[:20]
-        )
+        assert not problems, "Skills with missing trigger phrases:\n  " + "\n  ".join(problems[:20])
 
     def test_no_agent_collides_with_codex_builtin(self):
         """Codex has built-in agents `default`, `worker`, `explorer`. Custom agents must not use these names."""
@@ -179,13 +163,9 @@ class TestPluginSourceIntegrity:
             for agent in plugin.agents:
                 name = (agent.frontmatter.get("name") or "").strip()
                 if name:
-                    by_name.setdefault(name, []).append(
-                        f"{plugin_name}/agents/{agent.name}.md"
-                    )
+                    by_name.setdefault(name, []).append(f"{plugin_name}/agents/{agent.name}.md")
 
-        duplicates = {
-            name: paths for name, paths in sorted(by_name.items()) if len(paths) > 1
-        }
+        duplicates = {name: paths for name, paths in sorted(by_name.items()) if len(paths) > 1}
         assert not duplicates, "Duplicate agent frontmatter names:\n  " + "\n  ".join(
             f"{name}: {', '.join(paths)}" for name, paths in duplicates.items()
         )
@@ -203,17 +183,11 @@ class TestPluginSourceIntegrity:
                     current_phase = int(match.group(1))
                     phase_tasks.setdefault(current_phase, set())
 
-                if (
-                    match := _TASK_SUBAGENT_PATTERN.match(line)
-                ) and current_phase is not None:
-                    phase_tasks.setdefault(current_phase, set()).add(
-                        match.group(1).strip()
-                    )
+                if (match := _TASK_SUBAGENT_PATTERN.match(line)) and current_phase is not None:
+                    phase_tasks.setdefault(current_phase, set()).add(match.group(1).strip())
 
                 for match in _PHASE_OUTPUT_REF_PATTERN.finditer(line):
-                    references.append(
-                        (lineno, int(match.group("phase")), match.group("task"))
-                    )
+                    references.append((lineno, int(match.group("phase")), match.group("task")))
 
             for lineno, phase, task_key in references:
                 available = phase_tasks.get(phase, set())
@@ -224,9 +198,7 @@ class TestPluginSourceIntegrity:
                         f"in Phase {phase} (available: {sorted(available)})"
                     )
 
-        assert not problems, (
-            "Broken command phase output references:\n  " + "\n  ".join(problems)
-        )
+        assert not problems, "Broken command phase output references:\n  " + "\n  ".join(problems)
 
 
 # ── Progressive-disclosure refactor integrity ────────────────────────────────
@@ -252,9 +224,7 @@ class TestProgressiveDisclosureIntegrity:
         for plugin_name, _, details in self._modified_skills():
             size = len(details.read_text().encode("utf-8"))
             if size < 500:
-                too_small.append(
-                    f"{plugin_name}/{details.relative_to(PLUGINS_DIR)}: {size}B"
-                )
+                too_small.append(f"{plugin_name}/{details.relative_to(PLUGINS_DIR)}: {size}B")
         assert not too_small, (
             "references/details.md files are suspiciously small (<500B), "
             "suggesting failed extraction:\n  " + "\n  ".join(too_small)
@@ -267,12 +237,9 @@ class TestProgressiveDisclosureIntegrity:
         for plugin_name, skill_md, _ in self._modified_skills():
             body = skill_md.read_text()
             if "references/" not in body:
-                missing_pointer.append(
-                    f"{plugin_name}/{skill_md.relative_to(PLUGINS_DIR)}"
-                )
+                missing_pointer.append(f"{plugin_name}/{skill_md.relative_to(PLUGINS_DIR)}")
         assert not missing_pointer, (
-            "Refactored skills missing pointer to references/:\n  "
-            + "\n  ".join(missing_pointer)
+            "Refactored skills missing pointer to references/:\n  " + "\n  ".join(missing_pointer)
         )
 
     def test_extracted_skills_preserve_when_to_use(self):
@@ -293,9 +260,8 @@ class TestProgressiveDisclosureIntegrity:
             body = skill_md.read_text()
             if not any(marker in body for marker in nav_markers):
                 missing.append(f"{plugin_name}/{skill_md.relative_to(PLUGINS_DIR)}")
-        assert not missing, (
-            "Refactored skills missing navigation-tier section:\n  "
-            + "\n  ".join(missing)
+        assert not missing, "Refactored skills missing navigation-tier section:\n  " + "\n  ".join(
+            missing
         )
 
     def test_no_refactored_skill_is_stub_only(self):

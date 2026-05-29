@@ -85,9 +85,7 @@ class TestCodexAdapter:
         # No `tools` key in Codex TOML (silently ignored anyway)
         assert "tools" not in parsed
 
-    def test_agent_with_write_tools_gets_workspace_write(
-        self, tmp_path: Path, output_root: Path
-    ):
+    def test_agent_with_write_tools_gets_workspace_write(self, tmp_path: Path, output_root: Path):
         from tools.tests.conftest import _make_agent
 
         plugin_dir = tmp_path / "demo"
@@ -126,9 +124,7 @@ class TestCodexAdapter:
             "## Section A\n\n" + ("a" * 4000) + "\n\n"
             "## Section B\n\n" + ("b" * 4000) + "\n"
         )
-        skill = _make_skill(
-            plugin_dir, "big", "name: big\ndescription: Use when big.", body
-        )
+        skill = _make_skill(plugin_dir, "big", "name: big\ndescription: Use when big.", body)
         plugin = PluginSource(
             name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
         )
@@ -136,12 +132,7 @@ class TestCodexAdapter:
 
         head_path = output_root / ".codex" / "skills" / "demo__big" / "SKILL.md"
         overflow_path = (
-            output_root
-            / ".codex"
-            / "skills"
-            / "demo__big"
-            / "references"
-            / "details.md"
+            output_root / ".codex" / "skills" / "demo__big" / "references" / "details.md"
         )
         assert head_path.is_file()
         assert overflow_path.is_file()
@@ -189,9 +180,7 @@ class TestCodexAdapter:
         # Stage an oversized AGENTS.md at the repo root (not output_root)
         fake_repo = tmp_path / "fake_repo"
         fake_repo.mkdir()
-        (fake_repo / "AGENTS.md").write_text(
-            "# Big AGENTS.md\n\n" + ("filler line\n" * 200)
-        )
+        (fake_repo / "AGENTS.md").write_text("# Big AGENTS.md\n\n" + ("filler line\n" * 200))
         adapter = CodexAdapter(output_root=output_root, repo_root=fake_repo)
         adapter.emit_plugin(synthetic_plugin)
         result = adapter.emit_global([synthetic_plugin])
@@ -240,17 +229,13 @@ class TestCodexAdapter:
         # Emitted file uses namespaced ID
         assert (output_root / ".codex" / "agents" / "demo__worker.toml").is_file()
 
-    def test_command_becomes_skill(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_command_becomes_skill(self, synthetic_plugin: PluginSource, output_root: Path):
         CodexAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
         # Command should be present as a skill (Codex deprecated ~/.codex/prompts/)
         cmd_skill = output_root / ".codex" / "skills" / "demo__say-hi" / "SKILL.md"
         assert cmd_skill.is_file()
 
-    def test_skill_command_name_collision_namespaced(
-        self, tmp_path: Path, output_root: Path
-    ):
+    def test_skill_command_name_collision_namespaced(self, tmp_path: Path, output_root: Path):
         """A skill and command with the same name in one plugin must NOT overwrite."""
         from tools.tests.conftest import _make_command, _make_skill
 
@@ -277,9 +262,7 @@ class TestCodexAdapter:
         result = CodexAdapter(output_root=output_root).emit_plugin(plugin)
 
         skill_path = output_root / ".codex" / "skills" / "demo__review" / "SKILL.md"
-        cmd_skill_path = (
-            output_root / ".codex" / "skills" / "demo__review__command" / "SKILL.md"
-        )
+        cmd_skill_path = output_root / ".codex" / "skills" / "demo__review__command" / "SKILL.md"
         assert skill_path.is_file()
         assert cmd_skill_path.is_file()
         assert any("collides" in w for w in result.warnings)
@@ -364,9 +347,7 @@ class TestCodexAdapter:
         assert "## ##" not in overflow, f"double-prepend bug: {overflow[:80]!r}"
         assert "## ##" not in head, f"double-prepend bug in head: {head[-80:]!r}"
 
-    def test_empty_tools_field_yields_read_only_sandbox(
-        self, tmp_path: Path, output_root: Path
-    ):
+    def test_empty_tools_field_yields_read_only_sandbox(self, tmp_path: Path, output_root: Path):
         """An explicit `tools: []` in source should map to read-only sandbox, not workspace-write."""
         from tools.tests.conftest import _make_agent
 
@@ -392,9 +373,7 @@ class TestCodexAdapter:
         )
         assert parsed["sandbox_mode"] == "read-only", parsed
 
-    def test_missing_tools_field_yields_workspace_write(
-        self, tmp_path: Path, output_root: Path
-    ):
+    def test_missing_tools_field_yields_workspace_write(self, tmp_path: Path, output_root: Path):
         """A source agent with NO `tools:` field should map to workspace-write (Claude default)."""
         from tools.tests.conftest import _make_agent
 
@@ -420,9 +399,7 @@ class TestCodexAdapter:
         )
         assert parsed["sandbox_mode"] == "workspace-write"
 
-    def test_second_order_collision_routes_to_cmd(
-        self, tmp_path: Path, output_root: Path
-    ):
+    def test_second_order_collision_routes_to_cmd(self, tmp_path: Path, output_root: Path):
         """Skill `foo`, command `foo`, AND skill `foo__command` → command goes to `foo__cmd`."""
         from tools.tests.conftest import _make_command, _make_skill
 
@@ -430,18 +407,14 @@ class TestCodexAdapter:
         plugin_dir.mkdir()
         (plugin_dir / ".claude-plugin").mkdir()
         (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
-        s1 = _make_skill(
-            plugin_dir, "foo", "name: foo\ndescription: Use when foo.", "# foo\n"
-        )
+        s1 = _make_skill(plugin_dir, "foo", "name: foo\ndescription: Use when foo.", "# foo\n")
         s2 = _make_skill(
             plugin_dir,
             "foo__command",
             "name: foo__command\ndescription: Use when foo command.",
             "# foo__command\n",
         )
-        cmd = _make_command(
-            plugin_dir, "foo", 'description: "foo command"', "# foo cmd\n"
-        )
+        cmd = _make_command(plugin_dir, "foo", 'description: "foo command"', "# foo cmd\n")
         plugin = PluginSource(
             name="demo",
             dir=plugin_dir,
@@ -454,13 +427,9 @@ class TestCodexAdapter:
         # Real skill `foo`
         assert (output_root / ".codex" / "skills" / "demo__foo" / "SKILL.md").is_file()
         # Real skill `foo__command`
-        assert (
-            output_root / ".codex" / "skills" / "demo__foo__command" / "SKILL.md"
-        ).is_file()
+        assert (output_root / ".codex" / "skills" / "demo__foo__command" / "SKILL.md").is_file()
         # Command-derived skill routed to `__cmd` to avoid second-order clash
-        assert (
-            output_root / ".codex" / "skills" / "demo__foo__cmd" / "SKILL.md"
-        ).is_file()
+        assert (output_root / ".codex" / "skills" / "demo__foo__cmd" / "SKILL.md").is_file()
         assert any("second-order" in w for w in result.warnings)
 
     def test_rewriter_matches_lint_pattern(self):
@@ -482,9 +451,7 @@ class TestCodexAdapter:
 
 
 class TestCursorAdapter:
-    def test_emits_plugin_manifest(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_emits_plugin_manifest(self, synthetic_plugin: PluginSource, output_root: Path):
         adapter = CursorAdapter(output_root=output_root)
         result = adapter.emit_plugin(synthetic_plugin)
         manifest_path = output_root / ".cursor-plugin" / "plugins" / "demo.json"
@@ -513,9 +480,7 @@ class TestCursorAdapter:
         # First plugin entry uses `source`, not `path` or `url`
         assert data["plugins"][0]["source"] == "./plugins/demo"
 
-    def test_emits_curated_rules_present(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_emits_curated_rules_present(self, synthetic_plugin: PluginSource, output_root: Path):
         adapter = CursorAdapter(output_root=output_root)
         result = adapter.emit_global([synthetic_plugin])
         rule_files = [p for p in result.written if p.suffix == ".mdc"]
@@ -546,9 +511,7 @@ class TestCursorAdapter:
         )
         assert manifest["author"] == {"name": "Jane Doe", "email": "jane@example.com"}
 
-    def test_curated_rules_validate(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_curated_rules_validate(self, synthetic_plugin: PluginSource, output_root: Path):
         """Each emitted .mdc has only the three allowed frontmatter keys."""
         adapter = CursorAdapter(output_root=output_root)
         adapter.emit_global([synthetic_plugin])
@@ -590,9 +553,7 @@ class TestCursorAdapter:
 
 
 class TestOpenCodeAdapter:
-    def test_emits_subagent_markdown(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_emits_subagent_markdown(self, synthetic_plugin: PluginSource, output_root: Path):
         OpenCodeAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
         agent_md = output_root / ".opencode" / "agents" / "demo__greeter.md"
         assert agent_md.is_file()
@@ -615,9 +576,7 @@ class TestOpenCodeAdapter:
         assert re.search(r"write:\s*deny", content)
         assert re.search(r"bash:\s*deny", content)
 
-    def test_no_permission_block_when_no_tools_field(
-        self, tmp_path: Path, output_root: Path
-    ):
+    def test_no_permission_block_when_no_tools_field(self, tmp_path: Path, output_root: Path):
         from tools.tests.conftest import _make_agent
 
         plugin_dir = tmp_path / "demo"
@@ -637,17 +596,13 @@ class TestOpenCodeAdapter:
         content = (output_root / ".opencode" / "agents" / "demo__free.md").read_text()
         assert "permission:" not in content
 
-    def test_lowercases_tool_refs_in_body(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_lowercases_tool_refs_in_body(self, synthetic_plugin: PluginSource, output_root: Path):
         OpenCodeAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
         # Commands and agents need OpenCode's lowercase tool vocabulary.
         cmd_md = output_root / ".opencode" / "commands" / "demo__say-hi.md"
         assert cmd_md.is_file()
 
-    def test_emits_minimal_opencode_json(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_emits_minimal_opencode_json(self, synthetic_plugin: PluginSource, output_root: Path):
         adapter = OpenCodeAdapter(output_root=output_root)
         adapter.emit_plugin(synthetic_plugin)
         result = adapter.emit_global([synthetic_plugin])
@@ -671,9 +626,7 @@ class TestOpenCodeAdapter:
         assert "`Read`" not in body
         assert "`Bash`" not in body
 
-    def test_emits_opencode_skill_support_files(
-        self, tmp_path: Path, output_root: Path
-    ):
+    def test_emits_opencode_skill_support_files(self, tmp_path: Path, output_root: Path):
         from tools.tests.conftest import _make_skill
 
         plugin_dir = tmp_path / "demo"
@@ -706,9 +659,7 @@ class TestOpenCodeAdapter:
         plugin_dir = tmp_path / "bad_plugin"
         plugin_dir.mkdir()
         (plugin_dir / ".claude-plugin").mkdir()
-        (plugin_dir / ".claude-plugin" / "plugin.json").write_text(
-            '{"name": "bad_plugin"}'
-        )
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "bad_plugin"}')
         skill = _make_skill(
             plugin_dir,
             "hello",
@@ -753,9 +704,7 @@ class TestOpenCodeAdapter:
         else:
             raise AssertionError("too-long OpenCode skill id was accepted")
 
-    def test_rejects_ambiguous_opencode_skill_id_collision(
-        self, tmp_path: Path, output_root: Path
-    ):
+    def test_rejects_ambiguous_opencode_skill_id_collision(self, tmp_path: Path, output_root: Path):
         from tools.tests.conftest import _make_skill
 
         first_dir = tmp_path / "data-analysis"
@@ -828,9 +777,7 @@ class TestOpenCodeAdapter:
         )
         OpenCodeAdapter(output_root=output_root).emit_plugin(plugin)
 
-        content = (
-            output_root / ".opencode" / "agents" / "demo__locked-advisor.md"
-        ).read_text()
+        content = (output_root / ".opencode" / "agents" / "demo__locked-advisor.md").read_text()
         # Permission block MUST be present (locked agent), with skill/task allow + all else deny.
         assert "permission:" in content
         assert re.search(r"read:\s*deny", content)
@@ -862,9 +809,7 @@ class TestOpenCodeAdapter:
         )
         OpenCodeAdapter(output_root=output_root).emit_plugin(plugin)
 
-        content = (
-            output_root / ".opencode" / "agents" / "demo__open-agent.md"
-        ).read_text()
+        content = (output_root / ".opencode" / "agents" / "demo__open-agent.md").read_text()
         assert "permission:" not in content
 
     def test_subtask_inference_word_boundary(self, tmp_path: Path, output_root: Path):
@@ -901,9 +846,7 @@ class TestOpenCodeAdapter:
         OpenCodeAdapter(output_root=output_root).emit_plugin(plugin)
 
         lint = (output_root / ".opencode" / "commands" / "demo__lint.md").read_text()
-        delegate = (
-            output_root / ".opencode" / "commands" / "demo__delegate.md"
-        ).read_text()
+        delegate = (output_root / ".opencode" / "commands" / "demo__delegate.md").read_text()
 
         assert "subtask:" not in lint  # NO false positive on substring matches
         assert "subtask: true" in delegate  # genuine orchestration still detected
@@ -922,9 +865,7 @@ class TestGeminiAdapter:
         fm, _ = parse_frontmatter(skill_md.read_text())
         assert fm["name"] == "demo__hello"
 
-    def test_emits_native_subagent(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_emits_native_subagent(self, synthetic_plugin: PluginSource, output_root: Path):
         GeminiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
         agent_md = output_root / "agents" / "demo__greeter.md"
         assert agent_md.is_file()
@@ -993,9 +934,7 @@ class TestGeminiAdapter:
 
 
 class TestCopilotAdapter:
-    def test_emits_agent_profile(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_emits_agent_profile(self, synthetic_plugin: PluginSource, output_root: Path):
         adapter = CopilotAdapter(output_root=output_root)
         result = adapter.emit_plugin(synthetic_plugin)
 
@@ -1028,9 +967,7 @@ class TestCopilotAdapter:
         )
         CopilotAdapter(output_root=output_root).emit_plugin(plugin)
 
-        content = (
-            output_root / ".copilot" / "agents" / "demo__tool-user.agent.md"
-        ).read_text()
+        content = (output_root / ".copilot" / "agents" / "demo__tool-user.agent.md").read_text()
         fm, body = parse_frontmatter(content)
         assert fm["tools"] == ["read", "edit", "execute"]
         assert "`read`" in body
@@ -1084,13 +1021,9 @@ class TestCopilotAdapter:
         }
         for name, exp_model in expected.items():
             fm, _ = parse_frontmatter(
-                (
-                    output_root / ".copilot" / "agents" / f"demo__{name}.agent.md"
-                ).read_text()
+                (output_root / ".copilot" / "agents" / f"demo__{name}.agent.md").read_text()
             )
-            assert fm["model"] == exp_model, (
-                f"{name}: expected {exp_model}, got {fm['model']}"
-            )
+            assert fm["model"] == exp_model, f"{name}: expected {exp_model}, got {fm['model']}"
 
     def test_emits_skill(self, synthetic_plugin: PluginSource, output_root: Path):
         CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
@@ -1102,9 +1035,7 @@ class TestCopilotAdapter:
         assert fm["description"] == "Use when greeting users."
         assert "# Hello" in body
 
-    def test_emits_command_prompt_files(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_emits_command_prompt_files(self, synthetic_plugin: PluginSource, output_root: Path):
         CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
 
         entry = output_root / ".copilot" / "commands" / "demo" / "index.md"
@@ -1120,9 +1051,7 @@ class TestCopilotAdapter:
         assert cmd_fm["description"] == "Send a greeting"
         assert "Greet the user named $ARGUMENTS." in cmd_body
 
-    def test_emit_global_returns_empty(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
+    def test_emit_global_returns_empty(self, synthetic_plugin: PluginSource, output_root: Path):
         adapter = CopilotAdapter(output_root=output_root)
         result = adapter.emit_global([synthetic_plugin])
         assert result.written == []
@@ -1166,9 +1095,7 @@ class TestCopilotAdapter:
         )
         CopilotAdapter(output_root=output_root).emit_plugin(plugin)
 
-        content = (
-            output_root / ".copilot" / "agents" / "demo__advisory.agent.md"
-        ).read_text()
+        content = (output_root / ".copilot" / "agents" / "demo__advisory.agent.md").read_text()
         fm, body = parse_frontmatter(content)
         assert fm["name"] == "demo__advisory"
         assert fm["description"] == "Use when advising."
@@ -1193,9 +1120,7 @@ class TestCopilotAdapter:
         )
         CopilotAdapter(output_root=output_root).emit_plugin(plugin)
 
-        content = (
-            output_root / ".copilot" / "agents" / "demo__unrestricted.agent.md"
-        ).read_text()
+        content = (output_root / ".copilot" / "agents" / "demo__unrestricted.agent.md").read_text()
         fm, body = parse_frontmatter(content)
         assert fm["name"] == "demo__unrestricted"
         assert fm["description"] == "Use when unrestricted."
@@ -1214,9 +1139,7 @@ class TestLoadPlugin:
         # Build a fake plugins dir with a bad name
         bad_plugin = tmp_path / "plugins" / "bad__name"
         (bad_plugin / ".claude-plugin").mkdir(parents=True)
-        (bad_plugin / ".claude-plugin" / "plugin.json").write_text(
-            '{"name": "bad__name"}'
-        )
+        (bad_plugin / ".claude-plugin" / "plugin.json").write_text('{"name": "bad__name"}')
         monkeypatch.setattr(base, "PLUGINS_DIR", tmp_path / "plugins")
 
         # Should return None with a stderr warning
@@ -1255,9 +1178,7 @@ class TestFrontmatterParser:
     def test_block_scalar_description(self):
         from tools.adapters.base import parse_frontmatter
 
-        fm, _ = parse_frontmatter(
-            "---\nname: x\ndescription: >\n  multi\n  line\n---\nbody"
-        )
+        fm, _ = parse_frontmatter("---\nname: x\ndescription: >\n  multi\n  line\n---\nbody")
         assert fm["description"] == "multi line"
 
 

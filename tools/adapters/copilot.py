@@ -81,9 +81,7 @@ class CopilotAdapter(HarnessAdapter):
 
     harness_id = "copilot"
 
-    def __init__(
-        self, output_root: Path | None = None, repo_root: Path | None = None
-    ) -> None:
+    def __init__(self, output_root: Path | None = None, repo_root: Path | None = None) -> None:
         """Set output root (defaults to WORKTREE) and optional repo root."""
         super().__init__(output_root=output_root)
         if repo_root is not None:
@@ -108,9 +106,7 @@ class CopilotAdapter(HarnessAdapter):
         """No cross-plugin artifacts needed for Copilot."""
         return EmitResult()
 
-    def _emit_agent(
-        self, plugin: PluginSource, agent: AgentSource, result: EmitResult
-    ) -> None:
+    def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
         """Emit one .agent.md profile into the agents/ directory.
 
         Builds frontmatter (name, description, model, tools), rewrites tool
@@ -138,9 +134,7 @@ class CopilotAdapter(HarnessAdapter):
         content = _copilot_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(rel, content))
 
-    def _emit_skill(
-        self, plugin: PluginSource, skill: SkillSource, result: EmitResult
-    ) -> None:
+    def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
         """Emit one SKILL.md into the skills/ directory.
 
         Preserves the source skill's frontmatter (name, description, trigger
@@ -190,20 +184,13 @@ class CopilotAdapter(HarnessAdapter):
     def _emit_command_index(self, plugin: PluginSource, result: EmitResult) -> None:
         """Emit a plugin entrypoint command that points at the plugin's subcommands."""
         command_names = (
-            ", ".join(f"`/{plugin.name}:{cmd.name}`" for cmd in plugin.commands)
-            or "none"
+            ", ".join(f"`/{plugin.name}:{cmd.name}`" for cmd in plugin.commands) or "none"
         )
-        agent_names = ", ".join(
-            f"`{plugin.name}__{agent.name}`" for agent in plugin.agents
-        )
-        skill_names = ", ".join(
-            f"`{plugin.name}__{skill.name}`" for skill in plugin.skills
-        )
+        agent_names = ", ".join(f"`{plugin.name}__{agent.name}`" for agent in plugin.agents)
+        skill_names = ", ".join(f"`{plugin.name}__{skill.name}`" for skill in plugin.skills)
 
         parts = [
-            (
-                plugin.description or f"{plugin.name.replace('-', ' ').title()} plugin"
-            ).rstrip(".")
+            (plugin.description or f"{plugin.name.replace('-', ' ').title()} plugin").rstrip(".")
             + ".",
             "",
             f"This is the entry point for the `{plugin.name}` plugin.",

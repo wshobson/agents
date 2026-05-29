@@ -99,9 +99,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
             text = line.strip()
             if text:
                 existing = fields.get(current_key) or ""
-                fields[current_key] = (
-                    (existing + " " + text).strip() if existing else text
-                )
+                fields[current_key] = (existing + " " + text).strip() if existing else text
         elif in_list and (
             isinstance(fields.get(current_key), list)
             or (isinstance(fields.get(current_key), str) and fields[current_key] == "")
@@ -125,11 +123,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
                 item = stripped.strip('",[] ')
                 if item and item != "]":
                     fields[current_key].append(item)
-        elif (
-            current_key
-            and isinstance(fields.get(current_key), str)
-            and line.startswith("  ")
-        ):
+        elif current_key and isinstance(fields.get(current_key), str) and line.startswith("  "):
             fields[current_key] += " " + line.strip().strip('"')
 
     return fields, body
@@ -347,9 +341,7 @@ def load_plugin(plugin_name: str) -> PluginSource | None:
         for md in sorted(agents_dir.glob("*.md")):
             fm, body = parse_frontmatter(read_file(md))
             plugin.agents.append(
-                AgentSource(
-                    plugin=plugin_name, name=md.stem, path=md, frontmatter=fm, body=body
-                )
+                AgentSource(plugin=plugin_name, name=md.stem, path=md, frontmatter=fm, body=body)
             )
 
     skills_dir = plugin_dir / "skills"
@@ -360,9 +352,7 @@ def load_plugin(plugin_name: str) -> PluginSource | None:
                 continue
             fm, body = parse_frontmatter(read_file(skill_file))
             plugin.skills.append(
-                SkillSource(
-                    plugin=plugin_name, name=sd.name, dir=sd, frontmatter=fm, body=body
-                )
+                SkillSource(plugin=plugin_name, name=sd.name, dir=sd, frontmatter=fm, body=body)
             )
 
     commands_dir = plugin_dir / "commands"
@@ -370,9 +360,7 @@ def load_plugin(plugin_name: str) -> PluginSource | None:
         for md in sorted(commands_dir.glob("*.md")):
             fm, body = parse_frontmatter(read_file(md))
             plugin.commands.append(
-                CommandSource(
-                    plugin=plugin_name, name=md.stem, path=md, frontmatter=fm, body=body
-                )
+                CommandSource(plugin=plugin_name, name=md.stem, path=md, frontmatter=fm, body=body)
             )
 
     return plugin
@@ -440,9 +428,7 @@ class HarnessAdapter(ABC):
         target = (self.output_root / rel_path).resolve()
         root = self.output_root.resolve()
         if not target.is_relative_to(root):
-            raise ValueError(
-                f"refusing to write outside output_root: {target} (root={root})"
-            )
+            raise ValueError(f"refusing to write outside output_root: {target} (root={root})")
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8")
         return target
@@ -452,9 +438,7 @@ class HarnessAdapter(ABC):
         target = (self.output_root / rel_path).resolve()
         root = self.output_root.resolve()
         if not target.is_relative_to(root):
-            raise ValueError(
-                f"refusing to write outside output_root: {target} (root={root})"
-            )
+            raise ValueError(f"refusing to write outside output_root: {target} (root={root})")
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(content)
         return target

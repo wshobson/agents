@@ -80,9 +80,7 @@ class TestCodexRoundTrip:
             size = len(skill_md.read_text().encode("utf-8"))
             if size > 8 * 1024:
                 oversized.append(f"{skill_md.relative_to(WORKTREE)}: {size}B")
-        assert not oversized, "Codex skills over 8 KB injection cap:\n  " + "\n  ".join(
-            oversized
-        )
+        assert not oversized, "Codex skills over 8 KB injection cap:\n  " + "\n  ".join(oversized)
 
     def test_every_codex_agent_toml_parses_and_has_required_fields(self):
         required = {"name", "description", "developer_instructions"}
@@ -148,9 +146,7 @@ class TestOpenCodeRoundTrip:
                 problems.append(f"{agent_md.name}: invalid mode {fm.get('mode')!r}")
             model = fm.get("model", "")
             if model and "/" not in model:
-                problems.append(
-                    f"{agent_md.name}: model {model!r} not provider-prefixed"
-                )
+                problems.append(f"{agent_md.name}: model {model!r} not provider-prefixed")
         assert not problems, "OpenCode agent issues:\n  " + "\n  ".join(problems[:20])
 
     def test_locked_agents_have_proper_permission_block(self):
@@ -178,18 +174,12 @@ class TestOpenCodeRoundTrip:
                     continue
                 # Must allow skill + task (base capabilities), deny others.
                 if not re.search(r"skill:\s*allow", content):
-                    problems.append(
-                        f"{agent_id}: skill not allowed in permission block"
-                    )
+                    problems.append(f"{agent_id}: skill not allowed in permission block")
                 if not re.search(r"task:\s*allow", content):
                     problems.append(f"{agent_id}: task not allowed in permission block")
                 if not re.search(r"read:\s*deny", content):
-                    problems.append(
-                        f"{agent_id}: read should be denied for locked agent"
-                    )
-        assert not problems, "Locked-agent permission regressions:\n  " + "\n  ".join(
-            problems
-        )
+                    problems.append(f"{agent_id}: read should be denied for locked agent")
+        assert not problems, "Locked-agent permission regressions:\n  " + "\n  ".join(problems)
 
     def test_every_opencode_skill_has_valid_frontmatter(self):
         name_re = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -198,9 +188,7 @@ class TestOpenCodeRoundTrip:
             fm, _ = parse_frontmatter(skill_md.read_text())
             name = str(fm.get("name") or "")
             if name != skill_md.parent.name:
-                problems.append(
-                    f"{skill_md}: name {name!r} != directory {skill_md.parent.name!r}"
-                )
+                problems.append(f"{skill_md}: name {name!r} != directory {skill_md.parent.name!r}")
             if not name_re.fullmatch(name):
                 problems.append(f"{skill_md}: invalid OpenCode skill name {name!r}")
             if len(name) > 64:
@@ -233,9 +221,7 @@ class TestCursorRoundTrip:
         manifest_names = {p.stem for p in per_plugin.glob("*.json")}
         local_plugins = set(list_plugins())
         missing = local_plugins - manifest_names
-        assert not missing, (
-            f"Cursor per-plugin manifests missing for: {sorted(missing)}"
-        )
+        assert not missing, f"Cursor per-plugin manifests missing for: {sorted(missing)}"
 
     def test_cursor_rules_only_use_allowed_keys(self):
         rules_dir = WORKTREE / ".cursor" / "rules"
@@ -270,12 +256,8 @@ class TestGeminiRoundTrip:
             for match in at_pattern.findall(prompt):
                 target = WORKTREE / match
                 if not target.is_file():
-                    broken.append(
-                        f"{toml_path.relative_to(WORKTREE)}: @{{{match}}} -> missing"
-                    )
-        assert not broken, "Broken Gemini @{path} injections:\n  " + "\n  ".join(
-            broken[:20]
-        )
+                    broken.append(f"{toml_path.relative_to(WORKTREE)}: @{{{match}}} -> missing")
+        assert not broken, "Broken Gemini @{path} injections:\n  " + "\n  ".join(broken[:20])
 
     def test_every_gemini_command_has_prompt_and_args(self):
         problems = []
@@ -286,15 +268,11 @@ class TestGeminiRoundTrip:
                 problems.append(f"{toml_path.relative_to(WORKTREE)}: parse error {e}")
                 continue
             if "description" not in data:
-                problems.append(
-                    f"{toml_path.relative_to(WORKTREE)}: missing description"
-                )
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: missing description")
             if "prompt" not in data:
                 problems.append(f"{toml_path.relative_to(WORKTREE)}: missing prompt")
             elif "{{args}}" not in data["prompt"]:
-                problems.append(
-                    f"{toml_path.relative_to(WORKTREE)}: prompt missing {{{{args}}}}"
-                )
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: prompt missing {{{{args}}}}")
         assert not problems, "Gemini TOML issues:\n  " + "\n  ".join(problems[:20])
 
     def test_gemini_md_within_cap(self):
@@ -326,11 +304,7 @@ class TestCopilotRoundTrip:
 
     def test_copilot_command_count_matches_source(self):
         n = len(
-            [
-                p
-                for p in (WORKTREE / ".copilot" / "commands").rglob("*.md")
-                if p.name != "index.md"
-            ]
+            [p for p in (WORKTREE / ".copilot" / "commands").rglob("*.md") if p.name != "index.md"]
         )
         assert n == _source_command_count(), (
             f"command count mismatch: source={_source_command_count()} copilot={n}"
@@ -342,9 +316,7 @@ class TestCopilotRoundTrip:
             entry = WORKTREE / ".copilot" / "commands" / plugin_name / "index.md"
             if not entry.is_file():
                 missing.append(plugin_name)
-        assert not missing, (
-            f"missing Copilot command entrypoints for: {sorted(missing)}"
-        )
+        assert not missing, f"missing Copilot command entrypoints for: {sorted(missing)}"
 
     def test_every_copilot_agent_has_required_frontmatter(self):
         required = {"name", "description"}
@@ -357,9 +329,7 @@ class TestCopilotRoundTrip:
             missing = required - set(fm.keys())
             if missing:
                 problems.append(f"{agent_md.name}: missing {sorted(missing)}")
-        assert not problems, "Copilot agent frontmatter issues:\n  " + "\n  ".join(
-            problems[:20]
-        )
+        assert not problems, "Copilot agent frontmatter issues:\n  " + "\n  ".join(problems[:20])
 
 
 # ── Native-install manifests (always run; these are committed source) ─────────
@@ -388,9 +358,7 @@ class TestNativeInstallManifests:
         data = json.loads(marketplace.read_text())
         names = {p["name"] for p in data["plugins"]}
         local = set(list_plugins())
-        assert local.issubset(names), (
-            f"Codex marketplace missing plugins: {local - names}"
-        )
+        assert local.issubset(names), f"Codex marketplace missing plugins: {local - names}"
         for p in data["plugins"]:
             assert p["source"]["path"] == f"./plugins/{p['name']}", (
                 f"{p['name']}: marketplace source.path must point at the source plugin dir"
@@ -401,9 +369,7 @@ class TestNativeInstallManifests:
         for name in list_plugins():
             manifest = WORKTREE / "plugins" / name / ".codex-plugin" / "plugin.json"
             if not manifest.is_file():
-                problems.append(
-                    f"{name}: plugins/{name}/.codex-plugin/plugin.json missing"
-                )
+                problems.append(f"{name}: plugins/{name}/.codex-plugin/plugin.json missing")
                 continue
             try:
                 data = json.loads(manifest.read_text())
@@ -414,9 +380,7 @@ class TestNativeInstallManifests:
                 problems.append(f"{name}: manifest name is {data.get('name')!r}")
             if data.get("skills") != "./skills/":
                 problems.append(f"{name}: manifest skills is {data.get('skills')!r}")
-        assert not problems, "Codex per-plugin manifest issues:\n  " + "\n  ".join(
-            problems[:20]
-        )
+        assert not problems, "Codex per-plugin manifest issues:\n  " + "\n  ".join(problems[:20])
 
     def test_claude_md_is_symlink_to_agents_md(self):
         claude = WORKTREE / "CLAUDE.md"

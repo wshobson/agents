@@ -189,16 +189,12 @@ class OpenCodeAdapter(HarnessAdapter):
         config = {
             "$schema": "https://opencode.ai/config.json",
         }
-        result.written.append(
-            self.write("opencode.json", json.dumps(config, indent=2) + "\n")
-        )
+        result.written.append(self.write("opencode.json", json.dumps(config, indent=2) + "\n"))
         return result
 
     # ── Internals ──────────────────────────────────────────────────────────
 
-    def _emit_skill(
-        self, plugin: PluginSource, skill: SkillSource, result: EmitResult
-    ) -> None:
+    def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
         skill_id = _opencode_skill_id(plugin, skill)
         source_id = f"{plugin.name}/{skill.name}"
         existing_source = self._seen_skill_ids.get(skill_id)
@@ -225,9 +221,7 @@ class OpenCodeAdapter(HarnessAdapter):
             rel = src.relative_to(skill.dir)
             result.written.append(self.mirror_file(src, skill_dir / rel))
 
-    def _emit_agent(
-        self, plugin: PluginSource, agent: AgentSource, result: EmitResult
-    ) -> None:
+    def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
         agent_id = f"{plugin.name}__{agent.name}"
         rel = Path(".opencode") / "agents" / f"{agent_id}.md"
 
@@ -243,9 +237,7 @@ class OpenCodeAdapter(HarnessAdapter):
         }
 
         has_tools_field = "tools" in agent.frontmatter
-        permission = _build_permission_block(
-            agent.tools, has_tools_field=has_tools_field
-        )
+        permission = _build_permission_block(agent.tools, has_tools_field=has_tools_field)
         if permission:
             fm["permission"] = permission
 
@@ -253,9 +245,7 @@ class OpenCodeAdapter(HarnessAdapter):
         content = _opencode_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(rel, content))
 
-    def _emit_command(
-        self, plugin: PluginSource, cmd: CommandSource, result: EmitResult
-    ) -> None:
+    def _emit_command(self, plugin: PluginSource, cmd: CommandSource, result: EmitResult) -> None:
         cmd_id = f"{plugin.name}__{cmd.name}"
         rel = Path(".opencode") / "commands" / f"{cmd_id}.md"
 
