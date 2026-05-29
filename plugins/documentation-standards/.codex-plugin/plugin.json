@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Documentation Standards",
-    "shortDescription": "HADS (Human-AI Document Standard) \u2014 semantic tagging convention for writing documentation that works efficiently for bot",
+    "shortDescription": "HADS (Human-AI Document Standard) \u2014 semantic tagging convention for writing documentation that works efficiently for\u2026",
     "category": "Coding"
   }
 }

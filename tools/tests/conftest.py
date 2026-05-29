@@ -21,7 +21,9 @@ from tools.adapters.base import (  # noqa: E402
 )
 
 
-def _make_skill(plugin_dir: Path, name: str, frontmatter: str, body: str) -> SkillSource:
+def _make_skill(
+    plugin_dir: Path, name: str, frontmatter: str, body: str
+) -> SkillSource:
     """Build a SkillSource on disk under plugin_dir/skills/<name>/SKILL.md."""
     skill_dir = plugin_dir / "skills" / name
     skill_dir.mkdir(parents=True, exist_ok=True)
@@ -37,7 +39,9 @@ def _make_skill(plugin_dir: Path, name: str, frontmatter: str, body: str) -> Ski
     )
 
 
-def _make_agent(plugin_dir: Path, name: str, frontmatter: str, body: str) -> AgentSource:
+def _make_agent(
+    plugin_dir: Path, name: str, frontmatter: str, body: str
+) -> AgentSource:
     agents_dir = plugin_dir / "agents"
     agents_dir.mkdir(parents=True, exist_ok=True)
     content = f"---\n{frontmatter}\n---\n\n{body}\n"
@@ -53,7 +57,9 @@ def _make_agent(plugin_dir: Path, name: str, frontmatter: str, body: str) -> Age
     )
 
 
-def _make_command(plugin_dir: Path, name: str, frontmatter: str, body: str) -> CommandSource:
+def _make_command(
+    plugin_dir: Path, name: str, frontmatter: str, body: str
+) -> CommandSource:
     cmds_dir = plugin_dir / "commands"
     cmds_dir.mkdir(parents=True, exist_ok=True)
     content = f"---\n{frontmatter}\n---\n\n{body}\n"

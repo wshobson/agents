@@ -59,9 +59,7 @@ class Finding:
             rel = self.path.relative_to(WORKTREE)
         except ValueError:
             rel = self.path
-        return (
-            f"[{self.severity:7}] {self.kind:24} {rel}: {self.message}\n           Fix: {self.fix}"
-        )
+        return f"[{self.severity:7}] {self.kind:24} {rel}: {self.message}\n           Fix: {self.fix}"
 
 
 @dataclass
@@ -122,7 +120,12 @@ def check_stale_artifacts(report: Report) -> None:
                 pairs.append((real_skill_src, skill_md))
                 continue
             if leaf.endswith("__command"):
-                src = PLUGINS_DIR / plugin / "commands" / f"{leaf[: -len('__command')]}.md"
+                src = (
+                    PLUGINS_DIR
+                    / plugin
+                    / "commands"
+                    / f"{leaf[: -len('__command')]}.md"
+                )
             elif leaf.endswith("__cmd"):
                 # Second-order collision suffix
                 src = PLUGINS_DIR / plugin / "commands" / f"{leaf[: -len('__cmd')]}.md"
@@ -396,15 +399,21 @@ CHECKS = {
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Recurring drift detection (doc-gardener).")
-    parser.add_argument("--strict", action="store_true", help="Exit nonzero on any finding.")
+    parser = argparse.ArgumentParser(
+        description="Recurring drift detection (doc-gardener)."
+    )
+    parser.add_argument(
+        "--strict", action="store_true", help="Exit nonzero on any finding."
+    )
     parser.add_argument(
         "--check",
         choices=list(CHECKS.keys()),
         action="append",
         help="Run only the named check (repeat for multiple). Default: all.",
     )
-    parser.add_argument("--quiet", action="store_true", help="Only print findings, no summary.")
+    parser.add_argument(
+        "--quiet", action="store_true", help="Only print findings, no summary."
+    )
     args = parser.parse_args()
 
     selected = args.check or list(CHECKS.keys())
@@ -446,7 +455,9 @@ def main() -> int:
         warnings = report.by_severity("warning")
         infos = report.by_severity("info")
         print()
-        print(f"Totals: {len(errors)} error(s), {len(warnings)} warning(s), {len(infos)} info.")
+        print(
+            f"Totals: {len(errors)} error(s), {len(warnings)} warning(s), {len(infos)} info."
+        )
 
     if report.by_severity("error"):
         return 1

@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Signed Audit Trails",
-    "shortDescription": "Teaching skill: signed audit trails for Claude Code tool calls. Cookbook-style walkthrough of Cedar-gated tool calls wit",
+    "shortDescription": "Teaching skill: signed audit trails for Claude Code tool calls. Cookbook-style walkthrough of Cedar-gated tool calls\u2026",
     "category": "Coding"
   }
 }

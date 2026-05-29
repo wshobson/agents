@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Kubernetes Operations",
-    "shortDescription": "Kubernetes manifest generation, networking configuration, security policies, observability setup, GitOps workflows, and ",
+    "shortDescription": "Kubernetes manifest generation, networking configuration, security policies, observability setup, GitOps workflows\u2026",
     "category": "Coding"
   }
 }

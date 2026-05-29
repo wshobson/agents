@@ -10,7 +10,7 @@
   "license": "Apache-2.0",
   "interface": {
     "displayName": "Conductor",
-    "shortDescription": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: C",
+    "shortDescription": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured\u2026",
     "category": "Coding"
   }
 }

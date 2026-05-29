@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Cloud Infrastructure",
-    "shortDescription": "Cloud architecture design for AWS/Azure/GCP/OCI, Kubernetes cluster configuration, Terraform infrastructure-as-code, hyb",
+    "shortDescription": "Cloud architecture design for AWS/Azure/GCP/OCI, Kubernetes cluster configuration, Terraform infrastructure-as-code\u2026",
     "category": "Coding"
   }
 }

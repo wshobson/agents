@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Agent Teams",
-    "shortDescription": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development",
+    "shortDescription": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature\u2026",
     "category": "Coding"
   }
 }

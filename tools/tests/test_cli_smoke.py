@@ -148,7 +148,9 @@ class TestCodexSmoke:
                 tomllib.loads(toml_path.read_text())
             except tomllib.TOMLDecodeError as e:
                 broken.append(f"{toml_path.name}: {e}")
-        assert not broken, "Codex agent TOMLs that fail to parse:\n  " + "\n  ".join(broken)
+        assert not broken, "Codex agent TOMLs that fail to parse:\n  " + "\n  ".join(
+            broken
+        )
 
 
 # ── Claude Code CLI ──────────────────────────────────────────────────────────
@@ -169,7 +171,9 @@ class TestClaudeCodeSmoke:
         assert mp.get("plugins"), "marketplace.json has no plugins[]"
         # Owner/metadata are required for Claude Code's marketplace loader.
         assert mp.get("owner"), "marketplace.json missing top-level 'owner'"
-        assert mp.get("metadata", {}).get("version"), "marketplace.json missing metadata.version"
+        assert mp.get("metadata", {}).get("version"), (
+            "marketplace.json missing metadata.version"
+        )
 
 
 # ── Cross-CLI sanity: marketplace + adapter agreement ────────────────────────
@@ -186,7 +190,9 @@ class TestMarketplaceAgreement:
             source = entry.get("source")
             if not (isinstance(source, str) and source.startswith("./plugins/")):
                 continue
-            pj_path = WORKTREE / source.removeprefix("./") / ".claude-plugin" / "plugin.json"
+            pj_path = (
+                WORKTREE / source.removeprefix("./") / ".claude-plugin" / "plugin.json"
+            )
             if not pj_path.is_file():
                 continue
             pj = json.loads(pj_path.read_text())

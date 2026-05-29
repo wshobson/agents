@@ -23,7 +23,9 @@ def _patch_paths(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(dg, "WORKTREE", tmp_path)
     monkeypatch.setattr(dg, "PLUGINS_DIR", tmp_path / "plugins")
     monkeypatch.setattr(dg, "DOCS_DIR", tmp_path / "docs")
-    monkeypatch.setattr(dg, "MARKETPLACE_JSON", tmp_path / ".claude-plugin" / "marketplace.json")
+    monkeypatch.setattr(
+        dg, "MARKETPLACE_JSON", tmp_path / ".claude-plugin" / "marketplace.json"
+    )
     # Also patch the base module's WORKTREE / PLUGINS_DIR since list_plugins() uses them
     import tools.adapters.base as base
 
@@ -35,18 +37,24 @@ def _patch_paths(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
 
 
 class TestStaleArtifacts:
-    def test_fresh_artifacts_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_fresh_artifacts_no_finding(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_paths(monkeypatch, tmp_path)
         # Set up source
         plugin = tmp_path / "plugins" / "demo"
         (plugin / "agents").mkdir(parents=True)
         src = plugin / "agents" / "greeter.md"
-        src.write_text("---\nname: greeter\ndescription: Use when greeting.\n---\nBody.\n")
+        src.write_text(
+            "---\nname: greeter\ndescription: Use when greeting.\n---\nBody.\n"
+        )
         # Set up generated artifact that's newer
         gen_dir = tmp_path / ".codex" / "agents"
         gen_dir.mkdir(parents=True)
         gen = gen_dir / "demo__greeter.toml"
-        gen.write_text('name = "demo__greeter"\ndescription = "x"\ndeveloper_instructions = "y"\n')
+        gen.write_text(
+            'name = "demo__greeter"\ndescription = "x"\ndeveloper_instructions = "y"\n'
+        )
         # Force gen mtime to be after source
         future = src.stat().st_mtime + 100
         import os
@@ -57,16 +65,22 @@ class TestStaleArtifacts:
         check_stale_artifacts(report)
         assert [f for f in report.findings if f.kind == "STALE_ARTIFACT"] == []
 
-    def test_stale_artifact_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_stale_artifact_warns(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_paths(monkeypatch, tmp_path)
         plugin = tmp_path / "plugins" / "demo"
         (plugin / "agents").mkdir(parents=True)
         src = plugin / "agents" / "greeter.md"
-        src.write_text("---\nname: greeter\ndescription: Use when greeting.\n---\nBody.\n")
+        src.write_text(
+            "---\nname: greeter\ndescription: Use when greeting.\n---\nBody.\n"
+        )
         gen_dir = tmp_path / ".codex" / "agents"
         gen_dir.mkdir(parents=True)
         gen = gen_dir / "demo__greeter.toml"
-        gen.write_text('name = "demo__greeter"\ndescription = "x"\ndeveloper_instructions = "y"\n')
+        gen.write_text(
+            'name = "demo__greeter"\ndescription = "x"\ndeveloper_instructions = "y"\n'
+        )
         # Force src to be much newer
         import os
 
@@ -94,7 +108,9 @@ class TestStaleArtifacts:
         report = Report()
         check_stale_artifacts(report)
 
-        findings = [f for f in report.findings if f.kind == "opencode-skill-id-collision"]
+        findings = [
+            f for f in report.findings if f.kind == "opencode-skill-id-collision"
+        ]
         assert findings
         assert "data-analysis-report" in findings[0].message
 
@@ -111,14 +127,18 @@ class TestStaleArtifacts:
         report = Report()
         check_stale_artifacts(report)
 
-        assert [f for f in report.findings if f.kind == "opencode-skill-id-collision"] == []
+        assert [
+            f for f in report.findings if f.kind == "opencode-skill-id-collision"
+        ] == []
 
 
 # ── Context file size ────────────────────────────────────────────────────────
 
 
 class TestContextFiles:
-    def test_within_budget_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_within_budget_no_finding(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_paths(monkeypatch, tmp_path)
         (tmp_path / "AGENTS.md").write_text("\n".join(["line"] * 80))
         report = Report()
@@ -138,7 +158,9 @@ class TestContextFiles:
 
 
 class TestDeadLinks:
-    def test_valid_links_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_valid_links_no_finding(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_paths(monkeypatch, tmp_path)
         (tmp_path / "docs").mkdir()
         (tmp_path / "docs" / "a.md").write_text("[link to b](b.md)\n")
@@ -156,7 +178,9 @@ class TestDeadLinks:
         findings = [f for f in report.findings if f.kind == "DEAD_LINK"]
         assert findings
 
-    def test_external_links_skipped(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_external_links_skipped(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_paths(monkeypatch, tmp_path)
         (tmp_path / "docs").mkdir()
         (tmp_path / "docs" / "a.md").write_text(
@@ -171,7 +195,9 @@ class TestDeadLinks:
 
 
 class TestCodexSkillCaps:
-    def test_under_cap_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_under_cap_no_finding(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_paths(monkeypatch, tmp_path)
         sk = tmp_path / "plugins" / "demo" / "skills" / "small"
         sk.mkdir(parents=True)
@@ -233,7 +259,9 @@ class TestMarketplaceConsistency:
         check_marketplace_consistency(report)
         assert [f for f in report.findings if f.kind == "MARKETPLACE_ORPHAN"]
 
-    def test_external_plugin_not_orphaned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_external_plugin_not_orphaned(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         """git-subdir / git source plugins legitimately have no plugins/<name>/."""
         _patch_paths(monkeypatch, tmp_path)
         (tmp_path / "plugins").mkdir()
@@ -255,7 +283,9 @@ class TestMarketplaceConsistency:
         check_marketplace_consistency(report)
         assert not [f for f in report.findings if f.kind == "MARKETPLACE_ORPHAN"]
 
-    def test_unregistered_local_plugin_info(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_unregistered_local_plugin_info(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         _patch_paths(monkeypatch, tmp_path)
         plug = tmp_path / "plugins" / "unregistered"
         plug.mkdir(parents=True)

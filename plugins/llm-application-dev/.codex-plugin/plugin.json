@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Llm Application Dev",
-    "shortDescription": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures for Claude 4.6 and GP",
+    "shortDescription": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures for Claude 4.6\u2026",
     "category": "Coding"
   }
 }

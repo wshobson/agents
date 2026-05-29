@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Julia Development",
-    "shortDescription": "Modern Julia development with Julia 1.10+, package management, scientific computing, high-performance numerical code, an",
+    "shortDescription": "Modern Julia development with Julia 1.10+, package management, scientific computing, high-performance numerical\u2026",
     "category": "Coding"
   }
 }

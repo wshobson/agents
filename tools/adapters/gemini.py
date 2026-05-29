@@ -79,7 +79,9 @@ class GeminiAdapter(HarnessAdapter):
 
     # ── Internals ──────────────────────────────────────────────────────────
 
-    def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
+    def _emit_skill(
+        self, plugin: PluginSource, skill: SkillSource, result: EmitResult
+    ) -> None:
         """Mirror skill to skills/<plugin>__<skill>/SKILL.md at extension root.
 
         Gemini CLI auto-discovers these paths (Dec 2025 SKILL.md spec).
@@ -97,9 +99,13 @@ class GeminiAdapter(HarnessAdapter):
             for ref in sorted(skill.references_dir.rglob("*")):
                 if ref.is_file():
                     rel = ref.relative_to(skill.references_dir)
-                    result.written.append(self.mirror_file(ref, rel_dir / "references" / rel))
+                    result.written.append(
+                        self.mirror_file(ref, rel_dir / "references" / rel)
+                    )
 
-    def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
+    def _emit_agent(
+        self, plugin: PluginSource, agent: AgentSource, result: EmitResult
+    ) -> None:
         """Emit a Gemini subagent (April 2026 spec) at agents/<plugin>__<agent>.md."""
         agent_id = f"{plugin.name}__{agent.name}"
         rel = Path("agents") / f"{agent_id}.md"
@@ -121,7 +127,9 @@ class GeminiAdapter(HarnessAdapter):
         content = _gemini_frontmatter(fm) + "\n\n" + agent.body.rstrip() + "\n"
         result.written.append(self.write(rel, content))
 
-    def _emit_command(self, plugin: PluginSource, cmd: CommandSource, result: EmitResult) -> None:
+    def _emit_command(
+        self, plugin: PluginSource, cmd: CommandSource, result: EmitResult
+    ) -> None:
         """Emit a Gemini TOML command at commands/<plugin>/<command>.toml.
 
         Use `@{path}` file injection for large bodies, inline for small ones (the Google
@@ -137,11 +145,15 @@ class GeminiAdapter(HarnessAdapter):
         else:
             prompt = self._inject_command_prompt(plugin, cmd, description)
 
-        result.written.append(self.write(rel, _generate_command_toml(description, prompt)))
+        result.written.append(
+            self.write(rel, _generate_command_toml(description, prompt))
+        )
 
     def _emit_plugin_entry(self, plugin: PluginSource, result: EmitResult) -> None:
         """Top-level commands/<plugin>.toml — Gemini exposes this as `/<plugin>`."""
-        description = plugin.description or f"{plugin.name.replace('-', ' ').title()} plugin"
+        description = (
+            plugin.description or f"{plugin.name.replace('-', ' ').title()} plugin"
+        )
         rel = Path("commands") / f"{plugin.name}.toml"
 
         agent_list = ", ".join(f"`{plugin.name}__{a.name}`" for a in plugin.agents)

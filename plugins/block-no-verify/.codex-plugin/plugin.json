@@ -9,7 +9,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Block No Verify",
-    "shortDescription": "PreToolUse hook that prevents AI agents from using --no-verify, --no-gpg-sign, and other bypass flags that skip git hook",
+    "shortDescription": "PreToolUse hook that prevents AI agents from using --no-verify, --no-gpg-sign, and other bypass flags that skip git\u2026",
     "category": "Coding"
   }
 }

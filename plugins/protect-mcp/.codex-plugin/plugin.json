@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Protect Mcp",
-    "shortDescription": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugi",
+    "shortDescription": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance\u2026",
     "category": "Coding"
   }
 }

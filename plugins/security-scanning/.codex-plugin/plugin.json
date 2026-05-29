@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Security Scanning",
-    "shortDescription": "SAST analysis, dependency vulnerability scanning, OWASP Top 10 compliance, container security scanning, and automated se",
+    "shortDescription": "SAST analysis, dependency vulnerability scanning, OWASP Top 10 compliance, container security scanning, and\u2026",
     "category": "Coding"
   }
 }

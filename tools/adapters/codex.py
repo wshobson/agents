@@ -439,7 +439,9 @@ class CodexAdapter(HarnessAdapter):
 
     # ── Internals ──────────────────────────────────────────────────────────
 
-    def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
+    def _emit_skill(
+        self, plugin: PluginSource, skill: SkillSource, result: EmitResult
+    ) -> None:
         skill_id = f"{plugin.name}__{skill.name}"
         skill_dir = Path(".codex") / "skills" / skill_id
 
@@ -453,7 +455,8 @@ class CodexAdapter(HarnessAdapter):
             # If source already has references/details.md, route overflow to _overflow.md
             # so the source mirror pass below doesn't clobber it.
             source_has_details = (
-                skill.references_dir is not None and (skill.references_dir / "details.md").is_file()
+                skill.references_dir is not None
+                and (skill.references_dir / "details.md").is_file()
             )
             overflow_rel = "_overflow.md" if source_has_details else "details.md"
             result.warnings.append(
@@ -461,7 +464,9 @@ class CodexAdapter(HarnessAdapter):
                 f"split into references/{overflow_rel}"
             )
             result.written.append(
-                self.write(skill_dir / "references" / overflow_rel, overflow.rstrip() + "\n")
+                self.write(
+                    skill_dir / "references" / overflow_rel, overflow.rstrip() + "\n"
+                )
             )
 
         content = _frontmatter_block(fm) + "\n\n" + head
@@ -476,9 +481,13 @@ class CodexAdapter(HarnessAdapter):
                 if not ref.is_file():
                     continue
                 rel = ref.relative_to(skill.references_dir)
-                result.written.append(self.mirror_file(ref, skill_dir / "references" / rel))
+                result.written.append(
+                    self.mirror_file(ref, skill_dir / "references" / rel)
+                )
 
-    def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
+    def _emit_agent(
+        self, plugin: PluginSource, agent: AgentSource, result: EmitResult
+    ) -> None:
         agent_id = f"{plugin.name}__{agent.name}"
         rel = Path(".codex") / "agents" / f"{agent_id}.toml"
 
@@ -508,7 +517,9 @@ class CodexAdapter(HarnessAdapter):
 
         lines = [
             _toml_kv("name", agent_id),
-            _toml_kv("description", agent.description or f"{agent.name} (from {plugin.name})"),
+            _toml_kv(
+                "description", agent.description or f"{agent.name} (from {plugin.name})"
+            ),
             _toml_kv("model", model),
             _toml_kv("sandbox_mode", sandbox_mode),
             _toml_kv("developer_instructions", developer_instructions),
@@ -549,7 +560,8 @@ class CodexAdapter(HarnessAdapter):
 
         fm = {
             "name": skill_id,
-            "description": cmd.description or f"Command: {cmd.name} (from {plugin.name})",
+            "description": cmd.description
+            or f"Command: {cmd.name} (from {plugin.name})",
         }
         body = _rewrite_body_for_codex(cmd.body).rstrip() + "\n"
         head, overflow = _split_body_if_oversized(body, self.SKILL_BODY_CAP)
@@ -558,7 +570,9 @@ class CodexAdapter(HarnessAdapter):
                 f"command-skill `{skill_id}` body exceeded {self.SKILL_BODY_CAP}B; split into references/details.md"
             )
             result.written.append(
-                self.write(skill_dir / "references" / "details.md", overflow.rstrip() + "\n")
+                self.write(
+                    skill_dir / "references" / "details.md", overflow.rstrip() + "\n"
+                )
             )
         if cmd.argument_hint:
             fm["metadata"] = {"argument-hint": cmd.argument_hint}
@@ -568,7 +582,9 @@ class CodexAdapter(HarnessAdapter):
 
     # ── Marketplace manifests (native install; reads source skills) ──────────
 
-    def _emit_codex_plugin_manifest(self, plugin: PluginSource, result: EmitResult) -> None:
+    def _emit_codex_plugin_manifest(
+        self, plugin: PluginSource, result: EmitResult
+    ) -> None:
         """Write `plugins/<plugin>/.codex-plugin/plugin.json`, next to `.claude-plugin/`.
 
         The Codex marketplace installs the SOURCE plugin directory directly
@@ -601,36 +617,40 @@ class CodexAdapter(HarnessAdapter):
         for key in ("homepage", "repository", "license", "keywords"):
             if pj.get(key):
                 manifest[key] = pj[key]
+        desc = plugin.description or plugin.name
+        if len(desc) > 120:
+            # Cut on a word boundary so committed manifests never render mid-word.
+            desc = desc[:117].rsplit(" ", 1)[0].rstrip(" ,.;:!?-") + "…"
         manifest["interface"] = {
             "displayName": plugin.name.replace("-", " ").title(),
-            "shortDescription": (plugin.description or plugin.name)[:120],
+            "shortDescription": desc,
             "category": pj.get("category") or "Coding",
         }
         return manifest
 
     def _codex_marketplace(self, plugins: list[PluginSource]) -> dict:
-        """`.agents/plugins/marketplace.json` — entries install the source plugin dirs."""
+        """`.agents/plugins/marketplace.json` — entries install the source plugin dirs.
+
+        Schema per openai/codex `core-plugins`: each entry needs `name`, a `source`
+        (local variant `{"source": "local", "path": ...}`), a `policy`
+        (`installation`/`authentication`), and `category`. Entries install the source
+        plugin dir directly; per-plugin display metadata comes from each plugin's own
+        `.codex-plugin/plugin.json`, so we don't repeat version/description here.
+        """
         root = self._read_marketplace_root()
-        owner = root.get("owner")
-        if not isinstance(owner, dict):
-            owner = {"name": "Unknown", "email": ""}
         entries = []
         for p in plugins:
             pj = p.plugin_json or {}
-            entry: dict = {
-                "name": p.name,
-                "source": {"path": f"./plugins/{p.name}"},
-                "version": p.version,
-            }
-            if p.description:
-                entry["description"] = p.description
-            if pj.get("category"):
-                entry["category"] = pj["category"]
-            entries.append(entry)
+            entries.append(
+                {
+                    "name": p.name,
+                    "source": {"source": "local", "path": f"./plugins/{p.name}"},
+                    "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"},
+                    "category": pj.get("category") or "Coding",
+                }
+            )
         return {
             "name": root.get("name", "claude-code-workflows"),
-            "owner": owner,
-            "metadata": root.get("metadata", {}),
             "plugins": entries,
         }
 

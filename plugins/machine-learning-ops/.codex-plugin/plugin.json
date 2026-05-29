@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Machine Learning Ops",
-    "shortDescription": "ML model training pipelines, hyperparameter tuning, model deployment automation, experiment tracking, and MLOps workflow",
+    "shortDescription": "ML model training pipelines, hyperparameter tuning, model deployment automation, experiment tracking, and MLOps\u2026",
     "category": "Coding"
   }
 }

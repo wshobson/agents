@@ -10,7 +10,7 @@
   "license": "MIT",
   "interface": {
     "displayName": "Review Agent Governance",
-    "shortDescription": "Require a human approval signal before an AI agent can post PR reviews, comments, merges, or writes to CI config. Cedar-",
+    "shortDescription": "Require a human approval signal before an AI agent can post PR reviews, comments, merges, or writes to CI config\u2026",
     "category": "Coding"
   }
 }

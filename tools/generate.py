@@ -60,7 +60,9 @@ def get_adapter(harness_id: str, output_root: Path) -> HarnessAdapter:
         from tools.adapters.copilot import CopilotAdapter
 
         return CopilotAdapter(output_root=output_root)
-    raise ValueError(f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}")
+    raise ValueError(
+        f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}"
+    )
 
 
 def _validate_output_root(output_root: Path) -> str | None:
