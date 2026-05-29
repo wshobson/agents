@@ -1,0 +1,977 @@
+{
+  "name": "claude-code-workflows",
+  "plugins": [
+    {
+      "name": "accessibility-compliance",
+      "source": {
+        "source": "local",
+        "path": "./plugins/accessibility-compliance"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "agent-orchestration",
+      "source": {
+        "source": "local",
+        "path": "./plugins/agent-orchestration"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "agent-teams",
+      "source": {
+        "source": "local",
+        "path": "./plugins/agent-teams"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "api-scaffolding",
+      "source": {
+        "source": "local",
+        "path": "./plugins/api-scaffolding"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "api-testing-observability",
+      "source": {
+        "source": "local",
+        "path": "./plugins/api-testing-observability"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "application-performance",
+      "source": {
+        "source": "local",
+        "path": "./plugins/application-performance"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "arm-cortex-microcontrollers",
+      "source": {
+        "source": "local",
+        "path": "./plugins/arm-cortex-microcontrollers"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "backend-api-security",
+      "source": {
+        "source": "local",
+        "path": "./plugins/backend-api-security"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "backend-development",
+      "source": {
+        "source": "local",
+        "path": "./plugins/backend-development"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "block-no-verify",
+      "source": {
+        "source": "local",
+        "path": "./plugins/block-no-verify"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "blockchain-web3",
+      "source": {
+        "source": "local",
+        "path": "./plugins/blockchain-web3"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "brand-landingpage",
+      "source": {
+        "source": "local",
+        "path": "./plugins/brand-landingpage"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "business-analytics",
+      "source": {
+        "source": "local",
+        "path": "./plugins/business-analytics"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "c4-architecture",
+      "source": {
+        "source": "local",
+        "path": "./plugins/c4-architecture"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "cicd-automation",
+      "source": {
+        "source": "local",
+        "path": "./plugins/cicd-automation"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "cloud-infrastructure",
+      "source": {
+        "source": "local",
+        "path": "./plugins/cloud-infrastructure"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "code-documentation",
+      "source": {
+        "source": "local",
+        "path": "./plugins/code-documentation"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "code-refactoring",
+      "source": {
+        "source": "local",
+        "path": "./plugins/code-refactoring"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "codebase-cleanup",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codebase-cleanup"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "comprehensive-review",
+      "source": {
+        "source": "local",
+        "path": "./plugins/comprehensive-review"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "conductor",
+      "source": {
+        "source": "local",
+        "path": "./plugins/conductor"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "content-marketing",
+      "source": {
+        "source": "local",
+        "path": "./plugins/content-marketing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "context-management",
+      "source": {
+        "source": "local",
+        "path": "./plugins/context-management"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "customer-sales-automation",
+      "source": {
+        "source": "local",
+        "path": "./plugins/customer-sales-automation"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "data-engineering",
+      "source": {
+        "source": "local",
+        "path": "./plugins/data-engineering"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "data-validation-suite",
+      "source": {
+        "source": "local",
+        "path": "./plugins/data-validation-suite"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "database-cloud-optimization",
+      "source": {
+        "source": "local",
+        "path": "./plugins/database-cloud-optimization"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "database-design",
+      "source": {
+        "source": "local",
+        "path": "./plugins/database-design"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "database-migrations",
+      "source": {
+        "source": "local",
+        "path": "./plugins/database-migrations"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "debugging-toolkit",
+      "source": {
+        "source": "local",
+        "path": "./plugins/debugging-toolkit"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "dependency-management",
+      "source": {
+        "source": "local",
+        "path": "./plugins/dependency-management"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "deployment-strategies",
+      "source": {
+        "source": "local",
+        "path": "./plugins/deployment-strategies"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "deployment-validation",
+      "source": {
+        "source": "local",
+        "path": "./plugins/deployment-validation"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "developer-essentials",
+      "source": {
+        "source": "local",
+        "path": "./plugins/developer-essentials"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "distributed-debugging",
+      "source": {
+        "source": "local",
+        "path": "./plugins/distributed-debugging"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "documentation-generation",
+      "source": {
+        "source": "local",
+        "path": "./plugins/documentation-generation"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "documentation-standards",
+      "source": {
+        "source": "local",
+        "path": "./plugins/documentation-standards"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "dotnet-contribution",
+      "source": {
+        "source": "local",
+        "path": "./plugins/dotnet-contribution"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "error-debugging",
+      "source": {
+        "source": "local",
+        "path": "./plugins/error-debugging"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "error-diagnostics",
+      "source": {
+        "source": "local",
+        "path": "./plugins/error-diagnostics"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "framework-migration",
+      "source": {
+        "source": "local",
+        "path": "./plugins/framework-migration"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "frontend-mobile-development",
+      "source": {
+        "source": "local",
+        "path": "./plugins/frontend-mobile-development"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "frontend-mobile-security",
+      "source": {
+        "source": "local",
+        "path": "./plugins/frontend-mobile-security"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "full-stack-orchestration",
+      "source": {
+        "source": "local",
+        "path": "./plugins/full-stack-orchestration"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "functional-programming",
+      "source": {
+        "source": "local",
+        "path": "./plugins/functional-programming"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "game-development",
+      "source": {
+        "source": "local",
+        "path": "./plugins/game-development"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "git-pr-workflows",
+      "source": {
+        "source": "local",
+        "path": "./plugins/git-pr-workflows"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "hr-legal-compliance",
+      "source": {
+        "source": "local",
+        "path": "./plugins/hr-legal-compliance"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "incident-response",
+      "source": {
+        "source": "local",
+        "path": "./plugins/incident-response"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "javascript-typescript",
+      "source": {
+        "source": "local",
+        "path": "./plugins/javascript-typescript"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "julia-development",
+      "source": {
+        "source": "local",
+        "path": "./plugins/julia-development"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "jvm-languages",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jvm-languages"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "kubernetes-operations",
+      "source": {
+        "source": "local",
+        "path": "./plugins/kubernetes-operations"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "llm-application-dev",
+      "source": {
+        "source": "local",
+        "path": "./plugins/llm-application-dev"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "machine-learning-ops",
+      "source": {
+        "source": "local",
+        "path": "./plugins/machine-learning-ops"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "meigen-ai-design",
+      "source": {
+        "source": "local",
+        "path": "./plugins/meigen-ai-design"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "multi-platform-apps",
+      "source": {
+        "source": "local",
+        "path": "./plugins/multi-platform-apps"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "observability-monitoring",
+      "source": {
+        "source": "local",
+        "path": "./plugins/observability-monitoring"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "payment-processing",
+      "source": {
+        "source": "local",
+        "path": "./plugins/payment-processing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "performance-testing-review",
+      "source": {
+        "source": "local",
+        "path": "./plugins/performance-testing-review"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "plugin-eval",
+      "source": {
+        "source": "local",
+        "path": "./plugins/plugin-eval"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "protect-mcp",
+      "source": {
+        "source": "local",
+        "path": "./plugins/protect-mcp"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "python-development",
+      "source": {
+        "source": "local",
+        "path": "./plugins/python-development"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "quantitative-trading",
+      "source": {
+        "source": "local",
+        "path": "./plugins/quantitative-trading"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "reverse-engineering",
+      "source": {
+        "source": "local",
+        "path": "./plugins/reverse-engineering"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "review-agent-governance",
+      "source": {
+        "source": "local",
+        "path": "./plugins/review-agent-governance"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "security-compliance",
+      "source": {
+        "source": "local",
+        "path": "./plugins/security-compliance"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "security-scanning",
+      "source": {
+        "source": "local",
+        "path": "./plugins/security-scanning"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "seo-analysis-monitoring",
+      "source": {
+        "source": "local",
+        "path": "./plugins/seo-analysis-monitoring"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "seo-content-creation",
+      "source": {
+        "source": "local",
+        "path": "./plugins/seo-content-creation"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "seo-technical-optimization",
+      "source": {
+        "source": "local",
+        "path": "./plugins/seo-technical-optimization"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "shell-scripting",
+      "source": {
+        "source": "local",
+        "path": "./plugins/shell-scripting"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "ship-mate",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ship-mate"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "signed-audit-trails",
+      "source": {
+        "source": "local",
+        "path": "./plugins/signed-audit-trails"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "startup-business-analyst",
+      "source": {
+        "source": "local",
+        "path": "./plugins/startup-business-analyst"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "systems-programming",
+      "source": {
+        "source": "local",
+        "path": "./plugins/systems-programming"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "tdd-workflows",
+      "source": {
+        "source": "local",
+        "path": "./plugins/tdd-workflows"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "team-collaboration",
+      "source": {
+        "source": "local",
+        "path": "./plugins/team-collaboration"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "ui-design",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ui-design"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "unit-testing",
+      "source": {
+        "source": "local",
+        "path": "./plugins/unit-testing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "web-scripting",
+      "source": {
+        "source": "local",
+        "path": "./plugins/web-scripting"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    }
+  ]
+}

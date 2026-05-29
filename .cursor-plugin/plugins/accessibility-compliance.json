@@ -1,0 +1,11 @@
+{
+  "name": "accessibility-compliance",
+  "displayName": "Accessibility Compliance",
+  "version": "1.2.3",
+  "description": "WCAG accessibility auditing, compliance validation, UI testing for screen readers, keyboard navigation, and inclusive design",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

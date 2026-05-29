@@ -1,0 +1,11 @@
+{
+  "name": "debugging-toolkit",
+  "displayName": "Debugging Toolkit",
+  "version": "1.2.1",
+  "description": "Interactive debugging, developer experience optimization, and smart debugging workflows",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

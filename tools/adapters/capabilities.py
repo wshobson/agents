@@ -62,7 +62,7 @@ CAPABILITIES: dict[str, Capability] = {
         task_spawn=True,
         mcp_servers=True,
         hooks=True,
-        context_file_name="CLAUDE.md",
+        context_file_name="CLAUDE.md",  # symlink to AGENTS.md (the canonical context file)
         context_file_max_lines=_CONTEXT_LINES_CAP,
         skill_body_max_bytes=_NO_CAP,
         tool_name_case="CamelCase",
@@ -87,7 +87,7 @@ CAPABILITIES: dict[str, Capability] = {
         skill_body_max_bytes=_CODEX_SKILL_CAP,
         tool_name_case="none",  # action verbs, not tool names
         bare_model_aliases=False,
-        notes="Same SKILL.md format as Claude. Agents use TOML at .codex/agents/. AGENTS.md walked root->cwd with 32 KiB cap. Commands map to skills.",
+        notes="Same SKILL.md format as Claude. Committed marketplace at .agents/plugins/marketplace.json + per-plugin manifest at plugins/*/.codex-plugin/plugin.json (point at source plugins/). Agents use TOML at .codex/agents/. AGENTS.md walked root->cwd with 32 KiB cap. Commands map to skills.",
     ),
     "copilot": Capability(
         harness_id="copilot",

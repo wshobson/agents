@@ -1,0 +1,11 @@
+{
+  "name": "ui-design",
+  "displayName": "Ui Design",
+  "version": "1.0.5",
+  "description": "Comprehensive UI/UX design plugin for mobile (iOS, Android, React Native) and web applications with design systems, accessibility, and modern patterns",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

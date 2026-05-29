@@ -1,0 +1,16 @@
+{
+  "name": "game-development",
+  "version": "1.2.3",
+  "description": "Unity game development with C# scripting, Minecraft server plugin development with Bukkit/Spigot APIs",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Game Development",
+    "shortDescription": "Unity game development with C# scripting, Minecraft server plugin development with Bukkit/Spigot APIs",
+    "category": "Coding"
+  }
+}

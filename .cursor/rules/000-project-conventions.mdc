@@ -1,0 +1,22 @@
+---
+description: claude-agents marketplace project conventions
+alwaysApply: true
+---
+
+# claude-agents conventions
+
+This is a multi-harness plugin marketplace. Source lives under `plugins/`; per-harness
+artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `commands/`) are generated.
+
+- Don't hand-edit anything under `.codex/`, `.cursor-plugin/`, `.opencode/`, or top-level `commands/`, `agents/`, `skills/` — regenerate via `make generate HARNESS=<x>`.
+- Python tooling: `uv` (package manager), `ruff` (lint/format), `ty` (type check). Do not use pip/mypy/black.
+- Plugin files: `plugins/<name>/{.claude-plugin/plugin.json, agents/*.md, skills/<name>/SKILL.md, commands/*.md}`. Auto-discovered.
+- Cursor reads `.claude/skills/` and `.claude/agents/` directly — no separate `.cursor/skills/` is generated.
+
+## Never
+
+- Never commit secrets or hardcode credentials.
+- Never modify `.claude-plugin/marketplace.json` from inside a plugin PR — it's the registry.
+- Never run destructive git operations (force-push, reset --hard, branch -D) without explicit ask.
+
+See `docs/authoring.md` for the portable-content style guide.

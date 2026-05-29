@@ -1,0 +1,11 @@
+{
+  "name": "deployment-validation",
+  "displayName": "Deployment Validation",
+  "version": "1.2.1",
+  "description": "Pre-deployment checks, configuration validation, and deployment readiness assessment",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

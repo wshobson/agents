@@ -1,0 +1,27 @@
+{
+  "name": "ship-mate",
+  "version": "1.0.1",
+  "description": "Your AI development teammate. Turns a story file into a shipped, reviewed, and tested feature via orchestrator \u2192 architect \u2192 developer \u2192 PR reviewer \u2192 QA \u2192 Playwright.",
+  "skills": "./skills/",
+  "author": {
+    "name": "Pranay Yadav",
+    "email": "pranayyadav08@gmail.com"
+  },
+  "repository": "https://github.com/gh0sty02/ship-mate.git",
+  "license": "MIT",
+  "keywords": [
+    "pipeline",
+    "automation",
+    "orchestration",
+    "code-review",
+    "qa",
+    "playwright",
+    "multi-agent",
+    "dev-workflow"
+  ],
+  "interface": {
+    "displayName": "Ship Mate",
+    "shortDescription": "Your AI development teammate. Turns a story file into a shipped, reviewed, and tested feature via orchestrator \u2192\u2026",
+    "category": "Coding"
+  }
+}

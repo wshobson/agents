@@ -1,0 +1,16 @@
+{
+  "name": "agent-orchestration",
+  "version": "1.2.2",
+  "description": "Multi-agent system optimization, agent improvement workflows, and context management",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Agent Orchestration",
+    "shortDescription": "Multi-agent system optimization, agent improvement workflows, and context management",
+    "category": "Coding"
+  }
+}

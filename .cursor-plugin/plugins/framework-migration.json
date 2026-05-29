@@ -1,0 +1,11 @@
+{
+  "name": "framework-migration",
+  "displayName": "Framework Migration",
+  "version": "1.3.2",
+  "description": "Framework updates, migration planning, and architectural transformation workflows",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "database-design",
+  "version": "1.2.1",
+  "description": "Database architecture, schema design, and SQL optimization for production systems",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Database Design",
+    "shortDescription": "Database architecture, schema design, and SQL optimization for production systems",
+    "category": "Coding"
+  }
+}

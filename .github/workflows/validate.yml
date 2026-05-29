@@ -178,6 +178,19 @@ jobs:
       - name: Generate all harness artifacts
         run: make generate-all
 
+      - name: Verify committed artifacts are in sync with sources
+        # Native-install artifacts are committed so the repo installs from a clone.
+        # Regeneration must produce no diff — if it does, a source change was committed
+        # without running `make generate-all`. Run it locally and commit the result.
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::Generated artifacts drifted from the committed tree. Run 'make generate-all' and commit the result."
+            git status --short
+            git --no-pager diff --stat
+            exit 1
+          fi
+          echo "OK: committed harness artifacts match a fresh 'make generate-all'."
+
       - name: Structural validation (strict)
         run: make validate STRICT=1
 

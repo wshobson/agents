@@ -19,6 +19,11 @@ do, and what to avoid, so the work you do for Claude Code translates cleanly eve
 4. **Boring tech preference.** Markdown + YAML frontmatter + small Python adapters. No
    templating engines, no DSLs, no harness-specific markup.
 
+> **Native-install registries are generated and committed.** The per-harness install
+> manifests (Codex `.agents/plugins/marketplace.json` + `plugins/*/.codex-plugin/plugin.json`,
+> `.cursor-plugin/`, `gemini-extension.json`) point at the source `plugins/` and are checked in.
+> Run `make generate-all` before committing source changes — CI gates registry drift.
+
 ## Frontmatter
 
 | File | Required | Recommended | Notes |

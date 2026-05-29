@@ -1,0 +1,16 @@
+{
+  "name": "cloud-infrastructure",
+  "version": "1.3.2",
+  "description": "Cloud architecture design for AWS/Azure/GCP/OCI, Kubernetes cluster configuration, Terraform infrastructure-as-code, hybrid cloud networking, and multi-cloud cost optimization",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Cloud Infrastructure",
+    "shortDescription": "Cloud architecture design for AWS/Azure/GCP/OCI, Kubernetes cluster configuration, Terraform infrastructure-as-code\u2026",
+    "category": "Coding"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "api-testing-observability",
+  "version": "1.2.1",
+  "description": "API testing automation, request mocking, OpenAPI documentation generation, observability setup, and monitoring",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Api Testing Observability",
+    "shortDescription": "API testing automation, request mocking, OpenAPI documentation generation, observability setup, and monitoring",
+    "category": "Coding"
+  }
+}

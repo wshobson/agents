@@ -1,0 +1,16 @@
+{
+  "name": "agent-teams",
+  "version": "1.0.3",
+  "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's Agent Teams",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Agent Teams",
+    "shortDescription": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature\u2026",
+    "category": "Coding"
+  }
+}

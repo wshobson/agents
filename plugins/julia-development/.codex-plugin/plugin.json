@@ -1,0 +1,16 @@
+{
+  "name": "julia-development",
+  "version": "1.0.1",
+  "description": "Modern Julia development with Julia 1.10+, package management, scientific computing, high-performance numerical code, and production best practices",
+  "skills": "./skills/",
+  "author": {
+    "name": "Community Contribution",
+    "url": "https://github.com/exAClior"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Julia Development",
+    "shortDescription": "Modern Julia development with Julia 1.10+, package management, scientific computing, high-performance numerical\u2026",
+    "category": "Coding"
+  }
+}

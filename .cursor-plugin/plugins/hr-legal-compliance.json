@@ -1,0 +1,11 @@
+{
+  "name": "hr-legal-compliance",
+  "displayName": "Hr Legal Compliance",
+  "version": "1.2.3",
+  "description": "HR policy documentation, legal compliance templates (GDPR/SOC2/HIPAA), employment contracts, and regulatory documentation",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "error-diagnostics",
+  "version": "1.2.1",
+  "description": "Error tracing, root cause analysis, and smart debugging for production systems",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Error Diagnostics",
+    "shortDescription": "Error tracing, root cause analysis, and smart debugging for production systems",
+    "category": "Coding"
+  }
+}

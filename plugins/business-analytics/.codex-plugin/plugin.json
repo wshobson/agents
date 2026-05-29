@@ -1,0 +1,16 @@
+{
+  "name": "business-analytics",
+  "version": "1.2.3",
+  "description": "Business metrics analysis, KPI tracking, financial reporting, and data-driven decision making",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Business Analytics",
+    "shortDescription": "Business metrics analysis, KPI tracking, financial reporting, and data-driven decision making",
+    "category": "Coding"
+  }
+}

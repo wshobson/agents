@@ -19,7 +19,8 @@ Markdown source.
 2. Add agents in `agents/`, commands in `commands/`, skills in `skills/`.
 3. Update `.claude-plugin/marketplace.json` with your entry.
 4. Naming: lowercase, hyphen-separated. Never use `__` (the adapter namespace separator).
-5. Run `make validate` and `make garden` to surface any issues before submitting.
+5. Run `make generate-all` to refresh the committed native-install registries (CI gates registry drift).
+6. Run `make validate` and `make garden` to surface any issues before submitting.
 
 Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
 

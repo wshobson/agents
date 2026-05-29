@@ -1,0 +1,16 @@
+{
+  "name": "code-refactoring",
+  "version": "1.2.1",
+  "description": "Code cleanup, refactoring automation, and technical debt management with context restoration",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Code Refactoring",
+    "shortDescription": "Code cleanup, refactoring automation, and technical debt management with context restoration",
+    "category": "Coding"
+  }
+}

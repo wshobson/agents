@@ -30,7 +30,7 @@ from tools.adapters.capabilities import supported_harnesses
 # Per-harness output targets used by both `--clean` and `--prune`.
 _HARNESS_TARGETS = {
     # AGENTS.md is the committed canonical context file — never delete it from clean.
-    "codex": [".codex"],
+    "codex": [".codex", ".agents/plugins"],
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
     "gemini": ["commands", "agents", "skills"],

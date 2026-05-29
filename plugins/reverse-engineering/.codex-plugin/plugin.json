@@ -1,0 +1,16 @@
+{
+  "name": "reverse-engineering",
+  "version": "1.0.1",
+  "description": "Binary reverse engineering, malware analysis, firmware security, and software protection research for authorized security research, CTF competitions, and defensive security",
+  "skills": "./skills/",
+  "author": {
+    "name": "D\u00e1vid Balatoni",
+    "url": "https://github.com/balcsida"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Reverse Engineering",
+    "shortDescription": "Binary reverse engineering, malware analysis, firmware security, and software protection research for authorized\u2026",
+    "category": "Coding"
+  }
+}

@@ -332,6 +332,65 @@ class TestCopilotRoundTrip:
         assert not problems, "Copilot agent frontmatter issues:\n  " + "\n  ".join(problems[:20])
 
 
+# ── Native-install manifests (always run; these are committed source) ─────────
+
+
+class TestNativeInstallManifests:
+    """Committed registries each harness's native plugin manager installs from.
+
+    These are committed (not gitignored) so Codex + Cursor install straight from a clone;
+    they point at the source `plugins/` dirs (no duplicated skill/agent trees).
+    """
+
+    def test_gemini_extension_manifest(self):
+        path = WORKTREE / "gemini-extension.json"
+        assert path.is_file(), "gemini-extension.json missing"
+        data = json.loads(path.read_text())
+        assert data.get("contextFileName") == "AGENTS.md", (
+            "Gemini contextFileName must be AGENTS.md"
+        )
+        assert data.get("name"), "gemini-extension.json needs a name"
+        assert data.get("version"), "gemini-extension.json needs a version"
+
+    def test_codex_marketplace_lists_all_local_plugins(self):
+        marketplace = WORKTREE / ".agents" / "plugins" / "marketplace.json"
+        assert marketplace.is_file(), ".agents/plugins/marketplace.json missing"
+        data = json.loads(marketplace.read_text())
+        names = {p["name"] for p in data["plugins"]}
+        local = set(list_plugins())
+        assert local.issubset(names), f"Codex marketplace missing plugins: {local - names}"
+        for p in data["plugins"]:
+            assert p["source"]["path"] == f"./plugins/{p['name']}", (
+                f"{p['name']}: marketplace source.path must point at the source plugin dir"
+            )
+
+    def test_codex_per_plugin_manifests_valid(self):
+        problems = []
+        for name in list_plugins():
+            manifest = WORKTREE / "plugins" / name / ".codex-plugin" / "plugin.json"
+            if not manifest.is_file():
+                problems.append(f"{name}: plugins/{name}/.codex-plugin/plugin.json missing")
+                continue
+            try:
+                data = json.loads(manifest.read_text())
+            except json.JSONDecodeError as e:
+                problems.append(f"{name}: {e}")
+                continue
+            if data.get("name") != name:
+                problems.append(f"{name}: manifest name is {data.get('name')!r}")
+            if data.get("skills") != "./skills/":
+                problems.append(f"{name}: manifest skills is {data.get('skills')!r}")
+        assert not problems, "Codex per-plugin manifest issues:\n  " + "\n  ".join(problems[:20])
+
+    def test_claude_md_is_symlink_to_agents_md(self):
+        claude = WORKTREE / "CLAUDE.md"
+        assert claude.is_symlink(), "CLAUDE.md should be a symlink to AGENTS.md"
+        assert claude.readlink() == Path("AGENTS.md"), (
+            f"CLAUDE.md should point at AGENTS.md, points at {claude.readlink()}"
+        )
+        assert claude.read_text() == (WORKTREE / "AGENTS.md").read_text()
+
+
 # ── Context file size budgets (always run) ───────────────────────────────────
 
 

@@ -1,0 +1,16 @@
+{
+  "name": "kubernetes-operations",
+  "version": "1.2.3",
+  "description": "Kubernetes manifest generation, networking configuration, security policies, observability setup, GitOps workflows, and auto-scaling",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Kubernetes Operations",
+    "shortDescription": "Kubernetes manifest generation, networking configuration, security policies, observability setup, GitOps workflows\u2026",
+    "category": "Coding"
+  }
+}

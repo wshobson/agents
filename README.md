@@ -26,10 +26,19 @@ Pick your harness:
 
 ### Codex CLI · Cursor · OpenCode · Gemini CLI · Copilot
 
+Codex and Cursor install natively from the committed registries (which point at the source `plugins/`):
+
 ```bash
-gh repo clone wshobson/agents ~/agents
-cd ~/agents
-make generate HARNESS=<codex|cursor|opencode|gemini|copilot>
+npx codex-marketplace add wshobson/agents        # Codex; then install individual plugins
+# Cursor: add the marketplace, then `/plugin install <name>` (reads .cursor-plugin/ + source)
+```
+
+Gemini and OpenCode install via clone + generate (the transformed trees are gitignored):
+
+```bash
+gh repo clone wshobson/agents ~/agents && cd ~/agents
+make generate HARNESS=gemini && gemini extensions install .   # Gemini
+make install-opencode                                          # OpenCode (runs generate + symlinks)
 ```
 
 Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). Gemini-specific setup: [GEMINI.md](GEMINI.md) (also auto-loaded by Gemini CLI).
@@ -79,7 +88,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | Harness | Generates | Notes |
 |---|---|---|
 | **Claude Code** | (source-of-truth) | Native `marketplace.json` + `plugins/` |
-| **Codex CLI** | `.codex/skills/`, `.codex/agents/` | 8 KB skill cap respected; commands → skills |
+| **Codex CLI** | `.agents/plugins/marketplace.json` + `plugins/*/.codex-plugin/plugin.json` (committed); `.codex/skills/`, `.codex/agents/` (gitignored) | 8 KB skill cap respected; commands → skills |
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
@@ -90,6 +99,8 @@ make generate-all                        # all five
 make validate                            # structural checks
 make garden                              # drift / dead-link / cap detection
 ```
+
+Codex and Cursor install from source via committed registries; Gemini and OpenCode install via clone + `make`.
 
 [→ Full capability matrix and per-harness deep-dives](docs/harnesses.md)
 

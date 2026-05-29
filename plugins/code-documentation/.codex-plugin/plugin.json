@@ -1,0 +1,16 @@
+{
+  "name": "code-documentation",
+  "version": "1.2.1",
+  "description": "Documentation generation, code explanation, and technical writing with automated doc generation and tutorial creation",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Code Documentation",
+    "shortDescription": "Documentation generation, code explanation, and technical writing with automated doc generation and tutorial creation",
+    "category": "Coding"
+  }
+}

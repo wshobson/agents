@@ -1,0 +1,11 @@
+{
+  "name": "code-documentation",
+  "displayName": "Code Documentation",
+  "version": "1.2.1",
+  "description": "Documentation generation, code explanation, and technical writing with automated doc generation and tutorial creation",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

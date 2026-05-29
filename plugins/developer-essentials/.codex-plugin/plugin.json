@@ -1,0 +1,16 @@
+{
+  "name": "developer-essentials",
+  "version": "1.0.4",
+  "description": "Essential developer skills including Git workflows, SQL optimization, error handling, code review, E2E testing, authentication, debugging, and monorepo management",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Developer Essentials",
+    "shortDescription": "Essential developer skills including Git workflows, SQL optimization, error handling, code review, E2E testing\u2026",
+    "category": "Coding"
+  }
+}

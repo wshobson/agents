@@ -1,0 +1,16 @@
+{
+  "name": "c4-architecture",
+  "version": "1.0.1",
+  "description": "Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagram generation",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "C4 Architecture",
+    "shortDescription": "Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container\u2026",
+    "category": "Coding"
+  }
+}

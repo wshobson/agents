@@ -1,0 +1,16 @@
+{
+  "name": "distributed-debugging",
+  "version": "1.2.1",
+  "description": "Distributed system tracing and debugging across microservices",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Distributed Debugging",
+    "shortDescription": "Distributed system tracing and debugging across microservices",
+    "category": "Coding"
+  }
+}

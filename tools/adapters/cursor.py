@@ -56,7 +56,10 @@ def _normalize_author(author) -> dict | None:
         m = _AUTHOR_STRING_RE.match(author.strip())
         if not m:
             return {"name": author.strip(), "email": ""}
-        return {"name": m.group("name").strip(), "email": (m.group("email") or "").strip()}
+        return {
+            "name": m.group("name").strip(),
+            "email": (m.group("email") or "").strip(),
+        }
     if isinstance(author, (list, tuple)) and author:
         # Multi-author lists are legal in npm; Cursor wants a single author so pick the first.
         return _normalize_author(author[0])
@@ -163,8 +166,7 @@ class CursorAdapter(HarnessAdapter):
         if marketplace["plugins"]:
             top_manifest = {
                 "name": marketplace["name"],
-                "displayName": marketplace.get("metadata", {}).get("description")
-                or marketplace["name"],
+                "displayName": marketplace["name"].replace("-", " ").title(),
                 "version": marketplace.get("metadata", {}).get("version", "0.0.0"),
                 "description": marketplace.get("metadata", {}).get("description", ""),
                 "author": {
