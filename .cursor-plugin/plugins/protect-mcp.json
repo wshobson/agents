@@ -1,0 +1,11 @@
+{
+  "name": "protect-mcp",
+  "displayName": "Protect Mcp",
+  "version": "0.1.1",
+  "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 receipts independently verifiable offline.",
+  "author": {
+    "name": "Tom Farley",
+    "email": "tommy@scopeblind.com"
+  },
+  "license": "MIT"
+}

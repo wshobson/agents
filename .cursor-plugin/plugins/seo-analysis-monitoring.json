@@ -1,0 +1,11 @@
+{
+  "name": "seo-analysis-monitoring",
+  "displayName": "Seo Analysis Monitoring",
+  "version": "1.2.1",
+  "description": "Content freshness analysis, cannibalization detection, and authority building for SEO",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

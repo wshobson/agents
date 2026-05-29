@@ -4,9 +4,9 @@ Top-level architectural map for the claude-agents marketplace. Detail lives in [
 
 ## Invariants
 
-1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `.copilot/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. Never hand-edit generated files.
+1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/skills/`, `.codex/agents/`, `.opencode/`, `.copilot/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. The exception: small native-install registries (`.agents/plugins/marketplace.json`, `plugins/*/.codex-plugin/plugin.json`, `.cursor-plugin/`, `.cursor/rules/`, `gemini-extension.json`) are committed — they only point at the source `plugins/`, so the invariant holds. Never hand-edit generated files.
 
-2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. `CLAUDE.md` imports it via `@AGENTS.md`. Gemini CLI reads it via `.gemini/settings.json` `context.fileName`. Codex / Cursor / OpenCode read `AGENTS.md` natively.
+2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. Claude Code reads `CLAUDE.md`, a symlink to `AGENTS.md`. Gemini CLI reads it via `.gemini/settings.json` `context.fileName`. Codex / Cursor / OpenCode read `AGENTS.md` natively.
 
 3. **Adapters own per-harness mechanics; source content stays portable.** Authors write Claude-Code-quality markdown. Adapters under `tools/adapters/` handle every harness-specific transform (frontmatter rewriting, model-alias mapping, body-size caps, tool-name remapping). Source files never carry harness conditional logic.
 
@@ -19,7 +19,7 @@ Top-level architectural map for the claude-agents marketplace. Detail lives in [
 ```
 claude-agents/
 ├── AGENTS.md                       # Canonical context file (committed)
-├── CLAUDE.md                       # @AGENTS.md + Claude-specific addenda
+├── CLAUDE.md                       # symlink → AGENTS.md (Claude-specific addenda live in AGENTS.md)
 ├── ARCHITECTURE.md                 # This file
 ├── README.md                       # User-facing GitHub landing page
 ├── GEMINI.md                       # Gemini-specific setup (auto-loaded by Gemini CLI)
@@ -58,7 +58,7 @@ Each adapter consumes the canonical `plugins/` source and emits harness-native a
 
 | Adapter | Output | What it does |
 |---|---|---|
-| `codex.py` | `.codex/skills/`, `.codex/agents/*.toml` | Markdown → TOML transform, 8 KB body cap with `references/` overflow, sandbox_mode heuristic, collision detection |
+| `codex.py` | committed `.agents/plugins/marketplace.json` + `plugins/*/.codex-plugin/plugin.json`; gitignored `.codex/skills/`, `.codex/agents/*.toml` | Marketplace + per-plugin manifests (point at source `plugins/`); Markdown → TOML transform, 8 KB body cap with `references/` overflow, sandbox_mode heuristic, collision detection |
 | `cursor.py` | `.cursor-plugin/`, `.cursor/rules/*.mdc` | Marketplace manifests + hand-curated rules. Cursor reads `.claude/` directly for skills/agents |
 | `opencode.py` | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | Permission block from `tools:` allowlist (locked agents preserve intent); strict lowercase tool names; OpenCode-safe skill names |
 | `copilot.py` | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |

@@ -1,8 +1,10 @@
 <!--
 Thanks for the PR. A few quick orientation pointers:
-- AGENTS.md is the canonical context file (read by Codex/Cursor/OpenCode; CLAUDE.md
-  imports it via `@AGENTS.md`; Gemini reads it via `.gemini/settings.json`).
+- AGENTS.md is the canonical context file (read by Codex/Cursor/OpenCode; CLAUDE.md is a
+  symlink to AGENTS.md; Gemini reads it via `.gemini/settings.json`).
 - docs/authoring.md is the portable-content style guide.
+- If you touched plugin source, run `make generate-all` to refresh the committed
+  native-install registries (CI gates registry drift).
 - CI runs make validate STRICT=1, make garden, make test, make smoke-test, and the
   code-quality workflow (ruff/ty/markdownlint).
 -->

@@ -1,0 +1,16 @@
+{
+  "name": "team-collaboration",
+  "version": "1.2.1",
+  "description": "Team workflows, issue management, standup automation, and developer experience optimization",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Team Collaboration",
+    "shortDescription": "Team workflows, issue management, standup automation, and developer experience optimization",
+    "category": "Coding"
+  }
+}

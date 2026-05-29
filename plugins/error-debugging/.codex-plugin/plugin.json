@@ -1,0 +1,16 @@
+{
+  "name": "error-debugging",
+  "version": "1.2.1",
+  "description": "Error analysis, trace debugging, and multi-agent problem diagnosis",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Error Debugging",
+    "shortDescription": "Error analysis, trace debugging, and multi-agent problem diagnosis",
+    "category": "Coding"
+  }
+}

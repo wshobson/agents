@@ -1,0 +1,11 @@
+{
+  "name": "seo-content-creation",
+  "displayName": "Seo Content Creation",
+  "version": "1.2.1",
+  "description": "SEO content writing, planning, and quality auditing with E-E-A-T optimization",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

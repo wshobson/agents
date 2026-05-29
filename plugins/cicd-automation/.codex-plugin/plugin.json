@@ -1,0 +1,16 @@
+{
+  "name": "cicd-automation",
+  "version": "1.2.3",
+  "description": "CI/CD pipeline configuration, GitHub Actions/GitLab CI workflow setup, and automated deployment pipeline orchestration",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Cicd Automation",
+    "shortDescription": "CI/CD pipeline configuration, GitHub Actions/GitLab CI workflow setup, and automated deployment pipeline orchestration",
+    "category": "Coding"
+  }
+}

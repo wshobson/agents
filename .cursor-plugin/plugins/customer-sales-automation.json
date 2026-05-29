@@ -1,0 +1,11 @@
+{
+  "name": "customer-sales-automation",
+  "displayName": "Customer Sales Automation",
+  "version": "1.2.1",
+  "description": "Customer support workflow automation, sales pipeline management, email campaigns, and CRM integration",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

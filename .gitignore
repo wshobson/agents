@@ -25,20 +25,28 @@ node_modules
 .claude
 .worktrees/
 
-# Generated harness artifacts (all gitignored — regenerate via `make generate HARNESS=<x>`)
-# Source-of-truth lives under plugins/. See docs/harnesses.md.
+# Generated harness artifacts.
+#
+# MOST generated output is gitignored — source-of-truth lives only under plugins/.
+# Regenerate with `make generate-all`; never hand-edit generated files.
+#
+# EXCEPTION — small registries committed so Codex + Cursor install natively from a clone
+# (no build step). They point at the source plugins/ dirs; no skill/agent trees are
+# duplicated. NOT gitignored:
+#   .cursor-plugin/                       Cursor marketplace + per-plugin manifests
+#   .cursor/                              curated Cursor rules
+#   .agents/plugins/marketplace.json      Codex marketplace registry
+#   plugins/*/.codex-plugin/plugin.json   per-plugin Codex manifest (tracked under plugins/)
+# Gemini + OpenCode install via clone + `make` (their transformed trees below stay ignored).
+#
+# AGENTS.md is the committed canonical context file; Codex/Cursor/OpenCode read it
+# directly, Claude Code reads it via CLAUDE.md (a symlink to AGENTS.md), and Gemini CLI
+# reads it via gemini-extension.json (`contextFileName`) / .gemini/settings.json.
 
-# Codex CLI
+# Codex CLI — transformed skills/agents (local generation; the marketplace reads source)
 .codex/
-# AGENTS.md is committed as the canonical context file (per OpenAI harness engineering).
-# Codex/Cursor/OpenCode read it directly; Claude Code reads it via @AGENTS.md import
-# in CLAUDE.md; Gemini CLI reads it via .gemini/settings.json `context.fileName`.
 
-# Cursor
-.cursor/
-.cursor-plugin/
-
-# OpenCode
+# OpenCode — transformed trees (install via `make install-opencode`)
 .opencode/
 opencode.json
 
@@ -48,14 +56,15 @@ opencode.json
 # Copilot
 .copilot/
 
-# Gemini CLI (legacy paths kept for compatibility)
+# Gemini CLI extension trees (install via clone + `make generate HARNESS=gemini`)
 commands/**/*.toml
 /commands/
 /agents/
 /skills/
 
-# Local agent caches
+# Local agent caches (but NOT the committed Codex marketplace under .agents/plugins/)
 .agent/
-.agents/
+.agents/*
+!.agents/plugins/
 .antigravity/
 

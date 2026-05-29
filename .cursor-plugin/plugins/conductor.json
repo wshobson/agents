@@ -1,0 +1,11 @@
+{
+  "name": "conductor",
+  "displayName": "Conductor",
+  "version": "1.2.2",
+  "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context \u2192 Spec & Plan \u2192 Implement",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "Apache-2.0"
+}

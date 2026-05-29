@@ -1,0 +1,16 @@
+{
+  "name": "context-management",
+  "version": "1.2.1",
+  "description": "Context persistence, restoration, and long-running conversation management",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Context Management",
+    "shortDescription": "Context persistence, restoration, and long-running conversation management",
+    "category": "Coding"
+  }
+}

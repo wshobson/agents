@@ -1,0 +1,11 @@
+{
+  "name": "backend-api-security",
+  "displayName": "Backend Api Security",
+  "version": "1.2.1",
+  "description": "API security hardening, authentication implementation, authorization patterns, rate limiting, and input validation",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

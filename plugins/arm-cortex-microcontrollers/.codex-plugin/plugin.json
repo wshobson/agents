@@ -1,0 +1,16 @@
+{
+  "name": "arm-cortex-microcontrollers",
+  "version": "1.2.1",
+  "description": "ARM Cortex-M firmware development for Teensy, STM32, nRF52, and SAMD with peripheral drivers and memory safety patterns",
+  "skills": "./skills/",
+  "author": {
+    "name": "Ryan Snodgrass",
+    "url": "https://github.com/rsnodgrass"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Arm Cortex Microcontrollers",
+    "shortDescription": "ARM Cortex-M firmware development for Teensy, STM32, nRF52, and SAMD with peripheral drivers and memory safety patterns",
+    "category": "Coding"
+  }
+}

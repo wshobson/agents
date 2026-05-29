@@ -1,0 +1,11 @@
+{
+  "name": "jvm-languages",
+  "displayName": "Jvm Languages",
+  "version": "1.2.1",
+  "description": "JVM language development including Java, Scala, and C# with enterprise patterns and frameworks",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "database-cloud-optimization",
+  "version": "1.2.1",
+  "description": "Database query optimization, cloud cost optimization, and scalability improvements",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Database Cloud Optimization",
+    "shortDescription": "Database query optimization, cloud cost optimization, and scalability improvements",
+    "category": "Coding"
+  }
+}

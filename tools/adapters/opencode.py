@@ -9,6 +9,8 @@ skill names, so this adapter emits native OpenCode artifacts:
 3. `.opencode/skills/<plugin>-<skill>/SKILL.md` — skills with OpenCode-valid names.
 4. `opencode.json` at root with `"$schema": "https://opencode.ai/config.json"`.
 
+Install globally with `make install-opencode` (symlinks `.opencode/` -> ~/.config/opencode/).
+
 Sources: research summary by `a8a6c57414dc1ba23` synthesized into the plan.
 """
 

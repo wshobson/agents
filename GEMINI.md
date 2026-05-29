@@ -31,7 +31,7 @@ gemini extensions install https://github.com/major7apps/pensyve
 | Capability | Claude Code | Gemini CLI |
 |---|---|---|
 | Plugin installation | `/plugin install` | `gemini extensions install <url>` |
-| Context file | reads CLAUDE.md natively | reads via `.gemini/settings.json` redirect to AGENTS.md |
+| Context file | reads `CLAUDE.md` (a symlink to `AGENTS.md`) | reads via `.gemini/settings.json` redirect to AGENTS.md |
 | Per-agent tool allowlist | `tools:` (always) | `tools:` (honored — remapped to Gemini-native names) |
 | Skill / agent discovery | native | native (skills/, agents/ at extension root) |
 | Model assignment | per-agent | session-level (override via `model:` frontmatter) |

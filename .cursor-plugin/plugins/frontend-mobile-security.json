@@ -1,0 +1,11 @@
+{
+  "name": "frontend-mobile-security",
+  "displayName": "Frontend Mobile Security",
+  "version": "1.2.1",
+  "description": "XSS prevention, CSRF protection, content security policies, mobile app security, and secure storage patterns",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

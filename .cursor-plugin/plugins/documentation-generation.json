@@ -1,0 +1,11 @@
+{
+  "name": "documentation-generation",
+  "displayName": "Documentation Generation",
+  "version": "1.2.3",
+  "description": "OpenAPI specification generation, Mermaid diagram creation, tutorial writing, API reference documentation",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

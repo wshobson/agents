@@ -2,7 +2,7 @@
 
 Production-ready agentic-workflow building blocks: **83 plugins** (81 local + 2 external), **191 agents**, **155 skills**, **102 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, and Gemini CLI from a single Markdown source.
 
-This file is the canonical context file. Codex / Cursor / OpenCode read it directly. Claude Code reads it via `@AGENTS.md` import in `CLAUDE.md`. Gemini CLI reads it via `.gemini/settings.json` (`context.fileName`).
+This file is the canonical context file. Codex / Cursor / OpenCode read it directly. Claude Code reads it via `CLAUDE.md`, a symlink to this file. Gemini CLI reads it via `gemini-extension.json` (`contextFileName`) / `.gemini/settings.json`.
 
 > **Read this file like a table of contents.** Detail lives in `docs/`. Authoring conventions live in `docs/authoring.md`. Per-harness setup and capability deltas live in [`docs/harnesses.md`](docs/harnesses.md). Gemini-specific setup is in `GEMINI.md` (also auto-loaded by Gemini CLI). This file should never grow beyond ~150 lines (per OpenAI's [harness-engineering](https://openai.com/index/harness-engineering/) practice).
 
@@ -41,15 +41,14 @@ CI (`.github/workflows/validate.yml`) runs all four on every PR plus installs Op
 ## Regenerating per-harness artifacts
 
 ```bash
-make generate HARNESS=codex      # emits .codex/skills, .codex/agents
-make generate HARNESS=cursor     # emits .cursor-plugin/, .cursor/rules/
-make generate HARNESS=opencode   # emits .opencode/agents/, .opencode/commands/, .opencode/skills/
-make generate HARNESS=gemini     # emits skills/, agents/, commands/ at extension root
+make generate HARNESS=codex      # .codex/skills, .codex/agents, .codex/plugins/<p>/, .agents/plugins/marketplace.json
+make generate HARNESS=cursor     # .cursor-plugin/{marketplace,plugin}.json, .cursor/rules/
+make generate HARNESS=opencode   # .opencode/{skills,agents,commands,plugins}/, opencode.json
+make generate HARNESS=gemini     # skills/, agents/, commands/ at extension root
 make generate-all                # all four
-make install-opencode            # symlink generated OpenCode artifacts into global config
 ```
 
-Source-of-truth lives only under `plugins/`. Generated artifacts are gitignored — never hand-edit them.
+Generated artifacts are **committed** so each harness installs natively from a clone / GitHub URL (native-install commands in [`docs/harnesses.md`](docs/harnesses.md)). Run `make generate-all` before committing source changes — CI fails on drift. Source-of-truth lives only under `plugins/`; never hand-edit generated files.
 
 ## Skills (cross-harness)
 

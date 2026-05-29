@@ -1,0 +1,16 @@
+{
+  "name": "brand-landingpage",
+  "version": "1.0.1",
+  "description": "Guides developers from brand discovery through iterative design to deployment-ready HTML via Stitch.",
+  "skills": "./skills/",
+  "author": {
+    "name": "Travis D. Elliott",
+    "url": "https://github.com/travis-d-elliott"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Brand Landingpage",
+    "shortDescription": "Guides developers from brand discovery through iterative design to deployment-ready HTML via Stitch.",
+    "category": "Coding"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "quantitative-trading",
+  "version": "1.2.3",
+  "description": "Quantitative analysis, algorithmic trading strategies, financial modeling, portfolio risk management, and backtesting",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Quantitative Trading",
+    "shortDescription": "Quantitative analysis, algorithmic trading strategies, financial modeling, portfolio risk management, and backtesting",
+    "category": "Coding"
+  }
+}

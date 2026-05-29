@@ -1,0 +1,16 @@
+{
+  "name": "seo-technical-optimization",
+  "version": "1.2.1",
+  "description": "Technical SEO optimization including meta tags, keywords, structure, and featured snippets",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Seo Technical Optimization",
+    "shortDescription": "Technical SEO optimization including meta tags, keywords, structure, and featured snippets",
+    "category": "Coding"
+  }
+}

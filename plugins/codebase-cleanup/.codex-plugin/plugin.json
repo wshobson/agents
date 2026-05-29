@@ -1,0 +1,16 @@
+{
+  "name": "codebase-cleanup",
+  "version": "1.2.1",
+  "description": "Technical debt reduction, dependency updates, and code refactoring automation",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Codebase Cleanup",
+    "shortDescription": "Technical debt reduction, dependency updates, and code refactoring automation",
+    "category": "Coding"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "javascript-typescript",
+  "displayName": "Javascript Typescript",
+  "version": "1.2.3",
+  "description": "JavaScript and TypeScript development with ES6+, Node.js, React, and modern web frameworks",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}
