@@ -19,7 +19,7 @@ Pick your harness:
 
 ```bash
 /plugin marketplace add wshobson/agents
-/plugin install python-development          # or any of 83 plugins
+/plugin install python-development          # or any of 84 plugins
 ```
 
 [→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
@@ -47,9 +47,9 @@ Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). G
 
 | | Count | What it is |
 |---|---:|---|
-| **Plugins** | 83 | Granular, single-purpose installable units (81 local + 2 external via git-subdir) |
-| **Agents** | 191 | Domain experts (architecture, languages, infra, security, data, ML, docs, business, SEO) |
-| **Skills** | 155 | Modular knowledge packages with progressive disclosure (load when activated) |
+| **Plugins** | 84 | Granular, single-purpose installable units (82 local + 2 external via git-subdir) |
+| **Agents** | 192 | Domain experts (architecture, languages, infra, security, data, ML, docs, business, SEO) |
+| **Skills** | 156 | Modular knowledge packages with progressive disclosure (load when activated) |
 | **Commands** | 102 | Slash commands: scaffolding, security scans, test gen, infrastructure setup |
 | **Orchestrators** | 16 | Multi-agent coordination workflows (full-stack, security, ML, incident response) |
 
@@ -124,9 +124,9 @@ uv run plugin-eval certify path/to/skill
 
 Detail lives in `docs/`. Read in this order:
 
-- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 83 plugins
-- **[docs/agents.md](docs/agents.md)** — all 191 agents by category
-- **[docs/agent-skills.md](docs/agent-skills.md)** — 155 skills with progressive disclosure
+- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 84 plugins
+- **[docs/agents.md](docs/agents.md)** — all 192 agents by category
+- **[docs/agent-skills.md](docs/agent-skills.md)** — 156 skills with progressive disclosure
 - **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
 - **[docs/architecture.md](docs/architecture.md)** — design principles
 - **[docs/harnesses.md](docs/harnesses.md)** — cross-harness capability matrix

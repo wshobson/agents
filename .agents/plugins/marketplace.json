@@ -890,6 +890,18 @@
       "category": "Coding"
     },
     {
+      "name": "social-publishing",
+      "source": {
+        "source": "local",
+        "path": "./plugins/social-publishing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "startup-business-analyst",
       "source": {
         "source": "local",

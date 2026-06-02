@@ -1,0 +1,12 @@
+{
+  "name": "social-publishing",
+  "displayName": "Social Publishing",
+  "version": "1.0.0",
+  "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw \u2014 one workspace API key covers everything",
+  "author": {
+    "name": "ndesv21",
+    "email": ""
+  },
+  "homepage": "https://getsocialclaw.com",
+  "license": "MIT"
+}
