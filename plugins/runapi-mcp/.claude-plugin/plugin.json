@@ -1,0 +1,9 @@
+{
+  "name": "runapi",
+  "description": "RunAPI model discovery, pricing lookup, media task creation, polling, balance checks, and LLM chat for Claude Code.",
+  "version": "0.1.3",
+  "author": {
+    "name": "RunAPI",
+    "url": "https://runapi.ai"
+  }
+}
