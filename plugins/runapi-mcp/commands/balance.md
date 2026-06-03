@@ -1,6 +1,7 @@
 ---
 description: >-
   Check the authenticated RunAPI account balance and spending metrics.
+argument-hint: ""
 ---
 
 # RunAPI Balance

@@ -2,6 +2,7 @@
 description: >-
   Guide the user through RunAPI API key setup for Claude Code and other MCP
   hosts.
+argument-hint: ""
 ---
 
 # RunAPI Setup
