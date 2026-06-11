@@ -1,0 +1,17 @@
+{
+  "name": "file-conversion",
+  "version": "1.0.0",
+  "description": "Convert files between 999 routes \u2014 PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI \u2014 via the free ChangeThisFile API. MCP-aware with a zero-dependency script fallback; no API key required.",
+  "skills": "./skills/",
+  "author": {
+    "name": "Aadil Razvi",
+    "url": "https://changethisfile.com"
+  },
+  "homepage": "https://github.com/aadilr/changethisfile-mcp",
+  "license": "MIT",
+  "interface": {
+    "displayName": "File Conversion",
+    "shortDescription": "Convert files between 999 routes \u2014 PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI \u2014 via the free\u2026",
+    "category": "Coding"
+  }
+}
