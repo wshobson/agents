@@ -1,0 +1,16 @@
+{
+  "name": "before-you-build",
+  "version": "0.1.1",
+  "description": "Pre-build product risk review for founders, product teams, and AI-assisted builders before implementation starts.",
+  "skills": "./skills/",
+  "author": {
+    "name": "bin1874",
+    "url": "https://github.com/bin1874/before-you-build-skill"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Before You Build",
+    "shortDescription": "Pre-build product risk review for founders, product teams, and AI-assisted builders before implementation starts.",
+    "category": "Coding"
+  }
+}
