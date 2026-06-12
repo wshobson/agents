@@ -1147,18 +1147,6 @@
         "multi-agent",
         "dev-workflow"
       ]
-    },
-    {
-      "name": "skill-forge-essentials",
-      "source": "./plugins/skill-forge-essentials",
-      "description": "Three behavioral skills addressing AI-specific failure patterns: hidden code debt from agent generation, context compaction amnesia via behavioral self-enforcement, and imprecise Design Mode edits",
-      "version": "1.0.0",
-      "author": {
-        "name": "Adit Jain",
-        "url": "https://github.com/Adit-Jain-srm"
-      },
-      "license": "MIT",
-      "category": "code-quality"
     }
   ]
 }
