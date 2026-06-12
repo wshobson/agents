@@ -1,7 +1,7 @@
 ---
 description: >-
   List and compare RunAPI models by modality, service, or action.
-argument-hint: [modality|service|action]
+argument-hint: "[modality|service|action]"
 ---
 
 # RunAPI Models
@@ -17,4 +17,3 @@ List current RunAPI models from the embedded catalog.
 5. If the user asks about cost, call `mcp__runapi__check_pricing`.
 
 Keep output concise.
-Do not list hidden infrastructure providers.

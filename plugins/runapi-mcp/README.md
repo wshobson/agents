@@ -19,7 +19,7 @@ Or add manually to `.mcp.json`:
   "mcpServers": {
     "runapi": {
       "command": "npx",
-      "args": ["-y", "@runapi.ai/mcp"]
+      "args": ["-y", "@runapi.ai/mcp@0.1.8"]
     }
   }
 }

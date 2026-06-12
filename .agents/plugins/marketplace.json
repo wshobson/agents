@@ -794,6 +794,18 @@
       "category": "Coding"
     },
     {
+      "name": "runapi-mcp",
+      "source": {
+        "source": "local",
+        "path": "./plugins/runapi-mcp"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "ai-ml"
+    },
+    {
       "name": "security-compliance",
       "source": {
         "source": "local",
