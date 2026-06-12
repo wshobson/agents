@@ -37,7 +37,7 @@ After code generation, scan for these AI-specific debt patterns:
    - In React: does every addEventListener have a removeEventListener in cleanup?
 
 3. **EDGE CASES** - What inputs break this?
-   - Empty array/string? null/undefined? Very large input? Unicode? Concurrent calls?
+   - Empty array/string? null/undefined? Multi-MB input? Unicode? Concurrent calls?
    - Does the code assume the happy path? (AI almost always does)
 
 4. **HALLUCINATED DEPS** - Do all imports actually exist?
