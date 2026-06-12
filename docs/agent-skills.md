@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **156 local specialized skills** across 41 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **158 local specialized skills** across 43 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -176,6 +176,12 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | ------------------------ | ---------------------------------------------------------------------------- |
 | **kpi-dashboard-design** | Design executive dashboards with actionable KPIs and drill-down capabilities |
 | **data-storytelling**    | Transform data insights into compelling narratives for stakeholders          |
+
+### Before You Build (1 skill)
+
+| Skill                | Description                                                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **before-you-build** | Review demand, positioning, monetization, retention, trust, distribution, and feature-adoption risk before implementation starts |
 
 ### Data Engineering (4 skills)
 
@@ -386,7 +392,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 156 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
+All 158 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause
