@@ -12,7 +12,7 @@ description: >-
 
 ## Overview
 
-Long sessions corrupt silently. Context compaction drops instructions without warning. Hooks don't fix it (confirmed by multiple developers on GitHub issues #19471, #9796, #64171). This skill prevents both through behavioral self-enforcement: monitor health, anchor critical rules through compaction, split before damage occurs. No packages, no databases - pure behavioral enforcement that works in every harness.
+Long sessions corrupt silently. Context compaction drops instructions unannounced. Hooks don't fix it (confirmed by multiple developers on GitHub issues #19471, #9796, #64171). This skill prevents both through behavioral self-enforcement: monitor health, anchor critical rules through compaction, split before damage occurs. No packages, no databases - pure behavioral enforcement that works in every harness.
 
 ## When to Use
 
