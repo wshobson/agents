@@ -54,7 +54,7 @@ _CAMEL_TOOL_PATTERN = re.compile(
 _TOOL_PROSE_PATTERN = re.compile(rf"(?i:\bthe)\s+(?:`)?({_TOOL_ALTERNATION})(?:`)?\s+tool\b")
 
 # Bare model aliases that don't map cleanly (Cursor/OpenCode/Gemini need full IDs)
-_BARE_MODEL_ALIAS_PATTERN = re.compile(r"^(opus|sonnet|haiku)$")
+_BARE_MODEL_ALIAS_PATTERN = re.compile(r"^(fable|opus|sonnet|haiku)$")
 
 # Context file line cap (per harness-engineering principle)
 _CONTEXT_FILE_LINE_CAP = 150

@@ -69,11 +69,12 @@ plugins/python-development/
 └── skills/             # 16 specialized skills (async, testing, packaging, …)
 ```
 
-Three-tier model strategy:
+Tiered model strategy:
 
 | Tier | Model | Use |
 |---|---|---|
-| 1 | Opus 4.7 | Architecture, security, code review, production-critical |
+| 0 | Fable 5  | Longest-horizon autonomous work — large migrations, multi-hour runs (opt-in, premium cost) |
+| 1 | Opus     | Architecture, security, code review, production-critical |
 | 2 | inherit  | User-chosen — backend, frontend, AI/ML, specialized |
 | 3 | Sonnet   | Docs, testing, debugging, API references |
 | 4 | Haiku    | Fast operational tasks, SEO, deployment, content |
@@ -92,7 +93,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Gemini CLI** | `skills/`, `agents/`, `commands/` (TOML) | Native skills + subagents (April 2026 spec) |
-| **Copilot** | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to GPT-5 family |
+| **Copilot** | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to native Claude models |
 
 ```bash
 make generate-all                        # all five

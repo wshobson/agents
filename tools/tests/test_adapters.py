@@ -76,8 +76,8 @@ class TestCodexAdapter:
 
         parsed = tomllib.loads(content)
         assert parsed["name"] == "demo__greeter"
-        # opus is mapped to gpt-5
-        assert parsed["model"] == "gpt-5"
+        # opus is mapped to gpt-5.5
+        assert parsed["model"] == "gpt-5.5"
         # tools: Read, Grep -> read-only-ish set -> sandbox_mode = read-only
         assert parsed["sandbox_mode"] == "read-only"
         # color: blue should NOT be present
@@ -561,7 +561,7 @@ class TestOpenCodeAdapter:
         assert fm["name"] == "demo__greeter"
         assert fm["mode"] == "subagent"
         # opus -> full provider/model-id
-        assert fm["model"] == "anthropic/claude-opus-4-7"
+        assert fm["model"] == "anthropic/claude-opus-4-8"
 
     def test_permission_block_denies_unlisted_tools(
         self, synthetic_plugin: PluginSource, output_root: Path
@@ -945,7 +945,7 @@ class TestCopilotAdapter:
         fm, body = parse_frontmatter(agent_path.read_text())
         assert fm["name"] == "demo__greeter"
         assert fm["description"] == "Use when delegating greetings."
-        assert fm["model"] == "gpt-5"
+        assert fm["model"] == "claude-opus-4.8"
         assert fm["tools"] == ["read", "search"]
         assert "color" not in fm
 
@@ -1014,10 +1014,10 @@ class TestCopilotAdapter:
         CopilotAdapter(output_root=output_root).emit_plugin(plugin)
 
         expected = {
-            "sonnet-agent": "gpt-5-mini",
-            "haiku-agent": "gpt-5-nano",
-            "inherit-agent": "gpt-5",
-            "default-model": "gpt-5",
+            "sonnet-agent": "claude-sonnet-4.6",
+            "haiku-agent": "claude-haiku-4.5",
+            "inherit-agent": "claude-sonnet-4.6",
+            "default-model": "claude-sonnet-4.6",
         }
         for name, exp_model in expected.items():
             fm, _ = parse_frontmatter(
@@ -1099,7 +1099,7 @@ class TestCopilotAdapter:
         fm, body = parse_frontmatter(content)
         assert fm["name"] == "demo__advisory"
         assert fm["description"] == "Use when advising."
-        assert fm["model"] == "gpt-5-mini"
+        assert fm["model"] == "claude-sonnet-4.6"
         assert "tools:" in content
 
     def test_no_tools_field(self, tmp_path: Path, output_root: Path):
@@ -1124,7 +1124,7 @@ class TestCopilotAdapter:
         fm, body = parse_frontmatter(content)
         assert fm["name"] == "demo__unrestricted"
         assert fm["description"] == "Use when unrestricted."
-        assert fm["model"] == "gpt-5"
+        assert fm["model"] == "claude-opus-4.8"
         assert "tools" not in fm
 
 
@@ -1200,5 +1200,5 @@ class TestCapabilities:
         from tools.adapters.capabilities import MODEL_ALIASES, supported_harnesses
 
         for harness in supported_harnesses():
-            for alias in ("opus", "sonnet", "haiku", "inherit"):
+            for alias in ("fable", "opus", "sonnet", "haiku", "inherit"):
                 assert alias in MODEL_ALIASES[harness], f"{harness} missing {alias}"

@@ -66,7 +66,7 @@ Top-level `skills/` is Gemini output; do not use it for OpenCode installs.
 
 192 subagents under `plugins/*/agents/<name>.md`. Per-harness transpilation:
 
-- **Codex**: `.codex/agents/<plugin>__<agent>.toml` (drop `tools:`, map model alias to GPT-5 family, infer `sandbox_mode`)
+- **Codex**: `.codex/agents/<plugin>__<agent>.toml` (drop `tools:`, map model alias to the GPT-5.x family, infer `sandbox_mode`)
 - **OpenCode**: `.opencode/agents/<plugin>__<agent>.md` with `mode: subagent` + `permission:` block (locked agents — those with source `tools: []` — get deny-everything except base `skill`/`task`)
 - **Gemini**: `agents/<plugin>__<agent>.md` (April 2026 subagent spec)
 - **Cursor**: reads `.claude/agents/` directly

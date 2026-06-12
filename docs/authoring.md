@@ -41,7 +41,7 @@ to invoke your skill/agent.
 
 ### Talk about actions, not tools
 
-Codex's underlying GPT-5 doesn't have a `Read`/`Edit`/`Bash` vocabulary — the model picks
+Codex's underlying GPT-5.x models don't have a `Read`/`Edit`/`Bash` vocabulary — the model picks
 the native tool from the action you describe. OpenCode is strict about lowercase
 (`read`, `bash`). Cursor's agent has its own vocabulary.
 
@@ -112,13 +112,28 @@ clean naming — pick distinct names for skill/command pairs within a plugin.
 
 | Source field | Codex | Cursor | OpenCode | Gemini | Copilot |
 |---|---|---|---|---|---|---|
-| `model: opus` | `gpt-5` | `inherit` | `anthropic/claude-opus-4-7` | `gemini-2.5-pro` | `gpt-5` |
-| `model: sonnet` | `gpt-5-mini` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `gpt-5-mini` |
-| `model: haiku` | `gpt-5-nano` | `inherit` | `anthropic/claude-haiku-4-5-20251001` | `gemini-2.5-flash` | `gpt-5-nano` |
-| `model: inherit` | `gpt-5` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `gpt-5` |
+| `model: fable` | `gpt-5.5` | `inherit` | `anthropic/claude-fable-5` | `gemini-2.5-pro` | `claude-opus-4.8` |
+| `model: opus` | `gpt-5.5` | `inherit` | `anthropic/claude-opus-4-8` | `gemini-2.5-pro` | `claude-opus-4.8` |
+| `model: sonnet` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `claude-sonnet-4.6` |
+| `model: haiku` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-haiku-4-5` | `gemini-2.5-flash` | `claude-haiku-4.5` |
+| `model: inherit` | `gpt-5.5` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `claude-sonnet-4.6` |
 
 The adapter handles mapping. The `BARE_MODEL_ALIAS` lint is informational — it just notes
 that the mapping is implicit. If you want explicit, use `inherit`.
+
+Mapping targets live in `tools/adapters/capabilities.py` (`MODEL_ALIASES`) and track each
+harness's published catalog (last verified June 2026). Copilot CLI serves Claude models
+natively, so its aliases map Claude → Claude using Copilot's dotted IDs. Gemini stays on
+the GA `gemini-2.5-*` family because Gemini 3.x ships only access-gated `-preview` IDs.
+
+`fable` (Claude Fable 5) is the tier above `opus`, reserved for the longest-horizon
+autonomous work. It is native in Claude Code (v2.1.170+, opt-in, ~2.6× Opus effective
+cost); other harnesses map it to their top available model. Tag an agent `fable` only
+when Opus demonstrably needs multiple attempts at the task. Avoid it for
+security-analysis agents — Fable 5's cyber/bio classifiers fall back to Opus there
+anyway. Prefer stating goals over step-by-step scaffolding in fable-tier agent bodies,
+and never instruct the model to echo its reasoning (triggers `reasoning_extraction`
+refusals).
 
 ## Skills layout for progressive disclosure
 
