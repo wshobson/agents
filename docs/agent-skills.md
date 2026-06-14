@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **157 local specialized skills** across 42 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following the [Agent Skills Specification](https://agentskills.io/specification). This plugin ecosystem includes **157 local specialized skills** across 42 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 

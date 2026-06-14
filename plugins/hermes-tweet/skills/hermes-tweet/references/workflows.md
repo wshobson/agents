@@ -4,8 +4,8 @@ Use these patterns when the request is broader than one route lookup.
 
 ## Social Listening
 
-1. Use `tweet_explore` for search, trend, radar, and monitor routes.
-2. Prefer `tweet_read` routes until the user requests an account change.
+1. Search for search, trend, radar, and monitor routes with `tweet_explore`.
+2. Read through `tweet_read` routes until the user requests an account change.
 3. Group results by theme, account, link, and recency.
 4. Recommend a follow-up read route when the signal is incomplete.
 

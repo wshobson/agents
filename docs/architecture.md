@@ -176,7 +176,7 @@ Skills use a three-tier architecture for token efficiency:
 
 ### Specification Compliance
 
-All skills follow the [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md):
+All skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 ```yaml
 ---
