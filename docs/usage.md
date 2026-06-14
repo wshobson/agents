@@ -385,11 +385,11 @@ User: "Implement Kubernetes deployment with Helm"
 → Result: Production-grade K8s manifests with Helm charts
 ```
 
-See [Agent Skills](./agent-skills.md) for details on the 156 specialized skills.
+See [Agent Skills](./agent-skills.md) for details on the 157 specialized skills.
 
 ## See Also
 
 - [Agent Skills](./agent-skills.md) - Specialized knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 84 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 85 marketplace plugins
 - [Architecture](./architecture.md) - Design principles

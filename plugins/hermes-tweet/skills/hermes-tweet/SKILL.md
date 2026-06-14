@@ -62,9 +62,9 @@ Ask for these inputs before selecting routes:
 
 ## Workflow
 
-1. Start with `tweet_explore` to find matching catalog routes.
-2. Use `tweet_read` for read-only X/Twitter data.
-3. Use `tweet_action` only after the operator explicitly approves the action.
+1. Search the bundled endpoint catalog with `tweet_explore` to find matching routes.
+2. Read X/Twitter data through `tweet_read` after selecting a catalog route.
+3. Execute account-changing routes with `tweet_action` only after explicit approval.
 4. Keep API keys in environment variables or the Hermes runtime env file.
 5. Do not paste credentials into prompts, issues, PR comments, or tool inputs.
 6. Load [workflow patterns](references/workflows.md) when the user asks for a
