@@ -2,7 +2,7 @@
   "name": "claude-code-workflows",
   "displayName": "Claude Code Workflows",
   "version": "1.7.1",
-  "description": "Production-ready workflow orchestration with 84 marketplace plugins, 192 local specialized agents, and 156 local skills - optimized for granular installation and minimal token usage",
+  "description": "Production-ready workflow orchestration with 85 marketplace plugins, 192 local specialized agents, and 157 local skills - optimized for granular installation and minimal token usage",
   "author": {
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"

@@ -566,6 +566,18 @@
       "category": "Coding"
     },
     {
+      "name": "hermes-tweet",
+      "source": {
+        "source": "local",
+        "path": "./plugins/hermes-tweet"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "hr-legal-compliance",
       "source": {
         "source": "local",

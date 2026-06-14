@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **156 local specialized skills** across 41 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **157 local specialized skills** across 42 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -341,6 +341,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | Skill                  | Description                                                                                                              |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **social-publishing**  | Schedule and publish social media posts across 13 platforms via the SocialClaw API                                       |
+| **hermes-tweet**       | Operate Hermes Tweet for X/Twitter research, read routes, and approval-gated action workflows                            |
 
 ## How Skills Work
 
