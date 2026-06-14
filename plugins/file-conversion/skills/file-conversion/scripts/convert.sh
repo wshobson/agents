@@ -30,29 +30,39 @@ case "$TARGET" in
 esac
 BASENAME=$(basename "$IN")
 SRC=$(printf '%s' "${BASENAME##*.}" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9')
+# Reject traversal AND absolute / home-relative paths in a USER-SUPPLIED output
+# path — OUT is written with `curl -o`, so an unvalidated path could clobber
+# arbitrary files. Only relative, non-traversing paths are accepted. (The
+# auto-derived default below safely inherits the input file's own directory.)
+if [ -n "$OUT" ]; then
+  case "$OUT" in
+    /*|~*|*../*|*/..|..) echo "error: output path must be relative and must not contain '..': $OUT" >&2; exit 2 ;;
+  esac
+fi
 [ -z "$OUT" ] && OUT="${IN%.*}.${TARGET}"
 
-# Reject path traversal in a user-supplied output path — OUT is written with
-# `curl -o`, so an unvalidated "../../etc/passwd" could clobber arbitrary files.
-case "$OUT" in
-  *../*|*/..|..) echo "error: output path must not contain '..': $OUT" >&2; exit 2 ;;
-esac
-
-# base64 -w0 is GNU; macOS base64 has no -w flag
-B64=$(base64 -w0 < "$IN" 2>/dev/null || base64 < "$IN" | tr -d '\n')
-
+B64_FILE=$(mktemp)
 REQ_FILE=$(mktemp)
 RESP_FILE=$(mktemp)
-trap 'rm -f "$REQ_FILE" "$RESP_FILE"' EXIT
+trap 'rm -f "$B64_FILE" "$REQ_FILE" "$RESP_FILE"' EXIT
+
+# Encode to a file (not a shell variable / argv) so multi-MB payloads never hit
+# the OS per-argument limit. base64 -w0 is GNU; macOS base64 has no -w flag.
+base64 -w0 < "$IN" > "$B64_FILE" 2>/dev/null || base64 < "$IN" | tr -d '\n' > "$B64_FILE"
 
 # Build the JSON-RPC payload with jq so the filename (arbitrary user input) is
 # escaped correctly — newlines, control chars, quotes, backslashes. Falls back
 # to a strict printable-ASCII sanitization of the filename if jq is unavailable.
 if command -v jq >/dev/null 2>&1; then
-  jq -n --arg b64 "$B64" --arg src "$SRC" --arg tgt "$TARGET" --arg fn "$BASENAME" \
-    '{jsonrpc:"2.0",id:1,method:"tools/call",params:{name:"convert_file",arguments:{base64_content:$b64,source_format:$src,target_format:$tgt,filename:$fn}}}' \
+  # --rawfile reads the base64 from a file, avoiding the ~128KB single-argument
+  # limit that `--arg b64 "$B64"` hits on inputs larger than ~96KB.
+  jq -n --rawfile b64 "$B64_FILE" --arg src "$SRC" --arg tgt "$TARGET" --arg fn "$BASENAME" \
+    '{jsonrpc:"2.0",id:1,method:"tools/call",params:{name:"convert_file",arguments:{base64_content:($b64|rtrimstr("\n")),source_format:$src,target_format:$tgt,filename:$fn}}}' \
     > "$REQ_FILE"
 else
+  # printf is a shell builtin, so the large payload here is not subject to argv
+  # limits; read it back from the encoded file.
+  B64=$(cat "$B64_FILE")
   SAFE_FN=$(printf '%s' "$BASENAME" | tr -d '"\\' | LC_ALL=C tr -cd '[:print:]')
   printf '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"convert_file","arguments":{"base64_content":"%s","source_format":"%s","target_format":"%s","filename":"%s"}}}' \
     "$B64" "$SRC" "$TARGET" "$SAFE_FN" > "$REQ_FILE"
