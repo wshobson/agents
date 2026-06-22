@@ -102,6 +102,19 @@
       "category": "workflows"
     },
     {
+      "name": "operating-kit",
+      "source": "./plugins/operating-kit",
+      "description": "Portable operating method: session lifecycle agents (session-start/end), pre-ship code review, deploy with live verification, and production log health check. All agents use {{placeholders}} that adapt to your project. MIT.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Sharrmavishal",
+        "url": "https://github.com/Sharrmavishal"
+      },
+      "homepage": "https://github.com/Sharrmavishal/operating-kit",
+      "license": "MIT",
+      "category": "workflow"
+    },
+    {
       "name": "unit-testing",
       "source": "./plugins/unit-testing",
       "description": "Unit and integration test automation for Python and JavaScript with debugging support",
