@@ -23,10 +23,8 @@ Infer from the conversation (or ask) what actually changed:
 ## Steps
 
 ### 1: Read current files
-```
-Read: {{STATE_DOC}}
-Read: {{MEMORY_INDEX}}
-```
+
+Open and review both the canonical state file (`{{STATE_DOC}}`) and the memory index (`{{MEMORY_INDEX}}`) to understand what is currently recorded before making any changes.
 
 ### 2: Identify only what's now stale
 Pinpoint the specific fields that changed this session. Do not touch sections that didn't.

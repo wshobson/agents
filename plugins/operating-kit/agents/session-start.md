@@ -14,11 +14,12 @@ and `{{LIVE_CHECK}}` at the cheapest live confirmation.
 ## Steps
 
 ### 1: Read the canonical state doc
-```
-Read: {{STATE_DOC}}
-```
+
+Open and read `{{STATE_DOC}}` in full. Note the current versions, deployed revision, open issues, and what is next.
 
 ### 2: Verify live state (don't trust the doc alone)
+
+Run the live check to confirm the system matches what the doc says:
 ```bash
 {{LIVE_CHECK}}
 ```
