@@ -57,3 +57,31 @@ class TestCLI:
         )
         assert result.exit_code == 0
         assert "warning" not in result.stderr.lower()
+
+
+from unittest.mock import patch
+from plugin_eval.models import (
+    CompositeResult, Depth, EvalConfig, LayerResult, PluginEvalResult,
+)
+
+
+def test_score_warns_when_judge_unmeasured(sample_skill_dir, tmp_path):
+    fake = PluginEvalResult(
+        plugin_path=str(sample_skill_dir),
+        timestamp="t",
+        config=EvalConfig(depth=Depth.STANDARD),
+        layers=[
+            LayerResult(layer="static", score=0.8, sub_scores={}),
+            LayerResult(layer="judge", score=0.0, sub_scores={},
+                        metadata={"unmeasured": ["triggering_accuracy", "output_quality"]}),
+        ],
+        composite=CompositeResult(score=60.0),
+    )
+    with patch("plugin_eval.cli.EvalEngine") as Eng:
+        Eng.return_value.evaluate_skill.return_value = fake
+        result = CliRunner().invoke(
+            app, ["score", str(sample_skill_dir), "--output", "json"]
+        )
+    assert result.exit_code == 0
+    assert "judge" in result.stderr.lower()
+    assert "unmeasured" in result.stderr.lower() or "could not" in result.stderr.lower()

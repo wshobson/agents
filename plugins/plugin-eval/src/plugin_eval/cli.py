@@ -77,6 +77,17 @@ def _run_score(
         # Default: markdown
         typer.echo(reporter.to_markdown(result))
 
+    judge_layer = next((lr for lr in result.layers if lr.layer == "judge"), None)
+    if judge_layer is not None:
+        unmeasured = judge_layer.metadata.get("unmeasured") or []
+        if unmeasured:
+            stderr_console.print(
+                f"[yellow]warning:[/yellow] LLM judge could not measure "
+                f"{', '.join(unmeasured)}; composite computed from the remaining "
+                f"layers. Check that claude-agent-sdk is installed and a model is "
+                f"configured (run with --verbose for details)."
+            )
+
     if (
         threshold is not None
         and result.composite is not None
