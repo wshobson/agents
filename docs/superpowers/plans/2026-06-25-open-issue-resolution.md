@@ -587,13 +587,14 @@ npx --yes protect-mcp@0.5.5 evaluate \
   --fail-on-missing-policy false; echo "exit=$?"
 ```
 
-- [ ] **Step 2: Record the outcome and decide severity**
+- [x] **Step 2: OUTCOME (2026-06-25) — premise invalid; `evaluate` subcommand does not exist**
 
-- If deny→`exit=2` and permit→`exit=0`: gates work → #598 is a **false positive** for the shipped engine. Severity: informational. Proceed; the rewrite is still adopted as hardening.
-- If deny→`exit=0`: the disclosure is **correct** → severity **HIGH**. The rewrite (Task 7) becomes the priority fix and the reply credits a real vulnerability.
-- If `npx`/network unavailable in this environment: do not guess — surface the exact two commands above for the maintainer to run via `!`, and hold Task 10's reply until the result is known.
+The live run revealed `protect-mcp@0.5.5` has **no `evaluate` or `sign` subcommand** (the invocation above falls through to "wrapper" mode). Its real CLI is `serve` (HTTP hook server), `simulate`, `init-hooks`, and Cedar-via-WASM (`--cedar <dir>`). Consequences:
+- The plugin's `hooks/hooks.json` (PreToolUse `… evaluate …`, PostToolUse `… sign …`) targets non-existent subcommands → **the gate does not run at all** against the pinned version. This is a separate, larger defect than #598 as filed.
+- protect-mcp's own `test/run-tests.sh` also uses `evaluate …`, so the earlier "its test expects deny → gates work" inference was unfounded.
+- protect-mcp evaluates Cedar "locally via WASM" = the real Cedar engine, which genuinely discards `in`-on-String forbid rules. So the disclosure (#598) is **essentially correct**, not a false positive. The `.contains()` rewrite (Task 7) is the right fix regardless.
 
-- [ ] **Step 3: No commit** (record the result in the PR description / Task 10 draft).
+Decision (maintainer-approved): proceed with the Cedar correctness fix (Tasks 7-8), retarget Task 9 to a `cedar validate`-based test that needs no `evaluate`, and in Task 10 reply to #598 acknowledging the reporter is right AND surface the broken-hook finding as its own issue (do NOT blind-fix the hook integration here).
 
 ---
 
@@ -640,10 +641,9 @@ npx --yes protect-mcp@0.5.5 evaluate \
 
 Keep all comments and the terminal `permit (principal, action, resource);` unchanged.
 
-- [ ] **Step 2: Re-run the Task 6 deny/permit commands to confirm behavior is unchanged-or-fixed**
+- [ ] **Step 2: Confirm the rewritten policy is syntactically well-formed**
 
-Run the two `npx ... evaluate` commands from Task 6 against the rewritten policy.
-Expected: deny→`exit=2`, permit→`exit=0`. (If Task 6 showed the gates were already working, this confirms no regression; if it showed them broken, this confirms the fix.)
+`protect-mcp evaluate` does not exist (Task 6), so semantic validation moves to Task 9 (`cedar validate` against the schema). Here, just confirm the rewrite parses: every `forbid` block still ends with a valid `when { … }`, the terminal `permit (principal, action, resource);` is intact, and brackets/quotes balance. If a local `cedar` CLI is present you may pre-check `cedar validate --policies review-agent-governance.cedar` (without schema it checks syntax only); otherwise rely on Task 9.
 
 - [ ] **Step 3: Commit**
 
@@ -713,91 +713,102 @@ git commit -m "feat(review-agent-governance): add cedarschema typing context att
 
 ---
 
-### Task 9: Add a graceful-skip deny/permit round-trip test
+### Task 9: Add a `cedar validate` + textual regression test (no `evaluate` dependency)
+
+Retargeted after Task 6: `protect-mcp evaluate` does not exist, so the test cannot route through protect-mcp. Instead it (a) always-on: greps the policy to ensure no `in`-on-String forbid pattern regresses; (b) when the `cedar` CLI is present: `cedar validate` the policy against the schema, which fails on `in`-on-String and passes on `.contains()`.
 
 **Files:**
 - Create: `plugins/review-agent-governance/test/run-tests.sh` (executable)
-- Create: `plugins/review-agent-governance/test/fixtures/deny-gh-pr-merge.json`
-- Create: `plugins/review-agent-governance/test/fixtures/permit-ls.json`
 - Create: `plugins/review-agent-governance/test/README.md`
 
-**Interfaces:** mirrors `plugins/protect-mcp/test/run-tests.sh` conventions — exit `0` all pass, `1` a failure, `77` tools missing (treated as skipped).
+**Interfaces:** exit `0` all pass, `1` a failure. Part A always runs (needs only grep); Part B prints a SKIP line (does not fail) when `cedar` is absent.
 
-- [ ] **Step 1: Create the fixtures**
-
-`fixtures/deny-gh-pr-merge.json`:
-```json
-{ "tool_name": "Bash", "tool_input": { "command": "gh pr merge 123 --squash" } }
-```
-`fixtures/permit-ls.json`:
-```json
-{ "tool_name": "Bash", "tool_input": { "command": "ls -la" } }
-```
-
-- [ ] **Step 2: Create `test/run-tests.sh`** (mirrors protect-mcp's preflight + check_exit)
+- [ ] **Step 1: Create `test/run-tests.sh`**
 
 ```bash
 #!/usr/bin/env bash
-# run-tests.sh — exercise review-agent-governance.cedar against protect-mcp.
-# Exit codes: 0 pass, 1 fail, 77 required tools missing (skipped).
+# run-tests.sh — guard review-agent-governance.cedar against the in-on-String
+# forbid bug (#598). Part A (grep) always runs; Part B (cedar validate) runs
+# only if the `cedar` CLI is installed, else SKIPs without failing.
+# Exit codes: 0 pass, 1 fail.
 set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 POLICY="../policies/review-agent-governance.cedar"
-
-need() { command -v "$1" >/dev/null 2>&1 || { echo "SKIP: '$1' not found."; exit 77; }; }
-need node; need npx; need python3
+SCHEMA="../policies/review-agent-governance.cedarschema"
 
 PASS=0; FAIL=0
 pass() { echo "PASS: $1"; PASS=$((PASS+1)); }
 fail() { echo "FAIL: $1"; FAIL=$((FAIL+1)); }
-check_exit() { if [ "$1" -eq "$2" ]; then pass "$3"; else fail "$3 (exit $1, expected $2)"; fi; }
-tool() { python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["tool_name"])' "$1"; }
-inp() { python3 -c 'import json,sys;print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$1"; }
 
-run() {
-  npx --yes protect-mcp@0.5.5 evaluate --policy "$POLICY" \
-    --tool "$(tool "$1")" --input "$(inp "$1")" --fail-on-missing-policy false >/dev/null 2>&1
-}
+echo "=== Part A: no in-on-String forbid pattern (always runs) ==="
+# The bug pattern is `context.<attr> in [` inside a forbid rule. The fixed form
+# is `[ ... ].contains(context.<attr>)`. Assert the bad pattern is absent.
+if grep -nE 'context\.[a-z_]+[[:space:]]+in[[:space:]]*\[' "$POLICY" >/dev/null; then
+  fail "policy still uses 'context.<attr> in [ ... ]' (the discarded-forbid bug)"
+  grep -nE 'context\.[a-z_]+[[:space:]]+in[[:space:]]*\[' "$POLICY"
+else
+  pass "no in-on-String forbid pattern present"
+fi
+# And assert the fixed idiom is actually used.
+if grep -qE '\]\.contains\(context\.' "$POLICY"; then
+  pass "policy uses [ ... ].contains(context.<attr>)"
+else
+  fail "policy does not use the expected .contains() idiom"
+fi
 
-echo "=== Deny: gh pr merge ==="
-run fixtures/deny-gh-pr-merge.json; check_exit $? 2 "gh pr merge is denied (exit 2)"
-
-echo "=== Permit: ls ==="
-run fixtures/permit-ls.json; check_exit $? 0 "ls is permitted (exit 0)"
+echo "=== Part B: cedar validate against schema (if cedar CLI present) ==="
+if command -v cedar >/dev/null 2>&1; then
+  if cedar validate --policies "$POLICY" --schema "$SCHEMA"; then
+    pass "cedar validate succeeds (policy is well-typed)"
+  else
+    fail "cedar validate failed"
+  fi
+else
+  echo "SKIP: 'cedar' CLI not found — Part B skipped (Part A still gates)."
+fi
 
 echo ""; echo "Passed: $PASS, Failed: $FAIL"
 [ "$FAIL" -eq 0 ] || exit 1
 ```
 
-- [ ] **Step 3: Create `test/README.md`** documenting that the test requires node/npx/network and skips (exit 77) otherwise, mirroring `plugins/protect-mcp/test/README.md`.
+- [ ] **Step 2: Create `test/README.md`**
 
 ```markdown
 # review-agent-governance policy tests
 
-Round-trip deny/permit checks for `policies/review-agent-governance.cedar`,
-evaluated with `protect-mcp@0.5.5` (the engine the plugin's hook uses).
+Guards `policies/review-agent-governance.cedar` against the #598 `in`-on-String
+forbid bug.
 
 ```bash
-./run-tests.sh   # exit 0 pass · 1 fail · 77 tools missing (skipped)
+./run-tests.sh   # exit 0 pass · 1 fail
 ```
 
-Requires `node` (>=18), `npx`, and network access on first run.
+- **Part A** (always runs, needs only `grep`): asserts the policy contains no
+  `context.<attr> in [ ... ]` forbid pattern (which Cedar silently discards) and
+  uses `[ ... ].contains(context.<attr>)` instead.
+- **Part B** (runs only if the `cedar` CLI is installed): `cedar validate` the
+  policy against `review-agent-governance.cedarschema`. With the context
+  attributes typed as `String`, `cedar validate` rejects the `in`-on-String form
+  at load time and accepts `.contains()`.
+
+Note: the shipped runtime is `protect-mcp serve` (Cedar-via-WASM); this test
+validates the policy source directly and does not depend on protect-mcp.
 ```
 
-- [ ] **Step 4: Make executable and run**
+- [ ] **Step 3: Make executable and run**
 
 ```bash
 chmod +x plugins/review-agent-governance/test/run-tests.sh
 plugins/review-agent-governance/test/run-tests.sh; echo "suite exit=$?"
 ```
-Expected: `exit=0` (both checks pass) where npx/network are available, or `exit=77` (skipped) otherwise. A `1` means the gate is not firing — escalate per Task 6.
+Expected: `exit=0`. Part A passes (policy uses `.contains()` after Task 7); Part B passes if `cedar` is installed, else prints SKIP. A non-zero exit means Part A's regression guard caught the bad pattern — fix the policy.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
 git add plugins/review-agent-governance/test
-git commit -m "test(review-agent-governance): add deny/permit round-trip test (skips without npx) (#598)"
+git commit -m "test(review-agent-governance): guard against in-on-String forbid bug (#598)"
 ```
 
 ---
@@ -824,7 +835,8 @@ Expected: all pass; drift check prints nothing.
 - [ ] **Step 3: Draft the outward-facing actions (post only after explicit maintainer approval).**
 
 - **#591** — comment that the fix landed in the PR (judge now reads `AssistantMessage`/`ResultMessage` correctly, surfaces "unmeasured" instead of fake 0.5, removed dead config); thank lkjie; close when the PR merges.
-- **#598** — reply using the Task 6 result. If false positive: thank matiaszabal, explain the shipped engine is `protect-mcp@0.5.5` (their test used vanilla `cedar-policy 4.8.2`), note we adopted `.contains()` + a schema + a round-trip test as hardening, and reference `cedar-policy/cedar#2428`. If confirmed: credit a real high-severity finding and point to the fix PR. Close when the PR merges.
+- **#598** — reply crediting matiaszabal: the finding is **essentially correct**, not a false positive. protect-mcp evaluates Cedar via the real engine (WASM), which discards `in`-on-String forbid rules. We adopted `[ ... ].contains(context.<attr>)` + a `.cedarschema` + a regression test (PR). Reference `cedar-policy/cedar#2428`. ALSO disclose the adjacent finding we hit while verifying: the plugin's `hooks/hooks.json` targets `protect-mcp evaluate`/`sign` subcommands that don't exist in the pinned `@0.5.5` (it now uses `serve`/`init-hooks`), so the gate doesn't run as shipped — tracked separately (see new issue below). Close #598 when the PR merges.
+- **NEW ISSUE (file it)** — open a bug for the broken protect-mcp integration: `review-agent-governance/hooks/hooks.json` (and `protect-mcp/test/run-tests.sh`) invoke non-existent `evaluate`/`sign` subcommands of `protect-mcp@0.5.5`; the current CLI is `serve`/`init-hooks`/`--cedar`. Enforcement does not run as shipped. Recommend regenerating hooks via `protect-mcp init-hooks` (serve-based) and updating the pin/tests. This is the larger defect surfaced by #598's verification.
 - **#579** — close: fixed by the format-modernization commit (`4820385`); current marketplace carries no `strict`/component arrays. Ask the reporter to update the marketplace / unpin from 1.0.1/1.2.x.
 - **#580** — close: same modernization; `shell-scripting` is now 1.2.3 with auto-discovery and the skills load. Ask them to update.
 - **#570** — close as converted to PR #577 (trimmed 3-skill version); tracking moves there.
