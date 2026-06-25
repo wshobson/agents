@@ -494,6 +494,18 @@
       "category": "Coding"
     },
     {
+      "name": "file-conversion",
+      "source": {
+        "source": "local",
+        "path": "./plugins/file-conversion"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "framework-migration",
       "source": {
         "source": "local",

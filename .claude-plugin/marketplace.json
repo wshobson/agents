@@ -715,7 +715,7 @@
     {
       "name": "social-publishing",
       "source": "./plugins/social-publishing",
-      "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw — one workspace API key covers everything",
+      "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw \u2014 one workspace API key covers everything",
       "version": "1.0.0",
       "author": {
         "name": "ndesv21",
@@ -1205,6 +1205,19 @@
       "homepage": "https://github.com/runapi-ai/mcp",
       "license": "Apache-2.0",
       "category": "ai-ml"
+    },
+    {
+      "name": "file-conversion",
+      "source": "./plugins/file-conversion",
+      "description": "Convert files between 999 routes \u2014 PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI \u2014 via the free ChangeThisFile API. MCP-aware with a zero-dependency script fallback; no API key required.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Aadil Razvi",
+        "url": "https://changethisfile.com"
+      },
+      "homepage": "https://github.com/aadilr/changethisfile-mcp",
+      "license": "MIT",
+      "category": "utilities"
     }
   ]
 }
