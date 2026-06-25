@@ -18,9 +18,10 @@ fail() { echo "FAIL: ${1:-?}"; FAIL=$((FAIL+1)); }
 echo "=== Part A: no in-on-String forbid pattern (always runs) ==="
 # The bug pattern is `context.<attr> in [` inside a forbid rule. The fixed form
 # is `[ ... ].contains(context.<attr>)`. Assert the bad pattern is absent.
-if grep -nE 'context\.[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]+in[[:space:]]*\[' "$POLICY" >/dev/null; then
+bad_hits=$(grep -nE 'context\.[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]+in[[:space:]]*\[' "$POLICY" 2>/dev/null)
+if [ -n "$bad_hits" ]; then
   fail "policy still uses 'context.<attr> in [ ... ]' (the discarded-forbid bug)"
-  grep -nE 'context\.[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]+in[[:space:]]*\[' "$POLICY"
+  echo "$bad_hits"
 else
   pass "no in-on-String forbid pattern present"
 fi

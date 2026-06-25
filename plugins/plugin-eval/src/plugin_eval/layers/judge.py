@@ -8,6 +8,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from plugin_eval.layers._sdk import collect_sdk_output
 from plugin_eval.models import LayerResult
 from plugin_eval.parser import ParsedSkill, parse_skill
 
@@ -58,28 +59,9 @@ def _extract_and_parse(messages: list) -> dict:
     Returns the parsed dict on success, or an {"unmeasured": True, ...} marker
     when the run errored, produced no text, or returned non-JSON.
     """
-    from claude_agent_sdk import (  # type: ignore[import-untyped]
-        AssistantMessage,
-        ResultMessage,
-        TextBlock,
-    )
-
-    text = ""
-    fallback = ""
-    errored = False
-    for message in messages:
-        if isinstance(message, AssistantMessage):
-            for block in message.content:
-                if isinstance(block, TextBlock):
-                    text += block.text
-        elif isinstance(message, ResultMessage):
-            if message.is_error:
-                errored = True
-            if message.result:
-                fallback = message.result
-
-    raw = text or fallback
-    if errored:
+    output = collect_sdk_output(messages)
+    raw = output.text or (output.result or "")
+    if output.errored:
         return {
             "unmeasured": True,
             "error": "judge LLM call returned an error result",
