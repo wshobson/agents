@@ -137,3 +137,4 @@ class TestUnmeasuredPropagation:
         assert set(result.sub_scores) == {"triggering_accuracy", "output_quality"}
         assert result.sub_scores["triggering_accuracy"] == 0.9
         assert set(result.metadata["unmeasured"]) == {"orchestration_fitness", "scope_calibration"}
+        assert abs(result.score - 0.85) < 1e-9

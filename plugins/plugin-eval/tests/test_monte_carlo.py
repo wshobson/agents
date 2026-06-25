@@ -1,10 +1,10 @@
 from pathlib import Path
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 
 import pytest
+from claude_agent_sdk import AssistantMessage, ResultMessage, TextBlock
 
 from plugin_eval.layers.monte_carlo import MonteCarloAnalyzer, MonteCarloConfig, SimResult
-from claude_agent_sdk import AssistantMessage, ResultMessage, TextBlock
 from plugin_eval.layers.monte_carlo import _simresult_from_messages
 
 

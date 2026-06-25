@@ -1,8 +1,12 @@
 from pathlib import Path
+from unittest.mock import patch
 
 from typer.testing import CliRunner
 
 from plugin_eval.cli import app
+from plugin_eval.models import (
+    CompositeResult, Depth, EvalConfig, LayerResult, PluginEvalResult,
+)
 
 runner = CliRunner()
 
@@ -59,13 +63,7 @@ class TestCLI:
         assert "warning" not in result.stderr.lower()
 
 
-from unittest.mock import patch
-from plugin_eval.models import (
-    CompositeResult, Depth, EvalConfig, LayerResult, PluginEvalResult,
-)
-
-
-def test_score_warns_when_judge_unmeasured(sample_skill_dir, tmp_path):
+def test_score_warns_when_judge_unmeasured(sample_skill_dir):
     fake = PluginEvalResult(
         plugin_path=str(sample_skill_dir),
         timestamp="t",
