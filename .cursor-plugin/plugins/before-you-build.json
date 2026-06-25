@@ -1,0 +1,11 @@
+{
+  "name": "before-you-build",
+  "displayName": "Before You Build",
+  "version": "0.1.1",
+  "description": "Pre-build product risk review for founders, product teams, and AI-assisted builders before implementation starts.",
+  "author": {
+    "name": "bin1874",
+    "email": ""
+  },
+  "license": "MIT"
+}

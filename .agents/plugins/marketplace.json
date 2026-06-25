@@ -110,6 +110,18 @@
       "category": "Coding"
     },
     {
+      "name": "before-you-build",
+      "source": {
+        "source": "local",
+        "path": "./plugins/before-you-build"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "block-no-verify",
       "source": {
         "source": "local",
