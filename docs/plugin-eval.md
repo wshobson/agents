@@ -91,7 +91,6 @@ uv run plugin-eval score path/to/skill --threshold 70
 | `--output` | `markdown` | `json`, `markdown`, `html` |
 | `--verbose` | `false` | Show detailed output |
 | `--concurrency` | `4` | Max concurrent LLM calls (1–20) |
-| `--auth` | `max` | Auth mode: `max` (Claude Code Max plan) or `api-key` |
 | `--threshold` | none | Minimum score; exit 1 if below |
 
 ### `certify` — Full certification with badge

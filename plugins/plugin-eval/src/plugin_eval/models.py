@@ -36,11 +36,9 @@ class Depth(StrEnum):
 class EvalConfig(BaseModel):
     depth: Depth = Depth.STANDARD
     concurrency: int = Field(default=4, ge=1, le=20)
-    model_tier: str = "auto"
     output_format: str = "json"
     verbose: bool = False
     corpus_path: str | None = None
-    auth: str = "max"
     judges: int = Field(default=1, ge=1, le=5)
     monte_carlo_n: int | None = None
 

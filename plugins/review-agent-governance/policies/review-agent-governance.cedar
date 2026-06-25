@@ -20,19 +20,9 @@ forbid (
     action == Action::"Bash",
     resource
 ) when {
-    context.command_pattern in [
-        "gh pr review",
-        "gh pr comment",
-        "gh pr close",
-        "gh pr merge",
-        "gh pr edit",
-        "gh issue comment",
-        "gh issue close",
-        "gh issue edit",
-        "gh release create",
-        "gh release edit",
-        "gh api repos"
-    ]
+    ["gh pr review", "gh pr comment", "gh pr close", "gh pr merge", "gh pr edit",
+     "gh issue comment", "gh issue close", "gh issue edit", "gh release create",
+     "gh release edit", "gh api repos"].contains(context.command_pattern)
 };
 
 // 2. Posting via GitLab / Bitbucket CLIs
@@ -41,12 +31,8 @@ forbid (
     action == Action::"Bash",
     resource
 ) when {
-    context.command_pattern in [
-        "glab mr comment",
-        "glab mr approve",
-        "glab mr merge",
-        "glab issue comment"
-    ]
+    ["glab mr comment", "glab mr approve", "glab mr merge",
+     "glab issue comment"].contains(context.command_pattern)
 };
 
 // 3. Git operations on protected branches
@@ -55,8 +41,9 @@ forbid (
     action == Action::"Bash",
     resource
 ) when {
-    context.command_pattern in ["git push", "git push --force", "git push -f"] &&
-    context.target_branch in ["main", "master", "release", "production"]
+    ["git push", "git push --force", "git push -f"].contains(context.command_pattern) &&
+    context has target_branch &&
+    ["main", "master", "release", "production"].contains(context.target_branch)
 };
 
 // 4. Direct writes to CI / CD configuration paths. Modifying these files lets
@@ -67,13 +54,8 @@ forbid (
     action in [Action::"Write", Action::"Edit"],
     resource
 ) when {
-    context.path_starts_with in [
-        ".github/workflows/",
-        ".github/CODEOWNERS",
-        ".gitlab-ci.yml",
-        ".circleci/config.yml",
-        "buildkite/pipeline.yml"
-    ]
+    [".github/workflows/", ".github/CODEOWNERS", ".gitlab-ci.yml",
+     ".circleci/config.yml", "buildkite/pipeline.yml"].contains(context.path_starts_with)
 };
 
 // 5. WebFetch POSTs to known review / chat platforms
@@ -83,13 +65,8 @@ forbid (
     resource
 ) when {
     context.method == "POST" &&
-    context.url_host in [
-        "api.github.com",
-        "api.gitlab.com",
-        "api.bitbucket.org",
-        "hooks.slack.com",
-        "discord.com"
-    ]
+    ["api.github.com", "api.gitlab.com", "api.bitbucket.org",
+     "hooks.slack.com", "discord.com"].contains(context.url_host)
 };
 
 // ─────────────────────────────────────────────────────────────────────────

@@ -8,6 +8,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+from plugin_eval.layers._sdk import collect_sdk_output, usage_total_tokens
 from plugin_eval.models import LayerResult
 from plugin_eval.parser import ParsedSkill, parse_skill
 from plugin_eval.stats import (
@@ -40,7 +41,6 @@ class MonteCarloConfig:
 
     n_runs: int = 50
     concurrency: int = 4
-    auth: str = "max"
     seed: int = 42
     progress_callback: Callable[[int, int], None] | None = None
 
@@ -50,14 +50,30 @@ class MonteCarloConfig:
 # ---------------------------------------------------------------------------
 
 
-async def run_simulation(skill_content: str, prompt: str, auth: str) -> SimResult:
+def _simresult_from_messages(messages: list, prompt: str, duration_ms: int) -> SimResult:
+    """Build a SimResult from SDK messages (assistant text => activation + quality)."""
+    output = collect_sdk_output(messages)
+    tokens = usage_total_tokens(output.usage)
+    raw = output.text.strip() or (output.result or "").strip()
+    activated = bool(raw)
+    quality_score = min(1.0, len(raw) / 500) if activated else 0.0
+    return SimResult(
+        activated=activated,
+        quality_score=quality_score,
+        tokens=tokens,
+        duration_ms=duration_ms,
+        errored=output.errored,
+        prompt=prompt,
+    )
+
+
+async def run_simulation(skill_content: str, prompt: str) -> SimResult:
     """Run a single simulation via Agent SDK. Returns SimResult. On error, errored=True."""
     try:
         import time
 
         from claude_agent_sdk import (  # type: ignore[import-untyped]
             ClaudeAgentOptions,
-            ResultMessage,
             query,
         )
 
@@ -65,42 +81,17 @@ async def run_simulation(skill_content: str, prompt: str, auth: str) -> SimResul
             f"You are evaluating a skill. Apply the skill if appropriate.\n\n"
             f"{skill_content}\n\n{prompt}"
         )
-
-        result_text = ""
-        activated = False
-        tokens = 0
-
         start = time.monotonic()
-
-        async for message in query(
-            prompt=full_prompt,
-            options=ClaudeAgentOptions(
-                allowed_tools=[],
-            ),
-        ):
-            if isinstance(message, ResultMessage):
-                for block in getattr(message, "content", []):
-                    if hasattr(block, "text"):
-                        result_text += block.text
-                        activated = True
-                usage = getattr(message, "usage", None)
-                if usage:
-                    tokens = getattr(usage, "total_tokens", 0)
-
+        messages = [
+            message
+            async for message in query(
+                prompt=full_prompt,
+                options=ClaudeAgentOptions(allowed_tools=[]),
+            )
+        ]
         duration_ms = int((time.monotonic() - start) * 1000)
-
-        # Estimate quality score from response length and coherence heuristic
-        quality_score = min(1.0, len(result_text) / 500) if activated else 0.0
-
-        return SimResult(
-            activated=activated,
-            quality_score=quality_score,
-            tokens=tokens,
-            duration_ms=duration_ms,
-            prompt=prompt,
-        )
-
-    except Exception:
+        return _simresult_from_messages(messages, prompt, duration_ms)
+    except Exception:  # noqa: BLE001 — a failed run is recorded as errored, not fatal
         return SimResult(
             activated=False,
             quality_score=0.0,
@@ -245,7 +236,7 @@ class MonteCarloAnalyzer:
         async def run_one(prompt: str) -> SimResult:
             nonlocal completed
             async with self._sem:
-                result = await run_simulation(skill_content, prompt, self.config.auth)
+                result = await run_simulation(skill_content, prompt)
                 completed += 1
                 if self.config.progress_callback:
                     self.config.progress_callback(completed, total)

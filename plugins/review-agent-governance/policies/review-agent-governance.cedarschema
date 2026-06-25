@@ -1,0 +1,26 @@
+entity User;
+entity Resource;
+
+action "Bash" appliesTo {
+  principal: [User],
+  resource: [Resource],
+  context: { command_pattern: String, target_branch?: String }
+};
+
+action "Write" appliesTo {
+  principal: [User],
+  resource: [Resource],
+  context: { path_starts_with: String }
+};
+
+action "Edit" appliesTo {
+  principal: [User],
+  resource: [Resource],
+  context: { path_starts_with: String }
+};
+
+action "WebFetch" appliesTo {
+  principal: [User],
+  resource: [Resource],
+  context: { method: String, url_host: String }
+};

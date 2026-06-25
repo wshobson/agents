@@ -35,7 +35,6 @@ def _run_score(
     output: str,
     verbose: bool,
     concurrency: int,
-    auth: str,
     threshold: float | None,
 ) -> int:
     """Core scoring logic; returns exit code."""
@@ -48,7 +47,6 @@ def _run_score(
         output_format=output,
         verbose=verbose,
         concurrency=concurrency,
-        auth=auth,
     )
     engine = EvalEngine(config)
 
@@ -79,6 +77,17 @@ def _run_score(
         # Default: markdown
         typer.echo(reporter.to_markdown(result))
 
+    judge_layer = next((lr for lr in result.layers if lr.layer == "judge"), None)
+    if judge_layer is not None:
+        unmeasured = judge_layer.metadata.get("unmeasured") or []
+        if unmeasured:
+            stderr_console.print(
+                f"[yellow]warning:[/yellow] LLM judge could not measure "
+                f"{', '.join(unmeasured)}; composite computed from the remaining "
+                f"layers. Check that claude-agent-sdk is installed and a model is "
+                f"configured (run with --verbose for details)."
+            )
+
     if (
         threshold is not None
         and result.composite is not None
@@ -96,13 +105,12 @@ def score(
     output: str = typer.Option("markdown", help="Output format: json|markdown|html"),  # noqa: B008
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),  # noqa: B008
     concurrency: int = typer.Option(4, help="Max concurrent LLM calls"),  # noqa: B008
-    auth: str = typer.Option("max", help="Auth mode: max|api-key"),  # noqa: B008
     threshold: float | None = typer.Option(  # noqa: B008
         None, help="Minimum score threshold; exit code 1 if below"
     ),
 ) -> None:
     """Evaluate a plugin or skill directory and report its quality score."""
-    exit_code = _run_score(path, depth, output, verbose, concurrency, auth, threshold)
+    exit_code = _run_score(path, depth, output, verbose, concurrency, threshold)
     if exit_code != 0:
         raise typer.Exit(code=exit_code)
 
@@ -113,11 +121,10 @@ def certify(
     output: str = typer.Option("markdown", help="Output format: json|markdown|html"),  # noqa: B008
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),  # noqa: B008
     concurrency: int = typer.Option(4, help="Max concurrent LLM calls"),  # noqa: B008
-    auth: str = typer.Option("max", help="Auth mode: max|api-key"),  # noqa: B008
     threshold: float | None = typer.Option(None, help="Minimum score threshold"),  # noqa: B008
 ) -> None:
     """Certify a plugin or skill (runs at deep depth)."""
-    exit_code = _run_score(path, Depth.DEEP, output, verbose, concurrency, auth, threshold)
+    exit_code = _run_score(path, Depth.DEEP, output, verbose, concurrency, threshold)
     if exit_code != 0:
         raise typer.Exit(code=exit_code)
 
