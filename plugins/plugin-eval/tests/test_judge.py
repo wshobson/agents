@@ -49,6 +49,11 @@ class TestExtractAndParse:
         assert out["unmeasured"] is True
         assert out["raw"] == "not json at all"
 
+    def test_errored_result_with_partial_text_includes_raw(self):
+        out = _extract_and_parse([_assistant('{"f1": 0.9}'), _result(is_error=True)])
+        assert out["unmeasured"] is True
+        assert out["raw"] == '{"f1": 0.9}'
+
 
 class TestJudgeConfig:
     def test_default_config(self):

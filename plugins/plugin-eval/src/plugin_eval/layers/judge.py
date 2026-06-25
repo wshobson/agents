@@ -80,7 +80,11 @@ def _extract_and_parse(messages: list) -> dict:
 
     raw = text or fallback
     if errored:
-        return {"unmeasured": True, "error": "judge LLM call returned an error result"}
+        return {
+            "unmeasured": True,
+            "error": "judge LLM call returned an error result",
+            **({"raw": raw} if raw else {}),
+        }
     if not raw.strip():
         return {"unmeasured": True, "error": "judge LLM returned no text"}
 
