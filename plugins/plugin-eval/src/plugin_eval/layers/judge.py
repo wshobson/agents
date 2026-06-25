@@ -136,6 +136,14 @@ async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-4
 # ---------------------------------------------------------------------------
 
 
+def _measured_score(result: dict, key: str) -> float | None:
+    """Return the numeric score for an assessment, or None if it was unmeasured."""
+    if result.get("unmeasured"):
+        return None
+    val = result.get(key)
+    return float(val) if isinstance(val, (int, float)) else None
+
+
 @dataclass
 class JudgeConfig:
     judges: int = 1
@@ -170,27 +178,25 @@ class JudgeAnalyzer:
             self.assess_scope(skill),
         )
 
-        # Weighted composite: triggering 0.30, orchestration 0.30, output 0.25, scope 0.15
-        score = (
-            triggering.get("f1", 0.5) * 0.30
-            + orchestration.get("score", 0.5) * 0.30
-            + output_quality.get("score", 0.5) * 0.25
-            + scope.get("score", 0.5) * 0.15
-        )
-        score = max(0.0, min(1.0, score))
-
-        sub_scores: dict[str, float] = {
-            "triggering_accuracy": triggering.get("f1", 0.5),
-            "orchestration_fitness": orchestration.get("score", 0.5),
-            "output_quality": output_quality.get("score", 0.5),
-            "scope_calibration": scope.get("score", 0.5),
+        raw_scores: dict[str, float | None] = {
+            "triggering_accuracy": _measured_score(triggering, "f1"),
+            "orchestration_fitness": _measured_score(orchestration, "score"),
+            "output_quality": _measured_score(output_quality, "score"),
+            "scope_calibration": _measured_score(scope, "score"),
         }
+        sub_scores: dict[str, float] = {k: v for k, v in raw_scores.items() if v is not None}
+        unmeasured = sorted(k for k, v in raw_scores.items() if v is None)
+
+        # Layer score is display-only; the composite engine blends per-dimension
+        # sub_scores (omitted keys are excluded). Use the mean of measured dims.
+        score = sum(sub_scores.values()) / len(sub_scores) if sub_scores else 0.0
 
         metadata: dict = {
             "triggering": triggering,
             "orchestration": orchestration,
             "output_quality": output_quality,
             "scope": scope,
+            "unmeasured": unmeasured,
         }
 
         return LayerResult(

@@ -105,3 +105,35 @@ class TestJudgeAnalyzer:
         result = await analyzer.analyze_skill(sample_skill_dir)
         assert result.layer == "judge"
         assert result.score > 0
+
+
+class TestUnmeasuredPropagation:
+    @pytest.mark.asyncio
+    @patch("plugin_eval.layers.judge.query_llm")
+    async def test_all_unmeasured_yields_empty_sub_scores(self, mock_query, sample_skill_dir: Path):
+        mock_query.return_value = {"unmeasured": True, "error": "no text"}
+        analyzer = JudgeAnalyzer(JudgeConfig())
+        result = await analyzer.analyze_skill(sample_skill_dir)
+        assert result.sub_scores == {}
+        assert result.score == 0.0
+        assert set(result.metadata["unmeasured"]) == {
+            "triggering_accuracy",
+            "orchestration_fitness",
+            "output_quality",
+            "scope_calibration",
+        }
+
+    @pytest.mark.asyncio
+    @patch("plugin_eval.layers.judge.query_llm")
+    async def test_partial_measurement_omits_only_failed(self, mock_query, sample_skill_dir: Path):
+        mock_query.side_effect = [
+            {"f1": 0.9, "predictions": []},  # triggering measured
+            {"unmeasured": True, "error": "x"},  # orchestration failed
+            {"score": 0.8, "simulations": []},  # output measured
+            {"unmeasured": True, "error": "x"},  # scope failed
+        ]
+        analyzer = JudgeAnalyzer(JudgeConfig())
+        result = await analyzer.analyze_skill(sample_skill_dir)
+        assert set(result.sub_scores) == {"triggering_accuracy", "output_quality"}
+        assert result.sub_scores["triggering_accuracy"] == 0.9
+        assert set(result.metadata["unmeasured"]) == {"orchestration_fitness", "scope_calibration"}
