@@ -9,16 +9,18 @@ cd "$SCRIPT_DIR"
 POLICY="../policies/review-agent-governance.cedar"
 SCHEMA="../policies/review-agent-governance.cedarschema"
 
+[ -f "$POLICY" ] || { echo "FAIL: policy file not found: $POLICY"; exit 1; }
+
 PASS=0; FAIL=0
-pass() { echo "PASS: $1"; PASS=$((PASS+1)); }
-fail() { echo "FAIL: $1"; FAIL=$((FAIL+1)); }
+pass() { echo "PASS: ${1:-?}"; PASS=$((PASS+1)); }
+fail() { echo "FAIL: ${1:-?}"; FAIL=$((FAIL+1)); }
 
 echo "=== Part A: no in-on-String forbid pattern (always runs) ==="
 # The bug pattern is `context.<attr> in [` inside a forbid rule. The fixed form
 # is `[ ... ].contains(context.<attr>)`. Assert the bad pattern is absent.
-if grep -nE 'context\.[a-z_]+[[:space:]]+in[[:space:]]*\[' "$POLICY" >/dev/null; then
+if grep -nE 'context\.[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]+in[[:space:]]*\[' "$POLICY" >/dev/null; then
   fail "policy still uses 'context.<attr> in [ ... ]' (the discarded-forbid bug)"
-  grep -nE 'context\.[a-z_]+[[:space:]]+in[[:space:]]*\[' "$POLICY"
+  grep -nE 'context\.[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]+in[[:space:]]*\[' "$POLICY"
 else
   pass "no in-on-String forbid pattern present"
 fi
