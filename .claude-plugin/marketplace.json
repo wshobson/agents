@@ -1147,6 +1147,38 @@
         "multi-agent",
         "dev-workflow"
       ]
+    },
+    {
+      "name": "storymap-skill",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/MartinForReal/storymap-skill.git",
+        "path": "."
+      },
+      "description": "User story mapping (Jeff Patton style). Turns a goal, brief, or messy backlog into a sliced, prioritized delivery plan with per-persona stories. Four invocation modes (from scratch / brief / backlog / refinement), three prioritization methods (WSJF, RICE, MoSCoW), three slicing strategies (Patton classic, SAFe PI, Now/Next/Later). OKR coverage, dependency cycle detection, persona conflict resolution, slice-1 acceptance criteria, E2E test contract. Auto-activates in the Plan stage of Superpowers / gstack / GSD.",
+      "version": "0.0.3",
+      "author": {
+        "name": "MartinForReal",
+        "url": "https://github.com/MartinForReal"
+      },
+      "homepage": "https://github.com/MartinForReal/storymap-skill",
+      "license": "MIT",
+      "category": "workflows",
+      "keywords": [
+        "user-story-mapping",
+        "story-mapping",
+        "agile",
+        "safe",
+        "wsjf",
+        "rice",
+        "moscow",
+        "mvp",
+        "pi-planning",
+        "product-discovery",
+        "jeff-patton",
+        "backlog-management",
+        "personas"
+      ]
     }
   ]
 }
