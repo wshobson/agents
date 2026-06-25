@@ -698,9 +698,11 @@ action "WebFetch" appliesTo {
 
 ```bash
 cd plugins/review-agent-governance/policies
-command -v cedar >/dev/null 2>&1 && \
-  cedar validate --policies review-agent-governance.cedar --schema review-agent-governance.cedarschema || \
+if command -v cedar >/dev/null 2>&1; then
+  cedar validate --policies review-agent-governance.cedar --schema review-agent-governance.cedarschema
+else
   echo "cedar CLI not present — schema is documentation/validation-only"
+fi
 ```
 Expected: `cedar validate` reports success (no validation errors), or the skip message. Note: the shipped hook uses `protect-mcp`, which may not consume this schema — its value is `cedar validate` + documentation.
 
@@ -822,7 +824,7 @@ git commit -m "test(review-agent-governance): guard against in-on-String forbid 
 - [ ] **Step 1: Full repo gates**
 
 ```bash
-cd /Users/wshobson/workspace/agents
+cd "$(git rev-parse --show-toplevel)"   # run from the repo root
 make test            # plugin-eval + tools — must pass
 make validate STRICT=1
 make garden

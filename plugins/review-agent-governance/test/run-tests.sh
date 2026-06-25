@@ -5,7 +5,7 @@
 # Exit codes: 0 pass, 1 fail.
 set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
+cd "$SCRIPT_DIR" || { echo "FAIL: cannot cd to script dir: $SCRIPT_DIR"; exit 1; }
 POLICY="../policies/review-agent-governance.cedar"
 SCHEMA="../policies/review-agent-governance.cedarschema"
 
@@ -17,11 +17,13 @@ fail() { echo "FAIL: ${1:-?}"; FAIL=$((FAIL+1)); }
 
 echo "=== Part A: no in-on-String forbid pattern (always runs) ==="
 # The bug pattern is `context.<attr> in [` inside a forbid rule. The fixed form
-# is `[ ... ].contains(context.<attr>)`. Assert the bad pattern is absent.
-bad_hits=$(grep -nE 'context\.[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]+in[[:space:]]*\[' "$POLICY" 2>/dev/null)
-if [ -n "$bad_hits" ]; then
+# is `[ ... ].contains(context.<attr>)`. Flatten whitespace first so a reformat
+# that splits the expression across lines can't slip past the guard.
+attr_re='context\.[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]+in[[:space:]]*\['
+flat=$(tr '\n' ' ' <"$POLICY" | tr -s '[:space:]' ' ')
+if printf '%s' "$flat" | grep -qE "$attr_re"; then
   fail "policy still uses 'context.<attr> in [ ... ]' (the discarded-forbid bug)"
-  echo "$bad_hits"
+  grep -nE "$attr_re" "$POLICY" 2>/dev/null || echo "  (match spans multiple lines)"
 else
   pass "no in-on-String forbid pattern present"
 fi

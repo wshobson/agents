@@ -8,7 +8,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-from plugin_eval.layers._sdk import collect_sdk_output
+from plugin_eval.layers._sdk import collect_sdk_output, usage_total_tokens
 from plugin_eval.models import LayerResult
 from plugin_eval.parser import ParsedSkill, parse_skill
 from plugin_eval.stats import (
@@ -53,9 +53,10 @@ class MonteCarloConfig:
 def _simresult_from_messages(messages: list, prompt: str, duration_ms: int) -> SimResult:
     """Build a SimResult from SDK messages (assistant text => activation + quality)."""
     output = collect_sdk_output(messages)
-    tokens = output.usage.get("total_tokens", 0) if output.usage else 0
-    activated = bool(output.text)
-    quality_score = min(1.0, len(output.text) / 500) if activated else 0.0
+    tokens = usage_total_tokens(output.usage)
+    raw = output.text.strip() or (output.result or "").strip()
+    activated = bool(raw)
+    quality_score = min(1.0, len(raw) / 500) if activated else 0.0
     return SimResult(
         activated=activated,
         quality_score=quality_score,

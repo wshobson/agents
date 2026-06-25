@@ -114,32 +114,36 @@ so `context.command_pattern in [...]` is a type error and the erroring `forbid` 
 silently discarded — which is the disclosure's claim (issue #598, upstream
 `cedar-policy/cedar#2428`).
 
-**However**, the plugin is evaluated at runtime by `npx protect-mcp@0.5.5 evaluate`
-(`hooks/hooks.json`), not vanilla Cedar, and protect-mcp's own shipped regression test
-(`plugins/protect-mcp/test/run-tests.sh`, Test 3) *expects* the identical
-`in [string-set]` idiom to **deny** (exit 2). That strongly implies protect-mcp treats
-`in [string-set]` as set membership, making this a **likely false positive** for the
-real engine — but this rests on an inference; protect-mcp was not executed during
-analysis. The `.contains()` rewrite is correct, validator-clean Cedar either way
+An initial hypothesis was that the plugin's runtime (protect-mcp) might treat
+`in [string-set]` as set membership, making the disclosure a false positive. **Live
+verification (2026-06-25) refuted that** and confirmed the disclosure is essentially
+**correct**: `protect-mcp@0.5.5` evaluates Cedar via the real engine (WASM), which
+discards `in`-on-String forbids exactly as standard Cedar does. The verification also
+surfaced a **separate, larger defect** — `protect-mcp@0.5.5` has no `evaluate`/`sign`
+subcommands at all (its CLI is `serve` / `init-hooks` / `simulate` / `--cedar`), so the
+plugin's `hooks/hooks.json` (and protect-mcp's own `test/run-tests.sh`, which both invoke
+`evaluate`) don't run as shipped. That broken-hook integration is tracked as its own
+issue. The `.contains()` rewrite is correct, validator-clean Cedar regardless
 (`["a","b"].contains(context.x)` validates; confirmed via Context7).
 
 ### Plan
 
-1. **Live verification first** — run `npx protect-mcp@0.5.5 evaluate` against the policy
-   with a known deny-case (e.g. `command_pattern="gh pr merge"`) and a permit-case to
-   confirm whether the gates fire under the real engine. If the sandbox blocks
-   network/npx, surface the exact command for the maintainer to run via `!`. **This
-   result gates the severity wording** in the reply (informational vs. high).
+1. **Live verification first** — attempt to evaluate the policy with the real engine.
+   *Outcome:* `protect-mcp@0.5.5` has no `evaluate` subcommand, so the policy can't be
+   exercised that way; the disclosure is confirmed essentially correct (real Cedar
+   discards `in`-on-String), and the broken-hook integration is filed separately. The
+   reply credits the reporter rather than calling it a false positive.
 2. **Rewrite** all 5 `forbid` rules: `context.x in [list]` → `[list].contains(context.x)`.
 3. **Add a `.cedarschema`** typing the context attributes (`command_pattern`,
    `target_branch`, `path_starts_with`, `method`, `url_host`) as `String`, so
    `cedar validate` turns this class of mistake into a load-time error. *Caveat:*
    protect-mcp may not consume the schema at runtime; its value is for `cedar validate`,
    documentation, and future-proofing.
-4. **Permanent round-trip test** — a deny/permit test mirroring protect-mcp's
-   `run-tests.sh`, gated on `npx` availability (skips gracefully when absent, like the
-   existing smoke tests). Covers `review-agent-governance.cedar`, which has zero coverage
-   today.
+4. **Permanent regression test** — a `test/run-tests.sh` that does NOT depend on
+   `protect-mcp evaluate` (it doesn't exist): Part A always greps the policy for the
+   `in`-on-String pattern (catching a regression), and Part B runs `cedar validate`
+   against the schema when the `cedar` CLI is present (else skips). Covers
+   `review-agent-governance.cedar`, which had zero coverage.
 5. **Reply to the reporter** (responsible disclosure): acknowledge + credit, explain the
    engine distinction (their test used `cedar-policy 4.8.2`; the plugin runs
    `protect-mcp@0.5.5`), state the verified result, and note the `.contains()` hardening

@@ -7,6 +7,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from plugin_eval.layers._sdk import collect_sdk_output
 from plugin_eval.models import LayerResult
@@ -60,7 +61,8 @@ def _extract_and_parse(messages: list) -> dict:
     when the run errored, produced no text, or returned non-JSON.
     """
     output = collect_sdk_output(messages)
-    raw = output.text or (output.result or "")
+    text = output.text.strip()
+    raw = text or (output.result or "")
     if output.errored:
         return {
             "unmeasured": True,
@@ -118,9 +120,13 @@ async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-4
 # ---------------------------------------------------------------------------
 
 
-def _measured_score(result: dict, key: str) -> float | None:
-    """Return the numeric score for an assessment, or None if it was unmeasured."""
-    if result.get("unmeasured"):
+def _measured_score(result: Any, key: str) -> float | None:
+    """Return the numeric score for an assessment, or None if it was unmeasured.
+
+    Tolerates non-dict JSON (e.g. a list or bare string) by treating it as
+    unmeasured rather than raising.
+    """
+    if not isinstance(result, dict) or result.get("unmeasured"):
         return None
     val = result.get(key)
     return float(val) if isinstance(val, (int, float)) else None

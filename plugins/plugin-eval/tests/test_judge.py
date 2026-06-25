@@ -2,9 +2,19 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from claude_agent_sdk import AssistantMessage, ResultMessage, TextBlock
 
-from plugin_eval.layers.judge import JudgeAnalyzer, JudgeConfig, _extract_and_parse
+# claude-agent-sdk lives in the optional `llm` extra; skip these SDK-object tests
+# (rather than fail collection) when a dev installed only the `dev` extra.
+pytest.importorskip("claude_agent_sdk")
+
+from claude_agent_sdk import AssistantMessage, ResultMessage, TextBlock  # noqa: E402
+
+from plugin_eval.layers.judge import (  # noqa: E402
+    JudgeAnalyzer,
+    JudgeConfig,
+    _extract_and_parse,
+    _measured_score,
+)
 
 
 def _assistant(text: str) -> AssistantMessage:
@@ -138,3 +148,20 @@ class TestUnmeasuredPropagation:
         assert result.sub_scores["triggering_accuracy"] == 0.9
         assert set(result.metadata["unmeasured"]) == {"orchestration_fitness", "scope_calibration"}
         assert abs(result.score - 0.85) < 1e-9
+
+
+class TestMeasuredScoreNonDict:
+    def test_list_result_is_unmeasured(self):
+        assert _measured_score([], "f1") is None
+
+    def test_string_result_is_unmeasured(self):
+        assert _measured_score("oops", "score") is None
+
+    def test_dict_result_still_extracts(self):
+        assert _measured_score({"f1": 0.9}, "f1") == 0.9
+
+
+class TestWhitespaceFallback:
+    def test_whitespace_text_falls_back_to_result(self):
+        out = _extract_and_parse([_assistant("   \n"), _result(result='{"f1": 1.0}')])
+        assert out == {"f1": 1.0}

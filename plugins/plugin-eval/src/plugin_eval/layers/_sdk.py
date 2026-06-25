@@ -44,3 +44,18 @@ def collect_sdk_output(messages: list) -> SdkOutput:
             if isinstance(message.usage, dict):
                 usage = message.usage
     return SdkOutput(text=text, result=result, errored=errored, usage=usage)
+
+
+def usage_total_tokens(usage: dict[str, Any] | None) -> int:
+    """Total token count from an SDK usage dict.
+
+    The SDK's `usage` exposes separate `*_tokens` fields (input/output/cache),
+    not a single `total_tokens`. Prefer an explicit `total_tokens` if a future
+    SDK provides one, otherwise sum the component `*_tokens` fields.
+    """
+    if not usage:
+        return 0
+    total = usage.get("total_tokens")
+    if isinstance(total, int):
+        return total
+    return sum(n for k, n in usage.items() if k.endswith("_tokens") and isinstance(n, int))
