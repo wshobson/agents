@@ -52,50 +52,79 @@ def _resolve_model(tier: str) -> str:
 # ---------------------------------------------------------------------------
 
 
+def _extract_and_parse(messages: list) -> dict:
+    """Pull assistant text from SDK messages and parse JSON.
+
+    Returns the parsed dict on success, or an {"unmeasured": True, ...} marker
+    when the run errored, produced no text, or returned non-JSON.
+    """
+    from claude_agent_sdk import (  # type: ignore[import-untyped]
+        AssistantMessage,
+        ResultMessage,
+        TextBlock,
+    )
+
+    text = ""
+    fallback = ""
+    errored = False
+    for message in messages:
+        if isinstance(message, AssistantMessage):
+            for block in message.content:
+                if isinstance(block, TextBlock):
+                    text += block.text
+        elif isinstance(message, ResultMessage):
+            if message.is_error:
+                errored = True
+            if message.result:
+                fallback = message.result
+
+    raw = text or fallback
+    if errored:
+        return {"unmeasured": True, "error": "judge LLM call returned an error result"}
+    if not raw.strip():
+        return {"unmeasured": True, "error": "judge LLM returned no text"}
+
+    stripped = raw.strip()
+    fence_match = re.search(r"```(?:json)?\s*([\s\S]+?)\s*```", stripped)
+    if fence_match:
+        stripped = fence_match.group(1).strip()
+    try:
+        return json.loads(stripped)
+    except json.JSONDecodeError:
+        return {"unmeasured": True, "error": "judge response was not valid JSON", "raw": raw}
+
+
 async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-4-6") -> dict:
     """Call Claude via the Agent SDK and return a parsed JSON dict.
 
-    Raises RuntimeError if claude-agent-sdk is not installed.
+    Degrades to an {"unmeasured": True, ...} marker (never raises) when the SDK
+    is missing or the call fails, so the judge layer can be skipped instead of
+    crashing the whole evaluation.
     """
     try:
         from claude_agent_sdk import (  # type: ignore[import-untyped]
             ClaudeAgentOptions,
-            ResultMessage,
             query,
         )
-    except ImportError as exc:
-        raise RuntimeError(
-            "claude-agent-sdk is required for LLM judge. Install with: uv sync --extra llm"
-        ) from exc
+    except ImportError:
+        return {
+            "unmeasured": True,
+            "error": "claude-agent-sdk not installed (uv sync --extra llm)",
+        }
 
-    full_prompt = prompt
-    if system:
-        full_prompt = f"{system}\n\n{prompt}"
-
-    result_text = ""
-    async for message in query(
-        prompt=full_prompt,
-        options=ClaudeAgentOptions(
-            model=model,
-            allowed_tools=[],
-        ),
-    ):
-        if isinstance(message, ResultMessage):
-            # ResultMessage contains the final text
-            for block in getattr(message, "content", []):
-                if hasattr(block, "text"):
-                    result_text += block.text
-
-    # Try to parse JSON — handles raw JSON or JSON inside a markdown code block
-    stripped = result_text.strip()
-    fence_match = re.search(r"```(?:json)?\s*([\s\S]+?)\s*```", stripped)
-    if fence_match:
-        stripped = fence_match.group(1).strip()
-
+    full_prompt = f"{system}\n\n{prompt}" if system else prompt
     try:
-        return json.loads(stripped)
-    except json.JSONDecodeError:
-        return {"raw": result_text, "score": 0.5}
+        messages = [
+            message
+            async for message in query(
+                prompt=full_prompt,
+                options=ClaudeAgentOptions(model=model, allowed_tools=[]),
+            )
+        ]
+    except Exception as exc:  # noqa: BLE001 — judge is best-effort; degrade to unmeasured
+        return {"unmeasured": True, "error": f"judge LLM call failed: {exc}"}
+
+    return _extract_and_parse(messages)
 
 
 # ---------------------------------------------------------------------------
