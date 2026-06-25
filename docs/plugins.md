@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **88 marketplace plugins** organized by category: 85 local plugins plus 3 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`).
+Browse all **89 marketplace plugins** organized by category: 86 local plugins plus 3 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`).
 
 ## Quick Start - Essential Plugins
 
@@ -128,13 +128,14 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **documentation-generation** | OpenAPI specs, Mermaid diagrams, tutorials                                                                                                      | `/plugin install documentation-generation` |
 | **c4-architecture**          | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture`          |
 
-### 🔄 Workflows (7 plugins)
+### 🔄 Workflows (8 plugins)
 
 | Plugin                       | Description                                                                    | Install                                    |
 | ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------ |
 | **conductor**                | Context-Driven Development with tracks, specs, and phased implementation plans | `/plugin install conductor`                |
 | **git-pr-workflows**         | Git automation and PR enhancement                                              | `/plugin install git-pr-workflows`         |
 | **full-stack-orchestration** | End-to-end feature orchestration                                               | `/plugin install full-stack-orchestration` |
+| **operating-kit**            | Session lifecycle, pre-ship review, deploy with live verification + state doc update, prod log health check | `/plugin install operating-kit`            |
 | **tdd-workflows**            | Test-driven development methodology                                            | `/plugin install tdd-workflows`            |
 | **agent-teams**              | Parallel code review, debugging, feature, and research teams                   | `/plugin install agent-teams`              |
 | **ship-mate**                | Story-file to reviewed, tested PR workflow orchestration                       | `/plugin install ship-mate`                |

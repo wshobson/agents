@@ -722,6 +722,18 @@
       "category": "Coding"
     },
     {
+      "name": "operating-kit",
+      "source": {
+        "source": "local",
+        "path": "./plugins/operating-kit"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "payment-processing",
       "source": {
         "source": "local",
