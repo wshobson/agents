@@ -4,8 +4,12 @@ from unittest.mock import patch
 import pytest
 from claude_agent_sdk import AssistantMessage, ResultMessage, TextBlock
 
-from plugin_eval.layers.monte_carlo import MonteCarloAnalyzer, MonteCarloConfig, SimResult
-from plugin_eval.layers.monte_carlo import _simresult_from_messages
+from plugin_eval.layers.monte_carlo import (
+    MonteCarloAnalyzer,
+    MonteCarloConfig,
+    SimResult,
+    _simresult_from_messages,
+)
 
 
 def _assistant(text: str) -> AssistantMessage:
@@ -15,7 +19,11 @@ def _assistant(text: str) -> AssistantMessage:
 def _result(*, is_error: bool = False) -> ResultMessage:
     return ResultMessage(
         subtype="success" if not is_error else "error",
-        duration_ms=1, duration_api_ms=1, is_error=is_error, num_turns=1, session_id="t",
+        duration_ms=1,
+        duration_api_ms=1,
+        is_error=is_error,
+        num_turns=1,
+        session_id="t",
     )
 
 
@@ -66,7 +74,9 @@ class TestMonteCarloAnalyzer:
             SimResult(activated=True, quality_score=0.8 + i * 0.002, tokens=2500, duration_ms=1200)
             for i in range(48)
         ] + [
-            SimResult(activated=False, quality_score=0.0, tokens=500, duration_ms=200, errored=True),
+            SimResult(
+                activated=False, quality_score=0.0, tokens=500, duration_ms=200, errored=True
+            ),
             SimResult(activated=True, quality_score=0.75, tokens=8000, duration_ms=5000),
         ]
         stats = analyzer._compute_statistics(results)
