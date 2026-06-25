@@ -40,7 +40,6 @@ class MonteCarloConfig:
 
     n_runs: int = 50
     concurrency: int = 4
-    auth: str = "max"
     seed: int = 42
     progress_callback: Callable[[int, int], None] | None = None
 

@@ -147,9 +147,7 @@ def _measured_score(result: dict, key: str) -> float | None:
 @dataclass
 class JudgeConfig:
     judges: int = 1
-    auth: str = "max"
     concurrency: int = 4
-    model_tier: str = "auto"
 
 
 # ---------------------------------------------------------------------------

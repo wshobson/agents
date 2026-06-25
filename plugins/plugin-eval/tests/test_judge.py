@@ -59,7 +59,7 @@ class TestJudgeConfig:
     def test_default_config(self):
         config = JudgeConfig()
         assert config.judges == 1
-        assert config.auth == "max"
+        assert config.concurrency == 4
 
 
 class TestJudgeAnalyzer:

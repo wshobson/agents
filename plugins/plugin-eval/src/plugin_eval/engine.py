@@ -83,7 +83,6 @@ class EvalEngine:
 
             judge_config = JudgeConfig(
                 judges=self.config.judges,
-                auth=self.config.auth,
                 concurrency=self.config.concurrency,
             )
             judge = JudgeAnalyzer(judge_config)
@@ -98,7 +97,6 @@ class EvalEngine:
                 mc_config = MonteCarloConfig(
                     n_runs=n_runs,
                     concurrency=self.config.concurrency,
-                    auth=self.config.auth,
                 )
                 mc = MonteCarloAnalyzer(mc_config)
 

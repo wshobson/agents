@@ -21,7 +21,6 @@ class TestEvalConfig:
         config = EvalConfig()
         assert config.depth == Depth.STANDARD
         assert config.concurrency == 4
-        assert config.auth == "max"
 
     def test_custom_config(self):
         config = EvalConfig(depth=Depth.DEEP, concurrency=8)
