@@ -1155,7 +1155,7 @@
         "url": "https://github.com/MartinForReal/storymap-skill.git",
         "path": "."
       },
-      "description": "User story mapping (Jeff Patton style). Turns a goal, brief, or messy backlog into a sliced, prioritized delivery plan with per-persona stories. Four invocation modes (from scratch / brief / backlog / refinement), three prioritization methods (WSJF, RICE, MoSCoW), three slicing strategies (Patton classic, SAFe PI, Now/Next/Later). OKR coverage, dependency cycle detection, persona conflict resolution, slice-1 acceptance criteria, E2E test contract. Auto-activates in the Plan stage of Superpowers / gstack / GSD. Benchmark: 99.6% (255/256) on 25-eval suite, +79.2pp over no-skill baseline.",
+      "description": "User story mapping (Jeff Patton style). Turns a goal, brief, or messy backlog into a sliced, prioritized delivery plan with per-persona stories. Four invocation modes (from scratch / brief / backlog / refinement), three prioritization methods (WSJF, RICE, MoSCoW), three slicing strategies (Patton classic, SAFe PI, Now/Next/Later). OKR coverage, dependency cycle detection, persona conflict resolution, slice-1 acceptance criteria, E2E test contract. Auto-activates in the Plan stage of Superpowers / gstack / GSD.",
       "version": "0.0.3",
       "author": {
         "name": "MartinForReal",
