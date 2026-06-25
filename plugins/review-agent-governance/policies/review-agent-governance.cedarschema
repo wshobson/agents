@@ -4,7 +4,7 @@ entity Resource;
 action "Bash" appliesTo {
   principal: [User],
   resource: [Resource],
-  context: { command_pattern: String, target_branch: String }
+  context: { command_pattern: String, target_branch?: String }
 };
 
 action "Write" appliesTo {

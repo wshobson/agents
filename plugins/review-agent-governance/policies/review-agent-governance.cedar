@@ -42,6 +42,7 @@ forbid (
     resource
 ) when {
     ["git push", "git push --force", "git push -f"].contains(context.command_pattern) &&
+    context has target_branch &&
     ["main", "master", "release", "production"].contains(context.target_branch)
 };
 
