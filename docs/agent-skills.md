@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **158 local specialized skills** across 43 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **158 local specialized skills** across 44 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -68,7 +68,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 
 | Skill                       | Description                                                                             |
 | --------------------------- | --------------------------------------------------------------------------------------- |
-| **defi-protocol-templates** | Implement DeFi protocols with templates for staking, AMMs, governance, and lending      |
+| **defi-protocol-templates** | Implement DeFi protocols with templates for staking, AMMs, governance, and flash loans      |
 | **nft-standards**           | Implement NFT standards (ERC-721, ERC-1155) with metadata and marketplace integration   |
 | **solidity-security**       | Master smart contract security to prevent vulnerabilities and implement secure patterns |
 | **web3-testing**            | Test smart contracts using Hardhat and Foundry with unit tests and mainnet forking      |
