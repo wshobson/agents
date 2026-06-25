@@ -1,0 +1,12 @@
+{
+  "name": "runapi-mcp",
+  "description": "RunAPI MCP server for browsing models, checking pricing, and creating image, video, music, audio, and LLM tasks.",
+  "version": "0.1.3",
+  "author": {
+    "name": "RunAPI",
+    "url": "https://runapi.ai"
+  },
+  "homepage": "https://github.com/runapi-ai/mcp",
+  "license": "Apache-2.0",
+  "category": "ai-ml"
+}

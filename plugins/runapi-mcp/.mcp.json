@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "runapi": {
+      "command": "npx",
+      "args": ["-y", "@runapi.ai/mcp@0.1.8"],
+      "env": {
+        "RUNAPI_API_KEY": "${RUNAPI_API_KEY}"
+      }
+    }
+  }
+}
