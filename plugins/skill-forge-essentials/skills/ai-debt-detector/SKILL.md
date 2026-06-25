@@ -68,4 +68,4 @@ After code generation, scan for these AI-specific debt patterns:
 
 ## Why This Exists
 
-June 2026: companies spend 44% of AI tokens fixing bugs that AI generated (Entelligence AI). CodeRabbit analysis found AI produces 1.7x more problems than human code. The agent produces code that looks polished even when it's wrong. This skill is the countermeasure.
+AI agents systematically optimize for "looks correct" and "passes the happy path." They miss failure modes, orphan resources, and hallucinate dependencies at rates significantly higher than manual code. This skill forces an audit for those specific blind spots.

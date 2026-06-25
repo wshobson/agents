@@ -926,6 +926,18 @@
       "category": "Coding"
     },
     {
+      "name": "skill-forge-essentials",
+      "source": {
+        "source": "local",
+        "path": "./plugins/skill-forge-essentials"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "social-publishing",
       "source": {
         "source": "local",

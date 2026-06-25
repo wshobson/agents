@@ -154,6 +154,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **comprehensive-review**       | Multi-perspective code analysis               | `/plugin install comprehensive-review`       |
 | **performance-testing-review** | Performance analysis and test coverage review | `/plugin install performance-testing-review` |
 | **plugin-eval**                | Three-layer quality evaluation framework for Claude Code plugins | `/plugin install plugin-eval`                |
+| **skill-forge-essentials**    | Behavioral skills for AI code debt detection and session compaction survival | `/plugin install skill-forge-essentials`    |
 
 ### 🛠️ Utilities (5 plugins)
 
