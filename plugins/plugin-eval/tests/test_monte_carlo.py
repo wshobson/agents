@@ -4,6 +4,36 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from plugin_eval.layers.monte_carlo import MonteCarloAnalyzer, MonteCarloConfig, SimResult
+from claude_agent_sdk import AssistantMessage, ResultMessage, TextBlock
+from plugin_eval.layers.monte_carlo import _simresult_from_messages
+
+
+def _assistant(text: str) -> AssistantMessage:
+    return AssistantMessage(content=[TextBlock(text=text)], model="claude-sonnet-4-6")
+
+
+def _result(*, is_error: bool = False) -> ResultMessage:
+    return ResultMessage(
+        subtype="success" if not is_error else "error",
+        duration_ms=1, duration_api_ms=1, is_error=is_error, num_turns=1, session_id="t",
+    )
+
+
+class TestSimResultFromMessages:
+    def test_activated_when_assistant_text_present(self):
+        sim = _simresult_from_messages([_assistant("x" * 250), _result()], "p", 10)
+        assert sim.activated is True
+        assert sim.quality_score == 0.5
+        assert sim.errored is False
+
+    def test_not_activated_when_no_text(self):
+        sim = _simresult_from_messages([_result()], "p", 10)
+        assert sim.activated is False
+        assert sim.quality_score == 0.0
+
+    def test_errored_result_flagged(self):
+        sim = _simresult_from_messages([_result(is_error=True)], "p", 10)
+        assert sim.errored is True
 
 
 class TestSimResult:
