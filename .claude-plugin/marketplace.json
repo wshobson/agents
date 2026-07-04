@@ -1218,6 +1218,19 @@
       "homepage": "https://github.com/aadilr/changethisfile-mcp",
       "license": "MIT",
       "category": "utilities"
+    },
+    {
+      "name": "x402-payment",
+      "source": "./plugins/x402-payment",
+      "description": "x402 payment protocol for MCP servers \u2014 monetize any API via HTTP 402 + Stripe in one line. Pay-per-call billing for AI agents. Integrate Stripe or crypto payments with zero code changes.",
+      "version": "1.0.0",
+      "author": {
+        "name": "GadgetHumans",
+        "url": "https://api.gadgethumans.com"
+      },
+      "homepage": "https://api.gadgethumans.com",
+      "license": "MIT",
+      "category": "payment"
     }
   ]
 }

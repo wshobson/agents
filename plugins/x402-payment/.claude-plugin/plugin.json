@@ -1,0 +1,10 @@
+{
+  "name": "x402-payment",
+  "version": "1.0.0",
+  "description": "x402 payment protocol for MCP servers — monetize any API via HTTP 402 + Stripe in one line. Pay-per-call billing for AI agents.",
+  "author": {
+    "name": "GadgetHumans",
+    "url": "https://api.gadgethumans.com"
+  },
+  "license": "MIT"
+}

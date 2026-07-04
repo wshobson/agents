@@ -1020,6 +1020,18 @@
         "authentication": "ON_USE"
       },
       "category": "Coding"
+    },
+    {
+      "name": "x402-payment",
+      "source": {
+        "source": "local",
+        "path": "./plugins/x402-payment"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
     }
   ]
 }

@@ -942,6 +942,17 @@
         "email": "seth@major7apps.com"
       },
       "license": "MIT"
+    },
+    {
+      "name": "x402-payment",
+      "source": "./plugins/x402-payment",
+      "version": "1.0.0",
+      "description": "x402 payment protocol for MCP servers \u2014 monetize any API via HTTP 402 + Stripe in one line. Pay-per-call billing for AI agents.",
+      "author": {
+        "name": "GadgetHumans",
+        "email": ""
+      },
+      "license": "MIT"
     }
   ]
 }
