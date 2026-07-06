@@ -33,6 +33,17 @@
       "license": "MIT"
     },
     {
+      "name": "agent-preflight",
+      "source": "./plugins/agent-preflight",
+      "version": "1.0.0",
+      "description": "Preflight checks and receipts before AI agents modify real repositories",
+      "author": {
+        "name": "Wealth Hunter",
+        "email": ""
+      },
+      "license": "MIT"
+    },
+    {
       "name": "agent-teams",
       "source": "./plugins/agent-teams",
       "version": "1.0.3",

@@ -1,0 +1,10 @@
+{
+  "name": "agent-preflight",
+  "version": "1.0.0",
+  "description": "Preflight checks and receipts before AI agents modify real repositories",
+  "author": {
+    "name": "Wealth Hunter",
+    "url": "https://github.com/el-zachariah"
+  },
+  "license": "MIT"
+}
