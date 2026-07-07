@@ -245,10 +245,11 @@ TOOL_NAME_MAPS: dict[str, dict[str, str]] = {
 
 
 # Model alias map: bare Claude alias -> full provider-prefixed ID per harness.
-# Targets verified against each harness's published model catalog 2026-06:
+# Targets verified against each harness's published model catalog 2026-07:
 # Codex recommends gpt-5.5 (top) / gpt-5.4-mini (light tasks, subagents);
 # Copilot CLI serves Claude models natively, so aliases map Claude -> Claude
-# (no Fable in Copilot — top available Claude is Opus 4.8, dotted-ID format);
+# (Fable 5 and Sonnet 5 GA in Copilot since 2026-06-30; dotted-ID format for
+# minor-versioned models);
 # Gemini CLI's GA models remain gemini-2.5-* (3.x is preview-gated and its
 # IDs churn), so the gemini column intentionally stays on the 2.5 family.
 MODEL_ALIASES: dict[str, dict[str, str]] = {
@@ -267,11 +268,11 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
         "inherit": "gpt-5.5",
     },
     "copilot": {
-        "fable": "claude-opus-4.8",
+        "fable": "claude-fable-5",
         "opus": "claude-opus-4.8",
-        "sonnet": "claude-sonnet-4.6",
+        "sonnet": "claude-sonnet-5",
         "haiku": "claude-haiku-4.5",
-        "inherit": "claude-sonnet-4.6",
+        "inherit": "claude-sonnet-5",
     },
     "cursor": {
         "fable": "inherit",
@@ -283,9 +284,9 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
     "opencode": {
         "fable": "anthropic/claude-fable-5",
         "opus": "anthropic/claude-opus-4-8",
-        "sonnet": "anthropic/claude-sonnet-4-6",
+        "sonnet": "anthropic/claude-sonnet-5",
         "haiku": "anthropic/claude-haiku-4-5",
-        "inherit": "anthropic/claude-sonnet-4-6",
+        "inherit": "anthropic/claude-sonnet-5",
     },
     "gemini": {
         "fable": "gemini-2.5-pro",

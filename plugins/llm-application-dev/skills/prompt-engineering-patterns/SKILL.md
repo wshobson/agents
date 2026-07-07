@@ -85,7 +85,7 @@ class SQLQuery(BaseModel):
     tables_used: list[str] = Field(description="List of tables referenced")
 
 # Initialize model with structured output
-llm = ChatAnthropic(model="claude-sonnet-4-6")
+llm = ChatAnthropic(model="claude-sonnet-5")
 structured_llm = llm.with_structured_output(SQLQuery)
 
 # Create prompt template
