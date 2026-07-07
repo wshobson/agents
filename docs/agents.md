@@ -1,6 +1,6 @@
 # Agent Reference
 
-Complete reference for all **194 local specialized AI agents** organized by category with model assignments.
+Complete reference for all **199 local specialized AI agents** organized by category with model assignments.
 
 ## Agent Categories
 
@@ -232,8 +232,8 @@ Agents are assigned to specific Claude models based on task complexity and compu
 | ------- | ----------- | --------------------------------------------------------------- |
 | Fable   | 0           | Longest-horizon autonomous work (tier above Opus; see criteria) |
 | Opus    | 54          | Critical architecture, security, code review, production coding |
-| Sonnet  | 66          | Complex tasks, support with intelligence                        |
-| Haiku   | 22          | Fast operational tasks                                          |
+| Sonnet  | 68          | Complex tasks, support with intelligence                        |
+| Haiku   | 25          | Fast operational tasks                                          |
 | Inherit | 52          | Complex tasks where the user chooses the model at runtime       |
 
 ### Model Selection Criteria
