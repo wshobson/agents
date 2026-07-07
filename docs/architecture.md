@@ -36,7 +36,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **88 marketplace plugins** (85 local + 3 external via git-subdir) optimized for specific use cases
+- **89 marketplace plugins** (86 local + 3 external via git-subdir) optimized for specific use cases
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 6 plugins (debugging, backend, frontend, UI, multi-platform, essentials)
@@ -48,7 +48,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Component Breakdown
 
-**194 Local Specialized Agents**
+**199 Local Specialized Agents**
 
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
@@ -81,7 +81,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (88 plugins)
+│   └── marketplace.json          # Marketplace catalog (89 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -206,8 +206,8 @@ The system uses Claude Fable, Opus, Sonnet, Haiku, and Inherit assignments strat
 | ------- | --------- | ----------------------------------------------- |
 | Fable   | 0 agents  | Longest-horizon autonomous work (opt-in tier)   |
 | Opus    | 54 agents | Critical architecture, security, code review    |
-| Sonnet  | 66 agents | Complex tasks, support with intelligence        |
-| Haiku   | 22 agents | Fast operational tasks                          |
+| Sonnet  | 68 agents | Complex tasks, support with intelligence        |
+| Haiku   | 25 agents | Fast operational tasks                          |
 | Inherit | 52 agents | Defers model choice to the user at runtime      |
 
 ### Selection Criteria
@@ -263,7 +263,7 @@ code-reviewer (Sonnet) validates architecture
 ### Component Coverage
 
 - **100% agent coverage** - all plugins include at least one agent
-- **100% component availability** - all 194 local agents accessible across plugins
+- **100% component availability** - all 199 local agents accessible across plugins
 - **Efficient distribution** - 5.5 components per plugin average
 
 ### Discoverability
@@ -393,5 +393,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 88 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 89 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows
