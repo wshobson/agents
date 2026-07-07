@@ -16,7 +16,7 @@ artifacts (`.codex/`, `.cursor-plugin/`, `.opencode/`, `commands/`) are generate
 ## Never
 
 - Never commit secrets or hardcode credentials.
-- Never modify `.claude-plugin/marketplace.json` from inside a plugin PR — it's the registry.
+- Never hand-edit generated registries (`.agents/plugins/marketplace.json`, `.cursor-plugin/`) — plugin PRs register the plugin in `.claude-plugin/marketplace.json`, then run `make generate-all` (see CONTRIBUTING.md).
 - Never run destructive git operations (force-push, reset --hard, branch -D) without explicit ask.
 
 See `docs/authoring.md` for the portable-content style guide.
