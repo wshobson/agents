@@ -149,7 +149,7 @@ Use the `receipt-verifier` agent for help interpreting verification failures.
 
 ## Related
 
-- **npm**: [protect-mcp](https://www.npmjs.com/package/protect-mcp) — 10K+ monthly downloads
+- **npm**: [protect-mcp](https://www.npmjs.com/package/protect-mcp)
 - **Verification CLI**: [@veritasacta/verify](https://www.npmjs.com/package/@veritasacta/verify)
 - **Cedar integration**: Contributor to [cedar-policy/cedar-for-agents](https://github.com/cedar-policy/cedar-for-agents) (PR #64 merged)
 - **Microsoft AGT**: Integrated in [microsoft/agent-governance-toolkit](https://github.com/microsoft/agent-governance-toolkit) (PR #667 merged)

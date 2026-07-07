@@ -200,7 +200,7 @@ Each receipt is a JSON file with this structure:
 
 ## Related
 
-- **npm**: [protect-mcp](https://www.npmjs.com/package/protect-mcp) (v0.5.5, 10K+ monthly downloads)
+- **npm**: [protect-mcp](https://www.npmjs.com/package/protect-mcp)
 - **Verify CLI**: [@veritasacta/verify](https://www.npmjs.com/package/@veritasacta/verify)
 - **Source**: [github.com/ScopeBlind/scopeblind-gateway](https://github.com/ScopeBlind/scopeblind-gateway)
 - **Protocol**: [veritasacta.com](https://veritasacta.com)

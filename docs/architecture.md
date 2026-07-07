@@ -48,7 +48,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Component Breakdown
 
-**192 Local Specialized Agents**
+**194 Local Specialized Agents**
 
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
@@ -60,7 +60,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 - Complex operations like full-stack development, security hardening, ML pipelines, incident response
 - Pre-configured agent workflows
 
-**102 Local Commands**
+**106 Local Commands**
 
 - Optimized utilities including:
   - Project scaffolding (Python, TypeScript, Rust)
@@ -69,11 +69,11 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**156 Local Agent Skills**
+**158 Local Agent Skills**
 
 - Modular knowledge packages
 - Progressive disclosure architecture
-- Domain-specific expertise across 41 plugins
+- Domain-specific expertise across 44 plugins
 - Spec-compliant (Anthropic Agent Skills Specification)
 
 ## Repository Structure
