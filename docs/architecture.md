@@ -52,7 +52,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
-- Model-optimized with three-tier strategy (Opus, Sonnet, Haiku) for performance and cost
+- Model-optimized with a five-tier strategy (Fable, Opus, Sonnet, Haiku, Inherit) for performance and cost
 
 **16 Workflow Orchestrators**
 
@@ -198,16 +198,17 @@ See [Agent Skills](./agent-skills.md) for complete details on the 158 skills.
 
 ## Model Configuration Strategy
 
-### Four-Tier Architecture
+### Five-Tier Architecture
 
-The system uses Claude Opus, Sonnet, Haiku, and Inherit assignments strategically:
+The system uses Claude Fable, Opus, Sonnet, Haiku, and Inherit assignments strategically:
 
-| Model   | Count     | Use Case                                     |
-| ------- | --------- | -------------------------------------------- |
-| Opus    | 54 agents | Critical architecture, security, code review |
-| Sonnet  | 62 agents | Complex tasks, support with intelligence     |
-| Haiku   | 20 agents | Fast operational tasks                       |
-| Inherit | 49 agents | Defers model choice to the user at runtime   |
+| Model   | Count     | Use Case                                        |
+| ------- | --------- | ----------------------------------------------- |
+| Fable   | 0 agents  | Longest-horizon autonomous work (opt-in tier)   |
+| Opus    | 54 agents | Critical architecture, security, code review    |
+| Sonnet  | 66 agents | Complex tasks, support with intelligence        |
+| Haiku   | 22 agents | Fast operational tasks                          |
+| Inherit | 52 agents | Defers model choice to the user at runtime      |
 
 ### Selection Criteria
 

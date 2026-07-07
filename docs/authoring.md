@@ -112,18 +112,19 @@ clean naming — pick distinct names for skill/command pairs within a plugin.
 
 | Source field | Codex | Cursor | OpenCode | Gemini | Copilot |
 |---|---|---|---|---|---|---|
-| `model: fable` | `gpt-5.5` | `inherit` | `anthropic/claude-fable-5` | `gemini-2.5-pro` | `claude-opus-4.8` |
+| `model: fable` | `gpt-5.5` | `inherit` | `anthropic/claude-fable-5` | `gemini-2.5-pro` | `claude-fable-5` |
 | `model: opus` | `gpt-5.5` | `inherit` | `anthropic/claude-opus-4-8` | `gemini-2.5-pro` | `claude-opus-4.8` |
-| `model: sonnet` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `claude-sonnet-4.6` |
+| `model: sonnet` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-sonnet-5` | `gemini-2.5-pro` | `claude-sonnet-5` |
 | `model: haiku` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-haiku-4-5` | `gemini-2.5-flash` | `claude-haiku-4.5` |
-| `model: inherit` | `gpt-5.5` | `inherit` | `anthropic/claude-sonnet-4-6` | `gemini-2.5-pro` | `claude-sonnet-4.6` |
+| `model: inherit` | `gpt-5.5` | `inherit` | `anthropic/claude-sonnet-5` | `gemini-2.5-pro` | `claude-sonnet-5` |
 
 The adapter handles mapping. The `BARE_MODEL_ALIAS` lint is informational — it just notes
 that the mapping is implicit. If you want explicit, use `inherit`.
 
 Mapping targets live in `tools/adapters/capabilities.py` (`MODEL_ALIASES`) and track each
-harness's published catalog (last verified June 2026). Copilot CLI serves Claude models
-natively, so its aliases map Claude → Claude using Copilot's dotted IDs. Gemini stays on
+harness's published catalog (last verified July 2026). Copilot CLI serves Claude models
+natively — including Fable 5 and Sonnet 5 since late June 2026 — so its aliases map
+Claude → Claude using Copilot's IDs (dotted for minor-versioned models). Gemini stays on
 the GA `gemini-2.5-*` family because Gemini 3.x ships only access-gated `-preview` IDs.
 
 `fable` (Claude Fable 5) is the tier above `opus`, reserved for the longest-horizon
