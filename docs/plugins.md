@@ -148,13 +148,14 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **unit-testing**   | Automated unit test generation (Python/JavaScript)                                   | `/plugin install unit-testing`   |
 | **qa-orchestra**   | Multi-agent QA toolkit (10 agents, Chrome MCP live validation, stack-agnostic) — external plugin | `/plugin install qa-orchestra`   |
 
-### 🔍 Quality (3 plugins)
+### 🔍 Quality (4 plugins)
 
 | Plugin                         | Description                                   | Install                                      |
 | ------------------------------ | --------------------------------------------- | -------------------------------------------- |
 | **comprehensive-review**       | Multi-perspective code analysis               | `/plugin install comprehensive-review`       |
 | **performance-testing-review** | Performance analysis and test coverage review | `/plugin install performance-testing-review` |
 | **plugin-eval**                | Three-layer quality evaluation framework for Claude Code plugins | `/plugin install plugin-eval`                |
+| **skill-forge-essentials**    | Behavioral skills for AI code debt detection and session compaction survival | `/plugin install skill-forge-essentials`    |
 
 ### 🛠️ Utilities (5 plugins)
 
@@ -361,7 +362,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 88 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 89 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 

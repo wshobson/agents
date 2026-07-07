@@ -1,0 +1,16 @@
+{
+  "name": "skill-forge-essentials",
+  "version": "1.0.0",
+  "description": "Three behavioral skills addressing AI-specific failure patterns: hidden code debt from agent generation, context compaction amnesia, and imprecise Design Mode edits",
+  "skills": "./skills/",
+  "author": {
+    "name": "Adit Jain",
+    "email": "aditjain2005@gmail.com"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Skill Forge Essentials",
+    "shortDescription": "Three behavioral skills addressing AI-specific failure patterns: hidden code debt from agent generation, context\u2026",
+    "category": "Coding"
+  }
+}

@@ -1231,6 +1231,18 @@
       "homepage": "https://github.com/aadilr/changethisfile-mcp",
       "license": "MIT",
       "category": "utilities"
+    },
+    {
+      "name": "skill-forge-essentials",
+      "source": "./plugins/skill-forge-essentials",
+      "description": "Behavioral skills for AI-specific failure patterns: hidden code debt from agent generation and context compaction amnesia via behavioral self-enforcement",
+      "version": "1.0.0",
+      "author": {
+        "name": "Adit Jain",
+        "url": "https://github.com/Adit-Jain-srm"
+      },
+      "license": "MIT",
+      "category": "quality"
     }
   ]
 }
