@@ -250,7 +250,7 @@ class TestOpenCodeValidator:
         agents = tmp_path / ".opencode" / "agents"
         agents.mkdir(parents=True)
         (agents / "no_mode.md").write_text(
-            "---\nname: no_mode\ndescription: Use when testing.\nmodel: anthropic/claude-sonnet-4-6\n---\n\nBody.\n"
+            "---\nname: no_mode\ndescription: Use when testing.\nmodel: anthropic/claude-sonnet-5\n---\n\nBody.\n"
         )
 
         report = Report()
@@ -275,7 +275,7 @@ class TestOpenCodeValidator:
         agents.mkdir(parents=True)
         (agents / "bad_perm.md").write_text(
             "---\nname: bad_perm\ndescription: Use when testing.\nmode: subagent\n"
-            "model: anthropic/claude-sonnet-4-6\npermission:\n  fly_drone: allow\n---\n\nBody.\n"
+            "model: anthropic/claude-sonnet-5\npermission:\n  fly_drone: allow\n---\n\nBody.\n"
         )
 
         report = Report()
@@ -295,7 +295,7 @@ class TestOpenCodeValidator:
         agents.mkdir(parents=True)
         (agents / "nested.md").write_text(
             "---\nname: nested\ndescription: Use when nested.\nmode: subagent\n"
-            "model: anthropic/claude-sonnet-4-6\n"
+            "model: anthropic/claude-sonnet-5\n"
             "metadata:\n  permission:\n    fly_drone: allow\n"
             "---\n\nBody.\n"
         )
@@ -311,7 +311,7 @@ class TestOpenCodeValidator:
         agents.mkdir(parents=True)
         (agents / "bad_value.md").write_text(
             "---\nname: bad_value\ndescription: Use when testing.\nmode: subagent\n"
-            "model: anthropic/claude-sonnet-4-6\npermission:\n  read: maybe\n---\n\nBody.\n"
+            "model: anthropic/claude-sonnet-5\npermission:\n  read: maybe\n---\n\nBody.\n"
         )
 
         report = Report()

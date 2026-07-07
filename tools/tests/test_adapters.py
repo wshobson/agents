@@ -1014,10 +1014,10 @@ class TestCopilotAdapter:
         CopilotAdapter(output_root=output_root).emit_plugin(plugin)
 
         expected = {
-            "sonnet-agent": "claude-sonnet-4.6",
+            "sonnet-agent": "claude-sonnet-5",
             "haiku-agent": "claude-haiku-4.5",
-            "inherit-agent": "claude-sonnet-4.6",
-            "default-model": "claude-sonnet-4.6",
+            "inherit-agent": "claude-sonnet-5",
+            "default-model": "claude-sonnet-5",
         }
         for name, exp_model in expected.items():
             fm, _ = parse_frontmatter(
@@ -1099,7 +1099,7 @@ class TestCopilotAdapter:
         fm, body = parse_frontmatter(content)
         assert fm["name"] == "demo__advisory"
         assert fm["description"] == "Use when advising."
-        assert fm["model"] == "claude-sonnet-4.6"
+        assert fm["model"] == "claude-sonnet-5"
         assert "tools:" in content
 
     def test_no_tools_field(self, tmp_path: Path, output_root: Path):
