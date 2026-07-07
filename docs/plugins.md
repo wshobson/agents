@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **88 marketplace plugins** organized by category: 85 local plugins plus 3 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`).
+Browse all **89 marketplace plugins** organized by category: 86 local plugins plus 3 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`).
 
 ## Quick Start - Essential Plugins
 
@@ -147,7 +147,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **unit-testing**   | Automated unit test generation (Python/JavaScript)                                   | `/plugin install unit-testing`   |
 | **qa-orchestra**   | Multi-agent QA toolkit (10 agents, Chrome MCP live validation, stack-agnostic) — external plugin | `/plugin install qa-orchestra`   |
 
-### 🔍 Quality (3 plugins)
+### 🔍 Quality (4 plugins)
 
 | Plugin                         | Description                                   | Install                                      |
 | ------------------------------ | --------------------------------------------- | -------------------------------------------- |
@@ -361,7 +361,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 88 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 89 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
