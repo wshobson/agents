@@ -672,6 +672,19 @@
       "license": "MIT"
     },
     {
+      "name": "operating-kit",
+      "source": "./plugins/operating-kit",
+      "version": "1.0.0",
+      "description": "Portable operating method: session lifecycle agents (session-start/end), pre-ship code review, deploy with live verification, and production log health check. All agents use {{placeholders}} that adapt to your project.",
+      "author": {
+        "name": "Sharrmavishal",
+        "email": ""
+      },
+      "homepage": "https://github.com/Sharrmavishal/operating-kit",
+      "license": "MIT",
+      "category": "Coding"
+    },
+    {
       "name": "payment-processing",
       "source": "./plugins/payment-processing",
       "version": "1.2.3",

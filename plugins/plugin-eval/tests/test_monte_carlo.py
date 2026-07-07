@@ -20,7 +20,7 @@ from plugin_eval.layers.monte_carlo import (  # noqa: E402
 
 
 def _assistant(text: str) -> AssistantMessage:
-    return AssistantMessage(content=[TextBlock(text=text)], model="claude-sonnet-4-6")
+    return AssistantMessage(content=[TextBlock(text=text)], model="claude-sonnet-5")
 
 
 def _result(

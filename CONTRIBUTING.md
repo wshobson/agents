@@ -24,6 +24,15 @@ Markdown source.
 
 Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
 
+## Commercial content and disclosure
+
+- Plugin content must not funnel users to paid products, affiliate programs, or
+  revenue-sharing services. Submissions whose primary purpose is promotion are
+  closed as spam.
+- If a plugin wraps a third-party API, package, or service that you own or
+  maintain, disclose that relationship in the PR description and the plugin
+  README.
+
 ## Quality gates
 
 Every PR runs these on CI (`.github/workflows/`); run them locally before pushing:
