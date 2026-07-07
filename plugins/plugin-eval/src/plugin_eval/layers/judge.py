@@ -39,7 +39,7 @@ Score 1.0 — Perfectly calibrated: Minimal surface area, maximum cohesion, idea
 
 _MODEL_MAP: dict[str, str] = {
     "haiku": "claude-haiku-4-5-20251001",
-    "sonnet": "claude-sonnet-4-6",
+    "sonnet": "claude-sonnet-5",
     "opus": "claude-opus-4-8",
 }
 
@@ -82,7 +82,7 @@ def _extract_and_parse(messages: list) -> dict:
         return {"unmeasured": True, "error": "judge response was not valid JSON", "raw": raw}
 
 
-async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-4-6") -> dict:
+async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-5") -> dict:
     """Call Claude via the Agent SDK and return a parsed JSON dict.
 
     Degrades to an {"unmeasured": True, ...} marker (never raises) when the SDK
