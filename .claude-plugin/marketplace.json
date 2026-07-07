@@ -63,6 +63,19 @@
       "category": "workflows"
     },
     {
+      "name": "operating-kit",
+      "source": "./plugins/operating-kit",
+      "description": "Portable operating method: session lifecycle agents, pre-ship code review, deploy with live verification and state doc update, and production log health check",
+      "version": "1.0.0",
+      "author": {
+        "name": "Sharrmavishal",
+        "url": "https://github.com/Sharrmavishal"
+      },
+      "homepage": "https://github.com/Sharrmavishal/operating-kit",
+      "license": "MIT",
+      "category": "workflows"
+    },
+    {
       "name": "backend-development",
       "source": "./plugins/backend-development",
       "description": "Backend API design, GraphQL architecture, workflow orchestration with Temporal, and test-driven backend development",
@@ -715,7 +728,7 @@
     {
       "name": "social-publishing",
       "source": "./plugins/social-publishing",
-      "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw \u2014 one workspace API key covers everything",
+      "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw — one workspace API key covers everything",
       "version": "1.0.0",
       "author": {
         "name": "ndesv21",

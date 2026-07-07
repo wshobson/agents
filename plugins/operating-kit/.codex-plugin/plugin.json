@@ -1,0 +1,17 @@
+{
+  "name": "operating-kit",
+  "version": "1.0.0",
+  "description": "Portable operating method: session lifecycle agents (session-start/end), pre-ship code review, deploy with live verification, and production log health check. All agents use {{placeholders}} that adapt to your project.",
+  "skills": "./skills/",
+  "author": {
+    "name": "Sharrmavishal",
+    "url": "https://github.com/Sharrmavishal"
+  },
+  "homepage": "https://github.com/Sharrmavishal/operating-kit",
+  "license": "MIT",
+  "interface": {
+    "displayName": "Operating Kit",
+    "shortDescription": "Portable operating method: session lifecycle agents (session-start/end), pre-ship code review, deploy with live\u2026",
+    "category": "Coding"
+  }
+}
