@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **91 marketplace plugins** organized by category: 88 local plugins plus 3 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`).
+Browse all **92 marketplace plugins** organized by category: 88 local plugins plus 4 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`, `ciagent`).
 
 ## Quick Start - Essential Plugins
 
@@ -141,12 +141,13 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **ship-mate**                | Story-file to reviewed, tested PR workflow orchestration                       | `/plugin install ship-mate`                |
 | **storymap-skill**           | User story mapping (Jeff Patton) with WSJF/RICE/MoSCoW prioritization — external plugin | `/plugin install storymap-skill`           |
 
-### ✅ Testing (2 plugins)
+### ✅ Testing (3 plugins)
 
 | Plugin             | Description                                                                          | Install                          |
 | ------------------ | ------------------------------------------------------------------------------------ | -------------------------------- |
 | **unit-testing**   | Automated unit test generation (Python/JavaScript)                                   | `/plugin install unit-testing`   |
 | **qa-orchestra**   | Multi-agent QA toolkit (10 agents, Chrome MCP live validation, stack-agnostic) — external plugin | `/plugin install qa-orchestra`   |
+| **ciagent**        | Pytest-native regression testing for AI agents (golden-trace diffing, stability runs with flip attribution, LLM-judge audit) — external plugin | `/plugin install ciagent`        |
 
 ### 🔍 Quality (4 plugins)
 

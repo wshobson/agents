@@ -1095,6 +1095,23 @@
       "category": "testing"
     },
     {
+      "name": "ciagent",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/suniel12/ciagent.git",
+        "path": "plugins/ciagent"
+      },
+      "description": "Pytest-native regression testing for the AI agent being built — the onboard skill records golden baselines and generates a test spec; the check skill runs trace-diff regression, multi-run stability with verdict-flip attribution, and LLM-judge audits after every agent change.",
+      "version": "0.10.0",
+      "author": {
+        "name": "Sunil Pandey",
+        "url": "https://github.com/suniel12"
+      },
+      "homepage": "https://github.com/suniel12/ciagent",
+      "license": "Apache-2.0",
+      "category": "testing"
+    },
+    {
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
       "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 decisions are policy-gated before they run and every decision produces a tamper-evident receipt verifiable offline.",
