@@ -21,7 +21,7 @@ async def analyze_sentiment(text: str) -> SentimentAnalysis:
     client = Anthropic()
 
     message = client.messages.create(
-        model="claude-sonnet-4-6",
+        model="claude-sonnet-5",
         max_tokens=500,
         messages=[{
             "role": "user",
@@ -324,7 +324,7 @@ client = Anthropic()
 
 # Use prompt caching for repeated system prompts
 response = client.messages.create(
-    model="claude-sonnet-4-6",
+    model="claude-sonnet-5",
     max_tokens=1000,
     system=[
         {
