@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **89 marketplace plugins** organized by category: 86 local plugins plus 3 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`).
+Browse all **90 marketplace plugins** organized by category: 87 local plugins plus 3 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`).
 
 ## Quick Start - Essential Plugins
 
@@ -362,7 +362,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 89 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 90 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
