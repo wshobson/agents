@@ -1,0 +1,18 @@
+{
+  "name": "hermes-tweet",
+  "version": "0.1.6",
+  "description": "Hermes Agent plugin for X/Twitter research, timeline reading, tweet analysis, and approval-gated tweet actions through Hermes Tweet",
+  "skills": "./skills/",
+  "author": {
+    "name": "Xquik",
+    "url": "https://github.com/Xquik-dev"
+  },
+  "homepage": "https://github.com/Xquik-dev/hermes-tweet#readme",
+  "repository": "https://github.com/Xquik-dev/hermes-tweet",
+  "license": "MIT",
+  "interface": {
+    "displayName": "Hermes Tweet",
+    "shortDescription": "Hermes Agent plugin for X/Twitter research, timeline reading, tweet analysis, and approval-gated tweet actions\u2026",
+    "category": "marketing"
+  }
+}
