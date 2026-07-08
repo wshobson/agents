@@ -159,7 +159,7 @@ If both plugins are installed, run them side by side:
         "hooks": [
           {
             "type": "command",
-            "command": "npx protect-mcp@0.5.5 evaluate --policy ./protect.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
+            "command": "npx protect-mcp@0.7.4 evaluate --policy ./protect.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
           }
         ]
       },
@@ -168,7 +168,7 @@ If both plugins are installed, run them side by side:
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -f ./.review-approved ]; then exit 0; fi; npx protect-mcp@0.5.5 evaluate --policy ./review-governance.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
+            "command": "if [ -f ./.review-approved ]; then exit 0; fi; npx protect-mcp@0.7.4 evaluate --policy ./review-governance.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
           }
         ]
       }

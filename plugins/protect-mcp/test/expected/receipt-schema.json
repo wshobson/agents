@@ -1,32 +1,81 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://veritasacta.com/schemas/receipt-v1.json",
-  "title": "Veritas Acta Decision Receipt v1",
-  "description": "Expected shape of a protect-mcp-produced receipt. Mirrors draft-farley-acta-signed-receipts.",
+  "$id": "https://veritasacta.com/schemas/receipt-v2.json",
+  "title": "Veritas Acta Decision Receipt (v2 envelope)",
+  "description": "Expected shape of a protect-mcp@0.7.4 receipt. Mirrors draft-farley-acta-signed-receipts; the decision facts live in payload, signed as a unit.",
   "type": "object",
   "required": [
-    "receipt_id",
-    "receipt_version",
-    "issuer_id",
-    "event_time",
-    "tool_name",
-    "decision",
-    "public_key",
+    "v",
+    "type",
+    "algorithm",
+    "kid",
+    "issuer",
+    "issued_at",
+    "payload",
     "signature"
   ],
   "properties": {
-    "receipt_id":      { "type": "string", "pattern": "^rec_" },
-    "receipt_version": { "type": "string", "const": "1.0" },
-    "issuer_id":       { "type": "string" },
-    "event_time":      { "type": "string", "format": "date-time" },
-    "tool_name":       { "type": "string" },
-    "input_hash":      { "type": "string", "pattern": "^sha256:" },
-    "decision":        { "type": "string", "enum": ["allow", "deny"] },
-    "policy_id":       { "type": "string" },
-    "policy_digest":   { "type": "string", "pattern": "^sha256:" },
-    "parent_receipt_id": { "type": ["string", "null"] },
-    "public_key":      { "type": "string", "minLength": 32 },
-    "signature":       { "type": "string", "minLength": 32 }
+    "v": {
+      "type": "integer",
+      "const": 2
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "decision_receipt",
+        "gateway_restraint"
+      ]
+    },
+    "algorithm": {
+      "type": "string",
+      "const": "ed25519"
+    },
+    "kid": {
+      "type": "string"
+    },
+    "issuer": {
+      "type": "string"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "type": "object",
+      "required": [
+        "tool",
+        "decision"
+      ],
+      "properties": {
+        "tool": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "allow",
+            "deny"
+          ]
+        },
+        "reason_code": {
+          "type": "string"
+        },
+        "policy_digest": {
+          "type": "string"
+        },
+        "request_id": {
+          "type": "string"
+        },
+        "spec": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "signature": {
+      "type": "string",
+      "minLength": 32
+    }
   },
   "additionalProperties": true
 }
