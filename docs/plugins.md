@@ -363,7 +363,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 91 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 92 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
