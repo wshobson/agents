@@ -39,6 +39,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
     Supports:
     - scalar fields (`name: foo`)
     - inline lists (`tools: [a, b]`) and block lists (key: \\n  - a\\n  - b)
+    - one-level mappings (`metadata: \\n  version: 1.0.0`)
     - YAML block scalar indicators `>` and `|` (folded/literal multi-line strings)
     - 2-space continuation of scalar values
     """
@@ -100,6 +101,14 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
             if text:
                 existing = fields.get(current_key) or ""
                 fields[current_key] = (existing + " " + text).strip() if existing else text
+        elif (
+            current_key
+            and isinstance(fields.get(current_key), dict)
+            and line.startswith(("  ", "\t"))
+        ):
+            nested = re.match(r"^(\w[\w-]*):\s*(.*)", line.strip())
+            if nested:
+                fields[current_key][nested.group(1)] = nested.group(2).strip().strip('"').strip("'")
         elif in_list and (
             isinstance(fields.get(current_key), list)
             or (isinstance(fields.get(current_key), str) and fields[current_key] == "")
@@ -123,6 +132,13 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
                 item = stripped.strip('",[] ')
                 if item and item != "]":
                     fields[current_key].append(item)
+            elif is_indented:
+                nested = re.match(r"^(\w[\w-]*):\s*(.*)", stripped)
+                if nested:
+                    fields[current_key] = {
+                        nested.group(1): nested.group(2).strip().strip('"').strip("'")
+                    }
+                    in_list = False
         elif current_key and isinstance(fields.get(current_key), str) and line.startswith("  "):
             fields[current_key] += " " + line.strip().strip('"')
 
