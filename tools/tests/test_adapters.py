@@ -1181,6 +1181,28 @@ class TestFrontmatterParser:
         fm, _ = parse_frontmatter("---\nname: x\ndescription: >\n  multi\n  line\n---\nbody")
         assert fm["description"] == "multi line"
 
+    def test_nested_mapping(self):
+        from tools.adapters.base import parse_frontmatter
+
+        fm, _ = parse_frontmatter(
+            '---\nmetadata:\n  version: "1.0.0"\n  source: https://example.com\n---\nbody'
+        )
+        assert fm["metadata"] == {
+            "version": "1.0.0",
+            "source": "https://example.com",
+        }
+
+    def test_nested_mapping_rejects_deeper_indentation(self):
+        from tools.adapters.base import parse_frontmatter
+
+        fm, _ = parse_frontmatter("---\nmetadata:\n    version: 1.0.0\n---\nbody")
+        assert fm["metadata"] == ""
+
+        fm, _ = parse_frontmatter(
+            "---\nmetadata:\n  version: 1.0.0\n    source: https://example.com\n---\nbody"
+        )
+        assert fm["metadata"] == {"version": "1.0.0"}
+
 
 class TestCapabilities:
     def test_every_adapter_id_has_capabilities_entry(self):
