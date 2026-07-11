@@ -33,6 +33,11 @@ def read_plugin_json(plugin_dir: Path) -> dict:
         return {}
 
 
+def _is_one_level_mapping_entry(line: str) -> bool:
+    """Return whether a line has exactly one frontmatter indentation level."""
+    return bool(re.match(r"^(?: {2}|\t)\S", line))
+
+
 def parse_frontmatter(content: str) -> tuple[dict, str]:
     """Return (fields, body). Tolerant YAML-ish parser; no external dep.
 
@@ -104,7 +109,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
         elif (
             current_key
             and isinstance(fields.get(current_key), dict)
-            and line.startswith(("  ", "\t"))
+            and _is_one_level_mapping_entry(line)
         ):
             nested = re.match(r"^(\w[\w-]*):\s*(.*)", line.strip())
             if nested:
@@ -132,7 +137,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
                 item = stripped.strip('",[] ')
                 if item and item != "]":
                     fields[current_key].append(item)
-            elif is_indented:
+            elif _is_one_level_mapping_entry(line):
                 nested = re.match(r"^(\w[\w-]*):\s*(.*)", stripped)
                 if nested:
                     fields[current_key] = {
