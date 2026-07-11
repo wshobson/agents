@@ -1185,7 +1185,7 @@ class TestFrontmatterParser:
         from tools.adapters.base import parse_frontmatter
 
         fm, _ = parse_frontmatter(
-            "---\nmetadata:\n  version: \"1.0.0\"\n  source: https://example.com\n---\nbody"
+            '---\nmetadata:\n  version: "1.0.0"\n  source: https://example.com\n---\nbody'
         )
         assert fm["metadata"] == {
             "version": "1.0.0",
