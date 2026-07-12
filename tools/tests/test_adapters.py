@@ -169,6 +169,69 @@ class TestCodexAdapter:
         # Must warn about missing AGENTS.md
         assert any("AGENTS.md is missing" in w for w in result.warnings)
 
+    def test_marketplace_entries_have_description(
+        self, synthetic_plugin: PluginSource, output_root: Path, tmp_path: Path
+    ):
+        """Each `.agents/plugins/marketplace.json` entry carries a top-level
+        `description` as forward-compatible metadata, falling back to the plugin
+        name when the plugin's own manifest omits it.
+
+        NOTE: `codex-marketplace`'s installer (npm `codex-marketplace@0.2.1`,
+        `marketplacePluginSchema` in `dist/schema.js`) does not currently declare
+        or require this field — unknown keys are silently stripped by zod's
+        default `.parse()`. The field the installer actually validates is the
+        per-plugin `.codex-plugin/plugin.json` `description` — see
+        `test_plugin_manifest_description_falls_back_to_name` below.
+
+        Uses an empty `repo_root` so the real committed AGENTS.md isn't picked up.
+        """
+        empty_repo = tmp_path / "empty_repo"
+        empty_repo.mkdir()
+        adapter = CodexAdapter(output_root=output_root, repo_root=empty_repo)
+        adapter.emit_plugin(synthetic_plugin)
+        adapter.emit_global([synthetic_plugin])
+
+        marketplace_path = output_root / ".agents" / "plugins" / "marketplace.json"
+        data = json.loads(marketplace_path.read_text(encoding="utf-8"))
+        assert data["plugins"], "expected at least one marketplace plugin entry"
+        for entry in data["plugins"]:
+            assert "description" in entry, f"missing description key in entry: {entry}"
+            assert isinstance(entry["description"], str)
+            assert len(entry["description"]) > 0
+
+    def test_plugin_manifest_description_falls_back_to_name(
+        self, tmp_path: Path, output_root: Path
+    ):
+        """`codex-marketplace`'s installer parses each plugin's
+        `.codex-plugin/plugin.json` with `pluginManifestSchema`, which requires
+        `description: z.string().min(1)`. A plugin whose own manifest omits
+        `description` (e.g. `plugin-eval` upstream) must still get a non-empty
+        `description` in the generated Codex manifest, via the `plugin.name`
+        fallback — otherwise `npx codex-marketplace add <repo> --plugins` fails
+        with `String must contain at least 1 character(s)` at `path: ["description"]`
+        for that plugin (#617).
+        """
+        plugin_dir = tmp_path / "no-description-plugin"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text(
+            '{"name": "no-description-plugin", "version": "0.1.0"}'
+        )
+        plugin = PluginSource(
+            name="no-description-plugin",
+            dir=plugin_dir,
+            plugin_json={"name": "no-description-plugin", "version": "0.1.0"},
+        )
+        assert plugin.description == ""  # sanity: this is the empty-description case
+
+        CodexAdapter(output_root=output_root).emit_plugin(plugin)
+
+        manifest_path = (
+            output_root / "plugins" / "no-description-plugin" / ".codex-plugin" / "plugin.json"
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        assert manifest["description"] == "no-description-plugin"
+
     def test_emit_global_validates_committed_agents_md(
         self, synthetic_plugin: PluginSource, output_root: Path, tmp_path: Path
     ):

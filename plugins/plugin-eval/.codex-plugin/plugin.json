@@ -1,7 +1,7 @@
 {
   "name": "plugin-eval",
   "version": "0.1.1",
-  "description": "",
+  "description": "plugin-eval",
   "skills": "./skills/",
   "interface": {
     "displayName": "Plugin Eval",
