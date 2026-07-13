@@ -13,17 +13,17 @@ dependencies = [
 
 [project.optional-dependencies]
 llm = [
-    "claude-agent-sdk>=0.2.110",
+    "claude-agent-sdk>=0.2.116",
 ]
 api = [
-    "anthropic>=0.112.0",
+    "anthropic>=0.116.0",
 ]
 dev = [
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=6.0",
-    "ruff>=0.15.20",
-    "ty>=0.0.55",
+    "ruff>=0.15.21",
+    "ty>=0.0.59",
 ]
 
 [project.scripts]
