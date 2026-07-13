@@ -206,6 +206,16 @@
       "license": "MIT"
     },
     {
+      "name": "llm-finetuning",
+      "description": "Eval-gated LLM fine-tuning lifecycle (LoRA/QLoRA, DPO, GRPO/RLVR, vision SFT, quantized export). Use when fine-tuning an open-weights model end-to-end: building the eval harness first, selecting method and model, preparing data, training with Unsloth or TRL, gating checkpoints, and exporting GGUF/FP8.",
+      "version": "1.0.0",
+      "author": { "name": "Seth Hobson", "email": "seth@major7apps.com" },
+      "source": "./plugins/llm-finetuning",
+      "category": "ai-ml",
+      "homepage": "https://github.com/wshobson/agents",
+      "license": "MIT"
+    },
+    {
       "name": "agent-orchestration",
       "source": "./plugins/agent-orchestration",
       "description": "Multi-agent system optimization, agent improvement workflows, and context management",

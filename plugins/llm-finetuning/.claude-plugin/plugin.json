@@ -1,0 +1,10 @@
+{
+  "name": "llm-finetuning",
+  "version": "1.0.0",
+  "description": "Eval-gated LLM fine-tuning lifecycle: LoRA/QLoRA SFT, preference optimization (DPO/ORPO/KTO), GRPO/RLVR, vision SFT, and quantized export — Unsloth-first with TRL fallback, no eval harness means no fine-tune",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}
