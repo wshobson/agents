@@ -947,6 +947,16 @@
       "category": "development"
     },
     {
+      "name": "dgx-spark-ops",
+      "description": "NVIDIA DGX Spark (GB10) environment operations. Use when setting up, preflighting, or debugging ML workloads on DGX Spark or aarch64 Blackwell hardware — CUDA-13 wheel/ABI checks, unified-memory OOM ladders, thermal monitoring.",
+      "version": "1.0.0",
+      "author": { "name": "Seth Hobson", "email": "seth@major7apps.com" },
+      "source": "./plugins/dgx-spark-ops",
+      "category": "ai-ml",
+      "homepage": "https://github.com/wshobson/agents",
+      "license": "MIT"
+    },
+    {
       "name": "reverse-engineering",
       "source": "./plugins/reverse-engineering",
       "description": "Binary reverse engineering, malware analysis, firmware security, and software protection research for authorized security research, CTF competitions, and defensive security",
