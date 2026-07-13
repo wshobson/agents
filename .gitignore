@@ -68,3 +68,6 @@ commands/**/*.toml
 !.agents/plugins/
 .antigravity/
 
+
+# Superpowers plugin artifacts (specs/plans are session-local, never committed)
+docs/superpowers/
