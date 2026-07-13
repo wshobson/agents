@@ -200,10 +200,11 @@ import torch; print(torch.cuda.get_device_capability())  # expect (12, 1) (G7)
 grep -qi docker /proc/1/cgroup && echo container || echo bare-host  # G9
 ```
 
-`assets/preflight.sh` automates the checks that don't need
-judgment (G1, G3, G4, G7, G9) and produces a G-number pass/fail
-output format — the same shape `/spark-preflight` will use once
-that command ships. Full commands and interpretation notes for
-every gotcha: `references/gotcha-checks.md`. See also
+`assets/preflight.sh` runs G1, G3, G4, G7, G9. Every result
+line starts with its G-number — the output format
+`/spark-preflight` will parse: PASS/FAIL where automatable
+(G1, G7, G9), `INFO:` raw readings for judgment (G3, G4).
+Full commands and interpretation notes per gotcha:
+`references/gotcha-checks.md`. See also
 `plugins/dgx-spark-ops/skills/spark-environment-setup/SKILL.md`
 for the environment these gotchas assume is already working.
