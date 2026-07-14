@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **162 local specialized skills** across 46 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **163 local specialized skills** across 46 plugins, enabling progressive disclosure and efficient token usage.
 
 ## Overview
 
@@ -48,7 +48,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **projection-patterns**             | Build efficient projections from event streams for read-optimized views                               |
 | **saga-orchestration**              | Design distributed sagas with compensation logic and failure handling                                 |
 
-### Developer Essentials (11 skills)
+### Developer Essentials (12 skills)
 
 | Skill                            | Description                                                                                     |
 | -------------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -63,6 +63,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **nx-workspace-patterns**        | Configure Nx workspaces with computation caching and affected commands                          |
 | **turborepo-caching**            | Optimize Turborepo builds with remote caching and pipeline configuration                        |
 | **bazel-build-optimization**     | Design Bazel builds with hermetic actions and remote execution                                  |
+| **software-graph-analysis**      | Use Ontoly's deterministic Software Graph for architecture, request tracing, dependency impact, and configuration lookup |
 
 ### Blockchain & Web3 (4 skills)
 
@@ -392,7 +393,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 162 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
+All 163 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause

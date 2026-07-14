@@ -117,7 +117,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **frontend-mobile-development** | Frontend UI and mobile development                           | `/plugin install frontend-mobile-development` |
 | **ui-design**                   | UI/UX design for mobile (iOS, Android, React Native) and web | `/plugin install ui-design`                   |
 | **multi-platform-apps**         | Cross-platform app coordination (web/iOS/Android)            | `/plugin install multi-platform-apps`         |
-| **developer-essentials**        | Essential Git, SQL, code review, auth, debugging, and monorepo skills | `/plugin install developer-essentials`        |
+| **developer-essentials**        | Essential Git, SQL, code review, auth, debugging, monorepo, and software graph skills | `/plugin install developer-essentials`        |
 
 ### 📚 Documentation (4 plugins)
 
@@ -406,7 +406,7 @@ Each installed plugin loads **only its specific agents and commands** into Claud
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 158 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 163 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles
