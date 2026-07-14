@@ -26,6 +26,8 @@ still documents the full gate.
 **Run date:** YYYY-MM-DD
 **Baseline:** eval/baseline-BASE_MODEL.json
 **Drift suite:** eval/drift-suite.yaml (frozen)
+**Goldens fingerprint:** <sha256 of eval/goldens.jsonl, first 12 hex chars>
+<!-- re-gates compare this field to detect goldens changes since this gate -->
 
 ## Stage 1: Data Quality
 

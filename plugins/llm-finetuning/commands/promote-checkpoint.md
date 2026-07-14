@@ -30,19 +30,30 @@ subagent_type: llm-finetuning-eval-engineer
 prompt: |
   Re-gate the trained checkpoint in run directory: $ARGUMENTS
 
-  1. Locate the checkpoint under `$ARGUMENTS/train/` — if none exists,
+  1. Locate the checkpoint by searching `$ARGUMENTS` for checkpoint
+     artifacts, in this order: method-specific training output
+     directories (`outputs-*/`, e.g. `outputs-sft/`, `outputs-grpo/`),
+     `checkpoint-*/` directories, adapter or merged safetensors
+     anywhere under the run directory, and `train/` as one more
+     candidate location. If several match, take the most recent
+     complete checkpoint and state which you chose and why. Only if
+     no checkpoint artifact exists anywhere in the run directory,
      stop and report that this run directory has no checkpoint to
      gate.
   2. Confirm `eval/` exists (goldens.jsonl, graders/, drift-suite.yaml,
      and `eval/baseline-<model>.json`) — if it's missing or
      incomplete, stop and report that rather than gating against
      nothing.
-  3. Compare the current `eval/goldens.jsonl` against the goldens
-     state implied by this run's original gate (its prior
-     `$ARGUMENTS/promotion-report.md`, if one exists). If the goldens
-     have changed since that original gate, note this explicitly in
-     the new report — this verdict is being produced against a
-     different measuring stick than the run's first gate.
+  3. Compute the current goldens fingerprint —
+     `sha256sum eval/goldens.jsonl`, first 12 hex chars — and compare
+     it against the `**Goldens fingerprint:**` field in this run's
+     prior `$ARGUMENTS/promotion-report.md`, if one exists. If the
+     fingerprints differ, note this explicitly in the new report —
+     this verdict is being produced against a different measuring
+     stick than the run's first gate. If the prior report predates
+     the fingerprint field (or there is no prior report), note
+     "goldens provenance unknown for original gate" instead — do not
+     fabricate a comparison.
   4. Work the four promotion stages in order per
      `checkpoint-promotion`:
      - Data-quality gate — dedup and eval-goldens leakage check
