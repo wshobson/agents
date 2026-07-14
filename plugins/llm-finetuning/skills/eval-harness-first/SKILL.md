@@ -10,8 +10,8 @@ The Phase 0 gate for the whole plugin:
 skill assume this harness exists before a training
 config gets written. The harness is not a run-end
 side artifact — it is the data-curation engine.
-The same labeled traces that build the goldens
-become the training set.
+The same labeled traces that build the goldens feed
+training data too, minus an explicit holdout.
 
 **Input:** production/agent traces if they exist, or
 a task spec if they don't, plus labelers willing to
@@ -38,9 +38,11 @@ to train on. The flywheel:
    genuinely subjective.
 4. **Prioritize** by frequency × severity × value —
    not every bucket gets fixed first.
-5. **The same labeled traces become the training
-   set.** The coupling this skill enforces —
-   see `trace-to-training-data`.
+5. **The labeled traces feed dataset curation, minus
+   an explicit holdout.** Every `eval/goldens.jsonl`
+   ID stays excluded from training data by ID; only
+   the non-held-out traces flow through
+   `trace-to-training-data`.
 6. **Train.**
 7. **Re-run the same harness** on the checkpoint —
    not a different, looser one.

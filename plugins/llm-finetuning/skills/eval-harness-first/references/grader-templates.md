@@ -177,6 +177,13 @@ Task: {task}
 Response: {response}
 Verdict:"""
 
+class JudgeParseError(Exception):
+    """Raised when the judge returns anything other than
+    exactly PASS or FAIL — a transport or format failure,
+    not a grading verdict. Never caught and coerced to
+    False; the caller retries the judge call or routes the
+    item to human review."""
+
 def grade_llm_judge(task: str, response: str, criterion: str,
                      few_shot_pass: str, few_shot_fail: str,
                      judge_client) -> bool:
@@ -191,13 +198,16 @@ def grade_llm_judge(task: str, response: str, criterion: str,
     # SKILL.md's Judge Calibration section — never an
     # unpinned "latest" alias.
     verdict = judge_client.complete(prompt, temperature=0).strip().upper()
+    if verdict not in ("PASS", "FAIL"):
+        raise JudgeParseError(f"unparseable judge verdict: {verdict!r}")
     return verdict == "PASS"
 ```
 
-Do not treat any output other than exactly `PASS` or
-`FAIL` as a pass by default — log it as a parse
-failure and re-run or route to human review instead
-of defaulting either direction.
+The grader's return value stays binary pass/fail per this
+file's plugin-wide rule — `JudgeParseError` is not a third
+grading state, it's an operational failure. Never catch it
+and coerce to `False`; log it and re-run the judge call or
+route the item to human review instead.
 
 ## drift-suite.yaml Example
 

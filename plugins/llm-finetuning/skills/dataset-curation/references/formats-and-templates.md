@@ -106,7 +106,7 @@ tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
 
 sft_args = SFTConfig(
     output_dir="./outputs-sft",
-    max_seq_length=2048,
+    max_length=2048,
     packing=True,               # see SKILL.md Packing section before enabling
     assistant_only_loss=True,   # mask loss to assistant turns
 )

@@ -52,6 +52,16 @@ row fails the whole stage regardless of the
 others, and regardless of any task-metric gain
 reported elsewhere in this document)
 
+RERUN is a mid-report state, not a terminal one —
+`## Verdict` below may never show `PROMOTE` or
+`REJECT` while this line still reads `RERUN`.
+Complete the seed-variation rerun first, then
+overwrite this line with the outcome: PASS (rerun
+landed ≤1pt) or HARD FAIL (rerun still >1pt, in
+either the 2–5pt band or beyond) — this stage
+resolves to PASS or HARD FAIL, never RERUN, before
+the report reaches a verdict.
+
 ## Stage 3: Paired Arena
 
 - Items: N (see Paired-Arena Protocol below)
@@ -142,7 +152,11 @@ metric improved substantially in the same run.
 ```python
 def paired_arena_verdict(wins: int, ties: int, losses: int,
                           margin_pts: float = 5.0) -> str:
+    if wins < 0 or ties < 0 or losses < 0:
+        raise ValueError("paired_arena_verdict: counts must be non-negative")
     n = wins + ties + losses
+    if n == 0:
+        raise ValueError("paired_arena_verdict: no arena results (wins+ties+losses == 0)")
     win_rate = (wins + 0.5 * ties) / n
     # bootstrap or Wilson CI in practice; shown here as a stub
     ci_low, ci_high = bootstrap_ci(wins, ties, losses)

@@ -140,7 +140,7 @@ at an earlier stage means a later one doesn't run.
    holdout win that loses the live arena does not ship — stage 2 and
    stage 3 must agree.
 5. **Canary**, when the deployment target has production traffic to
-   canary against; local-only deployments stop at stage 4 by design,
+   canary against; local-only deployments stop at stage 3 by design,
    per `checkpoint-promotion`.
 6. **Write `promotion-report.md`.** Cover all four applicable stages
    as sections, and end with the terminal verdict contract:

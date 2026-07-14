@@ -197,7 +197,7 @@ import torch; print(torch.cuda.get_device_capability())  # expect (12, 1) (G7)
 ```
 
 ```bash
-grep -qi docker /proc/1/cgroup && echo container || echo bare-host  # G9
+{ [ -f /.dockerenv -o -f /run/.containerenv ] || grep -qE 'docker|containerd' /proc/1/cgroup; } 2>/dev/null && echo container || echo unknown  # G9
 ```
 
 `assets/preflight.sh` runs G1, G3, G4, G7, G9. Every result

@@ -77,6 +77,12 @@ Ctrl-C when done; this does not need root.
 
 ## G5: Bandwidth Ceiling
 
+**Intrusive, unlike the other checks in this file — do not run
+against an active workload.** It allocates ~4GB on a UMA system
+where GPU and host memory share one pool, and repeatedly clones
+that tensor. Run only on an idle host; a box with another job
+already using most of its 128GB headroom can OOM that job.
+
 ```bash
 python -c "
 import torch, time
@@ -89,6 +95,8 @@ torch.cuda.synchronize()
 dt = time.time() - t0
 gbps = (x.numel() * 4 * 2 * 20) / dt / 1e9
 print(f'{gbps:.1f} GB/s')
+del x, y
+torch.cuda.empty_cache()
 "
 ```
 
@@ -136,14 +144,25 @@ for a long or expensive run.
 ## G9: Container-First, Not Bare Pip
 
 ```bash
-cat /proc/1/cgroup | grep -q docker && echo "in container" || echo "bare host"
+if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
+  echo "in container (marker file)"
+elif grep -qE '(docker|containerd|kubepods)' /proc/1/cgroup 2>/dev/null; then
+  echo "in container (cgroup marker)"
+else
+  echo "unknown — no container marker matched, this does not prove a bare host"
+fi
 pip list 2>/dev/null | grep -E "^(torch|triton|xformers|transformers) "
 ```
 
-The first command distinguishes a container shell from a bare
-host. The second lists the versions actually installed — compare
-against the pinned set in an NGC or Unsloth image if running
-bare pip, to catch drift early rather than at import time.
+The first block checks Docker's `/.dockerenv` and Podman's
+`/run/.containerenv` marker files, then falls back to a
+cgroup-string check — a single `grep docker /proc/1/cgroup` alone
+is not reliable: cgroup v2 layouts and some runtimes/namespaces
+hide the runtime name, so a failed match is "unknown," never proof
+of a bare host. The second command lists the versions actually
+installed — compare against the pinned set in an NGC or Unsloth
+image if running bare pip, to catch drift early rather than at
+import time.
 
 ## G10: Dual-Spark Is DDP/FSDP Only
 
@@ -153,10 +172,15 @@ import os
 print('WORLD_SIZE:', os.environ.get('WORLD_SIZE'))
 print('parallelism strategy check: confirm config uses DDP or FSDP, not TP/tensor_parallel')
 "
-grep -riE "tensor_parallel|tp_size|tensor-parallel" *.yaml *.yml 2>/dev/null
+rg -l --iglob '*.yaml' --iglob '*.yml' -e 'tensor_parallel|tp_size|tensor-parallel' . \
+  || grep -rlE "tensor_parallel|tp_size|tensor-parallel" --include='*.yaml' --include='*.yml' .
 ```
 
-The `grep` catches training-config keys that would indicate a
-tensor-parallel launch. Any match on a two-Spark job is a
-configuration error — switch to DDP or FSDP before launching;
-TP is not viable across the ConnectX-7 link on this hardware.
+Search recursively, not just the current directory — a
+non-recursive `*.yaml *.yml` glob misses nested configs, and a
+redirected/suppressed error there reads as "no TP configuration"
+when it may just be "wrong directory." If the workload's config
+path is already known, pass it explicitly instead of searching.
+Any match on a two-Spark job is a configuration error — switch to
+DDP or FSDP before launching; TP is not viable across the
+ConnectX-7 link on this hardware.

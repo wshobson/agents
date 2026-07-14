@@ -5,14 +5,23 @@ Last verified: 2026-07-13
 Complete, runnable reward functions for TRL's
 `GRPOTrainer`. Every function here follows the
 current TRL reward-function signature: it accepts
-`completions` (a list of generated strings) plus
-any extra dataset columns as keyword arguments,
-and returns a `list[float]` the same length as
-`completions`. Base models are never named here —
-`SFT_CHECKPOINT`/`JUDGE_MODEL` are placeholders;
-see `finetuning-method-selection`'s
+`completions` plus any extra dataset columns as
+keyword arguments, and returns a `list[float]` the
+same length as `completions`. Base models are never
+named here — `SFT_CHECKPOINT`/`JUDGE_MODEL` are
+placeholders; see `finetuning-method-selection`'s
 `references/model-catalog.md` for actual
 checkpoints.
+
+**These examples assume the standard (string)
+completion format** — `completions: list[str]` — and
+call `.strip()`, `json.loads()`, `.split()`, etc.
+directly on each `completion`. TRL's conversational
+dataset format instead passes each completion as
+`[{"role": "assistant", "content": "..."}]`; on that
+format, extract `completion[0]["content"]` before
+applying any of the string operations below, in
+every function in this file.
 
 **Before wiring any of these into a training run,
 inspect them against 50–100 sampled outputs by
@@ -77,12 +86,25 @@ from jsonschema import validate, ValidationError
 
 def schema_reward(completions, output_schema, **kwargs) -> list[float]:
     """`output_schema` is a JSON Schema dict, either a
-    constant column or per-example. Rewards valid,
-    schema-conformant JSON; 0.0 for anything that
-    doesn't parse or doesn't validate.
+    single constant schema for the whole batch or a
+    per-example list the same length as `completions`.
+    Rewards valid, schema-conformant JSON; 0.0 for
+    anything that doesn't parse or doesn't validate.
     """
+    if isinstance(output_schema, dict):
+        # Constant case: one schema dict for every completion —
+        # zip()-ing a bare dict would iterate its keys instead,
+        # not the schema itself, so normalize first.
+        schemas = [output_schema] * len(completions)
+    else:
+        schemas = list(output_schema)
+        if len(schemas) != len(completions):
+            raise ValueError(
+                f"schema_reward: {len(schemas)} schemas for "
+                f"{len(completions)} completions"
+            )
     rewards = []
-    for completion, schema in zip(completions, output_schema):
+    for completion, schema in zip(completions, schemas):
         try:
             parsed = json.loads(completion)
             validate(instance=parsed, schema=schema)
@@ -244,26 +266,40 @@ response follow the requested format and stay
 on-topic" rather than "is this a good essay."
 Binary pass/fail, not a Likert score:
 
+TRL calls reward functions with `completions` plus
+whatever dataset columns the trainer was given, via
+`**kwargs` — it does not inject arbitrary objects
+like a judge client. Bind `judge_client` and the
+fixed `rubric` in a closure before handing the
+result to `GRPOTrainer(reward_funcs=[...])`, rather
+than declaring them as parameters TRL is expected to
+supply:
+
 ```python
-def rubric_judge_reward(completions, prompts, rubric, judge_client, **kwargs) -> list[float]:
+def make_rubric_judge_reward(judge_client, rubric):
     """`judge_client` calls JUDGE_MODEL — a model from a
     *different* model family than the model under
     training, never the model being trained or a
     same-family relative of it. `rubric` is a fixed
     pass/fail criterion string, not a free-form
-    quality prompt. Returns 1.0/0.0, never an
-    intermediate score.
+    quality prompt, so both are bound here rather than
+    read from TRL-supplied per-example kwargs. Returns a
+    reward function matching TRL's actual signature.
     """
-    rewards = []
-    for prompt, completion in zip(prompts, completions):
-        verdict = judge_client.judge(
-            rubric=rubric,
-            prompt=prompt,
-            response=completion,
-            output_format="pass_fail",   # binary only — no Likert scale
-        )
-        rewards.append(1.0 if verdict == "pass" else 0.0)
-    return rewards
+    def rubric_judge_reward(completions, prompts, **kwargs) -> list[float]:
+        """Returns 1.0/0.0 per completion, never an
+        intermediate score."""
+        rewards = []
+        for prompt, completion in zip(prompts, completions):
+            verdict = judge_client.judge(
+                rubric=rubric,
+                prompt=prompt,
+                response=completion,
+                output_format="pass_fail",   # binary only — no Likert scale
+            )
+            rewards.append(1.0 if verdict == "pass" else 0.0)
+        return rewards
+    return rubric_judge_reward
 ```
 
 **Calibration is a hard prerequisite, not a

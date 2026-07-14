@@ -68,7 +68,7 @@ model = FastLanguageModel.get_peft_model(model, r=32, lora_alpha=64)
 ## ORPO — Memory-Bound / No SFT Checkpoint
 
 ```python
-from trl import ORPOConfig, ORPOTrainer
+from trl.experimental.orpo import ORPOConfig, ORPOTrainer
 
 orpo_args = ORPOConfig(
     output_dir="./outputs-orpo",
@@ -149,7 +149,7 @@ trusting it:
 | γ/β (target reward margin) | 0 – 1 |
 
 ```python
-from trl import CPOConfig, CPOTrainer
+from trl.experimental.cpo import CPOConfig, CPOTrainer
 # TRL implements SimPO via CPOTrainer with loss_type="simpo"
 
 simpo_args = CPOConfig(

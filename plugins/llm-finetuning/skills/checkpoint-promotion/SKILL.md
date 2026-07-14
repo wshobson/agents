@@ -96,6 +96,21 @@ capability still fails here —
 task improvement never buys back
 a drift-budget breach.
 
+**RERUN is not a verdict.** A
+2–5pt drift only ever produces a
+`PROMOTE` or `REJECT` after the
+seed-variation rerun completes —
+`PROMOTE` requires the rerun to
+land back at ≤1pt (noise); any
+rerun result still >1pt — whether
+it stays in the 2–5pt band or
+breaches >5pt — resolves stage 2
+to a hard `REJECT`, same as a
+rerun that never happens. No
+report may reach the Verdict
+section with stage 2 still
+showing `RERUN`.
+
 ## Catastrophic Forgetting
 
 Unmanaged LoRA fine-tuning loses

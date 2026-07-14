@@ -66,10 +66,14 @@ earlier step already explains the symptom.
    the raw estimate alone.
 
 4. **Emit `env-report.json`.** Write the report to the working
-   directory using the full check vocabulary — `pass`, `fail`,
-   `warn: <detail>`, `skip: <reason>`, or `info: <reading>` per
-   G-number — matching `preflight.sh`'s own PASS/FAIL/WARN/SKIP/INFO
-   output contract:
+   directory by default — this skill has no `runs/` concept of its
+   own — unless the invocation names a different path (a caller such
+   as `/finetune` that owns a `runs/<date>-<slug>/` directory
+   supersedes this default and names the path explicitly; follow that
+   instruction instead of the working directory). Use the full check
+   vocabulary — `pass`, `fail`, `warn: <detail>`, `skip: <reason>`, or
+   `info: <reading>` per G-number — matching `preflight.sh`'s own
+   PASS/FAIL/WARN/SKIP/INFO output contract:
 
    ```json
    {

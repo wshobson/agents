@@ -108,17 +108,30 @@ model = FastLanguageModel.get_peft_model(
     bias="none",
     use_gradient_checkpointing="unsloth",
     random_state=3407,
-    use_rslora=False,                 # r < 32 threshold — leave off at r=32; on if r >= 32 and unstable
+    use_rslora=False,                 # r=32 threshold — leave disabled here unless instability is observed
 )
+
+import torch
+
+# Check hardware BF16 support before forcing it — see SKILL.md
+# Failure Modes. Training in fp16 on hardware without solid BF16
+# support is a known source of loss spikes and silent divergence,
+# so this is a hard prerequisite, not a config style choice.
+if not torch.cuda.is_bf16_supported():
+    raise RuntimeError(
+        "This GPU does not support BF16 — do not fall back to "
+        "fp16=True as if it were equivalent; pick hardware with "
+        "BF16 support instead (see SKILL.md Failure Modes)."
+    )
 
 training_args = SFTConfig(
     output_dir="./outputs",
-    max_seq_length=2048,
+    max_length=2048,
     dataset_text_field="text",
     per_device_train_batch_size=4,
     gradient_accumulation_steps=4,    # effective batch 16 (single device) — stays under 32
     learning_rate=2e-4,               # QLoRA standard
-    bf16=True,                        # never fp16 — see SKILL.md Failure Modes
+    bf16=True,                        # gated above — never fp16, see SKILL.md Failure Modes
     optim="adamw_8bit",
     num_train_epochs=3,
     logging_steps=10,

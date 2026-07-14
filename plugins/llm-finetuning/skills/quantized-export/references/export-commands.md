@@ -156,16 +156,35 @@ without erroring:
 vllm serve "$MERGED_DIR" \
     --quantization fp8 \
     --served-model-name checkpoint-fp8 \
-    --port 8000 &
+    --port 8000 > vllm-fp8-load.log 2>&1 &
+VLLM_PID=$!
 
-sleep 20
-curl -s http://localhost:8000/v1/models | grep -q checkpoint-fp8 \
-    && echo "FP8 endpoint up" \
-    || echo "FAILED: endpoint did not come up"
+# Bounded wait for readiness — up to 60s, not a blind sleep.
+ready=0
+for _ in $(seq 1 30); do
+    if curl -sf http://localhost:8000/v1/models | grep -q checkpoint-fp8; then
+        ready=1
+        break
+    fi
+    sleep 2
+done
 
-# confirm the loaded dtype in the server startup log,
-# not just endpoint liveness — grep for "fp8" near the
-# model-loading lines before trusting the deployment
+if [ "$ready" -ne 1 ]; then
+    echo "FAILED: endpoint did not come up within 60s"
+    kill "$VLLM_PID" 2>/dev/null
+    exit 1
+fi
+
+# Endpoint liveness alone does not prove FP8 loaded — vLLM can
+# silently fall back to bf16. Confirm the actual dtype from the
+# startup log before trusting the deployment.
+if grep -qi 'fp8' vllm-fp8-load.log; then
+    echo "FP8 endpoint up and confirmed FP8 in startup log"
+else
+    echo "FAILED: endpoint up but startup log does not confirm FP8 (possible silent bf16 fallback)"
+    kill "$VLLM_PID" 2>/dev/null
+    exit 1
+fi
 ```
 
 Use a nightly vLLM build for GB10/SM121
@@ -188,12 +207,20 @@ structure:
 import json
 import sys
 
+# Deterministic decoding, persisted and reused for both the
+# pre-export run (that produced pre-export-outputs.jsonl) and the
+# post-export run below — greedy (temperature 0) with a fixed seed.
+# Any drift in these settings between the two runs can flip an
+# otherwise-valid export into a spurious mismatch.
+SMOKE_TEST_GENERATION_KWARGS = {"temperature": 0, "seed": 0, "max_new_tokens": 512}
+
 def load_pre_export_outputs(path: str) -> dict:
     """goldens.jsonl-keyed pre-export generations,
-    produced from the promoted checkpoint before
-    any quantization/export step."""
+    produced from the promoted checkpoint before any
+    quantization/export step, using
+    SMOKE_TEST_GENERATION_KWARGS."""
     with open(path) as f:
-        return {row["id"]: row["output"] for row in map(json.loads, f)}
+        return {row["task_id"]: row["output"] for row in map(json.loads, f)}
 
 def load_goldens(path: str, n: int = 5) -> list:
     with open(path) as f:
@@ -206,12 +233,12 @@ def load_exported_model(export_path: str):
     a different framework than production here."""
     raise NotImplementedError("wire to target runtime")
 
-def generate(model, prompt: str) -> str:
+def generate(model, prompt: str, **generation_kwargs) -> str:
     raise NotImplementedError("wire to target runtime")
 
 def diff_report(golden_id: str, pre: str, post: str) -> dict:
     return {
-        "id": golden_id,
+        "task_id": golden_id,
         "match": pre.strip() == post.strip(),
         "pre_export": pre,
         "post_export": post,
@@ -224,14 +251,14 @@ def main(export_path: str, goldens_path: str, pre_export_path: str):
 
     reports = []
     for row in goldens:
-        post = generate(model, row["prompt"])
-        pre = pre_outputs[row["id"]]
-        reports.append(diff_report(row["id"], pre, post))
+        post = generate(model, row["prompt"], **SMOKE_TEST_GENERATION_KWARGS)
+        pre = pre_outputs[row["task_id"]]
+        reports.append(diff_report(row["task_id"], pre, post))
 
     failures = [r for r in reports if not r["match"]]
     print(json.dumps({"total": len(reports), "failures": len(failures)}, indent=2))
     for r in failures:
-        print(f"MISMATCH {r['id']}:")
+        print(f"MISMATCH {r['task_id']}:")
         print(f"  pre : {r['pre_export'][:200]}")
         print(f"  post: {r['post_export'][:200]}")
 

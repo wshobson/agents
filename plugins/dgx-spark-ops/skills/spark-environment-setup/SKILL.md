@@ -58,6 +58,10 @@ docker run --runtime=nvidia --gpus all -it --rm \
   unsloth/unsloth:dgxspark-latest
 ```
 
+`dgxspark-latest` is a moving tag — pin it once resolved:
+`docker inspect --format='{{index .RepoDigests 0}}' unsloth/unsloth:dgxspark-latest`,
+then use that `@sha256:...` digest in place of the tag.
+
 The reason for the container-first stance is pinning, not
 convenience. Triton, xformers, and transformers versions
 interact narrowly with GB10's SM121 target and the CUDA 13

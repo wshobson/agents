@@ -72,9 +72,10 @@ eliminate volume before expensive stages run on
 what's left:
 
 1. **Exact dedup.** Hash-based exact-match removal
-   of identical or near-identical rows. Cheapest
-   stage, run first, removes generation-loop repeats
-   before anything downstream sees them.
+   of identical rows (after normalization —
+   whitespace/casing collapsed before hashing).
+   Cheapest stage, run first, removes generation-loop
+   repeats before anything downstream sees them.
 2. **Semantic dedup (~0.92 similarity threshold).**
    Embed each candidate and drop rows whose
    nearest-neighbor cosine similarity to an

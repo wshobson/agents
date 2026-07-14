@@ -66,15 +66,20 @@ minimum):
 ```python
 def select_pair(trajectories):
     """trajectories: same task_id, each a dict with
-    'reward' and 'messages'. Returns (chosen, rejected)."""
+    'reward' and 'messages'. Returns (chosen, rejected) —
+    always two distinct records; raises if fewer than two
+    trajectories are given."""
+    if len(trajectories) < 2:
+        raise ValueError("select_pair needs >=2 trajectories to form a pair")
     ranked = sorted(trajectories, key=lambda t: t["reward"])
     chosen = ranked[-1]
+    candidates = [t for t in trajectories if t is not chosen]
     rewards = [t["reward"] for t in trajectories]
     mu = sum(rewards) / len(rewards)
     variance = sum((r - mu) ** 2 for r in rewards) / len(rewards)
     sigma = variance ** 0.5
     target = mu - 2 * sigma
-    rejected = min(ranked, key=lambda t: abs(t["reward"] - target))
+    rejected = min(candidates, key=lambda t: abs(t["reward"] - target))
     return chosen, rejected
 ```
 
@@ -116,9 +121,17 @@ grade each, and keep only the top-reward fraction
 — the Agent-lightning pattern named in `SKILL.md`:
 
 ```python
+MAX_CANDIDATES = 32  # ceiling on model calls per prompt for this recipe
+
 def rejection_sample(prompt, policy, grader, n=8, keep_fraction=0.25):
-    """Generate n candidates for prompt, grade each,
-    and keep the top keep_fraction by reward."""
+    """Generate n candidates for prompt, grade each, and
+    keep the top keep_fraction by reward. This recipe is
+    for small fixed batches — n is capped at
+    MAX_CANDIDATES; a larger sampling budget needs a
+    dedicated rollout pipeline with its own concurrency
+    and cost controls, not this loop."""
+    if n > MAX_CANDIDATES:
+        raise ValueError(f"n={n} exceeds MAX_CANDIDATES={MAX_CANDIDATES}")
     candidates = [policy.generate(prompt) for _ in range(n)]
     graded = [(c, grader.score(prompt, c)) for c in candidates]
     graded.sort(key=lambda pair: pair[1], reverse=True)

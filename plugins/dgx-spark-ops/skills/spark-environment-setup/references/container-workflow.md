@@ -32,6 +32,12 @@ docker run --runtime=nvidia --gpus all -it --rm \
 
 Same flag rationale as above. Prefer this over rebuilding a custom Unsloth image from the NGC base.
 
+`dgxspark-latest` is a moving tag, unlike the NGC image's dated
+`25.11-py3` tag above — pin it once resolved:
+`docker inspect --format='{{index .RepoDigests 0}}' unsloth/unsloth:dgxspark-latest`,
+then substitute that `@sha256:...` digest for the tag in CI or any
+pipeline where reproducibility matters.
+
 ## Pull vs rebuild
 
 Pull a fresh tag when: a new blessed release is announced, or you're chasing a bug that a recent tag's changelog says it fixes.
@@ -42,4 +48,4 @@ Rebuild locally (starting `FROM` one of the two images above) when: you need an 
 
 If a container genuinely doesn't fit (see `SKILL.md`'s Container-First Rule), isolate the environment with `uv` rather than the system Python, and follow the NVIDIA playbook install sequence from `SKILL.md` inside it.
 
-Caveat: if `uv` insists on a dependency version that conflicts with what the playbook pins (a common outcome given how young the aarch64/CUDA-13 wheel ecosystem is), use `uv pip install --override-dependencies` to force the pinned versions through rather than letting the resolver silently substitute an incompatible build. Verify the result with the Verification Commands section of `SKILL.md` before trusting the environment.
+Caveat: if `uv` insists on a dependency version that conflicts with what the playbook pins (a common outcome given how young the aarch64/CUDA-13 wheel ecosystem is), use `uv pip install --override` to force the pinned versions through rather than letting the resolver silently substitute an incompatible build. Verify the result with the Verification Commands section of `SKILL.md` before trusting the environment.

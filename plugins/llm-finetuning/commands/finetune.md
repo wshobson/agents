@@ -30,14 +30,18 @@ prompt: |
   Build or verify the eval harness for: $ARGUMENTS
 
   1. Check whether `eval/` already exists (goldens.jsonl, graders/,
-     drift-suite.yaml). If it does, verify it's complete rather than
-     rebuilding it.
+     drift-suite.yaml, and `baseline-<model>.json`). If it does,
+     verify it's complete rather than rebuilding it.
   2. If it does not exist, build it per `eval-harness-first`: error
      analysis into failure buckets (or synthetic goldens if no traces
      exist), one grader per bucket, judge calibration for any
      LLM-judge bucket, and a frozen `drift-suite.yaml`.
-  3. Run the full harness plus drift suite against the unmodified
-     base model and write `eval/baseline-<model>.json`.
+  3. Only if `eval/baseline-<model>.json` is missing, run the full
+     harness plus drift suite against the unmodified base model and
+     write it. If it already exists, preserve it as-is — it is the
+     measuring stick every later run's checkpoint gets diffed
+     against, and rewriting it on a later run would change what
+     "PROMOTE" means between runs.
   4. Walk `eval-harness-first`'s Phase 0 Exit Checklist in full before
      reporting done.
 
@@ -133,9 +137,11 @@ prompt: |
   its fix.
 </Task>
 
-**Gate:** `env-report.json` must exist with a verdict other than
-`blocked` before Phase 4 starts. A `blocked` verdict is a hard stop —
-report it and the named fix, and do not launch training.
+**Gate:** `env-report.json` must exist with verdict `ready` before
+Phase 4 starts. For `ready-with-warnings`, surface the warnings and
+require explicit caller confirmation before proceeding — this is a
+caller decision, not an automatic pass. A `blocked` verdict is a hard
+stop — report it and the named fix, and do not launch training.
 
 ## Phase 4: Training
 
@@ -189,7 +195,11 @@ prompt: |
   4. Paired arena vs. base model, position-randomized judge.
   5. Canary, if the deployment target has production traffic.
 
-  Write `promotion-report.md` covering all applicable stages, ending
+  Write `promotion-report.md` per `checkpoint-promotion`'s template,
+  including a `**Goldens fingerprint:**` field with the current
+  `sha256sum eval/goldens.jsonl` (first 12 hex chars) — later re-gates
+  via `/promote-checkpoint` compare against this field to detect
+  goldens changes since this gate. Cover all applicable stages, ending
   with the terminal verdict contract: `PROMOTE` or `REJECT`, with
   evidence and — for `REJECT` — exactly one top remediation.
 

@@ -146,6 +146,14 @@ unblock conversion.
 
 ## Hygiene
 
+- **Scan for secrets and PII before any row ships,
+  and redact what's found.** Traces sourced from
+  production logs can carry credentials, API keys,
+  tokens, or customer data — run a secret/PII scan
+  over every SFT and DPO row and redact matches;
+  conversion fails closed (the row is dropped, not
+  shipped with the raw content) if sensitive fields
+  remain after redaction. Never commit secrets.
 - **Eval goldens must never leak
   into training data.** Hold
   every `eval/goldens.jsonl` ID

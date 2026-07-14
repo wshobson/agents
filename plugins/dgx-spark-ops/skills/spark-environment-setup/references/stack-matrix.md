@@ -13,7 +13,7 @@ Full component-by-component status for the ML training/inference stack on DGX Sp
 | xformers | source build only | No prebuilt aarch64/SM121 wheel. Build with `TORCH_CUDA_ARCH_LIST=12.1` set, or the build targets the wrong architecture and either fails or silently produces non-functional kernels. |
 | vLLM | nightly wheels only | Use `wheels.vllm.ai/nightly/cu130`. The SM121 fix landed in the nightly channel around 2026-06; stable/release wheels predate it. |
 | TransformerEngine / NVFP4 training | container-only | Not practical via bare pip; use the NGC PyTorch container. `NVFP4BlockScaling` targets SM100 — treat SM121 support as caveated, not guaranteed. |
-| Unsloth | ✅ (container preferred) | Official Docker image `unsloth/unsloth:dgxspark-latest`, or the NVIDIA playbook pip sequence (see `SKILL.md`). Bare pip installs have hit torchcodec and GPU-detection gotchas. |
+| Unsloth | ✅ (container preferred) | Official Docker image `unsloth/unsloth:dgxspark-latest` (a moving tag — resolve and pin its digest for reproducible/CI use, see `references/container-workflow.md`), or the NVIDIA playbook pip sequence (see `SKILL.md`). Bare pip installs have hit torchcodec and GPU-detection gotchas. |
 | Axolotl / TRL / PEFT | ✅ | Standard install, no special handling needed. |
 | LLaMA-Factory / NeMo | fragile / in progress | Known to be unreliable on this platform as of this writing; expect breakage and check upstream issues before depending on either for a run. |
 

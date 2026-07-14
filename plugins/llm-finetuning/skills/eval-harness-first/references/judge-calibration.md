@@ -49,14 +49,30 @@ def tpr_tnr(judge_verdicts: list[bool], human_labels: list[bool]) -> tuple[float
     A single blended accuracy number hides which
     direction the judge is biased toward — always
     report both, never accuracy alone.
+
+    Raises ValueError on empty or mismatched-length
+    input, or if the sealed test split lacks either
+    class — a `zip()` over unequal lists silently
+    drops the extra items, which can produce
+    apparently valid metrics from a partial or
+    miscollected split.
     """
+    if not judge_verdicts or not human_labels:
+        raise ValueError("tpr_tnr: judge_verdicts and human_labels must be non-empty")
+    if len(judge_verdicts) != len(human_labels):
+        raise ValueError(
+            f"tpr_tnr: length mismatch ({len(judge_verdicts)} verdicts vs "
+            f"{len(human_labels)} labels) — check the split for a collection bug"
+        )
     tp = sum(j and h for j, h in zip(judge_verdicts, human_labels))
     fn = sum((not j) and h for j, h in zip(judge_verdicts, human_labels))
     tn = sum((not j) and (not h) for j, h in zip(judge_verdicts, human_labels))
     fp = sum(j and (not h) for j, h in zip(judge_verdicts, human_labels))
-    tpr = tp / (tp + fn) if (tp + fn) else float("nan")
-    tnr = tn / (tn + fp) if (tn + fp) else float("nan")
-    return tpr, tnr
+    if (tp + fn) == 0:
+        raise ValueError("tpr_tnr: no positive-labeled items in this split — TPR undefined")
+    if (tn + fp) == 0:
+        raise ValueError("tpr_tnr: no negative-labeled items in this split — TNR undefined")
+    return tp / (tp + fn), tn / (tn + fp)
 ```
 
 Agree on a TPR/TNR bar with whoever owns the eval

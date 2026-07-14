@@ -145,7 +145,11 @@ work":**
    ad hoc set.
 3. **Compare each output against the
    pre-export generation** for the same
-   prompt, same sampling settings. A diff
+   prompt, same deterministic sampling
+   settings — greedy decoding (temperature 0)
+   and a fixed seed, persisted and reused
+   between the pre- and post-export runs, not
+   just nominally identical config. A diff
    here is the whole point of the test — an
    export that changes outputs on identical
    inputs has a bug, even if the checkpoint

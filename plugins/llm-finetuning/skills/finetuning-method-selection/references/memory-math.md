@@ -32,10 +32,15 @@ parameter count and dtype, then sum.
 | int8 | 1 |
 | int4 (QLoRA NF4) | 0.5 |
 
-This term dominates for full fine-tuning and is
-the same regardless of method — it's what's
-loaded before any training-specific overhead is
-added.
+This term dominates for full fine-tuning, and the
+calculation (`params × bytes/param`) is the same
+formula regardless of method — but the dtype, and
+so the result, is not: bf16 LoRA loads weights at
+2 bytes/param while int4 QLoRA loads the same
+parameter count at 0.5 bytes/param, a 4x gap.
+Reuse the formula across methods; never reuse the
+resulting weight-memory number from one method's
+dtype for another's.
 
 ### 2. Optimizer states
 
@@ -80,8 +85,10 @@ levers matter more than exact estimation:
 ### 5. LoRA/QLoRA adapter overhead
 
 A rank-`r` adapter on a linear layer adds
-`2 × r × (in + out)` parameters. At normal rank
-sizes (1–32 for RL, up to ~256 for SFT-at-scale),
+`r × (in + out)` parameters — `A` is `r×in` and `B`
+is `out×r`, so together they contribute
+`r·in + r·out`. At normal rank sizes (1–32 for RL,
+up to ~256 for SFT-at-scale),
 this is a small fraction of a percent of base
 model size — round it to zero in the worksheet
 unless an unusually high rank is in play.
@@ -133,15 +140,18 @@ total_gb = weights_gb + adapter_gb  # + activations
 print(f"{total_gb:.0f}GB before activations")
 ```
 
-Weights alone land near the **≈40GB anchor** —
-the reference point for "a 70B-class model is
-reachable via QLoRA, not bf16," where bf16 weights
-alone (≈140GB) would already exceed most single-
-device budgets before optimizer state, gradients,
-or activations are added. A plan estimating far
-above the anchor for the same size class is a
-signal to recheck dtype and method, not just add
-headroom.
+The idealized formula lands weights at **≈35GB**
+(decimal GB, weights only); treat **≈40GB** as the
+real-world anchor once quantization metadata
+(NF4 double-quant constants) and runtime overhead
+are included — the reference point for "a 70B-class
+model is reachable via QLoRA, not bf16," where
+bf16 weights alone (≈140GB) would already exceed
+most single-device budgets before optimizer state,
+gradients, or activations are added. A plan
+estimating far above the ≈40GB anchor for the same
+size class is a signal to recheck dtype and
+method, not just add headroom.
 
 ## Using These Numbers
 

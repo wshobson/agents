@@ -29,7 +29,11 @@ first.
 - **LLaVA is legacy.** Do not recommend it for new
   work; it is listed here only so a stale
   recommendation can be recognized as such.
-- **InternVL3.5 is the MoE VLM alternative** to the
-  dense Qwen2.5-VL / Qwen3-VL and Gemma 3 vision
-  models above, for cases that specifically call for
-  a mixture-of-experts vision-language architecture.
+- **InternVL3.5 MoE variants are the MoE VLM
+  alternative** to the dense Qwen2.5-VL / Qwen3-VL
+  and Gemma 3 vision models above, for cases that
+  specifically call for a mixture-of-experts
+  vision-language architecture — InternVL3.5 also
+  ships dense checkpoints, so pick the MoE variant
+  explicitly rather than assuming every InternVL3.5
+  release is MoE.

@@ -19,7 +19,7 @@ object in the *current* TRL API.
 | `use_gradient_checkpointing="unsloth"` | `gradient_checkpointing=True` in `SFTConfig`/`TrainingArguments` | Unsloth's variant is a faster/lower-memory implementation of the same idea — not a different feature. Plain TRL's `gradient_checkpointing=True` is the correct fallback, just with less VRAM savings (~30% less benefit). |
 | `optim="adamw_8bit"` | `SFTConfig(optim="adamw_8bit")` | Identical string, same bitsandbytes optimizer — no translation needed. |
 | `use_rslora=True/False` | `LoraConfig(use_rslora=True/False)` | Same flag name in PEFT directly. |
-| `max_seq_length` (passed to `FastLanguageModel.from_pretrained`) | `SFTConfig(max_seq_length=...)` | **Current TRL**: lives on `SFTConfig`, not on the trainer call or `from_pretrained` in plain TRL. |
+| `max_seq_length` (passed to `FastLanguageModel.from_pretrained`) | `SFTConfig(max_length=...)` | **Current TRL**: the field is `max_length` on `SFTConfig` (renamed from `max_seq_length`), not on the trainer call or `from_pretrained` in plain TRL. |
 | `dataset_text_field` (Unsloth examples often set this on the trainer) | `SFTConfig(dataset_text_field=...)` | **Current TRL**: lives on `SFTConfig`, same as `max_seq_length`. |
 | `random_state=3407` (data/adapter-init seed) | `SFTConfig(seed=3407)` for trainer-level seeding | Set both — Unsloth's `random_state` seeds LoRA init specifically; `SFTConfig.seed` seeds the trainer's own RNG use. |
 
@@ -37,10 +37,11 @@ cookbook snippets) still show the old form:
   `tokenizer=`, update it before running — this
   is the single most common stale-API error when
   porting an older recipe forward.
-- **`max_seq_length` and `dataset_text_field`
-  live in `SFTConfig`, not scattered across the
-  trainer call or the model loader.** Set them
-  once, on the `SFTConfig` instance, and don't
+- **`max_length` (renamed from `max_seq_length`)
+  and `dataset_text_field` live in `SFTConfig`, not
+  scattered across the trainer call or the model
+  loader.** Set them once, on the `SFTConfig`
+  instance, and don't
   duplicate them elsewhere in the pipeline.
 
 ## The Escape Hatch: When to Drop Back to Plain TRL

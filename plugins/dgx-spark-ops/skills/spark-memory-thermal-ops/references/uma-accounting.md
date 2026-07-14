@@ -75,11 +75,12 @@ matter more than exact estimation:
 
 ### 5. LoRA/QLoRA adapter overhead
 
-A rank-`r` adapter on a linear layer adds `2 × r × (in + out)`
-parameters. At the rank sizes in normal use (1–32 for RL, up to
-~256 for SFT-at-scale), this is a small fraction of a percent of
-base model size — round it to zero in the worksheet unless an
-unusually high rank is in play.
+A rank-`r` adapter on a linear layer adds `r × (in + out)`
+parameters — `A` is `r×in` and `B` is `out×r`, so the two
+matrices together contribute `r·in + r·out`. At the rank sizes in
+normal use (1–32 for RL, up to ~256 for SFT-at-scale), this is a
+small fraction of a percent of base model size — round it to zero
+in the worksheet unless an unusually high rank is in play.
 
 ## Anchors
 

@@ -51,8 +51,12 @@ a given box.
 
 Unsloth's chunked-loss RL path extends usable RL
 context to roughly **7x longer** than an
-unchunked GRPO setup at the same memory budget.
-This matters specifically for RL because rollouts
+unchunked GRPO setup at the same memory budget —
+an order-of-magnitude figure from Unsloth's own
+published benchmarks, not re-measured here; verify
+against the current Unsloth release notes before
+sizing a context budget precisely on it. This
+matters specifically for RL because rollouts
 — especially long chain-of-thought completions —
 are the memory pressure point GRPO adds on top of
 the base training cost; chunking is the lever that
