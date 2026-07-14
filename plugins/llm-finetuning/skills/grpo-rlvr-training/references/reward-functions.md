@@ -1,0 +1,216 @@
+Last verified: 2026-07-13
+
+# GRPO Reward Function Library
+
+Complete, runnable reward functions for TRL's
+`GRPOTrainer`. Every function here follows the
+current TRL reward-function signature: it accepts
+`completions` (a list of generated strings) plus
+any extra dataset columns as keyword arguments,
+and returns a `list[float]` the same length as
+`completions`. Base models are never named here —
+`SFT_CHECKPOINT`/`JUDGE_MODEL` are placeholders;
+see `finetuning-method-selection`'s
+`references/model-catalog.md` for actual
+checkpoints.
+
+**Before wiring any of these into a training run,
+inspect them against 50–100 sampled outputs by
+hand** — this is `SKILL.md`'s Inspection Rule, not
+optional. A reward function that looks correct in
+isolation can still disagree with human judgment
+on real model outputs.
+
+## Format Reward
+
+Checks structural compliance — did the completion
+follow the required response shape at all — as a
+prerequisite to grading correctness:
+
+```python
+import re
+
+def format_reward(completions, **kwargs) -> list[float]:
+    """1.0 if the completion has a <reasoning>...</reasoning>
+    block followed by an <answer>...</answer> block, else 0.0.
+    This is a gate, not the correctness signal — a
+    well-formed wrong answer still scores 0 on
+    correctness_reward below.
+    """
+    pattern = re.compile(
+        r"^<reasoning>.*?</reasoning>\s*<answer>.*?</answer>$",
+        re.DOTALL,
+    )
+    return [1.0 if pattern.match(c.strip()) else 0.0 for c in completions]
+```
+
+## Correctness Reward — Exact Match
+
+The baseline verifiable-answer reward, for tasks
+with a single ground-truth string (math final
+answers, closed-form lookups):
+
+```python
+def correctness_reward(completions, answer, **kwargs) -> list[float]:
+    """`answer` is the ground-truth column from the
+    training dataset, aligned index-for-index with
+    `completions`. Extracts the <answer> block from
+    format_reward's expected shape and compares.
+    """
+    rewards = []
+    for completion, gold in zip(completions, answer):
+        match = re.search(r"<answer>(.*?)</answer>", completion, re.DOTALL)
+        predicted = match.group(1).strip() if match else None
+        rewards.append(2.0 if predicted == gold.strip() else 0.0)
+    return rewards
+```
+
+## Correctness Reward — Schema Validation
+
+For structured-output and tool-call tasks, where
+"correct" means "conforms to the required JSON
+schema," not string equality:
+
+```python
+import json
+from jsonschema import validate, ValidationError
+
+def schema_reward(completions, output_schema, **kwargs) -> list[float]:
+    """`output_schema` is a JSON Schema dict, either a
+    constant column or per-example. Rewards valid,
+    schema-conformant JSON; 0.0 for anything that
+    doesn't parse or doesn't validate.
+    """
+    rewards = []
+    for completion, schema in zip(completions, output_schema):
+        try:
+            parsed = json.loads(completion)
+            validate(instance=parsed, schema=schema)
+            rewards.append(1.0)
+        except (json.JSONDecodeError, ValidationError):
+            rewards.append(0.0)
+    return rewards
+```
+
+## Correctness Reward — Unit Test Execution
+
+For code-generation tasks, where "correct" means
+the generated function passes a held-out test
+suite. Execute in a subprocess with a hard
+timeout — never `exec()` untrusted completions
+in-process:
+
+```python
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+def test_execution_reward(
+    completions, test_code, timeout_s=10, **kwargs
+) -> list[float]:
+    """`test_code` is a per-example pytest snippet that
+    imports the candidate under a fixed module name
+    and asserts expected behavior. Runs each candidate
+    in its own subprocess with a wall-clock timeout;
+    an infinite loop or crash scores 0.0 instead of
+    hanging the training loop.
+    """
+    rewards = []
+    for completion, tests in zip(completions, test_code):
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate_path = Path(tmp) / "candidate.py"
+            test_path = Path(tmp) / "test_candidate.py"
+            candidate_path.write_text(completion)
+            test_path.write_text(tests)
+            try:
+                result = subprocess.run(
+                    [sys.executable, "-m", "pytest", str(test_path), "-q"],
+                    cwd=tmp,
+                    capture_output=True,
+                    timeout=timeout_s,
+                )
+                rewards.append(1.0 if result.returncode == 0 else 0.0)
+            except subprocess.TimeoutExpired:
+                rewards.append(0.0)
+    return rewards
+```
+
+## Length-Penalty Wrapper
+
+Wraps any reward function above to discourage
+runaway completion length without replacing the
+underlying correctness signal — use when a
+correctness-only reward starts trending toward
+longer, padded outputs:
+
+```python
+def with_length_penalty(reward_fn, target_len=512, penalty_per_token=0.001):
+    """Returns a new reward function that subtracts a
+    small per-token penalty for every token past
+    `target_len`, applied on top of `reward_fn`'s
+    output. Penalty is capped so it can't drive an
+    otherwise-correct reward negative — it discourages
+    padding without overriding correctness.
+    """
+    def wrapped(completions, **kwargs) -> list[float]:
+        base_rewards = reward_fn(completions, **kwargs)
+        adjusted = []
+        for reward, completion in zip(base_rewards, completions):
+            overflow = max(0, len(completion.split()) - target_len)
+            penalty = min(reward, overflow * penalty_per_token)
+            adjusted.append(reward - penalty)
+        return adjusted
+    return wrapped
+```
+
+This is a targeted fix for observed length
+creep, not a substitute for Dr.GRPO — if length
+bias is systemic rather than an occasional
+overflow, route to the Dr.GRPO variant in
+`SKILL.md`'s Variant Selection instead of stacking
+penalty wrappers.
+
+## Rubric-as-Reward Judge Pattern
+
+For tasks where correctness isn't code-checkable
+but the pass/fail line is still crisp enough for a
+judge to apply consistently — e.g., "did the
+response follow the requested format and stay
+on-topic" rather than "is this a good essay."
+Binary pass/fail, not a Likert score:
+
+```python
+def rubric_judge_reward(completions, prompts, rubric, judge_client, **kwargs) -> list[float]:
+    """`judge_client` calls JUDGE_MODEL — a model from a
+    *different* model family than the model under
+    training, never the model being trained or a
+    same-family relative of it. `rubric` is a fixed
+    pass/fail criterion string, not a free-form
+    quality prompt. Returns 1.0/0.0, never an
+    intermediate score.
+    """
+    rewards = []
+    for prompt, completion in zip(prompts, completions):
+        verdict = judge_client.judge(
+            rubric=rubric,
+            prompt=prompt,
+            response=completion,
+            output_format="pass_fail",   # binary only — no Likert scale
+        )
+        rewards.append(1.0 if verdict == "pass" else 0.0)
+    return rewards
+```
+
+**Calibration is a hard prerequisite, not a
+nice-to-have.** An uncalibrated judge is a
+noisier, more expensive version of the exact-match
+reward above — before wiring `rubric_judge_reward`
+into a GRPO run, the judge must be calibrated
+against human labels (train/dev/sealed-test
+splits, TPR/TNR reported, judge pinned to a fixed
+snapshot). That calibration workflow lives in
+`eval-harness-first`; do not skip it because the
+rubric "looks obviously right" — the same
+plugin-wide judge-calibration prerequisite applies
+here as everywhere else a judge grades a reward.
