@@ -1,0 +1,11 @@
+{
+  "name": "dgx-spark-ops",
+  "displayName": "Dgx Spark Ops",
+  "version": "1.0.0",
+  "description": "NVIDIA DGX Spark (GB10 Grace Blackwell) environment operations: aarch64/CUDA-13 stack setup, training gotcha preflights, and unified-memory/thermal management for local ML workloads",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "license": "MIT"
+}

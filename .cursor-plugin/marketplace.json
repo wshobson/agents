@@ -396,6 +396,17 @@
       "license": "MIT"
     },
     {
+      "name": "dgx-spark-ops",
+      "source": "./plugins/dgx-spark-ops",
+      "version": "1.0.0",
+      "description": "NVIDIA DGX Spark (GB10 Grace Blackwell) environment operations: aarch64/CUDA-13 stack setup, training gotcha preflights, and unified-memory/thermal management for local ML workloads",
+      "author": {
+        "name": "Seth Hobson",
+        "email": "seth@major7apps.com"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "distributed-debugging",
       "source": "./plugins/distributed-debugging",
       "version": "1.2.1",
@@ -634,6 +645,17 @@
       "source": "./plugins/llm-application-dev",
       "version": "2.0.6",
       "description": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures for Claude 4.6 and GPT-5.4",
+      "author": {
+        "name": "Seth Hobson",
+        "email": "seth@major7apps.com"
+      },
+      "license": "MIT"
+    },
+    {
+      "name": "llm-finetuning",
+      "source": "./plugins/llm-finetuning",
+      "version": "1.0.0",
+      "description": "Eval-gated LLM fine-tuning lifecycle: LoRA/QLoRA SFT, preference optimization (DPO/ORPO/KTO), GRPO/RLVR, vision SFT, and quantized export \u2014 Unsloth-first with TRL fallback, no eval harness means no fine-tune",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
