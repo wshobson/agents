@@ -292,7 +292,7 @@ def check_dead_links(report: Report) -> None:
         files = list(target.rglob("*.md")) if target.is_dir() else [target]
         for md in files:
             try:
-                content = md.read_text()
+                content = md.read_text(encoding="utf-8")
             except OSError:
                 continue
             for link in link_pattern.findall(content):

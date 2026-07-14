@@ -208,7 +208,7 @@ def validate_codex(report: Report) -> None:
             remediation="Run `make generate HARNESS=codex --all` (or include a global pass).",
         )
     else:
-        line_count = len(agents_md.read_text().splitlines())
+        line_count = len(agents_md.read_text(encoding="utf-8").splitlines())
         if line_count > 150:
             report.add(
                 severity="warning",
@@ -234,7 +234,7 @@ def validate_cursor(report: Report) -> None:
     marketplace = root / "marketplace.json"
     if marketplace.is_file():
         try:
-            data = json.loads(marketplace.read_text())
+            data = json.loads(marketplace.read_text(encoding="utf-8"))
         except json.JSONDecodeError as e:
             report.add(
                 severity="error",
@@ -267,7 +267,7 @@ def validate_cursor(report: Report) -> None:
     if plugins_dir.is_dir():
         for manifest in plugins_dir.glob("*.json"):
             try:
-                data = json.loads(manifest.read_text())
+                data = json.loads(manifest.read_text(encoding="utf-8"))
             except json.JSONDecodeError as e:
                 report.add(
                     severity="error",
@@ -290,7 +290,7 @@ def validate_cursor(report: Report) -> None:
     rules_dir = WORKTREE / ".cursor" / "rules"
     if rules_dir.is_dir():
         for mdc in rules_dir.glob("*.mdc"):
-            content = mdc.read_text()
+            content = mdc.read_text(encoding="utf-8")
             fm, _ = parse_frontmatter(content)
             if not fm:
                 report.add(
@@ -388,7 +388,7 @@ def validate_opencode(report: Report) -> None:
     cfg = WORKTREE / "opencode.json"
     if cfg.is_file():
         try:
-            data = json.loads(cfg.read_text())
+            data = json.loads(cfg.read_text(encoding="utf-8"))
         except json.JSONDecodeError as e:
             report.add(
                 severity="error",
@@ -411,7 +411,7 @@ def validate_opencode(report: Report) -> None:
     agents_dir = root / "agents"
     if agents_dir.is_dir():
         for agent_md in agents_dir.glob("*.md"):
-            content = agent_md.read_text()
+            content = agent_md.read_text(encoding="utf-8")
             fm, _ = parse_frontmatter(content)
             if not fm:
                 report.add(
@@ -470,7 +470,7 @@ def validate_opencode(report: Report) -> None:
     skills_dir = root / "skills"
     if skills_dir.is_dir():
         for skill_md in skills_dir.glob("*/SKILL.md"):
-            content = skill_md.read_text()
+            content = skill_md.read_text(encoding="utf-8")
             fm, _ = parse_frontmatter(content)
             if not fm:
                 report.add(
@@ -562,7 +562,7 @@ def validate_gemini(report: Report) -> None:
     # 2. Every native skill has frontmatter name matching directory
     if skills_dir.is_dir():
         for skill_md in skills_dir.glob("*/SKILL.md"):
-            content = skill_md.read_text()
+            content = skill_md.read_text(encoding="utf-8")
             fm, _ = parse_frontmatter(content)
             if fm.get("name") != skill_md.parent.name:
                 report.add(
@@ -577,7 +577,7 @@ def validate_gemini(report: Report) -> None:
     if agents_dir.is_dir():
         valid_model_prefixes = ("gemini-",)
         for agent_md in agents_dir.glob("*.md"):
-            fm, _ = parse_frontmatter(agent_md.read_text())
+            fm, _ = parse_frontmatter(agent_md.read_text(encoding="utf-8"))
             model = fm.get("model", "")
             if model and not model.startswith(valid_model_prefixes):
                 report.add(
@@ -591,7 +591,7 @@ def validate_gemini(report: Report) -> None:
     # 4. GEMINI.md size
     gemini_md = WORKTREE / "GEMINI.md"
     if gemini_md.is_file():
-        line_count = len(gemini_md.read_text().splitlines())
+        line_count = len(gemini_md.read_text(encoding="utf-8").splitlines())
         if line_count > 150:
             report.add(
                 severity="warning",
