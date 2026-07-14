@@ -725,6 +725,17 @@
       "version": "0.1.1"
     },
     {
+      "name": "pptx-deck-creation",
+      "source": "./plugins/pptx-deck-creation",
+      "version": "1.0.0",
+      "description": "Create production-ready, editable PowerPoint decks through a spec-first, coordinate-explicit workflow with read-only reference analysis and quality gates.",
+      "author": {
+        "name": "kimtth",
+        "email": ""
+      },
+      "license": "MIT"
+    },
+    {
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
       "version": "0.1.1",

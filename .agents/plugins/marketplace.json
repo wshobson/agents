@@ -782,6 +782,18 @@
       "category": "Coding"
     },
     {
+      "name": "pptx-deck-creation",
+      "source": {
+        "source": "local",
+        "path": "./plugins/pptx-deck-creation"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "protect-mcp",
       "source": {
         "source": "local",
