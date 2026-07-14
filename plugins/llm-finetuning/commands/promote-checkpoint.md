@@ -60,8 +60,9 @@ prompt: |
      verdict contract: `PROMOTE` or `REJECT`, with evidence and — for
      `REJECT` — exactly one top remediation.
 
-  Report the verdict, the path to `promotion-report.md`, and whether
-  the goldens changed since this run's original gate.
+  Report the verdict, the checkpoint path located in step 1, the path
+  to `promotion-report.md`, and whether the goldens changed since this
+  run's original gate.
 </Task>
 
 **Gate:** on `REJECT`, report the verdict, its evidence, and its named
@@ -75,8 +76,7 @@ loop back into the lifecycle on this command's own authority. On
 subagent_type: llm-finetuning-training-engineer
 prompt: |
   Export the promoted checkpoint for run directory: $ARGUMENTS
-  Checkpoint: the checkpoint path located and gated in Phase 5.
-  Promotion report: {phase5.output}
+  Checkpoint and promotion report: {phase5.output}
 
   Runs only because Phase 5 returned `PROMOTE`. Pick format and
   merged-vs-LoRA posture per `quantized-export`'s Format Map and the
