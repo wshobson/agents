@@ -107,14 +107,19 @@ task improvement never buys back
 a drift-budget breach.
 
 **Item count derives from the
-budget, not convenience:** score
-a benchmark here only once its
-95% CI half-width sits under
-half the hard-fail threshold
-(n≥200 for the 5pt budget above
-— n=50 carries ~±13pt of noise).
-Math and a 5-run cautionary
-example: `references/gate-templates.md`.
+budget, not convenience:** the
+strict n for a half-width under
+half the 5pt hard-fail threshold
+is ~1,300 at typical accuracy
+(p≈0.7); n=200 is a pragmatic
+floor (±6pt half-width at that
+same p, n=50 ±13pt) — report the
+half-width with every verdict,
+and treat a margin smaller than
+it as `REJECT (uncertain)`, not
+PASS/HARD FAIL. Full math and a
+5-run cautionary example:
+`references/gate-templates.md`.
 
 **RERUN is not a verdict.** A
 2–5pt drift only ever produces a

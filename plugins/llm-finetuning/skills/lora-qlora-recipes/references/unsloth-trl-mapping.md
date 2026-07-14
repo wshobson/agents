@@ -95,18 +95,36 @@ regardless of what was requested. Confirmed: passing
 `attn_implementation="sdpa"` explicitly still resolved to
 `model.config._attn_implementation ==
 "flash_attention_2"`. **The only working override is a
-monkeypatch before calling `from_pretrained`:**
+monkeypatch before calling `from_pretrained`** — scope it
+tightly, since `HAS_FLASH_ATTENTION` is a module-global
+that also affects any *other* `from_pretrained` call made
+later in the same process (a second model load in the same
+script or notebook cell inherits whatever the flag was last
+set to, silently):
 
 ```python
-import unsloth.models._utils as _uslsloth_utils
-_uslsloth_utils.HAS_FLASH_ATTENTION = False
+import unsloth.models._utils as unsloth_utils
+
+_original = unsloth_utils.HAS_FLASH_ATTENTION
+try:
+    unsloth_utils.HAS_FLASH_ATTENTION = False
+    model, tokenizer = FastLanguageModel.from_pretrained(...)
+    assert model.config._attn_implementation == "sdpa", (
+        f"expected sdpa, got {model.config._attn_implementation}"
+    )
+finally:
+    unsloth_utils.HAS_FLASH_ATTENTION = _original
 ```
 
-This forces the resolver down its SDPA branch. On plain
-TRL/PEFT (the escape hatch above), `attn_implementation=
-"sdpa"` passed to `AutoModelForCausalLM.from_pretrained`
-**is** honored correctly — this is an Unsloth-specific gap,
-not a general TRL issue.
+This forces the resolver down its SDPA branch for the
+duration of the `try` block only, restores the prior value
+in `finally` even if `from_pretrained` raises, and asserts
+the resolver actually landed on SDPA rather than silently
+falling through. On plain TRL/PEFT (the escape hatch
+above), `attn_implementation="sdpa"` passed to
+`AutoModelForCausalLM.from_pretrained` **is** honored
+correctly — this is an Unsloth-specific gap, not a general
+TRL issue.
 
 ### `padding_free` collision with a plain-TRL `SFTConfig`
 

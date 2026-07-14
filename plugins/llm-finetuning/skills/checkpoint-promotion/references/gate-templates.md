@@ -125,34 +125,55 @@ even if every general benchmark stayed within
 noise, and even if the checkpoint's target-task
 metric improved substantially in the same run.
 
-### Sizing the Suite: Item Count From the Budget, Not Convenience
+### Sizing the Suite: The Honest Math, Then the Pragmatic Floor
 
-The rule stated in `SKILL.md`'s Drift Budget
-section, worked in full: pick n so the benchmark's
-95% CI half-width sits comfortably under half the
-hard-fail threshold. For a binomial accuracy metric,
-half-width ≈ `1.96 * sqrt(p*(1-p)/n)`; at `p≈0.5`
-(worst case, widest CI) that's ≈ `0.98/sqrt(n)`.
+The exact formula for a binomial accuracy metric's
+95% CI half-width: `n ≈ 1.96² · p(1-p) / h²`, where
+`h` is the target half-width (as a fraction, e.g.
+0.025 for 2.5pt) and `p` is the benchmark's expected
+accuracy. `SKILL.md`'s Drift Budget section calls for
+sizing `n` so the half-width sits comfortably under
+half the hard-fail threshold — for the 5pt budget
+here, `h=2.5pt` (0.025). Worked at a typical
+GSM8K-style accuracy of `p≈0.7`:
 
-| Hard-fail budget | Half-width target | Minimum n |
-|---|---|---|
-| 5pt (0.05) | <0.025 | ~1600 naive; ~200 in practice at typical accuracy skew away from 0.5 |
-| 1pt (0.01) | <0.005 | ~40,000 naive — essentially never hit a 1pt budget with a benchmark-sized suite |
+```
+n ≈ 1.96² × 0.7×0.3 / 0.025² ≈ 3.8416 × 0.21 / 0.000625 ≈ 1,290
+```
 
-In practice, most drift benchmarks (GSM8K, MMLU
-subsets) sit well away from `p=0.5`, so the
-200-item floor already used by this file's own
-domain-adjacent range and `eval-harness-first`'s
-`references/grader-templates.md` example
-(`n_items: 250`, `n_items: 500`) is the right
-order of magnitude for a 5pt budget — **n=50 is
-not**: at `p≈0.7-0.8` (typical GSM8K accuracy),
-n=50 still carries a Wilson-interval half-width
-around ±13pt, wider than the entire hard-fail
-band. Treat 200 as a floor to derive from the
-budget, never as a fixed constant to copy — a
-tighter budget than 5pt needs the formula
-re-run, not the same 200.
+**The strict n for a 2.5pt half-width at p≈0.7 is
+~1,300 — not 200.** A 200-item suite at that same `p`
+only achieves:
+
+```
+half-width = 1.96 × sqrt(0.7×0.3 / 200) ≈ 1.96 × 0.0324 ≈ 6.3pt
+```
+
+**n=200 is a pragmatic floor, not a suite that meets
+the strict 2.5pt target.** Use it when a ~1,300-item
+domain-adjacent pool doesn't exist for the task (the
+common case), but with three rules attached:
+
+- **Report the actual CI half-width alongside every
+  Stage 2 verdict** — at n=200, p≈0.7 that's ≈±6pt;
+  recompute per benchmark since `p` varies row to row.
+- **A hard-fail margin smaller than the reported CI
+  half-width makes the verdict `REJECT (uncertain)`,
+  never PASS or HARD FAIL.** A delta that clears or
+  breaches the 5pt budget by less than the half-width
+  has not actually been distinguished from noise at
+  200 items. Resolve `REJECT (uncertain)` with either
+  a larger suite (build the domain-adjacent pool
+  toward the ~1,300-item strict number) or a
+  same-config seed-repeat (worked example below)
+  before promoting — do not round an uncertain result
+  to whichever verdict is more convenient.
+- **200 is a floor to derive from the budget, never a
+  fixed constant to copy.** A tighter hard-fail
+  threshold than 5pt needs the formula re-run at the
+  new `h`, and n=50 is well below even the pragmatic
+  floor: at `p≈0.7-0.8`, n=50 carries a half-width
+  around ±13pt, wider than the entire hard-fail band.
 
 ### Cautionary Worked Example: A Real 5-Run Trajectory That Was Mostly Noise
 
@@ -197,13 +218,20 @@ until a same-config seed pair confirms it.
 - **N items:** 200 minimum, drawn from the same
   domain-adjacent pool used in Stage 2 (not the
   training set, not the goldens used to build the
-  checkpoint) — fewer than 200 pairs produces a win
-  rate too noisy to separate from chance at the 50%
-  + margin threshold below. **This 200-item minimum
-  is for the LLM-judge protocol.** The deterministic
-  variant below has its own, smaller floor because
-  it isn't subject to judge noise on top of sampling
-  noise.
+  checkpoint). **This is the same pragmatic floor as
+  Stage 2's sizing rule above, not a suite proven to
+  resolve the margin below at 95% CI:** near the 50%
+  boundary, n=200's half-width is `1.96 ×
+  sqrt(0.25/200) ≈ 6.9pt`, wider than the 5pt margin
+  threshold. Report the CI half-width alongside the
+  win rate; if the margin is smaller than the
+  reported half-width, the stage verdict is `REJECT
+  (uncertain)` — same rule as Stage 2 — resolved with
+  a larger arena or a same-config seed-repeat before
+  promoting. **This 200-item minimum is for the
+  LLM-judge protocol.** The deterministic variant
+  below has its own, smaller floor because it isn't
+  subject to judge noise on top of sampling noise.
 
 ### Deterministic Variant (No LLM-Judge)
 

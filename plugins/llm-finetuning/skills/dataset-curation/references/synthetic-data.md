@@ -273,6 +273,21 @@ this confound has produced misleading run-to-run
 trajectories in practice, so treat swap-not-add as a
 hard rule for this recipe, not a style preference.
 
+**Row count is not token count.** Swapping rows
+1-for-1 holds the *row* count constant, but replay
+rows and target-task rows are rarely the same length —
+a swap can still shift total training tokens (and
+therefore `max_steps` under a fixed batch size and
+sequence-packing scheme) even though the row count
+didn't move. Hold total training tokens, or `max_steps`
+directly, constant between the old and new run — not
+just row count — and record the packed-token count
+for each run (not just the row count) in the dataset
+card before attributing a drift-score change to the
+replay-fraction change alone. A run that swapped rows
+but grew packed tokens 10% has the same attribution
+problem as one that added rows outright.
+
 ## Synthetic-Only Datasets and the ≥25% Real Floor
 
 `SKILL.md`'s Synthetic Data Rules require ≥25% real

@@ -23,22 +23,28 @@ docker run --runtime=nvidia --gpus all -it --rm \
 
 ## Unsloth container
 
-For Unsloth-centric fine-tuning runs, prefer the purpose-built image over the generic NGC one — it ships the pinned Triton/xformers/transformers combination already validated for this hardware:
+For Unsloth-centric fine-tuning runs, prefer the purpose-built image over the generic NGC one — it ships the pinned Triton/xformers/transformers combination already validated for this hardware.
+
+**`dgxspark-latest` is a moving tag, unlike the NGC image's dated `25.09-py3` tag above.** Don't run it directly as the invocation you'll rely on for a real run — resolve and pin its digest first, then run by digest:
 
 ```bash
+# 1. Discovery step: pull the moving tag and confirm it starts.
+docker pull unsloth/unsloth:dgxspark-latest
+
+# 2. Resolve the tag to its current digest.
+docker inspect --format='{{index .RepoDigests 0}}' unsloth/unsloth:dgxspark-latest
+# -> unsloth/unsloth@sha256:<resolved digest>
+
+# 3. Run by digest — this is the reproducible invocation.
 docker run --runtime=nvidia --gpus all -it --rm \
   --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 \
   -v "$(pwd)/finetuning:/workspace/finetuning" \
-  unsloth/unsloth:dgxspark-latest
+  unsloth/unsloth@sha256:<resolved digest>
 ```
 
-Same flag rationale as above. Prefer this over rebuilding a custom Unsloth image from the NGC base.
+Substitute the pinned `@sha256:...` digest for the tag in CI or any pipeline where reproducibility matters — a run recorded against `dgxspark-latest` by tag alone cannot be reproduced later if the tag has moved on. Re-resolve and re-pin the digest whenever picking up a new blessed release (see "Pull vs rebuild" below).
 
-`dgxspark-latest` is a moving tag, unlike the NGC image's dated
-`25.11-py3` tag above — pin it once resolved:
-`docker inspect --format='{{index .RepoDigests 0}}' unsloth/unsloth:dgxspark-latest`,
-then substitute that `@sha256:...` digest for the tag in CI or any
-pipeline where reproducibility matters.
+Same flag rationale as the NGC invocation above. Prefer this over rebuilding a custom Unsloth image from the NGC base.
 
 ## Pull vs rebuild
 

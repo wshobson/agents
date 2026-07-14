@@ -34,9 +34,12 @@ not a permanent pin:
 |---|---|
 | `transformers` | 5.13.1 |
 | `trl` | 1.8.0 |
+| `peft` | 0.19.1 |
+| `datasets` | 4.3.0 (pin as-is; not re-verified independently of the combination above) |
 | `unsloth` / `unsloth_zoo` | 2026.7.2 |
 | `torchao` | 0.17.0 (pure-Python wheel; NGC base image ships 0.13.0+git, too old — `pip install -U torchao` after the Unsloth line) |
 | `bitsandbytes` | 0.49.2 |
+| `hf_transfer` | 0.1.9 (current stable; see the deprecation note below before relying on it) |
 
 If a bare-pip install lands on a different combination than
 this table (pip resolver drift is expected as new releases
@@ -56,6 +59,44 @@ through Xet rather than hf_transfer regardless. This is cosmetic
 `hf_transfer`-based env setup should be read as intent ("make
 downloads fast"), not a literal current-API requirement; set
 `HF_XET_HIGH_PERFORMANCE=1` instead on `huggingface_hub` 1.23+.
+
+## GPU-Detection False Negative: Per-Hypothesis Detail
+
+The full discriminating check behind `SKILL.md`'s Verification
+Commands hypothesis table, in the order to work through them:
+
+1. **Runtime/flags.** If `docker run` was missing
+   `--runtime=nvidia --gpus all`, `nvidia-smi` run *inside* the
+   container fails or shows no devices even though the host sees
+   the GPU fine. Fix: re-run with both flags.
+2. **Device visibility.** `echo $CUDA_VISIBLE_DEVICES` — an
+   empty string set explicitly (not merely unset) hides all
+   devices from CUDA; a stale index (e.g. `1` on a single-GPU
+   box) hides the only device present. Fix: `unset
+   CUDA_VISIBLE_DEVICES` or set it to `0`.
+3. **Permissions.** `ls -l /dev/nvidia*` — missing entries or a
+   `Permission denied` on read means the container/user can't
+   open the device nodes (common when running rootless or with a
+   restrictive seccomp/AppArmor profile). Fix: match the host's
+   device-cgroup rules, or don't run rootless for GPU workloads.
+4. **CUDA init state.** A prior process that crashed mid-kernel
+   can leave the driver's CUDA context wedged for that process
+   tree. Retrying in a fresh shell or a freshly started container
+   (not just a new Python process in the same shell) rules this
+   out cheaply before assuming anything deeper is wrong.
+5. **ABI mismatch.** The last hypothesis to check, not the
+   first: `python3 -c "import torch; print(torch.version.cuda)"`
+   not starting with `13` confirms a `libcudart.so.12`-linked
+   wheel on a CUDA-13-only system — see the ABI Rule in
+   `SKILL.md`. This is the only one of the five that a wheel
+   reinstall actually fixes; reinstalling before ruling out 1-4
+   wastes a cycle without changing the outcome if the real cause
+   is a flag, an env var, or a permission.
+
+A torchcodec/driver interaction is the most frequently reported
+instance of (5) on this hardware specifically — see
+`gh issue list --repo NVIDIA/dgx-spark-playbooks` for current
+reports before assuming a novel cause.
 
 ## sm_121 vs sm_121a
 
