@@ -98,7 +98,22 @@ For code-generation tasks, where "correct" means
 the generated function passes a held-out test
 suite. Execute in a subprocess with a hard
 timeout — never `exec()` untrusted completions
-in-process:
+in-process.
+
+**WARNING — this function executes model-generated
+code and MUST run inside an isolated environment:**
+a network-disabled container, gVisor/firejail, or a
+dedicated CI sandbox, with **no secrets or
+credentials in the environment** — no HF tokens,
+experiment-tracker keys, cloud credentials, or SSH
+keys. GRPO will, by design, push adversarial
+completions through this path as the policy
+explores. Never run it directly on a training host
+holding credentials. The timeout below protects
+training-loop liveness only — **it is NOT a
+security boundary**. Likewise, `TemporaryDirectory`
+confines where the harness writes its files, not
+what the executed code can read or reach.
 
 ```python
 import subprocess
@@ -115,6 +130,16 @@ def test_execution_reward(
     in its own subprocess with a wall-clock timeout;
     an infinite loop or crash scores 0.0 instead of
     hanging the training loop.
+
+    SECURITY: executes model-generated code. Must run
+    inside an isolated environment (network-disabled
+    container, gVisor/firejail, or a dedicated CI
+    sandbox) with no secrets/credentials in the
+    environment. Never run directly on a host holding
+    credentials. The timeout is a liveness guard for
+    the training loop, NOT a security boundary; the
+    temporary directory confines harness writes, not
+    what executed code can read or reach.
     """
     rewards = []
     for completion, tests in zip(completions, test_code):
@@ -163,6 +188,11 @@ def with_length_penalty(reward_fn, target_len=512, penalty_per_token=0.001):
         return adjusted
     return wrapped
 ```
+
+Note that `len(completion.split())` counts words
+as a cheap proxy for tokens — use the model's own
+tokenizer for true token counts when tuning
+`target_len`.
 
 This is a targeted fix for observed length
 creep, not a substitute for Dr.GRPO — if length
