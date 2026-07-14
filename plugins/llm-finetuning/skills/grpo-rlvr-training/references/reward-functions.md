@@ -101,8 +101,8 @@ timeout — never `exec()` untrusted completions
 in-process.
 
 **WARNING — this function executes model-generated
-code and MUST run inside an isolated environment:**
-a network-disabled container, gVisor/firejail, or a
+code and REQUIRES an isolated environment:** a
+network-disabled container, gVisor/firejail, or a
 dedicated CI sandbox, with **no secrets or
 credentials in the environment** — no HF tokens,
 experiment-tracker keys, cloud credentials, or SSH
@@ -113,16 +113,23 @@ holding credentials. The timeout below protects
 training-loop liveness only — **it is NOT a
 security boundary**. Likewise, `TemporaryDirectory`
 confines where the harness writes its files, not
-what the executed code can read or reach.
+what the executed code can read or reach. The
+function below enforces this: it takes the sandbox
+boundary as a required argument and refuses to run
+at all — returning reward 0.0 — when the caller
+doesn't supply one. It never falls back to host
+execution.
 
 ```python
+import logging
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
+logger = logging.getLogger(__name__)
+
 def test_execution_reward(
-    completions, test_code, timeout_s=10, **kwargs
+    completions, test_code, sandbox_cmd, timeout_s=10, **kwargs
 ) -> list[float]:
     """`test_code` is a per-example pytest snippet that
     imports the candidate under a fixed module name
@@ -131,16 +138,41 @@ def test_execution_reward(
     an infinite loop or crash scores 0.0 instead of
     hanging the training loop.
 
-    SECURITY: executes model-generated code. Must run
-    inside an isolated environment (network-disabled
-    container, gVisor/firejail, or a dedicated CI
-    sandbox) with no secrets/credentials in the
-    environment. Never run directly on a host holding
-    credentials. The timeout is a liveness guard for
-    the training loop, NOT a security boundary; the
-    temporary directory confines harness writes, not
-    what executed code can read or reach.
+    SECURITY: executes model-generated code. This
+    function REQUIRES an isolation boundary — it does
+    not run anything on the host by itself.
+
+    `sandbox_cmd` (list[str], required) is a command
+    prefix that wraps pytest in that boundary, e.g. a
+    network-disabled, resource-capped Docker container:
+
+        # sandbox_cmd = [
+        #     "docker", "run", "--rm", "--network=none",
+        #     "--memory=1g", "--cpus=1",
+        #     "-v", f"{workdir}:/work:ro", "-w", "/work",
+        #     "python:3.12-slim",
+        # ]
+
+    If `sandbox_cmd` is falsy, this function refuses to
+    execute anything and returns 0.0 for every
+    completion — it never falls back to running
+    pytest on the host. The subprocess environment is
+    scrubbed to a minimal PATH (no HF tokens,
+    experiment-tracker keys, cloud credentials, or SSH
+    keys). The timeout is a liveness guard for the
+    training loop, NOT a security boundary — isolation
+    comes entirely from `sandbox_cmd`; the temporary
+    directory only confines harness writes, not what
+    executed code can read or reach.
     """
+    if not sandbox_cmd:
+        logger.warning(
+            "test_execution_reward: no sandbox boundary provided "
+            "— refusing to execute model-generated code"
+        )
+        return [0.0 for _ in completions]
+
+    scrubbed_env = {"PATH": "/usr/bin:/bin"}
     rewards = []
     for completion, tests in zip(completions, test_code):
         with tempfile.TemporaryDirectory() as tmp:
@@ -150,10 +182,12 @@ def test_execution_reward(
             test_path.write_text(tests)
             try:
                 result = subprocess.run(
-                    [sys.executable, "-m", "pytest", str(test_path), "-q"],
+                    [*sandbox_cmd, "python", "-m", "pytest",
+                     str(test_path), "-q"],
                     cwd=tmp,
                     capture_output=True,
                     timeout=timeout_s,
+                    env=scrubbed_env,
                 )
                 rewards.append(1.0 if result.returncode == 0 else 0.0)
             except subprocess.TimeoutExpired:

@@ -76,32 +76,79 @@ def grade_exact_match(completion: str, ground_truth: str) -> bool:
 For buckets where correctness means "the code runs
 and does the right thing" — the strongest signal
 available when applicable, since it needs no
-normalization or judgment call:
+normalization or judgment call.
+
+**WARNING — this grader executes model-generated
+code and REQUIRES an isolated environment:** a
+network-disabled container, gVisor/firejail, or a
+dedicated CI sandbox, with **no secrets or
+credentials in the environment** — no HF tokens,
+experiment-tracker keys, cloud credentials, or SSH
+keys. Never run it directly on a host holding
+credentials. The timeout below protects grading-loop
+liveness only — **it is NOT a security boundary**;
+isolation comes entirely from `sandbox_cmd`.
 
 ```python
+import logging
 import subprocess
 import tempfile
 from pathlib import Path
 
-def grade_execution(completion: str, test_code: str) -> bool:
+logger = logging.getLogger(__name__)
+
+def grade_execution(completion: str, test_code: str, sandbox_cmd: list[str]) -> bool:
     """Write the completion plus a pytest test file to
-    a scratch dir, run pytest, and pass only on a
-    clean exit code. Timeouts and non-zero exits are
-    both failures — never treat a hung process as a
-    pass by default.
+    a scratch dir, run pytest via `sandbox_cmd`, and
+    pass only on a clean exit code. Timeouts and
+    non-zero exits are both failures — never treat a
+    hung process as a pass by default.
+
+    SECURITY: executes model-generated code. This
+    function REQUIRES an isolation boundary — it does
+    not run anything on the host by itself.
+
+    `sandbox_cmd` (list[str], required) is a command
+    prefix that wraps pytest in that boundary, e.g. a
+    network-disabled, resource-capped Docker container:
+
+        # sandbox_cmd = [
+        #     "docker", "run", "--rm", "--network=none",
+        #     "--memory=1g", "--cpus=1",
+        #     "-v", f"{workdir}:/work:ro", "-w", "/work",
+        #     "python:3.12-slim",
+        # ]
+
+    If `sandbox_cmd` is falsy, this function refuses to
+    execute anything and returns False — it never falls
+    back to running pytest on the host. The subprocess
+    environment is scrubbed to a minimal PATH.
     """
+    if not sandbox_cmd:
+        logger.warning(
+            "grade_execution: no sandbox boundary provided "
+            "— refusing to execute model-generated code"
+        )
+        return False
+
+    scrubbed_env = {"PATH": "/usr/bin:/bin"}
     with tempfile.TemporaryDirectory() as tmp:
         solution = Path(tmp) / "solution.py"
         test_file = Path(tmp) / "test_solution.py"
         solution.write_text(completion)
         test_file.write_text(test_code)
-        result = subprocess.run(
-            ["pytest", str(test_file), "-q"],
-            cwd=tmp,
-            capture_output=True,
-            timeout=30,
-        )
-        return result.returncode == 0
+        try:
+            result = subprocess.run(
+                [*sandbox_cmd, "python", "-m", "pytest",
+                 str(test_file), "-q"],
+                cwd=tmp,
+                capture_output=True,
+                timeout=30,
+                env=scrubbed_env,
+            )
+            return result.returncode == 0
+        except subprocess.TimeoutExpired:
+            return False
 ```
 
 ## LLM-Judge Template
