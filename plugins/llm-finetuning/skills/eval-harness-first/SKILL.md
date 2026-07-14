@@ -14,8 +14,8 @@ the data-curation engine. The same labeled traces
 that build the goldens become the training set.
 
 **Input:** production/agent traces if they exist, or
-a task spec if they don't, plus human labelers
-willing to grade ≥100 examples.
+a task spec if they don't, plus labelers willing to
+grade ≥100 examples.
 **Output format:** the `eval/` directory below —
 goldens, graders, a drift suite, and a base-model
 baseline that later phases check for before they
@@ -146,16 +146,16 @@ finding.
 
 ```
 eval/
-├── goldens.jsonl          # labeled traces + synthetic goldens, versioned like code
+├── goldens.jsonl          # labeled traces + synthetic goldens, versioned
 ├── graders/                # one module per failure bucket
 │   ├── schema_compliance.py
 │   ├── exact_match.py
 │   └── rubric_judge.py
 ├── drift-suite.yaml        # frozen benchmarks + 200-500 domain-adjacent items
-└── baseline-<model>.json   # gate token: harness + drift suite run against the base model
+└── baseline-<model>.json   # gate token: harness + drift suite vs the base model
 runs/
 └── <run-id>/
-    └── results.json         # per-run harness output, re-run each checkpoint
+    └── results.json         # per-run harness output, one per checkpoint
 ```
 
 `eval/` persists across runs and lives outside
@@ -164,6 +164,21 @@ artifact. `runs/` is disposable and re-creatable;
 `eval/` is not. Never let a run script write into
 `eval/` — only goldens curation, grader edits, and a
 baseline refresh should touch it.
+
+### Phase 0 Exit Checklist
+
+Before `finetuning-method-selection`, confirm:
+
+1. ≥100 traces open-coded; 4–8 failure buckets.
+2. `eval/goldens.jsonl` committed and versioned.
+3. One grader per bucket, deterministic first.
+4. Judges calibrated — TPR/TNR from a sealed split,
+   snapshot pinned, different family.
+5. `eval/drift-suite.yaml` frozen.
+6. `eval/baseline-<model>.json` written.
+
+Missing any of the six? Not Phase 0 complete —
+`/finetune` checks the baseline file before a run.
 
 ## Related Skills
 
