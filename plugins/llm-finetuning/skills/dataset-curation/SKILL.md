@@ -36,12 +36,11 @@ launching training.
   not a target. Below it, a handful of low-quality
   or duplicate examples can dominate the gradient;
   above it, **quality over quantity** — a smaller
-  verified, deduplicated set consistently
-  outperforms a larger noisy one on the same task.
-- One row of the ChatML shape, for orientation —
-  the remaining four formats (instruct, DPO pair,
-  KTO unpaired, GRPO prompt-only) plus a
-  ShareGPT→role/content conversion note live in
+  verified, deduplicated set beats a larger noisy one.
+- The ChatML shape, for orientation; the other
+  four formats (instruct, DPO pair, KTO unpaired,
+  GRPO prompt-only) plus a ShareGPT conversion
+  note live in
   `references/formats-and-templates.md`:
 
   ```json
@@ -71,13 +70,19 @@ and ends.
   different one degrades without erroring. Verify
   the same template string used in training is the
   one applied at inference and eval time.
-- Full template-application and loss-masking code
-  sketch with the current TRL API (`processing_class`,
-  not `tokenizer=`): `references/formats-and-templates.md`.
-  Sanity-check the mask before training:
+- **Keep the dataset in `messages` shape** and let
+  the trainer template and mask it
+  (`assistant_only_loss=True` in current TRL) —
+  pre-rendering to a flat text field destroys the
+  turn boundaries masking needs. Full code sketch:
+  `references/formats-and-templates.md`.
+  Sanity-check before training — decode only the
+  unmasked positions; you should see only
+  assistant text:
 
   ```python
-  assert (labels[loss_mask] != -100).all()  # assistant spans only
+  keep = batch["labels"][0] != -100
+  print(tokenizer.decode(batch["input_ids"][0][keep]))
   ```
 
 ## Packing
@@ -85,9 +90,9 @@ and ends.
 **Without packing, 40–70% of compute is spent on
 padding** — variable-length examples batched at a
 fixed sequence length waste the gap between each
-example's real length and the batch's max length.
+example's real length and the batch's max.
 Packing concatenates multiple examples into one
-sequence up to the max length, eliminating most of
+sequence up to the max length, cutting most of
 that waste.
 
 - **Packing changes batch semantics.** A packed
@@ -99,14 +104,13 @@ that waste.
   packed-sequence count, not raw example count.
 - **MANDATORY validation step: decode and manually
   inspect 5–10 packed sequences before scaling to a
-  full run.** Pull 5–10 packed sequences, decode
-  them back to text, and confirm: example boundaries
-  land where expected, template markers are intact
-  per sub-example, and the loss mask still covers
-  assistant turns only within each packed sequence.
-  Not optional — packing bugs are silent (the run
-  trains, the loss curve looks normal) and only
-  surface in eval quality, hours later:
+  full run.** Decode them back to text and confirm:
+  example boundaries land where expected, template
+  markers are intact per sub-example, and the loss
+  mask is still assistant-only within each packed
+  sequence. Not optional — packing bugs are silent
+  (the loss curve looks normal) and only surface in
+  eval quality, hours later:
 
   ```python
   for seq in packed_dataset.select(range(10)):
@@ -119,8 +123,7 @@ that waste.
   Training on a growing share of model-generated
   data without a real-data floor drives measurable
   quality collapse over successive generations —
-  25% real is the minimum that holds the line, not
-  a target to trend toward.
+  25% real is the minimum that holds the line.
 - **Magpie and rejection sampling are the
   workhorses.** Magpie extracts prompts from the
   target model's own template prior (no seed prompt
@@ -137,16 +140,15 @@ that waste.
   10–30%.** Plan generation volume accordingly — a
   10,000-row target at 15% accept needs roughly
   65,000+ raw generations, not 10,000.
-- Full generation-method ranking, the filter funnel,
-  and the teacher→student distillation pattern:
-  `references/synthetic-data.md`.
+- Generation-method ranking, filter funnel, and
+  distillation pattern: `references/synthetic-data.md`.
 
 ## The Dataset Card
 
-Every dataset that reaches training gets a dataset
-card — the required Phase 2 artifact `/finetune`
-checks for before launching a run. The card is not
-free-form documentation; it MUST carry these fields:
+Every dataset that reaches training gets a card —
+the required Phase 2 artifact `/finetune` checks
+before launching a run. The card is not free-form
+documentation; it MUST carry these fields:
 
 - **Provenance** — where every row came from (real
   source(s), synthetic method(s), or both),
@@ -159,9 +161,9 @@ free-form documentation; it MUST carry these fields:
   (embedding-similarity threshold), or both; see
   the filter funnel in `references/synthetic-data.md`.
 - **Template used** — the exact chat template
-  string/identifier, the same one Chat Templates
-  and Loss Masking requires stays consistent
-  through inference and eval — this is what ties an
+  string/identifier, kept consistent through
+  inference and eval per Chat Templates and Loss
+  Masking above — this is what ties an
   `eval-harness-first` run back to the checkpoint.
 - **Packing config** — whether packing was used,
   max sequence length, and confirmation the
@@ -171,12 +173,22 @@ A dataset missing any of these six fields isn't
 ready for `/finetune` — treat the card as a gate,
 not a summary written after the fact.
 
+### Phase 2 Exit Checklist
+
+Before handing off to `/finetune`, confirm:
+
+1. Format matches the method (table above).
+2. Template applied before any concatenation.
+3. Loss masked to assistant turns only.
+4. 5–10 packed sequences decoded and read.
+5. ≥25% real data in the final mix.
+6. Dataset card complete — all six fields.
+
 ## References
 
 - `references/formats-and-templates.md` — JSONL
   examples for every format above, current-TRL
-  template-application code, and the
-  ShareGPT→role/content conversion note.
+  masking code, and the ShareGPT conversion note.
 - `references/synthetic-data.md` — generation-method
   ranking, filter funnel, and teacher→student
   distillation pattern.
@@ -184,9 +196,8 @@ not a summary written after the fact.
 Related skills: `finetuning-method-selection` routes
 here; `lora-qlora-recipes`, `vision-sft`, and
 `preference-optimization` consume the datasets this
-skill produces, for SFT, VLM SFT, and preference
-training respectively; `trace-to-training-data` is
-the upstream provenance source for graded-trajectory
-datasets; `eval-harness-first` grades the resulting
-checkpoint and expects the card's template field to
-match what it applies at inference.
+skill produces; `trace-to-training-data` is the
+provenance source for graded-trajectory datasets;
+`eval-harness-first` grades the resulting checkpoint
+and expects the card's template field to match what
+it applies at inference.

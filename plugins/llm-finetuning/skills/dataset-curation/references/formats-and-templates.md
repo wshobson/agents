@@ -25,9 +25,9 @@ pick one and use it consistently across the dataset:
 
 ## ChatML Conversation (SFT, Multi-Turn)
 
-A `messages` list per row — this is the shape
-`SFTTrainer` expects natively once a chat template
-is applied:
+A `messages` list per row — the shape `SFTTrainer`
+templates and loss-masks natively (see Applying the
+Chat Template below):
 
 ```json
 {"messages": [
@@ -87,51 +87,70 @@ requirement before a GRPO run.
 
 ## Applying the Chat Template (Current TRL API)
 
-Apply the template once, at dataset-prep time,
-before any packing:
+**Keep the dataset in `messages` shape and let
+`SFTTrainer` apply the template.** Do not
+pre-render conversations to a flat text field —
+flattening destroys the message boundaries TRL
+needs to mask loss to assistant turns. Given a
+`messages`-shaped dataset, current TRL applies
+the tokenizer's chat template per example (before
+any packing concatenation, satisfying `SKILL.md`'s
+template-before-concatenation rule) and masks loss
+to assistant spans when `assistant_only_loss=True`:
 
 ```python
 from transformers import AutoTokenizer
+from trl import SFTConfig, SFTTrainer
 
 tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
-
-def apply_template(example):
-    text = tokenizer.apply_chat_template(
-        example["messages"],
-        tokenize=False,
-        add_generation_prompt=False,
-    )
-    return {"text": text}
-
-dataset = dataset.map(apply_template)
-```
-
-`SFTTrainer` in current TRL takes the templated
-dataset directly and handles loss masking over
-non-assistant spans internally when given a
-`messages`-shaped dataset and
-`processing_class=tokenizer` (not `tokenizer=` —
-see `lora-qlora-recipes`'s
-`references/unsloth-trl-mapping.md` for the full
-Unsloth↔TRL kwarg mapping):
-
-```python
-from trl import SFTConfig, SFTTrainer
 
 sft_args = SFTConfig(
     output_dir="./outputs-sft",
     max_seq_length=2048,
-    packing=True,              # see SKILL.md Packing section before enabling
-    dataset_text_field="text",
+    packing=True,               # see SKILL.md Packing section before enabling
+    assistant_only_loss=True,   # mask loss to assistant turns
 )
 
 trainer = SFTTrainer(
     model=BASE_MODEL,
     args=sft_args,
-    train_dataset=dataset,
-    processing_class=tokenizer,
+    train_dataset=dataset,       # messages-shaped — no pre-rendered text field
+    processing_class=tokenizer,  # current TRL — not tokenizer=
 )
 ```
+
+(`processing_class`, not `tokenizer=` — see
+`lora-qlora-recipes`'s
+`references/unsloth-trl-mapping.md` for the full
+Unsloth↔TRL kwarg mapping.)
+
+`assistant_only_loss=True` requires the tokenizer's
+chat template to mark assistant spans (the
+`{% generation %}` keyword). If the template lacks
+it, TRL raises rather than silently training on
+everything — fix the template, don't fall back to
+flat text.
+
+`apply_chat_template(..., tokenize=False)` is still
+the right tool for *inspecting* what the template
+produces — decode-and-read checks like the packing
+inspection in `SKILL.md` — just not for building
+the training dataset.
+
+### The Flat-Text Path Does NOT Mask
+
+The older pattern — pre-rendering each conversation
+with `apply_chat_template(..., tokenize=False)`
+into a `text` column and pointing
+`SFTConfig(dataset_text_field="text")` at it —
+still runs, but computes loss over the **entire
+sequence**, user turns and template markers
+included. That is exactly the silent
+train-on-everything failure `SKILL.md`'s Chat
+Templates and Loss Masking section warns about.
+It is only appropriate when full-sequence loss is
+actually intended (CPT-style continued pretraining
+on raw text), never for conversational SFT.
 
 ## ShareGPT → role/content Conversion
 
