@@ -18,6 +18,12 @@ PR = "{http://schemas.openxmlformats.org/package/2006/relationships}"
 CT = "{http://schemas.openxmlformats.org/package/2006/content-types}"
 MAX_MEMBERS, MAX_MEMBER_SIZE, MAX_TOTAL_SIZE, MAX_COMPRESSION_RATIO = 5_000, 100 * 1024 * 1024, 512 * 1024 * 1024, 1_000
 
+
+def _write_stdout(value: str) -> None:
+    """Write UTF-8 JSON without depending on the console code page."""
+    sys.stdout.buffer.write(value.encode("utf-8"))
+
+
 def _workspace_path(value: str) -> Path:
     root = Path.cwd().resolve()
     path = Path(value).expanduser().resolve()
@@ -50,10 +56,13 @@ def _source_part(rels_name: str) -> str | None:
 
 def _target(rels_name: str, value: str) -> str | None:
     source = _source_part(rels_name)
-    if source is None or value.startswith("/"):
+    if source is None:
         return None
-    target = posixpath.normpath(posixpath.join(posixpath.dirname(source), value))
-    return target if target != ".." and not target.startswith("../") else None
+    if value.startswith("/"):
+        target = posixpath.normpath(value.lstrip("/"))
+    else:
+        target = posixpath.normpath(posixpath.join(posixpath.dirname(source), value))
+    return target if target not in {"", ".", ".."} and not target.startswith("../") else None
 
 def _content_types(archive: zipfile.ZipFile) -> tuple[set[str], set[str]]:
     root = ET.fromstring(archive.read("[Content_Types].xml"))
@@ -151,10 +160,17 @@ def main(argv: list[str] | None = None) -> int:
             output = _workspace_path(args.output)
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_text(payload, encoding="utf-8")
-        print(payload, end="")
+        _write_stdout(payload)
         return 0 if report["ok"] else 1
     except (OSError, ValueError, zipfile.BadZipFile) as exc:
-        print(json.dumps({"ok": False, "errors": [{"check": "input", "message": str(exc)}]}, indent=2))
+        _write_stdout(
+            json.dumps(
+                {"ok": False, "errors": [{"check": "input", "message": str(exc)}]},
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n"
+        )
         return 2
 
 if __name__ == "__main__":

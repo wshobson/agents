@@ -2,6 +2,7 @@
 """Read a PPTX OOXML package into a compact, JSON-safe inspection report."""
 from __future__ import annotations
 import json
+import posixpath
 import stat
 import sys
 import zipfile
@@ -41,9 +42,20 @@ def _validate_archive(archive: zipfile.ZipFile) -> None:
         if member.compress_size and member.file_size / member.compress_size > MAX_COMPRESSION_RATIO:
             raise ValueError(f"Suspicious compression ratio: {member.filename}")
 
-def _part_target(owner: str, target: str) -> str:
-    base = PurePosixPath(owner).parent.parent if owner.endswith(".rels") else PurePosixPath(owner).parent
-    return str((base / target).as_posix()).replace("/../", "/")
+def _source_part(rels_name: str) -> str | None:
+    path = PurePosixPath(rels_name)
+    if str(path) == "_rels/.rels":
+        return ""
+    if path.parent.name != "_rels" or not path.name.endswith(".rels"):
+        return None
+    return str(path.parent.parent / path.name.removesuffix(".rels"))
+
+
+def _part_target(rels_name: str, target: str) -> str:
+    source = _source_part(rels_name)
+    if source is None:
+        return target
+    return posixpath.normpath(posixpath.join(posixpath.dirname(source), target)).lstrip("/")
 
 def _xml(archive: zipfile.ZipFile, name: str):
     return ET.fromstring(archive.read(name))
@@ -51,7 +63,16 @@ def _xml(archive: zipfile.ZipFile, name: str):
 def _relationships(archive: zipfile.ZipFile, name: str) -> dict[str, dict[str, str]]:
     if name not in archive.namelist():
         return {}
-    return {item.get("Id", ""): {"type": item.get("Type", "").rsplit("/", 1)[-1], "target": item.get("Target", ""), "mode": item.get("TargetMode", "Internal")} for item in _xml(archive, name).findall(f"{PR}Relationship")}
+    relationships = {}
+    for item in _xml(archive, name).findall(f"{PR}Relationship"):
+        mode = item.get("TargetMode", "Internal")
+        target = item.get("Target", "")
+        relationships[item.get("Id", "")] = {
+            "type": item.get("Type", "").rsplit("/", 1)[-1],
+            "target": target if mode == "External" else _part_target(name, target),
+            "mode": mode,
+        }
+    return relationships
 
 def inspect(path: str) -> dict:
     with zipfile.ZipFile(path) as archive:
@@ -66,7 +87,7 @@ def inspect(path: str) -> dict:
         slides = []
         for index, item in enumerate(presentation.findall(f".//{P}sldId"), start=1):
             rel = presentation_rels.get(item.get(f"{R}id", ""), {})
-            slide_name = _part_target("ppt/_rels/presentation.xml.rels", rel.get("target", ""))
+            slide_name = rel.get("target", "")
             if slide_name not in names:
                 slides.append({"index": index, "part": slide_name, "error": "missing slide part"})
                 continue

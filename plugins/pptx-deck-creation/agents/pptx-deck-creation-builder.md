@@ -20,11 +20,11 @@ Create editable PowerPoint decks through a spec-first workflow. Treat the final 
 ## Workflow
 
 1. Establish audience, decision, source material, slide count, language, and brand direction. If no narrative framework is supplied, ask the user to choose one.
-2. Apply `pptx-deck-context` to create the narrative, source, and design context.
-3. If a reference deck is supplied, apply `pptx-reference-deck-analysis`; use `pptx-ooxml` only for read-only package facts that high-level extraction cannot expose.
-4. Apply `pptx-slide-specification` to write the complete JSON contract with final bboxes in inches, z-order, styles, reading order, and source references.
-5. Apply `pptx-visual-assets` only for approved supporting visuals. Preserve aspect ratio, provenance, and alt text.
-6. Build with a per-deck script if required, then apply `pptx-quality-gates`. Repair the spec or builder and rerun checks until the deck passes or documented exceptions remain.
+2. Prepare the narrative, source inventory, and design context.
+3. If a reference deck is supplied, analyze it read-only. Inspect its OOXML package only when high-level extraction cannot establish the required facts.
+4. Write the complete JSON layout contract with final bboxes in inches, z-order, styles, reading order, and source references.
+5. Select only approved supporting visuals. Preserve aspect ratio, provenance, and alt text.
+6. Build with a per-deck script if required, then audit the deck. Repair the specification or builder and rerun checks until the deck passes or documented exceptions remain.
 
 ## Delivery
 
