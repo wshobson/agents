@@ -109,6 +109,12 @@ Checklist before Phase 3 starts.
 
 ## Phase 3: Environment Preflight
 
+If the `dgx-spark-ops` plugin is not installed, send this same prompt
+instead to `llm-finetuning-training-engineer` (whose environment
+method covers the generic path): perform generic NVIDIA checks
+(driver, VRAM, disk) and write `runs/<date>-<slug>/env-report.json`
+with `platform: generic-nvidia`.
+
 <Task>
 subagent_type: dgx-spark-ops-engineer
 prompt: |
@@ -122,10 +128,6 @@ prompt: |
   a verdict of `ready`, `ready-with-warnings`, or `blocked`.
   Write it to `runs/<date>-<slug>/env-report.json` — this run
   directory, not your current directory, is where it belongs.
-
-  If the dgx-spark-ops plugin is not installed, perform generic NVIDIA
-  checks (driver, VRAM, disk) and write env-report.json with platform:
-  generic-nvidia.
 
   Report the verdict and, if `blocked`, the specific failing check and
   its fix.

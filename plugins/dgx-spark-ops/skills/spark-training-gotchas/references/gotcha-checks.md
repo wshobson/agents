@@ -8,18 +8,23 @@ each command is safe to run read-only unless noted.
 ## G1: CUDA 12/13 ABI Mismatch
 
 ```bash
-pip show torch | grep -i version
+python3 -c "import torch; print(torch.version.cuda)"
 python -c "import ctypes; ctypes.CDLL('libcudart.so.13')"
 ldconfig -p | grep libcudart
 ```
 
-`pip show torch` should report a `cu130` build tag. The `ctypes`
-load confirms `libcudart.so.13` is actually present on the
-system; if it raises `OSError`, the driver/runtime install is
-the problem, not the wheel. `ldconfig -p` lists every CUDA
-runtime version currently registered — a `libcudart.so.12`
-entry alongside `libcudart.so.13` is a common leftover from an
-earlier install and a likely ABI-mismatch source.
+`torch.version.cuda` is the authoritative signal: it should
+report `13.x`. Don't rely on `pip show torch | grep cu130` — NGC
+container builds (e.g. `nvcr.io/nvidia/pytorch:25.11-py3`) build
+torch internally against CUDA 13 with no `+cu130` wheel tag, so
+the absence of a `cu130` tag in `pip show` output is NOT a
+failure by itself on those containers. The `ctypes` load
+confirms `libcudart.so.13` is actually present on the system; if
+it raises `OSError`, the driver/runtime install is the problem,
+not the wheel. `ldconfig -p` lists every CUDA runtime version
+currently registered — a `libcudart.so.12` entry alongside
+`libcudart.so.13` is a common leftover from an earlier install
+and a likely ABI-mismatch source.
 
 ## G2: flash-attn Absent
 

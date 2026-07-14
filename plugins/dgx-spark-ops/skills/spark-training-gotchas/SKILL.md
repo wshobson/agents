@@ -189,7 +189,7 @@ before a long run, not after it fails at hour six.
 The cheapest checks to run before anything else:
 
 ```bash
-pip show torch | grep -i version  # expect cu130 (G1)
+python3 -c "import torch; print(torch.version.cuda)"  # expect 13.x (G1); NGC containers build torch internally against CUDA 13 with no +cu130 wheel tag, so an absent cu130 tag in `pip show` is not itself a failure
 ```
 
 ```python

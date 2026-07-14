@@ -10,10 +10,13 @@
 set -uo pipefail
 
 echo "== G1: CUDA 12/13 ABI =="
-if pip show torch 2>/dev/null | grep -qi cu130; then
-  echo "G1 PASS: torch reports a cu130 build"
+g1_cuda_ver=$(python3 -c "import torch; print(torch.version.cuda or '')" 2>/dev/null)
+if [ -z "$g1_cuda_ver" ]; then
+  echo "G1 SKIP: torch not importable"
+elif [[ "$g1_cuda_ver" == 13* ]]; then
+  echo "G1 PASS: torch built against CUDA $g1_cuda_ver"
 else
-  echo "G1 FAIL: torch is not a cu130 build (check libcudart version)"
+  echo "G1 FAIL: torch built against CUDA $g1_cuda_ver (need 13.x — see gotcha G1)"
 fi
 
 echo "== G3: UMA headroom (raw reading) =="

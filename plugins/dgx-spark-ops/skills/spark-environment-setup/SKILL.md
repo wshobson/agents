@@ -105,11 +105,15 @@ stack trace that mentions a CUDA symbol, check which CUDA tag
 the installed wheel was built against:
 
 ```bash
-pip show torch | grep -i version
+python3 -c "import torch; print(torch.version.cuda)"
 ```
 
-If that output doesn't say `cu130` (or a container-supplied
-equivalent), the ABI mismatch is the first thing to fix.
+If that output doesn't start with `13`, the ABI mismatch is the
+first thing to fix. Note that NGC container builds (e.g.
+`nvcr.io/nvidia/pytorch:25.11-py3`) build torch internally
+against CUDA 13 with no `+cu130` wheel tag — `pip show torch`
+won't say `cu130` on those containers, and that absence alone is
+not a failure.
 
 Typical symptoms, so the pattern is recognizable next time:
 
