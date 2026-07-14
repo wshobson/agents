@@ -6,6 +6,8 @@
 # Usage: bash thermal-sample.sh [interval_seconds] [logfile]
 set -uo pipefail
 
+command -v nvidia-smi >/dev/null || { echo "nvidia-smi not found" >&2; exit 1; }
+
 INTERVAL="${1:-30}"
 LOGFILE="${2:-thermal.log}"
 

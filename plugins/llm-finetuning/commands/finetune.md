@@ -120,6 +120,8 @@ prompt: |
   identity, execute the G1–G10 gotcha checks, compute UMA memory
   headroom for the planned workload, and write `env-report.json` with
   a verdict of `ready`, `ready-with-warnings`, or `blocked`.
+  Write it to `runs/<date>-<slug>/env-report.json` — this run
+  directory, not your current directory, is where it belongs.
 
   If the dgx-spark-ops plugin is not installed, perform generic NVIDIA
   checks (driver, VRAM, disk) and write env-report.json with platform:
@@ -234,3 +236,9 @@ Summarize:
 - **Lessons worth recording**: anything about the failure buckets,
   the drift budget, or the OOM ladder that would change how the next
   run against this `eval/` should be planned.
+
+**Phase 7 — Roadbook.** Append this summary's lessons and any
+non-obvious workarounds hit during the run to
+`runs/<date>-<slug>/roadbook.md`, under a dated heading for this
+attempt — create the file if it doesn't exist yet, and append rather
+than overwrite on every later run against the same slug.

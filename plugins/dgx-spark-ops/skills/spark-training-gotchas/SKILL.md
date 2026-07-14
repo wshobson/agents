@@ -202,8 +202,9 @@ grep -qi docker /proc/1/cgroup && echo container || echo bare-host  # G9
 
 `assets/preflight.sh` runs G1, G3, G4, G7, G9. Every result
 line starts with its G-number — the output format
-`/spark-preflight` will parse: PASS/FAIL where automatable
-(G1, G7, G9), `INFO:` raw readings for judgment (G3, G4).
+`/spark-preflight` will parse: PASS/FAIL/WARN verdicts where
+automatable (G1, G7, G9), SKIP when a tool is unavailable,
+`INFO:` raw readings for judgment (G3, G4).
 Full commands and interpretation notes per gotcha:
 `references/gotcha-checks.md`. See also
 `plugins/dgx-spark-ops/skills/spark-environment-setup/SKILL.md`

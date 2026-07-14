@@ -89,7 +89,7 @@ plan against rather than trusting the formula in isolation:
 | Model class | Method | Observed total | Notes |
 |---|---|---|---|
 | 70B | QLoRA | ≈40GB | 30–48h for 3 epochs; the reference point for "70B fits via QLoRA, not bf16." |
-| gpt-oss-120b (100B+ MoE) | NVFP4-native LoRA | ≈68GB (per Unsloth's official DGX Spark tutorial, unsloth.ai docs, 2025-12) | Community recipe (`nvfp4-lora-spark`); experimental, not the default assumption for other 100B+ MoE models. |
+| a ~120B-class MoE model | NVFP4-native LoRA | ≈68GB (per Unsloth's official DGX Spark tutorial, unsloth.ai docs, 2025-12) | Community recipe (`nvfp4-lora-spark`); experimental, not the default assumption for other 100B+ MoE models. |
 | 27B | LoRA | fits at pack ≤1024 | The LoRA ceiling on a single Spark — larger dense models need multi-Spark or a smaller method. |
 | 9B | Full fine-tune | fits comfortably | The full-FT ceiling — above this, full FT needs LoRA/QLoRA or multi-Spark instead. |
 

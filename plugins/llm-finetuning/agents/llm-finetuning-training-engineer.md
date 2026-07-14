@@ -113,11 +113,18 @@ Every run gets one directory; don't scatter its artifacts elsewhere:
 
 ```
 runs/<date>-<slug>/
+├── training-brief.md
+├── data/
+│   ├── dataset-card.md
+│   └── validation-report.md
+├── env-report.json
 ├── train/
 │   ├── config.yaml
-│   └── train.py
-├── logs/
-└── export/
+│   ├── train.py
+│   └── logs/
+├── promotion-report.md
+├── export/
+└── roadbook.md
 ```
 
 ## Failure Triage

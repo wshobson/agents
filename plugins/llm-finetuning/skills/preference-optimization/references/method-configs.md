@@ -170,7 +170,7 @@ simpo_args = CPOConfig(
 trainer = CPOTrainer(
     model=SFT_CHECKPOINT,
     args=simpo_args,
-    train_dataset=preference_pairs,
+    train_dataset=preference_pairs,   # {"prompt", "chosen", "rejected"}
     processing_class=tokenizer,
 )
 
