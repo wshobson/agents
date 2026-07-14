@@ -111,6 +111,7 @@ Claude Code automatically selects and coordinates the appropriate agents based o
 | `/machine-learning-ops:ml-pipeline`     | ML training pipeline orchestration |
 | `/data-engineering:data-pipeline`       | ETL/ELT pipeline construction      |
 | `/data-engineering:data-driven-feature` | Data-driven feature development    |
+| `/dgx-spark-ops:spark-preflight`        | DGX Spark ML workload preflight with env-report.json |
 
 ### Documentation
 
@@ -166,6 +167,8 @@ Claude Code automatically selects and coordinates the appropriate agents based o
 | `/llm-application-dev:prompt-optimize`      | Prompt engineering optimization |
 | `/agent-orchestration:multi-agent-optimize` | Multi-agent optimization        |
 | `/agent-orchestration:improve-agent`        | Agent improvement workflows     |
+| `/llm-finetuning:finetune`                  | Eval-gated fine-tuning lifecycle end to end |
+| `/llm-finetuning:promote-checkpoint`        | Re-gate and export a fine-tuned checkpoint  |
 
 ### Testing & Performance
 

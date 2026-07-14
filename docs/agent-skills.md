@@ -348,6 +348,29 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **social-publishing**  | Schedule and publish social media posts across 13 platforms via the SocialClaw API                                       |
 
+### LLM Fine-Tuning (10 skills)
+
+| Skill                           | Description                                                                              |
+| ------------------------------- | ---------------------------------------------------------------------------------------- |
+| **eval-harness-first**          | Build the eval harness that gates every run: golden sets, graders, judge calibration     |
+| **finetuning-method-selection** | Decide whether to fine-tune at all and route to the right method and base model          |
+| **dataset-curation**            | Prepare, format, and validate datasets for SFT and preference training                   |
+| **lora-qlora-recipes**          | Configure LoRA/QLoRA supervised fine-tuning with best-practice hyperparameters           |
+| **preference-optimization**     | Align a fine-tuned model with preference data using DPO, ORPO, KTO, or SimPO             |
+| **grpo-rlvr-training**          | Train reasoning and verifiable-task behavior with GRPO and RLVR reward functions         |
+| **vision-sft**                  | Fine-tune vision-language models with supervised learning on image+text data             |
+| **trace-to-training-data**      | Convert eval traces and production logs into SFT examples and preference pairs           |
+| **checkpoint-promotion**        | Gate checkpoints with drift budgets, paired comparison, and forgetting checks            |
+| **quantized-export**            | Export a promoted model as merged safetensors, LoRA-only, GGUF with imatrix, or FP8      |
+
+### DGX Spark Ops (3 skills)
+
+| Skill                        | Description                                                                              |
+| ---------------------------- | ---------------------------------------------------------------------------------------- |
+| **spark-environment-setup**  | Set up ML training/inference environments on NVIDIA DGX Spark (GB10, aarch64, CUDA 13)  |
+| **spark-training-gotchas**   | Preflight and diagnose the ten known failure modes for ML training on DGX Spark         |
+| **spark-memory-thermal-ops** | Manage unified memory and thermals during long-running ML jobs on GB10                  |
+
 ## How Skills Work
 
 ### Activation

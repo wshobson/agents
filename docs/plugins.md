@@ -178,7 +178,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **machine-learning-ops** | ML training pipelines and MLOps     | `/plugin install machine-learning-ops` |
 | **runapi-mcp**           | Media generation MCP (image, video, music, audio, LLM) across 130+ models | `/plugin install runapi-mcp`           |
 | **llm-finetuning**       | Eval-gated LLM fine-tuning lifecycle: dataset prep, LoRA/QLoRA training, and promotion gating | `/plugin install llm-finetuning`       |
-| **dgx-spark-ops**        | DGX Spark cluster setup, job scheduling, and operations monitoring | `/plugin install dgx-spark-ops`        |
+| **dgx-spark-ops**        | NVIDIA DGX Spark (GB10) environment ops: aarch64/CUDA-13 stack setup, training preflights, unified-memory/thermal management | `/plugin install dgx-spark-ops`        |
 
 ### 🧠 Memory (1 external plugin)
 
