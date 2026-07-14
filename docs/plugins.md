@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **92 marketplace plugins** organized by category: 88 local plugins plus 4 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`, `ciagent`).
+Browse all **94 marketplace plugins** organized by category: 90 local plugins plus 4 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`, `ciagent`).
 
 ## Quick Start - Essential Plugins
 
@@ -168,7 +168,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **file-conversion**       | Convert files across 1,000+ format pairs   | `/plugin install file-conversion`       |
 | **team-collaboration**    | Team workflows and standup automation      | `/plugin install team-collaboration`    |
 
-### 🤖 AI & ML (5 plugins)
+### 🤖 AI & ML (7 plugins)
 
 | Plugin                   | Description                         | Install                                |
 | ------------------------ | ----------------------------------- | -------------------------------------- |
@@ -177,6 +177,8 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **context-management**   | Context persistence and restoration | `/plugin install context-management`   |
 | **machine-learning-ops** | ML training pipelines and MLOps     | `/plugin install machine-learning-ops` |
 | **runapi-mcp**           | Media generation MCP (image, video, music, audio, LLM) across 130+ models | `/plugin install runapi-mcp`           |
+| **llm-finetuning**       | Eval-gated LLM fine-tuning lifecycle: dataset prep, LoRA/QLoRA training, and promotion gating | `/plugin install llm-finetuning`       |
+| **dgx-spark-ops**        | DGX Spark cluster setup, job scheduling, and operations monitoring | `/plugin install dgx-spark-ops`        |
 
 ### 🧠 Memory (1 external plugin)
 
@@ -363,7 +365,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 92 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -406,7 +408,7 @@ Each installed plugin loads **only its specific agents and commands** into Claud
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 158 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 175 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles

@@ -1,6 +1,6 @@
 # Agent Reference
 
-Complete reference for all **199 local specialized AI agents** organized by category with model assignments.
+Complete reference for all **203 local specialized AI agents** organized by category with model assignments.
 
 ## Agent Categories
 
@@ -156,6 +156,10 @@ Complete reference for all **199 local specialized AI agents** organized by cate
 | [mlops-engineer](../plugins/machine-learning-ops/agents/mlops-engineer.md)                    | opus  | ML infrastructure, experiment tracking, model registries              |
 | [prompt-engineer](../plugins/llm-application-dev/agents/prompt-engineer.md)                   | opus  | LLM prompt optimization and engineering                               |
 | [vector-database-engineer](../plugins/llm-application-dev/agents/vector-database-engineer.md) | opus  | Vector databases, embeddings, similarity search, and hybrid retrieval |
+| [llm-finetuning-architect](../plugins/llm-finetuning/agents/llm-finetuning-architect.md)      | opus  | Fine-tuning strategy, method/model selection, eval-gate ownership     |
+| [llm-finetuning-training-engineer](../plugins/llm-finetuning/agents/llm-finetuning-training-engineer.md) | sonnet | Dataset prep, Unsloth training runs, artifact export         |
+| [llm-finetuning-eval-engineer](../plugins/llm-finetuning/agents/llm-finetuning-eval-engineer.md) | sonnet | Golden sets, judge calibration, checkpoint promotion verdicts     |
+| [dgx-spark-ops-engineer](../plugins/dgx-spark-ops/agents/dgx-spark-ops-engineer.md)           | sonnet | DGX Spark (GB10/aarch64/CUDA 13) environment setup and diagnostics   |
 
 ### Documentation & Technical Writing
 
@@ -231,8 +235,8 @@ Agents are assigned to specific Claude models based on task complexity and compu
 | Model   | Agent Count | Use Case                                                        |
 | ------- | ----------- | --------------------------------------------------------------- |
 | Fable   | 0           | Longest-horizon autonomous work (tier above Opus; see criteria) |
-| Opus    | 54          | Critical architecture, security, code review, production coding |
-| Sonnet  | 68          | Complex tasks, support with intelligence                        |
+| Opus    | 55          | Critical architecture, security, code review, production coding |
+| Sonnet  | 71          | Complex tasks, support with intelligence                        |
 | Haiku   | 25          | Fast operational tasks                                          |
 | Inherit | 52          | Complex tasks where the user chooses the model at runtime       |
 
