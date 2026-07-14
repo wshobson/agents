@@ -55,16 +55,20 @@ prompt: |
      "goldens provenance unknown for original gate" instead — do not
      fabricate a comparison.
   4. Work the four promotion stages in order per
-     `checkpoint-promotion`:
-     - Data-quality gate — dedup and eval-goldens leakage check
-       against `eval/goldens.jsonl`.
-     - Re-run the identical harness plus frozen drift suite used for
-       the baseline — not a looser or expanded one — and diff against
-       `eval/baseline-<model>.json`.
-     - Apply the drift budget by pointer to `checkpoint-promotion`'s
+     `checkpoint-promotion` (drift scoring and applying its budget
+     are both part of stage 2, not separate stages):
+     - Stage 1 — data-quality gate: dedup and eval-goldens leakage
+       check against `eval/goldens.jsonl`.
+     - Stage 2 — capability drift: re-run the identical harness plus
+       frozen drift suite used for the baseline — not a looser or
+       expanded one — diff against `eval/baseline-<model>.json`, and
+       apply the drift budget by pointer to `checkpoint-promotion`'s
        Drift Budget table.
-     - Paired arena vs. base model, position-randomized judge.
-     - Canary, if the deployment target has production traffic.
+     - Stage 3 — paired arena vs. base model, position-randomized
+       judge (or the deterministic paired-comparison variant when
+       every grader is deterministic).
+     - Stage 4 — canary, if the deployment target has production
+       traffic.
   5. Write `$ARGUMENTS/promotion-report.md`, overwriting any prior
      report in this run directory, covering all applicable stages and
      the goldens-version note from step 3, ending with the terminal

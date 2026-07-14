@@ -1,4 +1,4 @@
-Last verified: 2026-07-13
+Last verified: 2026-07-14
 
 # Gate Templates
 
@@ -96,6 +96,12 @@ leverage fix — do not list more than one.
 
 ## Drift-Suite Scoring Table
 
+**Units: "pts" throughout this file and `SKILL.md`'s
+Drift Budget table mean percentage points (absolute
+accuracy difference, e.g. 78% → 46% is 32pts), never
+relative percent change.** State this explicitly in
+every report rather than leaving it implicit.
+
 The frozen benchmark set and the drift budget it's
 scored against — matches `eval-harness-first`'s
 `references/grader-templates.md` `drift-suite.yaml`
@@ -119,6 +125,73 @@ even if every general benchmark stayed within
 noise, and even if the checkpoint's target-task
 metric improved substantially in the same run.
 
+### Sizing the Suite: Item Count From the Budget, Not Convenience
+
+The rule stated in `SKILL.md`'s Drift Budget
+section, worked in full: pick n so the benchmark's
+95% CI half-width sits comfortably under half the
+hard-fail threshold. For a binomial accuracy metric,
+half-width ≈ `1.96 * sqrt(p*(1-p)/n)`; at `p≈0.5`
+(worst case, widest CI) that's ≈ `0.98/sqrt(n)`.
+
+| Hard-fail budget | Half-width target | Minimum n |
+|---|---|---|
+| 5pt (0.05) | <0.025 | ~1600 naive; ~200 in practice at typical accuracy skew away from 0.5 |
+| 1pt (0.01) | <0.005 | ~40,000 naive — essentially never hit a 1pt budget with a benchmark-sized suite |
+
+In practice, most drift benchmarks (GSM8K, MMLU
+subsets) sit well away from `p=0.5`, so the
+200-item floor already used by this file's own
+domain-adjacent range and `eval-harness-first`'s
+`references/grader-templates.md` example
+(`n_items: 250`, `n_items: 500`) is the right
+order of magnitude for a 5pt budget — **n=50 is
+not**: at `p≈0.7-0.8` (typical GSM8K accuracy),
+n=50 still carries a Wilson-interval half-width
+around ±13pt, wider than the entire hard-fail
+band. Treat 200 as a floor to derive from the
+budget, never as a fixed constant to copy — a
+tighter budget than 5pt needs the formula
+re-run, not the same 200.
+
+### Cautionary Worked Example: A Real 5-Run Trajectory That Was Mostly Noise
+
+From a dogfood run gating LoRA checkpoints on a
+frozen n=50 GSM8K drift slice, then re-measuring
+the same checkpoints at n=200 once the pattern
+looked suspicious:
+
+| Run | Config change | GSM8K@n=50 | GSM8K@n=200 |
+|---|---|---|---|
+| r1 | 0% replay (baseline config) | 46 | — |
+| r2 | +20% replay (swapped) | 64 | 60.0 |
+| r3 | r2 + lower LR | 72 | — |
+| r4 | r2 + 30% replay (added, not swapped) | 46 | — |
+| r5 | r2 exact config, seed repeat | 56 | 58.5 |
+
+Read at n=50, this trajectory looks like real
+signal: replay helps (+18pt), LR helps further
+(+8pt), more replay hurts (-26pt) — a story
+worth writing a remediation note about. Read at
+n=200 for the two points actually re-measured
+(r2 and r5, same config, different seed): 60.0
+vs 58.5, **overlapping Wilson CIs** — statistically
+indistinguishable, against a base-model score
+this run family never got within ~23pt of at
+either n. The entire 46→64→72→46 shape at n=50
+was sampling noise riding on top of one
+consistently large true drift. Two lessons this
+motivates in `SKILL.md`'s escalation-ladder
+caveats: (1) a per-checkpoint verdict at n=50 is
+still a fact about that checkpoint on those 50
+items, but (2) the run-to-run remediation
+trajectory built from a sequence of n=50 verdicts
+is not a reliable guide to which lever worked —
+re-run the suite at budget-derived n before
+trusting a multi-run remediation story, and treat
+single-seed lever attribution as a hypothesis
+until a same-config seed pair confirms it.
+
 ## Paired-Arena Protocol
 
 - **N items:** 200 minimum, drawn from the same
@@ -126,7 +199,39 @@ metric improved substantially in the same run.
   training set, not the goldens used to build the
   checkpoint) — fewer than 200 pairs produces a win
   rate too noisy to separate from chance at the 50%
-  + margin threshold below.
+  + margin threshold below. **This 200-item minimum
+  is for the LLM-judge protocol.** The deterministic
+  variant below has its own, smaller floor because
+  it isn't subject to judge noise on top of sampling
+  noise.
+
+### Deterministic Variant (No LLM-Judge)
+
+When every grader in the harness is deterministic
+(code-based, no judge anywhere), Stage 3 collapses
+to a per-golden paired comparison instead of a
+judge-scored arena:
+
+- **Pairing:** for each item in `eval/goldens.jsonl`,
+  compare the checkpoint's graded verdict against the
+  baseline's verdict on the identical prompt (from
+  `runs/baseline/results.json`, paired by `task_id`).
+  Win = checkpoint passed where baseline failed; loss
+  = the reverse; tie = same verdict either way.
+- **N items:** every golden, not a 200-item minimum —
+  the goldens set itself is the population, not a
+  sample drawn from a larger pool. If the goldens set
+  is small (dogfood scale, <100 items), say so in the
+  report and treat the resulting CI width as evidence
+  quality, not grounds to pad the count with
+  unrelated items.
+- **Position randomization:** N/A — deterministic
+  grading is order-independent, so there's no position
+  bias to correct for.
+- **Judge calibration:** N/A — no judge in this path.
+- **Tie handling and win-rate threshold:** same as the
+  judge protocol below (ties count half a win each;
+  50% + margin, CI excludes 50%).
 - **Position randomization:** for each item, flip a
   coin on which of {CHECKPOINT, BASE_MODEL} appears
   first in the judge's prompt; log the raw
@@ -168,9 +273,13 @@ def paired_arena_verdict(wins: int, ties: int, losses: int,
 
 ## Replay-Mix Configuration Example
 
-The standard catastrophic-forgetting mitigation
-from `SKILL.md` — general-domain data blended into
-the target-task training set at 10-30%:
+The standard catastrophic-forgetting mitigation —
+general-domain data blended into the target-task
+training set at 10-30%. **The escalation order
+(when and how far to move this fraction) is owned
+by `SKILL.md`'s Catastrophic Forgetting section —
+this file gives the config shape and the
+swap-not-add mechanic, not a competing order.**
 
 ```yaml
 # training data composition
@@ -182,8 +291,23 @@ replay_sampling: stratified   # match replay topic mix to
 ```
 
 Start at 20% when no prior forgetting data exists
-for the task; move toward 30% if Stage 2 still
-shows a >5pt domain-adjacent drop at 20%, and only
-drop toward 10% once a run at 20% clears Stage 2
-with headroom (all deltas comfortably inside the
-noise band, not just under the hard-fail line).
+for the task. When a later run needs to move this
+fraction, **swap rows rather than adding them** —
+drop target-task rows out of the mix as replay rows
+go in, so total row/step count holds constant
+between runs. Adding replay rows on top of the
+existing set changes replay fraction and total
+optimizer steps in the same move, which makes it
+impossible to attribute a drift-score change to
+either variable alone — see `dataset-curation`'s
+replay-mix construction recipe
+(`references/synthetic-data.md`) for the full
+swap procedure. Do not assume the dose-response is
+monotonic: a documented dogfood run saw 30.4%
+replay (added, not swapped) score 18 points *worse*
+on the replayed capability than 20% replay at
+otherwise-identical config, because the added rows
+also raised total steps 50→58. Only drop toward 10%
+once a run at 20% clears Stage 2 with headroom (all
+deltas comfortably inside the noise band, not just
+under the hard-fail line).

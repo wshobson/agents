@@ -174,6 +174,13 @@ row, check that date; if stale, work the refresh
 checklist in the catalog before recommending a
 model from it.
 
+**Precedence when the catalog and a method skill
+disagree:** the catalog's per-row Notes column
+states hardware/size-class *feasibility*, not a
+method recommendation — `lora-qlora-recipes`'s
+LoRA vs QLoRA vs Full FT table (routed by task
+shape) governs the actual method choice.
+
 ## Memory Feasibility
 
 Before committing to a method, size it: total

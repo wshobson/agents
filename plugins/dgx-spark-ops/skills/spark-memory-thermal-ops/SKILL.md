@@ -33,19 +33,14 @@ the job starts.
 - Sizing a training run against the 128GB pool
   before launch — will this model, method, and
   batch/pack combination fit.
-
 - A run OOMs mid-load or mid-step and the
   remediation order matters — what to try first,
   second, third.
-
 - Watching temperature and power during a
-  multi-hour job, and deciding whether a
-  slowdown is thermal throttling or something
-  else.
-
+  multi-hour job, deciding whether a slowdown is
+  thermal throttling or something else.
 - Planning to run a trainer alongside an
-  inference server (vLLM, Ollama) on the same
-  box.
+  inference server (vLLM, Ollama) on the same box.
 
 ## UMA Memory Model
 
@@ -53,12 +48,17 @@ Spark has no separate GPU VRAM — the GPU and
 CPU share one 128GB pool. Two consequences:
 
 - **`nvidia-smi` and `cudaMemGetInfo`
-  underreport pressure.** Both report
-  CUDA-allocator-visible memory, not the pool's
-  actual state — a box can show headroom in
-  `nvidia-smi` and still OOM, because page-cache
-  and mmap'd pages the allocator doesn't see
-  consume the same pool.
+  underreport pressure — or report nothing at
+  all.** Both report CUDA-allocator-visible
+  memory, not the pool's actual state — a box can
+  show headroom in `nvidia-smi` and still OOM,
+  because page-cache and mmap'd pages the
+  allocator doesn't see consume the same pool. On
+  some driver/setups, the memory query returns
+  `[N/A], [N/A]` outright instead of a number — a
+  script grepping for a numeric value there gets
+  nothing, not a misleading undercount (see
+  `spark-training-gotchas` gotcha G3).
 
 - **Model load is a transient peak, not the
   steady state.** Loading safetensors weights
@@ -77,9 +77,9 @@ Plan and diagnose with `free -g`, not
 free -g | awk 'NR==2 {print "free:", $4, "GB"}'
 ```
 
-Rule of thumb: take that free figure, subtract
-a few GB for OS/driver overhead, and budget
-against the result — not the 128GB spec number.
+Rule of thumb: take that free figure, subtract a
+few GB for OS/driver overhead, and budget against
+the result — not the 128GB spec number.
 The worksheet in `references/uma-accounting.md`
 accepts parameter count, dtype, and method as
 input, and returns a memory estimate to compare
@@ -113,10 +113,9 @@ total_gb = weights_gb + adapter_gb   # + activations
 print(f"{total_gb:.0f}GB before activations")
 ```
 
-Weights alone land near the ≈40GB anchor — a
-plan estimating far above that for the same
-model class is a signal to recheck dtype and
-method, not just add headroom.
+Weights alone land near the ≈40GB anchor — a plan
+estimating far above that for the same model
+class is a signal to recheck dtype and method.
 
 ## The OOM Ladder
 
@@ -142,22 +141,20 @@ than the last — don't skip ahead:
 
 2. **Reduce batch size or packing length.** Only
    after a flush fails to free enough headroom,
-   cut the batch size or packing length — the
-   first step that changes what the run does.
-   Prefer packing length first; it drives the
-   activation footprint more directly at long
-   context.
+   cut batch size or packing length — the first
+   step that changes what the run does. Prefer
+   packing length first; it drives activation
+   footprint more directly at long context.
 
 3. **Downgrade the method: bf16 LoRA before
    QLoRA.** If flushing and shrinking batch/pack
-   still OOM, drop the method down a tier — bf16
-   LoRA is next, not the reverse. QLoRA's
-   bitsandbytes dequantization buffers are
-   transient CUDA-side allocations that can OOM
-   before an equivalent bf16 LoRA run would,
-   even though QLoRA's steady-state footprint is
-   smaller. A QLoRA OOM is not proof the model
-   doesn't fit — try bf16 LoRA first.
+   still OOM, drop the method a tier — bf16 LoRA
+   is next, not the reverse. QLoRA's bitsandbytes
+   dequantization buffers are transient CUDA-side
+   allocations that can OOM before an equivalent
+   bf16 LoRA run would, even though QLoRA's
+   steady-state footprint is smaller. A QLoRA OOM
+   is not proof the model doesn't fit.
 
 Fall back further (smaller model, multi-Spark)
 only after all three steps and the job still
@@ -190,13 +187,12 @@ explain away:
   signature to recognize.
 
 - Log throttle events explicitly instead of
-  letting a run silently slow down without
-  record. A run whose per-step time doubles two
-  hours in should show that in the log,
-  correlated against the thermal sample at that
-  timestamp. Full throttling diagnostics and
-  the reboot failure mode:
-  `spark-training-gotchas` (gotcha G4).
+  letting a run silently slow down unrecorded. A
+  run whose per-step time doubles two hours in
+  should show that in the log, correlated against
+  the thermal sample at that timestamp. Full
+  throttling diagnostics: `spark-training-gotchas`
+  (gotcha G4).
 
 ## Concurrent Workloads
 
@@ -204,15 +200,20 @@ Because the 128GB pool is global, eviction
 happens without either process's logs showing
 an OOM:
 
-- Run one memory-heavy job at a time. A trainer
-  and an inference server (vLLM, Ollama) compete
-  for the same pool.
+- The one-heavy-job rule applies to **uncapped or
+  near-capacity** workloads — an uncapped trainer
+  and inference server (vLLM, Ollama) compete for
+  the same pool. A small, capped workload doesn't:
+  a <4GB LoRA fine-tune coexists fine alongside
+  vLLM capped at `gpu-memory-utilization<=0.5` —
+  check the other process's cap, not just its
+  presence, before stopping it.
 
 - Inference servers evict trainer pages silently
-  under contention, and vice versa — neither
-  logs an error, so a mysteriously slow run or a
-  lost KV cache is a contention symptom to check
-  for. Stop unrelated GPU-resident servers
+  under uncapped/near-capacity contention, and
+  vice versa — neither logs an error, so a slow
+  run or lost KV cache is a contention symptom to
+  check for. Stop unrelated *uncapped* servers
   before a long or full-pool run.
 
 Check for GPU-resident processes first:
@@ -221,11 +222,9 @@ Check for GPU-resident processes first:
 ps aux | grep -E 'vllm|ollama|trl|axolotl' | grep -v grep
 ```
 
-This procedure complements
-`plugins/dgx-spark-ops/skills/spark-training-gotchas/SKILL.md`
-(gotchas G3, G4, G6) — that skill covers
-launch-time failures; this one, the running
-job.
+This procedure complements `spark-training-gotchas`
+(gotchas G3, G4, G6) — that skill covers launch-time
+failures; this one, the running job.
 
 Memory math worksheets:
 `references/uma-accounting.md`.

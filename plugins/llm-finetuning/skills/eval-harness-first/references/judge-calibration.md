@@ -1,4 +1,4 @@
-Last verified: 2026-07-13
+Last verified: 2026-07-14
 
 # Judge Calibration Protocol
 
@@ -7,6 +7,22 @@ Calibration Is a Prerequisite" section. Any grader
 routed to an LLM-judge follows this before its
 verdicts count toward a pass rate or a checkpoint
 promotion decision.
+
+## N/A Path: All-Deterministic Harness
+
+If error analysis produced zero buckets that route to
+an LLM-judge — every grader is regex, schema, or
+execution-based — this entire protocol is N/A for the
+run, not an unsatisfiable checklist item. Phase 0
+Exit Checklist item 4 in `SKILL.md` is satisfied by
+stating this explicitly (e.g. "Judge calibration:
+N/A — all N graded criteria are deterministic") rather
+than leaving it blank or blocking Phase 0 completion
+on a judge that was never going to exist. This is
+common on a greenfield strict-schema or exact-match
+task with synthetic goldens — don't invent a
+subjective criterion just to have something to
+calibrate.
 
 ## 1. Label
 

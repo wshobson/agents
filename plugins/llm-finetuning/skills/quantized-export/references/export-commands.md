@@ -1,4 +1,4 @@
-Last verified: 2026-07-13
+Last verified: 2026-07-14
 
 # Export Commands
 
@@ -68,12 +68,42 @@ itself — export both when in doubt, compare
 smoke-test diffs, then ship only the one
 actually deployed.
 
-## llama.cpp: Manual imatrix + quantize
+## llama.cpp: Build, Convert, imatrix + Quantize
 
-Use this path when converting outside Unsloth
-(a merged safetensors export from another
-framework) or when a custom calibration set is
-required for the imatrix:
+Verified against llama.cpp commit `b1-6e52db5`,
+built from source on aarch64/GB10. Three corrections
+against older guidance floating around for this
+tool, found the hard way:
+
+**Build with the default configuration — do not
+try to build "just the tools you need."**
+`cmake --build --target llama-cli llama-quantize`
+fails ("No rule to make target"), and configuring
+with `-DLLAMA_BUILD_EXAMPLES=OFF
+-DLLAMA_BUILD_SERVER=OFF` breaks the default build
+outright — the unified `llama` app links against
+`llama-cli-impl`/`llama-server-impl` libraries those
+flags disable. Full default build is cheap enough
+(~2 min at `-j20` on a 20-core aarch64 box) that a
+minimal-target build isn't worth the breakage risk:
+
+```bash
+cmake -B build
+cmake --build build --config Release -j"$(nproc)"
+```
+
+**Converter prerequisites — neither is optional:**
+
+```bash
+pip install ./gguf-py
+pip install sentencepiece
+```
+
+`convert_hf_to_gguf.py` needs the repo's own
+`gguf-py` package installed, and imports
+`sentencepiece` unconditionally on the tokenizer
+path — even for a BPE-tokenizer model that the
+converter otherwise handles natively.
 
 ```bash
 # 1. Convert HF safetensors to GGUF (f16, no quant yet)
@@ -108,6 +138,31 @@ table at Q4_K_M — the imatrix step is cheap
 relative to the training run that produced the
 checkpoint and should not be skipped for a
 production export.
+
+**Raw-prompt smoke testing: use `llama-completion`,
+not `llama-cli`.** Current `llama-cli` is a
+chat-first UI — it re-templates `-p` text as a
+conversation turn and, at the end of generation,
+drops into an interactive `> ` prompt loop
+regardless of `-no-cnv` (the flag still parses and
+appears in `--help`, but does nothing the newer
+`--single-turn` flag doesn't already own; with
+stdin closed, a script invoking `llama-cli -no-cnv`
+hangs indefinitely instead of exiting). The raw,
+non-chat completion behavior a smoke test needs
+lives in a separate binary:
+
+```bash
+./llama-completion \
+    -m "$GGUF_DIR/model-Q4_K_M.gguf" \
+    -p "$(cat prompt.txt)" \
+    -n 512 --temp 0 --seed 0
+```
+
+`llama-completion` exits after generating, does not
+re-template the prompt, and does not require a
+`-no-cnv`/`--single-turn` flag at all — it never
+enters chat mode in the first place.
 
 ## AWQ Export Sketch
 
@@ -201,7 +256,31 @@ skeleton is runtime-agnostic — swap the `load()`
 and `generate()` bodies for the target stack
 (vLLM client, llama.cpp Python bindings, AWQ
 loader) without changing the surrounding
-structure:
+structure.
+
+**The comparison mode depends on whether the export
+is lossless or lossy — pick before running:**
+
+- **Lossless exports** (fp16/bf16 merge, no
+  quantization) — byte/string match
+  (`pre.strip() == post.strip()`) is the correct
+  gate. Any divergence here is a bug, full stop.
+- **Lossy exports** (any quantized format — Q4_K_M,
+  AWQ INT4, FP8) — byte match is **unmeetable by
+  design**, not a signal of a bug. A quantized
+  checkpoint legitimately perturbs logits, so
+  0/5 exact matches with 5/5 schema-valid,
+  on-template outputs is the *expected healthy*
+  result for a lossy export. **The gate for a lossy
+  export is the task grader's verdict**, per
+  `SKILL.md`'s Workload Overrides section — run
+  each golden's actual grader (from
+  `eval-harness-first`) against both the pre- and
+  post-export output, and diff verdicts, not text.
+  A byte-match diff is still worth logging for
+  triage (it tells you *how much* the output
+  changed), but it must never gate a lossy export by
+  itself.
 
 ```python
 import json
@@ -236,15 +315,34 @@ def load_exported_model(export_path: str):
 def generate(model, prompt: str, **generation_kwargs) -> str:
     raise NotImplementedError("wire to target runtime")
 
-def diff_report(golden_id: str, pre: str, post: str) -> dict:
+def grade(task_id: str, output: str) -> bool:
+    """Run the golden's actual task grader (from
+    eval-harness-first) against a single output.
+    Wire to the real grader module — never stub this
+    with a byte-match; that defeats the point of the
+    lossy-export path below."""
+    raise NotImplementedError("wire to eval-harness-first's grader for this golden")
+
+def diff_report(golden_id: str, pre: str, post: str, *, lossless: bool) -> dict:
+    """lossless=True: gate on byte/string match.
+    lossless=False (any quantized format): gate on
+    grader verdict agreement — byte match is expected
+    to fail for a healthy lossy export, so it is
+    recorded for triage only, never as `match`."""
+    byte_match = pre.strip() == post.strip()
+    if lossless:
+        match = byte_match
+    else:
+        match = grade(golden_id, pre) == grade(golden_id, post)
     return {
         "task_id": golden_id,
-        "match": pre.strip() == post.strip(),
+        "match": match,
+        "byte_match": byte_match,
         "pre_export": pre,
         "post_export": post,
     }
 
-def main(export_path: str, goldens_path: str, pre_export_path: str):
+def main(export_path: str, goldens_path: str, pre_export_path: str, *, lossless: bool):
     goldens = load_goldens(goldens_path, n=5)
     pre_outputs = load_pre_export_outputs(pre_export_path)
     model = load_exported_model(export_path)
@@ -253,12 +351,13 @@ def main(export_path: str, goldens_path: str, pre_export_path: str):
     for row in goldens:
         post = generate(model, row["prompt"], **SMOKE_TEST_GENERATION_KWARGS)
         pre = pre_outputs[row["task_id"]]
-        reports.append(diff_report(row["task_id"], pre, post))
+        reports.append(diff_report(row["task_id"], pre, post, lossless=lossless))
 
     failures = [r for r in reports if not r["match"]]
-    print(json.dumps({"total": len(reports), "failures": len(failures)}, indent=2))
+    print(json.dumps({"total": len(reports), "failures": len(failures),
+                       "mode": "byte-match" if lossless else "graded-verdict"}, indent=2))
     for r in failures:
-        print(f"MISMATCH {r['task_id']}:")
+        print(f"MISMATCH {r['task_id']} (byte_match={r['byte_match']}):")
         print(f"  pre : {r['pre_export'][:200]}")
         print(f"  post: {r['post_export'][:200]}")
 
@@ -267,7 +366,9 @@ def main(export_path: str, goldens_path: str, pre_export_path: str):
     sys.exit(1 if failures else 0)
 
 if __name__ == "__main__":
-    main(*sys.argv[1:4])
+    # lossless=True only for an unquantized fp16/bf16 merge;
+    # every quantized format (Q4_K_M, AWQ, FP8, ...) is lossless=False
+    main(*sys.argv[1:4], lossless=False)
 ```
 
 A failing run's mismatches are the diagnostic
@@ -276,4 +377,7 @@ re-exporting: garbled or run-on text points to
 a template mismatch, fluent-but-wrong-answer
 text points to a quantized `lm_head`, per the
 failure signatures in `SKILL.md`'s Smoke Test
-section.
+section. For a lossy export, `byte_match=False`
+on a passing (`match=True`) row is expected and
+not itself a failure signature — only a grader
+verdict flip is.

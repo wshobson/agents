@@ -1,4 +1,4 @@
-Last verified: 2026-07-13
+Last verified: 2026-07-14
 
 # Grader Templates
 
@@ -245,3 +245,50 @@ drift_budget:
   rerun_seed_variation_pts: [2, 5]
   hard_fail_threshold_pts: 5   # >5pt drop is a hard fail regardless of task-metric gains
 ```
+
+**Minimum viable drift suite for a small/dogfood run:** the
+500/250/300 general-benchmark sizes and the 200-500
+`domain_adjacent` range above are scoped for production-scale
+runs and can be hours of wall-clock at greedy single-stream
+decode on modest hardware. Scope down deliberately rather than
+silently truncating — pick n per benchmark using
+`checkpoint-promotion`'s item-count-from-budget rule (95% CI
+half-width comfortably under half the hard-fail threshold), and
+document the scoped-down suite inline in `drift-suite.yaml`
+(a comment naming the budget it was sized against). The
+`domain_adjacent` block itself is **optional when the golden
+set is small and already fully consumed by the task harness** —
+if `eval/goldens.jsonl` has no separate drift-suite-tagged
+holdout because every golden is already spoken for by the task
+grader, omit the block rather than fabricating a slice with
+nothing behind it; the frozen general benchmarks alone still
+provide a capability-drift signal.
+
+## Drift-Suite MMLU-Style Scoring: Logprob Over Generate-and-Extract
+
+"Letter-choice logprob or generate-and-extract" are not
+equivalent scoring methods, though earlier guidance in this
+plugin implied they were interchangeable:
+
+- **Generate-and-extract** (sample a completion, extract the
+  first A–D letter from a tight token budget) is **parse-brittle**
+  for models that preamble before answering. Observed on a real
+  drift run: a near-base checkpoint hit 9/100 unparsed-scored-
+  as-wrong items (all prose restarts like "The energy levels
+  of...") on a `max_new_tokens=8` budget, versus 0–1 unparsed
+  for other checkpoints in the same series — this conflates
+  answer-format compliance with the knowledge MMLU is supposed
+  to measure, and can hard-fail a checkpoint on formatting alone.
+- **Logprob scoring** (compare the model's log-probability on
+  each of the four answer-letter tokens directly, no generation
+  or parsing involved) is robust to this failure mode entirely —
+  there is nothing to parse, so a verbose or preambling model
+  scores on its actual answer distribution.
+
+**Prefer logprob scoring whenever the harness has logit access**
+(local inference, not a hosted API that only returns text). When
+logit access isn't available and generate-and-extract is the
+only option, use a generous token budget and retry with a longer
+budget on any unparsed output before scoring it as wrong — don't
+let a tight budget silently convert "the model reasoned before
+answering" into "the model failed the benchmark."

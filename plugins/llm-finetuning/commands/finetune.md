@@ -21,6 +21,17 @@ artifact the prior phase produced:
   run. Every Phase 5 checkpoint gets scored against the exact goldens
   and drift suite Phase 0 baselined, so a "pass" always means the
   same thing across every run this command ever launches.
+- **Two lifecycle realities the phase numbering doesn't spell out.**
+  (1) Phase 0's baseline requires a *working inference environment*
+  before Phase 3 would otherwise preflight one — in practice, do
+  enough of Phase 3's environment setup to run inference before
+  Phase 0 needs it, rather than reading the phase order as "Phase 3
+  environment work only starts after Phase 0 finishes." (2)
+  Synthetic goldens/training data generation (Phase 0/Phase 2) needs
+  a teacher LLM to sample from — if a local model is already
+  resident for another purpose, using it and then releasing it
+  before training needs the memory back is expected, not a deviation
+  to justify.
 
 ## Phase 0: Eval Harness & Baseline
 
@@ -184,16 +195,21 @@ prompt: |
   Baseline: {phase0.output}
   Checkpoint: {phase4.output}
 
-  Work the four promotion stages in order per `checkpoint-promotion`:
-  1. Data-quality gate — dedup and eval-goldens leakage check against
-     `eval/goldens.jsonl`.
-  2. Re-run the identical harness plus frozen drift suite used in
-     Phase 0 — not a looser or expanded one — and diff against
-     `eval/baseline-<model>.json`.
-  3. Apply the drift budget by pointer to `checkpoint-promotion`'s
-     Drift Budget table.
-  4. Paired arena vs. base model, position-randomized judge.
-  5. Canary, if the deployment target has production traffic.
+  Work the four promotion stages in order per `checkpoint-promotion`
+  (drift scoring and applying its budget are both part of stage 2,
+  not separate stages):
+  1. Stage 1 — data-quality gate: dedup and eval-goldens leakage
+     check against `eval/goldens.jsonl`.
+  2. Stage 2 — capability drift: re-run the identical harness plus
+     frozen drift suite used in Phase 0 — not a looser or expanded
+     one — diff against `eval/baseline-<model>.json`, and apply the
+     drift budget by pointer to `checkpoint-promotion`'s Drift Budget
+     table.
+  3. Stage 3 — paired arena vs. base model, position-randomized
+     judge (or the deterministic paired-comparison variant when
+     every grader is deterministic).
+  4. Stage 4 — canary, if the deployment target has production
+     traffic.
 
   Write `promotion-report.md` per `checkpoint-promotion`'s template,
   including a `**Goldens fingerprint:**` field with the current

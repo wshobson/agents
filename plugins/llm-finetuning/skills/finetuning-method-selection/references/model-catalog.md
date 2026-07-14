@@ -1,6 +1,6 @@
 # Model Catalog
 
-Last verified: 2026-07-13
+Last verified: 2026-07-14
 Refresh checklist: (1) check Unsloth supported-models page, (2) check the current open-weights leaderboards for each size class, (3) update rows + bump this date. Refresh at least quarterly; this file is the ONLY place base models are named in the llm-finetuning and dgx-spark-ops plugins.
 
 ## How to Read This Table
@@ -18,7 +18,7 @@ first.
 
 | Size class | Text recommendation | Vision recommendation | Spark feasibility | Notes |
 |---|---|---|---|---|
-| ≤4B | Qwen3 4B class | SmolVLM / Gemma 3 4B | Full fine-tune feasible | Smallest class where full FT is still the default choice, not LoRA. |
+| ≤4B | Qwen3 4B class | SmolVLM / Gemma 3 4B | Full fine-tune feasible | Smallest class where full FT is still *feasible* by default — a hardware/size-class note, not a method recommendation. Method choice (LoRA vs. full FT) is `lora-qlora-recipes`'s LoRA vs QLoRA vs Full FT table, routed by task shape (demonstrations vs. dense knowledge injection); that table governs over this feasibility note whenever the two appear to disagree. |
 | 7–9B | Qwen3 8B, Llama-class 8B | Qwen2.5-VL-7B | Full fine-tune ceiling | Above this class, full FT stops being the default on Spark — see 12–32B row. |
 | 12–32B | Qwen3 14B/32B, Gemma 3 27B | Qwen2.5-VL-32B | LoRA-only; 27B is the LoRA ceiling at pack≤1024 | 27B is the largest dense model that fits a LoRA run on a single Spark in practice. |
 | 70B+ | Llama 3.3 70B class | Use the 12–32B vision class instead — no 70B+ VLM recommendation at this size | QLoRA-only, ≈40GB, 30–48h for 3 epochs | bf16 is not feasible at this class on a single Spark; QLoRA is the only path in. |

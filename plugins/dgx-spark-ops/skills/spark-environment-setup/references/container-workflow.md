@@ -1,4 +1,4 @@
-Last verified: 2026-07-13 — refresh when the blessed container tags change.
+Last verified: 2026-07-14 — refresh when the blessed container tags change.
 
 # Container Workflow
 
@@ -12,8 +12,10 @@ General-purpose training/inference base:
 docker run --runtime=nvidia --gpus all -it --rm \
   --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 \
   -v "$(pwd)/finetuning:/workspace/finetuning" \
-  nvcr.io/nvidia/pytorch:25.11-py3
+  nvcr.io/nvidia/pytorch:25.09-py3
 ```
+
+**Tag guidance:** `25.09-py3` is the tag actually verified working on this hardware (torch `2.9.0a0+50eac811a6.nv25.09`, CUDA 13.0 baked in, matches the ABI Rule's expectations — no functional delta observed for the packages exercised in fine-tuning workflows). Treat `SKILL.md`'s mention of a newer blessed tag as guidance to pull when locally available, not a hard requirement — if the cited newer tag isn't locally cached and pulling isn't practical, fall back to the newest available `25.x` tag and record the gap in the run's notes rather than blocking on it.
 
 - `--runtime=nvidia --gpus all` gives the container access to the GB10 GPU; without it, PyTorch inside the container will report no CUDA device even though the host sees one fine.
 - `--ipc=host` and the `ulimit` flags avoid shared-memory starvation for PyTorch's DataLoader workers.

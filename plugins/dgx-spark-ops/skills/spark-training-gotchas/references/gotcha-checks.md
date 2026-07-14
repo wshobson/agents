@@ -1,4 +1,4 @@
-Last verified: 2026-07-13 — refresh when CUDA, PyTorch, or the
+Last verified: 2026-07-14 — refresh when CUDA, PyTorch, or the
 DGX Spark stack ships a new major version.
 
 Runnable check commands for each gotcha in `SKILL.md`, keyed by
@@ -26,17 +26,60 @@ currently registered — a `libcudart.so.12` entry alongside
 `libcudart.so.13` is a common leftover from an earlier install
 and a likely ABI-mismatch source.
 
-## G2: flash-attn Absent
+## G2: flash-attn — Presence Check and the Unsloth Override
 
 ```bash
-python -c "import flash_attn" 2>&1 | tail -5
+python -c "import flash_attn; print(flash_attn.__version__)" 2>&1 | tail -5
 python -c "import torch; print(torch.backends.cuda.flash_sdp_enabled())"
 ```
 
-The first command is expected to fail on Spark — that's the
-point of this check, confirming no training code path silently
-depends on flash-attn. The second confirms PyTorch's SDPA
-backend has flash-style kernels enabled as the fallback.
+Don't assume this import fails — it depends on the environment.
+On a **bare-pip** install it's expected to fail (no aarch64/
+sm_121 wheel exists), confirming no training code path silently
+depends on flash-attn. On an **NGC PyTorch container**
+(confirmed on `nvcr.io/nvidia/pytorch:25.09-py3`), flash-attn
+2.7.4.post1 ships pre-bundled and a live `flash_attn_func`
+kernel call on GB10 (capability `(12, 1)`) executes successfully
+with correct output shape — the "no sm_121 kernels" framing only
+applies to building it yourself, not to what these containers
+already carry.
+
+**The actual trap on a container with flash-attn present:**
+Unsloth's import-time patch banner reports `FA2 = True` and
+auto-prefers flash-attn over SDPA — including when the caller
+explicitly requested `attn_implementation="sdpa"`. Unsloth's
+loader (`unsloth/models/llama.py`, 2026.7.2) calls its internal
+`resolve_attention_implementation(...)` without forwarding the
+caller's `attn_implementation` as that function's
+`requested_attn_implementation` parameter, then pops the kwarg
+outright with a `# No need since we auto call it` comment —
+silently discarding whatever was requested. Confirmed via a live
+load: `attn_implementation="sdpa"` passed explicitly still
+resolved to `model.config._attn_implementation ==
+"flash_attention_2"`.
+
+**The only working override** on this Unsloth version, for any
+model routed through Unsloth's llama-architecture loader
+(`unsloth/models/llama.py` — this covers more than one base
+model family; see `finetuning-method-selection`'s model catalog
+for which) when flash-attn is importable, is a monkeypatch
+before calling `from_pretrained`:
+
+```python
+import unsloth.models._utils as _unsloth_utils
+_unsloth_utils.HAS_FLASH_ATTENTION = False
+```
+
+This forces `resolve_attention_implementation`'s auto-resolution
+down its `elif supports_sdpa:` branch instead of the flash-attn
+branch — confirmed working (`config._attn_implementation ==
+"sdpa"` after the monkeypatch). On plain TRL/PEFT (bypassing
+Unsloth entirely — see `lora-qlora-recipes`'
+`references/unsloth-trl-mapping.md` escape hatch),
+`attn_implementation="sdpa"` passed to
+`AutoModelForCausalLM.from_pretrained` **is** honored correctly;
+this gap is Unsloth-specific, not a general TRL/transformers
+issue.
 
 ## G3: UMA OOM Below 128GB
 
@@ -47,9 +90,14 @@ cat /proc/meminfo | grep -i huge
 
 Read real memory pressure from `free -g`, not `nvidia-smi` —
 unified memory means CUDA allocations and host RAM share one
-pool, and `nvidia-smi` only reports the CUDA side. If `free -g`
-shows most of the 128GB consumed while a load is failing,
-reclaim it:
+pool, and `nvidia-smi` only reports the CUDA side. On some
+driver/setup combinations, `nvidia-smi --query-gpu=memory.used,
+memory.total --format=csv` doesn't just undercount — it returns
+`[N/A], [N/A]` for the whole-GPU memory query outright. A script
+that greps for a numeric value there gets nothing, not a
+misleading number; don't build a headroom check on that query on
+this hardware. If `free -g` shows most of the 128GB consumed
+while a load is failing, reclaim it:
 
 ```bash
 sync
@@ -114,8 +162,16 @@ ps aux | grep -E "vllm|ollama|python.*train" | grep -v grep
 List every GPU-resident process before starting a long run.
 `nvidia-smi` shows per-process memory; the `ps` filter catches
 inference servers (vLLM, Ollama) that may not show up clearly in
-`nvidia-smi` output on unified memory. Stop unrelated servers
-before a run that needs the full 128GB pool.
+`nvidia-smi` output on unified memory. The one-heavy-job rule
+applies to **uncapped or near-capacity** workloads — stop
+unrelated servers before a run that needs the full 128GB pool,
+or that runs alongside another process without an explicit
+memory cap. It does not apply to small, memory-capped
+coexistence: a <4GB LoRA fine-tune has been observed running
+cleanly alongside a vLLM server started with
+`--gpu-memory-utilization 0.5` (or lower) on the same box — check
+the other process's own memory cap, not just its presence,
+before deciding whether it needs to be stopped.
 
 ## G7: NVFP4 Slower Than FP8 on SM121
 

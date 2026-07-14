@@ -11,10 +11,9 @@ cleanly and beats its task metric
 still doesn't ship without
 clearing all four stages below.
 `eval-harness-first` built the
-suite being re-run here — this
-skill is where that suite's
-baseline actually decides
-something.
+suite re-run here — this skill is
+where that suite's baseline
+decides something.
 
 **Input:** a trained checkpoint,
 `eval/baseline-<model>.json` from
@@ -32,7 +31,16 @@ directly.
 
 Each stage gates the next — a
 failure at stage 2 means stage 3
-doesn't run.
+doesn't run. Stages 2 and 3 share
+one expensive inference pass, so
+running them concurrently and
+applying gate order at verdict
+time is licensed on a
+**deterministic** arena (nothing
+saved by serializing); a
+judge-based arena should still
+wait for stage 2 first — that's
+where the real savings are.
 
 1. **Data-quality gate.** Before
    any eval touches the
@@ -44,9 +52,7 @@ doesn't run.
    prevent), and scan for label
    noise. A checkpoint trained on
    leaked goldens invalidates
-   every later stage — this isn't
-   optional preflight, it's why
-   stages 2–4 mean anything.
+   every later stage.
 2. **Held-out + frozen
    capability-drift suite.**
    Re-run `eval-harness-first`'s
@@ -60,7 +66,14 @@ doesn't run.
 3. **Paired arena vs. base.**
    Position-randomized judge,
    checkpoint vs. base model, same
-   prompts. **A holdout win that
+   prompts — or the deterministic
+   paired-comparison variant in
+   `references/gate-templates.md`
+   when every grader in the
+   harness is deterministic (no
+   LLM-judge; position
+   randomization N/A there).
+   **A holdout win that
    loses the live arena does not
    ship** — stage-2 numbers and
    stage-3 judgments must agree; a
@@ -69,16 +82,13 @@ doesn't run.
    real signal, not a discrepancy
    to explain away.
 4. **Canary.** 5–10% stratified
-   rollout with auto-rollback,
-   documented as a required step
-   for any checkpoint reaching
+   rollout with auto-rollback for
+   any checkpoint reaching
    production traffic. **Local-only
    users stop at stage 3** —
-   there's no production traffic
-   to canary against, and skipping
-   stage 4 for a local deployment
-   isn't a shortcut, it's the
-   correct stopping point.
+   skipping stage 4 for a local
+   deployment is the correct
+   stopping point, not a shortcut.
 
 ### Drift Budget
 
@@ -96,20 +106,27 @@ capability still fails here —
 task improvement never buys back
 a drift-budget breach.
 
+**Item count derives from the
+budget, not convenience:** score
+a benchmark here only once its
+95% CI half-width sits under
+half the hard-fail threshold
+(n≥200 for the 5pt budget above
+— n=50 carries ~±13pt of noise).
+Math and a 5-run cautionary
+example: `references/gate-templates.md`.
+
 **RERUN is not a verdict.** A
 2–5pt drift only ever produces a
 `PROMOTE` or `REJECT` after the
 seed-variation rerun completes —
-`PROMOTE` requires the rerun to
-land back at ≤1pt (noise); any
-rerun result still >1pt — whether
-it stays in the 2–5pt band or
-breaches >5pt — resolves stage 2
-to a hard `REJECT`, same as a
-rerun that never happens. No
-report may reach the Verdict
-section with stage 2 still
-showing `RERUN`.
+`PROMOTE` requires landing back
+at ≤1pt (noise); any rerun still
+>1pt — 2–5pt band or >5pt breach
+alike — resolves stage 2 to a
+hard `REJECT`. No report may
+reach the Verdict section with
+stage 2 still showing `RERUN`.
 
 ## Catastrophic Forgetting
 
@@ -127,28 +144,64 @@ stage 2 is what catches it:
   disciplined case.
 - **10–30% general-data replay
   mix is the standard
-  mitigation** — blend that
-  fraction of general-domain data
-  back into training rather than
-  training on target-task data
+  mitigation** — blend general-
+  domain data into training
+  rather than target-task data
   alone.
 
 If a checkpoint hits the >5pt
-hard fail in stage 2, the single
-top remediation is almost always
-**raise the replay fraction
-toward 30%**, not a different
-fix. If replay is already in
-that range and drift still
-exceeds budget, escalate in this
-order: **lower the learning
-rate, then fewer epochs, then a
-smaller LoRA rank** — the same
-rank/LR levers `lora-qlora-recipes`
-and `preference-optimization`
-tune for the training run in the
-first place, applied here in
-reverse.
+hard fail in stage 2, work this
+escalation ladder in order — the
+one canonical order this skill
+and `references/gate-templates.md`
+both point to:
+
+1. **Adjust the replay-mix
+   fraction — swap rows, don't
+   add them** (adding confounds
+   fraction with total optimizer
+   steps). Dose is not monotonic
+   at small-run scale (<~100
+   steps) — re-check drift after
+   any swap.
+2. **Lower the learning rate.**
+3. **Fewer epochs.**
+4. **A smaller LoRA rank** — the
+   same rank/LR levers
+   `lora-qlora-recipes` and
+   `preference-optimization` tune
+   for the training run, applied
+   here in reverse.
+
+This order is a default, not a
+law: **remediation guidance from
+a single before/after run pair
+is a hypothesis** — label it
+low-confidence once any lever
+produces a reversal, and prefer
+a seed-variation repeat over
+trusting the next rung blindly.
+A lever that clears the drift
+breach but drops a
+success-criterion metric below
+target is a two-sided tradeoff
+for a human, not a reason to
+keep descending the ladder. Full
+reasoning and the 5-run
+trajectory behind both caveats:
+`references/gate-templates.md`.
+
+**Disclose drift-suite
+instruction reuse.** A replay row
+copying the drift harness's exact
+instruction phrasing (not just
+disjoint source items) makes that
+benchmark's post-replay score an
+upper bound — flag it
+instruction-familiar, or re-probe
+with a paraphrase, before
+treating a near-budget pass as
+clean.
 
 ## The Verdict
 
@@ -173,33 +226,30 @@ suite dropped 6.2pt (threshold:
 >5pt hard fail) despite +8pt on
 the target task.
 
-Top remediation: raise the
+Top remediation: swap the
 replay-mix fraction from 10%
-toward 30%.
+toward 20%, holding step count
+constant.
 ```
 
 - **REJECT is a result, not an
   error.** A checkpoint that
   fails stage 2's drift budget or
   stage 3's arena comparison did
-  its job — the gate caught
-  something real. Don't treat a
-  REJECT as a failed run needing
-  a rerun of this skill; it's the
-  correct output of a working
-  gate.
+  its job. Don't treat a REJECT
+  as a failed run needing a rerun
+  of this skill; it's the correct
+  output of a working gate.
 - **One remediation, not a
   menu.** Evidence sections may
   list everything observed; the
   verdict section names the
-  single highest-leverage fix —
-  raise replay, drop LR, rerun
-  with seed variation, whatever
-  stage produced the failure
-  implies. A report that hedges
-  across three possible fixes
-  hasn't done the prioritization
-  this skill exists to do.
+  single highest-leverage fix per
+  the escalation ladder above. A
+  report that hedges across three
+  possible fixes hasn't done the
+  prioritization this skill
+  exists to do.
 - **No auto-retraining.** This
   skill produces a verdict and a
   report, not a re-triggered
@@ -207,31 +257,30 @@ toward 30%.
   the remediation back to a human
   decision at
   `finetuning-method-selection` or
-  the relevant training skill —
-  this skill does not loop back
-  into training on its own.
+  the relevant training skill.
 
 ## Related Skills
 
 - `eval-harness-first` — owns the
   drift suite and baseline this
   skill re-runs and diffs
-  against; a checkpoint arriving
-  without `baseline-<model>.json`
-  has nothing to gate against.
+  against; no `baseline-<model>.json`
+  means nothing to gate against.
 - `quantized-export` — the only
   valid next step after a
-  `PROMOTE` verdict; a `REJECT`ed
-  checkpoint never reaches
-  export.
+  `PROMOTE` verdict.
 - `preference-optimization` and
   `lora-qlora-recipes` — own the
-  LR and rank levers named in the
+  LR and rank levers in the
   Catastrophic Forgetting
   escalation path; this skill
-  diagnoses a drift-budget
-  breach, those skills own the
-  config that caused it.
+  diagnoses the breach, those
+  skills own the config that
+  caused it.
+- `dataset-curation` — owns the
+  replay-mix construction recipe
+  the escalation ladder's first
+  rung applies.
 
 Complete `promotion-report.md`
 template with all four stages,

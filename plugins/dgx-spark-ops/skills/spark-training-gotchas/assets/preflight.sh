@@ -6,9 +6,10 @@
 #   PASS/WARN for hardware capability only — it does NOT verify
 #   the kernel target arch (sm_121a), which stays a manual step,
 #   see gotcha-checks.md G7.
-# Non-automatable gotchas (G2 avoid-a-library, G6 process survey,
-# G8 upstream-issue lookup, G10 config review) are not covered
-# here — see references/gotcha-checks.md for those.
+# Non-automatable gotchas (G2 flash-attn presence/Unsloth
+# override check, G6 process survey, G8 upstream-issue lookup,
+# G10 config review) are not covered here — see
+# references/gotcha-checks.md for those.
 # Usage: bash preflight.sh
 set -uo pipefail
 

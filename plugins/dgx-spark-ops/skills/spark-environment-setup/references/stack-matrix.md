@@ -1,4 +1,4 @@
-Last verified: 2026-07-13 — refresh when CUDA, PyTorch, or Unsloth major versions change.
+Last verified: 2026-07-14 — refresh when CUDA, PyTorch, or Unsloth major versions change.
 
 # Spark Stack Matrix
 
@@ -16,6 +16,46 @@ Full component-by-component status for the ML training/inference stack on DGX Sp
 | Unsloth | ✅ (container preferred) | Official Docker image `unsloth/unsloth:dgxspark-latest` (a moving tag — resolve and pin its digest for reproducible/CI use, see `references/container-workflow.md`), or the NVIDIA playbook pip sequence (see `SKILL.md`). Bare pip installs have hit torchcodec and GPU-detection gotchas. |
 | Axolotl / TRL / PEFT | ✅ | Standard install, no special handling needed. |
 | LLaMA-Factory / NeMo | fragile / in progress | Known to be unreliable on this platform as of this writing; expect breakage and check upstream issues before depending on either for a run. |
+
+## Known-Good Version Matrix (Dated)
+
+`SKILL.md`'s bare-pip sequence pins `datasets`/`trl` explicitly
+for a reason: an unpinned `pip install transformers peft
+hf_transfer datasets trl accelerate` resolves current PyPI
+versions of `transformers`/`trl`/`datasets` that sit well
+outside what a given Unsloth release declares support for — pip
+installs them anyway and only warns after the fact. The
+combination below was confirmed working end-to-end (bf16 LoRA
+load + attach + a full SFT run) on `nvcr.io/nvidia/pytorch:25.09-py3`
+as of the date above; treat it as a dated snapshot to re-verify,
+not a permanent pin:
+
+| Package | Verified-working version |
+|---|---|
+| `transformers` | 5.13.1 |
+| `trl` | 1.8.0 |
+| `unsloth` / `unsloth_zoo` | 2026.7.2 |
+| `torchao` | 0.17.0 (pure-Python wheel; NGC base image ships 0.13.0+git, too old — `pip install -U torchao` after the Unsloth line) |
+| `bitsandbytes` | 0.49.2 |
+
+If a bare-pip install lands on a different combination than
+this table (pip resolver drift is expected as new releases
+ship), re-run the load+LoRA-attach smoke test in `SKILL.md`'s
+Verification Commands before trusting the environment, and
+check `gh issue list --repo NVIDIA/dgx-spark-playbooks` for a
+version-skew report matching the symptom before assuming it's
+novel.
+
+**`HF_HUB_ENABLE_HF_TRANSFER` is deprecated on `huggingface_hub`
+1.23+.** Setting it now only produces `FutureWarning: The
+HF_HUB_ENABLE_HF_TRANSFER environment variable is deprecated ...
+Please use HF_XET_HIGH_PERFORMANCE instead`, and downloads route
+through Xet rather than hf_transfer regardless. This is cosmetic
+(downloads still succeed, and fast) on current `huggingface_hub`
+— stale task instructions or older recipes that still reference
+`hf_transfer`-based env setup should be read as intent ("make
+downloads fast"), not a literal current-API requirement; set
+`HF_XET_HIGH_PERFORMANCE=1` instead on `huggingface_hub` 1.23+.
 
 ## sm_121 vs sm_121a
 

@@ -1,4 +1,4 @@
-Last verified: 2026-07-13
+Last verified: 2026-07-14
 
 # Synthetic Data: Generation, Filtering, Distillation
 
@@ -135,3 +135,167 @@ card's provenance field — "distilled from `TEACHER`"
 is a provenance fact `/finetune` and downstream
 audits both expect to find there, not something to
 leave implicit.
+
+## Replay-Mix Construction
+
+The implementation recipe behind
+`checkpoint-promotion`'s catastrophic-forgetting
+escalation ladder (`SKILL.md`'s owning document for
+*when* and *how far* to move the replay fraction —
+this section covers *how to build the rows*, the
+single most common REJECT remediation and the part
+most often improvised ad hoc under time pressure).
+Five decisions, in the order they come up:
+
+### 1. General-Domain Source Selection
+
+Pick a source that is genuinely general-domain for
+the capability being protected, not a narrow slice
+that happens to be convenient. Two failure modes to
+avoid:
+
+- **Don't teach to the gate.** If the replay source
+  is drawn from the exact same distribution as the
+  drift suite's benchmarks (e.g. the same GSM8K
+  train split the drift suite's test split comes
+  from), the resulting drift score partially
+  measures "did this model see similar items in
+  training," not "did fine-tuning preserve the
+  underlying capability." This is not automatically
+  disallowed — see `checkpoint-promotion`'s
+  instruction-reuse disclosure rule — but it must be
+  disclosed, and a broader source (not scoped to the
+  drift suite's own benchmarks) is the more
+  defensible default when one exists.
+- **Match the source to the forgetting signature.**
+  If error analysis on the failing checkpoint shows
+  a specific lost capability (e.g. chain-of-thought
+  math reasoning, not general knowledge), a replay
+  source targeting that capability recovers it
+  faster than a generic instruct-tuning mix — but
+  narrows the "general-domain" claim; state in the
+  dataset card which capability the replay mix
+  targets and why.
+
+### 2. Prompt Shape
+
+Decide what shape replay rows take in the
+messages-shaped SFT set — this is a real choice,
+not a detail:
+
+- **Natural instruction** — however the source
+  data's own prompts are phrased. Lowest effort,
+  least targeted.
+- **The drift harness's exact phrasing** — matches
+  the eval's instruction wording. Most directly
+  addresses an instruction-following forgetting
+  signature (e.g. "ignores the show-your-work
+  instruction"), but triggers the instruction-reuse
+  disclosure rule in `checkpoint-promotion` and
+  inflates the post-replay score on that specific
+  benchmark.
+- **Bare input, no instruction wrapper** — closest
+  to raw continued-pretraining signal; weakest at
+  restoring instruction-following specifically.
+
+Pick based on the forgetting signature from error
+analysis, not by default — and disclose the choice
+in the dataset card regardless of which one.
+
+### 3. Answer Reformatting
+
+Decide whether replay reference answers get
+reformatted toward the target task's output
+convention, or kept in the source format as-is.
+Example: rewriting a math dataset's `#### N`
+final-answer terminator to match the target
+task's own extraction convention. This is a
+judgment call that changes what the model learns
+to emit on replay-domain prompts — record the
+exact transformation applied (or "none — kept
+source format") in the dataset card, since it
+changes what a downstream error-analysis pass
+should expect to see.
+
+### 4. Val-Split Treatment
+
+Decide whether the validation split gains replay
+rows or stays task-only:
+
+- **Task-only val split** keeps `eval_loss` directly
+  comparable across runs that only differ in replay
+  fraction — the training loop has zero visibility
+  into replay fit, and replay recovery is only
+  measurable at the next Phase 5 re-gate.
+- **Replay rows in val too** gives in-loop visibility
+  into replay fit, at the cost of `eval_loss` no
+  longer being an apples-to-apples comparison against
+  a prior run's task-only val split.
+
+Neither is universally correct; state which was
+chosen and why in the dataset card, and don't
+compare `eval_loss` across runs that made different
+choices here without noting the confound.
+
+### 5. Disjointness Verification
+
+Before training, verify replay rows don't overlap
+the drift suite or the goldens set — required, not
+optional, regardless of which source was picked in
+step 1:
+
+- **Split-level separation** — draw replay rows only
+  from a source split (e.g. a train split) disjoint
+  from whatever split the drift suite's items are
+  drawn from.
+- **Exact-match text filter** — normalize and
+  exact-match replay row question/prompt text
+  against the drift suite's selected items and
+  `eval/goldens.jsonl`; drop any hit. Record the
+  overlap count found (expect 0) in the dataset card
+  — a nonzero count found and silently dropped is
+  still worth recording, since it signals the source
+  pool needs a tighter split boundary next time.
+
+### When a Later Run Changes the Replay Fraction: Swap, Don't Add
+
+If a checkpoint-promotion gate calls for moving the
+replay fraction (see `checkpoint-promotion`'s
+escalation ladder), implement the change by **swapping
+rows, not adding them**: drop target-task rows out of
+the training set as replay rows go in, so the total
+row/step count holds constant between the old and new
+run. Adding replay rows on top of the existing set
+changes replay fraction and total optimizer steps in
+the same move, making it impossible to attribute a
+later drift-score change to either variable alone —
+this confound has produced misleading run-to-run
+trajectories in practice, so treat swap-not-add as a
+hard rule for this recipe, not a style preference.
+
+## Synthetic-Only Datasets and the ≥25% Real Floor
+
+`SKILL.md`'s Synthetic Data Rules require ≥25% real
+data as a collapse guard. When a training set is
+100% synthetic by construction (a greenfield task
+with no real-data pool to draw from at all — not
+merely a lot of synthetic augmentation on top of a
+real base), that floor is unmeetable by definition
+unless something in the mix counts as "real."
+
+**Resolution: general-domain replay rows count
+toward the ≥25% floor.** "Real" in this rule means
+"not generated for this specific task from this
+specific student model" — a replay row pulled from
+an existing general-instruct dataset (human-authored
+or otherwise pre-existing, not freshly generated by
+the student or its teacher for this run) satisfies
+that definition even though the target-task rows
+around it are 100% synthetic. Build the replay mix
+per the five decisions above, then compute the
+synthetic/real ratio the dataset card requires
+treating replay rows as the "real" share — and state
+explicitly in the card that this is how the ratio
+was met, so a later audit doesn't misread an
+all-synthetic-target-data run as having silently
+skipped the collapse guard.

@@ -88,9 +88,15 @@ extrapolation, not a free throughput win.
 ## Unsloth Defaults
 
 Unsloth is the reference implementation this
-plugin assumes as the default fast path. Its
-out-of-the-box defaults, and why each one is set
-that way:
+plugin assumes as the default fast path — except
+for messages-shaped conversational SFT with
+`assistant_only_loss=True`, where Unsloth
+2026.7.x's compiled trainer has no messages-shaped
+path at all and the plain-TRL escape hatch
+(`references/unsloth-trl-mapping.md`) is the
+default for that combination, not a rare-regression
+fallback. Its out-of-the-box defaults, and why
+each one is set that way:
 
 - **`lora_dropout=0`** — the optimized kernel
   path assumes zero dropout; setting a nonzero

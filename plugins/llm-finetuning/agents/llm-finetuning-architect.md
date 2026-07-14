@@ -84,7 +84,11 @@ trustworthy if an earlier one was skipped.
    model catalog reference. Reason in size classes; pull
    any specific model name from that catalog, and check
    its "last verified" freshness before trusting the
-   row.
+   row. When the catalog's per-row Notes column and
+   `lora-qlora-recipes`'s LoRA vs QLoRA vs Full FT table
+   seem to disagree on method, the recipe table governs —
+   the catalog states size-class feasibility, not a
+   method recommendation.
 5. **Size memory feasibility.** Use
    `finetuning-method-selection`'s memory-feasibility
    guidance for the chosen method and dtype. Once
@@ -136,6 +140,14 @@ unmodified base model>
   `eval-harness-first`'s goldens-building guidance>
 - Size floor: <per the chosen method's skill —
   cite the skill, not a number from memory>
+- Replay fraction + source: <required, even when the
+  answer is "0%, accepted risk" — forgetting
+  prevention is a Phase-1 decision made here, not a
+  Phase-5 remediation discovered after a REJECT. State
+  the fraction and the general-domain source per
+  `dataset-curation`'s Replay-Mix Construction recipe,
+  or state explicitly that 0% replay is being accepted
+  and why>
 
 ## Memory Budget
 <method + dtype + size class, sized per
@@ -155,11 +167,11 @@ thresholds>
 
 ## Risks
 <off-ramps considered and rejected, and why;
-catastrophic-forgetting exposure for the chosen
-method, deferred to `checkpoint-promotion`'s
-mitigation guidance rather than restated here; any
-GRPO reward-hacking risk flagged by the Inspection
-Rule>
+catastrophic-forgetting exposure given the replay
+fraction decided above (0% replay is an explicit,
+accepted risk to name here, not a silent gap
+discovered at `checkpoint-promotion`); any GRPO
+reward-hacking risk flagged by the Inspection Rule>
 ```
 
 ## Behavioral Traits
