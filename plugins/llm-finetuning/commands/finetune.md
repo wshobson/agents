@@ -204,6 +204,7 @@ subagent_type: llm-finetuning-training-engineer
 prompt: |
   Export the promoted checkpoint for: $ARGUMENTS
   Brief: {phase1.output}
+  Checkpoint: {phase4.output}
   Promotion report: {phase5.output}
 
   Runs only because Phase 5 returned `PROMOTE`. Pick format and
