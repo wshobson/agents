@@ -189,15 +189,25 @@ class TestCodexAdapter:
         empty_repo.mkdir()
         adapter = CodexAdapter(output_root=output_root, repo_root=empty_repo)
         adapter.emit_plugin(synthetic_plugin)
-        adapter.emit_global([synthetic_plugin])
+        no_desc_plugin = PluginSource(
+            name="no-desc",
+            dir=empty_repo / "no-desc",
+            plugin_json={"name": "no-desc", "version": "0.1.0"},
+        )
+        adapter.emit_global([synthetic_plugin, no_desc_plugin])
 
         marketplace_path = output_root / ".agents" / "plugins" / "marketplace.json"
         data = json.loads(marketplace_path.read_text(encoding="utf-8"))
-        assert data["plugins"], "expected at least one marketplace plugin entry"
+        assert len(data["plugins"]) == 2, "expected two marketplace plugin entries"
         for entry in data["plugins"]:
             assert "description" in entry, f"missing description key in entry: {entry}"
             assert isinstance(entry["description"], str)
             assert len(entry["description"]) > 0
+
+        no_desc_entry = next(p for p in data["plugins"] if p["name"] == "no-desc")
+        assert no_desc_entry["description"] == "no-desc", (
+            "expected description to fall back to plugin name"
+        )
 
     def test_plugin_manifest_description_falls_back_to_name(
         self, tmp_path: Path, output_root: Path
