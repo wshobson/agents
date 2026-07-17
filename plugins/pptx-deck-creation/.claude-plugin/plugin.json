@@ -13,7 +13,6 @@
     "./skills/pptx-slide-specification",
     "./skills/pptx-visual-assets",
     "./skills/pptx-reference-deck-analysis",
-    "./skills/pptx-ooxml",
     "./skills/pptx-quality-gates"
   ]
 }

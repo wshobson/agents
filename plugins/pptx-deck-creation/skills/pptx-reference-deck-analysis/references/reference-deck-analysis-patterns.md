@@ -1,4 +1,4 @@
-# Task-Local Python Patterns
+# Reference-Deck Analysis Patterns
 
 Use these patterns only as documentation when writing a temporary analysis script with `python-pptx`; do not package them as an importable extraction library.
 

@@ -12,7 +12,7 @@ Use this skill before delivering a generated PPTX. Treat deterministic failures 
 1. Confirm the spec, builder, PPTX, source manifest, and audit paths.
 2. Apply `references/audit-checklist.md` to the coordinate contract before building.
 3. Reopen the PPTX and compare slide count, actual bounds, hidden slides, and requested geometry with the layout tree.
-4. For production decks, run `pptx-ooxml/scripts/validate_package.py` and save the JSON report.
+4. For production decks, run `pptx-reference-deck-analysis/scripts/validate_package.py` and save the JSON report.
 5. Check document language, slide titles, meaningful-image alt text, reading order, table headers, and source references.
 6. When a compatible renderer is already available, inspect previews for clipping, font fallback, contrast, crop, and hierarchy. Do not add a renderer dependency.
 7. Repair the spec or task-local builder, rebuild, and rerun the same checks.

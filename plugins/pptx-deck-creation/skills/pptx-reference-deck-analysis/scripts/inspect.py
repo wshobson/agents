@@ -19,6 +19,12 @@ MAX_MEMBER_SIZE = 100 * 1024 * 1024
 MAX_TOTAL_SIZE = 512 * 1024 * 1024
 MAX_COMPRESSION_RATIO = 1_000
 
+
+def _write_stdout(value: str) -> None:
+    """Write UTF-8 JSON without depending on the console code page."""
+    sys.stdout.buffer.write(value.encode("utf-8"))
+
+
 def _workspace_path(value: str) -> Path:
     root = Path.cwd().resolve()
     path = Path(value).expanduser().resolve()
@@ -106,7 +112,7 @@ def main(argv: list[str] | None = None) -> None:
     path = _workspace_path(argv[0])
     if not path.is_file():
         raise SystemExit(f"Input package does not exist: {path}")
-    print(json.dumps(inspect(str(path)), ensure_ascii=False, indent=2))
+    _write_stdout(json.dumps(inspect(str(path)), ensure_ascii=False, indent=2) + "\n")
 
 if __name__ == "__main__":
     main()
