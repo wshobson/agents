@@ -14,7 +14,7 @@ dependencies = [
 [project.optional-dependencies]
 # EasyOCR pulls in torch (~2 GB). Install with: uv sync --extra easyocr
 easyocr = [
-    "torch>=2.12.1",
+    "torch>=2.13.0",
     "torchvision>=0.15",
     "easyocr>=1.7",
 ]
