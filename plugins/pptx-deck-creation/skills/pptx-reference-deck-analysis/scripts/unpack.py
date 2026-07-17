@@ -20,7 +20,7 @@ def _workspace_path(value: str) -> Path:
         raise ValueError(f"Path escapes the current workspace: {value}")
     return path
 
-def _validate_members(archive: zipfile.ZipFile, output: Path) -> list[zipfile.ZipInfo]:
+def _validate_members(archive: zipfile.ZipFile, source: Path, output: Path) -> list[zipfile.ZipInfo]:
     members = archive.infolist()
     if len(members) > MAX_MEMBERS:
         raise ValueError("Archive contains too many entries")
@@ -31,6 +31,8 @@ def _validate_members(archive: zipfile.ZipFile, output: Path) -> list[zipfile.Zi
         target = (output / member.filename).resolve()
         if not target.is_relative_to(output):
             raise ValueError(f"Unsafe archive entry: {member.filename}")
+        if target == source:
+            raise ValueError(f"Archive entry would overwrite input package: {member.filename}")
         if member.file_size > MAX_MEMBER_SIZE:
             raise ValueError(f"Archive entry is too large: {member.filename}")
         total += member.file_size
@@ -41,9 +43,11 @@ def _validate_members(archive: zipfile.ZipFile, output: Path) -> list[zipfile.Zi
     return members
 
 def unpack(source: Path, output: Path) -> None:
+    if output == source:
+        raise ValueError("output directory must not be the input package")
     output.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(source) as archive:
-        for member in _validate_members(archive, output):
+        for member in _validate_members(archive, source, output):
             target = output / member.filename
             if member.is_dir():
                 target.mkdir(parents=True, exist_ok=True)

@@ -16,6 +16,7 @@ P = "{http://schemas.openxmlformats.org/presentationml/2006/main}"
 R = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
 PR = "{http://schemas.openxmlformats.org/package/2006/relationships}"
 CT = "{http://schemas.openxmlformats.org/package/2006/content-types}"
+SLIDE_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.presentationml.slide+xml"
 MAX_MEMBERS, MAX_MEMBER_SIZE, MAX_TOTAL_SIZE, MAX_COMPRESSION_RATIO = 5_000, 100 * 1024 * 1024, 512 * 1024 * 1024, 1_000
 
 
@@ -64,9 +65,12 @@ def _target(rels_name: str, value: str) -> str | None:
         target = posixpath.normpath(posixpath.join(posixpath.dirname(source), value))
     return target if target not in {"", ".", ".."} and not target.startswith("../") else None
 
-def _content_types(archive: zipfile.ZipFile) -> tuple[set[str], set[str]]:
+def _content_types(archive: zipfile.ZipFile) -> tuple[dict[str, str], dict[str, str]]:
     root = ET.fromstring(archive.read("[Content_Types].xml"))
-    return ({item.get("Extension", "").lower() for item in root.findall(f"{CT}Default")}, {item.get("PartName", "").lstrip("/") for item in root.findall(f"{CT}Override")})
+    return (
+        {item.get("Extension", "").lower(): item.get("ContentType", "") for item in root.findall(f"{CT}Default")},
+        {item.get("PartName", "").lstrip("/"): item.get("ContentType", "") for item in root.findall(f"{CT}Override")},
+    )
 
 def validate(path: str) -> dict[str, Any]:
     errors: list[dict[str, str]] = []
@@ -81,13 +85,13 @@ def validate(path: str) -> dict[str, Any]:
                 errors.append({"part": name, "check": "xml_well_formed", "message": str(exc)})
         if "[Content_Types].xml" not in names:
             errors.append({"part": "[Content_Types].xml", "check": "content_types", "message": "missing content types part"})
-            defaults, overrides = set(), set()
+            defaults, overrides = {}, {}
         else:
             try:
                 defaults, overrides = _content_types(archive)
             except Exception as exc:
                 errors.append({"part": "[Content_Types].xml", "check": "content_types", "message": str(exc)})
-                defaults, overrides = set(), set()
+                defaults, overrides = {}, {}
         referenced: set[str] = set()
         relationships: dict[str, dict[str, dict[str, str]]] = {}
         for rels_name in sorted(name for name in names if name.endswith(".rels")):
@@ -129,16 +133,14 @@ def validate(path: str) -> dict[str, Any]:
             except Exception as exc:
                 errors.append({"part": presentation, "check": "slide_order", "message": str(exc)})
         for slide in sorted(name for name in names if name.startswith("ppt/slides/slide") and name.endswith(".xml")):
-            if slide not in overrides and PurePosixPath(slide).suffix.lstrip(".").lower() not in defaults:
-                errors.append({"part": slide, "check": "content_type", "message": "no default or override content type declaration"})
+            if overrides.get(slide) != SLIDE_CONTENT_TYPE:
+                errors.append({"part": slide, "check": "content_type", "message": "missing or incorrect slide content type override"})
             if slide not in declared_slides:
                 warnings.append({"part": slide, "check": "unlisted_slide", "message": "slide part is not listed in presentation.xml"})
             rels_name = f"{PurePosixPath(slide).parent}/_rels/{PurePosixPath(slide).name}.rels"
             layouts = [item for item in relationships.get(rels_name, {}).values() if item["type"].endswith("/slideLayout")]
-            if len(layouts) > 1:
-                errors.append({"part": rels_name, "check": "slide_layout_relationship", "message": f"expected at most one slideLayout relationship, found {len(layouts)}"})
-            elif not layouts:
-                warnings.append({"part": rels_name, "check": "slide_layout_relationship", "message": "no slideLayout relationship found"})
+            if len(layouts) != 1:
+                errors.append({"part": rels_name, "check": "slide_layout_relationship", "message": f"expected exactly one slideLayout relationship, found {len(layouts)}"})
         for check, candidates in {"orphaned_media": (item for item in names if item.startswith("ppt/media/")), "orphaned_notes": (item for item in names if item.startswith("ppt/notesSlides/notesSlide") and item.endswith(".xml"))}.items():
             for name in sorted(candidates):
                 if name not in referenced:
@@ -158,6 +160,8 @@ def main(argv: list[str] | None = None) -> int:
         payload = json.dumps(report, ensure_ascii=False, indent=2) + "\n"
         if args.output:
             output = _workspace_path(args.output)
+            if output == deck:
+                raise ValueError("output must not overwrite the input deck")
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_text(payload, encoding="utf-8")
         _write_stdout(payload)

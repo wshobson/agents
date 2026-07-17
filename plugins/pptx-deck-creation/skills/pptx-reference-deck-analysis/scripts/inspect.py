@@ -57,11 +57,15 @@ def _source_part(rels_name: str) -> str | None:
     return str(path.parent.parent / path.name.removesuffix(".rels"))
 
 
-def _part_target(rels_name: str, target: str) -> str:
+def _part_target(rels_name: str, target: str) -> str | None:
     source = _source_part(rels_name)
     if source is None:
-        return target
-    return posixpath.normpath(posixpath.join(posixpath.dirname(source), target)).lstrip("/")
+        return None
+    if target.startswith("/"):
+        resolved = posixpath.normpath(target.lstrip("/"))
+    else:
+        resolved = posixpath.normpath(posixpath.join(posixpath.dirname(source), target))
+    return resolved if resolved not in {"", ".", ".."} and not resolved.startswith("../") else None
 
 def _xml(archive: zipfile.ZipFile, name: str):
     return ET.fromstring(archive.read(name))
