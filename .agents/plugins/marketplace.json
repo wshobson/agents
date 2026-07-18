@@ -861,7 +861,7 @@
     },
     {
       "name": "plugin-eval",
-      "description": "plugin-eval",
+      "description": "Three-layer quality evaluation framework for Claude Code plugins with Elo ranking",
       "source": {
         "source": "local",
         "path": "./plugins/plugin-eval"
@@ -874,6 +874,7 @@
     },
     {
       "name": "pptx-deck-creation",
+      "description": "Create production-ready, editable PowerPoint decks through a spec-first, coordinate-explicit workflow with read-only reference analysis and quality gates.",
       "source": {
         "source": "local",
         "path": "./plugins/pptx-deck-creation"
