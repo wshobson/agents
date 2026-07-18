@@ -1,0 +1,11 @@
+{
+  "name": "pptx-deck-creation",
+  "displayName": "Pptx Deck Creation",
+  "version": "1.0.0",
+  "description": "Create production-ready, editable PowerPoint decks through a spec-first, coordinate-explicit workflow with read-only reference analysis and quality gates.",
+  "author": {
+    "name": "kimtth",
+    "email": ""
+  },
+  "license": "MIT"
+}
