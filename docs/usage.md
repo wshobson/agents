@@ -111,6 +111,7 @@ Claude Code automatically selects and coordinates the appropriate agents based o
 | `/machine-learning-ops:ml-pipeline`     | ML training pipeline orchestration |
 | `/data-engineering:data-pipeline`       | ETL/ELT pipeline construction      |
 | `/data-engineering:data-driven-feature` | Data-driven feature development    |
+| `/dgx-spark-ops:spark-preflight`        | DGX Spark ML workload preflight with env-report.json |
 
 ### Documentation
 
@@ -166,6 +167,8 @@ Claude Code automatically selects and coordinates the appropriate agents based o
 | `/llm-application-dev:prompt-optimize`      | Prompt engineering optimization |
 | `/agent-orchestration:multi-agent-optimize` | Multi-agent optimization        |
 | `/agent-orchestration:improve-agent`        | Agent improvement workflows     |
+| `/llm-finetuning:finetune`                  | Eval-gated fine-tuning lifecycle end to end |
+| `/llm-finetuning:promote-checkpoint`        | Re-gate and export a fine-tuned checkpoint  |
 
 ### Testing & Performance
 
@@ -385,11 +388,11 @@ User: "Implement Kubernetes deployment with Helm"
 → Result: Production-grade K8s manifests with Helm charts
 ```
 
-See [Agent Skills](./agent-skills.md) for details on the 158 specialized skills.
+See [Agent Skills](./agent-skills.md) for details on the 175 specialized skills.
 
 ## See Also
 
 - [Agent Skills](./agent-skills.md) - Specialized knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 92 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 94 marketplace plugins
 - [Architecture](./architecture.md) - Design principles

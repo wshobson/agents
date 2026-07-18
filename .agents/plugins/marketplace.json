@@ -422,6 +422,18 @@
       "category": "Coding"
     },
     {
+      "name": "dgx-spark-ops",
+      "source": {
+        "source": "local",
+        "path": "./plugins/dgx-spark-ops"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "distributed-debugging",
       "source": {
         "source": "local",
@@ -678,6 +690,18 @@
       "source": {
         "source": "local",
         "path": "./plugins/llm-application-dev"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
+      "name": "llm-finetuning",
+      "source": {
+        "source": "local",
+        "path": "./plugins/llm-finetuning"
       },
       "policy": {
         "installation": "AVAILABLE",
