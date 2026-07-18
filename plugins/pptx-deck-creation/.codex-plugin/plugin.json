@@ -1,0 +1,24 @@
+{
+  "name": "pptx-deck-creation",
+  "version": "1.0.0",
+  "description": "Create production-ready, editable PowerPoint decks through a spec-first, coordinate-explicit workflow with read-only reference analysis and quality gates.",
+  "skills": "./skills/",
+  "author": {
+    "name": "kimtth"
+  },
+  "repository": "https://github.com/kimtth/agent-pptify-kit",
+  "license": "MIT",
+  "keywords": [
+    "powerpoint",
+    "pptx",
+    "presentations",
+    "slide-decks",
+    "deck-generation",
+    "slide-design"
+  ],
+  "interface": {
+    "displayName": "Pptx Deck Creation",
+    "shortDescription": "Create production-ready, editable PowerPoint decks through a spec-first, coordinate-explicit workflow with read-only\u2026",
+    "category": "creative"
+  }
+}

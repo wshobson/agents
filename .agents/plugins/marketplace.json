@@ -873,6 +873,18 @@
       "category": "Coding"
     },
     {
+      "name": "pptx-deck-creation",
+      "source": {
+        "source": "local",
+        "path": "./plugins/pptx-deck-creation"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "creative"
+    },
+    {
       "name": "protect-mcp",
       "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 receipts independently verifiable offline.",
       "source": {

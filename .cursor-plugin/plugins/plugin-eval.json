@@ -1,5 +1,6 @@
 {
   "name": "plugin-eval",
   "displayName": "Plugin Eval",
-  "version": "0.1.1"
+  "version": "0.1.1",
+  "description": "Three-layer quality evaluation framework for Claude Code plugins with Elo ranking"
 }

@@ -1,11 +1,11 @@
 {
   "name": "plugin-eval",
   "version": "0.1.1",
-  "description": "plugin-eval",
+  "description": "Three-layer quality evaluation framework for Claude Code plugins with Elo ranking",
   "skills": "./skills/",
   "interface": {
     "displayName": "Plugin Eval",
-    "shortDescription": "plugin-eval",
+    "shortDescription": "Three-layer quality evaluation framework for Claude Code plugins with Elo ranking",
     "category": "Coding"
   }
 }
