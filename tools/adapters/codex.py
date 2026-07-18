@@ -588,12 +588,21 @@ class CodexAdapter(HarnessAdapter):
         )
 
     def _codex_plugin_manifest(self, plugin: PluginSource) -> dict:
-        """Per-plugin `.codex-plugin/plugin.json` (mirrors the superpowers shape)."""
+        """Per-plugin `.codex-plugin/plugin.json` (mirrors the superpowers shape).
+
+        `description` falls back to `plugin.name` when the plugin's own
+        `.claude-plugin/plugin.json` omits it (e.g. `plugin-eval`): the
+        `codex-marketplace` installer's zod schema requires this field to be
+        non-empty (`description: z.string().min(1)` in `pluginManifestSchema`),
+        and this manifest — not the top-level `.agents/plugins/marketplace.json`
+        entry — is what that schema actually validates.
+        """
         pj = plugin.plugin_json or {}
+        desc = plugin.description or plugin.name
         manifest: dict = {
             "name": plugin.name,
             "version": plugin.version,
-            "description": plugin.description or "",
+            "description": desc,
             "skills": "./skills/",
         }
         if pj.get("author"):
@@ -601,7 +610,6 @@ class CodexAdapter(HarnessAdapter):
         for key in ("homepage", "repository", "license", "keywords"):
             if pj.get(key):
                 manifest[key] = pj[key]
-        desc = plugin.description or plugin.name
         if len(desc) > 120:
             # Cut on a word boundary so committed manifests never render mid-word.
             desc = desc[:117].rsplit(" ", 1)[0].rstrip(" ,.;:!?-") + "…"
@@ -618,8 +626,14 @@ class CodexAdapter(HarnessAdapter):
         Schema per openai/codex `core-plugins`: each entry needs `name`, a `source`
         (local variant `{"source": "local", "path": ...}`), a `policy`
         (`installation`/`authentication`), and `category`. Entries install the source
-        plugin dir directly; per-plugin display metadata comes from each plugin's own
-        `.codex-plugin/plugin.json`, so we don't repeat version/description here.
+        plugin dir directly; other per-plugin display metadata (including version and
+        description) comes from each plugin's own `.codex-plugin/plugin.json`, so we
+        don't repeat it here. We still include a top-level `description` per entry as
+        forward-compatible, non-authoritative metadata — `codex-marketplace`'s current
+        `marketplacePluginSchema` (npm `codex-marketplace@0.2.1`, `dist/schema.js`)
+        doesn't declare or require this field (unknown keys are silently stripped by
+        zod's default `.parse()`), so it is not what fixes the installer crash; see
+        `_codex_plugin_manifest()` for the field the installer actually validates.
         """
         root = self._read_marketplace_root()
         entries = []
@@ -628,6 +642,7 @@ class CodexAdapter(HarnessAdapter):
             entries.append(
                 {
                     "name": p.name,
+                    "description": p.description or p.name,
                     "source": {"source": "local", "path": f"./plugins/{p.name}"},
                     "policy": {"installation": "AVAILABLE", "authentication": "ON_USE"},
                     "category": pj.get("category") or "Coding",
