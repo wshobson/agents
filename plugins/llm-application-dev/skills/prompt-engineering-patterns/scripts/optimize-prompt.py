@@ -152,6 +152,13 @@ class PromptOptimizer:
                     best_variation = variation
                     best_variation_metrics = var_metrics
 
+            # Variations are generated deterministically from the prompt, so a
+            # round with no improvement would repeat identical evaluations for
+            # every remaining iteration.
+            if best_variation == current_prompt:
+                print("No improving variation found. Stopping optimization.")
+                break
+
             current_prompt = best_variation
             current_metrics = best_variation_metrics
 
