@@ -28,8 +28,10 @@ from tools.adapters.base import (
     HarnessAdapter,
     PluginSource,
     SkillSource,
+    rewrite_body_for_harness,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
+from tools.adapters.toml_utils import escape_toml_basic, escape_toml_multiline, toml_kv
 
 # Fields that Codex silently ignores; stripping them is honest.
 _CLAUDE_ONLY_SKILL_FIELDS = {
@@ -50,29 +52,6 @@ _CLAUDE_ONLY_AGENT_FIELDS = {
     "user-invocable",
     "disable-model-invocation",
 }
-
-
-# ── TOML emission (hand-rolled; no toml writer in stdlib) ────────────────────
-
-
-def _escape_toml_basic(s: str) -> str:
-    return s.replace("\\", "\\\\").replace('"', '\\"')
-
-
-def _escape_toml_multiline(s: str) -> str:
-    # Triple-quoted multi-line basic strings. Escape only triple-double-quote sequences.
-    return s.replace("\\", "\\\\").replace('"""', '\\"\\"\\"')
-
-
-def _toml_kv(key: str, value) -> str:
-    if isinstance(value, bool):
-        return f"{key} = {'true' if value else 'false'}"
-    if isinstance(value, int):
-        return f"{key} = {value}"
-    s = str(value)
-    if "\n" in s:
-        return f'{key} = """\n{_escape_toml_multiline(s)}\n"""'
-    return f'{key} = "{_escape_toml_basic(s)}"'
 
 
 # ── Skill rewriting ──────────────────────────────────────────────────────────
@@ -180,31 +159,6 @@ def _frontmatter_block(fm: dict) -> str:
             lines.append(f"{k}: {_yaml_scalar(v)}")
     lines.append("---")
     return "\n".join(lines)
-
-
-def _rewrite_body_for_codex(body: str) -> str:
-    """Replace 'the Read tool' / 'The Bash tool' / 'the `Grep` tool' -> action verbs.
-
-    Matches plugin_eval/layers/harness_portability.py's _TOOL_PROSE_PATTERN exactly:
-    the leading article is case-insensitive, but the tool name must match exact
-    CamelCase. This prevents `the bash tool` (referring to the shell, lowercase)
-    from being rewritten — it would be a false-positive that the lint correctly
-    leaves alone.
-
-    Codex prompts encourage action verbs over tool-name vocabulary.
-    """
-    import re
-
-    mapping = TOOL_NAME_MAPS["codex"]
-    out = body
-    for camel, replacement in mapping.items():
-        # `(?i:the)` makes only the article case-insensitive; tool name stays CamelCase.
-        out = re.sub(
-            rf"(?i:\bthe)\s+`?{re.escape(camel)}`?\s+tool\b",
-            replacement,
-            out,
-        )
-    return out
 
 
 _POINTER = (
@@ -447,7 +401,7 @@ class CodexAdapter(HarnessAdapter):
         # Codex requires `name` to match directory exactly.
         fm["name"] = skill_id
 
-        body = _rewrite_body_for_codex(skill.body).rstrip() + "\n"
+        body = rewrite_body_for_harness(skill.body, "codex").rstrip() + "\n"
         head, overflow = _split_body_if_oversized(body, self.SKILL_BODY_CAP)
         if overflow:
             # If source already has references/details.md, route overflow to _overflow.md
@@ -502,16 +456,16 @@ class CodexAdapter(HarnessAdapter):
         else:
             sandbox_mode = "workspace-write"
 
-        developer_instructions = _rewrite_body_for_codex(agent.body).strip()
+        developer_instructions = rewrite_body_for_harness(agent.body, "codex").strip()
         if not developer_instructions:
             developer_instructions = agent.description or f"{agent_id} subagent."
 
         lines = [
-            _toml_kv("name", agent_id),
-            _toml_kv("description", agent.description or f"{agent.name} (from {plugin.name})"),
-            _toml_kv("model", model),
-            _toml_kv("sandbox_mode", sandbox_mode),
-            _toml_kv("developer_instructions", developer_instructions),
+            toml_kv("name", agent_id),
+            toml_kv("description", agent.description or f"{agent.name} (from {plugin.name})"),
+            toml_kv("model", model),
+            toml_kv("sandbox_mode", sandbox_mode),
+            toml_kv("developer_instructions", developer_instructions),
         ]
         if agent.name in {"default", "worker", "explorer"}:
             result.warnings.append(
@@ -551,7 +505,7 @@ class CodexAdapter(HarnessAdapter):
             "name": skill_id,
             "description": cmd.description or f"Command: {cmd.name} (from {plugin.name})",
         }
-        body = _rewrite_body_for_codex(cmd.body).rstrip() + "\n"
+        body = rewrite_body_for_harness(cmd.body, "codex").rstrip() + "\n"
         head, overflow = _split_body_if_oversized(body, self.SKILL_BODY_CAP)
         if overflow:
             result.warnings.append(

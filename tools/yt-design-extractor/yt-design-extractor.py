@@ -368,6 +368,11 @@ def rgb_to_hex(rgb: tuple) -> str:
     return "#{:02x}{:02x}{:02x}".format(*rgb)
 
 
+def _round_color(rgb: tuple, bucket_size: int = 32) -> tuple:
+    """Round an RGB tuple to the nearest bucket for color clustering."""
+    return tuple((c // bucket_size) * bucket_size for c in rgb)
+
+
 def analyze_color_palettes(frames: list[Path], sample_size: int = 10) -> dict:
     """Analyze color palettes across sampled frames."""
     if not COLORTHIEF_AVAILABLE:
@@ -390,10 +395,7 @@ def analyze_color_palettes(frames: list[Path], sample_size: int = 10) -> dict:
         return {}
 
     # Find most common colors (rounded to reduce similar colors)
-    def round_color(rgb, bucket_size=32):
-        return tuple((c // bucket_size) * bucket_size for c in rgb)
-
-    rounded = [round_color(c) for c in all_colors]
+    rounded = [_round_color(c) for c in all_colors]
     most_common = Counter(rounded).most_common(12)
 
     return {

@@ -13,6 +13,7 @@ from tools.adapters.base import (
     PluginSource,
     SkillSource,
     h1_from_body,
+    rewrite_body_lowercase_tools,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 
@@ -48,14 +49,6 @@ def _copilot_frontmatter(fm: dict) -> str:
             lines.append(f"{k}: {value}")
     lines.append("---")
     return "\n".join(lines)
-
-
-def _rewrite_body_lowercase_tools(body: str) -> str:
-    """Lowercase Claude Code CamelCase tool names in backticked references."""
-    out = body
-    for camel, replacement in TOOL_NAME_MAPS["copilot"].items():
-        out = out.replace(f"`{camel}`", f"`{replacement}`")
-    return out
 
 
 def _build_tools_list(agent_tools: list[str]) -> list[str]:
@@ -130,7 +123,7 @@ class CopilotAdapter(HarnessAdapter):
         if model:
             fm["model"] = model
 
-        body = _rewrite_body_lowercase_tools(agent.body).rstrip() + "\n"
+        body = rewrite_body_lowercase_tools(agent.body, "copilot").rstrip() + "\n"
         content = _copilot_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(rel, content))
 
@@ -146,7 +139,7 @@ class CopilotAdapter(HarnessAdapter):
         content = (
             _copilot_frontmatter(skill.frontmatter)
             + "\n\n"
-            + _rewrite_body_lowercase_tools(skill.body).rstrip()
+            + rewrite_body_lowercase_tools(skill.body, "copilot").rstrip()
             + "\n"
         )
         result.written.append(self.write(skill_dir / "SKILL.md", content))
