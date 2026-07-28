@@ -1297,3 +1297,15 @@ class TestCapabilities:
         for harness in supported_harnesses():
             for alias in ("fable", "opus", "sonnet", "haiku", "inherit"):
                 assert alias in MODEL_ALIASES[harness], f"{harness} missing {alias}"
+
+    def test_opencode_resolves_minimax_model_ids(self):
+        """MiniMax model IDs resolve to the MiniMax provider instead of the inherit fallback."""
+        from tools.adapters.capabilities import resolve_model
+
+        model, warning = resolve_model("opencode", "MiniMax-M3")
+        assert model == "minimax/MiniMax-M3"
+        assert warning is None
+
+        model, warning = resolve_model("opencode", "MiniMax-M2.7")
+        assert model == "minimax/MiniMax-M2.7"
+        assert warning is None
