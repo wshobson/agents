@@ -1313,6 +1313,27 @@
         "deck-generation",
         "slide-design"
       ]
+    },
+    {
+      "name": "attester-verify",
+      "source": "./plugins/attester-verify",
+      "description": "Verify PyPI and npm package and symbol names against the attester.dev existence oracle before installing or importing, catching hallucinated dependencies with a free keyless tier (25 checks/day per IP).",
+      "version": "1.0.0",
+      "author": {
+        "name": "attester.dev",
+        "url": "https://github.com/maminihds"
+      },
+      "homepage": "https://attester.dev",
+      "license": "MIT",
+      "category": "security",
+      "keywords": [
+        "package-verification",
+        "hallucination",
+        "supply-chain",
+        "pypi",
+        "npm",
+        "slopsquatting"
+      ]
     }
   ]
 }

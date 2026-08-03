@@ -1,0 +1,16 @@
+{
+  "name": "attester-verify",
+  "version": "1.0.0",
+  "description": "Verify PyPI and npm package and symbol names against the attester.dev existence oracle before installing or importing, catching hallucinated dependencies",
+  "skills": "./skills/",
+  "author": {
+    "name": "attester.dev",
+    "email": "hello@attester.dev"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Attester Verify",
+    "shortDescription": "Verify PyPI and npm package and symbol names against the attester.dev existence oracle before installing or\u2026",
+    "category": "Coding"
+  }
+}
