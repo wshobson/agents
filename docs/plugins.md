@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **94 marketplace plugins** organized by category: 90 local plugins plus 4 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`, `ciagent`).
+Browse all **95 marketplace plugins** organized by category: 90 local plugins plus 5 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`, `ciagent`, `kin`).
 
 ## Quick Start - Essential Plugins
 
@@ -108,7 +108,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 
 ## Complete Plugin Catalog
 
-### 🎨 Development (6 plugins)
+### 🎨 Development (7 plugins)
 
 | Plugin                          | Description                                                  | Install                                       |
 | ------------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
@@ -118,6 +118,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **ui-design**                   | UI/UX design for mobile (iOS, Android, React Native) and web | `/plugin install ui-design`                   |
 | **multi-platform-apps**         | Cross-platform app coordination (web/iOS/Android)            | `/plugin install multi-platform-apps`         |
 | **developer-essentials**        | Essential Git, SQL, code review, auth, debugging, and monorepo skills | `/plugin install developer-essentials`        |
+| **kin**                         | Semantic code retrieval over a graph of entities, relationships, changes, and provenance (external plugin) | `/plugin install kin`                         |
 
 ### 📚 Documentation (4 plugins)
 
@@ -365,7 +366,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 95 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 

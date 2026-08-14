@@ -36,10 +36,10 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **94 marketplace plugins** (90 local + 4 external via git-subdir) optimized for specific use cases
+- **95 marketplace plugins** (90 local + 5 external via git-subdir) optimized for specific use cases
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
-  - **Development**: 6 plugins (debugging, backend, frontend, UI, multi-platform, essentials)
+  - **Development**: 7 plugins (debugging, backend, frontend, UI, multi-platform, essentials, semantic retrieval)
   - **Security**: 6 plugins (scanning, compliance, API, frontend/mobile, reverse engineering, hook policy)
   - **Operations**: 4 plugins (incident, diagnostics, distributed, observability)
   - **Languages**: 10 plugins (Python, JS/TS, systems, JVM, scripting, functional, embedded, and more)
@@ -81,7 +81,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (94 plugins)
+│   └── marketplace.json          # Marketplace catalog (95 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -393,5 +393,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 94 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 95 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows

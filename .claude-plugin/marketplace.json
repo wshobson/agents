@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 94 marketplace plugins, 203 local specialized agents, and 175 local skills - optimized for granular installation and minimal token usage",
+    "description": "Production-ready workflow orchestration with 95 marketplace plugins, 203 local specialized agents, and 175 local skills - optimized for granular installation and minimal token usage",
     "version": "1.7.1"
   },
   "plugins": [
@@ -1312,6 +1312,31 @@
         "slide-decks",
         "deck-generation",
         "slide-design"
+      ]
+    },
+    {
+      "name": "kin",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/firelock-ai/kin.git",
+        "path": "plugins/kin-claude"
+      },
+      "description": "Semantic code retrieval over a graph of entities, relationships, changes, and provenance. Locate, search, context packs, data-flow tracing, and impact analysis without raw file search.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Firelock",
+        "url": "https://github.com/firelock-ai"
+      },
+      "homepage": "https://github.com/firelock-ai/kin",
+      "license": "Apache-2.0",
+      "category": "development",
+      "keywords": [
+        "code-search",
+        "semantic-search",
+        "code-navigation",
+        "impact-analysis",
+        "code-review",
+        "mcp"
       ]
     }
   ]

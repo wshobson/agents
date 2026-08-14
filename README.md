@@ -1,6 +1,6 @@
 # Agentic Plugin Marketplace
 
-> Production-ready agentic workflow building blocks: **94 plugins**, **203 agents**,
+> Production-ready agentic workflow building blocks: **95 plugins**, **203 agents**,
 > **175 skills**, **109 commands** — built for Claude Code and consumed natively by
 > OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, and GitHub Copilot from a single Markdown source.
 
@@ -19,7 +19,7 @@ Pick your harness:
 
 ```bash
 /plugin marketplace add wshobson/agents
-/plugin install python-development          # or any of 94 plugins
+/plugin install python-development          # or any of 95 plugins
 ```
 
 [→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
@@ -47,7 +47,7 @@ Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md). G
 
 | | Count | What it is |
 |---|---:|---|
-| **Plugins** | 94 | Granular, single-purpose installable units (90 local + 4 external via git-subdir) |
+| **Plugins** | 95 | Granular, single-purpose installable units (90 local + 5 external via git-subdir) |
 | **Agents** | 203 | Domain experts (architecture, languages, infra, security, data, ML, docs, business, SEO) |
 | **Skills** | 175 | Modular knowledge packages with progressive disclosure (load when activated) |
 | **Commands** | 109 | Slash commands: scaffolding, security scans, test gen, infrastructure setup |
@@ -125,7 +125,7 @@ uv run plugin-eval certify path/to/skill
 
 Detail lives in `docs/`. Read in this order:
 
-- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 94 plugins
+- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 95 plugins
 - **[docs/agents.md](docs/agents.md)** — all 203 agents by category
 - **[docs/agent-skills.md](docs/agent-skills.md)** — 175 skills with progressive disclosure
 - **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
