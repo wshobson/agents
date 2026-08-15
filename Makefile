@@ -174,13 +174,13 @@ endif
 ifdef PLUGIN
 	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --plugin '$(PLUGIN)'
 else
-	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --all
+	$(UV_TOOLS) $(GENERATE) --harness '$(HARNESS)' --all --prune
 endif
 
 generate-all:
 	@for h in $(HARNESSES); do \
 		echo "--- $$h ---"; \
-		$(UV_TOOLS) $(GENERATE) --harness $$h --all || exit 1; \
+		$(UV_TOOLS) $(GENERATE) --harness $$h --all --prune || exit 1; \
 	done
 
 validate:

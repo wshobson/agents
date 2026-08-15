@@ -26,7 +26,7 @@ claude-agents/
 ├── CONTRIBUTING.md                 # Contributor entry point
 ├── .claude-plugin/marketplace.json # Plugin registry (source of truth)
 ├── .gemini/settings.json           # Gemini CLI → AGENTS.md redirect
-├── plugins/                        # SOURCE OF TRUTH (87 local plugins; 3 externals in marketplace)
+├── plugins/                        # SOURCE OF TRUTH (90 local plugins; 1 external in marketplace)
 │   └── <name>/
 │       ├── .claude-plugin/plugin.json
 │       ├── agents/*.md

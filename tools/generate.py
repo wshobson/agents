@@ -181,6 +181,14 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
         if f.resolve() not in written_resolved:
             f.unlink()
             removed.append(f)
+
+    # Removing a plugin's last file leaves its directory behind (e.g. an emptied
+    # .codex/skills/<plugin>__<skill>/); sweep those so orphaned dirs don't linger.
+    for f in removed:
+        d = f.parent
+        while d != output_root and d.is_dir() and not any(d.iterdir()):
+            d.rmdir()
+            d = d.parent
     return removed
 
 
