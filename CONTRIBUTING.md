@@ -33,6 +33,31 @@ Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
   maintain, disclose that relationship in the PR description and the plugin
   README.
 
+## External and vendor plugins
+
+Disclosure is necessary but not sufficient. Plugins that depend on a
+contributor-operated service, or that install from an external repo, must also
+meet this bar:
+
+- **No metered or paid API on the default path.** A free tier with a daily
+  quota and a paid tier behind it is a funnel, disclosed or not. If the
+  harness can do the job directly (e.g., querying PyPI/npm instead of a
+  proxy "oracle"), the plugin must do that instead of routing through your
+  service.
+- **No data routed through your service as a side effect.** Skills must not
+  send package names, repo contents, URLs, or other workspace data to a
+  third-party endpoint when a direct, first-party alternative exists.
+- **External `git-subdir` entries carry a higher bar.** Installs pull whatever
+  your repo contains at that moment — this marketplace reviews the entry once,
+  never the future payload. Expect us to require: a demonstrably maintained
+  project with real adoption (not a v0.x repo created weeks ago), full
+  disclosure of every high-privilege surface in the payload (`hooks/`
+  directories and `.mcp.json` manifests especially), and a review of those
+  files at submission time. Undisclosed hooks are grounds for closing the PR.
+- **Solve a problem this repo has.** Provider registries, model IDs, or
+  integrations nothing in the repo uses are speculative and will be declined;
+  propose them in an issue with a concrete use case first.
+
 ## Quality gates
 
 Every PR runs these on CI (`.github/workflows/`); run them locally before pushing:
