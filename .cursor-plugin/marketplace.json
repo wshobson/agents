@@ -88,6 +88,17 @@
       "license": "MIT"
     },
     {
+      "name": "attester-verify",
+      "source": "./plugins/attester-verify",
+      "version": "1.0.0",
+      "description": "Verify PyPI and npm package and symbol names against the attester.dev existence oracle before installing or importing, catching hallucinated dependencies",
+      "author": {
+        "name": "attester.dev",
+        "email": "hello@attester.dev"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "backend-api-security",
       "source": "./plugins/backend-api-security",
       "version": "1.2.1",

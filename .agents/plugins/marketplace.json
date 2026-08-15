@@ -93,6 +93,19 @@
       "category": "Coding"
     },
     {
+      "name": "attester-verify",
+      "description": "Verify PyPI and npm package and symbol names against the attester.dev existence oracle before installing or importing, catching hallucinated dependencies",
+      "source": {
+        "source": "local",
+        "path": "./plugins/attester-verify"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "backend-api-security",
       "description": "API security hardening, authentication implementation, authorization patterns, rate limiting, and input validation",
       "source": {
