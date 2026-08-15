@@ -9,6 +9,21 @@ The plugin ecosystem provides two primary interfaces:
 1. **Slash Commands** - Direct invocation of tools and workflows
 2. **Natural Language** - Claude reasons about which agents to use
 
+## How Installation Actually Works
+
+The **plugin** is the unit of installation; skills and agents come along with it.
+
+1. `/plugin marketplace add wshobson/agents` registers the catalog. It loads
+   nothing into context.
+2. `/plugin install <plugin>` installs one plugin — its agents, commands, and
+   skills together. Install the 2–3 plugins that cover your domain, not
+   individual skills.
+3. **Auto-discovery operates inside what you installed.** Claude Code discovers
+   an installed plugin's skills automatically and activates them when your task
+   matches a skill's description. You never select skills by hand.
+4. `AGENTS.md` and the `docs/` catalogs are for browsing what exists; reading
+   them installs nothing.
+
 ## Slash Commands
 
 Slash commands are the primary interface for working with agents and workflows. Each plugin provides namespaced commands that you can run directly.
