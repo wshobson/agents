@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 95 marketplace plugins, 204 local specialized agents, and 180 local skills - optimized for granular installation and minimal token usage",
+    "description": "Production-ready workflow orchestration with 91 marketplace plugins, 202 local specialized agents, and 180 local skills - optimized for granular installation and minimal token usage",
     "version": "1.7.1"
   },
   "plugins": [
@@ -813,19 +813,6 @@
         "email": "tommy@scopeblind.com"
       },
       "license": "MIT"
-    },
-    {
-      "name": "runapi-mcp",
-      "source": "./plugins/runapi-mcp",
-      "version": "0.1.3",
-      "description": "RunAPI MCP server for browsing models, checking pricing, and creating image, video, music, audio, and LLM tasks.",
-      "author": {
-        "name": "RunAPI",
-        "email": ""
-      },
-      "homepage": "https://github.com/runapi-ai/mcp",
-      "license": "Apache-2.0",
-      "category": "ai-ml"
     },
     {
       "name": "security-compliance",

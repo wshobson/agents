@@ -1,6 +1,6 @@
 # Agent Reference
 
-Complete reference for all **204 local specialized AI agents** organized by category with model assignments.
+Complete reference for all **202 local specialized AI agents** organized by category with model assignments.
 
 ## Agent Categories
 

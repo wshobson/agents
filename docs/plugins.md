@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **95 marketplace plugins** organized by category: 91 local plugins plus 4 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`, `ciagent`).
+Browse all **91 marketplace plugins** organized by category: 90 local plugins plus 1 externally hosted `git-subdir` entry (`pensyve`).
 
 ## Quick Start - Essential Plugins
 
@@ -128,7 +128,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **documentation-generation** | OpenAPI specs, Mermaid diagrams, tutorials                                                                                                      | `/plugin install documentation-generation` |
 | **c4-architecture**          | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture`          |
 
-### 🔄 Workflows (8 plugins)
+### 🔄 Workflows (7 plugins)
 
 | Plugin                       | Description                                                                    | Install                                    |
 | ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------ |
@@ -139,15 +139,12 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **tdd-workflows**            | Test-driven development methodology                                            | `/plugin install tdd-workflows`            |
 | **agent-teams**              | Parallel code review, debugging, feature, and research teams                   | `/plugin install agent-teams`              |
 | **ship-mate**                | Story-file to reviewed, tested PR workflow orchestration                       | `/plugin install ship-mate`                |
-| **storymap-skill**           | User story mapping (Jeff Patton) with WSJF/RICE/MoSCoW prioritization — external plugin | `/plugin install storymap-skill`           |
 
-### ✅ Testing (3 plugins)
+### ✅ Testing (1 plugin)
 
 | Plugin             | Description                                                                          | Install                          |
 | ------------------ | ------------------------------------------------------------------------------------ | -------------------------------- |
 | **unit-testing**   | Automated unit test generation (Python/JavaScript)                                   | `/plugin install unit-testing`   |
-| **qa-orchestra**   | Multi-agent QA toolkit (10 agents, Chrome MCP live validation, stack-agnostic) — external plugin | `/plugin install qa-orchestra`   |
-| **ciagent**        | Pytest-native regression testing for AI agents (golden-trace diffing, stability runs with flip attribution, LLM-judge audit) — external plugin | `/plugin install ciagent`        |
 
 ### 🔍 Quality (4 plugins)
 
@@ -168,7 +165,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **file-conversion**       | Convert files across 1,000+ format pairs   | `/plugin install file-conversion`       |
 | **team-collaboration**    | Team workflows and standup automation      | `/plugin install team-collaboration`    |
 
-### 🤖 AI & ML (7 plugins)
+### 🤖 AI & ML (6 plugins)
 
 | Plugin                   | Description                         | Install                                |
 | ------------------------ | ----------------------------------- | -------------------------------------- |
@@ -176,7 +173,6 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **agent-orchestration**  | Multi-agent system optimization     | `/plugin install agent-orchestration`  |
 | **context-management**   | Context persistence and restoration | `/plugin install context-management`   |
 | **machine-learning-ops** | ML training pipelines and MLOps     | `/plugin install machine-learning-ops` |
-| **runapi-mcp**           | Media generation MCP (image, video, music, audio, LLM) across 130+ models | `/plugin install runapi-mcp`           |
 | **llm-finetuning**       | Eval-gated LLM fine-tuning lifecycle: dataset prep, LoRA/QLoRA training, and promotion gating | `/plugin install llm-finetuning`       |
 | **dgx-spark-ops**        | NVIDIA DGX Spark (GB10) environment ops: aarch64/CUDA-13 stack setup, training preflights, unified-memory/thermal management | `/plugin install dgx-spark-ops`        |
 
@@ -366,7 +362,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 95 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 91 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 

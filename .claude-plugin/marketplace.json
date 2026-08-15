@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 95 marketplace plugins, 204 local specialized agents, and 180 local skills - optimized for granular installation and minimal token usage",
+    "description": "Production-ready workflow orchestration with 91 marketplace plugins, 202 local specialized agents, and 180 local skills - optimized for granular installation and minimal token usage",
     "version": "1.7.1"
   },
   "plugins": [
@@ -209,7 +209,10 @@
       "name": "llm-finetuning",
       "description": "Eval-gated LLM fine-tuning lifecycle (LoRA/QLoRA, DPO, GRPO/RLVR, vision SFT, quantized export). Use when fine-tuning an open-weights model end-to-end: building the eval harness first, selecting method and model, preparing data, training with Unsloth or TRL, gating checkpoints, and exporting GGUF/FP8.",
       "version": "1.0.0",
-      "author": { "name": "Seth Hobson", "email": "seth@major7apps.com" },
+      "author": {
+        "name": "Seth Hobson",
+        "email": "seth@major7apps.com"
+      },
       "source": "./plugins/llm-finetuning",
       "category": "ai-ml",
       "homepage": "https://github.com/wshobson/agents",
@@ -738,7 +741,7 @@
     {
       "name": "social-publishing",
       "source": "./plugins/social-publishing",
-      "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw — one workspace API key covers everything",
+      "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw \u2014 one workspace API key covers everything",
       "version": "1.0.0",
       "author": {
         "name": "ndesv21",
@@ -958,9 +961,12 @@
     },
     {
       "name": "dgx-spark-ops",
-      "description": "NVIDIA DGX Spark (GB10) environment operations. Use when setting up, preflighting, or debugging ML workloads on DGX Spark or aarch64 Blackwell hardware — CUDA-13 wheel/ABI checks, unified-memory OOM ladders, thermal monitoring.",
+      "description": "NVIDIA DGX Spark (GB10) environment operations. Use when setting up, preflighting, or debugging ML workloads on DGX Spark or aarch64 Blackwell hardware \u2014 CUDA-13 wheel/ABI checks, unified-memory OOM ladders, thermal monitoring.",
       "version": "1.0.0",
-      "author": { "name": "Seth Hobson", "email": "seth@major7apps.com" },
+      "author": {
+        "name": "Seth Hobson",
+        "email": "seth@major7apps.com"
+      },
       "source": "./plugins/dgx-spark-ops",
       "category": "ai-ml",
       "homepage": "https://github.com/wshobson/agents",
@@ -1098,40 +1104,6 @@
       "category": "memory"
     },
     {
-      "name": "qa-orchestra",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/Anasss/qa-orchestra.git",
-        "path": "."
-      },
-      "description": "Multi-agent QA toolkit with 10 specialized agents covering the full QA lifecycle \u2014 orchestrator, environment-manager, functional-reviewer, test-scenario-designer, browser-validator, automation-writer, manual-validator, bug-reporter, release-analyzer, and smart-test-selector. Stack-agnostic, output-chained, designed around live validation via Chrome MCP.",
-      "version": "1.0.0",
-      "author": {
-        "name": "Anass Rach",
-        "url": "https://github.com/Anasss"
-      },
-      "homepage": "https://github.com/Anasss/qa-orchestra",
-      "license": "MIT",
-      "category": "testing"
-    },
-    {
-      "name": "ciagent",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/suniel12/ciagent.git",
-        "path": "plugins/ciagent"
-      },
-      "description": "Pytest-native regression testing for the AI agent being built — the onboard skill records golden baselines and generates a test spec; the check skill runs trace-diff regression, multi-run stability with verdict-flip attribution, and LLM-judge audits after every agent change.",
-      "version": "0.10.0",
-      "author": {
-        "name": "Sunil Pandey",
-        "url": "https://github.com/suniel12"
-      },
-      "homepage": "https://github.com/suniel12/ciagent",
-      "license": "Apache-2.0",
-      "category": "testing"
-    },
-    {
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
       "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 decisions are policy-gated before they run and every decision produces a tamper-evident receipt verifiable offline.",
@@ -1223,51 +1195,6 @@
         "multi-agent",
         "dev-workflow"
       ]
-    },
-    {
-      "name": "storymap-skill",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/MartinForReal/storymap-skill.git",
-        "path": "."
-      },
-      "description": "User story mapping (Jeff Patton style). Turns a goal, brief, or messy backlog into a sliced, prioritized delivery plan with per-persona stories. Four invocation modes (from scratch / brief / backlog / refinement), three prioritization methods (WSJF, RICE, MoSCoW), three slicing strategies (Patton classic, SAFe PI, Now/Next/Later). OKR coverage, dependency cycle detection, persona conflict resolution, slice-1 acceptance criteria, E2E test contract. Auto-activates in the Plan stage of Superpowers / gstack / GSD.",
-      "version": "0.0.3",
-      "author": {
-        "name": "MartinForReal",
-        "url": "https://github.com/MartinForReal"
-      },
-      "homepage": "https://github.com/MartinForReal/storymap-skill",
-      "license": "MIT",
-      "category": "workflows",
-      "keywords": [
-        "user-story-mapping",
-        "story-mapping",
-        "agile",
-        "safe",
-        "wsjf",
-        "rice",
-        "moscow",
-        "mvp",
-        "pi-planning",
-        "product-discovery",
-        "jeff-patton",
-        "backlog-management",
-        "personas"
-      ]
-    },
-    {
-      "name": "runapi-mcp",
-      "source": "./plugins/runapi-mcp",
-      "description": "RunAPI MCP server for browsing models, checking pricing, and creating image, video, music, audio, and LLM tasks.",
-      "version": "0.1.3",
-      "author": {
-        "name": "RunAPI",
-        "url": "https://runapi.ai"
-      },
-      "homepage": "https://github.com/runapi-ai/mcp",
-      "license": "Apache-2.0",
-      "category": "ai-ml"
     },
     {
       "name": "file-conversion",

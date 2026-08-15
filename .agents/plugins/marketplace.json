@@ -951,19 +951,6 @@
       "category": "Coding"
     },
     {
-      "name": "runapi-mcp",
-      "description": "RunAPI MCP server for browsing models, checking pricing, and creating image, video, music, audio, and LLM tasks.",
-      "source": {
-        "source": "local",
-        "path": "./plugins/runapi-mcp"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "ai-ml"
-    },
-    {
       "name": "security-compliance",
       "description": "SOC2, HIPAA, and GDPR compliance validation, secrets scanning, compliance checklists, and regulatory documentation",
       "source": {

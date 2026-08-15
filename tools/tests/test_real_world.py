@@ -29,8 +29,8 @@ from tools.adapters.base import (  # noqa: E402
     parse_frontmatter,
 )
 
-# Real source skips marketplace orphans (qa-orchestra is external git-subdir).
-_EXTERNAL_PLUGINS: set[str] = {"qa-orchestra"}
+# Real source skips marketplace orphans (pensyve is external git-subdir).
+_EXTERNAL_PLUGINS: set[str] = {"pensyve"}
 
 # Trigger phrasing matcher — same regex plugin_eval/layers/static.py uses for MISSING_TRIGGER.
 _TRIGGER_PATTERN = re.compile(

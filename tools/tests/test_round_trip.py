@@ -209,7 +209,7 @@ class TestCursorRoundTrip:
         cursor_names = {p["name"] for p in data["plugins"]}
         local_plugins = set(list_plugins())
         # Cursor marketplace mirrors the Claude marketplace, so it should include the
-        # external git-subdir plugin (qa-orchestra) too.
+        # external git-subdir plugin (pensyve) too.
         assert local_plugins.issubset(cursor_names), (
             f"Cursor marketplace missing plugins: {local_plugins - cursor_names}"
         )
