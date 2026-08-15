@@ -36,7 +36,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **91 marketplace plugins** (90 local + 1 external via git-subdir) optimized for specific use cases
+- **92 marketplace plugins** (91 local + 1 external via git-subdir) optimized for specific use cases
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 6 plugins (debugging, backend, frontend, UI, multi-platform, essentials)
@@ -69,7 +69,7 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**180 Local Agent Skills**
+**181 Local Agent Skills**
 
 - Modular knowledge packages
 - Progressive disclosure architecture
@@ -81,7 +81,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (91 plugins)
+│   └── marketplace.json          # Marketplace catalog (92 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -144,7 +144,7 @@ Each plugin contains:
 
 ### Minimum Requirements
 
-- At least one agent OR one command
+- At least one agent, command, OR skill
 - Clear, focused purpose
 - Proper frontmatter in all files
 - Entry in marketplace.json
@@ -194,7 +194,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 180 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 181 skills.
 
 ## Model Configuration Strategy
 
@@ -262,7 +262,7 @@ code-reviewer (Sonnet) validates architecture
 
 ### Component Coverage
 
-- **100% agent coverage** - all plugins include at least one agent
+- **Full component coverage** - every plugin includes at least one agent, command, or skill
 - **100% component availability** - all 202 local agents accessible across plugins
 - **Efficient distribution** - 5.5 components per plugin average
 
@@ -393,5 +393,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 91 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 92 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows
