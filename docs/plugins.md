@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **94 marketplace plugins** organized by category: 90 local plugins plus 4 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`, `ciagent`).
+Browse all **95 marketplace plugins** organized by category: 91 local plugins plus 4 externally hosted `git-subdir` entries (`pensyve`, `qa-orchestra`, `storymap-skill`, `ciagent`).
 
 ## Quick Start - Essential Plugins
 
@@ -324,12 +324,13 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | ---------------------------- | ---------------------------------- | ------------------------------------------ |
 | **accessibility-compliance** | WCAG auditing and inclusive design | `/plugin install accessibility-compliance` |
 
-### 🎨 Creative (2 plugins)
+### 🎨 Creative (3 plugins)
 
 | Plugin               | Description                                                              | Install                            |
 | -------------------- | ------------------------------------------------------------------------ | ---------------------------------- |
 | **meigen-ai-design** | AI image generation with creative workflow orchestration and prompt MCPs | `/plugin install meigen-ai-design` |
 | **brand-landingpage** | Brand discovery through deployment-ready landing page HTML              | `/plugin install brand-landingpage` |
+| **pptx-deck-creation** | Production-ready editable PowerPoint decks via spec-first, coordinate-explicit workflow | `/plugin install pptx-deck-creation` |
 
 ## Plugin Structure
 
@@ -365,7 +366,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 95 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -408,7 +409,7 @@ Each installed plugin loads **only its specific agents and commands** into Claud
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 175 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 180 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles

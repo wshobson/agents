@@ -36,7 +36,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **94 marketplace plugins** (90 local + 4 external via git-subdir) optimized for specific use cases
+- **95 marketplace plugins** (91 local + 4 external via git-subdir) optimized for specific use cases
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 6 plugins (debugging, backend, frontend, UI, multi-platform, essentials)
@@ -48,7 +48,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Component Breakdown
 
-**203 Local Specialized Agents**
+**204 Local Specialized Agents**
 
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
@@ -69,11 +69,11 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**175 Local Agent Skills**
+**180 Local Agent Skills**
 
 - Modular knowledge packages
 - Progressive disclosure architecture
-- Domain-specific expertise across 48 plugins
+- Domain-specific expertise across 49 plugins
 - Spec-compliant (Anthropic Agent Skills Specification)
 
 ## Repository Structure
@@ -81,7 +81,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (94 plugins)
+│   └── marketplace.json          # Marketplace catalog (95 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -194,7 +194,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 175 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 180 skills.
 
 ## Model Configuration Strategy
 
@@ -263,7 +263,7 @@ code-reviewer (Sonnet) validates architecture
 ### Component Coverage
 
 - **100% agent coverage** - all plugins include at least one agent
-- **100% component availability** - all 203 local agents accessible across plugins
+- **100% component availability** - all 204 local agents accessible across plugins
 - **Efficient distribution** - 5.5 components per plugin average
 
 ### Discoverability
@@ -393,5 +393,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 94 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 95 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows

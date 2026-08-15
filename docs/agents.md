@@ -1,6 +1,6 @@
 # Agent Reference
 
-Complete reference for all **203 local specialized AI agents** organized by category with model assignments.
+Complete reference for all **204 local specialized AI agents** organized by category with model assignments.
 
 ## Agent Categories
 
@@ -225,6 +225,7 @@ Complete reference for all **203 local specialized AI agents** organized by cate
 | [payment-integration](../plugins/payment-processing/agents/payment-integration.md)      | sonnet | Payment processor integration (Stripe, PayPal)          |
 | [legacy-modernizer](../plugins/framework-migration/agents/legacy-modernizer.md)         | sonnet | Legacy code refactoring and modernization               |
 | [context-manager](../plugins/agent-orchestration/agents/context-manager.md)             | haiku  | Multi-agent context management                          |
+| [pptx-deck-creation-builder](../plugins/pptx-deck-creation/agents/pptx-deck-creation-builder.md) | inherit | Production-ready editable PPTX decks from briefs or reference decks |
 
 ## Model Configuration
 
