@@ -54,7 +54,12 @@ def _simresult_from_messages(messages: list, prompt: str, duration_ms: int) -> S
     """Build a SimResult from SDK messages (assistant text => activation + quality)."""
     output = collect_sdk_output(messages)
     tokens = usage_total_tokens(output.usage)
-    raw = output.text.strip() or (output.result or "").strip()
+    # An errored run carries diagnostic text, not skill output, so it must not
+    # register as activation. Counting it inflates the activation rate and puts
+    # this metric at odds with output consistency and token efficiency (both
+    # already drop errored runs) and with the exception path below, which
+    # reports activated=False for a run that failed before producing anything.
+    raw = "" if output.errored else (output.text.strip() or (output.result or "").strip())
     activated = bool(raw)
     quality_score = min(1.0, len(raw) / 500) if activated else 0.0
     return SimResult(
