@@ -204,10 +204,10 @@ The system uses Claude Fable, Opus, Sonnet, Haiku, and Inherit assignments strat
 
 | Model   | Count     | Use Case                                        |
 | ------- | --------- | ----------------------------------------------- |
-| Fable   | 0 agents  | Longest-horizon autonomous work (opt-in tier)   |
-| Opus    | 55 agents | Critical architecture, security, code review    |
-| Sonnet  | 71 agents | Complex tasks, support with intelligence        |
-| Haiku   | 25 agents | Fast operational tasks                          |
+| Fable   | 2 agents  | Longest-horizon autonomous work (opt-in tier)   |
+| Opus    | 54 agents | Critical architecture, security, code review    |
+| Sonnet  | 70 agents | Complex tasks, support with intelligence        |
+| Haiku   | 24 agents | Fast operational tasks                          |
 | Inherit | 52 agents | Defers model choice to the user at runtime      |
 
 ### Selection Criteria

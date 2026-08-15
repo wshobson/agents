@@ -223,7 +223,7 @@ Complete reference for all **202 local specialized AI agents** organized by cate
 | [arm-cortex-expert](../plugins/arm-cortex-microcontrollers/agents/arm-cortex-expert.md) | inherit| ARM Cortex-M firmware and peripheral driver development |
 | [blockchain-developer](../plugins/blockchain-web3/agents/blockchain-developer.md)       | sonnet | Web3 apps, smart contracts, DeFi protocols              |
 | [payment-integration](../plugins/payment-processing/agents/payment-integration.md)      | sonnet | Payment processor integration (Stripe, PayPal)          |
-| [legacy-modernizer](../plugins/framework-migration/agents/legacy-modernizer.md)         | sonnet | Legacy code refactoring and modernization               |
+| [legacy-modernizer](../plugins/framework-migration/agents/legacy-modernizer.md)         | fable  | Legacy code refactoring and modernization               |
 | [context-manager](../plugins/agent-orchestration/agents/context-manager.md)             | haiku  | Multi-agent context management                          |
 | [pptx-deck-creation-builder](../plugins/pptx-deck-creation/agents/pptx-deck-creation-builder.md) | inherit | Production-ready editable PPTX decks from briefs or reference decks |
 
@@ -235,9 +235,9 @@ Agents are assigned to specific Claude models based on task complexity and compu
 
 | Model   | Agent Count | Use Case                                                        |
 | ------- | ----------- | --------------------------------------------------------------- |
-| Fable   | 0           | Longest-horizon autonomous work (tier above Opus; see criteria) |
-| Opus    | 55          | Critical architecture, security, code review, production coding |
-| Sonnet  | 71          | Complex tasks, support with intelligence                        |
+| Fable   | 2           | Longest-horizon autonomous work (tier above Opus; see criteria) |
+| Opus    | 54          | Critical architecture, security, code review, production coding |
+| Sonnet  | 70          | Complex tasks, support with intelligence                        |
 | Haiku   | 24          | Fast operational tasks                                          |
 | Inherit | 52          | Complex tasks where the user chooses the model at runtime       |
 
