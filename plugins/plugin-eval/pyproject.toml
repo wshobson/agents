@@ -6,24 +6,24 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2.13.4",
-    "typer>=0.26.8",
+    "typer>=0.27.0",
     "rich>=15.0.0",
     "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
 llm = [
-    "claude-agent-sdk>=0.2.116",
+    "claude-agent-sdk>=0.2.123",
 ]
 api = [
-    "anthropic>=0.116.0",
+    "anthropic>=0.117.0",
 ]
 dev = [
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=6.0",
-    "ruff>=0.15.21",
-    "ty>=0.0.59",
+    "ruff>=0.15.22",
+    "ty>=0.0.61",
 ]
 
 [project.scripts]
