@@ -1012,6 +1012,19 @@
       "license": "MIT"
     },
     {
+      "name": "uizze-anti-ui-slop",
+      "source": "./plugins/uizze-anti-ui-slop",
+      "description": "STOP UI SLOP with a free anti-UI-slop workflow grounded in 800,000+ real web and iOS screens, product-specific design contracts, required states, and a hard finish gate.",
+      "version": "1.0.0",
+      "author": {
+        "name": "UIZZE",
+        "email": "business@uizze.com"
+      },
+      "homepage": "https://uizze.com",
+      "license": "MIT",
+      "category": "development"
+    },
+    {
       "name": "agent-teams",
       "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's Agent Teams",
       "version": "1.0.3",

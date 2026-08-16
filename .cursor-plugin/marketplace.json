@@ -981,6 +981,18 @@
       "license": "MIT"
     },
     {
+      "name": "uizze-anti-ui-slop",
+      "source": "./plugins/uizze-anti-ui-slop",
+      "version": "1.0.0",
+      "description": "STOP UI SLOP with a free anti-UI-slop workflow grounded in 800,000+ real web and iOS screens, product-specific design contracts, required states, and a hard finish gate.",
+      "author": {
+        "name": "UIZZE",
+        "email": "business@uizze.com"
+      },
+      "homepage": "https://uizze.com",
+      "license": "MIT"
+    },
+    {
       "name": "unit-testing",
       "source": "./plugins/unit-testing",
       "version": "1.2.1",

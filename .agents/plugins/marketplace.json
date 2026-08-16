@@ -1146,6 +1146,19 @@
       "category": "Coding"
     },
     {
+      "name": "uizze-anti-ui-slop",
+      "description": "STOP UI SLOP with a free anti-UI-slop workflow grounded in 800,000+ real web and iOS screens, product-specific design contracts, required states, and a hard finish gate.",
+      "source": {
+        "source": "local",
+        "path": "./plugins/uizze-anti-ui-slop"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "unit-testing",
       "description": "Unit and integration test automation for Python and JavaScript with debugging support",
       "source": {

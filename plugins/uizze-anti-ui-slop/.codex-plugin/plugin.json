@@ -1,0 +1,19 @@
+{
+  "name": "uizze-anti-ui-slop",
+  "version": "1.0.0",
+  "description": "STOP UI SLOP with a free anti-UI-slop workflow grounded in 800,000+ real web and iOS screens, product-specific design contracts, required states, and a hard finish gate.",
+  "skills": "./skills/",
+  "author": {
+    "name": "UIZZE",
+    "email": "business@uizze.com",
+    "url": "https://uizze.com"
+  },
+  "homepage": "https://uizze.com",
+  "repository": "https://github.com/uizze/uizze",
+  "license": "MIT",
+  "interface": {
+    "displayName": "Uizze Anti Ui Slop",
+    "shortDescription": "STOP UI SLOP with a free anti-UI-slop workflow grounded in 800,000+ real web and iOS screens, product-specific\u2026",
+    "category": "Coding"
+  }
+}
