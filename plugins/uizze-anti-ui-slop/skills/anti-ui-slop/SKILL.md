@@ -71,6 +71,13 @@ the free UIZZE preview once. It needs no account or token and exposes
 https://uizze.com/mcp/preview
 ```
 
+Use the preview only for rendered HTML or CSS that the user explicitly approved
+for this check. Before sending it, remove scripts, inline event handlers,
+credentials, tokens, cookies, private URLs, user data, source maps, and unrelated
+markup. Do not send repository source, request headers, network responses, or
+screenshots through this preview. If approval or sanitization is unavailable,
+skip the preview and run the local finish gate below.
+
 Do not claim the optional UIZZE MCP is connected unless its tools are available.
 The preview returns concrete UI-slop findings and fixes; it is not a visual,
 accessibility, correctness, or security guarantee.
