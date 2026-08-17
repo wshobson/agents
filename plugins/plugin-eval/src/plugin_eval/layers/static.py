@@ -233,6 +233,8 @@ class StaticAnalyzer:
         skill_parent = skill.path.parent  # skills/ dir
         for ref in skill.cross_references:
             ref_path = skill_parent / ref
+            if not ref_path.exists() and ref.startswith("sub-skills/"):
+                ref_path = skill.path / ref
             if not ref_path.exists():
                 patterns.append(
                     AntiPattern(
