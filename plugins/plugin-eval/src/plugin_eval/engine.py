@@ -124,6 +124,7 @@ class EvalEngine:
             config=self.config,
             layers=layers,
             composite=composite,
+            model_usage=self._merge_model_usage(layers),
         )
 
     def evaluate_plugin(self, plugin_dir: Path) -> PluginEvalResult:
@@ -156,6 +157,7 @@ class EvalEngine:
             config=self.config,
             layers=layers,
             composite=composite,
+            model_usage=self._merge_model_usage(layers),
         )
 
     # ------------------------------------------------------------------
@@ -312,6 +314,28 @@ class EvalEngine:
         if isinstance(token_eff, dict):
             normalized["token_efficiency"] = token_eff.get("efficiency_norm", 0.0)
         return normalized
+
+    # ------------------------------------------------------------------
+    # Model usage
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _merge_model_usage(layers: list[LayerResult]) -> dict[str, int]:
+        """Sum per-model token counts recorded by layers that made SDK calls.
+
+        Each layer that queries the Agent SDK (judge, monte_carlo) records its
+        own per-model totals in `metadata["model_usage"]`. Layers without SDK
+        calls (static) carry no such key, so a static-only run merges to {}.
+        """
+        merged: dict[str, int] = {}
+        for layer in layers:
+            usage = layer.metadata.get("model_usage")
+            if not isinstance(usage, dict):
+                continue
+            for model, tokens in usage.items():
+                if isinstance(tokens, int):
+                    merged[model] = merged.get(model, 0) + tokens
+        return merged
 
     # ------------------------------------------------------------------
     # Grading

@@ -17,10 +17,11 @@ class SdkOutput(NamedTuple):
     result: str | None  # ResultMessage.result, if present (fallback text)
     errored: bool  # a ResultMessage reported is_error
     usage: dict[str, Any] | None  # ResultMessage.usage, if it was a dict
+    model: str | None  # AssistantMessage.model, if any assistant turn occurred
 
 
 def collect_sdk_output(messages: list) -> SdkOutput:
-    """Walk SDK messages → assistant text, result fallback, error flag, usage."""
+    """Walk SDK messages → assistant text, result fallback, error flag, usage, model."""
     from claude_agent_sdk import (  # type: ignore[import-untyped]
         AssistantMessage,
         ResultMessage,
@@ -31,8 +32,10 @@ def collect_sdk_output(messages: list) -> SdkOutput:
     result: str | None = None
     errored = False
     usage: dict[str, Any] | None = None
+    model: str | None = None
     for message in messages:
         if isinstance(message, AssistantMessage):
+            model = message.model
             for block in message.content:
                 if isinstance(block, TextBlock):
                     text += block.text
@@ -43,7 +46,7 @@ def collect_sdk_output(messages: list) -> SdkOutput:
                 result = message.result
             if isinstance(message.usage, dict):
                 usage = message.usage
-    return SdkOutput(text=text, result=result, errored=errored, usage=usage)
+    return SdkOutput(text=text, result=result, errored=errored, usage=usage, model=model)
 
 
 def usage_total_tokens(usage: dict[str, Any] | None) -> int:

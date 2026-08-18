@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from plugin_eval.engine import EvalEngine
-from plugin_eval.models import Depth, EvalConfig
+from plugin_eval.models import CompositeResult, Depth, EvalConfig, PluginEvalResult
 from plugin_eval.reporter import Reporter, _effective_depth
 
 
@@ -30,6 +30,35 @@ class TestReporter:
         assert "Overall Score" in output
         assert "Layer Breakdown" in output
         assert "Dimension Scores" in output
+
+
+class TestModelUsageSection:
+    def test_static_only_run_shows_no_model_usage_line(self, sample_skill_dir: Path):
+        config = EvalConfig(depth=Depth.QUICK)
+        engine = EvalEngine(config)
+        result = engine.evaluate_skill(sample_skill_dir)
+        assert result.model_usage == {}
+
+        output = Reporter().to_markdown(result)
+        assert "_No model usage (static-only evaluation)._" in output
+        assert "| Model | Tokens |" not in output
+
+    def test_populated_model_usage_renders_per_model_rows(self, sample_skill_dir: Path):
+        result = PluginEvalResult(
+            plugin_path=str(sample_skill_dir),
+            timestamp="2026-01-01T00:00:00Z",
+            config=EvalConfig(depth=Depth.DEEP),
+            layers=[],
+            composite=CompositeResult(score=80.0),
+            model_usage={"claude-sonnet-5": 12345, "claude-haiku-4-5-20251001": 678},
+        )
+
+        output = Reporter().to_markdown(result)
+
+        assert "| Model | Tokens |" in output
+        assert "| claude-sonnet-5 | 12,345 |" in output
+        assert "| claude-haiku-4-5-20251001 | 678 |" in output
+        assert "_No model usage (static-only evaluation)._" not in output
 
 
 class TestDepthDowngradeWarning:
