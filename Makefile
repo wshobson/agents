@@ -195,7 +195,7 @@ garden:
 
 # Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
 test:
-	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/
+	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/ --ignore=tools/tests/test_cli_smoke.py
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
 # of opencode / gemini / codex / claude are on PATH. Per-CLI tests skip gracefully
