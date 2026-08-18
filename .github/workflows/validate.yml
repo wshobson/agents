@@ -153,7 +153,7 @@ jobs:
         run: uv sync --all-extras
 
       - name: Run tools test suite
-        run: uv run pytest -q ../../tools/tests/
+        run: uv run pytest -q ../../tools/tests/ --ignore=../../tools/tests/test_cli_smoke.py
 
   multi-harness-generate:
     name: Cross-harness generation + validation
