@@ -157,3 +157,7 @@ integrations for this marketplace's other supported harnesses.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Star history
+
+[![Star History Chart](https://star-history.dera.page/svg?repos=wshobson/agents&type=date&legend=top-left)](https://star-history.dera.page/#wshobson/agents&type=date&legend=top-left)
