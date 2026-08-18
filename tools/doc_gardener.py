@@ -3,7 +3,7 @@
 
 Per the OpenAI harness engineering pattern, a recurring task scans for:
 1. Generated artifacts whose source file is newer (regenerate needed)
-2. Context files (AGENTS.md, GEMINI.md, CLAUDE.md) above ~150 lines
+2. Context files (AGENTS.md, CLAUDE.md) above ~150 lines
 3. Dead links from docs/ into plugins/ or other docs/
 4. Skills above 8 KB body without `references/` (Codex hard cap)
 5. Plugin entries in marketplace.json without a corresponding plugins/<name>/ directory
@@ -36,7 +36,6 @@ MARKETPLACE_JSON = WORKTREE / ".claude-plugin" / "marketplace.json"
 
 CONTEXT_FILES = {
     "AGENTS.md": 150,
-    "GEMINI.md": 150,
     "CLAUDE.md": 200,  # slightly larger since it documents the source-of-truth
 }
 
@@ -182,39 +181,6 @@ def check_stale_artifacts(report: Report) -> None:
             if src and src.is_file():
                 pairs.append((src, skill_md))
 
-    # Gemini skills and agents at root
-    for top_dir in ("skills", "agents"):
-        root = WORKTREE / top_dir
-        if root.is_dir():
-            pattern = "*/SKILL.md" if top_dir == "skills" else "*.md"
-            for gen in root.glob(pattern):
-                name = gen.parent.name if top_dir == "skills" else gen.stem
-                if "__" in name:
-                    plugin, leaf = name.split("__", 1)
-                    if top_dir == "skills":
-                        src = PLUGINS_DIR / plugin / "skills" / leaf / "SKILL.md"
-                    else:
-                        src = PLUGINS_DIR / plugin / "agents" / f"{leaf}.md"
-                    if src.is_file():
-                        pairs.append((src, gen))
-
-    # Gemini commands at commands/<plugin>/<cmd>.toml -> plugins/<plugin>/commands/<cmd>.md
-    gemini_commands = WORKTREE / "commands"
-    if gemini_commands.is_dir():
-        for toml_path in gemini_commands.rglob("*.toml"):
-            # Top-level commands/<plugin>.toml maps to the plugin's plugin.json
-            if toml_path.parent == gemini_commands:
-                plugin = toml_path.stem
-                src = PLUGINS_DIR / plugin / ".claude-plugin" / "plugin.json"
-                if src.is_file():
-                    pairs.append((src, toml_path))
-            else:
-                plugin = toml_path.parent.name
-                cmd = toml_path.stem
-                src = PLUGINS_DIR / plugin / "commands" / f"{cmd}.md"
-                if src.is_file():
-                    pairs.append((src, toml_path))
-
     # Copilot agents (.agent.md) and skills (SKILL.md) at .copilot/
     copilot_root = WORKTREE / ".copilot"
     copilot_agents = copilot_root / "agents"
@@ -238,6 +204,30 @@ def check_stale_artifacts(report: Report) -> None:
                 src = PLUGINS_DIR / plugin / "skills" / leaf / "SKILL.md"
                 if src.is_file():
                     pairs.append((src, skill_md))
+
+    # Antigravity: one self-contained plugin dir per source plugin at
+    # .antigravity/plugins/<plugin>/{plugin.json,skills/,agents/,commands/<plugin>/}.
+    antigravity_plugins = WORKTREE / ".antigravity" / "plugins"
+    if antigravity_plugins.is_dir():
+        for plugin_dir in sorted(p for p in antigravity_plugins.iterdir() if p.is_dir()):
+            plugin_name = plugin_dir.name
+            plugin_json = plugin_dir / "plugin.json"
+            if plugin_json.is_file():
+                src = PLUGINS_DIR / plugin_name / ".claude-plugin" / "plugin.json"
+                if src.is_file():
+                    pairs.append((src, plugin_json))
+            for skill_md in (plugin_dir / "skills").glob("*/SKILL.md"):
+                src = PLUGINS_DIR / plugin_name / "skills" / skill_md.parent.name / "SKILL.md"
+                if src.is_file():
+                    pairs.append((src, skill_md))
+            for agent_md in (plugin_dir / "agents").glob("*.md"):
+                src = PLUGINS_DIR / plugin_name / "agents" / agent_md.name
+                if src.is_file():
+                    pairs.append((src, agent_md))
+            for toml_path in (plugin_dir / "commands").rglob("*.toml"):
+                src = PLUGINS_DIR / plugin_name / "commands" / f"{toml_path.stem}.md"
+                if src.is_file():
+                    pairs.append((src, toml_path))
 
     for src, gen in pairs:
         if src.stat().st_mtime > gen.stat().st_mtime + 1:  # 1s grace
@@ -280,7 +270,6 @@ def check_dead_links(report: Report) -> None:
         "README.md",
         "CLAUDE.md",
         "AGENTS.md",
-        "GEMINI.md",
     ):
         p = WORKTREE / top_file
         if p.is_file():

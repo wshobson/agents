@@ -149,25 +149,34 @@ CAPABILITIES: dict[str, Capability] = {
         bare_model_aliases=False,  # use full provider/model-id
         notes="Emits .opencode/skills/ with OpenCode-safe names for install. Agent frontmatter uses permission: block (not tools:). Tool names are strictly lowercase.",
     ),
-    "gemini": Capability(
-        harness_id="gemini",
-        display_name="Gemini CLI",
-        skills_native=True,  # Dec 2025
-        agents_native=True,  # April 2026
-        commands_native=True,
-        plugin_marketplace=False,  # direct GitHub URL install only
-        parallel_agents=True,  # April 2026
+    "antigravity": Capability(
+        harness_id="antigravity",
+        display_name="Google Antigravity CLI",
+        skills_native=True,
+        agents_native=True,  # native subagents via agents/<name>.md + invoke_subagent/define_subagent
+        commands_native=True,  # TOML commands accepted; agy converts them to skills internally
+        plugin_marketplace=True,  # `agy plugin install <name>@marketplace` / `agy plugin link`
+        parallel_agents=True,
         tool_allowlist_per_agent=True,
         todowrite=False,
-        task_spawn=True,  # @agent syntax
+        task_spawn=True,  # invoke_subagent / define_subagent tools
         mcp_servers=True,
-        hooks=False,
-        context_file_name="GEMINI.md",
+        hooks=True,
+        context_file_name="AGENTS.md",
         context_file_max_lines=_CONTEXT_LINES_CAP,
         skill_body_max_bytes=_NO_CAP,
         tool_name_case="lowercase",
         bare_model_aliases=False,
-        notes="Auto-discovers skills/ and agents/ at extension root. TOML commands at commands/. Use @{path} for file injection in prompts. GEMINI.md is injected every prompt — keep tight.",
+        notes=(
+            "One agy plugin per source plugin at .antigravity/plugins/<plugin>/ (no `<plugin>__` "
+            "namespacing — plugins are already self-contained). plugin.json = {name, description}. "
+            "Skills at skills/<skill>/SKILL.md, subagents at agents/<agent>.md (model is a tier "
+            "alias: inherit/flash/pro; tools use agy-native names via TOOL_NAME_MAPS), TOML "
+            "commands at commands/<plugin>/<cmd>.toml (agy reports them 'converted to skills'). "
+            "Verified against the installed agy 1.1.14 binary via `agy plugin validate` — that "
+            "command does not evaluate @{path} template syntax, so command bodies are always "
+            "inlined rather than file-injected."
+        ),
     ),
 }
 
@@ -228,18 +237,19 @@ TOOL_NAME_MAPS: dict[str, dict[str, str]] = {
         "Agent": "task",
         "Task": "task",
     },
-    "gemini": {
-        "Read": "read_file",
-        "Edit": "edit_file",
+    # Verified against the installed agy 1.1.14 binary's own docs
+    # (~/.gemini/antigravity-cli/builtin/skills/{agy-customizations,antigravity_guide}/) plus
+    # empirical `agy plugin validate` probes. Only tool names actually confirmed there are
+    # mapped; Glob/WebFetch/WebSearch/TodoWrite have no confirmed agy-native equivalent and are
+    # intentionally omitted rather than guessed — unmapped names pass through unchanged.
+    "antigravity": {
+        "Read": "view_file",
+        "Edit": "replace_file_content",
         "Write": "write_file",
-        "Bash": "run_shell_command",
-        "Grep": "search",
-        "Glob": "list_files",
-        "WebFetch": "fetch_url",
-        "WebSearch": "google_search",
-        "TodoWrite": "todo",
-        "Agent": "@agent",
-        "Task": "@agent",
+        "Bash": "run_command",
+        "Grep": "grep_search",
+        "Agent": "invoke_subagent",
+        "Task": "invoke_subagent",
     },
 }
 
@@ -249,9 +259,7 @@ TOOL_NAME_MAPS: dict[str, dict[str, str]] = {
 # Codex recommends gpt-5.5 (top) / gpt-5.4-mini (light tasks, subagents);
 # Copilot CLI serves Claude models natively, so aliases map Claude -> Claude
 # (Fable 5 and Sonnet 5 GA in Copilot since 2026-06-30; dotted-ID format for
-# minor-versioned models);
-# Gemini CLI's GA models remain gemini-2.5-* (3.x is preview-gated and its
-# IDs churn), so the gemini column intentionally stays on the 2.5 family.
+# minor-versioned models).
 MODEL_ALIASES: dict[str, dict[str, str]] = {
     "claude-code": {
         "fable": "fable",
@@ -288,12 +296,16 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
         "haiku": "anthropic/claude-haiku-4-5",
         "inherit": "anthropic/claude-sonnet-5",
     },
-    "gemini": {
-        "fable": "gemini-2.5-pro",
-        "opus": "gemini-2.5-pro",
-        "sonnet": "gemini-2.5-pro",
-        "haiku": "gemini-2.5-flash",
-        "inherit": "gemini-2.5-pro",
+    # agy subagent frontmatter takes a tier alias, not a concrete model id (confirmed via
+    # `agy models` — concrete ids are things like "gemini-3.1-pro-high", never bare tiers).
+    # fable/opus/sonnet map to agy's pro-class tier, haiku to its flash-class tier; `inherit`
+    # stays the literal string "inherit" (agy's own pass-through-to-session-model tier).
+    "antigravity": {
+        "fable": "pro",
+        "opus": "pro",
+        "sonnet": "pro",
+        "haiku": "flash",
+        "inherit": "inherit",
     },
 }
 

@@ -10,7 +10,7 @@ load the generated artifacts and report what it found.
 | Harness | CLI version | Result | Artifacts loaded | Notes |
 |---|---|---|---|---|
 | **OpenCode** | 1.1.23 | ✅ pass | 191 / 191 subagents discovered | All emitted agents pass OpenCode's parser. 2 OpenCode built-ins (`explore`, `general`) appear alongside ours. |
-| **Gemini CLI** | 0.42.0 | ✅ pass | `gemini extensions validate .` returns "successfully validated" | Native skills + subagents at extension root recognized. |
+| **Antigravity CLI** | agy 1.1.14 | ✅ pass (2026-08-18) | `agy plugin validate` passes for 91/91 generated plugins | Self-contained plugins at `.antigravity/plugins/<p>/`; `agy plugin install` + `agy plugin list` confirm discovery. Gemini CLI's harness support was retired May 2026 (Google deprecation) and is superseded by this row. |
 | **Codex CLI** | 0.133.0 | ✅ pass (structural) | All 191 agent TOMLs parse via Python `tomllib`; AGENTS.md within budget (43 lines / 500 tokens) | Codex doctor surfaces no errors; deeper "did the model actually load the skill" requires interactive verification. |
 | **Cursor** | (editor-only) | n/a | n/a | No CLI; manual verification recipe below. |
 | **Copilot** | (structural) | ✅ pass | 191 agent profiles, 155 skills, 25 commands all validated | No CLI round-trip tool yet; structural validation via `make validate` passes. |
@@ -54,16 +54,23 @@ opencode agent list | grep "subagent)$" | wc -l
 # Expected: 191 source agents discovered (plus OpenCode built-ins: explore, general)
 ```
 
-### Gemini round-trip
+### Antigravity round-trip
 
 ```bash
-# Native validator
-gemini extensions validate /path/to/claude-agents
+# Generate artifacts
+make generate HARNESS=antigravity
 
-# Or link as an extension and probe
-gemini extensions link /path/to/claude-agents
-gemini skills list   # should list all generated skills
-gemini extensions list | grep claude-code-workflows
+# Structural validation, one plugin at a time (agy's own binary, not our validator)
+for p in .antigravity/plugins/*/; do
+  agy plugin validate "$p"
+done
+
+# Install + discover
+agy plugin install .antigravity/plugins/<name>
+agy plugin list   # should list <name> among installed plugins
+
+# Or symlink every generated plugin into agy's config dir at once
+make install-antigravity
 ```
 
 ### Codex round-trip
@@ -154,8 +161,8 @@ the artifacts at runtime. Specifically untested by the automated suite:
 - Whether OpenCode's `task` tool dispatches our subagents end-to-end.
 - Whether Cursor 2.5+ marketplace browser displays our plugin entries (requires the
   editor; can't be scripted).
-- Whether Gemini's `@<agent>` invocation runs our generated subagent against a real
-  prompt.
+- Whether Antigravity's `invoke_subagent` actually dispatches our generated subagent
+  against a real prompt (agy's `plugin validate` is structural only).
 - Whether Copilot's agent profile and skill discovery actually loads our artifacts
   end-to-end (no CLI; requires VS Code editor).
 

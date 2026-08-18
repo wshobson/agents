@@ -3,7 +3,7 @@
 These run AFTER `make generate-all` (CI runs this). They:
 1. Verify counts match between source and generated artifacts (catches silent skips/dupes).
 2. Re-parse generated TOMLs/JSONs/MDCs to confirm structural correctness.
-3. Verify reference resolution (e.g. Gemini's `@{path}` injections point at real files).
+3. Verify reference resolution (e.g. no unverified `@{path}` injections in generated output).
 4. Spot-check that the same plugin's artifacts look reasonable across harnesses.
 
 CI runs `make generate-all` before this; if you're running locally first do the same.
@@ -238,52 +238,6 @@ class TestCursorRoundTrip:
 
 
 @pytest.mark.skipif(
-    not (WORKTREE / "commands").is_dir(),
-    reason="Gemini commands not generated (run `make generate HARNESS=gemini` first)",
-)
-class TestGeminiRoundTrip:
-    def test_gemini_command_at_path_injections_resolve(self):
-        """Every `@{plugins/foo/commands/bar.md}` in a generated Gemini TOML must
-        point at a real source file."""
-        broken = []
-        at_pattern = re.compile(r"@\{(plugins/[^}]+)\}")
-        for toml_path in (WORKTREE / "commands").rglob("*.toml"):
-            try:
-                data = tomllib.loads(toml_path.read_text())
-            except tomllib.TOMLDecodeError:
-                continue
-            prompt = data.get("prompt", "")
-            for match in at_pattern.findall(prompt):
-                target = WORKTREE / match
-                if not target.is_file():
-                    broken.append(f"{toml_path.relative_to(WORKTREE)}: @{{{match}}} -> missing")
-        assert not broken, "Broken Gemini @{path} injections:\n  " + "\n  ".join(broken[:20])
-
-    def test_every_gemini_command_has_prompt_and_args(self):
-        problems = []
-        for toml_path in (WORKTREE / "commands").rglob("*.toml"):
-            try:
-                data = tomllib.loads(toml_path.read_text())
-            except tomllib.TOMLDecodeError as e:
-                problems.append(f"{toml_path.relative_to(WORKTREE)}: parse error {e}")
-                continue
-            if "description" not in data:
-                problems.append(f"{toml_path.relative_to(WORKTREE)}: missing description")
-            if "prompt" not in data:
-                problems.append(f"{toml_path.relative_to(WORKTREE)}: missing prompt")
-            elif "{{args}}" not in data["prompt"]:
-                problems.append(f"{toml_path.relative_to(WORKTREE)}: prompt missing {{{{args}}}}")
-        assert not problems, "Gemini TOML issues:\n  " + "\n  ".join(problems[:20])
-
-    def test_gemini_md_within_cap(self):
-        gemini_md = WORKTREE / "GEMINI.md"
-        if not gemini_md.is_file():
-            pytest.skip("GEMINI.md missing")
-        lines = gemini_md.read_text().splitlines()
-        assert len(lines) <= 150, f"GEMINI.md is {len(lines)} lines (cap: 150)"
-
-
-@pytest.mark.skipif(
     not (WORKTREE / ".copilot").is_dir(),
     reason="Copilot artifacts not generated (run `make generate HARNESS=copilot` first)",
 )
@@ -332,6 +286,90 @@ class TestCopilotRoundTrip:
         assert not problems, "Copilot agent frontmatter issues:\n  " + "\n  ".join(problems[:20])
 
 
+@pytest.mark.skipif(
+    not (WORKTREE / ".antigravity" / "plugins").is_dir(),
+    reason="Antigravity artifacts not generated (run `make generate HARNESS=antigravity` first)",
+)
+class TestAntigravityRoundTrip:
+    def test_antigravity_plugin_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "plugins").iterdir()))
+        assert n == len(list_plugins()), (
+            f"plugin dir count mismatch: source={len(list_plugins())} antigravity={n}"
+        )
+
+    def test_antigravity_skill_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "plugins").glob("*/skills/*/SKILL.md")))
+        assert n == _source_skill_count(), (
+            f"skill count mismatch: source={_source_skill_count()} antigravity={n}"
+        )
+
+    def test_antigravity_agent_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "plugins").glob("*/agents/*.md")))
+        assert n == _source_agent_count(), (
+            f"agent count mismatch: source={_source_agent_count()} antigravity={n}"
+        )
+
+    def test_antigravity_command_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "plugins").glob("*/commands/*/*.toml")))
+        assert n == _source_command_count(), (
+            f"command count mismatch: source={_source_command_count()} antigravity={n}"
+        )
+
+    def test_every_antigravity_plugin_json_matches_source_plugin(self):
+        problems = []
+        for plugin_name in list_plugins():
+            plugin_json = WORKTREE / ".antigravity" / "plugins" / plugin_name / "plugin.json"
+            if not plugin_json.is_file():
+                problems.append(f"{plugin_name}: missing plugin.json")
+                continue
+            data = json.loads(plugin_json.read_text())
+            if data.get("name") != plugin_name:
+                problems.append(f"{plugin_name}: plugin.json name={data.get('name')!r}")
+        assert not problems, "Antigravity plugin.json issues:\n  " + "\n  ".join(problems[:20])
+
+    def test_no_at_path_injection_in_antigravity_commands(self):
+        """`agy plugin validate` never evaluates @{path} — every generated command
+        must inline its body instead of relying on unverified file injection.
+
+        Matches only the `@{plugins/...}` file-injection pattern our own adapters
+        would emit — not incidental `@{` substrings in example code
+        (e.g. `npm install pkg@{version}`) that show up in some command bodies.
+        """
+        at_pattern = re.compile(r"@\{(plugins/[^}]+)\}")
+        offenders = []
+        for toml_path in (WORKTREE / ".antigravity" / "plugins").glob("*/commands/*/*.toml"):
+            if at_pattern.search(toml_path.read_text()):
+                offenders.append(str(toml_path.relative_to(WORKTREE)))
+        assert not offenders, "Antigravity commands using unverified @{path}:\n  " + "\n  ".join(
+            offenders[:20]
+        )
+
+    def test_every_antigravity_agent_model_is_valid_tier(self):
+        problems = []
+        for agent_md in (WORKTREE / ".antigravity" / "plugins").glob("*/agents/*.md"):
+            fm, _ = parse_frontmatter(agent_md.read_text())
+            model = fm.get("model")
+            if model not in {"inherit", "flash", "pro"}:
+                problems.append(f"{agent_md.relative_to(WORKTREE)}: model={model!r}")
+        assert not problems, "Antigravity agent model issues:\n  " + "\n  ".join(problems[:20])
+
+    def test_every_antigravity_command_has_prompt_and_args(self):
+        problems = []
+        for toml_path in (WORKTREE / ".antigravity" / "plugins").glob("*/commands/*/*.toml"):
+            try:
+                data = tomllib.loads(toml_path.read_text())
+            except tomllib.TOMLDecodeError as e:
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: parse error {e}")
+                continue
+            if "description" not in data:
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: missing description")
+            if "prompt" not in data:
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: missing prompt")
+            elif "{{args}}" not in data["prompt"]:
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: prompt missing {{{{args}}}}")
+        assert not problems, "Antigravity TOML issues:\n  " + "\n  ".join(problems[:20])
+
+
 # ── Native-install manifests (always run; these are committed source) ─────────
 
 
@@ -341,16 +379,6 @@ class TestNativeInstallManifests:
     These are committed (not gitignored) so Codex + Cursor install straight from a clone;
     they point at the source `plugins/` dirs (no duplicated skill/agent trees).
     """
-
-    def test_gemini_extension_manifest(self):
-        path = WORKTREE / "gemini-extension.json"
-        assert path.is_file(), "gemini-extension.json missing"
-        data = json.loads(path.read_text())
-        assert data.get("contextFileName") == "AGENTS.md", (
-            "Gemini contextFileName must be AGENTS.md"
-        )
-        assert data.get("name"), "gemini-extension.json needs a name"
-        assert data.get("version"), "gemini-extension.json needs a version"
 
     def test_codex_marketplace_lists_all_local_plugins(self):
         marketplace = WORKTREE / ".agents" / "plugins" / "marketplace.json"
@@ -402,7 +430,6 @@ class TestContextFileBudgets:
         [
             ("CLAUDE.md", 200),  # slightly looser; project source-of-truth
             ("CONTRIBUTING.md", 150),
-            ("GEMINI.md", 150),
             ("AGENTS.md", 150),
         ],
     )

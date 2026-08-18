@@ -1,6 +1,0 @@
-{
-  "$schema": "https://geminicli.com/schemas/settings.json",
-  "context": {
-    "fileName": ["AGENTS.md", "GEMINI.md"]
-  }
-}

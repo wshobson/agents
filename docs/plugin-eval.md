@@ -156,7 +156,7 @@ Runs seven structural sub-checks against the parsed SKILL.md:
 | `structural_completeness` | 10%    | Heading density, code blocks, examples section, troubleshooting section           |
 | `token_efficiency`        | 9%     | MUST/NEVER/ALWAYS density, duplicate-line detection                               |
 | `ecosystem_coherence`     | 6%     | Cross-references to other skills/agents, "related"/"see also" mentions            |
-| `harness_portability`     | 6%     | Codex/Cursor/OpenCode/Gemini portability — body cap, tool refs, model aliases, name collisions |
+| `harness_portability`     | 6%     | Codex/Cursor/OpenCode/Antigravity portability — body cap, tool refs, model aliases, name collisions |
 
 Also detects anti-patterns (see below) and applies a multiplicative penalty.
 

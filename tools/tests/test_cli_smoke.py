@@ -5,7 +5,7 @@ that pure-Python parsing can't see (CLI version drift, schema validation surpris
 plugin loader behavior).
 
 Each test class skips gracefully when its CLI isn't installed — so local devs and
-CI runners only exercise the tools they have. CI installs OpenCode + Gemini CLI
+CI runners only exercise the tools they have. CI installs OpenCode + Antigravity CLI
 (both are quick) and the corresponding test classes become required gates.
 
 No API keys needed: every command exercised here is local-only (`agent list`,
@@ -101,21 +101,29 @@ class TestOpenCodeSmoke:
         )
 
 
-# ── Gemini CLI ───────────────────────────────────────────────────────────────
+# ── Antigravity CLI ──────────────────────────────────────────────────────────
 
 
-@pytest.mark.skipif(not _has("gemini"), reason="gemini CLI not installed")
-class TestGeminiSmoke:
-    def test_gemini_extension_validates(self):
-        """`gemini extensions validate <repo>` must return success — failure indicates
-        gemini-extension.json schema drift or invalid TOML in commands/."""
-        proc = _run(["gemini", "extensions", "validate", str(WORKTREE)])
-        assert proc.returncode == 0, (
-            f"gemini extensions validate failed (rc={proc.returncode}):\n"
-            f"--- stdout ---\n{proc.stdout}\n--- stderr ---\n{proc.stderr}"
-        )
-        # Success message is part of the Gemini CLI contract.
-        assert "successfully validated" in proc.stdout.lower() or proc.returncode == 0
+@pytest.mark.skipif(not _has("agy"), reason="agy CLI not installed")
+@pytest.mark.skipif(
+    not (WORKTREE / ".antigravity" / "plugins").is_dir(),
+    reason="Antigravity artifacts not generated — run `make generate HARNESS=antigravity`",
+)
+class TestAntigravitySmoke:
+    def test_agy_plugin_validate_passes_for_every_plugin(self):
+        """`agy plugin validate <dir>` must exit 0 for every generated plugin —
+        failure indicates a plugin.json, SKILL.md, agent, or command TOML schema
+        violation against the real agy binary."""
+        root = WORKTREE / ".antigravity" / "plugins"
+        failures = []
+        for plugin_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+            proc = _run(["agy", "plugin", "validate", str(plugin_dir)])
+            if proc.returncode != 0:
+                failures.append(
+                    f"{plugin_dir.name}: rc={proc.returncode}\n"
+                    f"--- stdout ---\n{proc.stdout}\n--- stderr ---\n{proc.stderr}"
+                )
+        assert not failures, "agy plugin validate failures:\n" + "\n".join(failures[:10])
 
 
 # ── Codex CLI ────────────────────────────────────────────────────────────────

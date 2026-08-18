@@ -1,7 +1,7 @@
 # Contributing to claude-agents
 
 Thanks for your interest in contributing. This marketplace ships to six agentic
-harnesses (Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Gemini CLI, GitHub Copilot) from a single
+harnesses (Claude Code, OpenAI Codex CLI, Cursor, OpenCode, the Antigravity CLI, GitHub Copilot) from a single
 Markdown source.
 
 ## Start here
@@ -66,7 +66,7 @@ Every PR runs these on CI (`.github/workflows/`); run them locally before pushin
 make validate STRICT=1     # structural validation across all harness outputs
 make garden STRICT=1       # drift, dead-link, stale-artifact detection
 make test                  # full pytest suite (plugin-eval + tools/tests/)
-make smoke-test            # real-CLI subprocess tests (OpenCode, Gemini, Codex, Claude)
+make smoke-test            # real-CLI subprocess tests (OpenCode, Antigravity, Codex, Claude)
 ```
 
 Code-quality checks (also in CI):
@@ -80,7 +80,7 @@ uv run ty check ../../tools/ src/plugin_eval/
 
 ## Cross-harness portability checklist
 
-Your content ships to five harnesses — some have stricter conventions than Claude Code:
+Your content ships to six harnesses — some have stricter conventions than Claude Code:
 
 - **Codex** hard-truncates skill bodies at 8 KB. Keep `SKILL.md` short; push detail
   into `references/details.md`.
@@ -89,6 +89,9 @@ Your content ships to five harnesses — some have stricter conventions than Cla
 - **Cursor** doesn't honor per-agent `tools:` allowlists — use it as a hint only.
 - **Copilot** maps Claude model aliases (`opus`/`sonnet`/`haiku`) to the GPT-5 family;
   agent `description` must be a plain string.
+- **Antigravity CLI** passes unmapped tool names through its allowlist unchanged;
+  maps model aliases to tier values (`pro`/`flash`/`inherit`); commands transpile
+  to Gemini-style TOML with the body always inlined.
 - All harnesses use ≤150-line context files. Don't bloat `AGENTS.md` / `CLAUDE.md`.
 
 `plugin-eval`'s `harness_portability` dimension catches most of these mechanically;

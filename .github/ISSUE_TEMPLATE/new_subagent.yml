@@ -14,7 +14,7 @@ body:
         Read [docs/authoring.md](https://github.com/wshobson/agents/blob/main/docs/authoring.md)
         before submitting — it covers the portable-content style guide that
         keeps your component working across Claude Code, Codex CLI, Cursor,
-        OpenCode, and Gemini CLI.
+        OpenCode, and the Antigravity CLI.
 
         **Important**: Only propose components for legitimate, constructive
         use cases. Proposals for malicious or harmful capabilities will be
@@ -119,7 +119,7 @@ body:
         gracefully on harnesses without those features?
       placeholder: |
         - Works on all 5 harnesses; uses only file ops and shell commands.
-        - OR: uses `Task` (Claude/Cursor/OpenCode/Gemini), degrades to
+        - OR: uses `Task` (Claude/Cursor/OpenCode/Antigravity), degrades to
           sequential execution on Codex.
     validations:
       required: false

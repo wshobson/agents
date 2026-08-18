@@ -520,86 +520,135 @@ def validate_opencode(report: Report) -> None:
                 )
 
 
-# ── Gemini validators ────────────────────────────────────────────────────────
+# ── Antigravity validators ───────────────────────────────────────────────────
 
 
-def validate_gemini(report: Report) -> None:
-    skills_dir = WORKTREE / "skills"
-    agents_dir = WORKTREE / "agents"
-    commands_dir = WORKTREE / "commands"
+_ANTIGRAVITY_PLUGIN_NAME_RE = re.compile(r"^[a-zA-Z0-9_-]+$")
+_ANTIGRAVITY_MODEL_TIERS = {"inherit", "flash", "pro"}
 
-    # 1. Every TOML command parses + has description + prompt
-    if commands_dir.is_dir():
-        for toml_path in commands_dir.rglob("*.toml"):
+
+def validate_antigravity(report: Report) -> None:
+    root = WORKTREE / ".antigravity" / "plugins"
+    if not root.is_dir():
+        return
+
+    for plugin_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+        # 1. plugin.json parses, has a non-empty agy-safe `name`, and it matches the
+        # directory (agy discovers plugins by directory; a mismatch is confusing at best).
+        plugin_json = plugin_dir / "plugin.json"
+        if not plugin_json.is_file():
+            report.add(
+                severity="error",
+                harness="antigravity",
+                path=plugin_dir,
+                message="missing plugin.json",
+                remediation="Regenerate via `make generate HARNESS=antigravity`.",
+            )
+        else:
+            try:
+                data = json.loads(plugin_json.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as e:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=plugin_json,
+                    message=f"JSON parse error: {e}",
+                    remediation="Regenerate via `make generate HARNESS=antigravity`.",
+                )
+                data = None
+            if data is not None and not isinstance(data, dict):
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=plugin_json,
+                    message=f"plugin.json must be a JSON object, got {type(data).__name__}",
+                    remediation="Regenerate via `make generate HARNESS=antigravity`.",
+                )
+                data = None
+            if data is not None:
+                name = data.get("name")
+                if not isinstance(name, str) or not name:
+                    report.add(
+                        severity="error",
+                        harness="antigravity",
+                        path=plugin_json,
+                        message="missing or empty required `name` field",
+                        remediation="Every agy plugin.json needs a non-empty `name`.",
+                    )
+                else:
+                    if not _ANTIGRAVITY_PLUGIN_NAME_RE.fullmatch(name):
+                        report.add(
+                            severity="error",
+                            harness="antigravity",
+                            path=plugin_json,
+                            message=f"plugin name {name!r} is not agy-safe (must match ^[a-zA-Z0-9_-]+$)",
+                            remediation="Rename the plugin to letters, digits, hyphens, underscores only.",
+                        )
+                    if name != plugin_dir.name:
+                        report.add(
+                            severity="error",
+                            harness="antigravity",
+                            path=plugin_json,
+                            message=f"plugin.json name {name!r} != directory name {plugin_dir.name!r}",
+                            remediation="agy discovers plugins by directory; name must match.",
+                        )
+
+        # 2. Every skill's frontmatter name matches its directory.
+        for skill_md in sorted((plugin_dir / "skills").glob("*/SKILL.md")):
+            fm, _ = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
+            if fm.get("name") != skill_md.parent.name:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=skill_md,
+                    message=f"frontmatter name {fm.get('name')!r} != directory {skill_md.parent.name!r}",
+                    remediation="agy discovers skills by directory; name must match.",
+                )
+
+        # 3. Every agent has name + description, and model is a valid tier alias.
+        for agent_md in sorted((plugin_dir / "agents").glob("*.md")):
+            fm, _ = parse_frontmatter(agent_md.read_text(encoding="utf-8"))
+            _check_nonempty_str_field(report, fm, "name", "antigravity", agent_md, label="agent")
+            _check_nonempty_str_field(
+                report, fm, "description", "antigravity", agent_md, label="agent"
+            )
+            model = fm.get("model")
+            if model not in _ANTIGRAVITY_MODEL_TIERS:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_md,
+                    message=f"model {model!r} not in {sorted(_ANTIGRAVITY_MODEL_TIERS)}",
+                    remediation="agy subagent `model` must be a tier alias: inherit, flash, or pro.",
+                )
+
+        # 4. Every command TOML parses and has description + prompt + {{args}}.
+        for toml_path in sorted((plugin_dir / "commands").rglob("*.toml")):
             try:
                 data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
             except tomllib.TOMLDecodeError as e:
                 report.add(
                     severity="error",
-                    harness="gemini",
+                    harness="antigravity",
                     path=toml_path,
                     message=f"TOML parse error: {e}",
-                    remediation="Likely a quoting issue in the command body. Regenerate or escape triple-quotes.",
+                    remediation="Regenerate via `make generate HARNESS=antigravity`.",
                 )
                 continue
-            if "description" not in data or "prompt" not in data:
-                report.add(
-                    severity="error",
-                    harness="gemini",
-                    path=toml_path,
-                    message=f"missing keys (have: {sorted(data.keys())})",
-                    remediation="Gemini TOML requires both `description` and `prompt`.",
-                )
-            if "prompt" in data and "{{args}}" not in data["prompt"]:
+            _check_nonempty_str_field(
+                report, data, "description", "antigravity", toml_path, label="command"
+            )
+            has_prompt = _check_nonempty_str_field(
+                report, data, "prompt", "antigravity", toml_path, label="command"
+            )
+            if has_prompt and "{{args}}" not in data["prompt"]:
                 report.add(
                     severity="warning",
-                    harness="gemini",
+                    harness="antigravity",
                     path=toml_path,
                     message="prompt does not include {{args}} placeholder",
                     remediation="Append {{args}} so user input is appended to the prompt.",
                 )
-
-    # 2. Every native skill has frontmatter name matching directory
-    if skills_dir.is_dir():
-        for skill_md in skills_dir.glob("*/SKILL.md"):
-            content = skill_md.read_text(encoding="utf-8")
-            fm, _ = parse_frontmatter(content)
-            if fm.get("name") != skill_md.parent.name:
-                report.add(
-                    severity="error",
-                    harness="gemini",
-                    path=skill_md,
-                    message=f"frontmatter name {fm.get('name')!r} != directory {skill_md.parent.name!r}",
-                    remediation="Gemini auto-discovers by directory; name must match.",
-                )
-
-    # 3. Subagents have a Gemini-compatible model
-    if agents_dir.is_dir():
-        valid_model_prefixes = ("gemini-",)
-        for agent_md in agents_dir.glob("*.md"):
-            fm, _ = parse_frontmatter(agent_md.read_text(encoding="utf-8"))
-            model = fm.get("model", "")
-            if model and not model.startswith(valid_model_prefixes):
-                report.add(
-                    severity="warning",
-                    harness="gemini",
-                    path=agent_md,
-                    message=f"model {model!r} doesn't look like a Gemini model id",
-                    remediation="Gemini wants names like 'gemini-2.5-pro' / 'gemini-2.5-flash'.",
-                )
-
-    # 4. GEMINI.md size
-    gemini_md = WORKTREE / "GEMINI.md"
-    if gemini_md.is_file():
-        line_count = len(gemini_md.read_text(encoding="utf-8").splitlines())
-        if line_count > 150:
-            report.add(
-                severity="warning",
-                harness="gemini",
-                path=gemini_md,
-                message=f"GEMINI.md is {line_count} lines (cap: 150 — table of contents pattern)",
-                remediation="Move detail to docs/.",
-            )
 
 
 # ── Driver ───────────────────────────────────────────────────────────────────
@@ -692,8 +741,8 @@ _VALIDATORS = {
     "codex": validate_codex,
     "copilot": validate_copilot,
     "cursor": validate_cursor,
-    "gemini": validate_gemini,
     "opencode": validate_opencode,
+    "antigravity": validate_antigravity,
 }
 
 
