@@ -298,6 +298,101 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
 }
 
 
+@dataclass(frozen=True)
+class ProviderRegion:
+    """One regional endpoint set for a third-party model provider."""
+
+    region: str
+    openai_base_url: str
+    anthropic_base_url: str
+    docs_root: str
+
+
+@dataclass(frozen=True)
+class ProviderModel:
+    """One native model offered by a third-party provider."""
+
+    model_id: str
+    context_window: int
+    pricing_usd_per_million_tokens: dict[str, float | None]
+    input_modalities: tuple[str, ...]
+    thinking: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ProviderEntry:
+    """A third-party provider with regional endpoints and native model IDs.
+
+    `provider_id` is the lowercase prefix used in `<provider>/<model-id>` identifiers,
+    matching the OpenCode `provider/model-id` convention. Adapters that emit
+    provider-prefixed model IDs resolve explicit native model IDs through this registry
+    so the ID keeps its provider prefix instead of being coerced to the `inherit` default.
+    """
+
+    provider_id: str
+    models: tuple[ProviderModel, ...]
+    regions: tuple[ProviderRegion, ...]
+
+
+# Third-party provider registry. Each entry carries the regional endpoints and native
+# model metadata sourced from the provider's published configuration. resolve_model()
+# consults this registry for harnesses that emit provider-prefixed model IDs so an
+# explicit native model ID is preserved rather than silently rewritten to `inherit`.
+PROVIDERS: dict[str, ProviderEntry] = {
+    "minimax": ProviderEntry(
+        provider_id="minimax",
+        models=(
+            ProviderModel(
+                model_id="MiniMax-M3",
+                context_window=1000000,
+                pricing_usd_per_million_tokens={
+                    "input": 0.6,
+                    "output": 2.4,
+                    "cache_read": 0.12,
+                    "cache_write": None,
+                },
+                input_modalities=("text", "image", "video"),
+                thinking=("adaptive", "disabled"),
+            ),
+            ProviderModel(
+                model_id="MiniMax-M2.7",
+                context_window=204800,
+                pricing_usd_per_million_tokens={
+                    "input": 0.3,
+                    "output": 1.2,
+                    "cache_read": 0.06,
+                    "cache_write": 0.375,
+                },
+                input_modalities=("text",),
+                thinking=("always_on",),
+            ),
+        ),
+        regions=(
+            ProviderRegion(
+                region="global_en",
+                openai_base_url="https://api.minimax.io/v1",
+                anthropic_base_url="https://api.minimax.io/anthropic",
+                docs_root="https://platform.minimax.io/docs",
+            ),
+            ProviderRegion(
+                region="cn_zh",
+                openai_base_url="https://api.minimaxi.com/v1",
+                anthropic_base_url="https://api.minimaxi.com/anthropic",
+                docs_root="https://platform.minimaxi.com/docs",
+            ),
+        ),
+    ),
+}
+
+
+# Flat lookup: native model_id -> provider_id, used by resolve_model().
+_PROVIDER_MODEL_INDEX: dict[str, str] = {
+    model.model_id: entry.provider_id
+    for entry in PROVIDERS.values()
+    for model in entry.models
+}
+
+
 def supported_harnesses() -> list[str]:
     """All harnesses except `claude-code` (which is the source, not a target)."""
     return [h for h in CAPABILITIES if h != "claude-code"]
@@ -309,6 +404,11 @@ def resolve_model(harness_id: str, source_model: str) -> tuple[str, str | None]:
     Returns (resolved_model, warning_or_None). When the source model is not in the
     known alias set, the caller should attach the warning to its EmitResult so the
     user knows their explicit model choice was overridden.
+
+    For harnesses that emit provider-prefixed model IDs (detected via a `/` in their
+    `inherit` alias, e.g. OpenCode's `anthropic/claude-sonnet-5`), an explicit native
+    model ID listed in PROVIDERS resolves to `<provider_id>/<model_id>` with no warning
+    so it is preserved instead of being silently rewritten to the `inherit` default.
     """
     aliases = MODEL_ALIASES.get(harness_id, {})
     source_model = (source_model or "inherit").strip()
@@ -319,6 +419,11 @@ def resolve_model(harness_id: str, source_model: str) -> tuple[str, str | None]:
         )
     if source_model in aliases:
         return aliases[source_model], None
+    # Explicit third-party provider model IDs keep their provider prefix on harnesses
+    # that use the `provider/model-id` form (detected via the `inherit` alias).
+    provider_id = _PROVIDER_MODEL_INDEX.get(source_model)
+    if provider_id is not None and "/" in aliases.get("inherit", ""):
+        return f"{provider_id}/{source_model}", None
     fallback = aliases.get("inherit", source_model)
     # If fallback is the same as source_model, no real coercion happened — say so plainly
     # instead of pretending we mapped to something different.
