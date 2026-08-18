@@ -1028,6 +1028,32 @@ class TestAntigravityAdapter:
         assert fm["metadata"]["version"] == "1.0.0"
         assert fm["metadata"]["source"] == "https://example.com/repo"
 
+    def test_quotes_comma_in_flow_list_item(self, tmp_path: Path, output_root: Path):
+        """A list item containing a comma must be quoted in the emitted flow
+        sequence, or it silently splits into two list items on round-trip."""
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        skill = _make_skill(
+            plugin_dir,
+            "tagged",
+            'name: tagged\ndescription: Use when testing.\ntags: ["foo, bar", baz]',
+            "# Tagged\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        skill_md = (
+            output_root / ".antigravity" / "plugins" / "demo" / "skills" / "tagged" / "SKILL.md"
+        )
+        fm, _ = parse_frontmatter(skill_md.read_text())
+        assert fm["tags"] == ["foo, bar", "baz"]
+
     def test_emits_agent_with_tier_model_and_mapped_tools(
         self, synthetic_plugin: PluginSource, output_root: Path
     ):

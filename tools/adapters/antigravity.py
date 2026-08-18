@@ -123,11 +123,25 @@ def _yaml_scalar(value: object) -> str:
     return s
 
 
+def _yaml_flow_scalar(value: object) -> str:
+    """Render a value as one item of a YAML flow sequence (`[a, b]`).
+
+    Flow sequences use `,` and `]` as structural delimiters, so an item
+    containing either must be quoted even when `_yaml_scalar` wouldn't quote
+    it as a bare top-level scalar.
+    """
+    s = str(value).replace("\n", " ")
+    if "," in s or "]" in s:
+        escaped = s.replace("\\", "\\\\").replace('"', '\\"')
+        return f'"{escaped}"'
+    return _yaml_scalar(s)
+
+
 def _antigravity_frontmatter(fm: dict) -> str:
     lines = ["---"]
     for k, v in fm.items():
         if isinstance(v, list):
-            value = ", ".join(_yaml_scalar(x) for x in v)
+            value = ", ".join(_yaml_flow_scalar(x) for x in v)
             lines.append(f"{k}: [{value}]")
         elif isinstance(v, dict):
             # Preserve mapping-valued fields (e.g. `metadata`) as a nested YAML
