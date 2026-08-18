@@ -95,7 +95,9 @@ async def query_llm(
     crashing the whole evaluation.
 
     When `usage_sink` is given, the call's token usage (if any) is added to it
-    under `model`, letting callers accumulate per-model usage across calls.
+    under the SDK-reported model (falling back to the requested `model` if the
+    stream reported none), letting callers accumulate per-model usage across
+    calls even when routing or fallback selects a different model.
     """
     try:
         from claude_agent_sdk import (  # type: ignore[import-untyped]
@@ -121,9 +123,11 @@ async def query_llm(
         return {"unmeasured": True, "error": f"judge LLM call failed: {exc}"}
 
     if usage_sink is not None:
-        tokens = usage_total_tokens(collect_sdk_output(messages).usage)
+        output = collect_sdk_output(messages)
+        tokens = usage_total_tokens(output.usage)
         if tokens:
-            usage_sink[model] = usage_sink.get(model, 0) + tokens
+            usage_model = output.model or model
+            usage_sink[usage_model] = usage_sink.get(usage_model, 0) + tokens
 
     return _extract_and_parse(messages)
 
@@ -162,7 +166,6 @@ class JudgeAnalyzer:
     def __init__(self, config: JudgeConfig) -> None:
         self.config = config
         self._sem = asyncio.Semaphore(config.concurrency)
-        self.model_usage: dict[str, int] = {}
 
     # ------------------------------------------------------------------
     # Public API
@@ -171,11 +174,14 @@ class JudgeAnalyzer:
     async def analyze_skill(self, skill_or_dir: Path | ParsedSkill) -> LayerResult:
         """Run all 4 assessments concurrently and return a LayerResult."""
         skill = skill_or_dir if isinstance(skill_or_dir, ParsedSkill) else parse_skill(skill_or_dir)
+        # Local to this call so concurrent/repeated analyze_skill invocations on
+        # the same analyzer instance never mix or accumulate token counts.
+        model_usage: dict[str, int] = {}
         triggering, orchestration, output_quality, scope = await asyncio.gather(
-            self.assess_triggering(skill),
-            self.assess_orchestration(skill),
-            self.assess_output_quality(skill),
-            self.assess_scope(skill),
+            self.assess_triggering(skill, model_usage),
+            self.assess_orchestration(skill, model_usage),
+            self.assess_output_quality(skill, model_usage),
+            self.assess_scope(skill, model_usage),
         )
 
         raw_scores: dict[str, float | None] = {
@@ -197,7 +203,7 @@ class JudgeAnalyzer:
             "output_quality": output_quality,
             "scope": scope,
             "unmeasured": unmeasured,
-            "model_usage": dict(self.model_usage),
+            "model_usage": model_usage,
         }
 
         return LayerResult(
@@ -211,7 +217,9 @@ class JudgeAnalyzer:
     # Individual assessments
     # ------------------------------------------------------------------
 
-    async def assess_triggering(self, skill: Path | ParsedSkill) -> dict:
+    async def assess_triggering(
+        self, skill: Path | ParsedSkill, usage_sink: dict[str, int] | None = None
+    ) -> dict:
         """Generate 10 synthetic prompts and classify triggering accuracy via Haiku."""
         if isinstance(skill, Path):
             skill = parse_skill(skill)
@@ -242,9 +250,11 @@ Return JSON matching this schema:
 }}"""
 
         async with self._sem:
-            return await query_llm(prompt, system=system, model=model, usage_sink=self.model_usage)
+            return await query_llm(prompt, system=system, model=model, usage_sink=usage_sink)
 
-    async def assess_orchestration(self, skill: Path | ParsedSkill) -> dict:
+    async def assess_orchestration(
+        self, skill: Path | ParsedSkill, usage_sink: dict[str, int] | None = None
+    ) -> dict:
         """Rate orchestration fitness using an anchored rubric via Sonnet."""
         if isinstance(skill, Path):
             skill = parse_skill(skill)
@@ -275,9 +285,11 @@ Return JSON:
 }}"""
 
         async with self._sem:
-            return await query_llm(prompt, system=system, model=model, usage_sink=self.model_usage)
+            return await query_llm(prompt, system=system, model=model, usage_sink=usage_sink)
 
-    async def assess_output_quality(self, skill: Path | ParsedSkill) -> dict:
+    async def assess_output_quality(
+        self, skill: Path | ParsedSkill, usage_sink: dict[str, int] | None = None
+    ) -> dict:
         """Simulate 3 tasks and judge output quality via Sonnet."""
         if isinstance(skill, Path):
             skill = parse_skill(skill)
@@ -304,9 +316,11 @@ Return JSON:
 }}"""
 
         async with self._sem:
-            return await query_llm(prompt, system=system, model=model, usage_sink=self.model_usage)
+            return await query_llm(prompt, system=system, model=model, usage_sink=usage_sink)
 
-    async def assess_scope(self, skill: Path | ParsedSkill) -> dict:
+    async def assess_scope(
+        self, skill: Path | ParsedSkill, usage_sink: dict[str, int] | None = None
+    ) -> dict:
         """Evaluate scope calibration using an anchored rubric via Sonnet."""
         if isinstance(skill, Path):
             skill = parse_skill(skill)
@@ -333,4 +347,4 @@ Return JSON:
 }}"""
 
         async with self._sem:
-            return await query_llm(prompt, system=system, model=model, usage_sink=self.model_usage)
+            return await query_llm(prompt, system=system, model=model, usage_sink=usage_sink)
