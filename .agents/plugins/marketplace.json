@@ -93,6 +93,19 @@
       "category": "Coding"
     },
     {
+      "name": "avoid-ai-writing",
+      "description": "Audit and rewrite prose that reads as machine-generated, across READMEs, changelogs, PR descriptions, docs, and blog copy, with detect-only, rewrite, and edit-in-place modes.",
+      "source": {
+        "source": "local",
+        "path": "./plugins/avoid-ai-writing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "documentation"
+    },
+    {
       "name": "backend-api-security",
       "description": "API security hardening, authentication implementation, authorization patterns, rate limiting, and input validation",
       "source": {

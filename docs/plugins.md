@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **91 marketplace plugins** organized by category: 90 local plugins plus 1 externally hosted `git-subdir` entry (`pensyve`).
+Browse all **92 marketplace plugins** organized by category: 91 local plugins plus 1 externally hosted `git-subdir` entry (`pensyve`).
 
 ## Quick Start - Essential Plugins
 
@@ -119,7 +119,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **multi-platform-apps**         | Cross-platform app coordination (web/iOS/Android)            | `/plugin install multi-platform-apps`         |
 | **developer-essentials**        | Essential Git, SQL, code review, auth, debugging, and monorepo skills | `/plugin install developer-essentials`        |
 
-### 📚 Documentation (4 plugins)
+### 📚 Documentation (5 plugins)
 
 | Plugin                       | Description                                                                                                                                     | Install                                    |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
@@ -127,6 +127,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **code-documentation**       | Documentation generation and code explanation                                                                                                   | `/plugin install code-documentation`       |
 | **documentation-generation** | OpenAPI specs, Mermaid diagrams, tutorials                                                                                                      | `/plugin install documentation-generation` |
 | **c4-architecture**          | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture`          |
+| **avoid-ai-writing**         | Audit and rewrite prose that reads as machine-generated across READMEs, changelogs, PR descriptions, and docs                                    | `/plugin install avoid-ai-writing`         |
 
 ### 🔄 Workflows (7 plugins)
 
@@ -362,7 +363,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 91 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 92 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -379,7 +380,7 @@ Install only the plugins you need:
 /plugin install backend-development
 ```
 
-Each installed plugin loads **only its specific agents and commands** into Claude's context.
+Each installed plugin loads **only its specific agents, commands, and skills** into Claude's context.
 
 ## Plugin Design Principles
 
@@ -405,7 +406,7 @@ Each installed plugin loads **only its specific agents and commands** into Claud
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 180 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 181 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles
