@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
-from tools.install_copilot import default_config_dir, install, uninstall
+from tools.install_copilot import default_config_dir, install, main, uninstall
 
 
 def _write_generated_copilot(repo_root: Path) -> None:
@@ -84,6 +85,79 @@ def test_force_replaces_conflicting_symlink_only(tmp_path: Path):
     assert (
         target.resolve() == (repo_root / ".copilot" / "agents" / "demo__agent.agent.md").resolve()
     )
+
+
+def test_main_does_not_clear_caches_on_failed_install(tmp_path: Path, monkeypatch):
+    repo_root = tmp_path / "repo"
+    config_dir = tmp_path / "config"
+    _write_generated_copilot(repo_root)
+
+    # Conflict: a real (non-symlink) file already at the install destination.
+    target = config_dir / "agents" / "demo__agent.agent.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("user file\n")
+
+    pkg_dir = config_dir / "pkg"
+    pkg_dir.mkdir(parents=True)
+    pkg_sentinel = pkg_dir / "sentinel.txt"
+    pkg_sentinel.write_text("pkg\n")
+
+    marketplace_cache_dir = config_dir / "marketplace-cache"
+    marketplace_cache_dir.mkdir(parents=True)
+    marketplace_sentinel = marketplace_cache_dir / "sentinel.txt"
+    marketplace_sentinel.write_text("marketplace\n")
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "install_copilot.py",
+            "install",
+            "--repo-root",
+            str(repo_root),
+            "--config-dir",
+            str(config_dir),
+        ],
+    )
+
+    result = main()
+
+    assert result != 0
+    assert pkg_sentinel.exists()
+    assert marketplace_sentinel.exists()
+
+
+def test_main_clears_caches_on_successful_install(tmp_path: Path, monkeypatch):
+    repo_root = tmp_path / "repo"
+    config_dir = tmp_path / "config"
+    _write_generated_copilot(repo_root)
+
+    pkg_dir = config_dir / "pkg"
+    pkg_dir.mkdir(parents=True)
+    (pkg_dir / "sentinel.txt").write_text("pkg\n")
+
+    marketplace_cache_dir = config_dir / "marketplace-cache"
+    marketplace_cache_dir.mkdir(parents=True)
+    (marketplace_cache_dir / "sentinel.txt").write_text("marketplace\n")
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "install_copilot.py",
+            "install",
+            "--repo-root",
+            str(repo_root),
+            "--config-dir",
+            str(config_dir),
+        ],
+    )
+
+    result = main()
+
+    assert result == 0
+    assert not pkg_dir.exists()
+    assert not marketplace_cache_dir.exists()
 
 
 def test_uninstall_removes_only_repo_owned_symlinks(tmp_path: Path):
