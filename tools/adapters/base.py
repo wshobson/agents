@@ -191,6 +191,41 @@ def context_paragraph(body: str, max_chars: int = 300) -> str:
     return text
 
 
+from tools.adapters.capabilities import TOOL_NAME_MAPS
+
+
+def rewrite_body_lowercase_tools(body: str, harness_id: str) -> str:
+    """Lowercase backticked Claude tool names using the harness's tool-name map."""
+    out = body
+    for camel, replacement in TOOL_NAME_MAPS[harness_id].items():
+        out = out.replace(f"`{camel}`", f"`{replacement}`")
+    return out
+
+
+def rewrite_body_for_harness(body: str, harness_id: str) -> str:
+    """Rewrite tool references for a target harness.
+
+    - codex: rewrites 'the `Tool` tool' phrases to action verbs.
+    - opencode/copilot/gemini/cursor: lowercases backticked tool names.
+    """
+    if harness_id == "codex":
+        return _rewrite_body_for_codex(body)
+    return rewrite_body_lowercase_tools(body, harness_id)
+
+
+def _rewrite_body_for_codex(body: str) -> str:
+    """Replace 'the Read tool' / 'The Bash tool' / 'the `Grep` tool' -> action verbs."""
+    mapping = TOOL_NAME_MAPS["codex"]
+    out = body
+    for camel, replacement in mapping.items():
+        out = re.sub(
+            rf"(?i:\bthe)\s+`?{re.escape(camel)}`?\s+tool\b",
+            replacement,
+            out,
+        )
+    return out
+
+
 def token_estimate(text: str) -> int:
     """Rough heuristic: 1 token ≈ 4 characters. Good enough for context budget audits."""
     return max(1, len(text) // 4)
@@ -406,6 +441,36 @@ class EmitResult:
     warnings: list[str] = field(default_factory=list)
 
 
+_TOOL_REPLACEMENTS = {
+    "Read": ("open", "read"),
+    "Edit": ("edit", "edit"),
+    "Write": ("write", "write"),
+    "Bash": ("shell", "shell"),
+    "Grep": ("rg", "rg"),
+    "Glob": ("glob", "glob"),
+    "WebFetch": ("fetch", "fetch"),
+    "WebSearch": ("search", "search"),
+    "TodoWrite": ("todo", "todo"),
+}
+
+# Pre-compiled patterns: (pattern, replacement_template) for "the `Tool` tool" and "the Tool tool"
+_TOOL_PROSE_PATTERNS: list[tuple[re.Pattern, str]] = []
+for _camel, (_lower, _normal) in _TOOL_REPLACEMENTS.items():
+    _TOOL_PROSE_PATTERNS.append(
+        (re.compile(rf"\bthe `{_camel}` tool\b"), _lower)
+    )
+    _TOOL_PROSE_PATTERNS.append(
+        (re.compile(rf"\bthe {_camel} tool\b"), _lower)
+    )
+
+# Pre-compiled backtick-lowercase patterns: `` `Tool` `` -> `` `tool` ``
+_TOOL_BACKTICK_PATTERNS: list[tuple[re.Pattern, str]] = []
+for _camel, (_lower, _normal) in _TOOL_REPLACEMENTS.items():
+    _TOOL_BACKTICK_PATTERNS.append(
+        (re.compile(rf"`{_camel}`"), _lower)
+    )
+
+
 class HarnessAdapter(ABC):
     """Base class for all per-harness adapters.
 
@@ -415,10 +480,12 @@ class HarnessAdapter(ABC):
 
     harness_id: str = ""
     output_root: Path = WORKTREE
+    _resolved_root: Path | None = None  # cached .resolve() result
 
     def __init__(self, output_root: Path | None = None) -> None:
         if output_root is not None:
             self.output_root = output_root
+        self._resolved_root = self.output_root.resolve()
 
     @property
     def capabilities(self):
@@ -447,9 +514,8 @@ class HarnessAdapter(ABC):
         Refuses to write outside `self.output_root` (catches `..` segments and absolute paths).
         """
         target = (self.output_root / rel_path).resolve()
-        root = self.output_root.resolve()
-        if not target.is_relative_to(root):
-            raise ValueError(f"refusing to write outside output_root: {target} (root={root})")
+        if not target.is_relative_to(self._resolved_root):
+            raise ValueError(f"refusing to write outside output_root: {target} (root={self._resolved_root})")
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8")
         return target
@@ -457,9 +523,8 @@ class HarnessAdapter(ABC):
     def write_bytes(self, rel_path: str | Path, content: bytes) -> Path:
         """Binary counterpart of `write` — for mirroring non-UTF-8 reference assets."""
         target = (self.output_root / rel_path).resolve()
-        root = self.output_root.resolve()
-        if not target.is_relative_to(root):
-            raise ValueError(f"refusing to write outside output_root: {target} (root={root})")
+        if not target.is_relative_to(self._resolved_root):
+            raise ValueError(f"refusing to write outside output_root: {target} (root={self._resolved_root})")
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(content)
         return target
@@ -476,22 +541,12 @@ class HarnessAdapter(ABC):
 
         Conservative — only matches "the <Tool> tool" and bare backticked tool names,
         not arbitrary occurrences of words like 'Read' or 'Bash' which may be valid prose.
+        Uses pre-compiled regexes for performance.
         """
-        replacements = {
-            "Read": "open" if tool_case == "lower" else "read",
-            "Edit": "edit",
-            "Write": "write",
-            "Bash": "shell",
-            "Grep": "rg",
-            "Glob": "glob",
-            "WebFetch": "fetch",
-            "WebSearch": "search",
-            "TodoWrite": "todo",
-        }
         out = body
-        for camel, replacement in replacements.items():
-            out = re.sub(rf"\bthe `{camel}` tool\b", f"`{replacement}`", out)
-            out = re.sub(rf"\bthe {camel} tool\b", f"`{replacement}`", out)
-            if tool_case == "lower":
-                out = re.sub(rf"`{camel}`", f"`{camel.lower()}`", out)
+        for pattern, replacement in _TOOL_PROSE_PATTERNS:
+            out = pattern.sub(replacement, out)
+        if tool_case == "lower":
+            for pattern, replacement in _TOOL_BACKTICK_PATTERNS:
+                out = pattern.sub(replacement, out)
         return out

@@ -8,6 +8,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import sys
 import traceback
@@ -40,27 +41,17 @@ _HARNESS_TARGETS = {
 
 def get_adapter(harness_id: str, output_root: Path) -> HarnessAdapter:
     """Lazy-import an adapter to keep CLI fast when only one harness is targeted."""
-    if harness_id == "codex":
-        from tools.adapters.codex import CodexAdapter
-
-        return CodexAdapter(output_root=output_root)
-    if harness_id == "cursor":
-        from tools.adapters.cursor import CursorAdapter
-
-        return CursorAdapter(output_root=output_root)
-    if harness_id == "opencode":
-        from tools.adapters.opencode import OpenCodeAdapter
-
-        return OpenCodeAdapter(output_root=output_root)
-    if harness_id == "gemini":
-        from tools.adapters.gemini import GeminiAdapter
-
-        return GeminiAdapter(output_root=output_root)
-    if harness_id == "copilot":
-        from tools.adapters.copilot import CopilotAdapter
-
-        return CopilotAdapter(output_root=output_root)
-    raise ValueError(f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}")
+    _ADAPTERS = {
+        "codex": lambda root: __import__("tools.adapters.codex", fromlist=["CodexAdapter"]).CodexAdapter(output_root=root),
+        "cursor": lambda root: __import__("tools.adapters.cursor", fromlist=["CursorAdapter"]).CursorAdapter(output_root=root),
+        "opencode": lambda root: __import__("tools.adapters.opencode", fromlist=["OpenCodeAdapter"]).OpenCodeAdapter(output_root=root),
+        "gemini": lambda root: __import__("tools.adapters.gemini", fromlist=["GeminiAdapter"]).GeminiAdapter(output_root=root),
+        "copilot": lambda root: __import__("tools.adapters.copilot", fromlist=["CopilotAdapter"]).CopilotAdapter(output_root=root),
+    }
+    factory = _ADAPTERS.get(harness_id)
+    if factory is None:
+        raise ValueError(f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}")
+    return factory(output_root)
 
 
 def _validate_output_root(output_root: Path) -> str | None:
@@ -72,8 +63,6 @@ def _validate_output_root(output_root: Path) -> str | None:
         return "refusing to operate on filesystem root"
     # Allow the repo root and any path under it; allow temp dirs (used in tests).
     # Reject other paths unless the user explicitly opts in via CLAUDE_AGENTS_ALLOW_ANY_ROOT=1.
-    import os
-
     if os.environ.get("CLAUDE_AGENTS_ALLOW_ANY_ROOT") == "1":
         return None
     repo = WORKTREE.resolve()
@@ -128,6 +117,37 @@ def clean_output(harness_id: str, output_root: Path) -> int:
     return cleaned
 
 
+def _harness_output_dirs(harness_id: str, output_root: Path) -> list[Path]:
+    """Return directories whose files are adapter-generated (for pruning)."""
+    dirs: list[Path] = []
+    if harness_id == "codex":
+        d = output_root / ".codex"
+        if d.is_dir():
+            dirs.append(d)
+    elif harness_id == "opencode":
+        d = output_root / ".opencode"
+        if d.is_dir():
+            dirs.append(d)
+    elif harness_id == "gemini":
+        for sub in ("commands", "agents", "skills"):
+            d = output_root / sub
+            if d.is_dir():
+                dirs.append(d)
+    elif harness_id == "copilot":
+        for sub in ("agents", "skills", "commands"):
+            d = output_root / ".copilot" / sub
+            if d.is_dir():
+                dirs.append(d)
+    elif harness_id == "cursor":
+        for sub_path in (
+            output_root / ".cursor-plugin" / "plugins",
+            output_root / ".cursor" / "rules",
+        ):
+            if sub_path.is_dir():
+                dirs.append(sub_path)
+    return dirs
+
+
 def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> list[Path]:
     """Remove generated artifacts whose source is gone.
 
@@ -140,42 +160,9 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
     removed: list[Path] = []
     written_resolved = {p.resolve() for p in written}
 
-    # Files to consider per-harness. We only prune files inside the adapter's own output
-    # tree, never single top-level scalars like AGENTS.md / opencode.json (those have only
-    # one possible source).
     candidates: list[Path] = []
-    if harness_id == "codex":
-        d = output_root / ".codex"
-        if d.is_dir():
-            # All files (TOMLs, SKILL.md, references/details.md, _overflow.md, binary
-            # references mirrored verbatim) — anything the adapter wrote should be in
-            # the `written` set; anything else under .codex/ is orphaned.
-            candidates.extend(p for p in d.rglob("*") if p.is_file())
-    elif harness_id == "opencode":
-        d = output_root / ".opencode"
-        if d.is_dir():
-            candidates.extend(p for p in d.rglob("*") if p.is_file())
-    elif harness_id == "gemini":
-        for sub in ("commands", "agents", "skills"):
-            d = output_root / sub
-            if d.is_dir():
-                candidates.extend(p for p in d.rglob("*") if p.is_file())
-    elif harness_id == "copilot":
-        for sub in ("agents", "skills"):
-            d = output_root / ".copilot" / sub
-            if d.is_dir():
-                candidates.extend(p for p in d.rglob("*") if p.is_file())
-        d = output_root / ".copilot" / "commands"
-        if d.is_dir():
-            candidates.extend(p for p in d.rglob("*") if p.is_file())
-    elif harness_id == "cursor":
-        # Both .cursor-plugin/plugins/*.json and .cursor/rules/*.mdc are adapter outputs.
-        for sub_path in (
-            output_root / ".cursor-plugin" / "plugins",
-            output_root / ".cursor" / "rules",
-        ):
-            if sub_path.is_dir():
-                candidates.extend(p for p in sub_path.rglob("*") if p.is_file())
+    for d in _harness_output_dirs(harness_id, output_root):
+        candidates.extend(p for p in d.rglob("*") if p.is_file())
 
     for f in candidates:
         if f.resolve() not in written_resolved:

@@ -25,22 +25,15 @@ from tools.adapters.base import (
     SkillSource,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
+from tools.adapters.toml_utils import escape_toml_basic, escape_toml_multiline
 
 _INLINE_BODY_THRESHOLD = 4 * 1024  # bytes; below this, inline; above, use @{path}
 
 
-def _escape_toml_basic(s: str) -> str:
-    return s.replace("\\", "\\\\").replace('"', '\\"')
-
-
-def _escape_toml_multiline(s: str) -> str:
-    return s.replace("\\", "\\\\").replace('"""', '\\"\\"\\"')
-
-
 def _generate_command_toml(description: str, prompt: str) -> str:
     return (
-        f'description = "{_escape_toml_basic(description)}"\n'
-        f'prompt = """\n{_escape_toml_multiline(prompt)}\n"""\n'
+        f'description = "{escape_toml_basic(description)}"\n'
+        f'prompt = """\n{escape_toml_multiline(prompt)}\n"""\n'
     )
 
 

@@ -27,6 +27,7 @@ from tools.adapters.base import (
     HarnessAdapter,
     PluginSource,
     SkillSource,
+    rewrite_body_lowercase_tools,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 
@@ -74,14 +75,6 @@ _TOOL_TO_PERMISSION = {
     "TodoWrite": "todowrite",
     "AskUserQuestion": "question",
 }
-
-
-def _rewrite_body_lowercase_tools(body: str) -> str:
-    """Lowercase the Claude tool names that appear as backticked identifiers."""
-    out = body
-    for camel, replacement in TOOL_NAME_MAPS["opencode"].items():
-        out = out.replace(f"`{camel}`", f"`{replacement}`")
-    return out
 
 
 def _build_permission_block(tools: list[str], *, has_tools_field: bool = True) -> dict:
@@ -209,7 +202,7 @@ class OpenCodeAdapter(HarnessAdapter):
         fm = dict(skill.frontmatter)
         fm["name"] = skill_id
 
-        body = _rewrite_body_lowercase_tools(skill.body).rstrip() + "\n"
+        body = rewrite_body_lowercase_tools(skill.body, "opencode").rstrip() + "\n"
         content = _opencode_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(skill_dir / "SKILL.md", content))
 
@@ -241,7 +234,7 @@ class OpenCodeAdapter(HarnessAdapter):
         if permission:
             fm["permission"] = permission
 
-        body = _rewrite_body_lowercase_tools(agent.body).rstrip() + "\n"
+        body = rewrite_body_lowercase_tools(agent.body, "opencode").rstrip() + "\n"
         content = _opencode_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(rel, content))
 
@@ -260,6 +253,6 @@ class OpenCodeAdapter(HarnessAdapter):
         if _SUBAGENT_KEYWORD_RE.search(cmd.body):
             fm["subtask"] = True
 
-        body = _rewrite_body_lowercase_tools(cmd.body).rstrip() + "\n"
+        body = rewrite_body_lowercase_tools(cmd.body, "opencode").rstrip() + "\n"
         content = _opencode_frontmatter(fm) + "\n\n" + body
         result.written.append(self.write(rel, content))
