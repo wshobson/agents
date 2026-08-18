@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 
 # tools.adapters.* imports happen via the conftest sys.path injection
+from tools.adapters.antigravity import AntigravityAdapter
 from tools.adapters.base import PluginSource, parse_frontmatter
 from tools.adapters.codex import CodexAdapter, _split_body_if_oversized
 from tools.adapters.copilot import (
@@ -1003,6 +1004,130 @@ class TestGeminiAdapter:
         assert "demo__hello" in content
 
 
+# ── Antigravity ──────────────────────────────────────────────────────────────
+
+
+class TestAntigravityAdapter:
+    def test_emits_plugin_json(self, synthetic_plugin: PluginSource, output_root: Path):
+        AntigravityAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        plugin_json = output_root / ".antigravity" / "plugins" / "demo" / "plugin.json"
+        assert plugin_json.is_file()
+
+        data = json.loads(plugin_json.read_text())
+        assert data["name"] == "demo"
+        assert data["description"] == "Demo plugin for tests"
+
+    def test_emits_skill_with_bare_name(self, synthetic_plugin: PluginSource, output_root: Path):
+        AntigravityAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        skill_md = (
+            output_root / ".antigravity" / "plugins" / "demo" / "skills" / "hello" / "SKILL.md"
+        )
+        assert skill_md.is_file()
+
+        fm, _ = parse_frontmatter(skill_md.read_text())
+        # No `<plugin>__` namespacing — the plugin directory already scopes it.
+        assert fm["name"] == "hello"
+
+    def test_emits_agent_with_tier_model_and_mapped_tools(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        AntigravityAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        agent_md = output_root / ".antigravity" / "plugins" / "demo" / "agents" / "greeter.md"
+        assert agent_md.is_file()
+
+        fm, _ = parse_frontmatter(agent_md.read_text())
+        assert fm["name"] == "greeter"
+        # opus -> pro (agy tier alias, not a concrete gemini/claude model id)
+        assert fm["model"] == "pro"
+        # Read, Grep -> view_file, grep_search (confirmed agy tool names)
+        assert fm["tools"] == ["view_file", "grep_search"]
+        assert fm["subagent"] == "true"
+
+    def test_agent_omits_tools_when_source_has_no_tools_field(
+        self, tmp_path: Path, output_root: Path
+    ):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "unrestricted",
+            "name: unrestricted\ndescription: Use when unrestricted.",
+            "# Unrestricted\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        agent_md = output_root / ".antigravity" / "plugins" / "demo" / "agents" / "unrestricted.md"
+        fm, _ = parse_frontmatter(agent_md.read_text())
+        assert "tools" not in fm
+
+    def test_model_alias_tiers(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+
+        agents = [
+            _make_agent(
+                plugin_dir,
+                name,
+                f"name: {name}\ndescription: Use for {name}.\nmodel: {model}",
+                f"# {name}\n",
+            )
+            for name, model in [
+                ("sonnet-agent", "sonnet"),
+                ("haiku-agent", "haiku"),
+                ("inherit-agent", "inherit"),
+            ]
+        ]
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=agents
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        expected = {"sonnet-agent": "pro", "haiku-agent": "flash", "inherit-agent": "inherit"}
+        for name, exp_model in expected.items():
+            agent_md = output_root / ".antigravity" / "plugins" / "demo" / "agents" / f"{name}.md"
+            fm, _ = parse_frontmatter(agent_md.read_text())
+            assert fm["model"] == exp_model, f"{name}: expected {exp_model}, got {fm['model']}"
+
+    def test_command_always_inlines_never_at_path(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        """`agy plugin validate` never evaluates @{path}, so commands always inline."""
+        AntigravityAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        toml_path = (
+            output_root / ".antigravity" / "plugins" / "demo" / "commands" / "demo" / "say-hi.toml"
+        )
+        assert toml_path.is_file()
+        content = toml_path.read_text()
+        assert "@{" not in content
+        assert "Greet the user" in content
+
+    def test_command_toml_parses_as_valid_toml(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        import tomllib
+
+        AntigravityAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        toml_path = (
+            output_root / ".antigravity" / "plugins" / "demo" / "commands" / "demo" / "say-hi.toml"
+        )
+        parsed = tomllib.loads(toml_path.read_text())
+        assert "description" in parsed
+        assert "prompt" in parsed
+        assert "{{args}}" in parsed["prompt"]
+        assert parsed["prompt"].rstrip().endswith("{{args}}")
+
+
 # ── Copilot ──────────────────────────────────────────────────────────────────
 
 
@@ -1282,6 +1407,7 @@ class TestCapabilities:
         from tools.adapters.capabilities import CAPABILITIES
 
         for adapter_cls in (
+            AntigravityAdapter,
             CodexAdapter,
             CopilotAdapter,
             CursorAdapter,

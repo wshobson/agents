@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 from tools.validate_generated import (
     Report,
+    validate_antigravity,
     validate_codex,
     validate_copilot,
     validate_cursor,
@@ -413,3 +414,187 @@ class TestGeminiValidator:
         assert any(
             "GEMINI.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings()
         )
+
+
+# ── Antigravity ──────────────────────────────────────────────────────────────
+
+
+def _write_plugin_json(plugin_dir: Path, content: str) -> None:
+    plugin_dir.mkdir(parents=True, exist_ok=True)
+    (plugin_dir / "plugin.json").write_text(content)
+
+
+class TestAntigravityValidator:
+    def test_missing_plugin_json_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        plugin_dir.mkdir(parents=True)
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("missing plugin.json" in f.message for f in report.errors())
+
+    def test_plugin_json_parse_error(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, "{not valid json")
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("JSON parse error" in f.message for f in report.errors())
+
+    def test_plugin_json_missing_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, "{}")
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("missing or empty required `name`" in f.message for f in report.errors())
+
+    def test_plugin_json_unsafe_name_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo plugin!"}')
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("not agy-safe" in f.message for f in report.errors())
+
+    def test_plugin_json_name_mismatch_dir_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "other-name"}')
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("!= directory name" in f.message for f in report.errors())
+
+    def test_skill_name_mismatch_dir_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        skill_dir = plugin_dir / "skills" / "hello"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text(
+            "---\nname: not-hello\ndescription: Use when testing.\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("frontmatter name" in f.message for f in report.errors())
+
+    def test_agent_missing_name_and_description_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        agents_dir = plugin_dir / "agents"
+        agents_dir.mkdir(parents=True)
+        (agents_dir / "bad.md").write_text("---\nmodel: pro\n---\n\nBody.\n")
+
+        report = Report()
+        validate_antigravity(report)
+        errors = [f.message for f in report.errors()]
+        assert any("name" in m for m in errors)
+        assert any("description" in m for m in errors)
+
+    def test_agent_invalid_model_tier_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        agents_dir = plugin_dir / "agents"
+        agents_dir.mkdir(parents=True)
+        (agents_dir / "bad.md").write_text(
+            "---\nname: bad\ndescription: Use when testing.\nmodel: gemini-2.5-pro\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("not in" in f.message for f in report.errors())
+
+    @pytest.mark.parametrize("tier", ["inherit", "flash", "pro"])
+    def test_agent_valid_model_tiers_pass(
+        self, tier: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        agents_dir = plugin_dir / "agents"
+        agents_dir.mkdir(parents=True)
+        (agents_dir / "good.md").write_text(
+            f"---\nname: good\ndescription: Use when testing.\nmodel: {tier}\n---\n\nBody.\n"
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert not report.errors()
+
+    def test_command_toml_missing_keys_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        cmds_dir = plugin_dir / "commands" / "demo"
+        cmds_dir.mkdir(parents=True)
+        (cmds_dir / "incomplete.toml").write_text('description = "Just a desc, no prompt"\n')
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("missing keys" in f.message for f in report.errors())
+
+    def test_command_toml_parse_error(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        cmds_dir = plugin_dir / "commands" / "demo"
+        cmds_dir.mkdir(parents=True)
+        (cmds_dir / "broken.toml").write_text("not = valid = toml = at = all")
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("TOML parse error" in f.message for f in report.errors())
+
+    def test_command_prompt_without_args_warns(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        cmds_dir = plugin_dir / "commands" / "demo"
+        cmds_dir.mkdir(parents=True)
+        (cmds_dir / "no_args.toml").write_text('description = "Test"\nprompt = """Run this."""\n')
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("{{args}}" in f.message for f in report.warnings())
+
+    def test_valid_plugin_passes_with_no_findings(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo", "description": "Demo plugin"}')
+        (plugin_dir / "skills" / "hello").mkdir(parents=True)
+        (plugin_dir / "skills" / "hello" / "SKILL.md").write_text(
+            "---\nname: hello\ndescription: Use when greeting.\n---\n\nBody.\n"
+        )
+        (plugin_dir / "agents").mkdir(parents=True)
+        (plugin_dir / "agents" / "greeter.md").write_text(
+            "---\nname: greeter\ndescription: Use when delegating.\nmodel: pro\nsubagent: true\n"
+            "---\n\nBody.\n"
+        )
+        cmds_dir = plugin_dir / "commands" / "demo"
+        cmds_dir.mkdir(parents=True)
+        (cmds_dir / "say-hi.toml").write_text(
+            'description = "Say hi"\nprompt = """Greet the user.\n\n{{args}}"""\n'
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert not report.errors()
+        assert not report.warnings()

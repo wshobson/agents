@@ -169,6 +169,35 @@ CAPABILITIES: dict[str, Capability] = {
         bare_model_aliases=False,
         notes="Auto-discovers skills/ and agents/ at extension root. TOML commands at commands/. Use @{path} for file injection in prompts. GEMINI.md is injected every prompt — keep tight.",
     ),
+    "antigravity": Capability(
+        harness_id="antigravity",
+        display_name="Google Antigravity CLI",
+        skills_native=True,
+        agents_native=True,  # native subagents via agents/<name>.md + invoke_subagent/define_subagent
+        commands_native=True,  # TOML commands accepted; agy converts them to skills internally
+        plugin_marketplace=True,  # `agy plugin install <name>@marketplace` / `agy plugin link`
+        parallel_agents=True,
+        tool_allowlist_per_agent=True,
+        todowrite=False,
+        task_spawn=True,  # invoke_subagent / define_subagent tools
+        mcp_servers=True,
+        hooks=True,
+        context_file_name="AGENTS.md",
+        context_file_max_lines=_CONTEXT_LINES_CAP,
+        skill_body_max_bytes=_NO_CAP,
+        tool_name_case="lowercase",
+        bare_model_aliases=False,
+        notes=(
+            "One agy plugin per source plugin at .antigravity/plugins/<plugin>/ (no `<plugin>__` "
+            "namespacing — plugins are already self-contained). plugin.json = {name, description}. "
+            "Skills at skills/<skill>/SKILL.md, subagents at agents/<agent>.md (model is a tier "
+            "alias: inherit/flash/pro; tools use agy-native names via TOOL_NAME_MAPS), TOML "
+            "commands at commands/<plugin>/<cmd>.toml (agy reports them 'converted to skills'). "
+            "Verified against the installed agy 1.1.14 binary via `agy plugin validate` — that "
+            "command does not evaluate @{path} template syntax, so command bodies are always "
+            "inlined rather than file-injected."
+        ),
+    ),
 }
 
 
@@ -241,6 +270,20 @@ TOOL_NAME_MAPS: dict[str, dict[str, str]] = {
         "Agent": "@agent",
         "Task": "@agent",
     },
+    # Verified against the installed agy 1.1.14 binary's own docs
+    # (~/.gemini/antigravity-cli/builtin/skills/{agy-customizations,antigravity_guide}/) plus
+    # empirical `agy plugin validate` probes. Only tool names actually confirmed there are
+    # mapped; Glob/WebFetch/WebSearch/TodoWrite have no confirmed agy-native equivalent and are
+    # intentionally omitted rather than guessed — unmapped names pass through unchanged.
+    "antigravity": {
+        "Read": "view_file",
+        "Edit": "replace_file_content",
+        "Write": "write_file",
+        "Bash": "run_command",
+        "Grep": "grep_search",
+        "Agent": "invoke_subagent",
+        "Task": "invoke_subagent",
+    },
 }
 
 
@@ -294,6 +337,19 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
         "sonnet": "gemini-2.5-pro",
         "haiku": "gemini-2.5-flash",
         "inherit": "gemini-2.5-pro",
+    },
+    # agy subagent frontmatter takes a tier alias, not a concrete model id (confirmed via
+    # `agy models` — concrete ids are things like "gemini-3.1-pro-high", never bare tiers).
+    # Mirrors gemini's tiering: whatever gemini resolves to its pro-class model maps to
+    # "pro" here, flash-class maps to "flash"; `inherit` stays the literal string "inherit"
+    # (agy's own pass-through-to-session-model tier) rather than following gemini's inherit
+    # resolution to a concrete pro-class id.
+    "antigravity": {
+        "fable": "pro",
+        "opus": "pro",
+        "sonnet": "pro",
+        "haiku": "flash",
+        "inherit": "inherit",
     },
 }
 

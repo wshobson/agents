@@ -602,6 +602,130 @@ def validate_gemini(report: Report) -> None:
             )
 
 
+# ── Antigravity validators ───────────────────────────────────────────────────
+
+
+_ANTIGRAVITY_PLUGIN_NAME_RE = re.compile(r"^[a-zA-Z0-9_-]+$")
+_ANTIGRAVITY_MODEL_TIERS = {"inherit", "flash", "pro"}
+
+
+def validate_antigravity(report: Report) -> None:
+    root = WORKTREE / ".antigravity" / "plugins"
+    if not root.is_dir():
+        return
+
+    for plugin_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+        # 1. plugin.json parses, has a non-empty agy-safe `name`, and it matches the
+        # directory (agy discovers plugins by directory; a mismatch is confusing at best).
+        plugin_json = plugin_dir / "plugin.json"
+        if not plugin_json.is_file():
+            report.add(
+                severity="error",
+                harness="antigravity",
+                path=plugin_dir,
+                message="missing plugin.json",
+                remediation="Regenerate via `make generate HARNESS=antigravity`.",
+            )
+        else:
+            try:
+                data = json.loads(plugin_json.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as e:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=plugin_json,
+                    message=f"JSON parse error: {e}",
+                    remediation="Regenerate via `make generate HARNESS=antigravity`.",
+                )
+                data = None
+            if data is not None:
+                name = data.get("name")
+                if not isinstance(name, str) or not name:
+                    report.add(
+                        severity="error",
+                        harness="antigravity",
+                        path=plugin_json,
+                        message="missing or empty required `name` field",
+                        remediation="Every agy plugin.json needs a non-empty `name`.",
+                    )
+                else:
+                    if not _ANTIGRAVITY_PLUGIN_NAME_RE.fullmatch(name):
+                        report.add(
+                            severity="error",
+                            harness="antigravity",
+                            path=plugin_json,
+                            message=f"plugin name {name!r} is not agy-safe (must match ^[a-zA-Z0-9_-]+$)",
+                            remediation="Rename the plugin to letters, digits, hyphens, underscores only.",
+                        )
+                    if name != plugin_dir.name:
+                        report.add(
+                            severity="error",
+                            harness="antigravity",
+                            path=plugin_json,
+                            message=f"plugin.json name {name!r} != directory name {plugin_dir.name!r}",
+                            remediation="agy discovers plugins by directory; name must match.",
+                        )
+
+        # 2. Every skill's frontmatter name matches its directory.
+        for skill_md in sorted((plugin_dir / "skills").glob("*/SKILL.md")):
+            fm, _ = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
+            if fm.get("name") != skill_md.parent.name:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=skill_md,
+                    message=f"frontmatter name {fm.get('name')!r} != directory {skill_md.parent.name!r}",
+                    remediation="agy discovers skills by directory; name must match.",
+                )
+
+        # 3. Every agent has name + description, and model is a valid tier alias.
+        for agent_md in sorted((plugin_dir / "agents").glob("*.md")):
+            fm, _ = parse_frontmatter(agent_md.read_text(encoding="utf-8"))
+            _check_nonempty_str_field(report, fm, "name", "antigravity", agent_md, label="agent")
+            _check_nonempty_str_field(
+                report, fm, "description", "antigravity", agent_md, label="agent"
+            )
+            model = fm.get("model")
+            if model not in _ANTIGRAVITY_MODEL_TIERS:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=agent_md,
+                    message=f"model {model!r} not in {sorted(_ANTIGRAVITY_MODEL_TIERS)}",
+                    remediation="agy subagent `model` must be a tier alias: inherit, flash, or pro.",
+                )
+
+        # 4. Every command TOML parses and has description + prompt + {{args}}.
+        for toml_path in sorted((plugin_dir / "commands").rglob("*.toml")):
+            try:
+                data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
+            except tomllib.TOMLDecodeError as e:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=toml_path,
+                    message=f"TOML parse error: {e}",
+                    remediation="Regenerate via `make generate HARNESS=antigravity`.",
+                )
+                continue
+            if "description" not in data or "prompt" not in data:
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=toml_path,
+                    message=f"missing keys (have: {sorted(data.keys())})",
+                    remediation="agy TOML commands require both `description` and `prompt`.",
+                )
+            if "prompt" in data and "{{args}}" not in data["prompt"]:
+                report.add(
+                    severity="warning",
+                    harness="antigravity",
+                    path=toml_path,
+                    message="prompt does not include {{args}} placeholder",
+                    remediation="Append {{args}} so user input is appended to the prompt.",
+                )
+
+
 # ── Driver ───────────────────────────────────────────────────────────────────
 
 
@@ -694,6 +818,7 @@ _VALIDATORS = {
     "cursor": validate_cursor,
     "gemini": validate_gemini,
     "opencode": validate_opencode,
+    "antigravity": validate_antigravity,
 }
 
 

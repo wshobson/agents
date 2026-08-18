@@ -332,6 +332,90 @@ class TestCopilotRoundTrip:
         assert not problems, "Copilot agent frontmatter issues:\n  " + "\n  ".join(problems[:20])
 
 
+@pytest.mark.skipif(
+    not (WORKTREE / ".antigravity" / "plugins").is_dir(),
+    reason="Antigravity artifacts not generated (run `make generate HARNESS=antigravity` first)",
+)
+class TestAntigravityRoundTrip:
+    def test_antigravity_plugin_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "plugins").iterdir()))
+        assert n == len(list_plugins()), (
+            f"plugin dir count mismatch: source={len(list_plugins())} antigravity={n}"
+        )
+
+    def test_antigravity_skill_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "plugins").glob("*/skills/*/SKILL.md")))
+        assert n == _source_skill_count(), (
+            f"skill count mismatch: source={_source_skill_count()} antigravity={n}"
+        )
+
+    def test_antigravity_agent_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "plugins").glob("*/agents/*.md")))
+        assert n == _source_agent_count(), (
+            f"agent count mismatch: source={_source_agent_count()} antigravity={n}"
+        )
+
+    def test_antigravity_command_count_matches_source(self):
+        n = len(list((WORKTREE / ".antigravity" / "plugins").glob("*/commands/*/*.toml")))
+        assert n == _source_command_count(), (
+            f"command count mismatch: source={_source_command_count()} antigravity={n}"
+        )
+
+    def test_every_antigravity_plugin_json_matches_source_plugin(self):
+        problems = []
+        for plugin_name in list_plugins():
+            plugin_json = WORKTREE / ".antigravity" / "plugins" / plugin_name / "plugin.json"
+            if not plugin_json.is_file():
+                problems.append(f"{plugin_name}: missing plugin.json")
+                continue
+            data = json.loads(plugin_json.read_text())
+            if data.get("name") != plugin_name:
+                problems.append(f"{plugin_name}: plugin.json name={data.get('name')!r}")
+        assert not problems, "Antigravity plugin.json issues:\n  " + "\n  ".join(problems[:20])
+
+    def test_no_at_path_injection_in_antigravity_commands(self):
+        """`agy plugin validate` never evaluates @{path} — every generated command
+        must inline its body instead of relying on unverified file injection.
+
+        Matches only the Gemini-style `@{plugins/...}` injection pattern our own
+        adapters would emit — not incidental `@{` substrings in example code
+        (e.g. `npm install pkg@{version}`) that show up in some command bodies.
+        """
+        at_pattern = re.compile(r"@\{(plugins/[^}]+)\}")
+        offenders = []
+        for toml_path in (WORKTREE / ".antigravity" / "plugins").glob("*/commands/*/*.toml"):
+            if at_pattern.search(toml_path.read_text()):
+                offenders.append(str(toml_path.relative_to(WORKTREE)))
+        assert not offenders, "Antigravity commands using unverified @{path}:\n  " + "\n  ".join(
+            offenders[:20]
+        )
+
+    def test_every_antigravity_agent_model_is_valid_tier(self):
+        problems = []
+        for agent_md in (WORKTREE / ".antigravity" / "plugins").glob("*/agents/*.md"):
+            fm, _ = parse_frontmatter(agent_md.read_text())
+            model = fm.get("model")
+            if model not in {"inherit", "flash", "pro"}:
+                problems.append(f"{agent_md.relative_to(WORKTREE)}: model={model!r}")
+        assert not problems, "Antigravity agent model issues:\n  " + "\n  ".join(problems[:20])
+
+    def test_every_antigravity_command_has_prompt_and_args(self):
+        problems = []
+        for toml_path in (WORKTREE / ".antigravity" / "plugins").glob("*/commands/*/*.toml"):
+            try:
+                data = tomllib.loads(toml_path.read_text())
+            except tomllib.TOMLDecodeError as e:
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: parse error {e}")
+                continue
+            if "description" not in data:
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: missing description")
+            if "prompt" not in data:
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: missing prompt")
+            elif "{{args}}" not in data["prompt"]:
+                problems.append(f"{toml_path.relative_to(WORKTREE)}: prompt missing {{{{args}}}}")
+        assert not problems, "Antigravity TOML issues:\n  " + "\n  ".join(problems[:20])
+
+
 # ── Native-install manifests (always run; these are committed source) ─────────
 
 

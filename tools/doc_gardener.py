@@ -239,6 +239,30 @@ def check_stale_artifacts(report: Report) -> None:
                 if src.is_file():
                     pairs.append((src, skill_md))
 
+    # Antigravity: one self-contained plugin dir per source plugin at
+    # .antigravity/plugins/<plugin>/{plugin.json,skills/,agents/,commands/<plugin>/}.
+    antigravity_plugins = WORKTREE / ".antigravity" / "plugins"
+    if antigravity_plugins.is_dir():
+        for plugin_dir in sorted(p for p in antigravity_plugins.iterdir() if p.is_dir()):
+            plugin_name = plugin_dir.name
+            plugin_json = plugin_dir / "plugin.json"
+            if plugin_json.is_file():
+                src = PLUGINS_DIR / plugin_name / ".claude-plugin" / "plugin.json"
+                if src.is_file():
+                    pairs.append((src, plugin_json))
+            for skill_md in (plugin_dir / "skills").glob("*/SKILL.md"):
+                src = PLUGINS_DIR / plugin_name / "skills" / skill_md.parent.name / "SKILL.md"
+                if src.is_file():
+                    pairs.append((src, skill_md))
+            for agent_md in (plugin_dir / "agents").glob("*.md"):
+                src = PLUGINS_DIR / plugin_name / "agents" / agent_md.name
+                if src.is_file():
+                    pairs.append((src, agent_md))
+            for toml_path in (plugin_dir / "commands").rglob("*.toml"):
+                src = PLUGINS_DIR / plugin_name / "commands" / f"{toml_path.stem}.md"
+                if src.is_file():
+                    pairs.append((src, toml_path))
+
     for src, gen in pairs:
         if src.stat().st_mtime > gen.stat().st_mtime + 1:  # 1s grace
             # Derive the plugin name correctly regardless of source layout.
