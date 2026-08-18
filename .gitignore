@@ -37,11 +37,7 @@ node_modules
 #   .cursor/                              curated Cursor rules
 #   .agents/plugins/marketplace.json      Codex marketplace registry
 #   plugins/*/.codex-plugin/plugin.json   per-plugin Codex manifest (tracked under plugins/)
-# Gemini + OpenCode install via clone + `make` (their transformed trees below stay ignored).
-#
-# AGENTS.md is the committed canonical context file; Codex/Cursor/OpenCode read it
-# directly, Claude Code reads it via CLAUDE.md (a symlink to AGENTS.md), and Gemini CLI
-# reads it via gemini-extension.json (`contextFileName`) / .gemini/settings.json.
+# OpenCode installs via clone + `make` (its transformed trees below stay ignored).
 
 # Codex CLI — transformed skills/agents (local generation; the marketplace reads source)
 .codex/
@@ -55,12 +51,6 @@ opencode.json
 
 # Copilot
 .copilot/
-
-# Gemini CLI extension trees (install via clone + `make generate HARNESS=gemini`)
-commands/**/*.toml
-/commands/
-/agents/
-/skills/
 
 # Local agent caches (but NOT the committed Codex marketplace under .agents/plugins/)
 .agent/

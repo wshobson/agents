@@ -1,7 +1,7 @@
 <!--
 Thanks for the PR. A few quick orientation pointers:
-- AGENTS.md is the canonical context file (read by Codex/Cursor/OpenCode; CLAUDE.md is a
-  symlink to AGENTS.md; Gemini reads it via `.gemini/settings.json`).
+- AGENTS.md is the canonical context file (read by Codex/Cursor/OpenCode/Antigravity CLI;
+  CLAUDE.md is a symlink to AGENTS.md).
 - docs/authoring.md is the portable-content style guide.
 - If you touched plugin source, run `make generate-all` to refresh the committed
   native-install registries (CI gates registry drift).
@@ -20,7 +20,7 @@ Thanks for the PR. A few quick orientation pointers:
 - [ ] Plugin authoring (new or modified `plugins/<name>/...`)
 - [ ] Adapter framework (`tools/adapters/`)
 - [ ] Quality tooling (validators, gardener, plugin-eval)
-- [ ] Per-harness setup or docs (GEMINI.md / docs/harnesses.md)
+- [ ] Per-harness setup or docs (docs/harnesses.md)
 - [ ] AGENTS.md / ARCHITECTURE.md / docs/
 - [ ] CI / build / release
 - [ ] Other
@@ -33,7 +33,7 @@ Thanks for the PR. A few quick orientation pointers:
 - [ ] OpenAI Codex CLI
 - [ ] Cursor
 - [ ] OpenCode
-- [ ] Gemini CLI
+- [ ] Antigravity CLI
 - [ ] Pure tooling / framework (no harness behavior change)
 
 ## Test plan

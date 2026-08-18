@@ -40,7 +40,7 @@ body:
         - OpenAI Codex CLI
         - Cursor
         - OpenCode
-        - Gemini CLI
+        - Antigravity CLI
         - Multiple harnesses
         - Adapter framework / tooling (not a specific harness)
     validations:

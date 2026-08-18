@@ -4,9 +4,9 @@ Top-level architectural map for the claude-agents marketplace. Detail lives in [
 
 ## Invariants
 
-1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/skills/`, `.codex/agents/`, `.opencode/`, `.copilot/`, `commands/`, `agents/`, `skills/` at extension root for Gemini) are produced by adapters and gitignored. The exception: small native-install registries (`.agents/plugins/marketplace.json`, `plugins/*/.codex-plugin/plugin.json`, `.cursor-plugin/`, `.cursor/rules/`, `gemini-extension.json`) are committed — they only point at the source `plugins/`, so the invariant holds. Never hand-edit generated files.
+1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/skills/`, `.codex/agents/`, `.opencode/`, `.copilot/`, `.antigravity/`) are produced by adapters and gitignored. The exception: small native-install registries (`.agents/plugins/marketplace.json`, `plugins/*/.codex-plugin/plugin.json`, `.cursor-plugin/`, `.cursor/rules/`) are committed — they only point at the source `plugins/`, so the invariant holds. Never hand-edit generated files.
 
-2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. Claude Code reads `CLAUDE.md`, a symlink to `AGENTS.md`. Gemini CLI reads it via `.gemini/settings.json` `context.fileName`. Codex / Cursor / OpenCode read `AGENTS.md` natively.
+2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. Claude Code reads `CLAUDE.md`, a symlink to `AGENTS.md`. Codex / Cursor / OpenCode / the Antigravity CLI (`agy`) all read `AGENTS.md` natively.
 
 3. **Adapters own per-harness mechanics; source content stays portable.** Authors write Claude-Code-quality markdown. Adapters under `tools/adapters/` handle every harness-specific transform (frontmatter rewriting, model-alias mapping, body-size caps, tool-name remapping). Source files never carry harness conditional logic.
 
@@ -22,10 +22,9 @@ claude-agents/
 ├── CLAUDE.md                       # symlink → AGENTS.md (Claude-specific addenda live in AGENTS.md)
 ├── ARCHITECTURE.md                 # This file
 ├── README.md                       # User-facing GitHub landing page
-├── GEMINI.md                       # Gemini-specific setup (auto-loaded by Gemini CLI)
 ├── CONTRIBUTING.md                 # Contributor entry point
 ├── .claude-plugin/marketplace.json # Plugin registry (source of truth)
-├── .gemini/settings.json           # Gemini CLI → AGENTS.md redirect
+├── .antigravity/plugins/<p>/       # Generated Antigravity CLI plugins (gitignored)
 ├── plugins/                        # SOURCE OF TRUTH (90 local plugins; 1 external in marketplace)
 │   └── <name>/
 │       ├── .claude-plugin/plugin.json
@@ -36,7 +35,7 @@ claude-agents/
 │   ├── adapters/                   # Per-harness adapter framework
 │   │   ├── base.py                 # Parser, HarnessAdapter ABC, helpers
 │   │   ├── capabilities.py         # Capability matrix; consumed by every adapter
-│   │   ├── codex.py / cursor.py / opencode.py / gemini.py / copilot.py
+│   │   ├── codex.py / cursor.py / opencode.py / antigravity.py / copilot.py
 │   │   └── cursor_rules/           # Hand-curated .mdc rules
 │   ├── generate.py                 # Unified CLI: `make generate HARNESS=<x>`
 │   ├── validate_generated.py       # Structural validation
@@ -62,7 +61,7 @@ Each adapter consumes the canonical `plugins/` source and emits harness-native a
 | `cursor.py` | `.cursor-plugin/`, `.cursor/rules/*.mdc` | Marketplace manifests + hand-curated rules. Cursor reads `.claude/` directly for skills/agents |
 | `opencode.py` | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | Permission block from `tools:` allowlist (locked agents preserve intent); strict lowercase tool names; OpenCode-safe skill names |
 | `copilot.py` | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to native Claude models |
-| `gemini.py` | `skills/`, `agents/`, `commands/*.toml` at extension root | Native skills + April-2026 subagents; `@{path}` injection for large command bodies |
+| `antigravity.py` | `.antigravity/plugins/<p>/{skills/,agents/,commands/}` | Self-contained agy plugin per source plugin (no `<plugin>__` namespacing); model tier alias (`inherit`/`flash`/`pro`); TOML commands always inline the body (no `@{path}` injection — `agy plugin validate` never evaluates it) |
 
 Detail in [`docs/harnesses.md`](docs/harnesses.md) (capability matrix per harness) and [`docs/architecture.md`](docs/architecture.md) (full design rationale).
 
@@ -74,7 +73,7 @@ Three mechanical gates, each runnable as a make target and wired into CI:
 2. **`make garden`** — drift detection (dead links, stale artifacts, oversize skills, marketplace orphans). Sorted by severity with per-kind summary.
 3. **`make test`** — pytest suite (adapters + validators + gardener + real-source + round-trip). Real-CLI smoke tests are excluded; run them separately via `make smoke-test`.
 
-CI workflow: [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs all three on every PR, plus a `cli-smoke-test` job that installs OpenCode + Gemini and exercises them against the generated artifacts.
+CI workflow: [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs all three on every PR, plus a `cli-smoke-test` job that installs OpenCode + Antigravity CLI and exercises them against the generated artifacts.
 
 ## Plugin component model
 

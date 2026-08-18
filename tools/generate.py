@@ -2,7 +2,7 @@
 """Unified CLI for emitting per-harness artifacts from claude-agents plugin sources.
 
 Usage:
-    python tools/generate.py --harness <codex|copilot|cursor|opencode|gemini> [--plugin <name>] [--all] [--clean] [--prune] [--strict]
+    python tools/generate.py --harness <codex|copilot|cursor|opencode|antigravity> [--plugin <name>] [--all] [--clean] [--prune] [--strict]
 """
 
 from __future__ import annotations
@@ -33,7 +33,6 @@ _HARNESS_TARGETS = {
     "codex": [".codex", ".agents/plugins"],
     "cursor": [".cursor", ".cursor-plugin"],
     "opencode": [".opencode", "opencode.json"],
-    "gemini": ["commands", "agents", "skills"],
     "copilot": [".copilot/agents", ".copilot/skills", ".copilot/commands"],
     "antigravity": [".antigravity"],
 }
@@ -53,10 +52,6 @@ def get_adapter(harness_id: str, output_root: Path) -> HarnessAdapter:
         from tools.adapters.opencode import OpenCodeAdapter
 
         return OpenCodeAdapter(output_root=output_root)
-    if harness_id == "gemini":
-        from tools.adapters.gemini import GeminiAdapter
-
-        return GeminiAdapter(output_root=output_root)
     if harness_id == "copilot":
         from tools.adapters.copilot import CopilotAdapter
 
@@ -160,11 +155,6 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
         d = output_root / ".opencode"
         if d.is_dir():
             candidates.extend(p for p in d.rglob("*") if p.is_file())
-    elif harness_id == "gemini":
-        for sub in ("commands", "agents", "skills"):
-            d = output_root / sub
-            if d.is_dir():
-                candidates.extend(p for p in d.rglob("*") if p.is_file())
     elif harness_id == "copilot":
         for sub in ("agents", "skills"):
             d = output_root / ".copilot" / sub
@@ -209,7 +199,7 @@ def main() -> int:
         "--harness",
         required=True,
         choices=supported_harnesses(),
-        help="Target harness (codex, copilot, cursor, opencode, or gemini).",
+        help="Target harness (codex, copilot, cursor, opencode, or antigravity).",
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--plugin", help="Generate only for the named plugin.")

@@ -5,8 +5,8 @@ globs: ["plugins/*/agents/*.md", "plugins/*/skills/*/SKILL.md", "plugins/*/comma
 
 # Authoring portable plugin content
 
-This content ships to Claude Code, Codex CLI, Cursor, OpenCode, and Gemini CLI. The adapter
-framework handles per-harness mechanics, but content choices affect portability.
+This content ships to Claude Code, Codex CLI, Cursor, OpenCode, and the Antigravity CLI. The
+adapter framework handles per-harness mechanics, but content choices affect portability.
 
 ## Frontmatter
 

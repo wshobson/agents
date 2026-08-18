@@ -10,12 +10,12 @@ contact_links:
     url: https://github.com/wshobson/agents/blob/main/AGENTS.md
     about: >-
       Start here — table of contents for the whole repo, read natively by
-      Codex / Cursor / OpenCode and imported by Claude Code / Gemini CLI.
+      Codex / Cursor / OpenCode / Antigravity CLI and imported by Claude Code.
   - name: Authoring guide (cross-harness style guide)
     url: https://github.com/wshobson/agents/blob/main/docs/authoring.md
     about: >-
       Read before adding new plugins or components — covers portability
-      across Claude Code, Codex CLI, Cursor, OpenCode, and Gemini CLI.
+      across Claude Code, Codex CLI, Cursor, OpenCode, and the Antigravity CLI.
   - name: Per-harness setup
     url: https://github.com/wshobson/agents/blob/main/docs/harnesses.md
     about: >-

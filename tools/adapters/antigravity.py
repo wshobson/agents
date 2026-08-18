@@ -1,7 +1,7 @@
 """Antigravity CLI adapter (Google Antigravity, binary `agy`).
 
 Emits one native agy plugin per source plugin at `.antigravity/plugins/<plugin>/` —
-no `<plugin>__` flat namespacing (unlike Codex/OpenCode/Gemini): agy plugins are
+no `<plugin>__` flat namespacing (unlike Codex/OpenCode): agy plugins are
 already self-contained, namespaced directories, so skill/agent/command names stay
 bare inside them.
 

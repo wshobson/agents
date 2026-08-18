@@ -520,88 +520,6 @@ def validate_opencode(report: Report) -> None:
                 )
 
 
-# ── Gemini validators ────────────────────────────────────────────────────────
-
-
-def validate_gemini(report: Report) -> None:
-    skills_dir = WORKTREE / "skills"
-    agents_dir = WORKTREE / "agents"
-    commands_dir = WORKTREE / "commands"
-
-    # 1. Every TOML command parses + has description + prompt
-    if commands_dir.is_dir():
-        for toml_path in commands_dir.rglob("*.toml"):
-            try:
-                data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
-            except tomllib.TOMLDecodeError as e:
-                report.add(
-                    severity="error",
-                    harness="gemini",
-                    path=toml_path,
-                    message=f"TOML parse error: {e}",
-                    remediation="Likely a quoting issue in the command body. Regenerate or escape triple-quotes.",
-                )
-                continue
-            if "description" not in data or "prompt" not in data:
-                report.add(
-                    severity="error",
-                    harness="gemini",
-                    path=toml_path,
-                    message=f"missing keys (have: {sorted(data.keys())})",
-                    remediation="Gemini TOML requires both `description` and `prompt`.",
-                )
-            if "prompt" in data and "{{args}}" not in data["prompt"]:
-                report.add(
-                    severity="warning",
-                    harness="gemini",
-                    path=toml_path,
-                    message="prompt does not include {{args}} placeholder",
-                    remediation="Append {{args}} so user input is appended to the prompt.",
-                )
-
-    # 2. Every native skill has frontmatter name matching directory
-    if skills_dir.is_dir():
-        for skill_md in skills_dir.glob("*/SKILL.md"):
-            content = skill_md.read_text(encoding="utf-8")
-            fm, _ = parse_frontmatter(content)
-            if fm.get("name") != skill_md.parent.name:
-                report.add(
-                    severity="error",
-                    harness="gemini",
-                    path=skill_md,
-                    message=f"frontmatter name {fm.get('name')!r} != directory {skill_md.parent.name!r}",
-                    remediation="Gemini auto-discovers by directory; name must match.",
-                )
-
-    # 3. Subagents have a Gemini-compatible model
-    if agents_dir.is_dir():
-        valid_model_prefixes = ("gemini-",)
-        for agent_md in agents_dir.glob("*.md"):
-            fm, _ = parse_frontmatter(agent_md.read_text(encoding="utf-8"))
-            model = fm.get("model", "")
-            if model and not model.startswith(valid_model_prefixes):
-                report.add(
-                    severity="warning",
-                    harness="gemini",
-                    path=agent_md,
-                    message=f"model {model!r} doesn't look like a Gemini model id",
-                    remediation="Gemini wants names like 'gemini-2.5-pro' / 'gemini-2.5-flash'.",
-                )
-
-    # 4. GEMINI.md size
-    gemini_md = WORKTREE / "GEMINI.md"
-    if gemini_md.is_file():
-        line_count = len(gemini_md.read_text(encoding="utf-8").splitlines())
-        if line_count > 150:
-            report.add(
-                severity="warning",
-                harness="gemini",
-                path=gemini_md,
-                message=f"GEMINI.md is {line_count} lines (cap: 150 — table of contents pattern)",
-                remediation="Move detail to docs/.",
-            )
-
-
 # ── Antigravity validators ───────────────────────────────────────────────────
 
 
@@ -816,7 +734,6 @@ _VALIDATORS = {
     "codex": validate_codex,
     "copilot": validate_copilot,
     "cursor": validate_cursor,
-    "gemini": validate_gemini,
     "opencode": validate_opencode,
     "antigravity": validate_antigravity,
 }

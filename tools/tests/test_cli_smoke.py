@@ -5,7 +5,7 @@ that pure-Python parsing can't see (CLI version drift, schema validation surpris
 plugin loader behavior).
 
 Each test class skips gracefully when its CLI isn't installed — so local devs and
-CI runners only exercise the tools they have. CI installs OpenCode + Gemini CLI
+CI runners only exercise the tools they have. CI installs OpenCode + Antigravity CLI
 (both are quick) and the corresponding test classes become required gates.
 
 No API keys needed: every command exercised here is local-only (`agent list`,
@@ -99,23 +99,6 @@ class TestOpenCodeSmoke:
             f"OpenCode failed to discover {len(missing)} agents — likely a frontmatter "
             f"or permission-block bug. Missing: {sorted(missing)[:10]}{'...' if len(missing) > 10 else ''}"
         )
-
-
-# ── Gemini CLI ───────────────────────────────────────────────────────────────
-
-
-@pytest.mark.skipif(not _has("gemini"), reason="gemini CLI not installed")
-class TestGeminiSmoke:
-    def test_gemini_extension_validates(self):
-        """`gemini extensions validate <repo>` must return success — failure indicates
-        gemini-extension.json schema drift or invalid TOML in commands/."""
-        proc = _run(["gemini", "extensions", "validate", str(WORKTREE)])
-        assert proc.returncode == 0, (
-            f"gemini extensions validate failed (rc={proc.returncode}):\n"
-            f"--- stdout ---\n{proc.stdout}\n--- stderr ---\n{proc.stderr}"
-        )
-        # Success message is part of the Gemini CLI contract.
-        assert "successfully validated" in proc.stdout.lower() or proc.returncode == 0
 
 
 # ── Antigravity CLI ──────────────────────────────────────────────────────────

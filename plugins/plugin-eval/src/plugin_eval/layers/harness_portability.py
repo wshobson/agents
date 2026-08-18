@@ -1,4 +1,4 @@
-"""Harness portability checks — surface non-portable patterns across Codex/Cursor/OpenCode/Gemini.
+"""Harness portability checks — surface non-portable patterns across Codex/Cursor/OpenCode/Antigravity.
 
 Each finding ships with a `remediation` string (OpenAI harness-engineering pattern:
 lint error messages inject remediation instructions into agent context).
@@ -53,7 +53,7 @@ _CAMEL_TOOL_PATTERN = re.compile(
 # "the bash tool" (referring to the shell, not Claude's Bash) false-positives.
 _TOOL_PROSE_PATTERN = re.compile(rf"(?i:\bthe)\s+(?:`)?({_TOOL_ALTERNATION})(?:`)?\s+tool\b")
 
-# Bare model aliases that don't map cleanly (Cursor/OpenCode/Gemini need full IDs)
+# Bare model aliases that don't map cleanly (Cursor/OpenCode/Antigravity need full IDs)
 _BARE_MODEL_ALIAS_PATTERN = re.compile(r"^(fable|opus|sonnet|haiku)$")
 
 # Context file line cap (per harness-engineering principle)

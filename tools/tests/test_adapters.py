@@ -21,7 +21,6 @@ from tools.adapters.copilot import (
     _needs_yaml_quoting,
 )
 from tools.adapters.cursor import CursorAdapter
-from tools.adapters.gemini import _INLINE_BODY_THRESHOLD, GeminiAdapter
 from tools.adapters.opencode import OpenCodeAdapter, _opencode_skill_id
 
 # ── Codex ────────────────────────────────────────────────────────────────────
@@ -926,84 +925,6 @@ class TestOpenCodeAdapter:
         assert "subtask: true" in delegate  # genuine orchestration still detected
 
 
-# ── Gemini ───────────────────────────────────────────────────────────────────
-
-
-class TestGeminiAdapter:
-    def test_emits_native_skill_at_extension_root(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
-        GeminiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
-        skill_md = output_root / "skills" / "demo__hello" / "SKILL.md"
-        assert skill_md.is_file()
-        fm, _ = parse_frontmatter(skill_md.read_text())
-        assert fm["name"] == "demo__hello"
-
-    def test_emits_native_subagent(self, synthetic_plugin: PluginSource, output_root: Path):
-        GeminiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
-        agent_md = output_root / "agents" / "demo__greeter.md"
-        assert agent_md.is_file()
-        fm, _ = parse_frontmatter(agent_md.read_text())
-        # opus -> gemini-2.5-pro
-        assert fm["model"] == "gemini-2.5-pro"
-
-    def test_inline_command_when_body_is_small(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
-        """Small commands inline the body — no @{path} indirection."""
-        GeminiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
-        toml_path = output_root / "commands" / "demo" / "say-hi.toml"
-        assert toml_path.is_file()
-        content = toml_path.read_text()
-        # Synthetic command body is ~30 bytes — well under inline threshold
-        assert "@{plugins/" not in content
-        assert "Greet the user" in content
-
-    def test_injection_when_body_is_large(self, tmp_path: Path, output_root: Path):
-        """Large command bodies use Gemini's @{path} file injection."""
-        from tools.tests.conftest import _make_command
-
-        plugin_dir = tmp_path / "demo"
-        plugin_dir.mkdir()
-        (plugin_dir / ".claude-plugin").mkdir()
-        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
-        # Body bigger than _INLINE_BODY_THRESHOLD
-        big_body = "# Big command\n\n" + ("x " * (_INLINE_BODY_THRESHOLD))
-        cmd = _make_command(plugin_dir, "bigcmd", 'description: "Big"', big_body)
-        plugin = PluginSource(
-            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, commands=[cmd]
-        )
-        GeminiAdapter(output_root=output_root).emit_plugin(plugin)
-
-        content = (output_root / "commands" / "demo" / "bigcmd.toml").read_text()
-        assert "@{plugins/demo/commands/bigcmd.md}" in content
-
-    def test_command_toml_parses_as_valid_toml(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
-        import tomllib
-
-        GeminiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
-        toml_path = output_root / "commands" / "demo" / "say-hi.toml"
-        parsed = tomllib.loads(toml_path.read_text())
-        assert "description" in parsed
-        assert "prompt" in parsed
-        assert "{{args}}" in parsed["prompt"]
-        # {{args}} must be near the end so user input is the final context
-        assert parsed["prompt"].rstrip().endswith("{{args}}")
-
-    def test_plugin_entry_command_at_top_level(
-        self, synthetic_plugin: PluginSource, output_root: Path
-    ):
-        GeminiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
-        entry = output_root / "commands" / "demo.toml"
-        assert entry.is_file()
-        # Should list subagents and skills
-        content = entry.read_text()
-        assert "demo__greeter" in content
-        assert "demo__hello" in content
-
-
 # ── Antigravity ──────────────────────────────────────────────────────────────
 
 
@@ -1411,7 +1332,6 @@ class TestCapabilities:
             CodexAdapter,
             CopilotAdapter,
             CursorAdapter,
-            GeminiAdapter,
             OpenCodeAdapter,
         ):
             assert adapter_cls.harness_id in CAPABILITIES

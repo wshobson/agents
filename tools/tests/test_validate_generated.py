@@ -12,7 +12,6 @@ from tools.validate_generated import (
     validate_codex,
     validate_copilot,
     validate_cursor,
-    validate_gemini,
     validate_opencode,
 )
 
@@ -365,55 +364,6 @@ class TestOpenCodeValidator:
         report = Report()
         validate_opencode(report)
         assert any("64" in f.message for f in report.errors())
-
-
-# ── Gemini ───────────────────────────────────────────────────────────────────
-
-
-class TestGeminiValidator:
-    def test_command_toml_missing_keys_errors(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
-        _patch_worktree(monkeypatch, tmp_path)
-        cmds = tmp_path / "commands"
-        cmds.mkdir()
-        (cmds / "incomplete.toml").write_text('description = "Just a desc, no prompt"\n')
-
-        report = Report()
-        validate_gemini(report)
-        assert any("missing keys" in f.message for f in report.errors())
-
-    def test_prompt_without_args_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-        _patch_worktree(monkeypatch, tmp_path)
-        cmds = tmp_path / "commands"
-        cmds.mkdir()
-        (cmds / "no_args.toml").write_text('description = "Test"\nprompt = """Run this."""\n')
-
-        report = Report()
-        validate_gemini(report)
-        assert any("{{args}}" in f.message for f in report.warnings())
-
-    def test_non_gemini_model_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-        _patch_worktree(monkeypatch, tmp_path)
-        agents = tmp_path / "agents"
-        agents.mkdir()
-        (agents / "wrong_model.md").write_text(
-            "---\nname: wrong_model\ndescription: Use when testing.\nmodel: gpt-5\n---\n\nBody.\n"
-        )
-
-        report = Report()
-        validate_gemini(report)
-        assert any("Gemini model id" in f.message for f in report.warnings())
-
-    def test_oversized_gemini_md_warns(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-        _patch_worktree(monkeypatch, tmp_path)
-        (tmp_path / "GEMINI.md").write_text("\n".join(["line"] * 200))
-
-        report = Report()
-        validate_gemini(report)
-        assert any(
-            "GEMINI.md" in str(f.path) and "cap: 150" in f.message for f in report.warnings()
-        )
 
 
 # ── Antigravity ──────────────────────────────────────────────────────────────

@@ -336,7 +336,7 @@ def load_plugin(plugin_name: str) -> PluginSource | None:
     """Load a plugin's source tree from `plugins/<name>/`.
 
     Plugin names with `__` are rejected: the adapter framework uses
-    `<plugin>__<leaf>` as a namespace separator across Codex/OpenCode/Gemini.
+    `<plugin>__<leaf>` as a namespace separator across Codex/OpenCode.
     A plugin name containing `__` would break stale-detection and produce
     ambiguous reverse-mappings in doc_gardener.
     """

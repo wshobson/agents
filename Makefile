@@ -16,13 +16,13 @@ YTX_SCRIPT := yt-design-extractor.py
 # `uv run` against the plugin-eval venv — has pyyaml + extra-paths to tools/adapters/
 UV_TOOLS := uv run $(EVAL_PROJECT) python
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity validate garden test smoke-test generate-plugin sync-commands generate-all-commands clean-commands
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity validate garden test smoke-test
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
 	@echo "================================================="
 	@echo ""
-	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Gemini):"
+	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Antigravity):"
 	@echo "  make generate HARNESS=<h> [PLUGIN=<p>]           Generate per-harness artifacts (defaults to all plugins)"
 	@echo "  make generate-all                                Generate for ALL harnesses + ALL plugins"
 	@echo "  make clean-generated [HARNESS=<h>]               Remove generated artifacts"
@@ -36,11 +36,6 @@ help:
 	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
 	@echo "  make test                                        Full pytest suite (plugin-eval + tools)"
 	@echo "  make smoke-test                                  Real-CLI smoke test (skips CLIs not on PATH)"
-	@echo ""
-	@echo "Legacy Gemini CLI targets (kept for compatibility — wrap make generate):"
-	@echo "  make generate-plugin PLUGIN=<name>  Generate Gemini commands for one plugin"
-	@echo "  make sync-commands                  Keep Gemini commands in sync"
-	@echo "  make generate-all-commands          Generate Gemini commands for ALL plugins"
 	@echo ""
 	@echo "YouTube Design Extractor Setup (run in order):"
 	@echo "  make install-ocr     Install system tools (tesseract + ffmpeg)"
@@ -59,7 +54,7 @@ help:
 	@echo "Examples:"
 	@echo "  make run URL='https://youtu.be/eVnQFWGDEdY'"
 	@echo "  make run-full URL='https://youtu.be/eVnQFWGDEdY' INTERVAL=15"
-	@echo "  make generate-plugin PLUGIN=javascript-typescript"
+	@echo "  make generate HARNESS=codex PLUGIN=javascript-typescript"
 	@echo ""
 	@echo "Options (pass as make variables):"
 	@echo "  URL=<url>          YouTube video URL (required)"
@@ -163,7 +158,7 @@ clean:
 #   make generate-all
 #   make clean-generated HARNESS=opencode
 
-HARNESSES := codex copilot cursor gemini opencode antigravity
+HARNESSES := codex copilot cursor opencode antigravity
 
 generate:
 ifndef HARNESS
@@ -200,11 +195,11 @@ test:
 	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/ --ignore=tools/tests/test_cli_smoke.py
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
-# of opencode / gemini / codex / claude are on PATH. Per-CLI tests skip gracefully
+# of opencode / agy / codex / claude are on PATH. Per-CLI tests skip gracefully
 # when the binary is missing — so local devs only exercise what they have installed.
-# CI installs OpenCode + Gemini + Codex and turns those skips into hard requirements.
+# CI installs OpenCode + Antigravity + Codex and turns those skips into hard requirements.
 smoke-test:
-	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d commands ]; then \
+	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d .antigravity ]; then \
 		echo "Generating harness artifacts first..."; \
 		$(MAKE) generate-all; \
 	fi
@@ -239,21 +234,3 @@ install-antigravity:
 
 uninstall-antigravity:
 	$(UV_TOOLS) tools/install_antigravity.py uninstall
-
-# Legacy Gemini wrappers (delegate to the unified CLI)
-generate-plugin:
-ifndef PLUGIN
-	@echo "Error: PLUGIN is required (e.g., make generate-plugin PLUGIN=javascript-typescript)"
-	@exit 1
-endif
-	$(UV_TOOLS) $(GENERATE) --harness gemini --plugin '$(PLUGIN)'
-
-sync-commands:
-	$(UV_TOOLS) $(GENERATE) --harness gemini --all --prune
-
-generate-all-commands:
-	$(UV_TOOLS) $(GENERATE) --harness gemini --all
-
-clean-commands:
-	-rm -rf commands/
-	@echo "Cleaned up commands/ (top-level Gemini TOMLs)"
