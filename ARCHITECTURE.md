@@ -25,7 +25,7 @@ claude-agents/
 ├── CONTRIBUTING.md                 # Contributor entry point
 ├── .claude-plugin/marketplace.json # Plugin registry (source of truth)
 ├── .antigravity/plugins/<p>/       # Generated Antigravity CLI plugins (gitignored)
-├── plugins/                        # SOURCE OF TRUTH (90 local plugins; 1 external in marketplace)
+├── plugins/                        # SOURCE OF TRUTH (91 local plugins; 1 external in marketplace)
 │   └── <name>/
 │       ├── .claude-plugin/plugin.json
 │       ├── agents/*.md
@@ -79,7 +79,7 @@ CI workflow: [`.github/workflows/validate.yml`](.github/workflows/validate.yml) 
 
 Each plugin is a directory under `plugins/`. Three component types, all auto-discovered:
 
-- **Agents** (`agents/<name>.md`) — domain experts. Frontmatter: `name`, `description` ("Use PROACTIVELY when …"), `model: opus|sonnet|haiku|inherit`, optional `tools:`, optional `color:`.
+- **Agents** (`agents/<name>.md`) — domain experts. Frontmatter: `name`, `description` ("Use PROACTIVELY when …"), `model: fable|opus|sonnet|haiku|inherit`, optional `tools:`, optional `color:`.
 - **Skills** (`skills/<n>/SKILL.md`) — modular knowledge with progressive disclosure. Frontmatter: `name`, `description` (must include a recognized trigger phrase like "Use when …"). Supporting material in `references/`, templates in `assets/`.
 - **Commands** (`commands/<n>.md`) — slash commands. Frontmatter: `description`, `argument-hint`.
 

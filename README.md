@@ -143,7 +143,7 @@ Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · Authoring: [docs/authoring.m
 
 [Pensyve](https://github.com/major7apps/pensyve) is included as an external
 `git-subdir` entry for Claude Code. Pensyve also maintains direct upstream
-integrations for this marketplace's other supported harnesses.
+integrations for Codex CLI, Cursor, OpenCode, and Copilot (not yet Antigravity CLI).
 
 | Harness | Pensyve integration |
 |---|---|

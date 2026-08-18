@@ -556,6 +556,15 @@ def validate_antigravity(report: Report) -> None:
                     remediation="Regenerate via `make generate HARNESS=antigravity`.",
                 )
                 data = None
+            if data is not None and not isinstance(data, dict):
+                report.add(
+                    severity="error",
+                    harness="antigravity",
+                    path=plugin_json,
+                    message=f"plugin.json must be a JSON object, got {type(data).__name__}",
+                    remediation="Regenerate via `make generate HARNESS=antigravity`.",
+                )
+                data = None
             if data is not None:
                 name = data.get("name")
                 if not isinstance(name, str) or not name:
@@ -626,15 +635,13 @@ def validate_antigravity(report: Report) -> None:
                     remediation="Regenerate via `make generate HARNESS=antigravity`.",
                 )
                 continue
-            if "description" not in data or "prompt" not in data:
-                report.add(
-                    severity="error",
-                    harness="antigravity",
-                    path=toml_path,
-                    message=f"missing keys (have: {sorted(data.keys())})",
-                    remediation="agy TOML commands require both `description` and `prompt`.",
-                )
-            if "prompt" in data and "{{args}}" not in data["prompt"]:
+            _check_nonempty_str_field(
+                report, data, "description", "antigravity", toml_path, label="command"
+            )
+            has_prompt = _check_nonempty_str_field(
+                report, data, "prompt", "antigravity", toml_path, label="command"
+            )
+            if has_prompt and "{{args}}" not in data["prompt"]:
                 report.add(
                     severity="warning",
                     harness="antigravity",

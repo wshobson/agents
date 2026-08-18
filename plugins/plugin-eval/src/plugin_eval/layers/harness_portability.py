@@ -53,7 +53,8 @@ _CAMEL_TOOL_PATTERN = re.compile(
 # "the bash tool" (referring to the shell, not Claude's Bash) false-positives.
 _TOOL_PROSE_PATTERN = re.compile(rf"(?i:\bthe)\s+(?:`)?({_TOOL_ALTERNATION})(?:`)?\s+tool\b")
 
-# Bare model aliases that don't map cleanly (Cursor/OpenCode/Antigravity need full IDs)
+# Bare model aliases that don't map cleanly (Cursor/OpenCode need full IDs; Antigravity
+# maps aliases to tier values — pro/flash/inherit — so it's unaffected)
 _BARE_MODEL_ALIAS_PATTERN = re.compile(r"^(fable|opus|sonnet|haiku)$")
 
 # Context file line cap (per harness-engineering principle)

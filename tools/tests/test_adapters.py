@@ -949,6 +949,85 @@ class TestAntigravityAdapter:
         # No `<plugin>__` namespacing — the plugin directory already scopes it.
         assert fm["name"] == "hello"
 
+    def test_mirrors_all_skill_support_dirs_not_just_references(
+        self, tmp_path: Path, output_root: Path
+    ):
+        """scripts/, assets/, resources/, examples/ must be mirrored alongside
+        references/ — not dropped (P1: broken workflows without them)."""
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        skill = _make_skill(
+            plugin_dir,
+            "toolkit",
+            "name: toolkit\ndescription: Use when running the toolkit.",
+            "# Toolkit\n\nRun `scripts/preflight.sh`.\n",
+        )
+        (skill.dir / "references").mkdir()
+        (skill.dir / "references" / "notes.md").write_text("notes")
+        (skill.dir / "scripts").mkdir()
+        (skill.dir / "scripts" / "preflight.sh").write_text("#!/bin/sh\necho ok\n")
+        (skill.dir / "assets").mkdir()
+        (skill.dir / "assets" / "logo.png").write_bytes(b"\x89PNG\r\n")
+        (skill.dir / "resources").mkdir()
+        (skill.dir / "resources" / "data.json").write_text("{}")
+        (skill.dir / "examples").mkdir()
+        (skill.dir / "examples" / "sample.txt").write_text("example")
+        # Hidden files must NOT be mirrored.
+        (skill.dir / ".DS_Store").write_text("junk")
+        hidden_dir = skill.dir / ".cache"
+        hidden_dir.mkdir()
+        (hidden_dir / "ignored.txt").write_text("ignored")
+
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        skill_root = output_root / ".antigravity" / "plugins" / "demo" / "skills" / "toolkit"
+        assert (skill_root / "references" / "notes.md").is_file()
+        assert (skill_root / "scripts" / "preflight.sh").is_file()
+        assert (skill_root / "assets" / "logo.png").is_file()
+        assert (skill_root / "resources" / "data.json").is_file()
+        assert (skill_root / "examples" / "sample.txt").is_file()
+        assert not (skill_root / ".DS_Store").exists()
+        assert not (skill_root / ".cache").exists()
+        # SKILL.md itself isn't duplicated by the mirroring loop.
+        assert (skill_root / "SKILL.md").read_text().count("# Toolkit") == 1
+
+    def test_preserves_mapping_valued_frontmatter_field(self, tmp_path: Path, output_root: Path):
+        """A dict-valued field (e.g. `metadata`) must round-trip as a YAML mapping,
+        not get flattened into a broken `str(dict)` scalar."""
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        skill = _make_skill(
+            plugin_dir,
+            "meta",
+            "name: meta\ndescription: Use when testing.\nmetadata:\n  version: 1.0.0\n  source: https://example.com/repo",
+            "# Meta\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        skill_md = (
+            output_root / ".antigravity" / "plugins" / "demo" / "skills" / "meta" / "SKILL.md"
+        )
+        content = skill_md.read_text()
+        assert "{'version'" not in content
+        fm, _ = parse_frontmatter(content)
+        assert isinstance(fm["metadata"], dict)
+        assert fm["metadata"]["version"] == "1.0.0"
+        assert fm["metadata"]["source"] == "https://example.com/repo"
+
     def test_emits_agent_with_tier_model_and_mapped_tools(
         self, synthetic_plugin: PluginSource, output_root: Path
     ):
@@ -1046,6 +1125,71 @@ class TestAntigravityAdapter:
         assert "description" in parsed
         assert "prompt" in parsed
         assert "{{args}}" in parsed["prompt"]
+        # The synthetic command body already contains `$ARGUMENTS`, translated in
+        # place — no duplicate trailing {{args}} block is appended.
+        assert "$ARGUMENTS" not in parsed["prompt"]
+        assert parsed["prompt"].count("{{args}}") == 1
+
+    def test_translates_dollar_arguments_placeholder_mid_body(
+        self, tmp_path: Path, output_root: Path
+    ):
+        """`$ARGUMENTS` occurrences anywhere in the body are translated to agy's
+        `{{args}}` in place; no duplicate trailing {{args}} block is appended."""
+        from tools.tests.conftest import _make_command
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        cmd = _make_command(
+            plugin_dir,
+            "echo",
+            'description: "Echo"',
+            "Echo back: $ARGUMENTS\n\nDo it again: $ARGUMENTS.",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, commands=[cmd]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        import tomllib
+
+        toml_path = (
+            output_root / ".antigravity" / "plugins" / "demo" / "commands" / "demo" / "echo.toml"
+        )
+        parsed = tomllib.loads(toml_path.read_text())
+        assert "$ARGUMENTS" not in parsed["prompt"]
+        assert parsed["prompt"].count("{{args}}") == 2
+
+    def test_appends_trailing_args_block_when_source_has_no_dollar_arguments(
+        self, tmp_path: Path, output_root: Path
+    ):
+        """Commands without `$ARGUMENTS` in the body still get exactly one trailing
+        {{args}} block so agy binds user input somewhere."""
+        from tools.tests.conftest import _make_command
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        cmd = _make_command(
+            plugin_dir,
+            "static",
+            'description: "Static"',
+            "Do a fixed thing, no arguments needed.",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, commands=[cmd]
+        )
+        AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        import tomllib
+
+        toml_path = (
+            output_root / ".antigravity" / "plugins" / "demo" / "commands" / "demo" / "static.toml"
+        )
+        parsed = tomllib.loads(toml_path.read_text())
+        assert parsed["prompt"].count("{{args}}") == 1
         assert parsed["prompt"].rstrip().endswith("{{args}}")
 
 

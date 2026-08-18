@@ -56,19 +56,91 @@ def _generate_command_toml(description: str, prompt: str) -> str:
     )
 
 
+_YAML_SPECIAL_LEADS = (
+    "[",
+    "{",
+    "*",
+    "&",
+    "!",
+    "|",
+    ">",
+    "'",
+    '"',
+    "@",
+    "`",
+    "#",
+    "%",
+    ",",
+    "?",
+    ":",
+    "-",
+)
+
+# YAML 1.1 implicit booleans/null — must be quoted to avoid being interpreted as bool/None.
+_YAML_RESERVED_WORDS = frozenset(
+    {
+        "true",
+        "false",
+        "yes",
+        "no",
+        "on",
+        "off",
+        "null",
+        "~",
+        "True",
+        "False",
+        "Yes",
+        "No",
+        "On",
+        "Off",
+        "Null",
+        "TRUE",
+        "FALSE",
+        "YES",
+        "NO",
+        "ON",
+        "OFF",
+        "NULL",
+    }
+)
+
+
+def _yaml_scalar(value: object) -> str:
+    """Render a value as a YAML scalar, quoting when needed to avoid ambiguity."""
+    s = str(value).replace("\n", " ")
+    needs_quote = (
+        s == ""
+        or s != s.strip()
+        or s.startswith(_YAML_SPECIAL_LEADS)
+        or ": " in s
+        or " #" in s
+        or s[:1].isdigit()
+        or s in _YAML_RESERVED_WORDS
+    )
+    if needs_quote:
+        escaped = s.replace("\\", "\\\\").replace('"', '\\"')
+        return f'"{escaped}"'
+    return s
+
+
 def _antigravity_frontmatter(fm: dict) -> str:
     lines = ["---"]
     for k, v in fm.items():
         if isinstance(v, list):
-            value = ", ".join(str(x) for x in v)
+            value = ", ".join(_yaml_scalar(x) for x in v)
             lines.append(f"{k}: [{value}]")
+        elif isinstance(v, dict):
+            # Preserve mapping-valued fields (e.g. `metadata`) as a nested YAML
+            # mapping instead of stringifying the Python dict repr.
+            lines.append(f"{k}:")
+            for subk, subv in v.items():
+                lines.append(f"  {subk}: {_yaml_scalar(subv)}")
         elif isinstance(v, bool):
             lines.append(f"{k}: {'true' if v else 'false'}")
         elif v is None:
             continue
         else:
-            value = str(v).replace("\n", " ").strip()
-            lines.append(f"{k}: {value}")
+            lines.append(f"{k}: {_yaml_scalar(v)}")
     lines.append("---")
     return "\n".join(lines)
 
@@ -113,12 +185,16 @@ class AntigravityAdapter(HarnessAdapter):
         content = _antigravity_frontmatter(fm) + "\n\n" + skill.body.rstrip() + "\n"
         result.written.append(self.write(rel_dir / "SKILL.md", content))
 
-        # Mirror references/ — binary copy so non-text assets don't crash the run.
-        if skill.references_dir:
-            for ref in sorted(skill.references_dir.rglob("*")):
-                if ref.is_file():
-                    rel = ref.relative_to(skill.references_dir)
-                    result.written.append(self.mirror_file(ref, rel_dir / "references" / rel))
+        # Mirror every support file (references/, assets/, scripts/, resources/,
+        # examples/, etc.) — binary copy so non-text assets don't crash the run.
+        # Skip SKILL.md (already emitted above) and hidden files/dirs.
+        for src in sorted(skill.dir.rglob("*")):
+            if not src.is_file() or src.name == "SKILL.md":
+                continue
+            rel = src.relative_to(skill.dir)
+            if any(part.startswith(".") for part in rel.parts):
+                continue
+            result.written.append(self.mirror_file(src, rel_dir / rel))
 
     def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
         """Emit one agy subagent at <plugin-root>/agents/<agent>.md."""
@@ -159,17 +235,26 @@ class AntigravityAdapter(HarnessAdapter):
         `agy plugin validate` accepts Gemini's `@{path}` file-injection syntax
         structurally but never evaluates it, so we can't confirm it resolves at
         runtime — always inline instead of injecting.
+
+        Claude's `$ARGUMENTS` placeholder is translated to agy's `{{args}}` in
+        place wherever it appears in the body; a trailing `{{args}}` block is
+        appended only when the source body had no `$ARGUMENTS` at all, so
+        arguments aren't bound twice.
         """
+        body = cmd.body.strip()
+        has_arguments_placeholder = "$ARGUMENTS" in body
+        body = body.replace("$ARGUMENTS", "{{args}}")
         lines = [
             f"You are running the `{cmd.name}` command from the `{plugin.name}` plugin.",
             "",
             "## Protocol",
             "",
-            cmd.body.strip(),
+            body,
             "",
         ]
         if cmd.argument_hint:
             lines.append(f"Arguments: {cmd.argument_hint}")
             lines.append("")
-        lines.append("{{args}}")
+        if not has_arguments_placeholder:
+            lines.append("{{args}}")
         return "\n".join(lines)

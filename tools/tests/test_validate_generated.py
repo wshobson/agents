@@ -495,7 +495,53 @@ class TestAntigravityValidator:
 
         report = Report()
         validate_antigravity(report)
-        assert any("missing keys" in f.message for f in report.errors())
+        assert any("missing required `prompt`" in f.message for f in report.errors())
+
+    def test_plugin_json_array_does_not_crash(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A `plugin.json` containing a JSON array (not an object) must be reported
+        as a finding, not raise AttributeError from `.get()` on a list."""
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, "[]")
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("must be a JSON object" in f.message for f in report.errors())
+
+    def test_command_toml_non_string_prompt_does_not_crash(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A `prompt` that TOML-parses to a non-string (e.g. an integer) must be
+        reported as a finding, not raise TypeError from `in` on a non-iterable."""
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        cmds_dir = plugin_dir / "commands" / "demo"
+        cmds_dir.mkdir(parents=True)
+        (cmds_dir / "bad_prompt.toml").write_text('description = "Test"\nprompt = 1\n')
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("`prompt` field must be a string" in f.message for f in report.errors())
+
+    def test_command_toml_non_string_description_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A non-string `description` must be reported, not silently pass."""
+        _patch_worktree(monkeypatch, tmp_path)
+        plugin_dir = tmp_path / ".antigravity" / "plugins" / "demo"
+        _write_plugin_json(plugin_dir, '{"name": "demo"}')
+        cmds_dir = plugin_dir / "commands" / "demo"
+        cmds_dir.mkdir(parents=True)
+        (cmds_dir / "bad_description.toml").write_text(
+            'description = 1\nprompt = """Run this.\n\n{{args}}"""\n'
+        )
+
+        report = Report()
+        validate_antigravity(report)
+        assert any("`description` field must be a string" in f.message for f in report.errors())
 
     def test_command_toml_parse_error(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)

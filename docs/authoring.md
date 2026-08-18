@@ -160,8 +160,8 @@ Things that work in Claude Code but degrade across harnesses:
 
 | Source pattern | Why it degrades |
 |---|---|
-| `TodoWrite` references | Only Claude Code and OpenCode support it. |
-| Hooks (`hooks:` frontmatter) | Only Claude Code and OpenCode (via TS plugins). |
+| `TodoWrite` references | Only Claude Code and OpenCode support it. Not Antigravity. |
+| Hooks (`hooks:` frontmatter) | Claude Code, OpenCode (via TS plugins), and Antigravity (native lifecycle hooks) support it. |
 | `color:` on agents | Cosmetic; dropped everywhere except Claude Code. |
 | Per-agent tool allowlist | Honored only on Claude Code/Antigravity/OpenCode. Cursor and Codex have coarser models. |
 | Slash commands | Codex converts to skills. Antigravity transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. |
