@@ -33,6 +33,7 @@ class SimResult:
     duration_ms: int
     errored: bool = False
     prompt: str = ""
+    model: str | None = None
 
 
 @dataclass
@@ -69,6 +70,7 @@ def _simresult_from_messages(messages: list, prompt: str, duration_ms: int) -> S
         duration_ms=duration_ms,
         errored=output.errored,
         prompt=prompt,
+        model=output.model,
     )
 
 
@@ -128,7 +130,10 @@ class MonteCarloAnalyzer:
         skill = skill_or_dir if isinstance(skill_or_dir, ParsedSkill) else parse_skill(skill_or_dir)
         skill_content = skill.raw_content
 
-        prompts = await self._generate_prompts(skill.name, skill.description)
+        model_usage: dict[str, int] = {}
+        prompts = await self._generate_prompts(
+            skill.name, skill.description, usage_sink=model_usage
+        )
 
         # Repeat prompts to reach n_runs
         repeated: list[str] = []
@@ -138,6 +143,11 @@ class MonteCarloAnalyzer:
 
         results = await self._run_all(skill_content, prompts_to_run)
         stats = self._compute_statistics(results)
+
+        # Aggregate per-sim token usage by the model the SDK actually reported.
+        for r in results:
+            if r.model and r.tokens:
+                model_usage[r.model] = model_usage.get(r.model, 0) + r.tokens
 
         triggering = stats["triggering"]
         output_consistency = stats["output_consistency"]
@@ -169,6 +179,7 @@ class MonteCarloAnalyzer:
             "n_runs": len(results),
             "n_activated": sum(1 for r in results if r.activated),
             "n_errored": sum(1 for r in results if r.errored),
+            "model_usage": model_usage,
         }
 
         return LayerResult(
@@ -182,7 +193,9 @@ class MonteCarloAnalyzer:
     # Prompt generation
     # ------------------------------------------------------------------
 
-    async def _generate_prompts(self, name: str, description: str) -> list[str]:
+    async def _generate_prompts(
+        self, name: str, description: str, usage_sink: dict[str, int] | None = None
+    ) -> list[str]:
         """Use Haiku to generate 15 varied prompts. Falls back to basic variants."""
         try:
             from plugin_eval.layers.judge import query_llm
@@ -198,7 +211,7 @@ class MonteCarloAnalyzer:
                 f"Description: {description}\n\n"
                 f'Return a JSON array of 15 strings. Example: ["prompt 1", "prompt 2", ...]'
             )
-            result = await query_llm(prompt, system=system, model=model)
+            result = await query_llm(prompt, system=system, model=model, usage_sink=usage_sink)
             if isinstance(result, list) and len(result) >= 5:
                 return [str(p) for p in result[:15]]
         except Exception:

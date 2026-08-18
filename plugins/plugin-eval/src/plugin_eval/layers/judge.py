@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from plugin_eval.layers._sdk import collect_sdk_output
+from plugin_eval.layers._sdk import collect_sdk_output, usage_total_tokens
 from plugin_eval.models import LayerResult
 from plugin_eval.parser import ParsedSkill, parse_skill
 
@@ -82,12 +82,20 @@ def _extract_and_parse(messages: list) -> dict:
         return {"unmeasured": True, "error": "judge response was not valid JSON", "raw": raw}
 
 
-async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-5") -> dict:
+async def query_llm(
+    prompt: str,
+    system: str = "",
+    model: str = "claude-sonnet-5",
+    usage_sink: dict[str, int] | None = None,
+) -> dict:
     """Call Claude via the Agent SDK and return a parsed JSON dict.
 
     Degrades to an {"unmeasured": True, ...} marker (never raises) when the SDK
     is missing or the call fails, so the judge layer can be skipped instead of
     crashing the whole evaluation.
+
+    When `usage_sink` is given, the call's token usage (if any) is added to it
+    under `model`, letting callers accumulate per-model usage across calls.
     """
     try:
         from claude_agent_sdk import (  # type: ignore[import-untyped]
@@ -111,6 +119,11 @@ async def query_llm(prompt: str, system: str = "", model: str = "claude-sonnet-5
         ]
     except Exception as exc:  # noqa: BLE001 — judge is best-effort; degrade to unmeasured
         return {"unmeasured": True, "error": f"judge LLM call failed: {exc}"}
+
+    if usage_sink is not None:
+        tokens = usage_total_tokens(collect_sdk_output(messages).usage)
+        if tokens:
+            usage_sink[model] = usage_sink.get(model, 0) + tokens
 
     return _extract_and_parse(messages)
 
@@ -149,6 +162,7 @@ class JudgeAnalyzer:
     def __init__(self, config: JudgeConfig) -> None:
         self.config = config
         self._sem = asyncio.Semaphore(config.concurrency)
+        self.model_usage: dict[str, int] = {}
 
     # ------------------------------------------------------------------
     # Public API
@@ -183,6 +197,7 @@ class JudgeAnalyzer:
             "output_quality": output_quality,
             "scope": scope,
             "unmeasured": unmeasured,
+            "model_usage": dict(self.model_usage),
         }
 
         return LayerResult(
@@ -227,7 +242,7 @@ Return JSON matching this schema:
 }}"""
 
         async with self._sem:
-            return await query_llm(prompt, system=system, model=model)
+            return await query_llm(prompt, system=system, model=model, usage_sink=self.model_usage)
 
     async def assess_orchestration(self, skill: Path | ParsedSkill) -> dict:
         """Rate orchestration fitness using an anchored rubric via Sonnet."""
@@ -260,7 +275,7 @@ Return JSON:
 }}"""
 
         async with self._sem:
-            return await query_llm(prompt, system=system, model=model)
+            return await query_llm(prompt, system=system, model=model, usage_sink=self.model_usage)
 
     async def assess_output_quality(self, skill: Path | ParsedSkill) -> dict:
         """Simulate 3 tasks and judge output quality via Sonnet."""
@@ -289,7 +304,7 @@ Return JSON:
 }}"""
 
         async with self._sem:
-            return await query_llm(prompt, system=system, model=model)
+            return await query_llm(prompt, system=system, model=model, usage_sink=self.model_usage)
 
     async def assess_scope(self, skill: Path | ParsedSkill) -> dict:
         """Evaluate scope calibration using an anchored rubric via Sonnet."""
@@ -318,4 +333,4 @@ Return JSON:
 }}"""
 
         async with self._sem:
-            return await query_llm(prompt, system=system, model=model)
+            return await query_llm(prompt, system=system, model=model, usage_sink=self.model_usage)

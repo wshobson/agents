@@ -94,6 +94,14 @@ class TestSimResultFromMessages:
         )
         assert sim.tokens == 7
 
+    def test_model_captured_from_assistant_message(self):
+        sim = _simresult_from_messages([_assistant("hi"), _result()], "p", 10)
+        assert sim.model == "claude-sonnet-5"
+
+    def test_model_is_none_without_an_assistant_message(self):
+        sim = _simresult_from_messages([_result(result="x" * 250)], "p", 10)
+        assert sim.model is None
+
 
 class TestSimResult:
     def test_sim_result(self):
@@ -150,6 +158,51 @@ class TestMonteCarloAnalyzer:
         assert stats["triggering"]["n_activated"] == 2
         assert stats["triggering"]["activation_rate"] == pytest.approx(0.5)
         assert stats["failure_rate"]["p_fail"] == pytest.approx(0.5)
+
+
+class TestMonteCarloModelUsage:
+    """Per-sim token usage aggregates by the model the SDK actually reported."""
+
+    @pytest.mark.asyncio
+    @patch("plugin_eval.layers.judge.query_llm")
+    @patch("plugin_eval.layers.monte_carlo.run_simulation")
+    async def test_analyze_skill_records_model_usage(
+        self, mock_sim, mock_query_llm, sample_skill_dir: Path
+    ):
+        # Prompt generation also calls query_llm (Haiku); force the fallback
+        # path so this test's usage total reflects only the sims below.
+        mock_query_llm.return_value = {"unmeasured": True}
+        mock_sim.return_value = SimResult(
+            activated=True,
+            quality_score=0.82,
+            tokens=2800,
+            duration_ms=1500,
+            model="claude-sonnet-5",
+        )
+        config = MonteCarloConfig(n_runs=10, concurrency=2)
+        analyzer = MonteCarloAnalyzer(config)
+        result = await analyzer.analyze_skill(sample_skill_dir)
+
+        assert result.metadata["model_usage"] == {"claude-sonnet-5": 28000}
+
+    @pytest.mark.asyncio
+    @patch("plugin_eval.layers.judge.query_llm")
+    @patch("plugin_eval.layers.monte_carlo.run_simulation")
+    async def test_sims_without_a_reported_model_are_not_attributed(
+        self, mock_sim, mock_query_llm, sample_skill_dir: Path
+    ):
+        # run_simulation's exception path (and any stream lacking an
+        # AssistantMessage) leaves model=None -- those tokens can't be
+        # attributed to a model and must be skipped, not mis-keyed under "None".
+        mock_query_llm.return_value = {"unmeasured": True}
+        mock_sim.return_value = SimResult(
+            activated=False, quality_score=0.0, tokens=0, duration_ms=0, errored=True, model=None
+        )
+        config = MonteCarloConfig(n_runs=5, concurrency=2)
+        analyzer = MonteCarloAnalyzer(config)
+        result = await analyzer.analyze_skill(sample_skill_dir)
+
+        assert result.metadata["model_usage"] == {}
 
 
 class TestUsageTotalTokens:
