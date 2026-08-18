@@ -28,6 +28,21 @@ class TestParseSkill:
         with pytest.raises(FileNotFoundError):
             parse_skill(empty)
 
+    def test_parse_cross_references_preserves_nested_paths(self, tmp_path: Path):
+        skill_dir = tmp_path / "parent"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: parent\n"
+            'description: "Use when testing nested references."\n'
+            "---\n\n"
+            "See `sub-skills/child/SKILL.md` and `skills/sibling/SKILL.md`.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sub-skills/child", "sibling"]
+
 
 class TestParseAgent:
     def test_parse_valid_agent(self, sample_plugin_dir: Path):

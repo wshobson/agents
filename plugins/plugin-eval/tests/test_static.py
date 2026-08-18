@@ -54,6 +54,20 @@ class TestStaticAnalyzer:
         weak = "A skill."
         assert analyzer._description_pushiness(good) > analyzer._description_pushiness(weak)
 
+    def test_nested_cross_reference_resolves_from_skill_directory(self, tmp_path: Path):
+        skill_dir = _make_skill(tmp_path, "Use when testing nested references.", "parent")
+        nested_skill = skill_dir / "sub-skills" / "child"
+        nested_skill.mkdir(parents=True)
+        (nested_skill / "SKILL.md").write_text("# Child\n")
+        (skill_dir / "SKILL.md").write_text(
+            (skill_dir / "SKILL.md").read_text()
+            + "\nSee `sub-skills/child/SKILL.md`.\n"
+        )
+
+        result = StaticAnalyzer().analyze_skill(skill_dir)
+
+        assert "DEAD_CROSS_REF" not in [ap.flag for ap in result.anti_patterns]
+
 
 class TestTriggerPattern:
     """Regression coverage for the broadened trigger-phrase matcher.

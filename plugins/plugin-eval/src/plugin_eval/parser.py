@@ -9,6 +9,10 @@ from pathlib import Path
 
 import yaml
 
+_CROSS_REFERENCE_PATTERN = re.compile(
+    r"(?<![\w-])((?:skill|skills|sub-skills)/[a-z0-9-]+(?:/[a-z0-9-]+)*)"
+)
+
 
 @dataclass
 class ParsedSkill:
@@ -93,7 +97,7 @@ def parse_skill(skill_dir: Path) -> ParsedSkill:
     must_pattern = re.compile(r"\b(MUST|NEVER|ALWAYS)\b")
     must_count = len(must_pattern.findall(content))
 
-    cross_refs = re.findall(r"(?:skill|skills)/([a-z0-9-]+)", body)
+    cross_refs = _extract_cross_references(body)
 
     return ParsedSkill(
         path=skill_dir,
@@ -134,7 +138,7 @@ def parse_agent(agent_path: Path) -> ParsedAgent:
     description = frontmatter.get("description", "")
     has_proactive = bool(re.search(r"use proactively", description, re.IGNORECASE))
 
-    skill_refs = re.findall(r"(?:skill|skills)/([a-z0-9-]+)", body)
+    skill_refs = _extract_cross_references(body)
 
     return ParsedAgent(
         path=agent_path,
@@ -196,3 +200,13 @@ def _split_frontmatter(content: str) -> tuple[dict, str]:
         frontmatter = {}
 
     return frontmatter, parts[2]
+
+
+def _extract_cross_references(body: str) -> list[str]:
+    """Extract skill paths while keeping references to nested skills intact."""
+    references = []
+    for reference in _CROSS_REFERENCE_PATTERN.findall(body):
+        if reference.startswith(("skill/", "skills/")):
+            reference = reference.split("/", 1)[1]
+        references.append(reference)
+    return references
