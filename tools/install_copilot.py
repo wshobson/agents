@@ -209,7 +209,8 @@ def main() -> int:
         report = install(
             repo_root=args.repo_root, config_dir=config_dir, force=args.force
         )
-        cache_cleared = _clear_copilot_cache(config_dir)
+        if report.ok:
+            cache_cleared = _clear_copilot_cache(config_dir)
     else:
         report = uninstall(repo_root=args.repo_root, config_dir=config_dir)
     _print_report(args.action, config_dir, report, cache_cleared=cache_cleared)
