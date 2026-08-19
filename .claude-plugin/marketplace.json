@@ -13,7 +13,7 @@
     {
       "name": "documentation-standards",
       "source": "./plugins/documentation-standards",
-      "description": "HADS (Human-AI Document Standard) \u2014 semantic tagging convention for writing docs that work efficiently for both humans and AI models. Reduces token consumption by separating machine-critical facts from human context.",
+      "description": "HADS (Human-AI Document Standard) — semantic tagging convention for writing docs that work efficiently for both humans and AI models. Reduces token consumption by separating machine-critical facts from human context.",
       "version": "1.0.1",
       "author": {
         "name": "Niksa Barlovic",
@@ -754,7 +754,7 @@
     {
       "name": "social-publishing",
       "source": "./plugins/social-publishing",
-      "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw \u2014 one workspace API key covers everything",
+      "description": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business + Standalone, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via SocialClaw — one workspace API key covers everything",
       "version": "1.0.0",
       "author": {
         "name": "ndesv21",
@@ -974,7 +974,7 @@
     },
     {
       "name": "dgx-spark-ops",
-      "description": "NVIDIA DGX Spark (GB10) environment operations. Use when setting up, preflighting, or debugging ML workloads on DGX Spark or aarch64 Blackwell hardware \u2014 CUDA-13 wheel/ABI checks, unified-memory OOM ladders, thermal monitoring.",
+      "description": "NVIDIA DGX Spark (GB10) environment operations. Use when setting up, preflighting, or debugging ML workloads on DGX Spark or aarch64 Blackwell hardware — CUDA-13 wheel/ABI checks, unified-memory OOM ladders, thermal monitoring.",
       "version": "1.0.0",
       "author": {
         "name": "Seth Hobson",
@@ -991,7 +991,7 @@
       "description": "Binary reverse engineering, malware analysis, firmware security, and software protection research for authorized security research, CTF competitions, and defensive security",
       "version": "1.0.1",
       "author": {
-        "name": "D\u00e1vid Balatoni",
+        "name": "Dávid Balatoni",
         "url": "https://github.com/balcsida"
       },
       "homepage": "https://github.com/wshobson/agents",
@@ -1000,7 +1000,7 @@
     },
     {
       "name": "conductor",
-      "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context \u2192 Spec & Plan \u2192 Implement",
+      "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context → Spec & Plan → Implement",
       "version": "1.2.2",
       "author": {
         "name": "Seth Hobson",
@@ -1119,7 +1119,7 @@
     {
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
-      "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 decisions are policy-gated before they run and every decision produces a tamper-evident receipt verifiable offline.",
+      "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin — decisions are policy-gated before they run and every decision produces a tamper-evident receipt verifiable offline.",
       "version": "0.1.1",
       "author": {
         "name": "Tom Farley",
@@ -1189,7 +1189,7 @@
     {
       "name": "ship-mate",
       "source": "./plugins/ship-mate",
-      "description": "Your AI development teammate. Turns a story file into a shipped, reviewed, and tested feature via orchestrator \u2192 architect \u2192 developer \u2192 PR reviewer \u2192 QA \u2192 Playwright.",
+      "description": "Your AI development teammate. Turns a story file into a shipped, reviewed, and tested feature via orchestrator → architect → developer → PR reviewer → QA → Playwright.",
       "version": "1.0.1",
       "author": {
         "name": "Pranay Yadav",
@@ -1212,7 +1212,7 @@
     {
       "name": "file-conversion",
       "source": "./plugins/file-conversion",
-      "description": "Convert files between 999 routes \u2014 PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI \u2014 via the free ChangeThisFile API. MCP-aware with a zero-dependency script fallback; no API key required.",
+      "description": "Convert files between 999 routes — PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI — via the free ChangeThisFile API. MCP-aware with a zero-dependency script fallback; no API key required.",
       "version": "1.0.0",
       "author": {
         "name": "Aadil Razvi",
@@ -1253,6 +1253,19 @@
         "deck-generation",
         "slide-design"
       ]
+    },
+    {
+      "name": "eskill",
+      "source": "./plugins/eskill",
+      "description": "Meta-skill to build top-tier Agent Skills: spec-compliant SKILL.md, eval loop, validator, market research, numbered-output pipeline (MIT)",
+      "version": "1.4.1",
+      "author": {
+        "name": "Hedra Lab",
+        "url": "https://github.com/hedralab"
+      },
+      "homepage": "https://github.com/hedralab/eskill",
+      "license": "MIT",
+      "category": "development"
     }
   ]
 }

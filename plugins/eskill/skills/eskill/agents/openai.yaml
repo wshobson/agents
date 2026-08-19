@@ -1,0 +1,3 @@
+display_name: eSkill
+short_description: Meta-skill tạo Agent Skill chuẩn top-1 (spec agentskills.io + eval loop + naming e-family)
+default_prompt: Tạo một skill để ... và kiểm tra nó chạy được

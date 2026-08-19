@@ -561,6 +561,19 @@
       "category": "Coding"
     },
     {
+      "name": "eskill",
+      "description": "Meta-skill to build top-tier Agent Skills: spec-compliant SKILL.md, eval loop, validator, market research, numbered-output pipeline",
+      "source": {
+        "source": "local",
+        "path": "./plugins/eskill"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "file-conversion",
       "description": "Convert files between 999 routes \u2014 PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI \u2014 via the free ChangeThisFile API. MCP-aware with a zero-dependency script fallback; no API key required.",
       "source": {
