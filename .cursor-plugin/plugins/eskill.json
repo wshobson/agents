@@ -1,0 +1,11 @@
+{
+  "name": "eskill",
+  "displayName": "Eskill",
+  "version": "1.4.1",
+  "description": "Meta-skill to build top-tier Agent Skills: spec-compliant SKILL.md, eval loop, validator, market research, numbered-output pipeline",
+  "author": {
+    "name": "Hedra Lab",
+    "email": ""
+  },
+  "license": "MIT"
+}

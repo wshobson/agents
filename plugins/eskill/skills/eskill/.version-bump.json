@@ -1,0 +1,14 @@
+{
+  "version": "1.4.1",
+  "bump": "patch",
+  "sync_files": [
+    "SKILL.md",
+    "README.md",
+    "eval-results.json",
+    "RELEASE-NOTES.md",
+    ".claude-plugin/plugin.json",
+    ".codex-plugin/plugin.json",
+    ".cursor-plugin/plugin.json"
+  ],
+  "tag_prefix": "v"
+}

@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Packaging — zip bản phát hành không đẩy lên repo
+*.zip
+*.tar.gz
+
+# Local scratch
+*.bak
+
+# Secrets — khong bao gio commit
+.env
+*.log
