@@ -1,7 +1,7 @@
 # Hermes Tweet
 
-Hermes Tweet adds Hermes Agent tools for X/Twitter research, timeline reading,
-tweet analysis, and approval-gated tweet actions.
+Hermes Tweet adds Hermes Agent tools for public X/Twitter research and
+approval-gated private or state-changing operations.
 
 ## Disclosure
 
@@ -11,15 +11,15 @@ the Xquik API that backs its read and action routes.
 ## What It Includes
 
 - `tweet_explore` for local route discovery without credentials
-- `tweet_read` for read-only X/Twitter data routes when `XQUIK_API_KEY` is set
-- `tweet_action` for account-changing routes only when action gating is enabled
+- `tweet_read` for public read-only X/Twitter routes when `XQUIK_API_KEY` is set
+- `tweet_action` for private reads, writes, monitors, webhooks, extractions,
+  draws, and media operations when action gating is enabled
 - A portable `hermes-tweet` skill with workflow guidance and references
 
 ## Setup
 
 ```bash
-~/.hermes/hermes-agent/venv/bin/python -m pip install hermes-tweet
-hermes plugins enable hermes-tweet
+hermes plugins install Xquik-dev/hermes-tweet --enable
 ```
 
 Set the API key on the Hermes runtime host:
@@ -30,10 +30,11 @@ export HERMES_TWEET_ENABLE_ACTIONS="false"
 ```
 
 Keep `HERMES_TWEET_ENABLE_ACTIONS` false for read-first sessions. Set it to
-`true` only for sessions that intentionally need posting, replies, DMs,
-follows, webhooks, monitors, media changes, or other account-changing routes.
+`true` only for an approved private read, write, monitor, webhook, extraction,
+draw, or media operation.
 
 ## Documentation
 
-See `skills/hermes-tweet/SKILL.md` for the full portable skill instructions and
-`skills/hermes-tweet/references/workflows.md` for workflow patterns.
+See `skills/hermes-tweet/SKILL.md` for the full portable skill instructions,
+`skills/hermes-tweet/references/endpoint-contract.md` for approval boundaries,
+and `skills/hermes-tweet/references/workflows.md` for workflow patterns.
