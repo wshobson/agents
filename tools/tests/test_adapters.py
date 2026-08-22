@@ -1513,3 +1513,69 @@ class TestCapabilities:
         for harness in supported_harnesses():
             for alias in ("fable", "opus", "sonnet", "haiku", "inherit"):
                 assert alias in MODEL_ALIASES[harness], f"{harness} missing {alias}"
+
+
+# ── Tool-reference rewriting ─────────────────────────────────────────────────
+
+
+class TestStripClaudeToolRefs:
+    """Characterization tests for `HarnessAdapter.strip_claude_tool_refs`.
+
+    Copilot command bodies are rewritten through this method, and its output is not
+    otherwise asserted anywhere. These tests pin the exact strings so that a refactor
+    which changes them has to say so instead of slipping through.
+    """
+
+    SAMPLE = "Use the `Read` tool first, then the Bash tool. Prefer `Grep` over `Glob`."
+
+    def _adapter(self, tmp_path: Path) -> CopilotAdapter:
+        return CopilotAdapter(output_root=tmp_path)
+
+    def test_lower_case_output_is_exact(self, tmp_path: Path):
+        assert (
+            self._adapter(tmp_path).strip_claude_tool_refs(self.SAMPLE, tool_case="lower")
+            == "Use `open` first, then `shell`. Prefer `grep` over `glob`."
+        )
+
+    def test_normal_case_output_is_exact(self, tmp_path: Path):
+        """`normal` keeps Read as `read` and leaves bare backticked names alone."""
+        assert (
+            self._adapter(tmp_path).strip_claude_tool_refs(self.SAMPLE, tool_case="normal")
+            == "Use `read` first, then `shell`. Prefer `Grep` over `Glob`."
+        )
+
+    def test_replacements_keep_their_backticks(self, tmp_path: Path):
+        out = self._adapter(tmp_path).strip_claude_tool_refs("Run the Bash tool.")
+        assert out == "Run `shell`."
+        assert "`shell`" in out, "replacement must stay inside backticks"
+
+    def test_backticked_prose_form(self, tmp_path: Path):
+        assert (
+            self._adapter(tmp_path).strip_claude_tool_refs("Call the `WebFetch` tool now.")
+            == "Call `fetch` now."
+        )
+
+    def test_bare_backticked_name_is_lowercased_not_verbed(self, tmp_path: Path):
+        """`Grep` on its own becomes `grep` — the lowercased name, not the `rg` verb."""
+        assert self._adapter(tmp_path).strip_claude_tool_refs("Prefer `Grep`.") == "Prefer `grep`."
+
+    def test_prose_words_are_left_alone(self, tmp_path: Path):
+        """Conservative by design: only the two tool phrasings are touched."""
+        sample = "Read the docs, then write a summary and edit it."
+        assert self._adapter(tmp_path).strip_claude_tool_refs(sample) == sample
+
+    def test_every_mapped_tool_is_covered(self, tmp_path: Path):
+        adapter = self._adapter(tmp_path)
+        expected = {
+            "Read": "open",
+            "Edit": "edit",
+            "Write": "write",
+            "Bash": "shell",
+            "Grep": "rg",
+            "Glob": "glob",
+            "WebFetch": "fetch",
+            "WebSearch": "search",
+            "TodoWrite": "todo",
+        }
+        for camel, verb in expected.items():
+            assert adapter.strip_claude_tool_refs(f"Use the {camel} tool.") == f"Use `{verb}`."
