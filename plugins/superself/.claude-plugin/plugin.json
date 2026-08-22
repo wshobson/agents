@@ -1,0 +1,11 @@
+{
+  "name": "superself",
+  "version": "1.0.0",
+  "description": "Drive the Superself `self` CLI: version control for a project's state — goals, decisions, work units, reports — kept as an append-only event log outside the code repo, so a session reads `self context` at start, attaches work to a unit, reports with evidence, and the next session picks up where this one left off.",
+  "author": {
+    "name": "fxylabs",
+    "url": "https://github.com/fxylabs"
+  },
+  "homepage": "https://github.com/fxylabs/superself",
+  "license": "Apache-2.0"
+}

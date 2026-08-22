@@ -1,6 +1,6 @@
 # claude-agents — multi-harness agentic plugin marketplace
 
-Production-ready agentic-workflow building blocks: **92 plugins** (91 local + 1 external), **202 agents**, **181 skills**, **105 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, and the Google Antigravity CLI (`agy`) from a single Markdown source.
+Production-ready agentic-workflow building blocks: **93 plugins** (92 local + 1 external), **202 agents**, **182 skills**, **105 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, and the Google Antigravity CLI (`agy`) from a single Markdown source.
 
 This file is the canonical context file. Codex / Cursor / OpenCode / Antigravity CLI read it directly. Claude Code reads it via `CLAUDE.md`, a symlink to this file.
 
@@ -10,7 +10,7 @@ This file is the canonical context file. Codex / Cursor / OpenCode / Antigravity
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — top-level architectural overview (adapter framework, source-of-truth invariant, capability matrix summary)
 - **[docs/architecture.md](docs/architecture.md)** — detailed design principles
-- **[docs/plugins.md](docs/plugins.md)** — full plugin catalog (92 plugins by category)
+- **[docs/plugins.md](docs/plugins.md)** — full plugin catalog (93 plugins by category)
 - **[docs/agents.md](docs/agents.md)** — agent reference (202 agents, model tiers)
 - **[docs/agent-skills.md](docs/agent-skills.md)** — skill reference (progressive disclosure model)
 - **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
@@ -52,7 +52,7 @@ Generated artifacts are **committed** so each harness installs natively from a c
 
 ## Skills (cross-harness)
 
-181 skills under `plugins/*/skills/<n>/SKILL.md` — discoverable by every harness:
+182 skills under `plugins/*/skills/<n>/SKILL.md` — discoverable by every harness:
 
 - **Claude Code**: auto-discovery via Anthropic's SKILL.md spec
 - **Codex CLI**: mirrored to `.codex/skills/<plugin>__<skill>/` (8 KB body cap; detail in `references/details.md`)
