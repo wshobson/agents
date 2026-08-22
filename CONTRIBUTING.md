@@ -32,6 +32,10 @@ Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
 - If a plugin wraps a third-party API, package, or service that you own or
   maintain, disclose that relationship in the PR description and the plugin
   README.
+- Do not ship payment processing, license enforcement, or access-control
+  tooling in a plugin payload. Scripts that take payment, verify a transaction,
+  or grant and revoke access to a repository or service are out of scope,
+  whether they charge the user or help the user charge someone else.
 
 ## External and vendor plugins
 
