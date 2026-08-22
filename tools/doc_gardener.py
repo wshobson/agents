@@ -49,10 +49,21 @@ CODEX_SKILL_CAP_BYTES = 8 * 1024
 # plugin add/remove. Only the two canonical context files are scanned — docs/
 # carries per-category subtotals that legitimately differ from the totals.
 COUNT_DOC_FILES = ("README.md", "AGENTS.md")
-COUNT_RE = re.compile(r"\b(\d+)\s+(plugins|agents|subagents|skills|commands)\b")
+COUNT_RE = re.compile(r"\b(\d+)\s+(plugins?|subagents?|agents?|skills?|commands?)\b")
 
-# AGENTS.md calls the same total "subagents" in its cross-harness section.
-COUNT_NOUN_ALIASES = {"subagents": "agents"}
+# Every spelling the two files use, mapped to its key in actual_counts(). AGENTS.md
+# calls the agent total "subagents" in its cross-harness section, and a total of one
+# would be written in the singular. Singular forms are matched for that reason, which
+# is also why only these two curated files are scanned: prose like "each plugin ships
+# 1 agent" elsewhere would read as a stale total.
+COUNT_NOUN_ALIASES = {
+    "plugin": "plugins",
+    "subagent": "agents",
+    "subagents": "agents",
+    "agent": "agents",
+    "skill": "skills",
+    "command": "commands",
+}
 
 # An agent's frontmatter `name:` is plugin-namespaced, so two copies of the same
 # agent can never hash alike. Normalize it away before comparing bodies, scoped to

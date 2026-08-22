@@ -357,6 +357,29 @@ class TestDocCounts:
         check_doc_counts(report)
         assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
 
+    def test_singular_nouns_are_matched(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """A total of one is written in the singular and still has to match."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=1, agents=1)
+        (tmp_path / "README.md").write_text("We ship 2 plugins and 1 agent today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        stale = [f for f in report.findings if f.kind == "STALE_COUNT"]
+        assert len(stale) == 1
+        assert "says 2 plugins, actual is 1" in stale[0].message
+
+    def test_singular_noun_matching_the_total_is_clean(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=1, agents=1)
+        (tmp_path / "README.md").write_text("We ship 1 plugin and 1 agent today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+
     def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Per-category subtotals under docs/ legitimately differ from the totals."""
         _patch_paths(monkeypatch, tmp_path)
