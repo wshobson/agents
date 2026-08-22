@@ -666,7 +666,7 @@
     },
     {
       "name": "hermes-tweet",
-      "description": "Hermes Agent plugin for X/Twitter research, timeline reading, tweet analysis, and approval-gated tweet actions through Hermes Tweet",
+      "description": "Hermes Agent plugin for public X/Twitter research and approval-gated private or state-changing operations through Hermes Tweet",
       "source": {
         "source": "local",
         "path": "./plugins/hermes-tweet"
