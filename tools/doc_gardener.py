@@ -8,6 +8,8 @@ Per the OpenAI harness engineering pattern, a recurring task scans for:
 4. Skills above 8 KB body without `references/` (Codex hard cap)
 5. Plugin entries in marketplace.json without a corresponding plugins/<name>/ directory
 6. Plugins missing from marketplace.json
+7. Component counts quoted in README.md / AGENTS.md that no longer match reality
+8. Same-named agents whose bodies have diverged across plugins
 
 Each finding ships with a `Fix:` remediation line.
 
@@ -20,9 +22,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
+from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -40,6 +44,16 @@ CONTEXT_FILES = {
 }
 
 CODEX_SKILL_CAP_BYTES = 8 * 1024
+
+# Headline component counts are quoted in these files and go stale on every
+# plugin add/remove. Only the two canonical context files are scanned — docs/
+# carries per-category subtotals that legitimately differ from the totals.
+COUNT_DOC_FILES = ("README.md", "AGENTS.md")
+COUNT_RE = re.compile(r"\b(\d{2,4})\s+(plugins|agents|skills|commands)\b")
+
+# An agent's frontmatter `name:` is plugin-namespaced, so two copies of the same
+# agent can never hash alike. Normalize it away before comparing bodies.
+AGENT_NAME_LINE_RE = re.compile(r"^name:.*$", re.MULTILINE)
 
 
 # ── Findings ─────────────────────────────────────────────────────────────────
@@ -375,12 +389,103 @@ def check_marketplace_consistency(report: Report) -> None:
             )
 
 
+def actual_counts() -> dict[str, int]:
+    """Live component totals, counted the same way the adapters discover them.
+
+    `plugins` counts marketplace entries rather than plugins/ directories, because
+    the headline figure includes external (git-subdir) entries that have no local dir.
+    """
+    plugins = 0
+    if MARKETPLACE_JSON.is_file():
+        try:
+            plugins = len(json.loads(MARKETPLACE_JSON.read_text()).get("plugins", []))
+        except json.JSONDecodeError:
+            plugins = 0  # check_marketplace_consistency reports the parse error
+    return {
+        "plugins": plugins,
+        "agents": len(list(PLUGINS_DIR.glob("*/agents/*.md"))),
+        "skills": len(list(PLUGINS_DIR.glob("*/skills/*/SKILL.md"))),
+        "commands": len(list(PLUGINS_DIR.glob("*/commands/*.md"))),
+    }
+
+
+def check_doc_counts(report: Report) -> None:
+    """Component counts quoted in README.md / AGENTS.md that no longer match reality."""
+    counts = actual_counts()
+    for filename in COUNT_DOC_FILES:
+        path = WORKTREE / filename
+        if not path.is_file():
+            continue
+        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            for quoted, noun in COUNT_RE.findall(line):
+                if int(quoted) == counts[noun]:
+                    continue
+                report.add(
+                    kind="STALE_COUNT",
+                    severity="error",
+                    path=path,
+                    message=f"line {lineno} says {quoted} {noun}, actual is {counts[noun]}",
+                    fix=f"Update the count to {counts[noun]} (every mention, not just this line).",
+                )
+
+
+def check_agent_divergence(report: Report) -> None:
+    """Same-named agents whose bodies have drifted apart across plugins.
+
+    Plugins are installed individually, so a shared agent is genuinely copied into
+    each plugin that offers it. Verbatim copies are expected and reported as info;
+    copies whose bodies have diverged are the drift worth acting on.
+    """
+    if not PLUGINS_DIR.is_dir():
+        return
+    by_filename: dict[str, list[Path]] = defaultdict(list)
+    for agent_path in sorted(PLUGINS_DIR.glob("*/agents/*.md")):
+        by_filename[agent_path.name].append(agent_path)
+
+    for filename, paths in sorted(by_filename.items()):
+        if len(paths) < 2:
+            continue
+        bodies: dict[str, list[Path]] = defaultdict(list)
+        for path in paths:
+            normalized = AGENT_NAME_LINE_RE.sub("name:", path.read_text(encoding="utf-8"), count=1)
+            bodies[hashlib.md5(normalized.encode("utf-8")).hexdigest()].append(path)
+
+        owners = ", ".join(path.parent.parent.name for path in paths)
+        if len(bodies) > 1:
+            variants = " | ".join(
+                "+".join(p.parent.parent.name for p in group) for group in bodies.values()
+            )
+            report.add(
+                kind="AGENT_BODY_DIVERGENT",
+                severity="warning",
+                path=paths[0],
+                message=(
+                    f"`{filename}` has {len(paths)} copies in {len(bodies)} different "
+                    f"versions: {variants}"
+                ),
+                fix=(
+                    "Reconcile the copies, or rename the intentional variants so the "
+                    "difference is visible in the agent name rather than hidden in the body."
+                ),
+            )
+        else:
+            report.add(
+                kind="AGENT_COPY_REDUNDANT",
+                severity="info",
+                path=paths[0],
+                message=f"`{filename}` is copied verbatim into {len(paths)} plugins ({owners})",
+                fix="Expected while plugins install standalone — edit every copy together.",
+            )
+
+
 CHECKS = {
     "stale": check_stale_artifacts,
     "context": check_oversized_context_files,
     "links": check_dead_links,
     "codex-cap": check_codex_skill_caps,
     "marketplace": check_marketplace_consistency,
+    "counts": check_doc_counts,
+    "agent-divergence": check_agent_divergence,
 }
 
 

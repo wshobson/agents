@@ -8,8 +8,10 @@ from pathlib import Path
 import pytest
 from tools.doc_gardener import (
     Report,
+    check_agent_divergence,
     check_codex_skill_caps,
     check_dead_links,
+    check_doc_counts,
     check_marketplace_consistency,
     check_oversized_context_files,
     check_stale_artifacts,
@@ -266,3 +268,120 @@ class TestMarketplaceConsistency:
         report = Report()
         check_marketplace_consistency(report)
         assert [f for f in report.findings if f.kind == "MARKETPLACE_MISSING"]
+
+
+# ── Doc counts ───────────────────────────────────────────────────────────────
+
+
+def _write_counts_fixture(tmp_path: Path, *, plugins: int, agents: int) -> None:
+    """Build a tiny repo with `plugins` marketplace entries and `agents` agent files."""
+    mp = tmp_path / ".claude-plugin"
+    mp.mkdir(parents=True, exist_ok=True)
+    (mp / "marketplace.json").write_text(
+        json.dumps(
+            {"plugins": [{"name": f"p{i}", "source": f"./plugins/p{i}"} for i in range(plugins)]}
+        )
+    )
+    agents_dir = tmp_path / "plugins" / "demo" / "agents"
+    agents_dir.mkdir(parents=True, exist_ok=True)
+    for i in range(agents):
+        (agents_dir / f"a{i}.md").write_text("---\nname: a\n---\nBody.\n")
+
+
+class TestDocCounts:
+    def test_matching_counts_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / "README.md").write_text("We ship **12 plugins** and **34 agents** today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+
+    def test_stale_count_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / "README.md").write_text("We ship **11 plugins** and **34 agents** today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        stale = [f for f in report.findings if f.kind == "STALE_COUNT"]
+        assert len(stale) == 1
+        assert stale[0].severity == "error"
+        assert "says 11 plugins, actual is 12" in stale[0].message
+
+    def test_reports_every_stale_mention(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / "README.md").write_text("11 plugins\n\nall 11 plugins by category\n")
+        (tmp_path / "AGENTS.md").write_text("11 plugins here too\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert len([f for f in report.findings if f.kind == "STALE_COUNT"]) == 3
+
+    def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """Per-category subtotals under docs/ legitimately differ from the totals."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        docs = tmp_path / "docs"
+        docs.mkdir(parents=True, exist_ok=True)
+        (docs / "plugins.md").write_text("### Development (60 plugins)\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+
+
+# ── Agent divergence ─────────────────────────────────────────────────────────
+
+
+def _write_agent(tmp_path: Path, plugin: str, filename: str, body: str) -> None:
+    agents_dir = tmp_path / "plugins" / plugin / "agents"
+    agents_dir.mkdir(parents=True, exist_ok=True)
+    (agents_dir / filename).write_text(f"---\nname: {plugin}-{filename[:-3]}\n---\n{body}")
+
+
+class TestAgentDivergence:
+    def test_single_copy_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Review carefully.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
+
+    def test_verbatim_copies_report_info(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """Identical bodies differing only by the namespaced `name:` are not drift."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Review carefully.\n")
+        _write_agent(tmp_path, "beta", "reviewer.md", "Review carefully.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_COPY_REDUNDANT"]
+        assert report.findings[0].severity == "info"
+
+    def test_diverged_bodies_warn(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Review carefully.\n")
+        _write_agent(tmp_path, "beta", "reviewer.md", "Review quickly instead.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+        finding = report.findings[0]
+        assert finding.severity == "warning"
+        assert "2 copies in 2 different versions" in finding.message
+
+    def test_groups_variants_in_message(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """Three copies sharing two bodies report as 3 copies / 2 versions."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Review carefully.\n")
+        _write_agent(tmp_path, "beta", "reviewer.md", "Review carefully.\n")
+        _write_agent(tmp_path, "gamma", "reviewer.md", "Something else entirely.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert "3 copies in 2 different versions" in report.findings[0].message
+        assert "alpha+beta" in report.findings[0].message
