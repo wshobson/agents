@@ -32,10 +32,14 @@ Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
 - If a plugin wraps a third-party API, package, or service that you own or
   maintain, disclose that relationship in the PR description and the plugin
   README.
-- Do not ship payment processing, license enforcement, or access-control
-  tooling in a plugin payload. Scripts that take payment, verify a transaction,
-  or grant and revoke access to a repository or service are out of scope,
-  whether they charge the user or help the user charge someone else.
+- Plugin payloads must not contain runnable machinery for collecting payment or
+  gating access. A script that takes payment, verifies a transaction, or grants
+  and revokes access to a repository or service is out of scope, whether it
+  charges the installing user or helps the installing user charge someone else.
+  Teaching an agent to build payment, licensing, or access-control features in
+  the user's own application is a different thing and is welcome — the
+  `payment-processing` plugin is the reference example. The line is whether the
+  payload runs a commercial transaction itself.
 
 ## External and vendor plugins
 
