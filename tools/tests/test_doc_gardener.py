@@ -412,6 +412,43 @@ class TestAgentDivergence:
         assert finding.severity == "warning"
         assert "2 copies in 2 different versions" in finding.message
 
+    def test_body_name_lines_still_count_as_content(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Only the frontmatter name is normalized; a `name:` in the body is real content."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Example config:\n\nname: alpha-thing\n")
+        _write_agent(tmp_path, "beta", "reviewer.md", "Example config:\n\nname: beta-thing\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+
+    def test_body_name_lines_matching_stay_verbatim(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Same body `name:` plus differing frontmatter names is still a verbatim copy."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Example config:\n\nname: shared\n")
+        _write_agent(tmp_path, "beta", "reviewer.md", "Example config:\n\nname: shared\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
+
+    def test_agent_without_frontmatter_does_not_crash(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin in ("alpha", "beta"):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "bare.md").write_text("No frontmatter here.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
+
     def test_groups_variants_in_message(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Three copies sharing two bodies report as 3 copies / 2 versions."""
         _patch_paths(monkeypatch, tmp_path)

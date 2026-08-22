@@ -55,8 +55,10 @@ COUNT_RE = re.compile(r"\b(\d+)\s+(plugins|agents|subagents|skills|commands)\b")
 COUNT_NOUN_ALIASES = {"subagents": "agents"}
 
 # An agent's frontmatter `name:` is plugin-namespaced, so two copies of the same
-# agent can never hash alike. Normalize it away before comparing bodies.
+# agent can never hash alike. Normalize it away before comparing bodies, scoped to
+# the opening frontmatter block so a `name:` line in the body still counts as content.
 AGENT_NAME_LINE_RE = re.compile(r"^name:.*$", re.MULTILINE)
+AGENT_FRONTMATTER_RE = re.compile(r"\A(---\n)(.*?)(\n---\n)", re.DOTALL)
 
 
 # ── Findings ─────────────────────────────────────────────────────────────────
@@ -392,6 +394,20 @@ def check_marketplace_consistency(report: Report) -> None:
             )
 
 
+def normalized_agent_text(text: str) -> str:
+    """Blank the plugin-namespaced frontmatter `name:` so sibling copies compare equal.
+
+    Only the opening frontmatter block is touched. A `name:` line in the body is real
+    content and must still count toward a divergence.
+    """
+    match = AGENT_FRONTMATTER_RE.match(text)
+    if not match:
+        return text
+    opener, frontmatter, closer = match.groups()
+    frontmatter = AGENT_NAME_LINE_RE.sub("name:", frontmatter, count=1)
+    return f"{opener}{frontmatter}{closer}{text[match.end() :]}"
+
+
 def actual_counts() -> dict[str, int]:
     """Live component totals, counted the same way the adapters discover them.
 
@@ -451,7 +467,7 @@ def check_agent_divergence(report: Report) -> None:
             continue
         bodies: dict[str, list[Path]] = defaultdict(list)
         for path in paths:
-            normalized = AGENT_NAME_LINE_RE.sub("name:", path.read_text(encoding="utf-8"), count=1)
+            normalized = normalized_agent_text(path.read_text(encoding="utf-8"))
             bodies[hashlib.md5(normalized.encode("utf-8")).hexdigest()].append(path)
 
         if len(bodies) > 1:
