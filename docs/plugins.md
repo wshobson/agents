@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **93 marketplace plugins** organized by category: 91 local plugins plus 2 externally hosted `git-subdir` entries (`pensyve` and `hol-guard`).
+Browse all **94 marketplace plugins** organized by category: 92 local plugins plus 2 externally hosted `git-subdir` entries (`pensyve` and `hol-guard`).
 
 ## Quick Start - Essential Plugins
 
@@ -129,7 +129,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **c4-architecture**          | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture`          |
 | **avoid-ai-writing**         | Audit and rewrite prose that reads as machine-generated across READMEs, changelogs, PR descriptions, and docs                                    | `/plugin install avoid-ai-writing`         |
 
-### 🔄 Workflows (7 plugins)
+### 🔄 Workflows (8 plugins)
 
 | Plugin                       | Description                                                                    | Install                                    |
 | ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------ |
@@ -140,6 +140,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **tdd-workflows**            | Test-driven development methodology                                            | `/plugin install tdd-workflows`            |
 | **agent-teams**              | Parallel code review, debugging, feature, and research teams                   | `/plugin install agent-teams`              |
 | **ship-mate**                | Story-file to reviewed, tested PR workflow orchestration                       | `/plugin install ship-mate`                |
+| **superself**                | Drive the Superself `self` CLI: project state (goals, decisions, work units, reports) outside the code repo, context at session start, done gated by evidence | `/plugin install superself`                |
 
 ### ✅ Testing (1 plugin)
 
@@ -364,7 +365,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 93 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -407,7 +408,7 @@ Each installed plugin loads **only its specific agents, commands, and skills** i
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 181 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 182 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles
