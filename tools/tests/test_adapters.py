@@ -1565,17 +1565,35 @@ class TestStripClaudeToolRefs:
         assert self._adapter(tmp_path).strip_claude_tool_refs(sample) == sample
 
     def test_every_mapped_tool_is_covered(self, tmp_path: Path):
+        """Both cases, passed explicitly so a change to the default is caught.
+
+        Only Read differs between the two. The rest are pinned in both modes so a
+        future divergence has to be deliberate.
+        """
         adapter = self._adapter(tmp_path)
+        # camel -> (tool_case="lower", tool_case="normal")
         expected = {
-            "Read": "open",
-            "Edit": "edit",
-            "Write": "write",
-            "Bash": "shell",
-            "Grep": "rg",
-            "Glob": "glob",
-            "WebFetch": "fetch",
-            "WebSearch": "search",
-            "TodoWrite": "todo",
+            "Read": ("open", "read"),
+            "Edit": ("edit", "edit"),
+            "Write": ("write", "write"),
+            "Bash": ("shell", "shell"),
+            "Grep": ("rg", "rg"),
+            "Glob": ("glob", "glob"),
+            "WebFetch": ("fetch", "fetch"),
+            "WebSearch": ("search", "search"),
+            "TodoWrite": ("todo", "todo"),
         }
-        for camel, verb in expected.items():
-            assert adapter.strip_claude_tool_refs(f"Use the {camel} tool.") == f"Use `{verb}`."
+        for camel, (lower_verb, normal_verb) in expected.items():
+            body = f"Use the {camel} tool."
+            assert adapter.strip_claude_tool_refs(body, tool_case="lower") == f"Use `{lower_verb}`."
+            assert (
+                adapter.strip_claude_tool_refs(body, tool_case="normal") == f"Use `{normal_verb}`."
+            )
+
+    def test_lower_is_the_default_tool_case(self, tmp_path: Path):
+        """Copilot emission relies on the default, so pin it."""
+        adapter = self._adapter(tmp_path)
+        body = "Use the Read tool."
+        assert adapter.strip_claude_tool_refs(body) == adapter.strip_claude_tool_refs(
+            body, tool_case="lower"
+        )
