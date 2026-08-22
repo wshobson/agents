@@ -320,6 +320,43 @@ class TestDocCounts:
         check_doc_counts(report)
         assert len([f for f in report.findings if f.kind == "STALE_COUNT"]) == 3
 
+    def test_single_digit_mismatch_is_caught(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """A count below 10 still has to match."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=9, agents=3)
+        (tmp_path / "README.md").write_text("We ship 8 plugins and 3 agents today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        stale = [f for f in report.findings if f.kind == "STALE_COUNT"]
+        assert len(stale) == 1
+        assert "says 8 plugins, actual is 9" in stale[0].message
+
+    def test_subagents_is_checked_against_the_agent_total(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """AGENTS.md calls the agent total `subagents` in its cross-harness section."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / "AGENTS.md").write_text("33 subagents under `plugins/*/agents/`.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        stale = [f for f in report.findings if f.kind == "STALE_COUNT"]
+        assert len(stale) == 1
+        assert "says 33 subagents, actual is 34" in stale[0].message
+
+    def test_matching_subagents_count_no_finding(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / "AGENTS.md").write_text("34 subagents under `plugins/*/agents/`.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+
     def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Per-category subtotals under docs/ legitimately differ from the totals."""
         _patch_paths(monkeypatch, tmp_path)
@@ -351,7 +388,9 @@ class TestAgentDivergence:
         check_agent_divergence(report)
         assert report.findings == []
 
-    def test_verbatim_copies_report_info(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def test_verbatim_copies_are_not_findings(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
         """Identical bodies differing only by the namespaced `name:` are not drift."""
         _patch_paths(monkeypatch, tmp_path)
         _write_agent(tmp_path, "alpha", "reviewer.md", "Review carefully.\n")
@@ -359,8 +398,7 @@ class TestAgentDivergence:
 
         report = Report()
         check_agent_divergence(report)
-        assert [f.kind for f in report.findings] == ["AGENT_COPY_REDUNDANT"]
-        assert report.findings[0].severity == "info"
+        assert report.findings == []
 
     def test_diverged_bodies_warn(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_paths(monkeypatch, tmp_path)

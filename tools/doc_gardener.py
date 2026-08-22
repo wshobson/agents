@@ -49,7 +49,10 @@ CODEX_SKILL_CAP_BYTES = 8 * 1024
 # plugin add/remove. Only the two canonical context files are scanned — docs/
 # carries per-category subtotals that legitimately differ from the totals.
 COUNT_DOC_FILES = ("README.md", "AGENTS.md")
-COUNT_RE = re.compile(r"\b(\d{2,4})\s+(plugins|agents|skills|commands)\b")
+COUNT_RE = re.compile(r"\b(\d+)\s+(plugins|agents|subagents|skills|commands)\b")
+
+# AGENTS.md calls the same total "subagents" in its cross-harness section.
+COUNT_NOUN_ALIASES = {"subagents": "agents"}
 
 # An agent's frontmatter `name:` is plugin-namespaced, so two copies of the same
 # agent can never hash alike. Normalize it away before comparing bodies.
@@ -418,14 +421,15 @@ def check_doc_counts(report: Report) -> None:
             continue
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
             for quoted, noun in COUNT_RE.findall(line):
-                if int(quoted) == counts[noun]:
+                key = COUNT_NOUN_ALIASES.get(noun, noun)
+                if int(quoted) == counts[key]:
                     continue
                 report.add(
                     kind="STALE_COUNT",
                     severity="error",
                     path=path,
-                    message=f"line {lineno} says {quoted} {noun}, actual is {counts[noun]}",
-                    fix=f"Update the count to {counts[noun]} (every mention, not just this line).",
+                    message=f"line {lineno} says {quoted} {noun}, actual is {counts[key]}",
+                    fix=f"Update the count to {counts[key]} (every mention, not just this line).",
                 )
 
 
@@ -433,8 +437,8 @@ def check_agent_divergence(report: Report) -> None:
     """Same-named agents whose bodies have drifted apart across plugins.
 
     Plugins are installed individually, so a shared agent is genuinely copied into
-    each plugin that offers it. Verbatim copies are expected and reported as info;
-    copies whose bodies have diverged are the drift worth acting on.
+    each plugin that offers it. A verbatim copy is therefore expected and is not
+    reported at all. Only copies whose bodies have drifted apart are findings.
     """
     if not PLUGINS_DIR.is_dir():
         return
@@ -450,7 +454,6 @@ def check_agent_divergence(report: Report) -> None:
             normalized = AGENT_NAME_LINE_RE.sub("name:", path.read_text(encoding="utf-8"), count=1)
             bodies[hashlib.md5(normalized.encode("utf-8")).hexdigest()].append(path)
 
-        owners = ", ".join(path.parent.parent.name for path in paths)
         if len(bodies) > 1:
             variants = " | ".join(
                 "+".join(p.parent.parent.name for p in group) for group in bodies.values()
@@ -467,14 +470,6 @@ def check_agent_divergence(report: Report) -> None:
                     "Reconcile the copies, or rename the intentional variants so the "
                     "difference is visible in the agent name rather than hidden in the body."
                 ),
-            )
-        else:
-            report.add(
-                kind="AGENT_COPY_REDUNDANT",
-                severity="info",
-                path=paths[0],
-                message=f"`{filename}` is copied verbatim into {len(paths)} plugins ({owners})",
-                fix="Expected while plugins install standalone — edit every copy together.",
             )
 
 
