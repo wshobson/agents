@@ -1014,6 +1014,17 @@
         "email": "seth@major7apps.com"
       },
       "license": "MIT"
+    },
+    {
+      "name": "gbr-pair",
+      "source": "./plugins/gbr-pair",
+      "version": "0.6.1",
+      "description": "Pair a phone running Build Remote Agent to this desktop agent (gbr/1). Attach only loopback Bot API :8788 or gbr-mcp. Phone is spectator + veto.",
+      "author": {
+        "name": "Linespotting AB",
+        "url": "https://grokbuildremote.com/"
+      },
+      "license": "MIT"
     }
   ]
 }

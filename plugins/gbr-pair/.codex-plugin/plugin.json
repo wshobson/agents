@@ -1,0 +1,16 @@
+{
+  "name": "gbr-pair",
+  "version": "0.6.1",
+  "description": "Pair a phone running Build Remote Agent to this desktop agent via gbr/1. Attach only loopback Bot API :8788 or gbr-mcp stdio. Phone is spectator + veto.",
+  "skills": "./skills/",
+  "author": {
+    "name": "Linespotting AB",
+    "url": "https://grokbuildremote.com/"
+  },
+  "license": "MIT",
+  "interface": {
+    "displayName": "Gbr Pair",
+    "shortDescription": "Pair a phone running Build Remote Agent (gbr/1). Spectator on :8788 / gbr-mcp.",
+    "category": "Coding"
+  }
+}

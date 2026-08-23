@@ -1183,6 +1183,19 @@
         "authentication": "ON_USE"
       },
       "category": "Coding"
+    },
+    {
+      "name": "gbr-pair",
+      "description": "Pair a phone running Build Remote Agent to this desktop agent (gbr/1). Attach only loopback Bot API :8788 or gbr-mcp. Phone is spectator + veto.",
+      "source": {
+        "source": "local",
+        "path": "./plugins/gbr-pair"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
     }
   ]
 }

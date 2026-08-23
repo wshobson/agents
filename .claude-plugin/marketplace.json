@@ -1253,6 +1253,19 @@
         "deck-generation",
         "slide-design"
       ]
+    },
+    {
+      "name": "gbr-pair",
+      "source": "./plugins/gbr-pair",
+      "description": "Pair a phone running Build Remote Agent to this desktop agent (gbr/1). Attach only loopback Bot API :8788 or gbr-mcp. Phone is spectator + veto.",
+      "version": "0.6.1",
+      "author": {
+        "name": "Linespotting AB",
+        "url": "https://grokbuildremote.com/"
+      },
+      "homepage": "https://grokbuildremote.com/",
+      "license": "MIT",
+      "category": "development"
     }
   ]
 }
