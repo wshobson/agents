@@ -419,18 +419,21 @@ def normalized_agent_text(text: str) -> str:
     return f"{opener}{frontmatter}{closer}{text[match.end() :]}"
 
 
-def actual_counts() -> dict[str, int]:
+def actual_counts() -> dict[str, int | None]:
     """Live component totals, counted the same way the adapters discover them.
 
     `plugins` counts marketplace entries rather than plugins/ directories, because
     the headline figure includes external (git-subdir) entries that have no local dir.
+    It is None when the manifest is missing or unparseable, which means "unknown"
+    rather than zero — otherwise one JSON syntax error would report every documented
+    plugin count as stale and tell the reader to write zero.
     """
-    plugins = 0
+    plugins: int | None = None
     if MARKETPLACE_JSON.is_file():
         try:
             plugins = len(json.loads(MARKETPLACE_JSON.read_text()).get("plugins", []))
         except json.JSONDecodeError:
-            plugins = 0  # check_marketplace_consistency reports the parse error
+            plugins = None  # check_marketplace_consistency reports the parse error
     return {
         "plugins": plugins,
         "agents": len(list(PLUGINS_DIR.glob("*/agents/*.md"))),
@@ -449,14 +452,15 @@ def check_doc_counts(report: Report) -> None:
         for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
             for quoted, noun in COUNT_RE.findall(line):
                 key = COUNT_NOUN_ALIASES.get(noun, noun)
-                if int(quoted) == counts[key]:
+                actual = counts[key]
+                if actual is None or int(quoted) == actual:
                     continue
                 report.add(
                     kind="STALE_COUNT",
                     severity="error",
                     path=path,
-                    message=f"line {lineno} says {quoted} {noun}, actual is {counts[key]}",
-                    fix=f"Update the count to {counts[key]} (every mention, not just this line).",
+                    message=f"line {lineno} says {quoted} {noun}, actual is {actual}",
+                    fix=f"Update the count to {actual} (every mention, not just this line).",
                 )
 
 

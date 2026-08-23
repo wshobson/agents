@@ -380,6 +380,35 @@ class TestDocCounts:
         check_doc_counts(report)
         assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
 
+    def test_unparseable_marketplace_skips_the_plugin_count(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A broken manifest means the plugin total is unknown, not zero."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / ".claude-plugin" / "marketplace.json").write_text("{ this is not json")
+        (tmp_path / "README.md").write_text("We ship 12 plugins and 30 agents today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        stale = [f for f in report.findings if f.kind == "STALE_COUNT"]
+        # The agent count is still checked; the plugin count is skipped entirely.
+        assert len(stale) == 1
+        assert "30 agents" in stale[0].message
+        assert not any("plugins" in f.message for f in stale)
+
+    def test_missing_marketplace_skips_the_plugin_count(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / ".claude-plugin" / "marketplace.json").unlink()
+        (tmp_path / "README.md").write_text("We ship 99 plugins today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+
     def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Per-category subtotals under docs/ legitimately differ from the totals."""
         _patch_paths(monkeypatch, tmp_path)
