@@ -10,7 +10,6 @@ from tools.doc_gardener import (
     CHECKS,
     Report,
     actual_counts,
-    marketplace_entry_problem,
     check_agent_divergence,
     check_codex_skill_caps,
     check_dead_links,
@@ -18,6 +17,7 @@ from tools.doc_gardener import (
     check_marketplace_consistency,
     check_oversized_context_files,
     check_stale_artifacts,
+    marketplace_entry_problem,
 )
 
 
