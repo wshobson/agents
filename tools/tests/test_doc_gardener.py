@@ -9,6 +9,7 @@ import pytest
 from tools.doc_gardener import (
     CHECKS,
     Report,
+    actual_counts,
     check_agent_divergence,
     check_codex_skill_caps,
     check_dead_links,
@@ -491,6 +492,20 @@ class TestDocCounts:
         assert len(stale) == 1
         assert "30 agents" in stale[0].message
 
+    def test_malformed_plugin_entry_makes_the_count_unknown(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A plugins list holding a non-object must not drive an error-severity count."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / ".claude-plugin" / "marketplace.json").write_text('{"plugins": [null, null]}')
+        (tmp_path / "README.md").write_text("We ship 99 plugins today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+        assert actual_counts(Report())["plugins"] is None
+
     def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Per-category subtotals under docs/ legitimately differ from the totals."""
         _patch_paths(monkeypatch, tmp_path)
@@ -679,6 +694,20 @@ class TestAgentDivergence:
         check_agent_divergence(report)
         assert report.findings == []
 
+    def test_indentation_without_frontmatter_is_content(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Leading blanks are only formatting when they sit ahead of frontmatter."""
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin, body in (("alpha", "    prose here\n"), ("beta", "prose here\n")):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(body)
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+
     def test_groups_variants_in_message(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Three copies sharing two bodies report as 3 copies / 2 versions."""
         _patch_paths(monkeypatch, tmp_path)
@@ -732,3 +761,35 @@ class TestUnreadableFiles:
         unreadable = [f for f in report.findings if f.kind == "UNREADABLE_FILE"]
         assert unreadable
         assert unreadable[0].severity == "error"
+
+
+# ── Marketplace shape ────────────────────────────────────────────────────────
+
+
+class TestMarketplaceShape:
+    def test_non_object_entry_is_reported_not_raised(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        mp = tmp_path / ".claude-plugin"
+        mp.mkdir(parents=True, exist_ok=True)
+        (mp / "marketplace.json").write_text('{"plugins": [null]}')
+        (tmp_path / "plugins").mkdir(exist_ok=True)
+
+        report = Report()
+        check_marketplace_consistency(report)  # must not raise
+        shape = [f for f in report.findings if f.kind == "MARKETPLACE_SHAPE"]
+        assert shape and "plugins[0] is NoneType" in shape[0].message
+
+    def test_non_object_root_is_reported_not_raised(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        mp = tmp_path / ".claude-plugin"
+        mp.mkdir(parents=True, exist_ok=True)
+        (mp / "marketplace.json").write_text("[]")
+        (tmp_path / "plugins").mkdir(exist_ok=True)
+
+        report = Report()
+        check_marketplace_consistency(report)  # must not raise
+        assert [f for f in report.findings if f.kind == "MARKETPLACE_SHAPE"]

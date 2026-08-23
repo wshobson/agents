@@ -392,7 +392,26 @@ def check_marketplace_consistency(report: Report) -> None:
     # missing LOCAL entries as orphans — externals legitimately don't have a plugins/<name>/.
     local_entries: dict[str, dict] = {}
     external_names: set[str] = set()
-    for entry in data.get("plugins", []):
+    entries = data.get("plugins", []) if isinstance(data, dict) else None
+    if not isinstance(entries, list):
+        report.add(
+            kind="MARKETPLACE_SHAPE",
+            severity="error",
+            path=MARKETPLACE_JSON,
+            message="expected an object with a `plugins` list at the top level",
+            fix='Restore the manifest shape: {"plugins": [ ... ]}.',
+        )
+        return
+    for position, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            report.add(
+                kind="MARKETPLACE_SHAPE",
+                severity="error",
+                path=MARKETPLACE_JSON,
+                message=f"plugins[{position}] is {type(entry).__name__}, expected an object",
+                fix="Remove the entry or give it the usual name/source/description fields.",
+            )
+            continue
         name = entry.get("name")
         if not name:
             continue
@@ -437,7 +456,12 @@ def normalized_agent_text(text: str) -> str:
     a closing `---` at end of file, and a trailing space after a delimiter from
     reading as drift. A `name:` line in the body is body content and still counts.
     """
-    text = text.lstrip(BOM).lstrip()
+    text = text.lstrip(BOM)
+    trimmed = text.lstrip()
+    # Blank lines ahead of a frontmatter block are formatting. Ahead of anything else
+    # they are body content, and stripping them would hide an indentation difference.
+    if trimmed.startswith("---"):
+        text = trimmed
     fields, body = parse_frontmatter(text)
     fields.pop("name", None)
     rendered = "\n".join(f"{key}: {fields[key]!r}" for key in sorted(fields))
@@ -465,7 +489,9 @@ def actual_counts(report: Report) -> dict[str, int | None]:
         # Valid JSON of the wrong shape is still an unknown count, not a crash.
         if isinstance(manifest, dict):
             entries = manifest.get("plugins")
-            if isinstance(entries, list):
+            # A list holding a non-object entry is malformed. Counting it would let
+            # garbage drive an error-severity finding.
+            if isinstance(entries, list) and all(isinstance(e, dict) for e in entries):
                 plugins = len(entries)
     return {
         "plugins": plugins,
