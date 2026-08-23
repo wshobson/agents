@@ -1620,10 +1620,18 @@ class TestStripClaudeToolRefs:
         out = tmp_path / "out"
         result = CopilotAdapter(output_root=out).emit_plugin(plugin)
         emitted = [p for p in result.written if p.suffix == ".md"]
-        assert emitted, "no markdown emitted for the command"
-        text = "\n".join(p.read_text(encoding="utf-8") for p in emitted)
-        assert "`open`" in text
-        assert "`shell`" in text
-        assert "`grep`" in text
-        assert "the `Read` tool" not in text
-        assert "the Bash tool" not in text
+        # Copilot writes the command twice, as a skill and as a legacy command, and
+        # also writes a plugin index that carries no command body.
+        command_files = [p for p in emitted if p.name in {"SKILL.md", "demo-cmd.md"}]
+        assert len(command_files) == 2, [p.name for p in emitted]
+
+        # Per file, not joined: a joined string would let one emitter regress to
+        # `read` while the other's `open` still satisfied the assertion.
+        for path in command_files:
+            text = path.read_text(encoding="utf-8")
+            assert "`open`" in text, path
+            assert "`shell`" in text, path
+            assert "`grep`" in text, path
+            assert "`read`" not in text, path
+            assert "the `Read` tool" not in text, path
+            assert "the Bash tool" not in text, path

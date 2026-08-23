@@ -618,6 +618,24 @@ class TestAgentDivergence:
         check_agent_divergence(report)
         assert report.findings == []
 
+    def test_closing_delimiter_whitespace_is_not_drift(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """`--- ` and `---` on the closing line describe the same agent."""
+        _patch_paths(monkeypatch, tmp_path)
+        bodies = {
+            "alpha": "---\nname: alpha-reviewer\nmodel: opus\n--- \nReview.\n",
+            "beta": "---\nname: beta-reviewer\nmodel: opus\n---\nReview.\n",
+        }
+        for plugin, text in bodies.items():
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(text)
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
+
     def test_crlf_does_not_hide_real_drift(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Normalizing line endings must not also flatten a genuine body difference."""
         _patch_paths(monkeypatch, tmp_path)

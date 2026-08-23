@@ -70,6 +70,7 @@ COUNT_NOUN_ALIASES = {
 # can never compare equal on raw text. It is dropped before comparing. A byte-order
 # mark or leading blank line would otherwise hide the frontmatter from the parser.
 BOM = "\ufeff"
+BODY_LEADING_BLANKS_RE = re.compile(r"\A(?:[ \t]*\n)+")
 
 
 # ── Findings ─────────────────────────────────────────────────────────────────
@@ -480,7 +481,11 @@ def normalized_agent_text(text: str) -> str:
     # parse_frontmatter strips leading "\n" but leaves the "\r" behind it.
     # Strip newlines only, never spaces: leading indentation is content, so an
     # indented code block must not compare equal to plain prose.
-    normalized_body = body.replace("\r\n", "\n").lstrip("\n").rstrip()
+    # Leading whitespace-only lines are delimiter residue: parse_frontmatter leaves
+    # the spaces from a `--- ` closing line, and blank lines before the body are
+    # formatting. Both go. A line that starts with spaces then real text is content,
+    # so its indentation survives.
+    normalized_body = BODY_LEADING_BLANKS_RE.sub("", body.replace("\r\n", "\n")).rstrip()
     return f"{rendered}\n---\n{normalized_body}"
 
 
