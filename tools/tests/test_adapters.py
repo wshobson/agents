@@ -1513,3 +1513,125 @@ class TestCapabilities:
         for harness in supported_harnesses():
             for alias in ("fable", "opus", "sonnet", "haiku", "inherit"):
                 assert alias in MODEL_ALIASES[harness], f"{harness} missing {alias}"
+
+
+# ── Tool-reference rewriting ─────────────────────────────────────────────────
+
+
+class TestStripClaudeToolRefs:
+    """Characterization tests for `HarnessAdapter.strip_claude_tool_refs`.
+
+    Copilot command bodies are rewritten through this method, and its output is not
+    otherwise asserted anywhere. These tests pin the exact strings so that a refactor
+    which changes them has to say so instead of slipping through.
+    """
+
+    SAMPLE = "Use the `Read` tool first, then the Bash tool. Prefer `Grep` over `Glob`."
+
+    def _adapter(self, tmp_path: Path) -> CopilotAdapter:
+        return CopilotAdapter(output_root=tmp_path)
+
+    def test_lower_case_output_is_exact(self, tmp_path: Path):
+        assert (
+            self._adapter(tmp_path).strip_claude_tool_refs(self.SAMPLE, tool_case="lower")
+            == "Use `open` first, then `shell`. Prefer `grep` over `glob`."
+        )
+
+    def test_normal_case_output_is_exact(self, tmp_path: Path):
+        """`normal` keeps Read as `read` and leaves bare backticked names alone."""
+        assert (
+            self._adapter(tmp_path).strip_claude_tool_refs(self.SAMPLE, tool_case="normal")
+            == "Use `read` first, then `shell`. Prefer `Grep` over `Glob`."
+        )
+
+    def test_replacements_keep_their_backticks(self, tmp_path: Path):
+        out = self._adapter(tmp_path).strip_claude_tool_refs("Run the Bash tool.")
+        assert out == "Run `shell`."
+        assert "`shell`" in out, "replacement must stay inside backticks"
+
+    def test_backticked_prose_form(self, tmp_path: Path):
+        assert (
+            self._adapter(tmp_path).strip_claude_tool_refs("Call the `WebFetch` tool now.")
+            == "Call `fetch` now."
+        )
+
+    def test_bare_backticked_name_is_lowercased_not_verbed(self, tmp_path: Path):
+        """`Grep` on its own becomes `grep` — the lowercased name, not the `rg` verb."""
+        assert self._adapter(tmp_path).strip_claude_tool_refs("Prefer `Grep`.") == "Prefer `grep`."
+
+    def test_prose_words_are_left_alone(self, tmp_path: Path):
+        """Conservative by design: only the two tool phrasings are touched."""
+        sample = "Read the docs, then write a summary and edit it."
+        assert self._adapter(tmp_path).strip_claude_tool_refs(sample) == sample
+
+    def test_every_mapped_tool_is_covered(self, tmp_path: Path):
+        """Both cases, passed explicitly so a change to the default is caught.
+
+        Only Read differs between the two. The rest are pinned in both modes so a
+        future divergence has to be deliberate.
+        """
+        adapter = self._adapter(tmp_path)
+        # camel -> (tool_case="lower", tool_case="normal")
+        expected = {
+            "Read": ("open", "read"),
+            "Edit": ("edit", "edit"),
+            "Write": ("write", "write"),
+            "Bash": ("shell", "shell"),
+            "Grep": ("rg", "rg"),
+            "Glob": ("glob", "glob"),
+            "WebFetch": ("fetch", "fetch"),
+            "WebSearch": ("search", "search"),
+            "TodoWrite": ("todo", "todo"),
+        }
+        for camel, (lower_verb, normal_verb) in expected.items():
+            body = f"Use the {camel} tool."
+            assert adapter.strip_claude_tool_refs(body, tool_case="lower") == f"Use `{lower_verb}`."
+            assert (
+                adapter.strip_claude_tool_refs(body, tool_case="normal") == f"Use `{normal_verb}`."
+            )
+
+    def test_emitted_copilot_command_rewrites_tool_refs(self, tmp_path: Path):
+        """Cover the real path: what a generated Copilot command body actually says.
+
+        The unit assertions above pin the method. Copilot's two call sites pass
+        `tool_case="lower"` explicitly, so this asserts the emitted file instead of the
+        method default, which is what would actually regress.
+        """
+        from tools.adapters.base import CommandSource, PluginSource
+
+        plugin_dir = tmp_path / "src" / "demo"
+        cmds = plugin_dir / "commands"
+        cmds.mkdir(parents=True)
+        body = "Use the `Read` tool first, then the Bash tool. Prefer `Grep` over `Glob`."
+        content = f"---\ndescription: Demo command.\n---\n\n{body}\n"
+        (cmds / "demo-cmd.md").write_text(content, encoding="utf-8")
+        fm, parsed_body = parse_frontmatter(content)
+        command = CommandSource(
+            plugin="demo",
+            name="demo-cmd",
+            path=cmds / "demo-cmd.md",
+            frontmatter=fm,
+            body=parsed_body,
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, commands=[command]
+        )
+
+        out = tmp_path / "out"
+        result = CopilotAdapter(output_root=out).emit_plugin(plugin)
+        emitted = [p for p in result.written if p.suffix == ".md"]
+        # Copilot writes the command twice, as a skill and as a legacy command, and
+        # also writes a plugin index that carries no command body.
+        command_files = [p for p in emitted if p.name in {"SKILL.md", "demo-cmd.md"}]
+        assert len(command_files) == 2, [p.name for p in emitted]
+
+        # Per file, not joined: a joined string would let one emitter regress to
+        # `read` while the other's `open` still satisfied the assertion.
+        for path in command_files:
+            text = path.read_text(encoding="utf-8")
+            assert "`open`" in text, path
+            assert "`shell`" in text, path
+            assert "`grep`" in text, path
+            assert "`read`" not in text, path
+            assert "the `Read` tool" not in text, path
+            assert "the Bash tool" not in text, path
