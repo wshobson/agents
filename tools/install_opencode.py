@@ -32,8 +32,9 @@ class InstallReport:
 
 
 def default_config_dir(env: Mapping[str, str] | None = None) -> Path:
-    # os.environ is a Mapping, not a dict, so it needs its own binding rather than
-    # being assigned back over an argument annotated dict[str, str] | None.
+    # An explicit None check, so a caller passing an empty mapping gets exactly that
+    # rather than falling back to os.environ. Matches install_copilot.default_config_dir.
+    # os.environ is a Mapping rather than a dict, hence the separate binding.
     source: Mapping[str, str] = os.environ if env is None else env
     if source.get("OPENCODE_CONFIG_DIR"):
         return Path(source["OPENCODE_CONFIG_DIR"]).expanduser()
