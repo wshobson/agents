@@ -159,12 +159,16 @@ integrations for Codex CLI, Cursor, OpenCode, and Copilot (not yet Antigravity C
 `git-subdir` entry for Claude Code from the reviewed `distributions/wshobson-agents`
 payload in [hashgraph-online/hol-guard-plugin](https://github.com/hashgraph-online/hol-guard-plugin).
 The payload exposes local `hol-guard` and `plugin-scanner` skills. Guard Cloud is neither
-required nor promoted on the default path.
+required nor promoted on the default path. This marketplace entry is a Claude Code
+discovery surface only; it does not add HOL Guard to this repository's generated Codex,
+Cursor, OpenCode, Antigravity, or Copilot registries.
 
-The payload pins its local CLI versions and requires user approval before installation.
-When protection is explicitly requested, the external `hol-guard` runtime can modify
-supported harness hook/settings configuration; those changes are performed by the local
-Guard CLI, not by files in this marketplace repository.
+The reviewed external payload is pinned to commit `43b2dda59e9f07057c52e69fd7426188faae1488`. Its local CLI pins are
+`hol-guard==2.2.119` and `plugin-scanner==2.2.119`, and installation requires user approval.
+For a reviewed payload update, the marketplace `sha` and the matching marketplace/external
+manifest versions must be advanced together. When protection is explicitly requested, the
+external `hol-guard` runtime can modify supported harness hook/settings configuration; those
+changes are performed by the local Guard CLI, not by files in this marketplace repository.
 
 ## License
 

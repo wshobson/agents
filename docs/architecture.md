@@ -40,7 +40,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 6 plugins (debugging, backend, frontend, UI, multi-platform, essentials)
-  - **Security**: 6 plugins (scanning, compliance, API, frontend/mobile, reverse engineering, hook policy)
+  - **Security**: 7 plugins (scanning, compliance, API, frontend/mobile, reverse engineering, hook policy, HOL Guard)
   - **Operations**: 4 plugins (incident, diagnostics, distributed, observability)
   - **Languages**: 10 plugins (Python, JS/TS, systems, JVM, scripting, functional, embedded, and more)
   - **Infrastructure**: 5 plugins (deployment, validation, K8s, cloud, CI/CD)

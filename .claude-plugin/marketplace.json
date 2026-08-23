@@ -1121,7 +1121,8 @@
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/hashgraph-online/hol-guard-plugin.git",
-        "path": "distributions/wshobson-agents"
+        "path": "distributions/wshobson-agents",
+        "sha": "43b2dda59e9f07057c52e69fd7426188faae1488"
       },
       "description": "Local pre-execution security controls and pre-install scanning for AI agent tools, packages, skills, plugins, and MCP servers.",
       "version": "0.1.0",
