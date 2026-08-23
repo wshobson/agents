@@ -615,6 +615,58 @@ class TestAgentDivergence:
         check_agent_divergence(report)
         assert report.findings == []
 
+    def test_nested_frontmatter_key_order_is_not_drift(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Mapping key order carries no meaning, so reordering it is not a change."""
+        _patch_paths(monkeypatch, tmp_path)
+        bodies = {
+            "alpha": "---\nname: alpha-r\nmetadata:\n  version: 1.0.0\n  author: me\n---\nB.\n",
+            "beta": "---\nname: beta-r\nmetadata:\n  author: me\n  version: 1.0.0\n---\nB.\n",
+        }
+        for plugin, text in bodies.items():
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(text)
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
+
+    def test_nested_frontmatter_value_change_is_drift(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Canonicalizing key order must not also flatten a changed nested value."""
+        _patch_paths(monkeypatch, tmp_path)
+        bodies = {
+            "alpha": "---\nname: alpha-r\nmetadata:\n  version: 1.0.0\n---\nB.\n",
+            "beta": "---\nname: beta-r\nmetadata:\n  version: 2.0.0\n---\nB.\n",
+        }
+        for plugin, text in bodies.items():
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(text)
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+
+    def test_list_order_is_still_meaningful(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """Only mapping keys are reordered. A reordered list is a real difference."""
+        _patch_paths(monkeypatch, tmp_path)
+        bodies = {
+            "alpha": "---\nname: alpha-r\ntools: [Read, Write]\n---\nB.\n",
+            "beta": "---\nname: beta-r\ntools: [Write, Read]\n---\nB.\n",
+        }
+        for plugin, text in bodies.items():
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(text)
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+
     def test_crlf_copy_matches_its_lf_twin(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """The realistic case: one copy edited on Windows, the other on Unix.
 

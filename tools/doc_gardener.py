@@ -467,6 +467,20 @@ def check_marketplace_consistency(report: Report) -> None:
             )
 
 
+def canonical_frontmatter_value(value: object) -> object:
+    """Order-independent form of a parsed frontmatter value.
+
+    Mapping key order carries no meaning, and `repr` preserves insertion order, so two
+    agents with the same nested fields written in a different order would otherwise
+    hash differently. List order is left alone because it is meaningful.
+    """
+    if isinstance(value, dict):
+        return {key: canonical_frontmatter_value(value[key]) for key in sorted(value)}
+    if isinstance(value, list):
+        return [canonical_frontmatter_value(item) for item in value]
+    return value
+
+
 def normalized_agent_text(text: str) -> str:
     """Render an agent as its frontmatter fields minus `name`, plus its body.
 
@@ -483,7 +497,9 @@ def normalized_agent_text(text: str) -> str:
         text = trimmed
     fields, body = parse_frontmatter(text)
     fields.pop("name", None)
-    rendered = "\n".join(f"{key}: {fields[key]!r}" for key in sorted(fields))
+    rendered = "\n".join(
+        f"{key}: {canonical_frontmatter_value(fields[key])!r}" for key in sorted(fields)
+    )
     # Line endings are formatting, so a CRLF copy must match its LF twin.
     # parse_frontmatter strips leading "\n" but leaves the "\r" behind it.
     # Strip newlines only, never spaces: leading indentation is content, so an
