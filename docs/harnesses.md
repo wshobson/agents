@@ -141,6 +141,24 @@ For generated harnesses, use Pensyve's upstream harness-native integration:
 | OpenCode | `integrations/opencode-plugin` |
 | Copilot | `.copilot/` (repo-level) or `~/.copilot/` (global install via `make install-copilot`) |
 
+## External HOL Guard integration
+
+The Claude Code marketplace includes HOL Guard as an external `git-subdir` plugin from
+`https://github.com/hashgraph-online/hol-guard-plugin.git`, path `distributions/wshobson-agents`.
+The reviewed payload exposes the portable `hol-guard` and `plugin-scanner` skills and
+keeps decisioning local by default. Guard Cloud is neither required nor promoted. This
+marketplace entry is a Claude Code discovery surface only; it does not add HOL Guard to the
+generated Codex, Cursor, OpenCode, Antigravity, or Copilot registries.
+
+The reviewed payload is pinned to commit `43b2dda59e9f07057c52e69fd7426188faae1488` and installs the exact local CLI versions
+`hol-guard==2.2.119` and `plugin-scanner==2.2.119`, with user approval required before
+installation. For a reviewed payload update, advance the marketplace `sha` and matching
+marketplace/external manifest versions together.
+
+When the user explicitly requests protection, the local HOL Guard runtime can modify
+supported harness hook/settings configuration. Generated harness outputs in this repository
+do not vendor or rewrite the external HOL Guard payload.
+
 ## Global install
 
 OpenCode, Copilot, and Antigravity support installing generated artifacts globally for

@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **92 marketplace plugins** organized by category: 91 local plugins plus 1 externally hosted `git-subdir` entry (`pensyve`).
+Browse all **93 marketplace plugins** organized by category: 91 local plugins plus 2 externally hosted `git-subdir` entries (`pensyve` and `hol-guard`).
 
 ## Quick Start - Essential Plugins
 
@@ -223,7 +223,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **cloud-infrastructure**  | AWS/Azure/GCP cloud architecture            | `/plugin install cloud-infrastructure`  |
 | **cicd-automation**       | CI/CD pipeline configuration                | `/plugin install cicd-automation`       |
 
-### 🔒 Security (6 plugins)
+### 🔒 Security (7 plugins)
 
 | Plugin                       | Description                                                     | Install                                    |
 | ---------------------------- | --------------------------------------------------------------- | ------------------------------------------ |
@@ -233,6 +233,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **frontend-mobile-security** | XSS/CSRF prevention and mobile security                         | `/plugin install frontend-mobile-security` |
 | **reverse-engineering**      | Binary analysis, malware triage, firmware security (authorized) | `/plugin install reverse-engineering`      |
 | **block-no-verify**          | PreToolUse hook blocking `--no-verify` and hook-bypass flags    | `/plugin install block-no-verify`          |
+| **hol-guard**                | Local pre-execution policy and pre-install agent supply-chain scanning | `/plugin install hol-guard`                 |
 
 ### 🛡️ Governance (3 plugins)
 
@@ -363,7 +364,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 92 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 93 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
