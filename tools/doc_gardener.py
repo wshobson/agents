@@ -49,7 +49,7 @@ CODEX_SKILL_CAP_BYTES = 8 * 1024
 # plugin add/remove. Only the two canonical context files are scanned — docs/
 # carries per-category subtotals that legitimately differ from the totals.
 COUNT_DOC_FILES = ("README.md", "AGENTS.md")
-COUNT_RE = re.compile(r"\b(\d+)\s+(plugins?|subagents?|agents?|skills?|commands?)\b")
+COUNT_RE = re.compile(r"\b(\d[\d,]*)\s+(plugins?|subagents?|agents?|skills?|commands?)\b")
 
 # Every spelling the two files use, mapped to its key in actual_counts(). AGENTS.md
 # calls the agent total "subagents" in its cross-harness section, and a total of one
@@ -458,7 +458,9 @@ def check_doc_counts(report: Report) -> None:
             for quoted, noun in COUNT_RE.findall(line):
                 key = COUNT_NOUN_ALIASES.get(noun, noun)
                 actual = counts[key]
-                if actual is None or int(quoted) == actual:
+                # A thousands separator is still one number: 1,234 agents.
+                claimed = int(quoted.replace(",", ""))
+                if actual is None or claimed == actual:
                     continue
                 report.add(
                     kind="STALE_COUNT",

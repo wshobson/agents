@@ -434,6 +434,45 @@ class TestDocCounts:
         check_doc_counts(report)
         assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
 
+    def test_thousands_separator_is_one_number(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """`1,234 agents` is 1234, not a stale claim of 234."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / "README.md").write_text("We ship 1,234 agents today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        stale = [f for f in report.findings if f.kind == "STALE_COUNT"]
+        assert len(stale) == 1
+        assert "says 1,234 agents, actual is 34" in stale[0].message
+
+    def test_thousands_separator_matching_the_total_is_clean(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=2, agents=1234)
+        (tmp_path / "README.md").write_text("We ship 1,234 agents today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+
+    def test_counts_inside_code_fences_are_checked(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """README quotes the plugin total inside a bash fence, so fences count."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / "README.md").write_text(
+            "```bash\n/plugin install x  # any of 11 plugins\n```\n"
+        )
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f.message for f in report.findings] == ["line 2 says 11 plugins, actual is 12"]
+
     def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Per-category subtotals under docs/ legitimately differ from the totals."""
         _patch_paths(monkeypatch, tmp_path)
