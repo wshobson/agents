@@ -29,6 +29,7 @@ import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, cast
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -402,16 +403,17 @@ def check_marketplace_consistency(report: Report) -> None:
             fix='Restore the manifest shape: {"plugins": [ ... ]}.',
         )
         return
-    for position, entry in enumerate(entries):
-        if not isinstance(entry, dict):
+    for position, raw_entry in enumerate(entries):
+        if not isinstance(raw_entry, dict):
             report.add(
                 kind="MARKETPLACE_SHAPE",
                 severity="error",
                 path=MARKETPLACE_JSON,
-                message=f"plugins[{position}] is {type(entry).__name__}, expected an object",
+                message=f"plugins[{position}] is {type(raw_entry).__name__}, expected an object",
                 fix="Remove the entry or give it the usual name/source/description fields.",
             )
             continue
+        entry = cast("dict[str, Any]", raw_entry)
         name = entry.get("name")
         if not name:
             continue
