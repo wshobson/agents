@@ -69,9 +69,7 @@ def _link_one(src: Path, dst: Path, *, force: bool, report: InstallReport) -> No
             return
         dst.unlink()
     elif dst.exists():
-        report.errors.append(
-            f"{dst} already exists and is not a symlink; refusing to overwrite"
-        )
+        report.errors.append(f"{dst} already exists and is not a symlink; refusing to overwrite")
         return
 
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -138,9 +136,7 @@ def main() -> int:
     parser.add_argument("action", choices=("install", "uninstall"))
     parser.add_argument("--config-dir", type=Path, default=None)
     parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
-    parser.add_argument(
-        "--force", action="store_true", help="Replace conflicting symlinks only"
-    )
+    parser.add_argument("--force", action="store_true", help="Replace conflicting symlinks only")
     args = parser.parse_args()
 
     config_dir = (args.config_dir or default_config_dir()).expanduser()

@@ -35,34 +35,33 @@ jobs:
         run: uv sync --all-extras
 
       - name: ruff check (lint)
-        # Scope: adapter framework + plugin-eval. yt-design-extractor.py is legacy
-        # and out of scope for the multi-harness work; not gated.
+        # Scope: all of tools/ plus plugin-eval. Narrower per-file paths let
+        # check_agent_name_collisions.py, the installers and yt-design-extractor.py
+        # drift out of format; `make lint` runs this same scope locally.
         run: |
           uv run ruff check \
-            ../../tools/adapters/ \
-            ../../tools/generate.py \
-            ../../tools/validate_generated.py \
-            ../../tools/doc_gardener.py \
-            ../../tools/tests/ \
+            ../../tools/ \
             src/plugin_eval/
 
       - name: ruff format --check
         run: |
           uv run ruff format --check \
-            ../../tools/adapters/ \
-            ../../tools/generate.py \
-            ../../tools/validate_generated.py \
-            ../../tools/doc_gardener.py \
-            ../../tools/tests/ \
+            ../../tools/ \
             src/plugin_eval/
 
       - name: ty type-check
         run: |
+          # Not ../../tools/ — yt-design-extractor imports optional OCR deps that are
+          # installed only by `make install-ocr`, so ty cannot resolve them here.
           uv run ty check \
             ../../tools/adapters/ \
             ../../tools/generate.py \
             ../../tools/validate_generated.py \
             ../../tools/doc_gardener.py \
+            ../../tools/install_opencode.py \
+            ../../tools/install_copilot.py \
+            ../../tools/install_antigravity.py \
+            ../../tools/check_agent_name_collisions.py \
             ../../tools/tests/ \
             src/plugin_eval/
 

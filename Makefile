@@ -16,7 +16,13 @@ YTX_SCRIPT := yt-design-extractor.py
 # `uv run` against the plugin-eval venv — has pyyaml + extra-paths to tools/adapters/
 UV_TOOLS := uv run $(EVAL_PROJECT) python
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity validate garden test smoke-test
+# Paths for `make lint` / `make format`, relative to plugins/plugin-eval/ where the
+# ruff and ty config lives. ty skips tools/yt-design-extractor/ because that tool
+# imports optional OCR dependencies installed only by `make install-ocr`.
+RUFF_PATHS := ../../tools/ src/plugin_eval/
+TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/check_agent_name_collisions.py ../../tools/tests/ src/plugin_eval/
+
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity validate garden lint format test smoke-test
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
@@ -34,6 +40,8 @@ help:
 	@echo "  make uninstall-antigravity                       Remove repo-owned Antigravity symlinks"
 	@echo "  make validate [HARNESS=<h>] [STRICT=1]           Structural validation of generated artifacts"
 	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
+	@echo "  make lint                                        ruff + ty, exactly as CI runs them"
+	@echo "  make format                                      Apply ruff format and safe fixes"
 	@echo "  make test                                        Full pytest suite (plugin-eval + tools)"
 	@echo "  make smoke-test                                  Real-CLI smoke test (skips CLIs not on PATH)"
 	@echo ""
@@ -189,6 +197,19 @@ endif
 
 garden:
 	$(UV_TOOLS) tools/doc_gardener.py $(if $(STRICT),--strict)
+
+# Code-quality gates. These MUST run from plugins/plugin-eval/, which is where the
+# [tool.ruff] and [tool.ty] config lives and where CI runs them. Running ruff from the
+# repo root silently falls back to line-length 88 and disagrees with CI, so use these
+# targets rather than invoking ruff directly.
+lint:
+	cd plugins/plugin-eval && uv run ruff check $(RUFF_PATHS)
+	cd plugins/plugin-eval && uv run ruff format --check $(RUFF_PATHS)
+	cd plugins/plugin-eval && uv run ty check $(TY_PATHS)
+
+format:
+	cd plugins/plugin-eval && uv run ruff format $(RUFF_PATHS)
+	cd plugins/plugin-eval && uv run ruff check --fix $(RUFF_PATHS)
 
 # Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
 test:

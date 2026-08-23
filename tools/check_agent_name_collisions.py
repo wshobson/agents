@@ -84,8 +84,7 @@ def main() -> int:
         return 0
 
     print(
-        f"Found {duplicate_name_count} duplicate agent names across "
-        f"{colliding_file_count} files:"
+        f"Found {duplicate_name_count} duplicate agent names across {colliding_file_count} files:"
     )
     for name, paths in duplicates.items():
         print(f"\n{name} ({len(paths)} files)")
@@ -93,20 +92,14 @@ def main() -> int:
             print(f"  - {path.relative_to(root)}")
 
     failed = args.fail_on_duplicates
-    if (
-        args.max_duplicate_names is not None
-        and duplicate_name_count > args.max_duplicate_names
-    ):
+    if args.max_duplicate_names is not None and duplicate_name_count > args.max_duplicate_names:
         print(
             f"\nERROR: duplicate name count {duplicate_name_count} exceeds "
             f"baseline {args.max_duplicate_names}",
             file=sys.stderr,
         )
         failed = True
-    if (
-        args.max_colliding_files is not None
-        and colliding_file_count > args.max_colliding_files
-    ):
+    if args.max_colliding_files is not None and colliding_file_count > args.max_colliding_files:
         print(
             f"\nERROR: colliding file count {colliding_file_count} exceeds "
             f"baseline {args.max_colliding_files}",

@@ -64,19 +64,25 @@ Every PR runs these on CI (`.github/workflows/`); run them locally before pushin
 
 ```bash
 make validate STRICT=1     # structural validation across all harness outputs
-make garden STRICT=1       # drift, dead-link, stale-artifact detection
+make garden                # drift, dead-link, stale-artifact detection
 make test                  # full pytest suite (plugin-eval + tools/tests/)
 make smoke-test            # real-CLI subprocess tests (OpenCode, Antigravity, Codex, Claude)
 ```
 
+`make garden STRICT=1` also fails on warnings. Main currently carries ten
+`SKILL_OVER_CODEX_CAP` warnings, so treat it as something to read rather than a
+pass/fail gate until those skills are split. CI gates on errors only.
+
 Code-quality checks (also in CI):
 
 ```bash
-cd plugins/plugin-eval
-uv run ruff check ../../tools/ src/plugin_eval/
-uv run ruff format --check ../../tools/ src/plugin_eval/
-uv run ty check ../../tools/ src/plugin_eval/
+make lint      # ruff check, ruff format --check, and ty
+make format    # apply ruff format and safe fixes
 ```
+
+Both run from `plugins/plugin-eval/`, which is where the ruff and ty config lives.
+Invoking ruff from the repo root instead silently falls back to line-length 88 and
+disagrees with CI.
 
 ## Cross-harness portability checklist
 
