@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 from tools.doc_gardener import (
+    CHECKS,
     Report,
     check_agent_divergence,
     check_codex_skill_caps,
@@ -645,3 +646,45 @@ class TestAgentDivergence:
         check_agent_divergence(report)
         assert "3 copies in 2 different versions" in report.findings[0].message
         assert "alpha+beta" in report.findings[0].message
+
+
+# ── Unreadable files ─────────────────────────────────────────────────────────
+
+
+class TestUnreadableFiles:
+    """One bad file costs a finding, never the rest of the run."""
+
+    def _seed_bad_repo(self, tmp_path: Path) -> None:
+        bad = b"\xff\xfe not utf-8\n"
+        for plugin in ("alpha", "beta"):
+            agents = tmp_path / "plugins" / plugin / "agents"
+            skill = tmp_path / "plugins" / plugin / "skills" / "s"
+            agents.mkdir(parents=True, exist_ok=True)
+            skill.mkdir(parents=True, exist_ok=True)
+            (agents / "reviewer.md").write_bytes(bad)
+            (skill / "SKILL.md").write_bytes(bad)
+        (tmp_path / "docs").mkdir(exist_ok=True)
+        (tmp_path / "docs" / "x.md").write_bytes(bad)
+        (tmp_path / "AGENTS.md").write_bytes(bad)
+        (tmp_path / "README.md").write_bytes(bad)
+        (tmp_path / ".claude-plugin").mkdir(exist_ok=True)
+        (tmp_path / ".claude-plugin" / "marketplace.json").write_bytes(bad)
+
+    def test_no_check_crashes_on_a_non_utf8_file(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        self._seed_bad_repo(tmp_path)
+        for name, check in CHECKS.items():
+            report = Report()
+            check(report)  # must not raise
+            assert all(f.kind for f in report.findings), name
+
+    def test_the_bad_file_is_reported(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        self._seed_bad_repo(tmp_path)
+        report = Report()
+        CHECKS["counts"](report)
+        unreadable = [f for f in report.findings if f.kind == "UNREADABLE_FILE"]
+        assert unreadable
+        assert unreadable[0].severity == "error"

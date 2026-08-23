@@ -103,6 +103,24 @@ class Report:
         return [f for f in self.findings if f.severity == severity]
 
 
+def read_text_or_none(path: Path, report: Report) -> str | None:
+    """Read a file as UTF-8, reporting a finding rather than killing the whole run.
+
+    One unreadable file should cost its own finding, not every other check's output.
+    """
+    try:
+        return path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        report.add(
+            kind="UNREADABLE_FILE",
+            severity="error",
+            path=path,
+            message=f"cannot be read as UTF-8 text: {exc}",
+            fix="Re-save the file as UTF-8, or remove it if it is not source.",
+        )
+        return None
+
+
 # ── Checks ───────────────────────────────────────────────────────────────────
 
 
@@ -281,7 +299,10 @@ def check_oversized_context_files(report: Report) -> None:
         path = WORKTREE / name
         if not path.is_file():
             continue
-        line_count = len(path.read_text().splitlines())
+        content = read_text_or_none(path, report)
+        if content is None:
+            continue
+        line_count = len(content.splitlines())
         if line_count > cap:
             report.add(
                 kind="CONTEXT_FILE_OVERSIZED",
@@ -310,7 +331,9 @@ def check_dead_links(report: Report) -> None:
         files = list(target.rglob("*.md")) if target.is_dir() else [target]
         for md in files:
             try:
-                content = md.read_text(encoding="utf-8")
+                content = read_text_or_none(md, report)
+                if content is None:
+                    continue
             except OSError:
                 continue
             for link in link_pattern.findall(content):
@@ -333,8 +356,10 @@ def check_codex_skill_caps(report: Report) -> None:
     if not PLUGINS_DIR.is_dir():
         return
     for skill_md in PLUGINS_DIR.glob("*/skills/*/SKILL.md"):
-        content = skill_md.read_text(encoding="utf-8")
-        fm, body = parse_frontmatter(content)
+        content = read_text_or_none(skill_md, report)
+        if content is None:
+            continue
+        _, body = parse_frontmatter(content)
         body_bytes = len(body.encode("utf-8"))
         if body_bytes > CODEX_SKILL_CAP_BYTES:
             refs = skill_md.parent / "references"
@@ -352,7 +377,10 @@ def check_marketplace_consistency(report: Report) -> None:
     if not MARKETPLACE_JSON.is_file():
         return
     try:
-        data = json.loads(MARKETPLACE_JSON.read_text())
+        raw = read_text_or_none(MARKETPLACE_JSON, report)
+        if raw is None:
+            return
+        data = json.loads(raw)
     except json.JSONDecodeError as e:
         report.add(
             kind="MARKETPLACE_PARSE",
@@ -431,8 +459,8 @@ def actual_counts() -> dict[str, int | None]:
     plugins: int | None = None
     if MARKETPLACE_JSON.is_file():
         try:
-            manifest = json.loads(MARKETPLACE_JSON.read_text())
-        except json.JSONDecodeError:
+            manifest = json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
             manifest = None  # check_marketplace_consistency reports the parse error
         # Valid JSON of the wrong shape is still an unknown count, not a crash.
         if isinstance(manifest, dict):
@@ -454,7 +482,10 @@ def check_doc_counts(report: Report) -> None:
         path = WORKTREE / filename
         if not path.is_file():
             continue
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        content = read_text_or_none(path, report)
+        if content is None:
+            continue
+        for lineno, line in enumerate(content.splitlines(), 1):
             for quoted, noun in COUNT_RE.findall(line):
                 key = COUNT_NOUN_ALIASES.get(noun, noun)
                 actual = counts[key]
@@ -489,7 +520,10 @@ def check_agent_divergence(report: Report) -> None:
             continue
         bodies: dict[str, list[Path]] = defaultdict(list)
         for path in paths:
-            normalized = normalized_agent_text(path.read_text(encoding="utf-8"))
+            raw = read_text_or_none(path, report)
+            if raw is None:
+                continue
+            normalized = normalized_agent_text(raw)
             bodies[hashlib.md5(normalized.encode("utf-8")).hexdigest()].append(path)
 
         if len(bodies) > 1:
