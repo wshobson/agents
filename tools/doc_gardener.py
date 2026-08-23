@@ -65,11 +65,10 @@ COUNT_NOUN_ALIASES = {
     "command": "commands",
 }
 
-# An agent's frontmatter `name:` is plugin-namespaced, so two copies of the same
-# agent can never hash alike. Normalize it away before comparing bodies, scoped to
-# the opening frontmatter block so a `name:` line in the body still counts as content.
-AGENT_NAME_LINE_RE = re.compile(r"^name:.*$", re.MULTILINE)
-AGENT_FRONTMATTER_RE = re.compile(r"\A(---\r?\n)(.*?)(\r?\n---(?:\r?\n|\Z))", re.DOTALL)
+# An agent's frontmatter `name:` is plugin-namespaced, so two copies of the same agent
+# can never compare equal on raw text. It is dropped before comparing. A byte-order
+# mark or leading blank line would otherwise hide the frontmatter from the parser.
+BOM = "\ufeff"
 
 
 # ── Findings ─────────────────────────────────────────────────────────────────
@@ -406,17 +405,18 @@ def check_marketplace_consistency(report: Report) -> None:
 
 
 def normalized_agent_text(text: str) -> str:
-    """Blank the plugin-namespaced frontmatter `name:` so sibling copies compare equal.
+    """Render an agent as its frontmatter fields minus `name`, plus its body.
 
-    Only the opening frontmatter block is touched. A `name:` line in the body is real
-    content and must still count toward a divergence.
+    Uses the same frontmatter parser the adapters use, so a copy is judged on its
+    fields and body rather than on exact delimiter formatting. That keeps CRLF files,
+    a closing `---` at end of file, and a trailing space after a delimiter from
+    reading as drift. A `name:` line in the body is body content and still counts.
     """
-    match = AGENT_FRONTMATTER_RE.match(text)
-    if not match:
-        return text
-    opener, frontmatter, closer = match.groups()
-    frontmatter = AGENT_NAME_LINE_RE.sub("name:", frontmatter, count=1)
-    return f"{opener}{frontmatter}{closer}{text[match.end() :]}"
+    text = text.lstrip(BOM).lstrip()
+    fields, body = parse_frontmatter(text)
+    fields.pop("name", None)
+    rendered = "\n".join(f"{key}: {fields[key]!r}" for key in sorted(fields))
+    return f"{rendered}\n---\n{body.strip()}"
 
 
 def actual_counts() -> dict[str, int | None]:

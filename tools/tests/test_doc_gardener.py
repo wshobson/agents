@@ -554,6 +554,47 @@ class TestAgentDivergence:
         check_agent_divergence(report)
         assert report.findings == []
 
+    @pytest.mark.parametrize(
+        ("label", "template"),
+        [
+            ("bom", "\ufeff---\nname: {name}\nmodel: opus\n---\nReview.\n"),
+            ("leading_blank", "\n\n---\nname: {name}\nmodel: opus\n---\nReview.\n"),
+            ("trailing_space", "--- \nname: {name}\nmodel: opus\n---\nReview.\n"),
+            ("no_trailing_newline", "---\nname: {name}\nmodel: opus\n---\nReview."),
+        ],
+    )
+    def test_delimiter_formatting_is_not_drift(
+        self, label: str, template: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Frontmatter formatting must not decide whether two copies match."""
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin in ("alpha", "beta"):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(
+                template.format(name=f"{plugin}-reviewer"), encoding="utf-8"
+            )
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == [], f"{label} was treated as drift"
+
+    def test_frontmatter_field_change_is_drift(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A real frontmatter difference other than `name` still counts."""
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin, model in (("alpha", "opus"), ("beta", "sonnet")):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(
+                f"---\nname: {plugin}-reviewer\nmodel: {model}\n---\nReview.\n"
+            )
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+
     def test_groups_variants_in_message(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Three copies sharing two bodies report as 3 copies / 2 versions."""
         _patch_paths(monkeypatch, tmp_path)
