@@ -36,10 +36,13 @@ Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
   gating access. A script that takes payment, verifies a transaction, or grants
   and revokes access to a repository or service is out of scope, whether it
   charges the installing user or helps the installing user charge someone else.
-  Teaching an agent to build payment, licensing, or access-control features in
-  the user's own application is a different thing and is welcome — the
-  `payment-processing` plugin is the reference example. The line is whether the
-  payload runs a commercial transaction itself.
+  Verifying a transaction, checking a licence or entitlement, and granting or
+  revoking access are each covered on their own, so splitting the steps across
+  tools does not get around the rule. Teaching an agent to build payment,
+  licensing, or access-control features in the user's own application is a
+  different thing and is welcome, and the `payment-processing` plugin is the
+  reference example of that. The line is whether the payload operates the
+  contributor's commercial relationship or only explains how to build one.
 
 ## External and vendor plugins
 

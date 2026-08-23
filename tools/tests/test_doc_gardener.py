@@ -474,6 +474,23 @@ class TestDocCounts:
         check_doc_counts(report)
         assert [f.message for f in report.findings] == ["line 2 says 11 plugins, actual is 12"]
 
+    def test_unreadable_manifest_is_reported_by_the_counts_check(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A non-UTF-8 manifest reports UNREADABLE_FILE, not just an unknown count."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / ".claude-plugin" / "marketplace.json").write_bytes(b"\xff\xfe bad\n")
+        (tmp_path / "README.md").write_text("We ship 99 plugins and 30 agents today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "UNREADABLE_FILE"]
+        stale = [f for f in report.findings if f.kind == "STALE_COUNT"]
+        # Plugin count unknown, agent count still checked.
+        assert len(stale) == 1
+        assert "30 agents" in stale[0].message
+
     def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Per-category subtotals under docs/ legitimately differ from the totals."""
         _patch_paths(monkeypatch, tmp_path)
@@ -634,6 +651,33 @@ class TestAgentDivergence:
         report = Report()
         check_agent_divergence(report)
         assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+
+    def test_leading_indentation_is_content(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """An indented body must not compare equal to the same text unindented."""
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin, body in (("alpha", "    indented code\n"), ("beta", "indented code\n")):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(f"---\nname: {plugin}-reviewer\n---\n{body}")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+
+    def test_matching_indentation_stays_verbatim(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin in ("alpha", "beta"):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(
+                f"---\nname: {plugin}-reviewer\n---\n    indented code\n"
+            )
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
 
     def test_groups_variants_in_message(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Three copies sharing two bodies report as 3 copies / 2 versions."""

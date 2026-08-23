@@ -330,11 +330,8 @@ def check_dead_links(report: Report) -> None:
     for target in targets:
         files = list(target.rglob("*.md")) if target.is_dir() else [target]
         for md in files:
-            try:
-                content = read_text_or_none(md, report)
-                if content is None:
-                    continue
-            except OSError:
+            content = read_text_or_none(md, report)
+            if content is None:
                 continue
             for link in link_pattern.findall(content):
                 # Skip external links and anchors
@@ -444,10 +441,12 @@ def normalized_agent_text(text: str) -> str:
     fields, body = parse_frontmatter(text)
     fields.pop("name", None)
     rendered = "\n".join(f"{key}: {fields[key]!r}" for key in sorted(fields))
-    return f"{rendered}\n---\n{body.strip()}"
+    # rstrip only. A trailing newline is formatting, but leading indentation is
+    # content: an indented code block must not compare equal to plain prose.
+    return f"{rendered}\n---\n{body.rstrip()}"
 
 
-def actual_counts() -> dict[str, int | None]:
+def actual_counts(report: Report) -> dict[str, int | None]:
     """Live component totals, counted the same way the adapters discover them.
 
     `plugins` counts marketplace entries rather than plugins/ directories, because
@@ -458,9 +457,10 @@ def actual_counts() -> dict[str, int | None]:
     """
     plugins: int | None = None
     if MARKETPLACE_JSON.is_file():
+        raw = read_text_or_none(MARKETPLACE_JSON, report)
         try:
-            manifest = json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            manifest = None if raw is None else json.loads(raw)
+        except json.JSONDecodeError:
             manifest = None  # check_marketplace_consistency reports the parse error
         # Valid JSON of the wrong shape is still an unknown count, not a crash.
         if isinstance(manifest, dict):
@@ -477,7 +477,7 @@ def actual_counts() -> dict[str, int | None]:
 
 def check_doc_counts(report: Report) -> None:
     """Component counts quoted in README.md / AGENTS.md that no longer match reality."""
-    counts = actual_counts()
+    counts = actual_counts(report)
     for filename in COUNT_DOC_FILES:
         path = WORKTREE / filename
         if not path.is_file():
