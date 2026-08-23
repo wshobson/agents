@@ -105,6 +105,21 @@ class Report:
         return [f for f in self.findings if f.severity == severity]
 
 
+def marketplace_entry_problem(entry: object) -> str | None:
+    """Say why a `plugins[]` entry is unusable, or None when it is fine.
+
+    Both readers of the manifest go through this. When only one of them enforced the
+    shape, a counts-only run could report a stale total from a manifest the
+    consistency check rejects.
+    """
+    if not isinstance(entry, dict):
+        return f" is {type(entry).__name__}, expected an object"
+    name = entry.get("name")
+    if name is not None and not isinstance(name, str):
+        return f".name is {type(name).__name__}, expected a string"
+    return None
+
+
 def read_text_or_none(path: Path, report: Report) -> str | None:
     """Read a file as UTF-8, reporting a finding rather than killing the whole run.
 
@@ -405,26 +420,18 @@ def check_marketplace_consistency(report: Report) -> None:
         )
         return
     for position, raw_entry in enumerate(entries):
-        if not isinstance(raw_entry, dict):
+        problem = marketplace_entry_problem(raw_entry)
+        if problem is not None:
             report.add(
                 kind="MARKETPLACE_SHAPE",
                 severity="error",
                 path=MARKETPLACE_JSON,
-                message=f"plugins[{position}] is {type(raw_entry).__name__}, expected an object",
+                message=f"plugins[{position}]{problem}",
                 fix="Remove the entry or give it the usual name/source/description fields.",
             )
             continue
         entry = cast("dict[str, Any]", raw_entry)
         name = entry.get("name")
-        if name is not None and not isinstance(name, str):
-            report.add(
-                kind="MARKETPLACE_SHAPE",
-                severity="error",
-                path=MARKETPLACE_JSON,
-                message=f"plugins[{position}].name is {type(name).__name__}, expected a string",
-                fix="Give the entry a plain string name.",
-            )
-            continue
         if not name:
             continue
         source = entry.get("source")
@@ -508,9 +515,12 @@ def actual_counts(report: Report) -> dict[str, int | None]:
         # Valid JSON of the wrong shape is still an unknown count, not a crash.
         if isinstance(manifest, dict):
             entries = manifest.get("plugins")
-            # A list holding a non-object entry is malformed. Counting it would let
-            # garbage drive an error-severity finding.
-            if isinstance(entries, list) and all(isinstance(e, dict) for e in entries):
+            # Malformed entries make the total unknown. Counting them would let
+            # garbage drive an error-severity finding, and would disagree with
+            # check_marketplace_consistency about the same manifest.
+            if isinstance(entries, list) and all(
+                marketplace_entry_problem(e) is None for e in entries
+            ):
                 plugins = len(entries)
     return {
         "plugins": plugins,

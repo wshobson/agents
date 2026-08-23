@@ -10,6 +10,7 @@ from tools.doc_gardener import (
     CHECKS,
     Report,
     actual_counts,
+    marketplace_entry_problem,
     check_agent_divergence,
     check_codex_skill_caps,
     check_dead_links,
@@ -506,6 +507,22 @@ class TestDocCounts:
         assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
         assert actual_counts(Report())["plugins"] is None
 
+    def test_list_valued_name_makes_the_count_unknown(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Both readers of the manifest apply the same entry rule."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / ".claude-plugin" / "marketplace.json").write_text(
+            '{"plugins": [{"name": ["bad"]}]}'
+        )
+        (tmp_path / "README.md").write_text("We ship 99 plugins today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+        assert actual_counts(Report())["plugins"] is None
+
     def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Per-category subtotals under docs/ legitimately differ from the totals."""
         _patch_paths(monkeypatch, tmp_path)
@@ -848,3 +865,24 @@ class TestMarketplaceShape:
         report = Report()
         check_marketplace_consistency(report)  # must not raise
         assert [f for f in report.findings if f.kind == "MARKETPLACE_SHAPE"]
+
+
+# ── Shared entry rule ────────────────────────────────────────────────────────
+
+
+@pytest.mark.parametrize(
+    ("entry", "ok"),
+    [
+        ({"name": "x", "source": "./plugins/x"}, True),
+        ({"source": "./plugins/x"}, True),  # name is optional
+        ({"name": ""}, True),  # empty name is skipped downstream, not malformed
+        ({"name": ["bad"]}, False),
+        ({"name": 7}, False),
+        (None, False),
+        ([], False),
+        ("string", False),
+    ],
+)
+def test_marketplace_entry_problem(entry: object, ok: bool):
+    """One rule, so the counts check and the consistency check cannot disagree."""
+    assert (marketplace_entry_problem(entry) is None) is ok
