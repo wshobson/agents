@@ -109,9 +109,7 @@ def get_video_metadata(url: str) -> dict:
     try:
         return json.loads(result.stdout)
     except json.JSONDecodeError as e:
-        sys.exit(
-            f"yt-dlp returned invalid JSON: {e}\nFirst 200 chars: {result.stdout[:200]}"
-        )
+        sys.exit(f"yt-dlp returned invalid JSON: {e}\nFirst 200 chars: {result.stdout[:200]}")
 
 
 def get_transcript(video_id: str) -> list[dict] | None:
@@ -184,9 +182,7 @@ def download_video(url: str, out_dir: Path) -> Path:
     sys.exit("Download succeeded but could not locate video file.")
 
 
-def extract_frames_interval(
-    video_path: Path, out_dir: Path, interval: int = 30
-) -> list[Path]:
+def extract_frames_interval(video_path: Path, out_dir: Path, interval: int = 30) -> list[Path]:
     """Extract one frame every `interval` seconds."""
     frames_dir = out_dir / "frames"
     frames_dir.mkdir(exist_ok=True)
@@ -222,9 +218,7 @@ def extract_frames_interval(
     return frames
 
 
-def extract_frames_scene(
-    video_path: Path, out_dir: Path, threshold: float = 0.3
-) -> list[Path]:
+def extract_frames_scene(video_path: Path, out_dir: Path, threshold: float = 0.3) -> list[Path]:
     """Use ffmpeg scene-change detection to grab visually distinct frames."""
     frames_dir = out_dir / "frames_scene"
     frames_dir.mkdir(exist_ok=True)
@@ -325,9 +319,7 @@ def run_ocr_on_frames(
     else:
         # Tesseract can run in parallel
         with ThreadPoolExecutor(max_workers=workers) as executor:
-            future_to_frame = {
-                executor.submit(ocr_frame_tesseract, f): f for f in frames
-            }
+            future_to_frame = {executor.submit(ocr_frame_tesseract, f): f for f in frames}
             for i, future in enumerate(as_completed(future_to_frame)):
                 frame = future_to_frame[future]
                 try:
@@ -554,15 +546,13 @@ def build_markdown(
         lines.append("")
 
     # --- Visual Text Index (OCR summary) ---
-    frames_with_text = [
-        (ts, rel, txt) for ts, rel, txt in all_frames if txt and len(txt) > 10
-    ]
+    frames_with_text = [(ts, rel, txt) for ts, rel, txt in all_frames if txt and len(txt) > 10]
     if frames_with_text:
         lines.append("## Visual Text Index\n")
         lines.append("Searchable index of all text detected in video frames.\n")
         lines.append("| Timestamp | Key Text (preview) |")
         lines.append("|-----------|-------------------|")
-        for ts, rel, txt in frames_with_text:
+        for ts, _rel, txt in frames_with_text:
             # First line or first 80 chars as preview
             preview = txt.split("\n")[0][:80].replace("|", "\\|")
             if len(txt) > 80:
@@ -573,7 +563,7 @@ def build_markdown(
         # Full text dump for searchability
         lines.append("### All Detected Text (Full)\n")
         lines.append("<details><summary>Click to expand full OCR text</summary>\n")
-        for ts, rel, txt in frames_with_text:
+        for ts, _rel, txt in frames_with_text:
             lines.append(f"**[{ts}]**")
             lines.append(f"```\n{txt}\n```\n")
         lines.append("</details>\n")
@@ -722,9 +712,7 @@ def main():
     if not args.transcript_only:
         video_path = download_video(args.url, out_dir)
         try:
-            interval_frames = extract_frames_interval(
-                video_path, out_dir, interval=args.interval
-            )
+            interval_frames = extract_frames_interval(video_path, out_dir, interval=args.interval)
             if args.scene_detect:
                 scene_frames = extract_frames_scene(
                     video_path, out_dir, threshold=args.scene_threshold
@@ -782,9 +770,7 @@ def main():
         print(f"  Scene frames   : {len(scene_frames)} in frames_scene/")
     if ocr_results:
         frames_with_text = sum(1 for t in ocr_results.values() if len(t) > 10)
-        print(
-            f"  OCR results    : {frames_with_text} frames with text → ocr-results.json"
-        )
+        print(f"  OCR results    : {frames_with_text} frames with text → ocr-results.json")
     if color_analysis:
         print(
             f"  Color palette  : {len(color_analysis.get('dominant_colors', []))} colors → color-palette.json"

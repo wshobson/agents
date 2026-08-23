@@ -103,3 +103,14 @@ def test_uninstall_removes_only_repo_owned_symlinks(tmp_path: Path):
     assert not (config_dir / "agents" / "demo__agent.md").exists()
     assert unrelated.is_symlink()
     assert real_file.read_text() == "user\n"
+
+
+def test_default_config_dir_respects_an_empty_env(tmp_path: Path, monkeypatch):
+    """An explicitly empty mapping means "no env vars", not "fall back to os.environ"."""
+    monkeypatch.setenv("OPENCODE_CONFIG_DIR", str(tmp_path / "from-environ"))
+    assert default_config_dir({}) == Path.home() / ".config" / "opencode"
+
+
+def test_default_config_dir_reads_os_environ_when_omitted(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("OPENCODE_CONFIG_DIR", str(tmp_path / "from-environ"))
+    assert default_config_dir() == tmp_path / "from-environ"

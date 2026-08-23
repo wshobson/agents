@@ -64,8 +64,7 @@ def _generated_artifacts(repo_root: Path) -> list[tuple[str, Path]]:
             artifacts.append((subdir, src.resolve()))
     if not artifacts:
         raise FileNotFoundError(
-            f"No artifacts found under {generated_root}; "
-            "run `make generate HARNESS=copilot` first"
+            f"No artifacts found under {generated_root}; run `make generate HARNESS=copilot` first"
         )
     return artifacts
 
@@ -83,9 +82,7 @@ def _link_one(src: Path, dst: Path, *, force: bool, report: InstallReport) -> No
             return
         dst.unlink()
     elif dst.exists():
-        report.errors.append(
-            f"{dst} already exists and is not a symlink; refusing to overwrite"
-        )
+        report.errors.append(f"{dst} already exists and is not a symlink; refusing to overwrite")
         return
 
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -198,17 +195,13 @@ def main() -> int:
     parser.add_argument("action", choices=("install", "uninstall"))
     parser.add_argument("--config-dir", type=Path, default=None)
     parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
-    parser.add_argument(
-        "--force", action="store_true", help="Replace conflicting symlinks only"
-    )
+    parser.add_argument("--force", action="store_true", help="Replace conflicting symlinks only")
     args = parser.parse_args()
 
     config_dir = (args.config_dir or default_config_dir()).expanduser()
     cache_cleared = None
     if args.action == "install":
-        report = install(
-            repo_root=args.repo_root, config_dir=config_dir, force=args.force
-        )
+        report = install(repo_root=args.repo_root, config_dir=config_dir, force=args.force)
         if report.ok:
             cache_cleared = _clear_copilot_cache(config_dir)
     else:

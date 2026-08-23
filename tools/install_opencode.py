@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import os
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -30,12 +31,15 @@ class InstallReport:
         return not self.errors
 
 
-def default_config_dir(env: dict[str, str] | None = None) -> Path:
-    env = env or os.environ
-    if env.get("OPENCODE_CONFIG_DIR"):
-        return Path(env["OPENCODE_CONFIG_DIR"]).expanduser()
-    if env.get("XDG_CONFIG_HOME"):
-        return Path(env["XDG_CONFIG_HOME"]).expanduser() / "opencode"
+def default_config_dir(env: Mapping[str, str] | None = None) -> Path:
+    # An explicit None check, so a caller passing an empty mapping gets exactly that
+    # rather than falling back to os.environ. Matches install_copilot.default_config_dir.
+    # os.environ is a Mapping rather than a dict, hence the separate binding.
+    source: Mapping[str, str] = os.environ if env is None else env
+    if source.get("OPENCODE_CONFIG_DIR"):
+        return Path(source["OPENCODE_CONFIG_DIR"]).expanduser()
+    if source.get("XDG_CONFIG_HOME"):
+        return Path(source["XDG_CONFIG_HOME"]).expanduser() / "opencode"
     return Path.home() / ".config" / "opencode"
 
 

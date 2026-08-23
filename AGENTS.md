@@ -48,7 +48,7 @@ make generate HARNESS=antigravity  # .antigravity/plugins/<p>/
 make generate-all                  # all four
 ```
 
-Generated artifacts are **committed** so each harness installs natively from a clone / GitHub URL (native-install commands in [`docs/harnesses.md`](docs/harnesses.md)). Run `make generate-all` before committing source changes — it also prunes artifacts whose source was removed; CI fails on drift. Source-of-truth lives only under `plugins/`; never hand-edit generated files.
+The small per-harness registries are **committed** so each harness installs natively from a clone / GitHub URL (native-install commands in [`docs/harnesses.md`](docs/harnesses.md)). The transformed skill and agent trees under `.codex/`, `.opencode/`, `.copilot/` and `.antigravity/` stay gitignored and are rebuilt locally. Run `make generate-all` before committing source changes — it also prunes artifacts whose source was removed; CI fails on drift. Source-of-truth lives only under `plugins/`; never hand-edit generated files.
 
 ## Skills (cross-harness)
 
