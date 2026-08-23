@@ -51,7 +51,7 @@ jobs:
       - name: Validate marketplace entries resolve to plugin dirs
         run: |
           python3 - <<'PY'
-          import json, os, posixpath, sys
+          import json, os, posixpath, re, sys
           from urllib.parse import urlparse
           with open('.claude-plugin/marketplace.json') as f:
               mp = json.load(f)
@@ -69,9 +69,14 @@ jobs:
                       errors.append(f"{p['name']}: unsupported source object {src.get('source')!r}")
                       continue
 
-                  extra_keys = set(src) - {'source', 'url', 'path'}
+                  # Claude Code's git-subdir schema: url, path, ref?, sha? (sha is the effective pin).
+                  extra_keys = set(src) - {'source', 'url', 'path', 'ref', 'sha'}
                   if extra_keys:
                       errors.append(f"{p['name']}: git-subdir entry has unsupported keys: {sorted(extra_keys)}")
+
+                  sha = src.get('sha')
+                  if sha is not None and not re.fullmatch(r'[0-9a-f]{40}', sha):
+                      errors.append(f"{p['name']}: git-subdir sha must be a 40-character lowercase hex commit")
 
                   url = src.get('url')
                   path = src.get('path')
