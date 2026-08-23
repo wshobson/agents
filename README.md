@@ -1,6 +1,6 @@
 # Agentic Plugin Marketplace
 
-> Production-ready agentic workflow building blocks: **92 plugins**, **202 agents**,
+> Production-ready agentic workflow building blocks: **93 plugins**, **202 agents**,
 > **181 skills**, **105 commands** — built for Claude Code and consumed natively by
 > OpenAI Codex CLI, Cursor, OpenCode, the Antigravity CLI, and GitHub Copilot from a single Markdown source.
 
@@ -19,7 +19,7 @@ Pick your harness:
 
 ```bash
 /plugin marketplace add wshobson/agents
-/plugin install python-development          # or any of 92 plugins
+/plugin install python-development          # or any of 93 plugins
 ```
 
 [→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
@@ -47,7 +47,7 @@ Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md).
 
 | | Count | What it is |
 |---|---:|---|
-| **Plugins** | 92 | Granular, single-purpose installable units (91 local + 1 external via git-subdir) |
+| **Plugins** | 93 | Granular, single-purpose installable units (91 local + 2 external via git-subdir) |
 | **Agents** | 202 | Domain experts (architecture, languages, infra, security, data, ML, docs, business, SEO) |
 | **Skills** | 181 | Modular knowledge packages with progressive disclosure (load when activated) |
 | **Commands** | 105 | Slash commands: scaffolding, security scans, test gen, infrastructure setup |
@@ -125,7 +125,7 @@ uv run plugin-eval certify path/to/skill
 
 Detail lives in `docs/`. Read in this order:
 
-- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 92 plugins
+- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 93 plugins
 - **[docs/agents.md](docs/agents.md)** — all 202 agents by category
 - **[docs/agent-skills.md](docs/agent-skills.md)** — 181 skills with progressive disclosure
 - **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
@@ -152,6 +152,19 @@ integrations for Codex CLI, Cursor, OpenCode, and Copilot (not yet Antigravity C
 | Cursor | [integrations/cursor](https://github.com/major7apps/pensyve/tree/main/integrations/cursor) |
 | OpenCode | [integrations/opencode-plugin](https://github.com/major7apps/pensyve/tree/main/integrations/opencode-plugin) |
 | Copilot | `.copilot/` in repo root or `~/.copilot/` via `make install-copilot` |
+
+## External Security Integration
+
+[HOL Guard](https://github.com/hashgraph-online/hol-guard) is included as an external
+`git-subdir` entry for Claude Code from the reviewed `distributions/wshobson-agents`
+payload in [hashgraph-online/hol-guard-plugin](https://github.com/hashgraph-online/hol-guard-plugin).
+The payload exposes local `hol-guard` and `plugin-scanner` skills. Guard Cloud is neither
+required nor promoted on the default path.
+
+The payload pins its local CLI versions and requires user approval before installation.
+When protection is explicitly requested, the external `hol-guard` runtime can modify
+supported harness hook/settings configuration; those changes are performed by the local
+Guard CLI, not by files in this marketplace repository.
 
 ## License
 
