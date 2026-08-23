@@ -69,7 +69,7 @@ COUNT_NOUN_ALIASES = {
 # agent can never hash alike. Normalize it away before comparing bodies, scoped to
 # the opening frontmatter block so a `name:` line in the body still counts as content.
 AGENT_NAME_LINE_RE = re.compile(r"^name:.*$", re.MULTILINE)
-AGENT_FRONTMATTER_RE = re.compile(r"\A(---\n)(.*?)(\n---\n)", re.DOTALL)
+AGENT_FRONTMATTER_RE = re.compile(r"\A(---\r?\n)(.*?)(\r?\n---(?:\r?\n|\Z))", re.DOTALL)
 
 
 # ── Findings ─────────────────────────────────────────────────────────────────
@@ -431,9 +431,14 @@ def actual_counts() -> dict[str, int | None]:
     plugins: int | None = None
     if MARKETPLACE_JSON.is_file():
         try:
-            plugins = len(json.loads(MARKETPLACE_JSON.read_text()).get("plugins", []))
+            manifest = json.loads(MARKETPLACE_JSON.read_text())
         except json.JSONDecodeError:
-            plugins = None  # check_marketplace_consistency reports the parse error
+            manifest = None  # check_marketplace_consistency reports the parse error
+        # Valid JSON of the wrong shape is still an unknown count, not a crash.
+        if isinstance(manifest, dict):
+            entries = manifest.get("plugins")
+            if isinstance(entries, list):
+                plugins = len(entries)
     return {
         "plugins": plugins,
         "agents": len(list(PLUGINS_DIR.glob("*/agents/*.md"))),

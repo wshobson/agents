@@ -409,6 +409,31 @@ class TestDocCounts:
         check_doc_counts(report)
         assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
 
+    def test_manifest_with_wrong_root_type_skips_the_plugin_count(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Valid JSON of the wrong shape is an unknown count, not a traceback."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / ".claude-plugin" / "marketplace.json").write_text("[]")
+        (tmp_path / "README.md").write_text("We ship 99 plugins today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+
+    def test_manifest_with_null_plugins_skips_the_plugin_count(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        _write_counts_fixture(tmp_path, plugins=12, agents=34)
+        (tmp_path / ".claude-plugin" / "marketplace.json").write_text('{"plugins": null}')
+        (tmp_path / "README.md").write_text("We ship 99 plugins today.\n")
+
+        report = Report()
+        check_doc_counts(report)
+        assert [f for f in report.findings if f.kind == "STALE_COUNT"] == []
+
     def test_docs_subtotals_are_not_scanned(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """Per-category subtotals under docs/ legitimately differ from the totals."""
         _patch_paths(monkeypatch, tmp_path)
@@ -496,6 +521,34 @@ class TestAgentDivergence:
             agents_dir = tmp_path / "plugins" / plugin / "agents"
             agents_dir.mkdir(parents=True, exist_ok=True)
             (agents_dir / "bare.md").write_text("No frontmatter here.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
+
+    def test_crlf_frontmatter_is_normalized(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """CRLF copies differing only by the namespaced name are not divergent."""
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin in ("alpha", "beta"):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_bytes(
+                f"---\r\nname: {plugin}-reviewer\r\nmodel: opus\r\n---\r\nReview.\r\n".encode()
+            )
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
+
+    def test_frontmatter_closing_at_eof_is_normalized(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """An agent with no body after its frontmatter still normalizes."""
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin in ("alpha", "beta"):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(f"---\nname: {plugin}-reviewer\n---")
 
         report = Report()
         check_agent_divergence(report)
