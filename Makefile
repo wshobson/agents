@@ -202,14 +202,18 @@ garden:
 # [tool.ruff] and [tool.ty] config lives and where CI runs them. Running ruff from the
 # repo root silently falls back to line-length 88 and disagrees with CI, so use these
 # targets rather than invoking ruff directly.
+#
+# --extra dev matters: ruff and ty live in that extra. Without it `uv run ruff`
+# provisions an unpinned ruff on the fly, which can differ from the locked version CI
+# uses and disagree about formatting.
 lint:
-	cd plugins/plugin-eval && uv run ruff check $(RUFF_PATHS)
-	cd plugins/plugin-eval && uv run ruff format --check $(RUFF_PATHS)
-	cd plugins/plugin-eval && uv run ty check $(TY_PATHS)
+	cd plugins/plugin-eval && uv run --extra dev ruff check $(RUFF_PATHS)
+	cd plugins/plugin-eval && uv run --extra dev ruff format --check $(RUFF_PATHS)
+	cd plugins/plugin-eval && uv run --extra dev ty check $(TY_PATHS)
 
 format:
-	cd plugins/plugin-eval && uv run ruff format $(RUFF_PATHS)
-	cd plugins/plugin-eval && uv run ruff check --fix $(RUFF_PATHS)
+	cd plugins/plugin-eval && uv run --extra dev ruff format $(RUFF_PATHS)
+	cd plugins/plugin-eval && uv run --extra dev ruff check --fix $(RUFF_PATHS)
 
 # Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
 test:
