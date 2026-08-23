@@ -1590,10 +1590,40 @@ class TestStripClaudeToolRefs:
                 adapter.strip_claude_tool_refs(body, tool_case="normal") == f"Use `{normal_verb}`."
             )
 
-    def test_lower_is_the_default_tool_case(self, tmp_path: Path):
-        """Copilot emission relies on the default, so pin it."""
-        adapter = self._adapter(tmp_path)
-        body = "Use the Read tool."
-        assert adapter.strip_claude_tool_refs(body) == adapter.strip_claude_tool_refs(
-            body, tool_case="lower"
+    def test_emitted_copilot_command_rewrites_tool_refs(self, tmp_path: Path):
+        """Cover the real path: what a generated Copilot command body actually says.
+
+        The unit assertions above pin the method. Copilot's two call sites pass
+        `tool_case="lower"` explicitly, so this asserts the emitted file instead of the
+        method default, which is what would actually regress.
+        """
+        from tools.adapters.base import CommandSource, PluginSource
+
+        plugin_dir = tmp_path / "src" / "demo"
+        cmds = plugin_dir / "commands"
+        cmds.mkdir(parents=True)
+        body = "Use the `Read` tool first, then the Bash tool. Prefer `Grep` over `Glob`."
+        content = f"---\ndescription: Demo command.\n---\n\n{body}\n"
+        (cmds / "demo-cmd.md").write_text(content, encoding="utf-8")
+        fm, parsed_body = parse_frontmatter(content)
+        command = CommandSource(
+            plugin="demo",
+            name="demo-cmd",
+            path=cmds / "demo-cmd.md",
+            frontmatter=fm,
+            body=parsed_body,
         )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, commands=[command]
+        )
+
+        out = tmp_path / "out"
+        result = CopilotAdapter(output_root=out).emit_plugin(plugin)
+        emitted = [p for p in result.written if p.suffix == ".md"]
+        assert emitted, "no markdown emitted for the command"
+        text = "\n".join(p.read_text(encoding="utf-8") for p in emitted)
+        assert "`open`" in text
+        assert "`shell`" in text
+        assert "`grep`" in text
+        assert "the `Read` tool" not in text
+        assert "the Bash tool" not in text

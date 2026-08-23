@@ -598,19 +598,41 @@ class TestAgentDivergence:
         check_agent_divergence(report)
         assert report.findings == []
 
-    def test_crlf_frontmatter_is_normalized(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-        """CRLF copies differing only by the namespaced name are not divergent."""
+    def test_crlf_copy_matches_its_lf_twin(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """The realistic case: one copy edited on Windows, the other on Unix.
+
+        Comparing CRLF against CRLF would pass without normalizing anything, so this
+        deliberately mixes the two.
+        """
         _patch_paths(monkeypatch, tmp_path)
-        for plugin in ("alpha", "beta"):
+        bodies = {
+            "alpha": "---\r\nname: alpha-reviewer\r\nmodel: opus\r\n---\r\nReview.\r\n",
+            "beta": "---\nname: beta-reviewer\nmodel: opus\n---\nReview.\n",
+        }
+        for plugin, text in bodies.items():
             agents_dir = tmp_path / "plugins" / plugin / "agents"
             agents_dir.mkdir(parents=True, exist_ok=True)
-            (agents_dir / "reviewer.md").write_bytes(
-                f"---\r\nname: {plugin}-reviewer\r\nmodel: opus\r\n---\r\nReview.\r\n".encode()
-            )
+            (agents_dir / "reviewer.md").write_bytes(text.encode())
 
         report = Report()
         check_agent_divergence(report)
         assert report.findings == []
+
+    def test_crlf_does_not_hide_real_drift(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """Normalizing line endings must not also flatten a genuine body difference."""
+        _patch_paths(monkeypatch, tmp_path)
+        bodies = {
+            "alpha": "---\r\nname: alpha-reviewer\r\n---\r\nReview carefully.\r\n",
+            "beta": "---\nname: beta-reviewer\n---\nReview quickly.\n",
+        }
+        for plugin, text in bodies.items():
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_bytes(text.encode())
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
 
     def test_frontmatter_closing_at_eof_is_normalized(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -780,6 +802,21 @@ class TestMarketplaceShape:
         check_marketplace_consistency(report)  # must not raise
         shape = [f for f in report.findings if f.kind == "MARKETPLACE_SHAPE"]
         assert shape and "plugins[0] is NoneType" in shape[0].message
+
+    def test_unhashable_name_is_reported_not_raised(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A list-valued name would be added to a set and raise TypeError."""
+        _patch_paths(monkeypatch, tmp_path)
+        mp = tmp_path / ".claude-plugin"
+        mp.mkdir(parents=True, exist_ok=True)
+        (mp / "marketplace.json").write_text('{"plugins": [{"name": ["bad"], "source": {}}]}')
+        (tmp_path / "plugins").mkdir(exist_ok=True)
+
+        report = Report()
+        check_marketplace_consistency(report)  # must not raise
+        shape = [f for f in report.findings if f.kind == "MARKETPLACE_SHAPE"]
+        assert shape and "name is list" in shape[0].message
 
     def test_non_object_root_is_reported_not_raised(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch

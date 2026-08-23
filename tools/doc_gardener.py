@@ -415,6 +415,15 @@ def check_marketplace_consistency(report: Report) -> None:
             continue
         entry = cast("dict[str, Any]", raw_entry)
         name = entry.get("name")
+        if name is not None and not isinstance(name, str):
+            report.add(
+                kind="MARKETPLACE_SHAPE",
+                severity="error",
+                path=MARKETPLACE_JSON,
+                message=f"plugins[{position}].name is {type(name).__name__}, expected a string",
+                fix="Give the entry a plain string name.",
+            )
+            continue
         if not name:
             continue
         source = entry.get("source")
@@ -467,9 +476,12 @@ def normalized_agent_text(text: str) -> str:
     fields, body = parse_frontmatter(text)
     fields.pop("name", None)
     rendered = "\n".join(f"{key}: {fields[key]!r}" for key in sorted(fields))
-    # rstrip only. A trailing newline is formatting, but leading indentation is
-    # content: an indented code block must not compare equal to plain prose.
-    return f"{rendered}\n---\n{body.rstrip()}"
+    # Line endings are formatting, so a CRLF copy must match its LF twin.
+    # parse_frontmatter strips leading "\n" but leaves the "\r" behind it.
+    # Strip newlines only, never spaces: leading indentation is content, so an
+    # indented code block must not compare equal to plain prose.
+    normalized_body = body.replace("\r\n", "\n").lstrip("\n").rstrip()
+    return f"{rendered}\n---\n{normalized_body}"
 
 
 def actual_counts(report: Report) -> dict[str, int | None]:
