@@ -1,7 +1,7 @@
 {
   "name": "hermes-tweet",
   "displayName": "Hermes Tweet",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Hermes Agent plugin for public X/Twitter research and approval-gated private or state-changing operations through Hermes Tweet",
   "author": {
     "name": "Xquik",
