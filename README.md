@@ -155,7 +155,7 @@ integrations for Codex CLI, Cursor, OpenCode, and Copilot (not yet Antigravity C
 
 ## External Security Integration
 
-[HOL Guard](https://github.com/hashgraph-online/hol-guard) is included as an external
+[HOL Guard](https://hol.org/guard) is included as an external
 `git-subdir` entry for Claude Code from the reviewed `distributions/wshobson-agents`
 payload in [hashgraph-online/hol-guard-plugin](https://github.com/hashgraph-online/hol-guard-plugin).
 The payload exposes local `hol-guard` and `plugin-scanner` skills. Guard Cloud is neither

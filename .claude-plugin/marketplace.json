@@ -1130,7 +1130,7 @@
         "name": "Hashgraph Online",
         "url": "https://github.com/hashgraph-online"
       },
-      "homepage": "https://github.com/hashgraph-online/hol-guard",
+      "homepage": "https://hol.org/guard",
       "license": "Apache-2.0",
       "category": "security",
       "keywords": [
