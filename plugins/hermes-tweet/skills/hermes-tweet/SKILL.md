@@ -10,7 +10,7 @@ description: >
   X/Twitter context. Requires XQUIK_API_KEY for read and action tools.
 license: MIT
 metadata:
-  version: "0.1.12"
+  version: "0.1.13"
   source: https://github.com/Xquik-dev/hermes-tweet
   homepage: https://github.com/Xquik-dev/hermes-tweet#readme
 ---
@@ -39,6 +39,9 @@ Install and enable the plugin through Hermes:
 ```bash
 hermes plugins install Xquik-dev/hermes-tweet --enable
 ```
+
+Hermes scans plugins during installation and updates. Review each warning.
+A dangerous verdict blocks installation or disables an update.
 
 Set the API key on the Hermes runtime host:
 

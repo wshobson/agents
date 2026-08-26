@@ -22,6 +22,9 @@ the Xquik API that backs its read and action routes.
 hermes plugins install Xquik-dev/hermes-tweet --enable
 ```
 
+Hermes scans plugins during installation and updates. Review each warning.
+A dangerous verdict blocks installation or disables an update.
+
 Set the API key on the Hermes runtime host:
 
 ```bash
