@@ -1,0 +1,10 @@
+{
+  "name": "document-trust",
+  "version": "1.0.0",
+  "description": "Forensic document authenticity verification, citation checking, grounded extraction, AI-text detection, identity checks, adverse-media screening, and tender search for agents that process documents",
+  "author": {
+    "name": "Sketchjar",
+    "url": "https://github.com/Sketchjar"
+  },
+  "license": "Apache-2.0"
+}

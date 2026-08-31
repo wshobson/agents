@@ -1279,6 +1279,11 @@
         "deck-generation",
         "slide-design"
       ]
+    },
+    {
+      "name": "document-trust",
+      "source": "./plugins/document-trust",
+      "description": "Forensic document authenticity verification, citation checking, grounded extraction, AI-text detection, identity checks, adverse-media screening, and tender search"
     }
   ]
 }
