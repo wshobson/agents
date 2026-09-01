@@ -636,7 +636,7 @@ def check_arguments_framing(report: Report) -> None:
     web page can carry instructions the agent then acts on with tools. An
     interpolation counts as framed when it sits inside a `<user_request>` block (or
     `<user_input>`, `<arguments>`, `<input>`), when a sentence within three lines
-    above or one below says the text is data rather than instructions, or when the
+    above or two below says the text is data rather than instructions, or when the
     token is a backticked reference to the value, as in "Parse `$ARGUMENTS` for
     flags". Fenced code blocks are skipped: there the value is a shell or JSON
     string, not prompt text. One finding per command lists every offending line.
@@ -674,7 +674,8 @@ def check_arguments_framing(report: Report) -> None:
                 continue
             if ARGUMENTS_TOKEN not in ARGUMENTS_BACKTICKED_RE.sub("", line):
                 continue
-            window = "\n".join(lines[max(start, idx - 3) : idx + 2])
+            # Three lines above and two below: a heading's clause sits past a blank line.
+            window = "\n".join(lines[max(start, idx - 3) : idx + 3])
             if ARGUMENTS_FRAMING_RE.search(window):
                 continue
             unframed.append(idx + 1)
