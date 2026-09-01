@@ -23,6 +23,10 @@ The **plugin** is the unit of installation; skills and agents come along with it
    matches a skill's description. You never select skills by hand.
 4. `AGENTS.md` and the `docs/` catalogs are for browsing what exists; reading
    them installs nothing.
+5. **Skills only, any agent.** `gh skill install wshobson/agents <skill>` and
+   `npx skills add wshobson/agents --skill <skill>` install one skill, without
+   its plugin's agents or commands, into Claude Code or any other agent the
+   installer supports. See [harnesses.md](./harnesses.md#skills-only-installers).
 
 ## Slash Commands
 

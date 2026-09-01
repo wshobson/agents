@@ -77,7 +77,7 @@ Every PR runs these on CI (`.github/workflows/`); run them locally before pushin
 make validate STRICT=1     # structural validation across all harness outputs
 make garden                # drift, dead-link, stale-artifact detection
 make test                  # full pytest suite (plugin-eval + tools/tests/)
-make smoke-test            # real-CLI subprocess tests (OpenCode, Antigravity, Codex, Claude)
+make smoke-test            # real-CLI subprocess tests (OpenCode, Antigravity, Codex, Claude, gh skill, npx skills)
 ```
 
 `make garden STRICT=1` also fails on warnings. Main currently carries ten
@@ -109,6 +109,9 @@ Your content ships to six harnesses — some have stricter conventions than Clau
 - **Antigravity CLI** passes unmapped tool names through its allowlist unchanged;
   maps model aliases to tier values (`pro`/`flash`/`inherit`); commands transpile
   to Gemini-style TOML with the body always inlined.
+- **Skills installers** (`gh skill`, `npx skills`) install by bare skill name: keep skill
+  directory names unique across plugins and equal to the frontmatter `name`. `make smoke-test`
+  checks both against the real CLIs.
 - All harnesses use ≤150-line context files. Don't bloat `AGENTS.md` / `CLAUDE.md`.
 
 `plugin-eval`'s `harness_portability` dimension catches most of these mechanically;

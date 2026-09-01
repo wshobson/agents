@@ -384,6 +384,17 @@ Install only the plugins you need:
 
 Each installed plugin loads **only its specific agents, commands, and skills** into Claude's context.
 
+### Skills Only (Any Agent)
+
+To take one skill without its plugin, use an Agent Skills installer. Both read `plugins/*/skills/` from GitHub directly and install into Claude Code or any other agent they support:
+
+```bash
+gh skill install wshobson/agents python-testing-patterns --agent claude-code   # GitHub CLI 2.90+
+npx skills add wshobson/agents --skill python-testing-patterns -a claude-code  # vercel-labs/skills
+```
+
+Selectors, install paths, and gotchas: [harnesses.md](./harnesses.md#skills-only-installers).
+
 ## Plugin Design Principles
 
 ### Single Responsibility
