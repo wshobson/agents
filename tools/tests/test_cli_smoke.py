@@ -55,6 +55,27 @@ def _run(
     )
 
 
+def _run_stdout_to_file(args: list[str], cwd: Path, sink_dir: Path) -> subprocess.CompletedProcess:
+    """Like `_run`, but stdout is written to a file instead of a pipe.
+
+    `opencode agent list` prints every agent's expanded permission array (about
+    330k lines for this catalog) and exits before a pipe is drained, so pipe
+    capture intermittently drops the tail and the alphabetically last agents go
+    missing. A file sink is written synchronously, so the output is complete.
+    """
+    sink = sink_dir / "stdout.txt"
+    with sink.open("w") as fh:
+        proc = subprocess.run(
+            args,
+            stdout=fh,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=_TIMEOUT,
+            cwd=str(cwd),
+        )
+    return subprocess.CompletedProcess(args, proc.returncode, sink.read_text(), proc.stderr)
+
+
 # ── OpenCode CLI ─────────────────────────────────────────────────────────────
 
 
@@ -73,18 +94,18 @@ class TestOpenCodeSmoke:
         shutil.copy(WORKTREE / "opencode.json", d / "opencode.json")
         return d
 
-    def test_opencode_agent_list_succeeds(self, opencode_workdir: Path):
+    def test_opencode_agent_list_succeeds(self, opencode_workdir: Path, tmp_path: Path):
         """`opencode agent list` must exit 0 — failure indicates an agent frontmatter
         bug, mode/model schema violation, or permission-block parse error."""
-        proc = _run(["opencode", "agent", "list"], cwd=opencode_workdir)
+        proc = _run_stdout_to_file(["opencode", "agent", "list"], opencode_workdir, tmp_path)
         assert proc.returncode == 0, (
             f"opencode agent list failed (rc={proc.returncode}):\n"
             f"--- stdout ---\n{proc.stdout}\n--- stderr ---\n{proc.stderr}"
         )
 
-    def test_opencode_discovers_every_source_agent(self, opencode_workdir: Path):
+    def test_opencode_discovers_every_source_agent(self, opencode_workdir: Path, tmp_path: Path):
         """Every source agent in plugins/*/agents/ must show up in `opencode agent list`."""
-        proc = _run(["opencode", "agent", "list"], cwd=opencode_workdir)
+        proc = _run_stdout_to_file(["opencode", "agent", "list"], opencode_workdir, tmp_path)
         assert proc.returncode == 0
         listed = set()
         for line in proc.stdout.splitlines():
@@ -284,8 +305,9 @@ class TestVercelSkillsSmoke:
             f"--- stdout ---\n{proc.stdout[-2000:]}\n--- stderr ---\n{proc.stderr[-2000:]}"
         )
         text = _ANSI.sub("", proc.stdout + proc.stderr)
-        # Skill names print on their own line inside the box drawing: `│    <name>`.
-        listed = set(re.findall(r"^[│\s]*([a-z0-9][a-z0-9_-]*)\s*$", text, flags=re.M))
+        # Each skill name is its own box-drawing line, `│` plus exactly four spaces;
+        # descriptions are indented six, so they never match.
+        listed = set(re.findall(r"^│ {4}([a-z0-9][a-z0-9_.-]*)$", text, flags=re.M))
 
         expected = {skill for _, skill in _source_skill_dirs()}
         missing = expected - listed
