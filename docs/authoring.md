@@ -113,6 +113,7 @@ The `ARGUMENTS_UNFRAMED` gardener warning fires on any other interpolation.
 Framing lowers the chance that the model follows injected text; it is not a security boundary.
 Claude Code substitutes the value into the prompt with no separate channel, so the harness's
 tool permissions and approval prompts remain the control on what a command can do.
+
 ### Skill directory names are identities
 
 `gh skill` and `npx skills` install a skill under its directory name, which the
