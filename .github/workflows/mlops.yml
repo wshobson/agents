@@ -1,0 +1,166 @@
+name: MLOps (lab baseline)
+
+# Reusable MLOps baseline for the Major 7 lab.
+#
+# Two modes:
+#   - kind=ci  (manual dispatch): lint + test gate before pushing a model.
+#   - kind=release (manual dispatch or on model/* tag): validate a model dir,
+#     push it to the Hugging Face `major7` org, and publish a model card
+#     summary.
+#
+# This workflow is deliberately CPU-side only. GPU training/finetuning runs on
+# the DGX Spark and logs straight to Weights & Biases (entity m7, project
+# major7-lab). See docs/mlops.md for the full lab pipeline.
+
+on:
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: 'ci (lint + test) or release (push model to HF)'
+        required: true
+        default: 'ci'
+        type: choice
+        options: [ci, release]
+      hf_target:
+        description: 'HF repo to push for kind=release, e.g. major7/my-model (blank = model/<tag>)'
+        required: false
+        default: ''
+        type: string
+      model_path:
+        description: 'Path to the model directory (or file) to release'
+        required: false
+        default: ''
+        type: string
+  push:
+    tags:
+      - 'model/*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mlops-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  HF_NAMESPACE: major7
+
+jobs:
+  lint:
+    name: Lint (ruff + ty)
+    if: ${{ inputs.kind == 'ci' || inputs.kind == '' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/plugin-eval
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync plugin-eval dev dependencies
+        run: uv sync --all-extras
+
+      - name: ruff check
+        run: uv run ruff check ../../tools/ src/plugin_eval/
+
+      - name: ruff format --check
+        run: uv run ruff format --check ../../tools/ src/plugin_eval/
+
+      - name: ty type-check
+        run: uv run ty check src/plugin_eval/
+
+  test:
+    name: Test (pytest)
+    if: ${{ inputs.kind == 'ci' || inputs.kind == '' }}
+    needs: lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/plugin-eval
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync plugin-eval dependencies
+        run: uv sync --all-extras
+
+      - name: Run pytest
+        run: uv run pytest -q
+
+  model-release:
+    name: Release model to HF (${{ env.HF_NAMESPACE }})
+    if: ${{ inputs.kind == 'release' || startsWith(github.ref, 'refs/tags/model/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve target and source
+        id: resolve
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          if [ -n "${{ inputs.hf_target }}" ]; then target="${{ inputs.hf_target }}"; else target="${tag#model/}"; fi
+          case "$target" in
+            "$HF_NAMESPACE"/*) full="$target" ;;
+            *) full="$HF_NAMESPACE/$target" ;;
+          esac
+          src="${{ inputs.model_path }}"
+          if [ -z "$src" ]; then src="$(dirname "${tag#model/}")"; fi
+          echo "target=$full" >> "$GITHUB_OUTPUT"
+          echo "src=$src" >> "$GITHUB_OUTPUT"
+          echo ">> HF repo: $full (source path: ./$src)"
+          if [ ! -e "$src" ]; then echo "::error::model path '$src' not found in repo"; exit 1; fi
+
+      - name: Push to Hugging Face
+        run: |
+          uv run --with huggingface_hub --with hf_transfer python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+          api = HfApi()
+          target = os.environ["TARGET"]
+          src = os.environ["SRC"]
+          # hf_transfer accelerates large uploads; Hugging Face's server negotiates
+          # the protocol, so this is a safe no-op if it is unavailable.
+          os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "1")
+          if os.path.isfile(src):
+              api.upload_file(path_or_filename=src, repo_id=target, repo_type="model",
+                              commit_message=f"release: {target}")
+          else:
+              api.upload_folder(folder_path=src, repo_id=target, repo_type="model",
+                                commit_message=f"release: {target}")
+          print(f"OK: pushed {src} -> {target}")
+          PY
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TARGET: "${{ steps.resolve.outputs.target }}"
+          SRC: "${{ steps.resolve.outputs.src }}"
+
+      - name: Model card summary
+        if: always()
+        run: |
+          {
+            echo "## Model release"
+            echo ""
+            echo "- **HF repo:** \`${{ steps.resolve.outputs.target }}\`"
+            echo "- **Source path:** \`${{ steps.resolve.outputs.src }}\`"
+            echo "- **Trigger:** ${{ github.ref }}"
+          } >> "$GITHUB_STEP_SUMMARY"

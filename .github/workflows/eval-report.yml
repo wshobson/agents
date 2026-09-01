@@ -17,9 +17,22 @@ on:
         required: false
         default: ''
         type: string
+      log_wandb:
+        description: 'Push eval metrics to Weights & Biases (m7/major7-lab)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
   schedule:
     # Weekly full static sweep, Mondays at 06:00 UTC
     - cron: '0 6 * * 1'
+
+# Don't let the weekly schedule and a manual dispatch run at once on the same ref.
+concurrency:
+  group: eval-report-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -54,6 +67,38 @@ jobs:
             args+=( --only-changed "$ONLY_CHANGED" )
           fi
           uv run python scripts/eval_all.py "${args[@]}"
+
+      - name: Log eval metrics to Weights & Biases
+        if: ${{ inputs.log_wandb == 'true' }}
+        env:
+          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+          WANDB_ENTITY: m7
+          WANDB_PROJECT: major7-lab
+        run: |
+          uv run --with wandb python - <<'PY'
+          import json, os, wandb, pathlib
+          p = pathlib.Path("eval-reports/summary.json")
+          rows = json.loads(p.read_text()) if p.exists() else []
+          run = wandb.init(
+              project="major7-lab",
+              entity="m7",
+              name=f"plugin-eval-{os.environ.get('DEPTH','quick')}",
+              tags=["plugin-eval", os.environ.get("DEPTH","quick"), "github-actions"],
+              config={"depth": os.environ.get("DEPTH","quick"),
+                      "only_changed": os.environ.get("ONLY_CHANGED",""),
+                      "run_id": os.environ.get("GITHUB_RUN_ID","")},
+          )
+          table = wandb.Table(columns=["plugin", "score", "ci_lower", "ci_upper", "confidence", "errored"])
+          for r in rows:
+            table.add_data(r.get("name"), r.get("score"), r.get("ci_lower"), r.get("ci_upper"), r.get("confidence"), r.get("errored"))
+          scored = [r["score"] for r in rows if not r.get("errored") and r.get("score") is not None]
+          run.log({"eval/mean_score": sum(scored)/len(scored) if scored else float("nan"),
+                   "eval/plugins_evaluated": len(rows),
+                   "eval/plugins_errored": sum(1 for r in rows if r.get("errored")),
+                   "eval/table": table})
+          run.finish()
+          print(f"logged {len(rows)} plugins to wandb")
+          PY
 
       - name: Post report to job summary
         if: always()
