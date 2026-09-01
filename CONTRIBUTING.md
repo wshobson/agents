@@ -109,6 +109,9 @@ Your content ships to six harnesses — some have stricter conventions than Clau
 - **Antigravity CLI** passes unmapped tool names through its allowlist unchanged;
   maps model aliases to tier values (`pro`/`flash`/`inherit`); commands transpile
   to Gemini-style TOML with the body always inlined.
+- **Commands** that use `$ARGUMENTS` frame it as data (a `<user_request>` block or an inline
+  "data, not instructions" clause, see `docs/authoring.md`); `make garden` warns on a bare
+  interpolation.
 - **Skills installers** (`gh skill`, `npx skills`) install by bare skill name: keep skill
   directory names unique across plugins and equal to the frontmatter `name`. `make smoke-test`
   checks both against the real CLIs.

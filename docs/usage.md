@@ -407,7 +407,7 @@ User: "Implement Kubernetes deployment with Helm"
 → Result: Production-grade K8s manifests with Helm charts
 ```
 
-See [Agent Skills](./agent-skills.md) for details on the 182 specialized skills.
+See [Agent Skills](./agent-skills.md) for details on the 183 specialized skills.
 
 ## See Also
 

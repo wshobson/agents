@@ -1,7 +1,7 @@
 # Agentic Plugin Marketplace
 
 > Production-ready agentic workflow building blocks: **94 plugins**, **202 agents**,
-> **182 skills**, **105 commands** — built for Claude Code and consumed natively by
+> **183 skills**, **105 commands** — built for Claude Code and consumed natively by
 > OpenAI Codex CLI, Cursor, OpenCode, the Antigravity CLI, and GitHub Copilot from a single Markdown source.
 
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Antigravity CLI](https://img.shields.io/badge/Antigravity%20CLI-supported-blue)](docs/harnesses.md) [![Copilot](https://img.shields.io/badge/Copilot-supported-lightgrey)](docs/harnesses.md)
@@ -59,7 +59,7 @@ Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md).
 |---|---:|---|
 | **Plugins** | 94 | Granular, single-purpose installable units (92 local + 2 external via git-subdir) |
 | **Agents** | 202 | Domain experts (architecture, languages, infra, security, data, ML, docs, business, SEO) |
-| **Skills** | 182 | Modular knowledge packages with progressive disclosure (load when activated) |
+| **Skills** | 183 | Modular knowledge packages with progressive disclosure (load when activated) |
 | **Commands** | 105 | Slash commands: scaffolding, security scans, test gen, infrastructure setup |
 | **Orchestrators** | 16 | Multi-agent coordination workflows (full-stack, security, ML, incident response) |
 
@@ -137,7 +137,7 @@ Detail lives in `docs/`. Read in this order:
 
 - **[docs/plugins.md](docs/plugins.md)** — full catalog of all 94 plugins
 - **[docs/agents.md](docs/agents.md)** — all 202 agents by category
-- **[docs/agent-skills.md](docs/agent-skills.md)** — 182 skills with progressive disclosure
+- **[docs/agent-skills.md](docs/agent-skills.md)** — 183 skills with progressive disclosure
 - **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
 - **[docs/architecture.md](docs/architecture.md)** — design principles
 - **[docs/harnesses.md](docs/harnesses.md)** — cross-harness capability matrix

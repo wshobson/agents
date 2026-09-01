@@ -510,7 +510,7 @@
     },
     {
       "name": "documentation-standards",
-      "description": "HADS (Human-AI Document Standard) \u2014 semantic tagging convention for writing documentation that works efficiently for both human readers and AI models. Reduces token consumption and hallucination risk by separating machine-critical facts from human context.",
+      "description": "HADS (Human-AI Document Standard) \u2014 semantic tagging convention for writing documentation that works efficiently for both human readers and AI models \u2014 plus the grounded-vault pattern: a raw/wiki/archive knowledge store with per-claim provenance links and git fingerprints for zero-token drift detection.",
       "source": {
         "source": "local",
         "path": "./plugins/documentation-standards"
