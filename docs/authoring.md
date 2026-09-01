@@ -110,6 +110,10 @@ A backticked reference such as ``Parse `$ARGUMENTS` for flags`` already reads as
 fine. Shell and JSON strings inside fenced code blocks are not prompt text and are not checked.
 The `ARGUMENTS_UNFRAMED` gardener warning fires on any other interpolation.
 
+Framing lowers the chance that the model follows injected text; it is not a security boundary.
+Claude Code substitutes the value into the prompt with no separate channel, so the harness's
+tool permissions and approval prompts remain the control on what a command can do.
+
 ### Don't collide with Codex built-in agent names
 
 `default`, `worker`, and `explorer` are built-in Codex subagent roles. If you name a custom

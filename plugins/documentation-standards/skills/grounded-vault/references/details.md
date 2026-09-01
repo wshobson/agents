@@ -18,44 +18,72 @@ import subprocess
 import sys
 from pathlib import Path
 
+RAW = (Path.cwd() / "raw").resolve()
 WIKI = Path("wiki")
 HEADER = re.compile(r"^> (Raw|Fingerprint|Monitored|Status): (.*)$", re.M)
 LINK = re.compile(r"\[([^\]]+)\]\(([^)]+\.md)\)")
-NUMBER = re.compile(r"\b\d[\d.,%]*\b")
-QUOTE = re.compile(r"[\"“]([^\"”]{8,})[\"”]")
+NUMBER = re.compile(r"(?<![\w.,])\d[\d.,]*%?(?![\w.,])")
+QUOTE = re.compile(r"[\"\u201c]([^\"\u201d]{8,})[\"\u201d]")  # shorter quoted words are not claims
 
 
 def header(text: str) -> dict[str, str]:
     return {k: v.strip() for k, v in HEADER.findall(text)}
 
 
-def claims(text: str):
-    """Yield (figure_or_quote, raw_path) for every sentence that links a raw source."""
-    for sentence in re.split(r"(?<=[.!?])\s+", text):
-        links = [p for _, p in LINK.findall(sentence) if "raw/" in p]
-        if not links:
+def prose(text: str) -> str:
+    """Body text without the header block, headings, and fenced code."""
+    kept, fenced = [], False
+    for line in text.splitlines():
+        if line.startswith("```"):
+            fenced = not fenced
             continue
-        for item in NUMBER.findall(sentence) + QUOTE.findall(sentence):
-            yield item, links
+        if fenced or line.startswith((">", "#")):
+            continue
+        kept.append(line)
+    return "\n".join(kept)
 
 
-def grounded(item: str, sources: list[str], page: Path) -> bool:
+def claims(text: str):
+    """Yield (item, is_number, raw_links) for every figure or quotation in the prose."""
+    for sentence in re.split(r"(?<=[.!?])\s+", prose(text)):
+        links = [path for _, path in LINK.findall(sentence) if "raw/" in path]
+        bare = LINK.sub(" ", sentence)  # link labels and paths are not claims
+        for item in NUMBER.findall(bare):
+            yield item, True, links
+        for item in QUOTE.findall(bare):
+            yield item, False, links
+
+
+def raw_source(page: Path, rel: str) -> Path | None:
+    """The raw file a link points at, or None when it escapes raw/ or is missing."""
+    src = (page.parent / rel).resolve()
+    return src if src.is_relative_to(RAW) and src.is_file() else None
+
+
+def grounded(item: str, is_number: bool, sources: list[str], page: Path) -> bool:
+    token = re.compile(r"(?<![\w.,])" + re.escape(item) + r"(?![\w.,])")
     for rel in sources:
-        src = (page.parent / rel).resolve()
-        if src.is_file() and item in src.read_text(errors="replace"):
+        src = raw_source(page, rel)
+        if src is None:
+            continue
+        text = src.read_text(errors="replace")
+        if token.search(text) if is_number else item in text:
             return True
     return False
 
 
-def drifted(fingerprint: str, monitored: str) -> str:
+def drift(fingerprint: str, monitored: str) -> str:
+    """Non-empty when monitored paths changed since the fingerprint, or git cannot tell."""
     sha = fingerprint.removeprefix("git:")
     paths = [p.strip() for p in monitored.split(",") if p.strip()]
-    if not sha or not paths:
+    if not paths:
         return ""
     out = subprocess.run(
         ["git", "diff", "--stat", f"{sha}..HEAD", "--", *paths],
         capture_output=True, text=True, check=False,
     )
+    if out.returncode != 0:
+        return f"git cannot compare {sha}: {out.stderr.strip() or 'unknown fingerprint'}"
     return out.stdout.strip()
 
 
@@ -66,15 +94,22 @@ def main(strict: bool) -> int:
         meta = header(text)
         if meta.get("Status", "Current") != "Current":
             continue
-        for item, sources in claims(text):
-            if not grounded(item, sources, page):
+        if not meta.get("Fingerprint"):
+            print(f"{page}: no Fingerprint header")
+            errors += 1
+        for item, is_number, sources in claims(text):
+            if not sources:
+                if strict:
+                    print(f"{page}: {item!r} has no raw/ source link")
+                    errors += 1
+                continue
+            if not grounded(item, is_number, sources, page):
                 print(f"{page}: {item!r} not found in {', '.join(sources)}")
                 errors += 1
-        if meta.get("Fingerprint") and meta.get("Monitored"):
-            stat = drifted(meta["Fingerprint"], meta["Monitored"])
-            if stat:
-                print(f"{page}: drifted since {meta['Fingerprint']}\n{stat}")
-                errors += 1
+        stat = drift(meta["Fingerprint"], meta.get("Monitored", "")) if meta.get("Fingerprint") else ""
+        if stat:
+            print(f"{page}: drifted since {meta['Fingerprint']}\n{stat}")
+            errors += 1
     print(f"{errors} problem(s)")
     return 1 if (errors and strict) else 0
 
@@ -85,15 +120,23 @@ if __name__ == "__main__":
 
 What it checks, and what it deliberately does not:
 
-- Only sentences that link a `raw/` file are checked, so prose without a source link is not
-  silently accepted as grounded; the reviewer sees it has no link. Add a lint for unlinked
-  numbers if the vault is large enough to need it.
-- A number or quote is grounded when it appears verbatim in any of the sentence's linked
-  sources. Reformatted figures (1,000 versus 1000) fail on purpose; copy the source's form.
+- Only the prose is scanned. The header block, headings, fenced code, and the labels and
+  paths of Markdown links are excluded, so a source path such as `raw/adr/0007-jwt.md`
+  never reads as a claim of `0007`.
+- A number is grounded when it appears in a linked source as a whole token, so `15` does
+  not match `150` or `2015`. A quotation must appear verbatim. Quoted phrases shorter than
+  eight characters are not treated as claims; a two-word quote is not evidence of anything.
+  Reformatted figures (`1,000` versus `1000`) fail on purpose; copy the source's form.
+- A link must resolve inside `raw/`. A path that escapes it, or points at a file that is
+  missing, is a miss, so a page cannot ground a claim on something outside the vault.
+- Under `--strict`, a number or quotation with no `raw/` link in its sentence is an error.
+  Without `--strict` it is skipped, which is the mode for a first pass over an old vault.
+- Every current page needs a `Fingerprint:`. An empty `Monitored:` is allowed: a page
+  compiled only from `raw/` has no code to drift against.
+- Drift is a non-empty `git diff --stat` between the fingerprint and `HEAD` restricted to
+  the monitored paths. When git cannot compare, for example after a history rewrite removed
+  the fingerprint, that counts as drift too; recompile and stamp a fresh fingerprint.
 - Archived and disputed pages are skipped; they are records, not claims.
-- Drift is a non-empty `git diff --stat` between the fingerprint and `HEAD` restricted to the
-  monitored paths. A fingerprint that no longer exists in the repository (after a history
-  rewrite) makes `git` fail; treat that as drift and recompile.
 
 ## Batching the drift check
 
