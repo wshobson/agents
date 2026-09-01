@@ -8,6 +8,12 @@ name: MLOps (lab baseline)
 #     push it to the Hugging Face `major7` org, and publish a model card
 #     summary.
 #
+# Reuse model: copy this file into another repo and adjust the working
+# directories in the lint/test jobs. It is intentionally not a workflow_call
+# template — a call contract (declared inputs / required secrets / outputs)
+# would add ceremony for a baseline whose jobs are specific to this repo's
+# uv layout.
+#
 # This workflow is deliberately CPU-side only. GPU training/finetuning runs on
 # the DGX Spark and logs straight to Weights & Biases (entity m7, project
 # major7-lab). See docs/mlops.md for the full lab pipeline.
@@ -107,7 +113,15 @@ jobs:
 
   model-release:
     name: Release model to HF (major7)
-    if: ${{ inputs.kind == 'release' || startsWith(github.ref, 'refs/tags/model/') }}
+    # Release blocks on the CI gate: on a model/* tag push, lint + test run
+    # first (inputs.kind is empty on tag pushes, so their if: is true) and a
+    # broken tree cannot reach the HF org. On a manual kind=release dispatch
+    # the gate jobs are skipped, which we allow explicitly below.
+    needs: [lint, test]
+    if: >
+      (inputs.kind == 'release' || startsWith(github.ref, 'refs/tags/model/'))
+      && (needs.lint.result == 'success' || needs.lint.result == 'skipped')
+      && (needs.test.result == 'success' || needs.test.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
@@ -116,15 +130,27 @@ jobs:
 
       - name: Resolve target and source
         id: resolve
+        # Untrusted inputs (manual dispatch) must not be interpolated into the
+        # shell script — pass them through env: per GitHub's hardening guide
+        # (code-injection via template expansion).
+        env:
+          HF_TARGET_INPUT: ${{ inputs.hf_target }}
+          MODEL_PATH_INPUT: ${{ inputs.model_path }}
         run: |
           tag="${GITHUB_REF#refs/tags/}"
-          if [ -n "${{ inputs.hf_target }}" ]; then target="${{ inputs.hf_target }}"; else target="${tag#model/}"; fi
+          if [ -n "$HF_TARGET_INPUT" ]; then target="$HF_TARGET_INPUT"; else target="${tag#model/}"; fi
           case "$target" in
             "$HF_NAMESPACE"/*) full="$target" ;;
             *) full="$HF_NAMESPACE/$target" ;;
           esac
-          src="${{ inputs.model_path }}"
-          if [ -z "$src" ]; then src="$(dirname "${tag#model/}")"; fi
+          # Default source: the directory named after the tag (model/my-model-v1
+          # -> my-model-v1/). Never derive a parent directory.
+          src="$MODEL_PATH_INPUT"
+          if [ -z "$src" ]; then src="${tag#model/}"; fi
+          # Defense in depth: refuse to release the repo root or an empty path.
+          case "$src" in
+            ""|.|/) echo "::error::refusing to release repo root or empty path"; exit 1 ;;
+          esac
           echo "target=$full" >> "$GITHUB_OUTPUT"
           echo "src=$src" >> "$GITHUB_OUTPUT"
           echo ">> HF repo: $full (source path: ./$src)"
@@ -132,17 +158,18 @@ jobs:
 
       - name: Push to Hugging Face
         run: |
-          uv run --with huggingface_hub --with hf_transfer python - <<'PY'
+          uv run --with 'huggingface_hub==0.35.0' --with 'hf_transfer==0.1.9' python - <<'PY'
           import os
           from huggingface_hub import HfApi
           api = HfApi()
           target = os.environ["TARGET"]
           src = os.environ["SRC"]
-          # hf_transfer accelerates large uploads; Hugging Face's server negotiates
-          # the protocol, so this is a safe no-op if it is unavailable.
+          # hf_transfer accelerates large uploads; the Hub negotiates the
+          # protocol, so this is a safe no-op when it is unavailable.
           os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "1")
           if os.path.isfile(src):
-              api.upload_file(path_or_filename=src, repo_id=target, repo_type="model",
+              api.upload_file(path_or_fileobj=src, path_in_repo=os.path.basename(src),
+                              repo_id=target, repo_type="model",
                               commit_message=f"release: {target}")
           else:
               api.upload_folder(folder_path=src, repo_id=target, repo_type="model",
@@ -156,11 +183,14 @@ jobs:
 
       - name: Model card summary
         if: always()
+        env:
+          HF_TARGET_OUT: ${{ steps.resolve.outputs.target }}
+          MODEL_SRC_OUT: ${{ steps.resolve.outputs.src }}
         run: |
           {
             echo "## Model release"
             echo ""
-            echo "- **HF repo:** \`${{ steps.resolve.outputs.target }}\`"
-            echo "- **Source path:** \`${{ steps.resolve.outputs.src }}\`"
-            echo "- **Trigger:** ${{ github.ref }}"
+            echo "- **HF repo:** \`$HF_TARGET_OUT\`"
+            echo "- **Source path:** \`$MODEL_SRC_OUT\`"
+            echo "- **Trigger:** ${GITHUB_REF#refs/tags/}"
           } >> "$GITHUB_STEP_SUMMARY"

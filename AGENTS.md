@@ -18,6 +18,7 @@ This file is the canonical context file. Codex / Cursor / OpenCode / Antigravity
 - **[docs/harnesses.md](docs/harnesses.md)** — per-harness capability matrix
 - **[docs/plugin-eval.md](docs/plugin-eval.md)** — three-layer quality evaluation framework
 - **[docs/round-trip-results.md](docs/round-trip-results.md)** — real-CLI verification recipes
+- **[docs/mlops.md](docs/mlops.md)** — MLOps lab pipeline (W&B, Hugging Face, model release)
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — how to contribute
 
 ## Working in this repo
