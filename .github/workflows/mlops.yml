@@ -106,7 +106,7 @@ jobs:
         run: uv run pytest -q
 
   model-release:
-    name: Release model to HF (${{ env.HF_NAMESPACE }})
+    name: Release model to HF (major7)
     if: ${{ inputs.kind == 'release' || startsWith(github.ref, 'refs/tags/model/') }}
     runs-on: ubuntu-latest
     steps:
