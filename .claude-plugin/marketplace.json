@@ -1012,6 +1012,19 @@
       "license": "Apache-2.0"
     },
     {
+      "name": "superself",
+      "source": "./plugins/superself",
+      "description": "Drive the Superself `self` CLI: version control for a project's state (goals, decisions, work units, reports) kept outside the code repo, so a session reads context at start, reports with evidence, and the next session picks up where this one left off",
+      "version": "1.0.0",
+      "author": {
+        "name": "fxylabs",
+        "url": "https://github.com/fxylabs"
+      },
+      "homepage": "https://github.com/fxylabs/superself",
+      "license": "Apache-2.0",
+      "category": "workflows"
+    },
+    {
       "name": "ui-design",
       "description": "Comprehensive UI/UX design plugin for mobile (iOS, Android, React Native) and web applications with design systems, accessibility, and modern patterns",
       "version": "1.0.5",

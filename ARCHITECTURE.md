@@ -25,7 +25,7 @@ claude-agents/
 ├── CONTRIBUTING.md                 # Contributor entry point
 ├── .claude-plugin/marketplace.json # Plugin registry (source of truth)
 ├── .antigravity/plugins/<p>/       # Generated Antigravity CLI plugins (gitignored)
-├── plugins/                        # SOURCE OF TRUTH (91 local plugins; 2 external in marketplace)
+├── plugins/                        # SOURCE OF TRUTH (92 local plugins; 2 external in marketplace)
 │   └── <name>/
 │       ├── .claude-plugin/plugin.json
 │       ├── agents/*.md
