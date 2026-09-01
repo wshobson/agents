@@ -41,7 +41,7 @@ def _has(cli: str) -> bool:
 def _run(
     args: list[str],
     cwd: Path | None = None,
-    env: dict | None = None,
+    env: dict[str, str] | None = None,
     timeout: int = _TIMEOUT,
 ) -> subprocess.CompletedProcess:
     """Run a subprocess with a tight timeout and capture stdout/stderr."""
