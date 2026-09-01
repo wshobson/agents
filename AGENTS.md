@@ -60,6 +60,7 @@ The small per-harness registries are **committed** so each harness installs nati
 - **OpenCode**: mirrored to `.opencode/skills/<plugin>-<skill>/` using hyphenated names for global install
 - **Cursor**: reads `.claude/skills/` directly (no re-emit)
 - **Antigravity CLI**: native plugins at `.antigravity/plugins/<p>/` — bare `skills/<skill>/SKILL.md` (no `<plugin>__` namespacing; the plugin dir already scopes it)
+- **Skills-only installers**: `gh skill install wshobson/agents` and `npx skills add wshobson/agents` read `plugins/*/skills/` from GitHub directly (see `docs/harnesses.md`); `make smoke-test` runs both plus the agentskills.io spec check
 
 ## Subagents (cross-harness)
 

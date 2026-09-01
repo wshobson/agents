@@ -247,10 +247,18 @@ jobs:
           curl -fsSL https://antigravity.google/cli/install.sh | bash
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
+      - name: Set up Node.js (for npx skills)
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
+        with:
+          node-version: 22
+
       - name: Verify CLI versions
         run: |
           opencode --version
           agy --version
+          gh --version
+          gh skill --help > /dev/null   # gh >= 2.90; the skills smoke tests skip silently without it
+          npx --version
 
       - name: Install uv
         uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5

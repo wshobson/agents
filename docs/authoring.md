@@ -29,7 +29,7 @@ do, and what to avoid, so the work you do for Claude Code translates cleanly eve
 | File | Required | Recommended | Notes |
 |---|---|---|---|
 | `agents/<name>.md` | `name`, `description` | `model`, optional `tools:`, optional `color:` | `tools:` allowlist becomes a per-harness permission block where supported, dropped otherwise. |
-| `skills/<name>/SKILL.md` | `name`, `description` | (none) | Other Anthropic SKILL.md fields work on Claude Code only. |
+| `skills/<name>/SKILL.md` | `name`, `description` | (none) | `name` must equal the directory name (agentskills.io spec; `gh skill publish --dry-run` rejects a mismatch). Other Anthropic SKILL.md fields work on Claude Code only. |
 | `commands/<name>.md` | `description` | `argument-hint:` | Codex converts these to skills (it deprecated `~/.codex/prompts/`). Copilot emits `.copilot/commands/<plugin>/<name>.md` slash-command prompts. |
 
 **Description triggers.** Include a recognized phrase: `Use when …`, `Use this skill when …`,

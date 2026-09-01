@@ -41,6 +41,16 @@ make generate HARNESS=antigravity && make install-antigravity  # Antigravity (ag
 make install-opencode                                          # OpenCode (runs generate + symlinks)
 ```
 
+### Skills only: `gh skill` · `npx skills`
+
+Both Agent Skills installers read `plugins/*/skills/` straight from GitHub, into whichever agent you use. No clone, no marketplace, no generate step. Skills only: no agents, commands, or hooks.
+
+```bash
+gh skill install wshobson/agents                                 # browse, then pick a skill or --all
+gh skill install wshobson/agents python-testing-patterns --agent claude-code
+npx skills add wshobson/agents --skill python-testing-patterns   # add -a claude-code, -g for user scope
+```
+
 Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md).
 
 ## What's inside

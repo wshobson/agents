@@ -15,6 +15,8 @@ No API keys needed: every command exercised here is local-only (`agent list`,
 from __future__ import annotations
 
 import json
+import os
+import re
 import shutil
 import subprocess
 import sys
@@ -37,14 +39,17 @@ def _has(cli: str) -> bool:
 
 
 def _run(
-    args: list[str], cwd: Path | None = None, env: dict | None = None
+    args: list[str],
+    cwd: Path | None = None,
+    env: dict | None = None,
+    timeout: int = _TIMEOUT,
 ) -> subprocess.CompletedProcess:
     """Run a subprocess with a tight timeout and capture stdout/stderr."""
     return subprocess.run(
         args,
         capture_output=True,
         text=True,
-        timeout=_TIMEOUT,
+        timeout=timeout,
         cwd=str(cwd) if cwd else None,
         env=env,
     )
@@ -178,6 +183,116 @@ class TestClaudeCodeSmoke:
         # Owner/metadata are required for Claude Code's marketplace loader.
         assert mp.get("owner"), "marketplace.json missing top-level 'owner'"
         assert mp.get("metadata", {}).get("version"), "marketplace.json missing metadata.version"
+
+
+# ── Agent Skills installers: gh skill + npx skills ───────────────────────────
+#
+# Neither is a harness. Both are distribution channels that read the source tree
+# directly and discover skills through the `plugins/<plugin>/skills/<skill>/`
+# layout. A layout change, or a SKILL.md that breaks the agentskills.io spec,
+# silently drops skills from `gh skill install` and `npx skills add`, so these
+# tests run the real CLIs against this checkout.
+
+_ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+
+
+def _source_skill_dirs() -> list[tuple[str, str]]:
+    """(plugin, skill directory name) for every source skill under plugins/.
+
+    The directory name is what both installers key on: the agentskills.io spec
+    requires frontmatter `name` to equal it, and `gh skill publish` enforces that.
+    """
+    pairs: list[tuple[str, str]] = []
+    for plugin_name in list_plugins():
+        plugin = load_plugin(plugin_name)
+        if plugin:
+            pairs.extend((plugin.name, s.dir.name) for s in plugin.skills)
+    return pairs
+
+
+def test_source_skill_names_are_unique_across_plugins():
+    """`npx skills` installs by bare skill name, so two plugins shipping the same
+    skill directory name would overwrite each other on install."""
+    names = [skill for _, skill in _source_skill_dirs()]
+    dupes = sorted({n for n in names if names.count(n) > 1})
+    assert not dupes, f"Skill directory names shared across plugins: {dupes}"
+
+
+def _gh_has_skill_command() -> bool:
+    """`gh skill` shipped in GitHub CLI 2.90 (April 2026); older builds lack it."""
+    return _has("gh") and _run(["gh", "skill", "--help"]).returncode == 0
+
+
+@pytest.mark.skipif(
+    not _gh_has_skill_command(), reason="gh CLI with `gh skill` (>= 2.90) not installed"
+)
+class TestGitHubSkillSmoke:
+    def test_gh_skill_discovers_every_source_skill(self):
+        """`gh skill install <dir> --from-local` lists skills found through the
+        `plugins/{scope}/skills/*/SKILL.md` convention as `[plugins] <plugin>/<skill>`
+        (TSV when piped). Every source skill directory must appear. gh prints the
+        frontmatter name, so a name/directory mismatch also surfaces here."""
+        proc = _run(["gh", "skill", "install", ".", "--from-local"], cwd=WORKTREE)
+        assert proc.returncode == 0, (
+            f"gh skill install --from-local failed (rc={proc.returncode}):\n"
+            f"--- stdout ---\n{proc.stdout[:2000]}\n--- stderr ---\n{proc.stderr}"
+        )
+        listed = set()
+        for line in proc.stdout.splitlines():
+            head = line.split("\t", 1)[0].strip()
+            if head.startswith("[plugins] "):
+                listed.add(head.removeprefix("[plugins] "))
+
+        expected = {f"{plugin}/{skill}" for plugin, skill in _source_skill_dirs()}
+        missing = expected - listed
+        assert not missing, (
+            f"gh skill failed to discover {len(missing)} source skills. "
+            f"Missing: {sorted(missing)[:10]}{'...' if len(missing) > 10 else ''}"
+        )
+
+    def test_gh_skill_publish_dry_run_validates_every_skill(self):
+        """`gh skill publish --dry-run` validates every discovered SKILL.md against
+        the agentskills.io spec: name pattern, name == directory, required
+        frontmatter, `allowed-tools` shape. Errors fail the run; warnings
+        (recommended `license`, body length) are advisory and stay visible in -v."""
+        proc = _run(["gh", "skill", "publish", "--dry-run"], cwd=WORKTREE)
+        output = proc.stdout + proc.stderr
+        errors = [line for line in output.splitlines() if line.startswith("error")]
+        assert proc.returncode == 0 and not errors, (
+            f"gh skill publish --dry-run failed (rc={proc.returncode}):\n"
+            + "\n".join(errors or [output[-2000:]])
+        )
+
+
+@pytest.mark.skipif(not _has("npx"), reason="npx (Node.js) not installed")
+class TestVercelSkillsSmoke:
+    def test_npx_skills_discovers_every_source_skill(self):
+        """`npx skills add <dir> --list` (vercel-labs/skills) walks the tree and lists
+        skills by bare frontmatter name, with no plugin prefix. Every source skill must
+        appear. On a generated checkout the listing is a superset: the gitignored
+        `.codex/`, `.opencode/` and `.copilot/` trees are walked too, so only
+        containment is asserted."""
+        env = {**os.environ, "DISABLE_TELEMETRY": "1", "NO_COLOR": "1"}
+        proc = _run(
+            ["npx", "--yes", "skills@latest", "add", ".", "--list", "-y"],
+            cwd=WORKTREE,
+            env=env,
+            timeout=180,  # first run downloads the package
+        )
+        assert proc.returncode == 0, (
+            f"npx skills add --list failed (rc={proc.returncode}):\n"
+            f"--- stdout ---\n{proc.stdout[-2000:]}\n--- stderr ---\n{proc.stderr[-2000:]}"
+        )
+        text = _ANSI.sub("", proc.stdout + proc.stderr)
+        # Skill names print on their own line inside the box drawing: `│    <name>`.
+        listed = set(re.findall(r"^[│\s]*([a-z0-9][a-z0-9_-]*)\s*$", text, flags=re.M))
+
+        expected = {skill for _, skill in _source_skill_dirs()}
+        missing = expected - listed
+        assert not missing, (
+            f"npx skills failed to discover {len(missing)} source skills. "
+            f"Missing: {sorted(missing)[:10]}{'...' if len(missing) > 10 else ''}"
+        )
 
 
 # ── Cross-CLI sanity: marketplace + adapter agreement ────────────────────────

@@ -2,6 +2,15 @@
 
 Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **182 local specialized skills** across 51 plugins, enabling progressive disclosure and efficient token usage.
 
+Install any skill on its own, into any agent, with the Agent Skills installers:
+
+```bash
+gh skill install wshobson/agents <skill>              # GitHub CLI 2.90+
+npx skills add wshobson/agents --skill <skill>        # vercel-labs/skills
+```
+
+Naming, pinning, and gotchas: [harnesses.md](./harnesses.md#skills-only-installers).
+
 ## Overview
 
 Skills provide Claude with deep expertise in specific domains without loading everything into context upfront. Each skill includes:

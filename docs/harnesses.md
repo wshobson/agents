@@ -107,6 +107,46 @@ plugins/*/.codex-plugin/plugin.json    # per-plugin Codex manifest (skills: ./sk
 - **OpenCode** — no one-step-from-URL install. Clone the repo, then `make install-opencode`
   (runs generate + symlinks `.opencode/` → `~/.config/opencode/`).
 
+## Skills-only installers
+
+`gh skill` (GitHub CLI 2.90+) and `npx skills` ([vercel-labs/skills](https://github.com/vercel-labs/skills))
+install Agent Skills into any supported agent straight from GitHub. Both discover every
+`plugins/<plugin>/skills/<skill>/` directory in this repo without a clone, a marketplace, or a
+generate step. They carry skills only: no agents, commands, or hooks.
+
+```bash
+# gh skill: lists as `[plugins] <plugin>/<skill>`, selects by bare skill name or exact path
+gh skill install wshobson/agents                                     # interactive browse
+gh skill install wshobson/agents python-testing-patterns
+gh skill install wshobson/agents plugins/python-development/skills/python-testing-patterns  # exact path skips the tree walk
+gh skill install wshobson/agents --all --agent claude-code --scope user
+gh skill install wshobson/agents python-testing-patterns --pin <sha>
+
+# npx skills: lists and selects by bare skill name
+npx skills add wshobson/agents --list
+npx skills add wshobson/agents --skill python-testing-patterns -a claude-code
+npx skills add wshobson/agents --all -g
+```
+
+Gotchas:
+
+- **Both install under the bare skill name** (`<agent>/skills/<skill>/`). The `<plugin>/` prefix
+  in `gh skill` listings is display only; `python-development/python-testing-patterns` is not a
+  valid selector, `python-testing-patterns` and the exact `plugins/...` path are. Skill directory
+  names are unique across plugins and `make smoke-test` keeps them that way; a duplicate would
+  collide on install.
+- **`gh skill` installs from the latest GitHub release when one exists**, and from `main` only
+  when the repo has none. This repo publishes no releases, so installs track `main`. Creating a
+  release would freeze `gh skill` installs at that tag until the next one.
+- **Local checkouts.** After `make generate-all`, `npx skills add ./agents` also walks the
+  gitignored `.codex/`, `.opencode/` and `.copilot/` trees and lists their copies. Install from
+  the GitHub source instead, or use `gh skill install . --from-local`, which skips hidden
+  directories.
+- **Spec gate.** `gh skill publish --dry-run` validates every SKILL.md against the
+  [agentskills.io spec](https://agentskills.io/specification): name pattern, name equal to the
+  directory name, required frontmatter. `make smoke-test` runs it, plus discovery through both
+  CLIs, against the real binaries.
+
 ## Regenerating
 
 The committed registries point at source; the transformed trees are regenerated on demand.
