@@ -69,7 +69,7 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**182 Local Agent Skills**
+**183 Local Agent Skills**
 
 - Modular knowledge packages
 - Progressive disclosure architecture
@@ -194,7 +194,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 182 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 183 skills.
 
 ## Model Configuration Strategy
 

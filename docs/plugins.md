@@ -123,7 +123,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 
 | Plugin                       | Description                                                                                                                                     | Install                                    |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| **documentation-standards**  | HADS semantic tagging conventions for human- and AI-friendly documentation                                                                       | `/plugin install documentation-standards`  |
+| **documentation-standards**  | HADS semantic tagging conventions plus the grounded-vault pattern for provenance-linked, drift-checked knowledge stores                          | `/plugin install documentation-standards`  |
 | **code-documentation**       | Documentation generation and code explanation                                                                                                   | `/plugin install code-documentation`       |
 | **documentation-generation** | OpenAPI specs, Mermaid diagrams, tutorials                                                                                                      | `/plugin install documentation-generation` |
 | **c4-architecture**          | Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagrams | `/plugin install c4-architecture`          |
@@ -408,7 +408,7 @@ Each installed plugin loads **only its specific agents, commands, and skills** i
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 182 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 183 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles
