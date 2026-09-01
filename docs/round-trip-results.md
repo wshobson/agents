@@ -14,8 +14,8 @@ load the generated artifacts and report what it found.
 | **Codex CLI** | 0.133.0 | ✅ pass (structural) | All 191 agent TOMLs parse via Python `tomllib`; AGENTS.md within budget (43 lines / 500 tokens) | Codex doctor surfaces no errors; deeper "did the model actually load the skill" requires interactive verification. |
 | **Cursor** | (editor-only) | n/a | n/a | No CLI; manual verification recipe below. |
 | **Copilot** | (structural) | ✅ pass | 191 agent profiles, 155 skills, 25 commands all validated | No CLI round-trip tool yet; structural validation via `make validate` passes. |
-| **gh skill** | gh 2.98.0 | ✅ pass (2026-09-01) | 182 / 182 source skills discovered; `gh skill publish --dry-run` passes | Discovery through the `plugins/{scope}/skills/*/SKILL.md` convention; installs by bare skill name. Runs in CI via `make smoke-test`. |
-| **npx skills** | skills 1.5.23 | ✅ pass (2026-09-01) | 182 / 182 source skills discovered | Flat skill names. From a generated checkout the listing also includes the gitignored harness trees. Runs in CI via `make smoke-test`. |
+| **gh skill** | gh 2.98.0 | ✅ pass (2026-09-01) | 183 / 183 source skills discovered; `gh skill publish --dry-run` passes | Discovery through the `plugins/{scope}/skills/*/SKILL.md` convention; installs by bare skill name. Runs in CI via `make smoke-test`. |
+| **npx skills** | skills 1.5.23 | ✅ pass (2026-09-01) | 183 / 183 source skills discovered | Flat skill names. From a generated checkout the listing also includes the gitignored harness trees. Runs in CI via `make smoke-test`. |
 
 ## Issues surfaced and fixed during round-trip
 
@@ -100,14 +100,14 @@ codex
 ```bash
 # Local discovery, same conventions as a GitHub install (no network)
 gh skill install . --from-local | grep -c '^\[plugins\]'
-# Expected: 182 source skills, listed as `[plugins] <plugin>/<skill>`
+# Expected: 183 source skills, listed as `[plugins] <plugin>/<skill>`
 
 # agentskills.io spec validation (name pattern, name == directory, frontmatter)
 gh skill publish --dry-run
 # Expected: exit 0; `license` warnings are advisory
 
 # Vercel skills CLI discovery (walks gitignored generated trees too, so the count
-# exceeds 182 after `make generate-all`; every source skill must be present)
+# exceeds 183 after `make generate-all`; every source skill must be present)
 DISABLE_TELEMETRY=1 npx skills add . --list -y
 
 # From GitHub, as a user would
