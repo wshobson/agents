@@ -111,7 +111,7 @@ make validate                            # structural checks
 make garden                              # drift / dead-link / cap detection
 ```
 
-Codex and Cursor install from source via committed registries; Antigravity and OpenCode install via clone + `make`.
+Codex and Cursor install from source via committed registries; Antigravity and OpenCode install via clone + `make`. Individual skills install into any agent with `gh skill install wshobson/agents` or `npx skills add wshobson/agents`, no clone needed.
 
 [→ Full capability matrix and per-harness deep-dives](docs/harnesses.md)
 

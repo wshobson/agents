@@ -73,7 +73,7 @@ Three mechanical gates, each runnable as a make target and wired into CI:
 2. **`make garden`** — drift detection (dead links, stale artifacts, oversize skills, marketplace orphans). Sorted by severity with per-kind summary.
 3. **`make test`** — pytest suite (adapters + validators + gardener + real-source + round-trip). Real-CLI smoke tests are excluded; run them separately via `make smoke-test`.
 
-CI workflow: [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs all three on every PR, plus a `cli-smoke-test` job that installs OpenCode + Antigravity CLI and exercises them against the generated artifacts.
+CI workflow: [`.github/workflows/validate.yml`](.github/workflows/validate.yml) runs all three on every PR, plus a `cli-smoke-test` job that installs OpenCode, Antigravity CLI, and Node and exercises them against the generated artifacts; the same job runs `gh skill` and `npx skills` against the source skills, with `gh skill publish --dry-run` as the agentskills.io spec gate.
 
 ## Plugin component model
 

@@ -86,6 +86,16 @@ command `subagent_type` references to match.
 CI runs `tools/check_agent_name_collisions.py --fail-on-duplicates` to keep the source
 tree collision-free.
 
+### Skill directory names are identities
+
+`gh skill` and `npx skills` install a skill under its directory name, which the
+agentskills.io spec requires to equal the frontmatter `name`, and the Codex, OpenCode,
+Copilot, and Antigravity adapters derive generated IDs from the same directory
+(`<plugin>__<dir>`, `<plugin>-<dir>`). Renaming a skill directory therefore renames its
+generated artifacts on the next `make generate-all` (the old ones are pruned) and changes
+what installers fetch. Keep directory names unique across plugins and treat a rename as a
+user-visible change.
+
 ### Don't collide with Codex built-in agent names
 
 `default`, `worker`, and `explorer` are built-in Codex subagent roles. If you name a custom
