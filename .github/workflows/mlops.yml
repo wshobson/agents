@@ -1,0 +1,196 @@
+name: MLOps (lab baseline)
+
+# Reusable MLOps baseline for the Major 7 lab.
+#
+# Two modes:
+#   - kind=ci  (manual dispatch): lint + test gate before pushing a model.
+#   - kind=release (manual dispatch or on model/* tag): validate a model dir,
+#     push it to the Hugging Face `major7` org, and publish a model card
+#     summary.
+#
+# Reuse model: copy this file into another repo and adjust the working
+# directories in the lint/test jobs. It is intentionally not a workflow_call
+# template — a call contract (declared inputs / required secrets / outputs)
+# would add ceremony for a baseline whose jobs are specific to this repo's
+# uv layout.
+#
+# This workflow is deliberately CPU-side only. GPU training/finetuning runs on
+# the DGX Spark and logs straight to Weights & Biases (entity m7, project
+# major7-lab). See docs/mlops.md for the full lab pipeline.
+
+on:
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: 'ci (lint + test) or release (push model to HF)'
+        required: true
+        default: 'ci'
+        type: choice
+        options: [ci, release]
+      hf_target:
+        description: 'HF repo to push for kind=release, e.g. major7/my-model (blank = model/<tag>)'
+        required: false
+        default: ''
+        type: string
+      model_path:
+        description: 'Path to the model directory (or file) to release'
+        required: false
+        default: ''
+        type: string
+  push:
+    tags:
+      - 'model/*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mlops-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  HF_NAMESPACE: major7
+
+jobs:
+  lint:
+    name: Lint (ruff + ty)
+    if: ${{ inputs.kind == 'ci' || inputs.kind == '' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/plugin-eval
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync plugin-eval dev dependencies
+        run: uv sync --all-extras
+
+      - name: ruff check
+        run: uv run ruff check ../../tools/ src/plugin_eval/
+
+      - name: ruff format --check
+        run: uv run ruff format --check ../../tools/ src/plugin_eval/
+
+      - name: ty type-check
+        run: uv run ty check src/plugin_eval/
+
+  test:
+    name: Test (pytest)
+    if: ${{ inputs.kind == 'ci' || inputs.kind == '' }}
+    needs: lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/plugin-eval
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync plugin-eval dependencies
+        run: uv sync --all-extras
+
+      - name: Run pytest
+        run: uv run pytest -q
+
+  model-release:
+    name: Release model to HF (major7)
+    # Release blocks on the CI gate: on a model/* tag push, lint + test run
+    # first (inputs.kind is empty on tag pushes, so their if: is true) and a
+    # broken tree cannot reach the HF org. On a manual kind=release dispatch
+    # the gate jobs are skipped, which we allow explicitly below.
+    needs: [lint, test]
+    if: >
+      (inputs.kind == 'release' || startsWith(github.ref, 'refs/tags/model/'))
+      && (needs.lint.result == 'success' || needs.lint.result == 'skipped')
+      && (needs.test.result == 'success' || needs.test.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+
+      - name: Resolve target and source
+        id: resolve
+        # Untrusted inputs (manual dispatch) must not be interpolated into the
+        # shell script — pass them through env: per GitHub's hardening guide
+        # (code-injection via template expansion).
+        env:
+          HF_TARGET_INPUT: ${{ inputs.hf_target }}
+          MODEL_PATH_INPUT: ${{ inputs.model_path }}
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          if [ -n "$HF_TARGET_INPUT" ]; then target="$HF_TARGET_INPUT"; else target="${tag#model/}"; fi
+          case "$target" in
+            "$HF_NAMESPACE"/*) full="$target" ;;
+            *) full="$HF_NAMESPACE/$target" ;;
+          esac
+          # Default source: the directory named after the tag (model/my-model-v1
+          # -> my-model-v1/). Never derive a parent directory.
+          src="$MODEL_PATH_INPUT"
+          if [ -z "$src" ]; then src="${tag#model/}"; fi
+          # Defense in depth: refuse to release the repo root or an empty path.
+          case "$src" in
+            ""|.|/) echo "::error::refusing to release repo root or empty path"; exit 1 ;;
+          esac
+          echo "target=$full" >> "$GITHUB_OUTPUT"
+          echo "src=$src" >> "$GITHUB_OUTPUT"
+          echo ">> HF repo: $full (source path: ./$src)"
+          if [ ! -e "$src" ]; then echo "::error::model path '$src' not found in repo"; exit 1; fi
+
+      - name: Push to Hugging Face
+        run: |
+          uv run --with 'huggingface_hub==0.35.0' --with 'hf_transfer==0.1.9' python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+          api = HfApi()
+          target = os.environ["TARGET"]
+          src = os.environ["SRC"]
+          # hf_transfer accelerates large uploads; the Hub negotiates the
+          # protocol, so this is a safe no-op when it is unavailable.
+          os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "1")
+          if os.path.isfile(src):
+              api.upload_file(path_or_fileobj=src, path_in_repo=os.path.basename(src),
+                              repo_id=target, repo_type="model",
+                              commit_message=f"release: {target}")
+          else:
+              api.upload_folder(folder_path=src, repo_id=target, repo_type="model",
+                                commit_message=f"release: {target}")
+          print(f"OK: pushed {src} -> {target}")
+          PY
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TARGET: "${{ steps.resolve.outputs.target }}"
+          SRC: "${{ steps.resolve.outputs.src }}"
+
+      - name: Model card summary
+        if: always()
+        env:
+          HF_TARGET_OUT: ${{ steps.resolve.outputs.target }}
+          MODEL_SRC_OUT: ${{ steps.resolve.outputs.src }}
+        run: |
+          {
+            echo "## Model release"
+            echo ""
+            echo "- **HF repo:** \`$HF_TARGET_OUT\`"
+            echo "- **Source path:** \`$MODEL_SRC_OUT\`"
+            echo "- **Trigger:** ${GITHUB_REF#refs/tags/}"
+          } >> "$GITHUB_STEP_SUMMARY"
