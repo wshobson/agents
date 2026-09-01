@@ -616,6 +616,85 @@ def check_agent_divergence(report: Report) -> None:
             )
 
 
+ARGUMENTS_TOKEN = "$ARGUMENTS"
+ARGUMENTS_TAG_OPEN_RE = re.compile(r"^\s*<(?:user_request|user_input|arguments|input)>\s*$")
+ARGUMENTS_TAG_CLOSE_RE = re.compile(r"^\s*</(?:user_request|user_input|arguments|input)>\s*$")
+# A sentence near the interpolation that tells the model the text is data.
+ARGUMENTS_FRAMING_RE = re.compile(
+    r"\bas data\b|\bnot (?:as )?instructions\b|\btreat(?:s|ed|ing)?\b[^.\n]{0,80}\bas\b",
+    re.IGNORECASE,
+)
+ARGUMENTS_BACKTICKED_RE = re.compile(r"`[^`\n]*\$ARGUMENTS[^`\n]*`")
+FENCE_RE = re.compile(r"^\s*(?:```|~~~)")
+
+
+def check_arguments_framing(report: Report) -> None:
+    """Commands that interpolate a raw `$ARGUMENTS` into prompt text with no framing.
+
+    Claude Code substitutes `$ARGUMENTS` textually wherever it appears, and every
+    command runs with tool access, so argument text copied from an issue, a log, or a
+    web page can carry instructions the agent then acts on with tools. An
+    interpolation counts as framed when it sits inside a `<user_request>` block (or
+    `<user_input>`, `<arguments>`, `<input>`), when a sentence within three lines
+    above or one below says the text is data rather than instructions, or when the
+    token is a backticked reference to the value, as in "Parse `$ARGUMENTS` for
+    flags". Fenced code blocks are skipped: there the value is a shell or JSON
+    string, not prompt text. One finding per command lists every offending line.
+    """
+    if not PLUGINS_DIR.is_dir():
+        return
+    for command in sorted(PLUGINS_DIR.glob("*/commands/*.md")):
+        raw = read_text_or_none(command, report)
+        if raw is None or ARGUMENTS_TOKEN not in raw:
+            continue
+        lines = raw.splitlines()
+        start = 0
+        if lines and lines[0].strip() == "---":
+            for idx in range(1, len(lines)):
+                if lines[idx].strip() == "---":
+                    start = idx + 1
+                    break
+        in_fence = False
+        in_tag = False
+        unframed: list[int] = []
+        for idx in range(start, len(lines)):
+            line = lines[idx]
+            if FENCE_RE.match(line):
+                in_fence = not in_fence
+                continue
+            if in_fence:
+                continue
+            if ARGUMENTS_TAG_OPEN_RE.match(line):
+                in_tag = True
+                continue
+            if ARGUMENTS_TAG_CLOSE_RE.match(line):
+                in_tag = False
+                continue
+            if ARGUMENTS_TOKEN not in line or in_tag:
+                continue
+            if ARGUMENTS_TOKEN not in ARGUMENTS_BACKTICKED_RE.sub("", line):
+                continue
+            window = "\n".join(lines[max(start, idx - 3) : idx + 2])
+            if ARGUMENTS_FRAMING_RE.search(window):
+                continue
+            unframed.append(idx + 1)
+        if unframed:
+            where = ", ".join(str(n) for n in unframed)
+            report.add(
+                kind="ARGUMENTS_UNFRAMED",
+                severity="warning",
+                path=command,
+                message=(
+                    f"`$ARGUMENTS` is interpolated into the prompt without framing on "
+                    f"line{'s' if len(unframed) > 1 else ''} {where}"
+                ),
+                fix=(
+                    "Wrap it in a <user_request> block and say the text is data, not "
+                    'instructions; see docs/authoring.md, "Treat $ARGUMENTS as data".'
+                ),
+            )
+
+
 CHECKS = {
     "stale": check_stale_artifacts,
     "context": check_oversized_context_files,
@@ -624,6 +703,7 @@ CHECKS = {
     "marketplace": check_marketplace_consistency,
     "counts": check_doc_counts,
     "agent-divergence": check_agent_divergence,
+    "arguments": check_arguments_framing,
 }
 
 
