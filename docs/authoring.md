@@ -1,6 +1,6 @@
 # Authoring portable plugin content
 
-Plugin content in this repo ships to **five** harnesses: OpenAI Codex CLI, Cursor, OpenCode, the Google Antigravity CLI (`agy`), and GitHub Copilot. Claude Code is the source-of-truth. The adapter framework handles per-harness
+Plugin content in this repo ships to **six** harnesses: OpenAI Codex CLI, Cursor, OpenCode, the Google Antigravity CLI (`agy`), GitHub Copilot, and Pi. Claude Code is the source-of-truth. The adapter framework handles per-harness
 mechanics (frontmatter rewrites, format transforms, output paths) so you author one set of
 markdown files. But content choices still affect portability — this guide tells you what to
 do, and what to avoid, so the work you do for Claude Code translates cleanly everywhere.
@@ -119,7 +119,8 @@ tool permissions and approval prompts remain the control on what a command can d
 `gh skill` and `npx skills` install a skill under its directory name, which the
 agentskills.io spec requires to equal the frontmatter `name`, and the Codex, OpenCode,
 Copilot, and Antigravity adapters derive generated IDs from the same directory
-(`<plugin>__<dir>`, `<plugin>-<dir>`). Renaming a skill directory therefore renames its
+(`<plugin>__<dir>`, `<plugin>-<dir>`), and Pi nests the skill at `.pi/skills/<plugin>/<dir>/`.
+Renaming a skill directory therefore renames its
 generated artifacts on the next `make generate-all` (the old ones are pruned) and changes
 what installers fetch. Keep directory names unique across plugins and treat a rename as a
 user-visible change.
@@ -148,13 +149,13 @@ clean naming — pick distinct names for skill/command pairs within a plugin.
 
 ### Model aliases
 
-| Source field | Codex | Cursor | OpenCode | Antigravity | Copilot |
-|---|---|---|---|---|---|
-| `model: fable` | `gpt-5.5` | `inherit` | `anthropic/claude-fable-5` | `pro` | `claude-fable-5` |
-| `model: opus` | `gpt-5.5` | `inherit` | `anthropic/claude-opus-4-8` | `pro` | `claude-opus-4.8` |
-| `model: sonnet` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-sonnet-5` | `pro` | `claude-sonnet-5` |
-| `model: haiku` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-haiku-4-5` | `flash` | `claude-haiku-4.5` |
-| `model: inherit` | `gpt-5.5` | `inherit` | `anthropic/claude-sonnet-5` | `inherit` | `claude-sonnet-5` |
+| Source field | Codex | Cursor | OpenCode | Antigravity | Copilot | Pi |
+|---|---|---|---|---|---|---|
+| `model: fable` | `gpt-5.5` | `inherit` | `anthropic/claude-fable-5` | `pro` | `claude-fable-5` | `anthropic/claude-fable-5` |
+| `model: opus` | `gpt-5.5` | `inherit` | `anthropic/claude-opus-4-8` | `pro` | `claude-opus-4.8` | `anthropic/claude-opus-4-8` |
+| `model: sonnet` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-sonnet-5` | `pro` | `claude-sonnet-5` | `anthropic/claude-sonnet-5` |
+| `model: haiku` | `gpt-5.4-mini` | `inherit` | `anthropic/claude-haiku-4-5` | `flash` | `claude-haiku-4.5` | `anthropic/claude-haiku-4-5` |
+| `model: inherit` | `gpt-5.5` | `inherit` | `anthropic/claude-sonnet-5` | `inherit` | `claude-sonnet-5` | `inherit` |
 
 The adapter handles mapping. The `BARE_MODEL_ALIAS` lint is informational — it just notes
 that the mapping is implicit. If you want explicit, use `inherit`.
@@ -166,7 +167,8 @@ Claude → Claude using Copilot's IDs (dotted for minor-versioned models). Antig
 frontmatter takes a tier alias, not a concrete model id (`agy models` only ever returns
 concrete ids like `gemini-3.1-pro-high`, never bare tiers) — `fable`/`opus`/`sonnet` map to
 its pro-class tier, `haiku` to its flash-class tier, and `inherit` stays the literal string
-`inherit`.
+`inherit`. Pi uses the same full model ids as OpenCode; for `inherit` the adapter omits the
+`model:` field so the parent's model applies.
 
 `fable` (Claude Fable 5) is the tier above `opus`, reserved for the longest-horizon
 autonomous work. It is native in Claude Code (v2.1.170+, opt-in, ~2.6× Opus effective
@@ -189,7 +191,7 @@ point and are taught where to look next." Apply this within each skill:
 - `assets/`: templates, configs, scaffolding. Loaded by name when the skill says "scaffold
   from `assets/config.template.ts`".
 
-This is the canonical Anthropic SKILL.md pattern. Codex, Cursor, OpenCode, and Antigravity
+This is the canonical Anthropic SKILL.md pattern. Codex, Cursor, OpenCode, Antigravity, and Pi
 all honor `references/`.
 
 ## What translates poorly
@@ -198,12 +200,12 @@ Things that work in Claude Code but degrade across harnesses:
 
 | Source pattern | Why it degrades |
 |---|---|
-| `TodoWrite` references | Only Claude Code and OpenCode support it. Not Antigravity. |
-| Hooks (`hooks:` frontmatter) | Claude Code, OpenCode (via TS plugins), and Antigravity (native lifecycle hooks) support it. |
+| `TodoWrite` references | Only Claude Code and OpenCode support it. Not Antigravity, not Pi. |
+| Hooks (`hooks:` frontmatter) | Claude Code, OpenCode (via TS plugins), Antigravity (native lifecycle hooks), and Pi (via TypeScript extensions) support it. |
 | `color:` on agents | Cosmetic; dropped everywhere except Claude Code. |
-| Per-agent tool allowlist | Honored only on Claude Code/Antigravity/OpenCode. Cursor and Codex have coarser models. |
-| Slash commands | Codex converts to skills. Antigravity transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. |
-| Marketplace registry | Only Claude Code, Cursor, and Antigravity have one. Codex/OpenCode have no marketplace. |
+| Per-agent tool allowlist | Honored only on Claude Code/Antigravity/OpenCode, and on Pi through the subagent extension. Cursor and Codex have coarser models. |
+| Slash commands | Codex converts to skills. Antigravity transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. Pi emits prompt templates under `.pi/prompts/`. |
+| Marketplace registry | Only Claude Code, Cursor, and Antigravity have one. Codex, OpenCode, and Pi have no marketplace; Pi installs packages from npm, git, or a local path. |
 
 When you must use a feature with no equivalent, the `harness_portability` lint won't fire
 (it's not a portability problem — it's a capability gap). Just document the constraint in

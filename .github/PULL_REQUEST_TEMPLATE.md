@@ -1,6 +1,6 @@
 <!--
 Thanks for the PR. A few quick orientation pointers:
-- AGENTS.md is the canonical context file (read by Codex/Cursor/OpenCode/Antigravity CLI;
+- AGENTS.md is the canonical context file (read by Codex/Cursor/OpenCode/Antigravity CLI/Pi;
   CLAUDE.md is a symlink to AGENTS.md).
 - docs/authoring.md is the portable-content style guide.
 - If you touched plugin source, run `make generate-all` to refresh the committed
@@ -34,6 +34,7 @@ Thanks for the PR. A few quick orientation pointers:
 - [ ] Cursor
 - [ ] OpenCode
 - [ ] Antigravity CLI
+- [ ] Pi
 - [ ] Pure tooling / framework (no harness behavior change)
 
 ## Test plan

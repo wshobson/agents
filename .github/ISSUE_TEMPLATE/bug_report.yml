@@ -41,6 +41,7 @@ body:
         - Cursor
         - OpenCode
         - Antigravity CLI
+        - Pi
         - Multiple harnesses
         - Adapter framework / tooling (not a specific harness)
     validations:

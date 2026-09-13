@@ -38,7 +38,7 @@ body:
       description: What part of the marketplace would this feature affect?
       options:
         - Existing plugin / agent / skill / command (improvement)
-        - Adapter framework (Codex / Cursor / OpenCode / Antigravity)
+        - Adapter framework (Codex / Cursor / OpenCode / Antigravity / Pi)
         - New harness support
         - Quality tooling (validators, gardener, plugin-eval)
         - Documentation

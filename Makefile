@@ -28,7 +28,7 @@ help:
 	@echo "claude-agents — multi-harness plugin marketplace"
 	@echo "================================================="
 	@echo ""
-	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Antigravity):"
+	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Antigravity / Pi):"
 	@echo "  make generate HARNESS=<h> [PLUGIN=<p>]           Generate per-harness artifacts (defaults to all plugins)"
 	@echo "  make generate-all                                Generate for ALL harnesses + ALL plugins"
 	@echo "  make clean-generated [HARNESS=<h>]               Remove generated artifacts"
@@ -222,9 +222,9 @@ test:
 	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/ --ignore=tools/tests/test_cli_smoke.py
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
-# of opencode / agy / codex / claude are on PATH. Per-CLI tests skip gracefully
+# of opencode / agy / codex / claude / pi are on PATH. Per-CLI tests skip gracefully
 # when the binary is missing — so local devs only exercise what they have installed.
-# CI installs OpenCode + Antigravity + Codex and turns those skips into hard requirements.
+# CI installs OpenCode + Antigravity + Codex + Pi and turns those skips into hard requirements.
 smoke-test:
 	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d .antigravity ] || [ ! -d .pi ]; then \
 		echo "Generating harness artifacts first..."; \
