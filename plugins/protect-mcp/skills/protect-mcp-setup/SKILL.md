@@ -81,8 +81,9 @@ script bundled with the plugin:
 ```
 
 Claude Code passes the hook event to the command as JSON on stdin and does not
-set `TOOL_NAME` or `TOOL_INPUT` variables. The scripts read `tool_name` and
-`tool_input` from that payload and pass them to `protect-mcp` as flags. Set
+set `TOOL_NAME` or `TOOL_INPUT` variables. `evaluate.sh` reads `tool_name` and
+`tool_input` from that payload and passes them to `protect-mcp` as flags; `sign.sh` reads
+`tool_name` only, because the 0.7.4 signer records nothing else. Set
 `PROTECT_MCP_POLICY`, `PROTECT_MCP_RECEIPTS`, and `PROTECT_MCP_KEY` to change the
 default paths. When the policy file is missing, the PreToolUse hook prints a
 warning to stderr and allows the call.

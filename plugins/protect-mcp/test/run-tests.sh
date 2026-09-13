@@ -209,6 +209,17 @@ else
     fail "hooks.json PostToolUse did not write a receipt for Read"
 fi
 
+# --- Test 12: an evaluator that cannot run must block, not fail open ----------
+# Simulate npx failing to execute (exit 126, as when a huge tool input exceeds the
+# argument-length limit). The hook must map that to exit 2.
+echo ""
+echo "=== Test 12: hooks.json PreToolUse blocks when the evaluator cannot run ==="
+FAKE_BIN="$WORKDIR/fakebin"; mkdir -p "$FAKE_BIN"
+printf '#!/bin/sh\nexit 126\n' > "$FAKE_BIN/npx"; chmod +x "$FAKE_BIN/npx"
+PATH="$FAKE_BIN:$PATH" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" PROTECT_MCP_POLICY=fixtures/test-policy.cedar \
+    bash -c "$PRE_CMD" < fixtures/pretool-allow-read.json >/dev/null 2>&1
+check_exit $? 2 "evaluator exit 126 is mapped to a blocking exit 2"
+
 # --- Summary ----------------------------------------------------------------
 echo ""
 echo "─────────────────────────────────────────────"

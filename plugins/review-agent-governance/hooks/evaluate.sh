@@ -35,4 +35,15 @@ if [ -z "$tool" ]; then
   exit 2
 fi
 
-exec npx protect-mcp@0.7.4 evaluate --policy "$POLICY" --tool "$tool" --input "$input"
+npx protect-mcp@0.7.4 evaluate --policy "$POLICY" --tool "$tool" --input "$input"
+rc=$?
+case "$rc" in
+  0|2) exit "$rc" ;;
+  *)
+    # npx could not run the evaluator (for example exit 126 when a large tool input
+    # exceeds the argument-length limit). Claude Code treats exits other than 2 as
+    # non-blocking, so map them to 2 rather than letting the call through.
+    echo "review-agent-governance: evaluator did not run (exit $rc), denying (fail-closed)." >&2
+    exit 2
+    ;;
+esac
