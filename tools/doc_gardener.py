@@ -293,6 +293,28 @@ def check_stale_artifacts(report: Report) -> None:
                 if src.is_file():
                     pairs.append((src, toml_path))
 
+    # Pi: .pi/skills/<plugin>/<skill>/SKILL.md, .pi/prompts/<plugin>__<cmd>.md,
+    # .pi/agents/<plugin>__<agent>.md.
+    pi_root = WORKTREE / ".pi"
+    if pi_root.is_dir():
+        for skill_md in (pi_root / "skills").glob("*/*/SKILL.md"):
+            plugin_name = skill_md.parent.parent.name
+            src = PLUGINS_DIR / plugin_name / "skills" / skill_md.parent.name / "SKILL.md"
+            if src.is_file():
+                pairs.append((src, skill_md))
+        for prompt_md in (pi_root / "prompts").glob("*.md"):
+            if "__" in prompt_md.stem:
+                plugin_name, cmd = prompt_md.stem.split("__", 1)
+                src = PLUGINS_DIR / plugin_name / "commands" / f"{cmd}.md"
+                if src.is_file():
+                    pairs.append((src, prompt_md))
+        for agent_md in (pi_root / "agents").glob("*.md"):
+            if "__" in agent_md.stem:
+                plugin_name, agent = agent_md.stem.split("__", 1)
+                src = PLUGINS_DIR / plugin_name / "agents" / f"{agent}.md"
+                if src.is_file():
+                    pairs.append((src, agent_md))
+
     for src, gen in pairs:
         if src.stat().st_mtime > gen.stat().st_mtime + 1:  # 1s grace
             # Derive the plugin name correctly regardless of source layout.
