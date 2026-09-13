@@ -152,6 +152,96 @@ class TestAntigravitySmoke:
         assert not failures, "agy plugin validate failures:\n" + "\n".join(failures[:10])
 
 
+# ── Pi ───────────────────────────────────────────────────────────────────────
+
+
+def _pi_env(config_dir: Path) -> dict[str, str]:
+    """Offline, sandboxed, and guaranteed to fail before any tokens are billed."""
+    env = dict(os.environ)
+    env.update(
+        {
+            "PI_CODING_AGENT_DIR": str(config_dir),
+            "PI_OFFLINE": "1",
+            "PI_SKIP_VERSION_CHECK": "1",
+            "ANTHROPIC_API_KEY": "sk-ant-invalid-smoke-test",
+        }
+    )
+    return env
+
+
+def _pi_expand(message: str, env: dict[str, str]) -> str:
+    """Run pi from the repo root in json mode and return the first user message text.
+
+    Pi expands `/template args` and `/skill:name` into the user message before the
+    model call; the invalid key then produces a 401. The expanded text is the proof
+    of discovery and costs nothing.
+    """
+    proc = _run(
+        [
+            "pi",
+            "--mode",
+            "json",
+            "--no-session",
+            "--approve",
+            "--model",
+            "anthropic/claude-haiku-4-5",
+            "-p",
+            message,
+        ],
+        cwd=WORKTREE,
+        env=env,
+        timeout=60,
+    )
+    for line in proc.stdout.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        msg = event.get("message") if event.get("type") == "message_start" else None
+        if msg and msg.get("role") == "user":
+            parts = [c.get("text", "") for c in msg.get("content", []) if c.get("type") == "text"]
+            return "".join(parts)
+    raise AssertionError(
+        f"pi emitted no user message for {message!r} (rc={proc.returncode})\n"
+        f"--- stdout ---\n{proc.stdout[:2000]}\n--- stderr ---\n{proc.stderr[:2000]}"
+    )
+
+
+@pytest.mark.skipif(not _has("pi"), reason="pi CLI not installed")
+@pytest.mark.skipif(
+    not (WORKTREE / ".pi").is_dir(),
+    reason="Pi artifacts not generated — run `make generate HARNESS=pi`",
+)
+class TestPiSmoke:
+    @pytest.fixture(scope="class")
+    def pi_env(self, tmp_path_factory) -> dict[str, str]:
+        return _pi_env(tmp_path_factory.mktemp("pi-config"))
+
+    def test_unknown_template_stays_literal(self, pi_env: dict[str, str]):
+        """Negative control: the expansion assertions below cannot pass vacuously."""
+        text = _pi_expand("/no-such-plugin__no-such-command smoke", pi_env)
+        assert text.startswith("/no-such-plugin__no-such-command")
+
+    def test_pi_expands_every_generated_prompt_template(self, pi_env: dict[str, str]):
+        failures = []
+        for prompt_md in sorted((WORKTREE / ".pi" / "prompts").glob("*.md")):
+            text = _pi_expand(f"/{prompt_md.stem} smoke", pi_env)
+            if text.startswith("/"):
+                failures.append(prompt_md.name)
+        assert not failures, (
+            f"pi did not expand {len(failures)} prompt template(s): {failures[:10]}"
+        )
+
+    def test_pi_expands_every_generated_skill(self, pi_env: dict[str, str]):
+        failures = []
+        for skill_md in sorted((WORKTREE / ".pi" / "skills").glob("*/*/SKILL.md")):
+            name = skill_md.parent.name
+            text = _pi_expand(f"/skill:{name}", pi_env)
+            if not text.startswith(f'<skill name="{name}"'):
+                failures.append(name)
+        assert not failures, f"pi did not load {len(failures)} skill(s): {failures[:10]}"
+
+
 # ── Codex CLI ────────────────────────────────────────────────────────────────
 
 

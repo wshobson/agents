@@ -256,6 +256,11 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install Pi CLI
+        # Pinned to the version the adapter was verified against. Bump alongside any
+        # change to Pi's skill, prompt-template, or agent discovery rules.
+        run: npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.85.1
+
       - name: Ensure GitHub CLI has `gh skill` (2.90+)
         # Runner images ship gh, but the skills smoke tests need the `gh skill`
         # command group. Upgrade from GitHub's apt repository only when the
@@ -277,6 +282,7 @@ jobs:
         run: |
           opencode --version
           agy --version
+          pi --version
           gh --version
           gh skill --help > /dev/null   # hard requirement: the skills smoke tests must run, not skip
           npx --version
