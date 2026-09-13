@@ -94,7 +94,7 @@ Tiered model strategy:
 
 ## Multi-harness support
 
-This marketplace ships to six agentic harnesses from one Markdown source. Each adapter
+This marketplace ships to seven agentic harnesses from one Markdown source. Each adapter
 emits harness-native artifacts (not lowest-common-denominator translations):
 
 | Harness | Generates | Notes |

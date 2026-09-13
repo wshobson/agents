@@ -115,7 +115,8 @@ plugins/*/.codex-plugin/plugin.json    # per-plugin Codex manifest (skills: ./sk
   `pi install /path/to/agents/.pi`; agents need the symlink route because Pi packages have no
   agents resource, and they only work with the reference `subagent` extension or a compatible
   package. Running `pi` inside the clone also works. Pi asks to trust the project and then reads
-  `.pi/` directly.
+  `.pi/` directly. Pick one route. If you install globally with `make install-pi` and also run
+  `pi` inside the clone, Pi sees every skill twice and warns on each name.
 
 ## Skills-only installers
 
@@ -149,9 +150,9 @@ Gotchas:
   when the repo has none. This repo publishes no releases, so installs track `main`. Creating a
   release would freeze `gh skill` installs at that tag until the next one.
 - **Local checkouts.** After `make generate-all`, `npx skills add ./agents` also walks the
-  gitignored `.codex/`, `.opencode/` and `.copilot/` trees and lists their copies. Install from
-  the GitHub source instead, or use `gh skill install . --from-local`, which skips hidden
-  directories.
+  gitignored `.codex/`, `.opencode/`, `.copilot/`, `.antigravity/` and `.pi/` trees and lists
+  their copies. Install from the GitHub source instead, or use `gh skill install . --from-local`,
+  which skips hidden directories.
 - **Spec gate.** `gh skill publish --dry-run` validates every SKILL.md against the
   [agentskills.io spec](https://agentskills.io/specification): name pattern, name equal to the
   directory name, required frontmatter. `make smoke-test` runs it, plus discovery through both

@@ -216,11 +216,12 @@ jobs:
             .opencode/
             opencode.json
             .antigravity/
+            .pi/
             AGENTS.md
           retention-days: 7
 
   cli-smoke-test:
-    name: Real-CLI smoke test (OpenCode + Antigravity)
+    name: Real-CLI smoke test (OpenCode + Antigravity + Pi)
     runs-on: ubuntu-latest
     # Real-CLI subprocess tests: invokes the actual harness binaries against our
     # generated artifacts to catch issues that pure-Python parsing misses (CLI

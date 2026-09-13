@@ -172,6 +172,11 @@ def _pi_env(config_dir: Path) -> dict[str, str]:
             "ANTHROPIC_AUTH_TOKEN": "sk-ant-invalid-smoke-test",
             "ANTHROPIC_OAUTH_TOKEN": "sk-ant-invalid-smoke-test",
             "ANTHROPIC_API_KEY": "sk-ant-invalid-smoke-test",
+            # Pi also honors ANTHROPIC_BASE_URL. A developer pointed at a gateway that
+            # authenticates on its own would bill real tokens despite the invalid keys,
+            # so send the request to a closed port instead. Pi expands the template
+            # before it calls the model, so every assertion below still holds.
+            "ANTHROPIC_BASE_URL": "http://127.0.0.1:1",
         }
     )
     return env

@@ -88,6 +88,9 @@ make validate HARNESS=pi STRICT=1
 # turn that call into a 401. The expanded text in the json stream is the proof.
 export PI_OFFLINE=1 PI_SKIP_VERSION_CHECK=1
 export ANTHROPIC_AUTH_TOKEN=sk-ant-invalid ANTHROPIC_OAUTH_TOKEN=sk-ant-invalid ANTHROPIC_API_KEY=sk-ant-invalid
+# Pi honors ANTHROPIC_BASE_URL too. A gateway that authenticates on its own would bill
+# real tokens despite the invalid keys, so send the request to a closed port.
+export ANTHROPIC_BASE_URL=http://127.0.0.1:1
 
 pi --mode json --no-session --approve --model anthropic/claude-haiku-4-5 \
   -p '/python-development__python-scaffold smoke'

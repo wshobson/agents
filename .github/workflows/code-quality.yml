@@ -61,6 +61,7 @@ jobs:
             ../../tools/install_opencode.py \
             ../../tools/install_copilot.py \
             ../../tools/install_antigravity.py \
+            ../../tools/install_pi.py \
             ../../tools/check_agent_name_collisions.py \
             ../../tools/tests/ \
             src/plugin_eval/

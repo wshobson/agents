@@ -1944,7 +1944,7 @@ class TestPiAdapter:
         fm, body = parse_frontmatter(skill_md.read_text())
         assert fm["name"] == "hello"
         assert fm["description"] == "Use when greeting users."
-        # Claude tool references are rewritten to lowercase Pi vocabulary.
+        # Claude tool references are rewritten away from Claude tool vocabulary.
         assert "`Read`" not in body and "`Bash`" not in body
 
     def test_mirrors_skill_support_files_and_skips_hidden(self, tmp_path: Path, output_root: Path):
@@ -1972,7 +1972,7 @@ class TestPiAdapter:
             name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
         )
 
-        PiAdapter(output_root=output_root).emit_plugin(plugin)
+        result = PiAdapter(output_root=output_root).emit_plugin(plugin)
 
         root = output_root / ".pi" / "skills" / "demo" / "toolkit"
         assert (root / "references" / "notes.md").is_file()
@@ -1980,6 +1980,11 @@ class TestPiAdapter:
         assert (root / "assets" / "logo.png").read_bytes() == b"\x89PNG\r\n"
         assert not (root / ".DS_Store").exists()
         assert (root / "SKILL.md").read_text().count("# Toolkit") == 1
+        # written is the prune set, so a mirrored file missing from it would be
+        # deleted on the next run.
+        assert (root / "references" / "notes.md") in result.written
+        assert (root / "scripts" / "preflight.sh") in result.written
+        assert (root / "assets" / "logo.png") in result.written
 
     def test_emits_prompt_template_with_namespaced_filename(
         self, synthetic_plugin: PluginSource, output_root: Path

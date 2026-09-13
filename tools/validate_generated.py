@@ -666,7 +666,20 @@ def validate_pi(report: Report) -> None:
         return
     fix = "Regenerate via `make generate HARNESS=pi`."
 
-    # 1. Skills: name matches directory, description present, Pi name rules (warnings).
+    # 1. Skills: every skill directory has a SKILL.md, and that file names its own
+    # directory, carries a description, and follows Pi's name rules (warnings).
+    skills_root = root / "skills"
+    if skills_root.is_dir():
+        for plugin_dir in sorted(p for p in skills_root.iterdir() if p.is_dir()):
+            for skill_dir in sorted(p for p in plugin_dir.iterdir() if p.is_dir()):
+                if not (skill_dir / "SKILL.md").is_file():
+                    report.add(
+                        severity="error",
+                        harness="pi",
+                        path=skill_dir,
+                        message="skill directory has no SKILL.md",
+                        remediation=fix,
+                    )
     for skill_md in sorted((root / "skills").glob("*/*/SKILL.md")):
         fm, _ = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
         name = fm.get("name")

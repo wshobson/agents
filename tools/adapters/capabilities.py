@@ -182,8 +182,9 @@ CAPABILITIES: dict[str, Capability] = {
         harness_id="pi",
         display_name="Pi",
         skills_native=True,  # Agent Skills standard; recursive discovery under skills/
-        agents_native=False,  # no subagents in pi core; the reference `subagent` example
-        # extension (examples/extensions/subagent/) reads agents/<name>.md files
+        # Pi core has no subagents. The reference `subagent` example extension
+        # (examples/extensions/subagent/) reads agents/<name>.md files.
+        agents_native=False,  # only with the subagent extension
         commands_native=True,  # prompt templates: prompts/<name>.md -> /name
         plugin_marketplace=False,  # packages install from npm, git, or a local path; no registry
         parallel_agents=True,  # the subagent extension runs tasks in parallel

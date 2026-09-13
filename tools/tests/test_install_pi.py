@@ -66,15 +66,21 @@ def test_install_force_replaces_only_symlink_conflicts(tmp_path: Path):
     _write_generated_pi(repo_root)
     (config_dir / "agents").mkdir(parents=True)
     (config_dir / "agents" / "demo__greeter.md").symlink_to(tmp_path / "elsewhere.md")
+    (config_dir / "prompts").mkdir(parents=True)
+    (config_dir / "prompts" / "demo__say-hi.md").write_text("user file\n")
 
     without_force = install(repo_root=repo_root, config_dir=config_dir)
     with_force = install(repo_root=repo_root, config_dir=config_dir, force=True)
 
-    assert not without_force.ok and "FORCE=1" in without_force.errors[0]
-    assert with_force.ok
+    assert not without_force.ok
+    assert any("FORCE=1" in e for e in without_force.errors)
     assert (config_dir / "agents" / "demo__greeter.md").resolve() == (
         repo_root / ".pi" / "agents" / "demo__greeter.md"
     ).resolve()
+    # Force replaces the symlink conflict, but a real file is still refused.
+    assert not with_force.ok
+    assert any("not a symlink" in e for e in with_force.errors)
+    assert (config_dir / "prompts" / "demo__say-hi.md").read_text() == "user file\n"
 
 
 def test_uninstall_removes_only_repo_owned_symlinks(tmp_path: Path):

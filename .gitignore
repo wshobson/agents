@@ -37,7 +37,7 @@ node_modules
 #   .cursor/                              curated Cursor rules
 #   .agents/plugins/marketplace.json      Codex marketplace registry
 #   plugins/*/.codex-plugin/plugin.json   per-plugin Codex manifest (tracked under plugins/)
-# OpenCode and Antigravity install via clone + `make` (their transformed trees below stay ignored).
+# OpenCode, Antigravity, and Pi install via clone + `make` (their transformed trees below stay ignored).
 
 # Codex CLI — transformed skills/agents (local generation; the marketplace reads source)
 .codex/

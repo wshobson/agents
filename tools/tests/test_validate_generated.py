@@ -654,6 +654,16 @@ class TestPiValidator:
         validate_pi(report)
         assert any("description" in f.message for f in report.errors())
 
+    def test_skill_dir_without_skill_md_is_error(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "skills" / "demo" / "empty").mkdir(parents=True)
+        report = Report()
+        validate_pi(report)
+        assert any("SKILL.md" in f.message for f in report.errors())
+
     def test_skill_name_pattern_violation_is_warning(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ):
