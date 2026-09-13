@@ -20,15 +20,15 @@ UV_TOOLS := uv run $(EVAL_PROJECT) python
 # ruff and ty config lives. ty skips tools/yt-design-extractor/ because that tool
 # imports optional OCR dependencies installed only by `make install-ocr`.
 RUFF_PATHS := ../../tools/ src/plugin_eval/
-TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/check_agent_name_collisions.py ../../tools/tests/ src/plugin_eval/
+TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/install_pi.py ../../tools/check_agent_name_collisions.py ../../tools/tests/ src/plugin_eval/
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity validate garden lint format test smoke-test
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity install-pi uninstall-pi validate garden lint format test smoke-test
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
 	@echo "================================================="
 	@echo ""
-	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Antigravity):"
+	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Antigravity / Pi):"
 	@echo "  make generate HARNESS=<h> [PLUGIN=<p>]           Generate per-harness artifacts (defaults to all plugins)"
 	@echo "  make generate-all                                Generate for ALL harnesses + ALL plugins"
 	@echo "  make clean-generated [HARNESS=<h>]               Remove generated artifacts"
@@ -38,6 +38,8 @@ help:
 	@echo "  make uninstall-copilot                           Remove repo-owned Copilot symlinks"
 	@echo "  make install-antigravity [FORCE=1]               Symlink Antigravity plugins into global config"
 	@echo "  make uninstall-antigravity                       Remove repo-owned Antigravity symlinks"
+	@echo "  make install-pi [FORCE=1]                        Symlink Pi skills, prompts, and agents into ~/.pi/agent"
+	@echo "  make uninstall-pi                                Remove repo-owned Pi symlinks"
 	@echo "  make validate [HARNESS=<h>] [STRICT=1]           Structural validation of generated artifacts"
 	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
 	@echo "  make lint                                        ruff + ty, exactly as CI runs them"
@@ -166,7 +168,7 @@ clean:
 #   make generate-all
 #   make clean-generated HARNESS=opencode
 
-HARNESSES := codex copilot cursor opencode antigravity
+HARNESSES := codex copilot cursor opencode antigravity pi
 
 generate:
 ifndef HARNESS
@@ -220,11 +222,11 @@ test:
 	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/ --ignore=tools/tests/test_cli_smoke.py
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
-# of opencode / agy / codex / claude are on PATH. Per-CLI tests skip gracefully
+# of opencode / agy / codex / claude / pi are on PATH. Per-CLI tests skip gracefully
 # when the binary is missing — so local devs only exercise what they have installed.
-# CI installs OpenCode + Antigravity + Codex and turns those skips into hard requirements.
+# CI installs OpenCode + Antigravity + Codex + Pi and turns those skips into hard requirements.
 smoke-test:
-	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d .antigravity ]; then \
+	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d .antigravity ] || [ ! -d .pi ]; then \
 		echo "Generating harness artifacts first..."; \
 		$(MAKE) generate-all; \
 	fi
@@ -259,3 +261,10 @@ install-antigravity:
 
 uninstall-antigravity:
 	$(UV_TOOLS) tools/install_antigravity.py uninstall
+
+install-pi:
+	$(UV_TOOLS) $(GENERATE) --harness pi --all --prune
+	$(UV_TOOLS) tools/install_pi.py install $(if $(filter 1 true TRUE yes YES,$(FORCE)),--force)
+
+uninstall-pi:
+	$(UV_TOOLS) tools/install_pi.py uninstall

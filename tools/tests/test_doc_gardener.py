@@ -118,6 +118,37 @@ class TestStaleArtifacts:
 
         assert [f for f in report.findings if f.kind == "opencode-skill-id-collision"] == []
 
+    def test_stale_pi_artifacts_are_reported(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        import os
+        import time
+
+        _patch_paths(monkeypatch, tmp_path)
+
+        src_skill = tmp_path / "plugins" / "demo" / "skills" / "hello" / "SKILL.md"
+        src_cmd = tmp_path / "plugins" / "demo" / "commands" / "say-hi.md"
+        src_agent = tmp_path / "plugins" / "demo" / "agents" / "greeter.md"
+        gen_skill = tmp_path / ".pi" / "skills" / "demo" / "hello" / "SKILL.md"
+        gen_cmd = tmp_path / ".pi" / "prompts" / "demo__say-hi.md"
+        gen_agent = tmp_path / ".pi" / "agents" / "demo__greeter.md"
+        for p in (src_skill, src_cmd, src_agent, gen_skill, gen_cmd, gen_agent):
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text("x\n")
+        old = time.time() - 100
+        for gen in (gen_skill, gen_cmd, gen_agent):
+            os.utime(gen, (old, old))  # generated files are older than their sources
+
+        report = Report()
+        check_stale_artifacts(report)
+
+        stale = sorted(
+            str(f.path.relative_to(tmp_path)) for f in report.findings if f.kind == "STALE_ARTIFACT"
+        )
+        assert stale == [
+            ".pi/agents/demo__greeter.md",
+            ".pi/prompts/demo__say-hi.md",
+            ".pi/skills/demo/hello/SKILL.md",
+        ]
+
 
 # ── Context file size ────────────────────────────────────────────────────────
 

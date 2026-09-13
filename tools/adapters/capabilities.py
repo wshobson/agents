@@ -178,6 +178,36 @@ CAPABILITIES: dict[str, Capability] = {
             "inlined rather than file-injected."
         ),
     ),
+    "pi": Capability(
+        harness_id="pi",
+        display_name="Pi",
+        skills_native=True,  # Agent Skills standard; recursive discovery under skills/
+        # Pi core has no subagents. The reference `subagent` example extension
+        # (examples/extensions/subagent/) reads agents/<name>.md files.
+        agents_native=False,  # only with the subagent extension
+        commands_native=True,  # prompt templates: prompts/<name>.md -> /name
+        plugin_marketplace=False,  # packages install from npm, git, or a local path; no registry
+        parallel_agents=True,  # the subagent extension runs tasks in parallel
+        tool_allowlist_per_agent=True,  # extension honors `tools:` in agent frontmatter
+        todowrite=False,
+        task_spawn=False,  # `subagent` tool exists only with the extension loaded
+        mcp_servers=False,  # only via an extension such as pi-mcp-adapter
+        hooks=True,  # TypeScript extensions subscribe to lifecycle events
+        context_file_name="AGENTS.md",
+        context_file_max_lines=_CONTEXT_LINES_CAP,
+        skill_body_max_bytes=_NO_CAP,
+        tool_name_case="lowercase",
+        bare_model_aliases=False,
+        notes=(
+            "Emits a gitignored .pi/ tree that is both Pi's project-local config dir and a "
+            "valid Pi package: skills/<plugin>/<skill>/SKILL.md (recursive discovery, bare "
+            "names), prompts/<plugin>__<cmd>.md (prompt templates, flat so command stems are "
+            "namespaced), agents/<plugin>__<agent>.md (reference subagent-extension format: "
+            "name, description, tools, model; body is the system prompt). Verified against "
+            "pi 0.85.1: symlinked skills and prompts are discovered, `/name args` and "
+            "`/skill:name` expand in --mode json before any model call."
+        ),
+    ),
 }
 
 
@@ -251,6 +281,19 @@ TOOL_NAME_MAPS: dict[str, dict[str, str]] = {
         "Agent": "invoke_subagent",
         "Task": "invoke_subagent",
     },
+    # pi 0.85.1 built-in tools: read, write, edit, bash, plus grep, find, ls, ask_question.
+    # WebFetch/WebSearch/TodoWrite have no built-in equivalent and pass through unchanged.
+    # `subagent` is the tool the reference subagent extension registers.
+    "pi": {
+        "Read": "read",
+        "Edit": "edit",
+        "Write": "write",
+        "Bash": "bash",
+        "Grep": "grep",
+        "Glob": "find",
+        "Agent": "subagent",
+        "Task": "subagent",
+    },
 }
 
 
@@ -305,6 +348,16 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
         "opus": "pro",
         "sonnet": "pro",
         "haiku": "flash",
+        "inherit": "inherit",
+    },
+    # Pi models are `provider/id`. The direct anthropic provider resolves these ids in
+    # pi 0.85.1 (no "Model not found" warning). Same targets as OpenCode. `inherit` is
+    # kept literal: the adapter omits the `model:` field so the parent's model applies.
+    "pi": {
+        "fable": "anthropic/claude-fable-5",
+        "opus": "anthropic/claude-opus-4-8",
+        "sonnet": "anthropic/claude-sonnet-5",
+        "haiku": "anthropic/claude-haiku-4-5",
         "inherit": "inherit",
     },
 }

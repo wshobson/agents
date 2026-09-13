@@ -9,7 +9,11 @@ CI runners only exercise the tools they have. CI installs OpenCode + Antigravity
 (both are quick) and the corresponding test classes become required gates.
 
 No API keys needed: every command exercised here is local-only (`agent list`,
-`extensions validate`, `doctor`, `--version`).
+`extensions validate`, `doctor`, `--version`). The Pi tests are the one exception to
+"local-only", and they are still free: they set every Anthropic credential variable to
+an invalid value and point the base URL at a closed port, so Pi expands the slash command
+into the user message and the model call fails before any request is completed. The
+expanded text is the assertion, and no tokens are billed.
 """
 
 from __future__ import annotations
@@ -150,6 +154,108 @@ class TestAntigravitySmoke:
                     f"--- stdout ---\n{proc.stdout}\n--- stderr ---\n{proc.stderr}"
                 )
         assert not failures, "agy plugin validate failures:\n" + "\n".join(failures[:10])
+
+
+# ── Pi ───────────────────────────────────────────────────────────────────────
+
+
+def _pi_env(config_dir: Path) -> dict[str, str]:
+    """Offline, sandboxed, and guaranteed to fail before any tokens are billed."""
+    env = dict(os.environ)
+    env.update(
+        {
+            "PI_CODING_AGENT_DIR": str(config_dir),
+            "PI_OFFLINE": "1",
+            "PI_SKIP_VERSION_CHECK": "1",
+            # Pi consults ANTHROPIC_AUTH_TOKEN, then ANTHROPIC_OAUTH_TOKEN, then
+            # ANTHROPIC_API_KEY. All three must be invalid, or a developer's exported
+            # token would satisfy the model call and the sweeps would bill real tokens.
+            "ANTHROPIC_AUTH_TOKEN": "sk-ant-invalid-smoke-test",
+            "ANTHROPIC_OAUTH_TOKEN": "sk-ant-invalid-smoke-test",
+            "ANTHROPIC_API_KEY": "sk-ant-invalid-smoke-test",
+            # Pi also honors ANTHROPIC_BASE_URL. A developer pointed at a gateway that
+            # authenticates on its own would bill real tokens despite the invalid keys,
+            # so send the request to a closed port instead. Pi expands the template
+            # before it calls the model, so every assertion below still holds.
+            "ANTHROPIC_BASE_URL": "http://127.0.0.1:1",
+        }
+    )
+    return env
+
+
+def _pi_expand(message: str, env: dict[str, str]) -> str:
+    """Run pi from the repo root in json mode and return the first user message text.
+
+    Pi expands `/template args` and `/skill:name` into the user message before the
+    model call, and that call fails before any request is completed, so no tokens are
+    billed. The expanded text is the proof of discovery and costs nothing.
+    """
+    proc = _run(
+        [
+            "pi",
+            "--mode",
+            "json",
+            "--no-session",
+            "--approve",
+            "--model",
+            "anthropic/claude-haiku-4-5",
+            "-p",
+            message,
+        ],
+        cwd=WORKTREE,
+        env=env,
+        timeout=60,
+    )
+    for line in proc.stdout.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(event, dict):
+            continue
+        msg = event.get("message") if event.get("type") == "message_start" else None
+        if msg and msg.get("role") == "user":
+            parts = [c.get("text", "") for c in msg.get("content", []) if c.get("type") == "text"]
+            return "".join(parts)
+    raise AssertionError(
+        f"pi emitted no user message for {message!r} (rc={proc.returncode})\n"
+        f"--- stdout ---\n{proc.stdout[:2000]}\n--- stderr ---\n{proc.stderr[:2000]}"
+    )
+
+
+@pytest.mark.skipif(not _has("pi"), reason="pi CLI not installed")
+@pytest.mark.skipif(
+    not (WORKTREE / ".pi").is_dir(),
+    reason="Pi artifacts not generated — run `make generate HARNESS=pi`",
+)
+class TestPiSmoke:
+    @pytest.fixture(scope="class")
+    def pi_env(self, tmp_path_factory) -> dict[str, str]:
+        return _pi_env(tmp_path_factory.mktemp("pi-config"))
+
+    def test_unknown_template_stays_literal(self, pi_env: dict[str, str]):
+        """Negative control: the expansion assertions below cannot pass vacuously."""
+        text = _pi_expand("/no-such-plugin__no-such-command smoke", pi_env)
+        assert text.startswith("/no-such-plugin__no-such-command")
+
+    def test_pi_expands_every_generated_prompt_template(self, pi_env: dict[str, str]):
+        failures = []
+        for prompt_md in sorted((WORKTREE / ".pi" / "prompts").glob("*.md")):
+            text = _pi_expand(f"/{prompt_md.stem} smoke", pi_env)
+            if text.startswith("/"):
+                failures.append(prompt_md.name)
+        assert not failures, (
+            f"pi did not expand {len(failures)} prompt template(s): {failures[:10]}"
+        )
+
+    def test_pi_expands_every_generated_skill(self, pi_env: dict[str, str]):
+        failures = []
+        for skill_md in sorted((WORKTREE / ".pi" / "skills").glob("*/*/SKILL.md")):
+            name = skill_md.parent.name
+            text = _pi_expand(f"/skill:{name}", pi_env)
+            if not text.startswith(f'<skill name="{name}"'):
+                failures.append(name)
+        assert not failures, f"pi did not load {len(failures)} skill(s): {failures[:10]}"
 
 
 # ── Codex CLI ────────────────────────────────────────────────────────────────

@@ -14,7 +14,7 @@ body:
         Read [docs/authoring.md](https://github.com/wshobson/agents/blob/main/docs/authoring.md)
         before submitting — it covers the portable-content style guide that
         keeps your component working across Claude Code, Codex CLI, Cursor,
-        OpenCode, and the Antigravity CLI.
+        OpenCode, the Antigravity CLI, and Pi.
 
         **Important**: Only propose components for legitimate, constructive
         use cases. Proposals for malicious or harmful capabilities will be
@@ -118,9 +118,9 @@ body:
         (e.g., TodoWrite, MCP, parallel Task tool)? How does it degrade
         gracefully on harnesses without those features?
       placeholder: |
-        - Works on all 5 harnesses; uses only file ops and shell commands.
+        - Works on all 6 harnesses; uses only file ops and shell commands.
         - OR: uses `Task` (Claude/Cursor/OpenCode/Antigravity), degrades to
-          sequential execution on Codex.
+          sequential execution on Codex and needs an extension on Pi.
     validations:
       required: false
 

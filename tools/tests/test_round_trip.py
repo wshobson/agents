@@ -370,6 +370,57 @@ class TestAntigravityRoundTrip:
         assert not problems, "Antigravity TOML issues:\n  " + "\n  ".join(problems[:20])
 
 
+@pytest.mark.skipif(
+    not (WORKTREE / ".pi").is_dir(),
+    reason="Pi artifacts not generated (run `make generate HARNESS=pi` first)",
+)
+class TestPiRoundTrip:
+    def test_pi_skill_count_matches_source(self):
+        n = len(list((WORKTREE / ".pi" / "skills").glob("*/*/SKILL.md")))
+        assert n == _source_skill_count(), (
+            f"skill count mismatch: source={_source_skill_count()} pi={n}"
+        )
+
+    def test_pi_prompt_count_matches_source_commands(self):
+        n = len(list((WORKTREE / ".pi" / "prompts").glob("*.md")))
+        assert n == _source_command_count(), (
+            f"prompt count mismatch: source={_source_command_count()} pi={n}"
+        )
+
+    def test_pi_agent_count_matches_source(self):
+        n = len(list((WORKTREE / ".pi" / "agents").glob("*.md")))
+        assert n == _source_agent_count(), (
+            f"agent count mismatch: source={_source_agent_count()} pi={n}"
+        )
+
+    def test_every_pi_prompt_maps_back_to_a_source_command(self):
+        from tools.adapters.base import PLUGINS_DIR
+
+        problems = []
+        for md in (WORKTREE / ".pi" / "prompts").glob("*.md"):
+            plugin, _, cmd = md.stem.partition("__")
+            if not (PLUGINS_DIR / plugin / "commands" / f"{cmd}.md").is_file():
+                problems.append(md.name)
+        assert not problems, "Pi prompts with no source command:\n  " + "\n  ".join(problems[:20])
+
+    def test_every_pi_agent_name_is_unique_and_model_is_provider_qualified(self):
+        seen: dict[str, str] = {}
+        problems = []
+        for agent_md in (WORKTREE / ".pi" / "agents").glob("*.md"):
+            fm, _ = parse_frontmatter(agent_md.read_text())
+            name = fm.get("name")
+            if not name:
+                problems.append(f"{agent_md.name}: missing name")
+                continue
+            if name in seen:
+                problems.append(f"{agent_md.name}: name {name!r} also in {seen[name]}")
+            seen[name] = agent_md.name
+            model = fm.get("model")
+            if model is not None and "/" not in model:
+                problems.append(f"{agent_md.name}: model {model!r} is not provider/id")
+        assert not problems, "Pi agent issues:\n  " + "\n  ".join(problems[:20])
+
+
 # ── Native-install manifests (always run; these are committed source) ─────────
 
 
