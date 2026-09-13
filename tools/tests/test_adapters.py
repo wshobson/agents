@@ -1569,6 +1569,20 @@ class TestFrontmatterYamlSafety:
             assert fm["argument-hint"] == _BRACKET_HINT
             assert fm["version"] == "+1"
 
+    def test_pi_emits_parseable_frontmatter(self, tmp_path: Path, output_root: Path):
+        from tools.adapters.pi import PiAdapter
+
+        plugin = _ambiguous_skill_plugin(tmp_path)
+        result = PiAdapter(output_root=output_root).emit_plugin(plugin)
+
+        emitted = [p for p in result.written if p.suffix == ".md"]
+        assert emitted
+        for path in emitted:
+            fm = _safe_load_frontmatter(path)
+            assert fm["description"] == _COLON_DESCRIPTION
+            assert fm["argument-hint"] == _BRACKET_HINT
+            assert fm["version"] == "+1"
+
     def test_yaml_scalar_round_trips_implicit_numbers(self):
         for value in _IMPLICIT_NUMBERS:
             loaded = yaml.safe_load(f"k: {yaml_scalar(value)}")["k"]
@@ -1589,16 +1603,17 @@ class TestFrontmatterYamlSafety:
         assert loaded["tools"] == list(_FLOW_DELIMITER_ITEMS)
 
     def test_every_frontmatter_emitter_round_trips_hostile_values(self):
-        """The four adapters that share `yaml_scalar` must agree on every hostile shape.
+        """The adapters that share `yaml_scalar` must agree on every hostile shape.
 
         `yaml_scalar` is the single quoting rule, so a value it mishandles is wrong in
-        all four outputs at once. Antigravity additionally renders lists as flow
+        every output at once. Antigravity additionally renders lists as flow
         sequences, which is the one place an adapter adds a rule of its own.
         """
         from tools.adapters.antigravity import _antigravity_frontmatter
         from tools.adapters.codex import _frontmatter_block
         from tools.adapters.copilot import _copilot_frontmatter
         from tools.adapters.opencode import _opencode_frontmatter
+        from tools.adapters.pi import _pi_frontmatter
 
         values = (
             _COLON_DESCRIPTION,
@@ -1617,6 +1632,7 @@ class TestFrontmatterYamlSafety:
             ("codex", _frontmatter_block),
             ("copilot", _copilot_frontmatter),
             ("opencode", _opencode_frontmatter),
+            ("pi", _pi_frontmatter),
         ):
             block = emitter(fm)
             body = block[len("---\n") : -len("\n---")]
@@ -1911,3 +1927,198 @@ class TestPiCapabilities:
             "Agent": "subagent",
             "Task": "subagent",
         }
+
+
+# ── Pi adapter ───────────────────────────────────────────────────────────────
+
+
+class TestPiAdapter:
+    def test_emits_skill_under_plugin_dir_with_bare_name(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        from tools.adapters.pi import PiAdapter
+
+        PiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        skill_md = output_root / ".pi" / "skills" / "demo" / "hello" / "SKILL.md"
+        assert skill_md.is_file()
+        fm, body = parse_frontmatter(skill_md.read_text())
+        assert fm["name"] == "hello"
+        assert fm["description"] == "Use when greeting users."
+        # Claude tool references are rewritten to lowercase Pi vocabulary.
+        assert "`Read`" not in body and "`Bash`" not in body
+
+    def test_mirrors_skill_support_files_and_skips_hidden(self, tmp_path: Path, output_root: Path):
+        from tools.adapters.pi import PiAdapter
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        skill = _make_skill(
+            plugin_dir,
+            "toolkit",
+            "name: toolkit\ndescription: Use when running the toolkit.",
+            "# Toolkit\n\nRun `scripts/preflight.sh`.\n",
+        )
+        (skill.dir / "references").mkdir()
+        (skill.dir / "references" / "notes.md").write_text("notes")
+        (skill.dir / "scripts").mkdir()
+        (skill.dir / "scripts" / "preflight.sh").write_text("#!/bin/sh\necho ok\n")
+        (skill.dir / "assets").mkdir()
+        (skill.dir / "assets" / "logo.png").write_bytes(b"\x89PNG\r\n")
+        (skill.dir / ".DS_Store").write_text("junk")
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
+        )
+
+        PiAdapter(output_root=output_root).emit_plugin(plugin)
+
+        root = output_root / ".pi" / "skills" / "demo" / "toolkit"
+        assert (root / "references" / "notes.md").is_file()
+        assert (root / "scripts" / "preflight.sh").is_file()
+        assert (root / "assets" / "logo.png").read_bytes() == b"\x89PNG\r\n"
+        assert not (root / ".DS_Store").exists()
+        assert (root / "SKILL.md").read_text().count("# Toolkit") == 1
+
+    def test_emits_prompt_template_with_namespaced_filename(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        from tools.adapters.pi import PiAdapter, pi_prompt_id
+
+        PiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        assert pi_prompt_id("demo", "say-hi") == "demo__say-hi"
+        prompt_md = output_root / ".pi" / "prompts" / "demo__say-hi.md"
+        assert prompt_md.is_file()
+        fm, body = parse_frontmatter(prompt_md.read_text())
+        assert fm["description"] == "Send a greeting"
+        assert fm["argument-hint"] == "<name>"
+        # Pi substitutes $ARGUMENTS itself; the body keeps it verbatim and adds no wrapper.
+        assert "$ARGUMENTS" in body
+        assert body.lstrip().startswith("# Say Hi")
+
+    def test_prompt_description_falls_back_to_title_cased_name(
+        self, tmp_path: Path, output_root: Path
+    ):
+        from tools.adapters.pi import PiAdapter
+        from tools.tests.conftest import _make_command
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        cmd = _make_command(plugin_dir, "tech-debt", "", "# Tech debt\n\nFind it.\n")
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, commands=[cmd]
+        )
+
+        PiAdapter(output_root=output_root).emit_plugin(plugin)
+
+        fm, _ = parse_frontmatter(
+            (output_root / ".pi" / "prompts" / "demo__tech-debt.md").read_text()
+        )
+        assert fm["description"] == "Tech Debt"
+        assert "argument-hint" not in fm
+
+    def test_emits_agent_in_subagent_extension_format(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        from tools.adapters.pi import PiAdapter, pi_agent_id
+
+        result = PiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        assert pi_agent_id("demo", "greeter") == "demo__greeter"
+        agent_md = output_root / ".pi" / "agents" / "demo__greeter.md"
+        assert agent_md.is_file()
+        fm, body = parse_frontmatter(agent_md.read_text())
+        assert fm["name"] == "greeter"  # source frontmatter name is kept
+        assert fm["description"] == "Use when delegating greetings."
+        assert fm["model"] == "anthropic/claude-opus-4-8"
+        assert fm["tools"] == "read, grep"
+        assert "color" not in fm
+        assert body.lstrip().startswith("# Greeter agent")
+        assert result.warnings == []
+
+    def test_agent_omits_model_when_inherit_and_name_falls_back_to_id(
+        self, tmp_path: Path, output_root: Path
+    ):
+        from tools.adapters.pi import PiAdapter
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(plugin_dir, "helper", "description: Use when helping.", "# Helper\n")
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+
+        PiAdapter(output_root=output_root).emit_plugin(plugin)
+
+        fm, _ = parse_frontmatter((output_root / ".pi" / "agents" / "demo__helper.md").read_text())
+        assert fm["name"] == "demo__helper"
+        assert "model" not in fm
+        assert "tools" not in fm  # no source `tools:` means inherit every tool
+
+    def test_locked_agent_gets_read_only_tool_set(self, tmp_path: Path, output_root: Path):
+        from tools.adapters.pi import PiAdapter
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "locked",
+            "name: locked\ndescription: Use when reviewing.\ntools: []",
+            "# Locked\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+
+        PiAdapter(output_root=output_root).emit_plugin(plugin)
+
+        fm, _ = parse_frontmatter((output_root / ".pi" / "agents" / "demo__locked.md").read_text())
+        assert fm["tools"] == "read, grep, find, ls"
+
+    def test_unmapped_tools_pass_through_and_unknown_model_warns(
+        self, tmp_path: Path, output_root: Path
+    ):
+        from tools.adapters.pi import PiAdapter
+        from tools.tests.conftest import _make_agent
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        agent = _make_agent(
+            plugin_dir,
+            "webby",
+            "name: webby\ndescription: Use when browsing.\nmodel: gpt-9\ntools: WebFetch, mcp__x__y, Glob",
+            "# Webby\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, agents=[agent]
+        )
+
+        result = PiAdapter(output_root=output_root).emit_plugin(plugin)
+
+        fm, _ = parse_frontmatter((output_root / ".pi" / "agents" / "demo__webby.md").read_text())
+        assert fm["tools"] == "WebFetch, mcp__x__y, find"
+        assert "model" not in fm  # unknown alias falls back to inherit, which is omitted
+        assert any("gpt-9" in w for w in result.warnings)
+
+    def test_emit_result_lists_every_written_file(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        from tools.adapters.pi import PiAdapter
+
+        result = PiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        rel = sorted(str(p.relative_to(output_root)) for p in result.written)
+        assert rel == [
+            ".pi/agents/demo__greeter.md",
+            ".pi/prompts/demo__say-hi.md",
+            ".pi/skills/demo/hello/SKILL.md",
+        ]
