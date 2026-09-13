@@ -178,6 +178,37 @@ else
     fail "No receipt available to tamper with"
 fi
 
+# --- Tests 9-11: hooks.json commands with the payload on stdin --------------
+# Claude Code runs the command string from hooks.json with the event JSON on
+# stdin and sets no TOOL_NAME variable. Run the exact command the same way.
+PLUGIN_ROOT="$(cd .. && pwd)"
+hook_cmd() { python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hooks"][sys.argv[2]][0]["hooks"][0]["command"])' "$PLUGIN_ROOT/hooks/hooks.json" "$1"; }
+PRE_CMD="$(hook_cmd PreToolUse)"
+POST_CMD="$(hook_cmd PostToolUse)"
+
+echo ""
+echo "=== Test 9: hooks.json PreToolUse permits Read from a stdin payload ==="
+CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" PROTECT_MCP_POLICY=fixtures/test-policy.cedar \
+    bash -c "$PRE_CMD" < fixtures/pretool-allow-read.json >/dev/null 2>&1
+check_exit $? 0 "hooks.json PreToolUse allows Read (stdin payload)"
+
+echo ""
+echo "=== Test 10: hooks.json PreToolUse denies Write from a stdin payload ==="
+CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" PROTECT_MCP_POLICY=fixtures/test-policy.cedar \
+    bash -c "$PRE_CMD" < fixtures/pretool-deny-write.json >/dev/null 2>&1
+check_exit $? 2 "hooks.json PreToolUse denies Write (stdin payload)"
+
+echo ""
+echo "=== Test 11: hooks.json PostToolUse signs a receipt from a stdin payload ==="
+HOOK_RECEIPTS="$WORKDIR/hook-receipts/"
+CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" PROTECT_MCP_RECEIPTS="$HOOK_RECEIPTS" PROTECT_MCP_KEY="$KEY" \
+    bash -c "$POST_CMD" < fixtures/posttool-signing-input.json >/dev/null 2>&1
+if [ -s "$HOOK_RECEIPTS/receipts.jsonl" ] && grep -q '"Read"' "$HOOK_RECEIPTS/receipts.jsonl"; then
+    pass "hooks.json PostToolUse wrote a receipt naming the Read tool"
+else
+    fail "hooks.json PostToolUse did not write a receipt for Read"
+fi
+
 # --- Summary ----------------------------------------------------------------
 echo ""
 echo "─────────────────────────────────────────────"

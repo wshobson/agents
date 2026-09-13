@@ -30,7 +30,7 @@ test/
 ```
 
 Requires `node` (>= 18), `npx`, and `python3`. Fetches `protect-mcp` and
-`@veritasacta/verify` from npm on first run. Runs eight tests:
+`@veritasacta/verify` from npm on first run. Runs eleven tests:
 
 | # | Scenario | Expected exit |
 |---|----------|----------------|
@@ -42,6 +42,9 @@ Requires `node` (>= 18), `npx`, and `python3`. Fetches `protect-mcp` and
 | 6 | Produced receipt conforms to the schema        | 0 (valid)   |
 | 7 | `@veritasacta/verify` accepts the receipt      | 0 (valid)   |
 | 8 | Tampered receipt is rejected                   | 1 (tampered)|
+| 9 | `hooks.json` PreToolUse on `Read`, payload on stdin  | 0 (permit)  |
+| 10 | `hooks.json` PreToolUse on `Write`, payload on stdin | 2 (forbid)  |
+| 11 | `hooks.json` PostToolUse, payload on stdin           | receipt written |
 
 Test 8 is the critical regression guard: flipping the `decision` field in a
 signed receipt must invalidate the Ed25519 signature, so `@veritasacta/verify`

@@ -43,7 +43,7 @@ Add `protect-mcp` to your Claude Code project:
 # 1. Install the plugin (adds hooks + skill to your project)
 claude plugin install wshobson/agents/protect-mcp
 
-# 2. Configure hooks in .claude/settings.json (see below)
+# 2. Create ./protect.cedar (see below). The plugin installs the hooks.
 
 # 3. Start the receipt-signing server (runs locally, no external calls)
 npx protect-mcp@latest serve --enforce
@@ -54,7 +54,8 @@ npx protect-mcp@latest serve --enforce
 
 ## Hook Configuration
 
-Add the following to your project's `.claude/settings.json`:
+Installing the plugin adds both hooks from `hooks/hooks.json`. Each hook runs a
+script bundled with the plugin:
 
 ```json
 {
@@ -62,24 +63,29 @@ Add the following to your project's `.claude/settings.json`:
     "PreToolUse": [
       {
         "matcher": ".*",
-        "hook": {
-          "type": "command",
-          "command": "npx protect-mcp@latest evaluate --policy ./protect.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" || exit 2"
-        }
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/evaluate.sh" }
+        ]
       }
     ],
     "PostToolUse": [
       {
         "matcher": ".*",
-        "hook": {
-          "type": "command",
-          "command": "npx protect-mcp@latest sign --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --output \"$TOOL_OUTPUT\" --receipts ./receipts/"
-        }
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/sign.sh" }
+        ]
       }
     ]
   }
 }
 ```
+
+Claude Code passes the hook event to the command as JSON on stdin and does not
+set `TOOL_NAME` or `TOOL_INPUT` variables. The scripts read `tool_name` and
+`tool_input` from that payload and pass them to `protect-mcp` as flags. Set
+`PROTECT_MCP_POLICY`, `PROTECT_MCP_RECEIPTS`, and `PROTECT_MCP_KEY` to change the
+default paths. When the policy file is missing, the PreToolUse hook prints a
+warning to stderr and allows the call.
 
 ### What each hook does
 
