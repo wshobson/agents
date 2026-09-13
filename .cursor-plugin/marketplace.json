@@ -775,7 +775,7 @@
     {
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 receipts independently verifiable offline.",
       "author": {
         "name": "Tom Farley",
@@ -819,7 +819,7 @@
     {
       "name": "review-agent-governance",
       "source": "./plugins/review-agent-governance",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Require a human approval signal before an AI agent can post PR reviews, comments, merges, or writes to CI config. Cedar-gated, receipt-signed, designed for the Hermes-style failure mode where a review bot posts without oversight.",
       "author": {
         "name": "Tom Farley",

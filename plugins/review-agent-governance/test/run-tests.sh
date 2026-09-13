@@ -45,5 +45,27 @@ else
   echo "SKIP: 'cedar' CLI not found — Part B skipped (Part A still gates)."
 fi
 
+echo "=== Part C: hooks.json commands with the payload on stdin (if node present) ==="
+# Claude Code runs the command from hooks.json with the event JSON on stdin and
+# sets no TOOL_NAME variable. Run the exact command string the same way.
+if command -v node >/dev/null 2>&1 && command -v npx >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1; then
+  PLUGIN_ROOT="$(cd .. && pwd)"
+  PRE_CMD="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hooks"]["PreToolUse"][0]["hooks"][0]["command"])' "$PLUGIN_ROOT/hooks/hooks.json")"
+  WORKDIR="$(mktemp -d)"; trap 'rm -rf "$WORKDIR"' EXIT
+
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" REVIEW_GOVERNANCE_POLICY="$POLICY" REVIEW_APPROVAL_FLAG="$WORKDIR/absent" \
+    bash -c "$PRE_CMD" < fixtures/pretool-allow-read.json >/dev/null 2>&1
+  [ $? -eq 0 ] && pass "hooks.json PreToolUse allows Read (stdin payload)" || fail "hooks.json PreToolUse blocked Read"
+
+  # A deny case is not tested here: the shipped policy uses an entity shape that
+  # protect-mcp 0.7 does not evaluate, so it permits everything. See #705.
+  touch "$WORKDIR/approved"
+  CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" REVIEW_GOVERNANCE_POLICY="$WORKDIR/missing.cedar" REVIEW_APPROVAL_FLAG="$WORKDIR/approved" \
+    bash -c "$PRE_CMD" < fixtures/pretool-allow-read.json >/dev/null 2>&1
+  [ $? -eq 0 ] && pass "approval flag short-circuits before the policy is read" || fail "approval flag did not short-circuit"
+else
+  echo "SKIP: node, npx, or python3 not found. Part C skipped."
+fi
+
 echo ""; echo "Passed: $PASS, Failed: $FAIL"
 [ "$FAIL" -eq 0 ] || exit 1

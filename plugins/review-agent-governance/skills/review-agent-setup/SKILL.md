@@ -148,34 +148,16 @@ that no review action bypassed the human gate.
 
 ## Composing with protect-mcp
 
-If both plugins are installed, run them side by side:
+If both plugins are installed, each plugin's `hooks/hooks.json` registers its
+own PreToolUse hook, and Claude Code runs both on every tool call:
 
 ```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "npx protect-mcp@0.7.4 evaluate --policy ./protect.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
-          }
-        ]
-      },
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f ./.review-approved ]; then exit 0; fi; npx protect-mcp@0.7.4 evaluate --policy ./review-governance.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
-          }
-        ]
-      }
-    ]
-  }
-}
+{ "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/evaluate.sh" }
 ```
+
+Each `evaluate.sh` reads `tool_name` and `tool_input` from the hook payload on
+stdin (Claude Code sets no `TOOL_NAME` variable) and evaluates its own policy:
+`./protect.cedar` for protect-mcp and `./review-governance.cedar` here.
 
 Both hooks must pass for the tool call to proceed. Cedar deny in either
 policy blocks it.
