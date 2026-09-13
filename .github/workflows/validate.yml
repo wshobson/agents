@@ -236,8 +236,12 @@ jobs:
           bun-version: latest
 
       - name: Install OpenCode CLI
+        # Pinned. Without a version the installer asks api.github.com for the
+        # latest release, and shared runners hit the unauthenticated rate limit
+        # ("Failed to fetch version information"). Bump alongside the OpenCode
+        # release notes when the adapter needs a newer CLI.
         run: |
-          curl -fsSL https://opencode.ai/install | bash
+          curl -fsSL https://opencode.ai/install | bash -s -- --version 1.18.30
           echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
 
       - name: Install Antigravity CLI
