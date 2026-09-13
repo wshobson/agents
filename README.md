@@ -7,7 +7,7 @@
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Antigravity CLI](https://img.shields.io/badge/Antigravity%20CLI-supported-blue)](docs/harnesses.md) [![Copilot](https://img.shields.io/badge/Copilot-supported-lightgrey)](docs/harnesses.md) [![Pi](https://img.shields.io/badge/Pi-supported-orange)](docs/harnesses.md)
 
 > [!NOTE]
-> One source-of-truth (`plugins/`), six harnesses. Each harness gets idiomatic,
+> One source-of-truth (`plugins/`), six target harnesses. Each harness gets idiomatic,
 > harness-native artifacts — not lowest-common-denominator translations.
 > See [docs/harnesses.md](docs/harnesses.md) for the capability matrix.
 

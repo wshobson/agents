@@ -11,8 +11,9 @@ CI runners only exercise the tools they have. CI installs OpenCode + Antigravity
 No API keys needed: every command exercised here is local-only (`agent list`,
 `extensions validate`, `doctor`, `--version`). The Pi tests are the one exception to
 "local-only", and they are still free: they set every Anthropic credential variable to
-an invalid value, so Pi expands the slash command into the user message and the model
-call then fails with a 401. The expanded text is the assertion, and no tokens are billed.
+an invalid value and point the base URL at a closed port, so Pi expands the slash command
+into the user message and the model call fails before any request is completed. The
+expanded text is the assertion, and no tokens are billed.
 """
 
 from __future__ import annotations
@@ -186,8 +187,8 @@ def _pi_expand(message: str, env: dict[str, str]) -> str:
     """Run pi from the repo root in json mode and return the first user message text.
 
     Pi expands `/template args` and `/skill:name` into the user message before the
-    model call; the invalid key then produces a 401. The expanded text is the proof
-    of discovery and costs nothing.
+    model call, and that call fails before any request is completed, so no tokens are
+    billed. The expanded text is the proof of discovery and costs nothing.
     """
     proc = _run(
         [

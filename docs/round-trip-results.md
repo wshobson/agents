@@ -14,7 +14,7 @@ load the generated artifacts and report what it found.
 | **Codex CLI** | 0.133.0 | ✅ pass (structural) | All 191 agent TOMLs parse via Python `tomllib`; AGENTS.md within budget (43 lines / 500 tokens) | Codex doctor surfaces no errors; deeper "did the model actually load the skill" requires interactive verification. |
 | **Cursor** | (editor-only) | n/a | n/a | No CLI; manual verification recipe below. |
 | **Copilot** | (structural) | ✅ pass | 191 agent profiles, 155 skills, 25 commands all validated | No CLI round-trip tool yet; structural validation via `make validate` passes. |
-| **Pi** | 0.85.1 | ✅ pass | 105 / 105 prompt templates and 183 / 183 skills expand | Expansion is checked in json mode with every Anthropic credential variable set to an invalid value, so the model call fails with a 401 and no tokens are billed. Runs in CI via `make smoke-test`. |
+| **Pi** | 0.85.1 | ✅ pass | 105 / 105 prompt templates and 183 / 183 skills expand | Expansion is checked in json mode with every Anthropic credential variable set to an invalid value and the base URL pointed at a closed port, so the model call fails before any request is completed and no tokens are billed. Runs in CI via `make smoke-test`. |
 | **gh skill** | gh 2.98.0 | ✅ pass (2026-09-01) | 183 / 183 source skills discovered; `gh skill publish --dry-run` passes | Discovery through the `plugins/{scope}/skills/*/SKILL.md` convention; installs by bare skill name. Runs in CI via `make smoke-test`. |
 | **npx skills** | skills 1.5.23 | ✅ pass (2026-09-01) | 183 / 183 source skills discovered | Flat skill names. From a generated checkout the listing also includes the gitignored harness trees. Runs in CI via `make smoke-test`. |
 
@@ -84,8 +84,9 @@ make generate HARNESS=pi
 make validate HARNESS=pi STRICT=1
 
 # Prove discovery without billing tokens. Pi expands `/template` and `/skill:name`
-# into the user message before it calls the model, and the invalid credentials below
-# turn that call into a 401. The expanded text in the json stream is the proof.
+# into the user message before it calls the model, and the invalid credentials and
+# closed-port base URL below make that call fail before any request is completed, so no
+# tokens are billed. The expanded text in the json stream is the proof.
 export PI_OFFLINE=1 PI_SKIP_VERSION_CHECK=1
 export ANTHROPIC_AUTH_TOKEN=sk-ant-invalid ANTHROPIC_OAUTH_TOKEN=sk-ant-invalid ANTHROPIC_API_KEY=sk-ant-invalid
 # Pi honors ANTHROPIC_BASE_URL too. A gateway that authenticates on its own would bill
