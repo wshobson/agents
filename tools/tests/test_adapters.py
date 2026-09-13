@@ -1865,3 +1865,49 @@ class TestStripClaudeToolRefs:
             assert "`read`" not in text, path
             assert "the `Read` tool" not in text, path
             assert "the Bash tool" not in text, path
+
+
+# ── Pi: capability matrix entries ────────────────────────────────────────────
+
+
+class TestPiCapabilities:
+    def test_pi_is_a_supported_harness(self):
+        from tools.adapters.capabilities import CAPABILITIES, supported_harnesses
+
+        assert "pi" in supported_harnesses()
+        cap = CAPABILITIES["pi"]
+        assert cap.display_name == "Pi"
+        assert cap.skills_native is True
+        assert cap.commands_native is True
+        assert cap.agents_native is False  # only via the reference `subagent` extension
+        assert cap.plugin_marketplace is False
+        assert cap.tool_name_case == "lowercase"
+        assert cap.context_file_name == "AGENTS.md"
+        assert cap.skill_body_max_bytes == 0
+
+    def test_pi_model_aliases_resolve_to_anthropic_ids(self):
+        from tools.adapters.capabilities import resolve_model
+
+        assert resolve_model("pi", "fable") == ("anthropic/claude-fable-5", None)
+        assert resolve_model("pi", "opus") == ("anthropic/claude-opus-4-8", None)
+        assert resolve_model("pi", "sonnet") == ("anthropic/claude-sonnet-5", None)
+        assert resolve_model("pi", "haiku") == ("anthropic/claude-haiku-4-5", None)
+        assert resolve_model("pi", "inherit") == ("inherit", None)
+        resolved, warning = resolve_model("pi", "gpt-9")
+        assert resolved == "inherit"
+        assert warning and "gpt-9" in warning
+
+    def test_pi_tool_map_uses_builtin_lowercase_names(self):
+        from tools.adapters.capabilities import TOOL_NAME_MAPS
+
+        m = TOOL_NAME_MAPS["pi"]
+        assert m == {
+            "Read": "read",
+            "Edit": "edit",
+            "Write": "write",
+            "Bash": "bash",
+            "Grep": "grep",
+            "Glob": "find",
+            "Agent": "subagent",
+            "Task": "subagent",
+        }
