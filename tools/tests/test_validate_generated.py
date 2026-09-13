@@ -700,6 +700,78 @@ class TestPiValidator:
         validate_pi(report)
         assert any("__" in f.message and f.path.name == "say-hi.md" for f in report.errors())
 
+    def test_prompt_filename_with_empty_plugin_is_error(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "prompts" / "__say-hi.md").write_text(
+            "---\ndescription: d\n---\n\nHi\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any(
+            f.path.name == "__say-hi.md" and "<plugin>__<command>" in f.message
+            for f in report.errors()
+        )
+
+    def test_prompt_filename_with_empty_command_is_error(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "prompts" / "demo__.md").write_text("---\ndescription: d\n---\n\nHi\n")
+        report = Report()
+        validate_pi(report)
+        assert any(
+            f.path.name == "demo__.md" and "<plugin>__<command>" in f.message
+            for f in report.errors()
+        )
+
+    def test_agent_filename_must_be_namespaced(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "agents" / "greeter.md").write_text(
+            "---\nname: greeter\ndescription: Use when greeting.\n---\n\nYou greet.\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any(
+            f.path.name == "greeter.md" and "<plugin>__<agent>" in f.message
+            for f in report.errors()
+        )
+
+    def test_agent_filename_with_empty_plugin_is_error(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "agents" / "__greeter.md").write_text(
+            "---\nname: greeter\ndescription: Use when greeting.\n---\n\nYou greet.\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any(
+            f.path.name == "__greeter.md" and "<plugin>__<agent>" in f.message
+            for f in report.errors()
+        )
+
+    def test_agent_filename_with_empty_agent_is_error(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "agents" / "demo__.md").write_text(
+            "---\nname: greeter\ndescription: Use when greeting.\n---\n\nYou greet.\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any(
+            f.path.name == "demo__.md" and "<plugin>__<agent>" in f.message for f in report.errors()
+        )
+
     def test_agent_missing_name_is_error(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_worktree(monkeypatch, tmp_path)
         _write_pi_tree(tmp_path)

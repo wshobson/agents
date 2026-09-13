@@ -67,7 +67,7 @@ rules to write portable content.
 | `TodoWrite` in body | no equivalent — leave as-is | no equivalent — leave as-is | works as-is | no equivalent | no equivalent |
 | Skill body > 8 KB | split into `references/details.md` | passed through | passed through | passed through | passed through |
 | Agent named `worker` | namespaced to `<plugin>__worker` | passed through | passed through | passed through (no `<plugin>__` namespacing — the plugin dir already scopes it) | namespaced to `<plugin>__worker.md` (the agents directory is flat) |
-| Slash command (`commands/<x>.md`) | converted to skill | passed through | rewritten to `.opencode/commands/` | TOML at `commands/<plugin>/<x>.toml`, body always inlined (never `@{path}`-injected) | prompt template at `prompts/<plugin>__<x>.md`, body verbatim, `$ARGUMENTS` substituted by Pi |
+| Slash command (`commands/<x>.md`) | converted to skill | passed through | rewritten to `.opencode/commands/` | TOML at `commands/<plugin>/<x>.toml`, body always inlined (never `@{path}`-injected) | prompt template at `prompts/<plugin>__<x>.md`, the body is copied as written once Claude tool references are rewritten to Pi names, `$ARGUMENTS` is left in place for Pi to substitute, and no wrapper text is added |
 
 ## Output paths (committed vs gitignored)
 
@@ -94,6 +94,11 @@ plugins/*/.codex-plugin/plugin.json    # per-plugin Codex manifest (skills: ./sk
 .copilot/agents/, .copilot/skills/, .copilot/commands/
 .pi/skills/, .pi/prompts/, .pi/agents/   # transformed Pi trees (skills are nested per plugin)
 ```
+
+`.pi/` is also Pi's project-local config directory, so you may keep your own files there such
+as `.pi/settings.json` or `.pi/extensions/*.ts`. The adapter owns only `.pi/skills`,
+`.pi/prompts` and `.pi/agents`. Cleaning and pruning stay inside those three subdirectories and
+leave everything else under `.pi/` alone.
 
 ## Native install
 

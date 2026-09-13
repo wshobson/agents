@@ -105,7 +105,7 @@ emits harness-native artifacts (not lowest-common-denominator translations):
 | **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
 | **Antigravity CLI** | `.antigravity/plugins/<p>/{skills/,agents/,commands/}` | Self-contained agy plugin per source plugin; model tier alias (`inherit`/`flash`/`pro`) |
 | **Copilot** | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to native Claude models |
-| **Pi** | `.pi/{skills/<plugin>/<skill>/,prompts/<plugin>__<cmd>.md,agents/<plugin>__<agent>.md}` | Skills discovered recursively; commands become prompt templates; agents use the reference subagent-extension format |
+| **Pi** | `.pi/{skills/<plugin>/<skill>/,prompts/<plugin>__<cmd>.md,agents/<plugin>__<agent>.md}` | Skills discovered recursively; commands become prompt templates; agents use the reference subagent-extension format; the generator owns only those three subdirectories, so your own files elsewhere under `.pi/` are left alone |
 
 ```bash
 make generate-all                        # all six

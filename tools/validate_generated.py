@@ -717,7 +717,8 @@ def validate_pi(report: Report) -> None:
 
     # 2. Prompt templates: namespaced filename, frontmatter with a description.
     for prompt_md in sorted((root / "prompts").glob("*.md")):
-        if "__" not in prompt_md.stem:
+        plugin_part, separator, command_part = prompt_md.stem.partition("__")
+        if not separator or not plugin_part or not command_part:
             report.add(
                 severity="error",
                 harness="pi",
@@ -728,8 +729,17 @@ def validate_pi(report: Report) -> None:
         fm, _ = parse_frontmatter(prompt_md.read_text(encoding="utf-8"))
         _check_nonempty_str_field(report, fm, "description", "pi", prompt_md, label="prompt")
 
-    # 3. Agents: name + description, model is provider/id when present.
+    # 3. Agents: namespaced filename, name + description, model is provider/id when present.
     for agent_md in sorted((root / "agents").glob("*.md")):
+        plugin_part, separator, agent_part = agent_md.stem.partition("__")
+        if not separator or not plugin_part or not agent_part:
+            report.add(
+                severity="error",
+                harness="pi",
+                path=agent_md,
+                message="agent filename is not `<plugin>__<agent>.md`",
+                remediation=fix,
+            )
         fm, _ = parse_frontmatter(agent_md.read_text(encoding="utf-8"))
         _check_nonempty_str_field(report, fm, "name", "pi", agent_md, label="agent")
         _check_nonempty_str_field(report, fm, "description", "pi", agent_md, label="agent")

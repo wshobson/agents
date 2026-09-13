@@ -2127,3 +2127,34 @@ class TestPiAdapter:
             ".pi/prompts/demo__say-hi.md",
             ".pi/skills/demo/hello/SKILL.md",
         ]
+
+    def test_clean_and_prune_leave_developer_pi_files_alone(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        """`.pi/` is also Pi's project-local config dir. Clean and prune own only
+        `.pi/skills`, `.pi/prompts` and `.pi/agents`, so a developer's own settings and
+        extensions survive a full regeneration."""
+        from tools.adapters.pi import PiAdapter
+        from tools.generate import clean_output, prune_orphans
+
+        PiAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        settings = output_root / ".pi" / "settings.json"
+        settings.write_text('{"trusted": true}\n')
+        extension = output_root / ".pi" / "extensions" / "keep.ts"
+        extension.parent.mkdir(parents=True, exist_ok=True)
+        extension.write_text("export const keep = 1;\n")
+        stale = output_root / ".pi" / "prompts" / "zz__stale.md"
+        stale.write_text("---\ndescription: gone\n---\n\nOld.\n")
+
+        clean_output("pi", output_root)
+        assert settings.is_file()
+        assert extension.is_file()
+
+        stale.parent.mkdir(parents=True, exist_ok=True)
+        stale.write_text("---\ndescription: gone\n---\n\nOld.\n")
+        removed = prune_orphans("pi", output_root, written=set())
+
+        assert stale.resolve() in {p.resolve() for p in removed}
+        assert not stale.exists()
+        assert settings.is_file()
+        assert extension.is_file()

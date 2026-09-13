@@ -260,6 +260,8 @@ jobs:
       - name: Install Pi CLI
         # Pinned to the version the adapter was verified against. Bump alongside any
         # change to Pi's skill, prompt-template, or agent discovery rules.
+        # Only the direct version is pinned; the package's own dependencies still resolve
+        # within their caret ranges, which is acceptable for a smoke-test CLI install.
         run: npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.85.1
 
       - name: Ensure GitHub CLI has `gh skill` (2.90+)

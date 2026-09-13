@@ -35,7 +35,9 @@ _HARNESS_TARGETS = {
     "opencode": [".opencode", "opencode.json"],
     "copilot": [".copilot/agents", ".copilot/skills", ".copilot/commands"],
     "antigravity": [".antigravity"],
-    "pi": [".pi"],
+    # `.pi/` is also Pi's project-local config dir, so a developer may keep their own
+    # settings and extensions there. The adapter owns only these three subtrees.
+    "pi": [".pi/skills", ".pi/prompts", ".pi/agents"],
 }
 
 
@@ -173,9 +175,12 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
         if d.is_dir():
             candidates.extend(p for p in d.rglob("*") if p.is_file())
     elif harness_id == "pi":
-        d = output_root / ".pi"
-        if d.is_dir():
-            candidates.extend(p for p in d.rglob("*") if p.is_file())
+        # Only the three adapter-owned subtrees. Anything else under `.pi/` belongs to
+        # the developer, because Pi reads its own project config from the same dir.
+        for sub in ("skills", "prompts", "agents"):
+            d = output_root / ".pi" / sub
+            if d.is_dir():
+                candidates.extend(p for p in d.rglob("*") if p.is_file())
     elif harness_id == "cursor":
         # Both .cursor-plugin/plugins/*.json and .cursor/rules/*.mdc are adapter outputs.
         for sub_path in (

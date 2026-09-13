@@ -70,7 +70,8 @@ jobs:
                adapter namespace separator — see `docs/authoring.md`).
 
             3. **Cross-harness portability** — Content should work across
-               all five harnesses unless explicitly marked Claude-Code-
+               all six harnesses (Claude Code, Codex CLI, Cursor, OpenCode,
+               Antigravity CLI, Pi) unless explicitly marked Claude-Code-
                only in `CLAUDE.md`. Watch for hard dependencies on
                Claude-Code-only primitives (`TodoWrite`, the `Task` /
                `Agent` spawn tool, per-agent `tools:` frontmatter) without
