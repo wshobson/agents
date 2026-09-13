@@ -60,6 +60,9 @@ opencode.json
 # Antigravity CLI — transformed plugins (local generation; install via clone + `make generate HARNESS=antigravity`)
 .antigravity/
 
+# Pi — transformed skills/prompts/agents (local generation; `make generate HARNESS=pi`)
+.pi/
+
 
 # Superpowers plugin artifacts (specs/plans are session-local, never committed)
 docs/superpowers/

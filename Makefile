@@ -166,7 +166,7 @@ clean:
 #   make generate-all
 #   make clean-generated HARNESS=opencode
 
-HARNESSES := codex copilot cursor opencode antigravity
+HARNESSES := codex copilot cursor opencode antigravity pi
 
 generate:
 ifndef HARNESS
@@ -224,7 +224,7 @@ test:
 # when the binary is missing — so local devs only exercise what they have installed.
 # CI installs OpenCode + Antigravity + Codex and turns those skips into hard requirements.
 smoke-test:
-	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d .antigravity ]; then \
+	@if [ ! -d .opencode ] || [ ! -d .codex ] || [ ! -d .antigravity ] || [ ! -d .pi ]; then \
 		echo "Generating harness artifacts first..."; \
 		$(MAKE) generate-all; \
 	fi

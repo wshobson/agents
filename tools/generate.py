@@ -2,7 +2,7 @@
 """Unified CLI for emitting per-harness artifacts from claude-agents plugin sources.
 
 Usage:
-    python tools/generate.py --harness <codex|copilot|cursor|opencode|antigravity> [--plugin <name>] [--all] [--clean] [--prune] [--strict]
+    python tools/generate.py --harness <codex|copilot|cursor|opencode|antigravity|pi> [--plugin <name>] [--all] [--clean] [--prune] [--strict]
 """
 
 from __future__ import annotations
@@ -35,6 +35,7 @@ _HARNESS_TARGETS = {
     "opencode": [".opencode", "opencode.json"],
     "copilot": [".copilot/agents", ".copilot/skills", ".copilot/commands"],
     "antigravity": [".antigravity"],
+    "pi": [".pi"],
 }
 
 
@@ -60,6 +61,10 @@ def get_adapter(harness_id: str, output_root: Path) -> HarnessAdapter:
         from tools.adapters.antigravity import AntigravityAdapter
 
         return AntigravityAdapter(output_root=output_root)
+    if harness_id == "pi":
+        from tools.adapters.pi import PiAdapter
+
+        return PiAdapter(output_root=output_root)
     raise ValueError(f"Unknown harness: {harness_id}. Supported: {supported_harnesses()}")
 
 
@@ -167,6 +172,10 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
         d = output_root / ".antigravity"
         if d.is_dir():
             candidates.extend(p for p in d.rglob("*") if p.is_file())
+    elif harness_id == "pi":
+        d = output_root / ".pi"
+        if d.is_dir():
+            candidates.extend(p for p in d.rglob("*") if p.is_file())
     elif harness_id == "cursor":
         # Both .cursor-plugin/plugins/*.json and .cursor/rules/*.mdc are adapter outputs.
         for sub_path in (
@@ -199,7 +208,7 @@ def main() -> int:
         "--harness",
         required=True,
         choices=supported_harnesses(),
-        help="Target harness (codex, copilot, cursor, opencode, or antigravity).",
+        help="Target harness (codex, copilot, cursor, opencode, antigravity, or pi).",
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--plugin", help="Generate only for the named plugin.")
