@@ -651,6 +651,86 @@ def validate_antigravity(report: Report) -> None:
                 )
 
 
+# ── Pi validators ────────────────────────────────────────────────────────────
+
+_PI_SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+_PI_SKILL_NAME_MAX = 64
+_PI_DESCRIPTION_MAX = 1024
+
+
+def validate_pi(report: Report) -> None:
+    """Validate the `.pi/` tree: skills (Agent Skills standard), prompt templates,
+    and agents in the reference subagent-extension format."""
+    root = WORKTREE / ".pi"
+    if not root.is_dir():
+        return
+    fix = "Regenerate via `make generate HARNESS=pi`."
+
+    # 1. Skills: name matches directory, description present, Pi name rules (warnings).
+    for skill_md in sorted((root / "skills").glob("*/*/SKILL.md")):
+        fm, _ = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
+        name = fm.get("name")
+        _check_nonempty_str_field(report, fm, "name", "pi", skill_md, label="skill")
+        _check_nonempty_str_field(report, fm, "description", "pi", skill_md, label="skill")
+        if isinstance(name, str) and name:
+            if name != skill_md.parent.name:
+                report.add(
+                    severity="error",
+                    harness="pi",
+                    path=skill_md,
+                    message=f"frontmatter name {name!r} != directory {skill_md.parent.name!r}",
+                    remediation=fix,
+                )
+            if len(name) > _PI_SKILL_NAME_MAX or not _PI_SKILL_NAME_RE.fullmatch(name):
+                report.add(
+                    severity="warning",
+                    harness="pi",
+                    path=skill_md,
+                    message=(
+                        f"skill name {name!r} violates Pi's name rules "
+                        f"(lowercase a-z, 0-9, single hyphens, max {_PI_SKILL_NAME_MAX})"
+                    ),
+                    remediation="Rename the source skill directory; Pi loads it with a warning.",
+                )
+        description = fm.get("description")
+        if isinstance(description, str) and len(description) > _PI_DESCRIPTION_MAX:
+            report.add(
+                severity="warning",
+                harness="pi",
+                path=skill_md,
+                message=f"description is {len(description)} chars (Pi warns above {_PI_DESCRIPTION_MAX})",
+                remediation="Shorten the source skill description.",
+            )
+
+    # 2. Prompt templates: namespaced filename, frontmatter with a description.
+    for prompt_md in sorted((root / "prompts").glob("*.md")):
+        if "__" not in prompt_md.stem:
+            report.add(
+                severity="error",
+                harness="pi",
+                path=prompt_md,
+                message="prompt filename is not `<plugin>__<command>.md`",
+                remediation=fix,
+            )
+        fm, _ = parse_frontmatter(prompt_md.read_text(encoding="utf-8"))
+        _check_nonempty_str_field(report, fm, "description", "pi", prompt_md, label="prompt")
+
+    # 3. Agents: name + description, model is provider/id when present.
+    for agent_md in sorted((root / "agents").glob("*.md")):
+        fm, _ = parse_frontmatter(agent_md.read_text(encoding="utf-8"))
+        _check_nonempty_str_field(report, fm, "name", "pi", agent_md, label="agent")
+        _check_nonempty_str_field(report, fm, "description", "pi", agent_md, label="agent")
+        model = fm.get("model")
+        if model is not None and (not isinstance(model, str) or "/" not in model):
+            report.add(
+                severity="error",
+                harness="pi",
+                path=agent_md,
+                message=f"model {model!r} is not provider/id",
+                remediation="Pi models are `provider/id`; check MODEL_ALIASES['pi'].",
+            )
+
+
 # ── Driver ───────────────────────────────────────────────────────────────────
 
 
@@ -743,6 +823,7 @@ _VALIDATORS = {
     "cursor": validate_cursor,
     "opencode": validate_opencode,
     "antigravity": validate_antigravity,
+    "pi": validate_pi,
 }
 
 

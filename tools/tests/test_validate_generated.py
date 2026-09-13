@@ -13,6 +13,7 @@ from tools.validate_generated import (
     validate_copilot,
     validate_cursor,
     validate_opencode,
+    validate_pi,
 )
 
 
@@ -594,3 +595,119 @@ class TestAntigravityValidator:
         validate_antigravity(report)
         assert not report.errors()
         assert not report.warnings()
+
+
+# ── Pi ───────────────────────────────────────────────────────────────────────
+
+
+def _write_pi_tree(root: Path) -> None:
+    skill = root / ".pi" / "skills" / "demo" / "hello"
+    skill.mkdir(parents=True)
+    (skill / "SKILL.md").write_text(
+        "---\nname: hello\ndescription: Use when testing.\n---\n\nBody.\n"
+    )
+    prompts = root / ".pi" / "prompts"
+    prompts.mkdir(parents=True)
+    (prompts / "demo__say-hi.md").write_text(
+        "---\ndescription: Send a greeting\n---\n\nHi $ARGUMENTS\n"
+    )
+    agents = root / ".pi" / "agents"
+    agents.mkdir(parents=True)
+    (agents / "demo__greeter.md").write_text(
+        "---\nname: greeter\ndescription: Use when greeting.\nmodel: anthropic/claude-sonnet-5\ntools: read, grep\n---\n\nYou greet.\n"
+    )
+
+
+class TestPiValidator:
+    def test_clean_output_no_findings(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        report = Report()
+        validate_pi(report)
+        assert report.findings == []
+
+    def test_no_pi_dir_is_silent(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        report = Report()
+        validate_pi(report)
+        assert report.findings == []
+
+    def test_skill_name_must_match_directory(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "skills" / "demo" / "hello" / "SKILL.md").write_text(
+            "---\nname: other\ndescription: Use when testing.\n---\n\nBody.\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any("!= directory" in f.message for f in report.errors())
+
+    def test_skill_missing_description_is_error(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "skills" / "demo" / "hello" / "SKILL.md").write_text(
+            "---\nname: hello\n---\n\nBody.\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any("description" in f.message for f in report.errors())
+
+    def test_skill_name_pattern_violation_is_warning(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        bad = tmp_path / ".pi" / "skills" / "demo" / "Bad_Name"
+        bad.mkdir(parents=True)
+        (bad / "SKILL.md").write_text(
+            "---\nname: Bad_Name\ndescription: Use when testing.\n---\n\nBody.\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert report.errors() == []
+        assert any("Bad_Name" in f.message for f in report.warnings())
+
+    def test_prompt_without_description_is_error(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "prompts" / "demo__say-hi.md").write_text(
+            "---\nargument-hint: x\n---\n\nHi\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any(f.path.name == "demo__say-hi.md" for f in report.errors())
+
+    def test_prompt_filename_must_be_namespaced(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "prompts" / "say-hi.md").write_text("---\ndescription: d\n---\n\nHi\n")
+        report = Report()
+        validate_pi(report)
+        assert any("__" in f.message and f.path.name == "say-hi.md" for f in report.errors())
+
+    def test_agent_missing_name_is_error(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "agents" / "demo__greeter.md").write_text(
+            "---\ndescription: Use when greeting.\n---\n\nYou greet.\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any("name" in f.message for f in report.errors())
+
+    def test_agent_model_must_be_provider_qualified(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_worktree(monkeypatch, tmp_path)
+        _write_pi_tree(tmp_path)
+        (tmp_path / ".pi" / "agents" / "demo__greeter.md").write_text(
+            "---\nname: greeter\ndescription: Use when greeting.\nmodel: opus\n---\n\nYou greet.\n"
+        )
+        report = Report()
+        validate_pi(report)
+        assert any("provider/id" in f.message for f in report.errors())
