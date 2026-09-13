@@ -27,6 +27,7 @@ from tools.adapters.base import (
     HarnessAdapter,
     PluginSource,
     SkillSource,
+    yaml_scalar,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 
@@ -81,86 +82,6 @@ def _filter_frontmatter(fm: dict, drop: set[str]) -> dict:
     return {k: v for k, v in fm.items() if k not in drop}
 
 
-_YAML_SPECIAL_LEADS = (
-    "[",
-    "{",
-    "*",
-    "&",
-    "!",
-    "|",
-    ">",
-    "'",
-    '"',
-    "@",
-    "`",
-    "#",
-    "%",
-    ",",
-    "?",
-    ":",
-    "-",
-)
-
-# YAML 1.1 implicit booleans/null — must be quoted to avoid being interpreted as bool/None.
-# YAML 1.2 narrowed this list, but PyYAML's default is still 1.1 (and many consumers are
-# affected); quote conservatively.
-_YAML_RESERVED_WORDS = frozenset(
-    {
-        "true",
-        "false",
-        "yes",
-        "no",
-        "on",
-        "off",
-        "null",
-        "~",
-        "True",
-        "False",
-        "Yes",
-        "No",
-        "On",
-        "Off",
-        "Null",
-        "TRUE",
-        "FALSE",
-        "YES",
-        "NO",
-        "ON",
-        "OFF",
-        "NULL",
-    }
-)
-
-
-def _yaml_scalar(value: str) -> str:
-    """Render a string as a YAML scalar, quoting when needed to avoid ambiguity.
-
-    Quotes when the value:
-    - is empty / pure whitespace
-    - starts with a YAML special character
-    - contains `:` followed by whitespace (would be interpreted as a key)
-    - contains ` #` (would be interpreted as a comment)
-    - has leading or trailing whitespace
-    - starts with a digit or `-`/`+` (number-like)
-    - matches a YAML 1.1 implicit-boolean/null reserved word
-    """
-    s = str(value).replace("\n", " ")
-    needs_quote = (
-        s == ""
-        or s != s.strip()
-        or s.startswith(_YAML_SPECIAL_LEADS)
-        or ": " in s
-        or " #" in s
-        or s[:1].isdigit()
-        or s in _YAML_RESERVED_WORDS
-    )
-    if needs_quote:
-        # Use double quotes; escape embedded double-quotes and backslashes.
-        escaped = s.replace("\\", "\\\\").replace('"', '\\"')
-        return f'"{escaped}"'
-    return s
-
-
 def _frontmatter_block(fm: dict) -> str:
     """Render a minimal YAML-ish frontmatter block (string/scalar fields only)."""
     lines = ["---"]
@@ -168,15 +89,15 @@ def _frontmatter_block(fm: dict) -> str:
         if isinstance(v, list):
             lines.append(f"{k}:")
             for item in v:
-                lines.append(f"  - {_yaml_scalar(item)}")
+                lines.append(f"  - {yaml_scalar(item)}")
         elif isinstance(v, dict):
             lines.append(f"{k}:")
             for subk, subv in v.items():
-                lines.append(f"  {subk}: {_yaml_scalar(subv)}")
+                lines.append(f"  {subk}: {yaml_scalar(subv)}")
         elif v is None:
             continue
         else:
-            lines.append(f"{k}: {_yaml_scalar(v)}")
+            lines.append(f"{k}: {yaml_scalar(v)}")
     lines.append("---")
     return "\n".join(lines)
 

@@ -11,15 +11,13 @@ import json
 import re
 from pathlib import Path
 
+import yaml
+
 # tools.adapters.* imports happen via the conftest sys.path injection
 from tools.adapters.antigravity import AntigravityAdapter
-from tools.adapters.base import PluginSource, parse_frontmatter
+from tools.adapters.base import PluginSource, parse_frontmatter, yaml_scalar
 from tools.adapters.codex import CodexAdapter, _split_body_if_oversized
-from tools.adapters.copilot import (
-    CopilotAdapter,
-    _build_tools_list,
-    _needs_yaml_quoting,
-)
+from tools.adapters.copilot import CopilotAdapter, _build_tools_list
 from tools.adapters.cursor import CursorAdapter
 from tools.adapters.opencode import OpenCodeAdapter, _opencode_skill_id
 
@@ -1352,20 +1350,6 @@ class TestCopilotAdapter:
         assert _build_tools_list(["CustomTool"]) == ["CustomTool"]
         assert _build_tools_list([]) == []
 
-    def test_yaml_quoting(self):
-        assert _needs_yaml_quoting("123")
-        assert _needs_yaml_quoting("3.14")
-        assert _needs_yaml_quoting("true")
-        assert _needs_yaml_quoting("false")
-        assert _needs_yaml_quoting("yes")
-        assert _needs_yaml_quoting("no")
-        assert _needs_yaml_quoting("on")
-        assert _needs_yaml_quoting("off")
-        assert _needs_yaml_quoting("null")
-        assert _needs_yaml_quoting("~")
-        assert not _needs_yaml_quoting("hello world")
-        assert not _needs_yaml_quoting("Use when testing.")
-
     def test_explicit_empty_tools(self, tmp_path: Path, output_root: Path):
         from tools.tests.conftest import _make_agent
 
@@ -1415,6 +1399,252 @@ class TestCopilotAdapter:
         assert fm["description"] == "Use when unrestricted."
         assert fm["model"] == "claude-opus-4.8"
         assert "tools" not in fm
+
+
+# ── Cross-cutting: emitted frontmatter must parse as YAML ────────────────────
+
+# Both values are shapes that exist in the repo today: `conductor:manage` has a colon
+# in its description, and `agent-teams:team-delegate` has a bracketed argument hint.
+# Their source files quote them correctly, so an adapter that drops the quotes turns
+# valid source into an artifact the target harness cannot load.
+_COLON_DESCRIPTION = "Manage track lifecycle: archive, restore, delete"
+_BRACKET_HINT = "[--archive | --restore | --list]"
+
+# Strings a YAML loader silently retypes when they are emitted bare. `+1` and `+0x1A`
+# come back as ints, `.5` and `.0` as floats, `.inf`/`.INF`/`+.inf` as float infinity,
+# `.nan`/`.NaN` as float not-a-number, `+1:30` as a sexagesimal int, and `+.5` as a float
+# under YAML 1.2. A version, port, offset or flag field holding one of these must survive
+# as the string that was written.
+_IMPLICIT_NUMBERS = (
+    "+1",
+    "+3",
+    "+0x1A",
+    "+1_000",
+    "+1:30",
+    ".0",
+    ".5",
+    "+.5",
+    ".inf",
+    ".Inf",
+    ".INF",
+    "+.inf",
+    "-.inf",
+    ".nan",
+    ".NaN",
+    ".NAN",
+)
+
+# Flow collections treat each of these as structural, so an item carrying one anywhere,
+# not only in the leading position, has to be quoted.
+_FLOW_DELIMITER_ITEMS = (
+    "a {b",
+    "a [b",
+    "a }b",
+    "a ]b",
+    "a ,b",
+    "{a}",
+    "[a]",
+)
+
+
+def _ambiguous_plugin(tmp_path: Path) -> PluginSource:
+    """A one-command plugin whose frontmatter needs quoting to stay parseable."""
+    from tools.tests.conftest import _make_command
+
+    plugin_json = {"name": "demo", "description": _COLON_DESCRIPTION}
+    plugin_dir = tmp_path / "demo"
+    plugin_dir.mkdir()
+    (plugin_dir / ".claude-plugin").mkdir()
+    (plugin_dir / ".claude-plugin" / "plugin.json").write_text(json.dumps(plugin_json))
+    command = _make_command(
+        plugin_dir,
+        "manage",
+        f'description: "{_COLON_DESCRIPTION}"\nargument-hint: "{_BRACKET_HINT}"',
+        "# Manage\n\nBody.\n",
+    )
+    return PluginSource(name="demo", dir=plugin_dir, plugin_json=plugin_json, commands=[command])
+
+
+def _ambiguous_skill_plugin(tmp_path: Path) -> PluginSource:
+    """A one-skill plugin whose frontmatter needs quoting to stay parseable.
+
+    Antigravity emits commands as TOML, so `_ambiguous_plugin` gives it no Markdown to
+    check. A skill lands at `skills/<skill>/SKILL.md` in every harness that writes
+    Markdown, which makes this the fixture the Antigravity YAML test needs.
+    """
+    from tools.tests.conftest import _make_skill
+
+    plugin_json = {"name": "demo", "description": _COLON_DESCRIPTION}
+    plugin_dir = tmp_path / "demo"
+    plugin_dir.mkdir()
+    (plugin_dir / ".claude-plugin").mkdir()
+    (plugin_dir / ".claude-plugin" / "plugin.json").write_text(json.dumps(plugin_json))
+    skill = _make_skill(
+        plugin_dir,
+        "manage",
+        f'name: manage\ndescription: "{_COLON_DESCRIPTION}"\n'
+        f'argument-hint: "{_BRACKET_HINT}"\nversion: "+1"',
+        "# Manage\n\nBody.\n",
+    )
+    return PluginSource(name="demo", dir=plugin_dir, plugin_json=plugin_json, skills=[skill])
+
+
+def _safe_load_frontmatter(path: Path) -> dict:
+    """Parse a generated file's frontmatter with a real YAML parser."""
+    text = path.read_text(encoding="utf-8")
+    assert text.startswith("---\n"), f"{path} has no frontmatter"
+    end = text.index("\n---", 3)
+    loaded = yaml.safe_load(text[4:end])
+    assert isinstance(loaded, dict), f"{path} frontmatter is not a mapping: {loaded!r}"
+    return loaded
+
+
+class TestFrontmatterYamlSafety:
+    """Every adapter must emit frontmatter a real YAML parser accepts.
+
+    `parse_frontmatter` is a tolerant hand-rolled reader, so the repo's own validators
+    accept output that PyYAML rejects. These tests use PyYAML directly.
+    """
+
+    def test_yaml_scalar_round_trips_ambiguous_values(self):
+        for value in (
+            _COLON_DESCRIPTION,
+            _BRACKET_HINT,
+            "",
+            "  padded  ",
+            "true",
+            "false",
+            "yes",
+            "NO",
+            "on",
+            "off",
+            "null",
+            "~",
+            "123",
+            "3.14",
+            "- leading dash",
+            "trailing # hash",
+            'has "quotes" and \\ backslash',
+        ):
+            assert yaml.safe_load(f"k: {yaml_scalar(value)}") == {"k": value}
+
+    def test_yaml_scalar_leaves_plain_values_unquoted(self):
+        for value in ("hello world", "Use when testing.", "claude-sonnet-5"):
+            assert yaml_scalar(value) == value
+
+    def test_copilot_emits_parseable_frontmatter(self, tmp_path: Path, output_root: Path):
+        plugin = _ambiguous_plugin(tmp_path)
+        result = CopilotAdapter(output_root=output_root).emit_plugin(plugin)
+
+        emitted = [p for p in result.written if p.suffix == ".md"]
+        assert emitted
+        for path in emitted:
+            fm = _safe_load_frontmatter(path)
+            assert fm["description"] == _COLON_DESCRIPTION
+            if "argument-hint" in fm:
+                assert fm["argument-hint"] == _BRACKET_HINT
+
+    def test_opencode_emits_parseable_frontmatter(self, tmp_path: Path, output_root: Path):
+        plugin = _ambiguous_plugin(tmp_path)
+        result = OpenCodeAdapter(output_root=output_root).emit_plugin(plugin)
+
+        emitted = [p for p in result.written if p.suffix == ".md"]
+        assert emitted
+        for path in emitted:
+            fm = _safe_load_frontmatter(path)
+            assert fm["description"] == _COLON_DESCRIPTION
+            assert fm["argument-hint"] == _BRACKET_HINT
+
+    def test_antigravity_emits_parseable_frontmatter(self, tmp_path: Path, output_root: Path):
+        # A skill, not a command: Antigravity writes commands as `.toml`, so a
+        # command-only plugin gives this test nothing to parse.
+        plugin = _ambiguous_skill_plugin(tmp_path)
+        result = AntigravityAdapter(output_root=output_root).emit_plugin(plugin)
+
+        emitted = [p for p in result.written if p.suffix == ".md"]
+        assert emitted, "Antigravity emitted no Markdown, so no frontmatter was checked"
+        for path in emitted:
+            fm = _safe_load_frontmatter(path)
+            assert fm["description"] == _COLON_DESCRIPTION
+            assert fm["argument-hint"] == _BRACKET_HINT
+            assert fm["version"] == "+1"
+
+    def test_yaml_scalar_round_trips_implicit_numbers(self):
+        for value in _IMPLICIT_NUMBERS:
+            loaded = yaml.safe_load(f"k: {yaml_scalar(value)}")["k"]
+            assert loaded == value, f"{value!r} came back as {loaded!r}"
+            assert isinstance(loaded, str), f"{value!r} came back as {type(loaded).__name__}"
+
+    def test_yaml_scalar_leaves_non_numeric_dot_and_sign_values_unquoted(self):
+        # The implicit-number rule must not swallow ordinary values that merely open
+        # with `.` or `+`, or every dotfile name in frontmatter would gain quotes.
+        for value in (".gitignore", ".info", ".", "+", "+abc", "..", ".x5"):
+            assert yaml_scalar(value) == value
+
+    def test_antigravity_flow_sequence_round_trips_delimiters(self):
+        from tools.adapters.antigravity import _antigravity_frontmatter
+
+        block = _antigravity_frontmatter({"tools": list(_FLOW_DELIMITER_ITEMS)})
+        loaded = yaml.safe_load(block[len("---\n") : -len("\n---")])
+        assert loaded["tools"] == list(_FLOW_DELIMITER_ITEMS)
+
+    def test_every_frontmatter_emitter_round_trips_hostile_values(self):
+        """The four adapters that share `yaml_scalar` must agree on every hostile shape.
+
+        `yaml_scalar` is the single quoting rule, so a value it mishandles is wrong in
+        all four outputs at once. Antigravity additionally renders lists as flow
+        sequences, which is the one place an adapter adds a rule of its own.
+        """
+        from tools.adapters.antigravity import _antigravity_frontmatter
+        from tools.adapters.codex import _frontmatter_block
+        from tools.adapters.copilot import _copilot_frontmatter
+        from tools.adapters.opencode import _opencode_frontmatter
+
+        values = (
+            _COLON_DESCRIPTION,
+            _BRACKET_HINT,
+            *_IMPLICIT_NUMBERS,
+            *_FLOW_DELIMITER_ITEMS,
+            "trailing # hash",
+            'has "quotes" and \\ backslash',
+        )
+        fm: dict = {f"field{i}": value for i, value in enumerate(values)}
+        fm["listed"] = list(values)
+        fm["mapped"] = {f"sub{i}": value for i, value in enumerate(values)}
+
+        for name, emitter in (
+            ("antigravity", _antigravity_frontmatter),
+            ("codex", _frontmatter_block),
+            ("copilot", _copilot_frontmatter),
+            ("opencode", _opencode_frontmatter),
+        ):
+            block = emitter(fm)
+            body = block[len("---\n") : -len("\n---")]
+            loaded = yaml.safe_load(body)
+            assert loaded == fm, f"{name} frontmatter did not round-trip"
+
+    def test_copilot_preserves_mapping_valued_fields(self, tmp_path: Path, output_root: Path):
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        skill = _make_skill(
+            plugin_dir,
+            "hello",
+            "name: hello\ndescription: Use when greeting.\nmetadata:\n  owner: platform\n  tier: 1",
+            "# Hello\n\nBody.\n",
+        )
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
+        )
+        CopilotAdapter(output_root=output_root).emit_plugin(plugin)
+
+        fm = _safe_load_frontmatter(
+            output_root / ".copilot" / "skills" / "demo__hello" / "SKILL.md"
+        )
+        assert fm["metadata"] == {"owner": "platform", "tier": "1"}
 
 
 # ── Cross-cutting: capabilities consistency ──────────────────────────────────

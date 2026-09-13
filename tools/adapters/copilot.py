@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
 from tools.adapters.base import (
@@ -13,22 +12,9 @@ from tools.adapters.base import (
     PluginSource,
     SkillSource,
     h1_from_body,
+    yaml_scalar,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
-
-
-def _needs_yaml_quoting(value: str) -> bool:
-    """Check if a string value needs YAML quoting to prevent type coercion."""
-    return bool(re.match(r"^\d+(\.\d+)?$", value)) or value.lower() in (
-        "true",
-        "false",
-        "yes",
-        "no",
-        "on",
-        "off",
-        "null",
-        "~",
-    )
 
 
 def _copilot_frontmatter(fm: dict) -> str:
@@ -38,14 +24,17 @@ def _copilot_frontmatter(fm: dict) -> str:
         if isinstance(v, list):
             lines.append(f"{k}:")
             for item in v:
-                lines.append(f"  - {item}")
+                lines.append(f"  - {yaml_scalar(item)}")
+        elif isinstance(v, dict):
+            # Preserve mapping-valued fields (e.g. `metadata`) as a nested YAML
+            # mapping instead of stringifying the Python dict repr.
+            lines.append(f"{k}:")
+            for subk, subv in v.items():
+                lines.append(f"  {subk}: {yaml_scalar(subv)}")
         elif isinstance(v, bool):
             lines.append(f"{k}: {'true' if v else 'false'}")
         elif v is not None:
-            value = str(v).replace("\n", " ").strip()
-            if _needs_yaml_quoting(value):
-                value = f'"{value}"'
-            lines.append(f"{k}: {value}")
+            lines.append(f"{k}: {yaml_scalar(v)}")
     lines.append("---")
     return "\n".join(lines)
 

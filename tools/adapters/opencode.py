@@ -27,6 +27,7 @@ from tools.adapters.base import (
     HarnessAdapter,
     PluginSource,
     SkillSource,
+    yaml_scalar,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 
@@ -135,18 +136,17 @@ def _opencode_frontmatter(fm: dict) -> str:
         if isinstance(v, dict):
             lines.append(f"{k}:")
             for sk, sv in v.items():
-                lines.append(f"  {sk}: {sv}")
+                lines.append(f"  {sk}: {yaml_scalar(sv)}")
         elif isinstance(v, list):
             lines.append(f"{k}:")
             for item in v:
-                lines.append(f"  - {item}")
+                lines.append(f"  - {yaml_scalar(item)}")
         elif isinstance(v, bool):
             lines.append(f"{k}: {'true' if v else 'false'}")
         elif v is None:
             continue
         else:
-            value = str(v).replace("\n", " ").strip()
-            lines.append(f"{k}: {value}")
+            lines.append(f"{k}: {yaml_scalar(v)}")
     lines.append("---")
     return "\n".join(lines)
 

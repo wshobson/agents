@@ -37,6 +37,7 @@ from tools.adapters.base import (
     HarnessAdapter,
     PluginSource,
     SkillSource,
+    yaml_scalar,
 )
 from tools.adapters.capabilities import TOOL_NAME_MAPS, resolve_model
 
@@ -56,85 +57,25 @@ def _generate_command_toml(description: str, prompt: str) -> str:
     )
 
 
-_YAML_SPECIAL_LEADS = (
-    "[",
-    "{",
-    "*",
-    "&",
-    "!",
-    "|",
-    ">",
-    "'",
-    '"',
-    "@",
-    "`",
-    "#",
-    "%",
-    ",",
-    "?",
-    ":",
-    "-",
-)
-
-# YAML 1.1 implicit booleans/null — must be quoted to avoid being interpreted as bool/None.
-_YAML_RESERVED_WORDS = frozenset(
-    {
-        "true",
-        "false",
-        "yes",
-        "no",
-        "on",
-        "off",
-        "null",
-        "~",
-        "True",
-        "False",
-        "Yes",
-        "No",
-        "On",
-        "Off",
-        "Null",
-        "TRUE",
-        "FALSE",
-        "YES",
-        "NO",
-        "ON",
-        "OFF",
-        "NULL",
-    }
-)
-
-
-def _yaml_scalar(value: object) -> str:
-    """Render a value as a YAML scalar, quoting when needed to avoid ambiguity."""
-    s = str(value).replace("\n", " ")
-    needs_quote = (
-        s == ""
-        or s != s.strip()
-        or s.startswith(_YAML_SPECIAL_LEADS)
-        or ": " in s
-        or " #" in s
-        or s[:1].isdigit()
-        or s in _YAML_RESERVED_WORDS
-    )
-    if needs_quote:
-        escaped = s.replace("\\", "\\\\").replace('"', '\\"')
-        return f'"{escaped}"'
-    return s
+# Every character YAML treats as structural inside a flow collection. A plain scalar in
+# flow context may not contain any of them, at any position.
+_YAML_FLOW_DELIMITERS = ("[", "]", "{", "}", ",")
 
 
 def _yaml_flow_scalar(value: object) -> str:
     """Render a value as one item of a YAML flow sequence (`[a, b]`).
 
-    Flow sequences use `,` and `]` as structural delimiters, so an item
-    containing either must be quoted even when `_yaml_scalar` wouldn't quote
-    it as a bare top-level scalar.
+    Flow sequences use `[`, `]`, `{`, `}` and `,` as structural delimiters, so an item
+    containing any of them must be quoted even when `yaml_scalar` wouldn't quote it as a
+    bare top-level scalar. `yaml_scalar` only rejects those characters in the leading
+    position, which is enough in block context but not here: `a {b` would emit as
+    `[a {b]`, and a YAML parser reads the `{` as the start of a flow mapping and fails.
     """
     s = str(value).replace("\n", " ")
-    if "," in s or "]" in s:
+    if any(delimiter in s for delimiter in _YAML_FLOW_DELIMITERS):
         escaped = s.replace("\\", "\\\\").replace('"', '\\"')
         return f'"{escaped}"'
-    return _yaml_scalar(s)
+    return yaml_scalar(s)
 
 
 def _antigravity_frontmatter(fm: dict) -> str:
@@ -148,13 +89,13 @@ def _antigravity_frontmatter(fm: dict) -> str:
             # mapping instead of stringifying the Python dict repr.
             lines.append(f"{k}:")
             for subk, subv in v.items():
-                lines.append(f"  {subk}: {_yaml_scalar(subv)}")
+                lines.append(f"  {subk}: {yaml_scalar(subv)}")
         elif isinstance(v, bool):
             lines.append(f"{k}: {'true' if v else 'false'}")
         elif v is None:
             continue
         else:
-            lines.append(f"{k}: {_yaml_scalar(v)}")
+            lines.append(f"{k}: {yaml_scalar(v)}")
     lines.append("---")
     return "\n".join(lines)
 
