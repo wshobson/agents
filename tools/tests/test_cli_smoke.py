@@ -9,7 +9,10 @@ CI runners only exercise the tools they have. CI installs OpenCode + Antigravity
 (both are quick) and the corresponding test classes become required gates.
 
 No API keys needed: every command exercised here is local-only (`agent list`,
-`extensions validate`, `doctor`, `--version`).
+`extensions validate`, `doctor`, `--version`). The Pi tests are the one exception to
+"local-only", and they are still free: they set every Anthropic credential variable to
+an invalid value, so Pi expands the slash command into the user message and the model
+call then fails with a 401. The expanded text is the assertion, and no tokens are billed.
 """
 
 from __future__ import annotations
@@ -163,6 +166,11 @@ def _pi_env(config_dir: Path) -> dict[str, str]:
             "PI_CODING_AGENT_DIR": str(config_dir),
             "PI_OFFLINE": "1",
             "PI_SKIP_VERSION_CHECK": "1",
+            # Pi consults ANTHROPIC_AUTH_TOKEN, then ANTHROPIC_OAUTH_TOKEN, then
+            # ANTHROPIC_API_KEY. All three must be invalid, or a developer's exported
+            # token would satisfy the model call and the sweeps would bill real tokens.
+            "ANTHROPIC_AUTH_TOKEN": "sk-ant-invalid-smoke-test",
+            "ANTHROPIC_OAUTH_TOKEN": "sk-ant-invalid-smoke-test",
             "ANTHROPIC_API_KEY": "sk-ant-invalid-smoke-test",
         }
     )
@@ -196,6 +204,8 @@ def _pi_expand(message: str, env: dict[str, str]) -> str:
         try:
             event = json.loads(line)
         except json.JSONDecodeError:
+            continue
+        if not isinstance(event, dict):
             continue
         msg = event.get("message") if event.get("type") == "message_start" else None
         if msg and msg.get("role") == "user":
