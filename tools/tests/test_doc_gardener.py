@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from tools.doc_gardener import (
     CHECKS,
     Report,
@@ -14,6 +15,7 @@ from tools.doc_gardener import (
     check_codex_skill_caps,
     check_dead_links,
     check_doc_counts,
+    check_generated_frontmatter_yaml,
     check_marketplace_consistency,
     check_oversized_context_files,
     check_stale_artifacts,
@@ -148,6 +150,65 @@ class TestStaleArtifacts:
             ".pi/prompts/demo__say-hi.md",
             ".pi/skills/demo/hello/SKILL.md",
         ]
+
+
+# ── Generated YAML frontmatter ────────────────────────────────────────────────
+
+
+class TestGeneratedFrontmatterYaml:
+    @pytest.mark.parametrize("root_name", [".codex", ".opencode", ".copilot", ".antigravity"])
+    def test_malformed_generated_frontmatter_errors(
+        self, root_name: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / root_name / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text('---\nname: broken\ndescription: "unterminated\n---\nBody.\n')
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert findings[0].severity == "error"
+        assert findings[0].path == generated
+
+    def test_valid_generated_mapping_is_clean(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".opencode" / "agents" / "valid.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text('---\nname: valid\ntools:\n  read: true\n---\nBody.\n')
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        assert [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"] == []
+
+    def test_missing_closing_delimiter_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".copilot" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text('---\nname: broken\nBody without a delimiter.\n')
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert "closing delimiter" in findings[0].message
+
+    def test_non_mapping_frontmatter_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".antigravity" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text('---\n- name\n- description\n---\nBody.\n')
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert "expected a YAML mapping" in findings[0].message
 
 
 # ── Context file size ────────────────────────────────────────────────────────
