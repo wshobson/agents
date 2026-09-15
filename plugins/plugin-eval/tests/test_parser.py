@@ -44,6 +44,79 @@ class TestParseSkill:
         assert skill.cross_references == ["sub-skills/child", "sibling"]
 
 
+class TestCodeBlockCounting:
+    def _skill(self, tmp_path: Path, body: str, name: str = "counted") -> Path:
+        skill_dir = tmp_path / name
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            f"name: {name}\n"
+            'description: "Use when counting fenced code blocks."\n'
+            "---\n\n"
+            "# Counted\n\n" + body
+        )
+        return skill_dir
+
+    def test_each_fenced_block_counts_once(self, tmp_path: Path):
+        body = "\n\n".join(["```python\nprint('x')\n```"] * 3)
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 3
+        assert skill.code_block_languages == ["python", "python", "python"]
+
+    def test_languages_come_from_opening_fences(self, tmp_path: Path):
+        body = "```bash\nls\n```\n\n```yaml\nkey: value\n```\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 2
+        assert skill.code_block_languages == ["bash", "yaml"]
+
+    def test_unclosed_fence_still_counts_as_a_block(self, tmp_path: Path):
+        body = "```python\nprint('x')\n```\n\n```bash\nls\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 2
+        assert skill.code_block_languages == ["python", "bash"]
+
+    def test_shorter_fence_inside_a_longer_one_is_not_a_block(self, tmp_path: Path):
+        body = "````markdown\n```python\nprint('x')\n```\n````\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 1
+        assert skill.code_block_languages == ["markdown"]
+
+    def test_fence_inside_a_blockquote_counts(self, tmp_path: Path):
+        body = "> ```bash\n> ls\n> ```\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 1
+        assert skill.code_block_languages == ["bash"]
+
+    def test_prose_without_fences_counts_nothing(self, tmp_path: Path):
+        skill = parse_skill(self._skill(tmp_path, "Just prose about ``inline code``.\n"))
+        assert skill.code_block_count == 0
+        assert skill.code_block_languages == []
+
+    def test_tilde_fenced_block_counts_once_with_its_language(self, tmp_path: Path):
+        body = "~~~python\nprint('x')\n~~~\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 1
+        assert skill.code_block_languages == ["python"]
+
+    def test_tilde_run_inside_a_backtick_block_does_not_close_it(self, tmp_path: Path):
+        body = "```markdown\n~~~\nstill inside\n~~~\n```\n\n```bash\nls\n```\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 2
+        assert skill.code_block_languages == ["markdown", "bash"]
+
+    def test_fence_run_with_trailing_text_does_not_close_a_block(self, tmp_path: Path):
+        body = "```\n``` text\n```\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 1
+        assert skill.code_block_languages == []
+
+    def test_closing_fence_with_trailing_whitespace_still_closes(self, tmp_path: Path):
+        body = "```python\nprint('x')\n```   \n\n```bash\nls\n```\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 2
+        assert skill.code_block_languages == ["python", "bash"]
+
+
 class TestParseAgent:
     def test_parse_valid_agent(self, sample_plugin_dir: Path):
         agent_path = sample_plugin_dir / "agents" / "test-agent.md"

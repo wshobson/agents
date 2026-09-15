@@ -69,6 +69,37 @@ class TestStaticAnalyzer:
         assert "DEAD_CROSS_REF" not in [ap.flag for ap in result.anti_patterns]
 
 
+def _make_skill_with_code_blocks(tmp_path: Path, blocks: int, name: str) -> Path:
+    skill_dir = tmp_path / name
+    skill_dir.mkdir()
+    body = "\n\n".join(["```python\nprint('x')\n```"] * blocks)
+    (skill_dir / "SKILL.md").write_text(
+        f'---\nname: {name}\ndescription: "Use when checking code block thresholds."\n---\n\n'
+        "# Skill\n\n## Usage\n\nRun it.\n\n" + body + "\n\n## Output format\n\nReturns JSON.\n"
+    )
+    return skill_dir
+
+
+class TestCodeBlockThresholds:
+    """The rubric states these thresholds in code blocks, not fence delimiters."""
+
+    def test_two_blocks_earn_the_orchestration_bonus_that_one_does_not(self, tmp_path: Path):
+        analyzer = StaticAnalyzer()
+        one = analyzer.analyze_skill(_make_skill_with_code_blocks(tmp_path, 1, "one-block"))
+        two = analyzer.analyze_skill(_make_skill_with_code_blocks(tmp_path, 2, "two-blocks"))
+        one_score = one.sub_scores["orchestration_wiring"]
+        two_score = two.sub_scores["orchestration_wiring"]
+        assert two_score - one_score == pytest.approx(0.05)
+
+    def test_five_blocks_reach_a_tier_three_blocks_do_not(self, tmp_path: Path):
+        analyzer = StaticAnalyzer()
+        three = analyzer.analyze_skill(_make_skill_with_code_blocks(tmp_path, 3, "three-blocks"))
+        five = analyzer.analyze_skill(_make_skill_with_code_blocks(tmp_path, 5, "five-blocks"))
+        three_score = three.sub_scores["structural_completeness"]
+        five_score = five.sub_scores["structural_completeness"]
+        assert five_score - three_score == pytest.approx(0.05)
+
+
 class TestTriggerPattern:
     """Regression coverage for the broadened trigger-phrase matcher.
 
