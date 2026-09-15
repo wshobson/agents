@@ -355,9 +355,13 @@ def check_generated_frontmatter_yaml(report: Report) -> None:
             if text is None:
                 continue
             lines = text.lstrip(BOM).splitlines()
-            if not lines or lines[0].strip() != "---":
+            first_content = next((index for index, line in enumerate(lines) if line.strip()), None)
+            if first_content is None or lines[first_content].strip() != "---":
                 continue
-            closing = next((index for index, line in enumerate(lines[1:], 1) if line.strip() == "---"), None)
+            lines = lines[first_content:]
+            closing = next(
+                (index for index, line in enumerate(lines[1:], 1) if line.strip() == "---"), None
+            )
             if closing is None:
                 report.add(
                     kind="INVALID_GENERATED_FRONTMATTER",
