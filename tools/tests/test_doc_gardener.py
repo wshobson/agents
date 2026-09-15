@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -18,6 +19,7 @@ from tools.doc_gardener import (
     check_marketplace_consistency,
     check_oversized_context_files,
     check_stale_artifacts,
+    main,
     marketplace_entry_problem,
 )
 
@@ -211,6 +213,29 @@ class TestGeneratedFrontmatterYaml:
         assert len(findings) == 1
         assert findings[0].path == generated
         assert "not valid YAML" in findings[0].message
+
+    def test_cli_selector_dispatches_and_returns_error(
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+        capsys: pytest.CaptureFixture[str],
+    ):
+        """The named CLI check dispatches frontmatter validation and exits nonzero."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".codex" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text(
+            '---\nname: broken\ndescription: "unterminated\n---\nBody.\n',
+            encoding="utf-8",
+        )
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            ["doc_gardener.py", "--check", "frontmatter-yaml", "--quiet"],
+        )
+
+        assert main() == 1
+        assert "INVALID_GENERATED_FRONTMATTER" in capsys.readouterr().out
 
     def test_valid_generated_mapping_is_clean(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
