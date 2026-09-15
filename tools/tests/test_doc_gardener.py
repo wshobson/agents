@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -14,9 +15,11 @@ from tools.doc_gardener import (
     check_codex_skill_caps,
     check_dead_links,
     check_doc_counts,
+    check_generated_frontmatter_yaml,
     check_marketplace_consistency,
     check_oversized_context_files,
     check_stale_artifacts,
+    main,
     marketplace_entry_problem,
 )
 
@@ -148,6 +151,135 @@ class TestStaleArtifacts:
             ".pi/prompts/demo__say-hi.md",
             ".pi/skills/demo/hello/SKILL.md",
         ]
+
+
+# ── Generated YAML frontmatter ────────────────────────────────────────────────
+
+
+class TestGeneratedFrontmatterYaml:
+    @pytest.mark.parametrize("root_name", [".codex", ".opencode", ".copilot", ".antigravity"])
+    def test_malformed_generated_frontmatter_errors(
+        self, root_name: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Malformed YAML is reported in every generated Markdown root."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / root_name / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text('---\nname: broken\ndescription: "unterminated\n---\nBody.\n')
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert findings[0].severity == "error"
+        assert findings[0].path == generated
+
+    def test_leading_blank_lines_do_not_hide_malformed_frontmatter(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A BOM and leading blank lines do not bypass frontmatter validation."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".codex" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text(
+            '\ufeff\n  \n---\nname: broken\ndescription: "unterminated\n---\nBody.\n',
+            encoding="utf-8",
+        )
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert findings[0].path == generated
+
+    def test_indented_delimiter_in_literal_does_not_hide_malformed_yaml(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """An indented scalar line is content, not the closing delimiter."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".opencode" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text(
+            '---\ndescription: |\n  ---\nvalue: "unterminated\n---   \nBody.\n',
+            encoding="utf-8",
+        )
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert findings[0].path == generated
+        assert "not valid YAML" in findings[0].message
+
+    def test_cli_selector_dispatches_and_returns_error(
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+        capsys: pytest.CaptureFixture[str],
+    ):
+        """The named CLI check dispatches frontmatter validation and exits nonzero."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".codex" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text(
+            '---\nname: broken\ndescription: "unterminated\n---\nBody.\n',
+            encoding="utf-8",
+        )
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            ["doc_gardener.py", "--check", "frontmatter-yaml", "--quiet"],
+        )
+
+        assert main() == 1
+        assert "INVALID_GENERATED_FRONTMATTER" in capsys.readouterr().out
+
+    def test_valid_generated_mapping_is_clean(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A mapping-valued generated frontmatter block remains valid."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".opencode" / "agents" / "valid.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text("---\nname: valid\ntools:\n  read: true\n---\nBody.\n")
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        assert [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"] == []
+
+    def test_missing_closing_delimiter_errors(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """An opened frontmatter block must have a closing delimiter."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".copilot" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text("---\nname: broken\nBody without a delimiter.\n")
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert "closing delimiter" in findings[0].message
+
+    def test_non_mapping_frontmatter_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """Generated frontmatter must parse to a YAML mapping."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".antigravity" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text("---\n- name\n- description\n---\nBody.\n")
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert "expected a YAML mapping" in findings[0].message
 
 
 # ── Context file size ────────────────────────────────────────────────────────
