@@ -192,6 +192,26 @@ class TestGeneratedFrontmatterYaml:
         assert len(findings) == 1
         assert findings[0].path == generated
 
+    def test_indented_delimiter_in_literal_does_not_hide_malformed_yaml(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """An indented scalar line is content, not the closing delimiter."""
+        _patch_paths(monkeypatch, tmp_path)
+        generated = tmp_path / ".opencode" / "agents" / "broken.md"
+        generated.parent.mkdir(parents=True)
+        generated.write_text(
+            '---\ndescription: |\n  ---\nvalue: "unterminated\n---   \nBody.\n',
+            encoding="utf-8",
+        )
+
+        report = Report()
+        check_generated_frontmatter_yaml(report)
+
+        findings = [f for f in report.findings if f.kind == "INVALID_GENERATED_FRONTMATTER"]
+        assert len(findings) == 1
+        assert findings[0].path == generated
+        assert "not valid YAML" in findings[0].message
+
     def test_valid_generated_mapping_is_clean(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ):

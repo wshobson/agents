@@ -360,7 +360,7 @@ def check_generated_frontmatter_yaml(report: Report) -> None:
                 continue
             lines = lines[first_content:]
             closing = next(
-                (index for index, line in enumerate(lines[1:], 1) if line.strip() == "---"), None
+                (index for index, line in enumerate(lines[1:], 1) if line.rstrip() == "---"), None
             )
             if closing is None:
                 report.add(
