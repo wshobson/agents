@@ -395,6 +395,7 @@ def check_generated_frontmatter_yaml(report: Report) -> None:
 
 
 def check_oversized_context_files(report: Report) -> None:
+    """Report context files that exceed their configured line budgets."""
     for name, cap in CONTEXT_FILES.items():
         path = WORKTREE / name
         if not path.is_file():
