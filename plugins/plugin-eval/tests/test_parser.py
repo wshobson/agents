@@ -92,6 +92,30 @@ class TestCodeBlockCounting:
         assert skill.code_block_count == 0
         assert skill.code_block_languages == []
 
+    def test_tilde_fenced_block_counts_once_with_its_language(self, tmp_path: Path):
+        body = "~~~python\nprint('x')\n~~~\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 1
+        assert skill.code_block_languages == ["python"]
+
+    def test_tilde_run_inside_a_backtick_block_does_not_close_it(self, tmp_path: Path):
+        body = "```markdown\n~~~\nstill inside\n~~~\n```\n\n```bash\nls\n```\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 2
+        assert skill.code_block_languages == ["markdown", "bash"]
+
+    def test_fence_run_with_trailing_text_does_not_close_a_block(self, tmp_path: Path):
+        body = "```\n``` text\n```\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 1
+        assert skill.code_block_languages == []
+
+    def test_closing_fence_with_trailing_whitespace_still_closes(self, tmp_path: Path):
+        body = "```python\nprint('x')\n```   \n\n```bash\nls\n```\n"
+        skill = parse_skill(self._skill(tmp_path, body))
+        assert skill.code_block_count == 2
+        assert skill.code_block_languages == ["python", "bash"]
+
 
 class TestParseAgent:
     def test_parse_valid_agent(self, sample_plugin_dir: Path):
