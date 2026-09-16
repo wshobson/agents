@@ -63,16 +63,18 @@ When writing a review-governance policy:
    GETs — all fine for agents to do unattended. The gate is on write /
    post / merge / close actions only.
 
-4. **Gate branches by name, not by path.** Use `context.target_branch in
-   ["main", ...]` not `context.resource_path starts with "refs/heads/main"`.
-   Branch names are what humans reason about.
+4. **Gate branches by name, not by path.** The hook passes only the raw
+   command string, so match the branch name inside `context.input.command`
+   (e.g. `context.input.command like "*main*"`), not a resource path such as
+   `refs/heads/main`. Branch names are what humans reason about.
 
 5. **Include the notification surfaces.** Slack and Discord webhooks are
    where review-bot hallucinations amplify. Gate POSTs to those hosts.
 
 6. **Leave non-review actions alone.** This policy is focused. A permissive
-   `permit (principal, action, resource);` at the end lets everything else
-   through. Combine with `protect-mcp` for broader policy enforcement.
+   `permit (principal, action == Action::"MCP::Tool::call", resource);` at the
+   end lets everything else through. Combine with `protect-mcp` for broader
+   policy enforcement.
 
 ## Example extensions
 
@@ -81,35 +83,35 @@ When writing a review-governance policy:
 ```cedar
 forbid (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) when {
-    context.command_pattern starts with "linear"
+    context has input && context.input has command &&
+    context.input.command like "linear*"
 };
 
 forbid (
     principal,
-    action == Action::"WebFetch",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"WebFetch"
 ) when {
-    context.method == "POST" &&
-    context.url_host == "api.linear.app"
+    context has input && context.input has url &&
+    context.input.url like "*api.linear.app*"
 };
 ```
 
 ### Teams with their own internal review bot
 
 ```cedar
+// The WebFetch tool input carries no HTTP method, so gate by host.
 forbid (
     principal,
-    action == Action::"WebFetch",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"WebFetch"
 ) when {
-    context.method in ["POST", "PUT", "PATCH", "DELETE"] &&
-    context.url_host in [
-        "review-bot.internal.company.com",
-        "code-review.internal.company.com"
-    ]
+    context has input && context.input has url &&
+    (context.input.url like "*review-bot.internal.company.com*" ||
+     context.input.url like "*code-review.internal.company.com*")
 };
 ```
 
@@ -121,16 +123,17 @@ identity but not a developer's personal account:
 ```cedar
 permit (
     principal == Principal::"gh-bot-reviewer",
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) when {
-    context.command_pattern in ["gh pr comment"]
+    context has input && context.input has command &&
+    context.input.command like "gh pr comment*"
 };
 
 forbid (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) unless {
     principal == Principal::"gh-bot-reviewer" ||
     context.human_approved == true

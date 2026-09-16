@@ -91,29 +91,57 @@ plugins/protect-mcp/
 ## Example Cedar Policy
 
 ```cedar
-// Allow all read operations
+// Allow all read operations (one rule per tool: Cedar scopes take a single
+// resource constraint, so tools cannot share a rule with `||`).
 permit (
     principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep"],
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Read"
+);
+
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Glob"
+);
+
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Grep"
 );
 
 // Writes only within the project directory
 permit (
     principal,
-    action in [Action::"Write", Action::"Edit"],
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Write"
 ) when {
-    context.path_starts_with == "./"
+    context has input && context.input has file_path &&
+    context.input.file_path like "./*"
 };
 
-// Never allow destructive shell commands
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Edit"
+) when {
+    context has input && context.input has file_path &&
+    context.input.file_path like "./*"
+};
+
+// Never allow destructive shell commands (prefix/substring match so
+// arguments are caught)
 forbid (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) when {
-    context.command_pattern in ["rm -rf", "dd if=", "mkfs", "shred"]
+    context has input && context.input has command &&
+    (context.input.command like "*rm -rf*" ||
+     context.input.command like "dd *" ||
+     context.input.command like "*mkfs*" ||
+     context.input.command like "*shred*")
 };
 ```
 

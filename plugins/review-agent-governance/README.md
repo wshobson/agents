@@ -48,9 +48,9 @@ The default policy forbids (unless approved):
 - **`gh release create`, `gh release edit`**
 - **`gh api repos`** (catches arbitrary GitHub REST calls)
 - **GitLab / Bitbucket equivalents** (`glab mr comment` etc.)
-- **`git push` to `main`, `master`, `release`, `production`**
-- **Writes to `.github/workflows/`, `.gitlab-ci.yml`, `.circleci/config.yml`**
-- **`WebFetch` POSTs to `api.github.com`, `hooks.slack.com`, Discord**
+- **`git push` naming `main`, `master`, `release`, `production`**
+- **Writes to `.github/workflows/`, `.github/CODEOWNERS`, `.gitlab-ci.yml`, `.circleci/config.yml`, `buildkite/pipeline.yml`**
+- **`WebFetch` requests to `api.github.com`, `hooks.slack.com`, Discord** (the tool input carries no HTTP method, so all requests to these hosts are gated)
 
 Everything else passes through. This plugin is focused on the review
 surface; use it alongside [protect-mcp](../protect-mcp/) if you want
@@ -141,7 +141,7 @@ An agent working on a PR wants to post a review comment. Without approval:
 $ agent: gh pr review 42 --comment --body "LGTM"
   → PreToolUse hook runs
   → No ./.review-approved file, policy evaluates
-  → Cedar: forbid on context.command_pattern == "gh pr review"
+   → Cedar: forbid on context.input.command like "gh pr review*"
   → Exit 2: Claude Code blocks the tool call
   → PostToolUse runs, signs a receipt with decision=deny
 ```
