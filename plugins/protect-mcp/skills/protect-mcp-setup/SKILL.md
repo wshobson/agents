@@ -103,39 +103,54 @@ Writes the receipt to `./receipts/<timestamp>.json`.
 Create `./protect.cedar` at the project root:
 
 ```cedar
-// Allow read-only tools by default
-permit (
-    principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep", Action::"WebFetch"],
-    resource
-);
+// Allow read-only tools by default. Note: one rule per tool — Cedar scopes
+// accept a single resource constraint, so tools cannot share a rule via `||`.
+permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Read");
+permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Glob");
+permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Grep");
+permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"WebFetch");
 
 // Require explicit allow for destructive tools
 permit (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) when {
-    // Allow safe commands only
-    context.command_pattern in ["git", "npm", "ls", "cat", "echo", "pwd", "test"]
+    // Allow safe commands only (prefix-match so arguments are caught)
+    context has input && context.input has command &&
+    (context.input.command like "git*" || context.input.command like "npm*" ||
+     context.input.command like "ls*" || context.input.command like "cat*" ||
+     context.input.command like "echo*" || context.input.command like "pwd*" ||
+     context.input.command like "test*")
 };
 
 // Never allow recursive deletion
 forbid (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) when {
-    context.command_pattern == "rm -rf"
+    context has input && context.input has command &&
+    context.input.command like "*rm -rf*"
 };
 
 // Require confirmation for writes outside the project
 forbid (
     principal,
-    action in [Action::"Edit", Action::"Write"],
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Write"
 ) when {
-    context.path_starts_with != "."
+    context has input && context.input has file_path &&
+    !(context.input.file_path like "./*")
+};
+
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Edit"
+) when {
+    context has input && context.input has file_path &&
+    !(context.input.file_path like "./*")
 };
 ```
 

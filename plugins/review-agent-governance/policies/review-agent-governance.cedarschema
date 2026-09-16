@@ -1,26 +1,14 @@
-entity User;
-entity Resource;
+entity Agent;
+entity Tool;
 
-action "Bash" appliesTo {
-  principal: [User],
-  resource: [Resource],
-  context: { command_pattern: String, target_branch?: String }
-};
-
-action "Write" appliesTo {
-  principal: [User],
-  resource: [Resource],
-  context: { path_starts_with: String }
-};
-
-action "Edit" appliesTo {
-  principal: [User],
-  resource: [Resource],
-  context: { path_starts_with: String }
-};
-
-action "WebFetch" appliesTo {
-  principal: [User],
-  resource: [Resource],
-  context: { method: String, url_host: String }
+action "MCP::Tool::call" appliesTo {
+  principal: [Agent],
+  resource: [Tool],
+  context: {
+    input: {
+      command?: String,
+      file_path?: String,
+      url?: String
+    }
+  }
 };

@@ -44,10 +44,14 @@ When a user asks you to write a Cedar policy:
 2. **Start from safe defaults.** Prefer allow-listing over deny-listing.
    Begin with the minimum tools needed and add more as justified.
 
-3. **Use context attributes.** Cedar policies can inspect the tool input
-   via `context`. For `Bash`, use `context.command_pattern` to match command
-   families (git, npm, docker, rm). For `Edit`/`Write`, use
-   `context.path_starts_with` to restrict file system scope.
+3. **Use context attributes.** protect-mcp evaluates every tool call as
+   `action == Action::"MCP::Tool::call"` with `resource == Tool::"<tool>"`,
+   and exposes the tool input at `context.input`. For `Bash`, match command
+   families with `context.input.command like "git*"` (prefix-match so calls
+   with arguments are caught). For `Edit`/`Write`, restrict scope with
+   `context.input.file_path like "./*"`. For `WebFetch`, match
+   `context.input.url like "*example.com*"`. Guard optional fields first:
+   `context has input && context.input has command && ...`.
 
 4. **Write paired rules.** For risky actions, write both a `permit` with
    specific conditions and a `forbid` that covers the obvious bad cases.
@@ -64,25 +68,56 @@ When a user asks you to write a Cedar policy:
 ### Research project (read-only, safe)
 
 ```cedar
-// Allow all read-oriented tools
+// Allow all read-oriented tools (one rule per tool: Cedar scopes take a
+// single resource constraint, so tools cannot share a rule with `||`).
 permit (
     principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep"],
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Read"
+);
+
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Glob"
+);
+
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Grep"
 );
 
 // Web searches are fine, no fetch
 permit (
     principal,
-    action == Action::"WebSearch",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"WebSearch"
 );
 
 // No writes, no shell
 forbid (
     principal,
-    action in [Action::"Write", Action::"Edit", Action::"Bash", Action::"WebFetch"],
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Write"
+);
+
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Edit"
+);
+
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+);
+
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"WebFetch"
 );
 ```
 
@@ -92,38 +127,73 @@ forbid (
 // Reads are free
 permit (
     principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep"],
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Read"
+);
+
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Glob"
+);
+
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Grep"
 );
 
 // Writes only within the project directory
 permit (
     principal,
-    action in [Action::"Write", Action::"Edit"],
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Write"
 ) when {
-    context.path_starts_with == "./"
+    context has input && context.input has file_path &&
+    context.input.file_path like "./*"
 };
 
-// Safe shell commands only
 permit (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Edit"
 ) when {
-    context.command_pattern in [
-        "git", "npm", "pnpm", "yarn", "ls", "cat", "pwd",
-        "echo", "test", "node", "python", "make"
-    ]
+    context has input && context.input has file_path &&
+    context.input.file_path like "./*"
+};
+
+// Safe shell commands only (prefix-match so arguments are caught)
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    (context.input.command like "git*" ||
+     context.input.command like "npm*" ||
+     context.input.command like "pnpm*" ||
+     context.input.command like "yarn*" ||
+     context.input.command like "ls*" ||
+     context.input.command like "cat*" ||
+     context.input.command like "pwd*" ||
+     context.input.command like "echo*" ||
+     context.input.command like "test*" ||
+     context.input.command like "node*" ||
+     context.input.command like "python*" ||
+     context.input.command like "make*")
 };
 
 // Never destructive
 forbid (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) when {
-    context.command_pattern in ["rm -rf", "dd", "mkfs", "shred"]
+    context has input && context.input has command &&
+    (context.input.command like "*rm -rf*" ||
+     context.input.command like "dd *" ||
+     context.input.command like "*mkfs*" ||
+     context.input.command like "*shred*")
 };
 ```
 
@@ -133,8 +203,16 @@ forbid (
 // Reads require evidenced trust tier
 permit (
     principal,
-    action in [Action::"Read", Action::"Grep"],
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Read"
+) when {
+    context.trust_tier == "evidenced"
+};
+
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Grep"
 ) when {
     context.trust_tier == "evidenced"
 };
@@ -142,21 +220,26 @@ permit (
 // Writes only to approved paths
 permit (
     principal,
-    action == Action::"Write",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Write"
 ) when {
     context.trust_tier == "institutional" &&
-    context.path_starts_with in ["./deployments/", "./config/"]
+    context has input && context.input has file_path &&
+    (context.input.file_path like "./deployments/*" ||
+     context.input.file_path like "./config/*")
 };
 
 // Shell only for explicit deployment commands
 permit (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) when {
     context.trust_tier == "institutional" &&
-    context.command_pattern in ["kubectl apply", "terraform plan", "terraform apply"]
+    context has input && context.input has command &&
+    (context.input.command like "kubectl apply*" ||
+     context.input.command like "terraform plan*" ||
+     context.input.command like "terraform apply*")
 };
 
 // Block everything else
