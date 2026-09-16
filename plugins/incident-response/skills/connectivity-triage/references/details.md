@@ -154,12 +154,12 @@ If the process does not appear, confirm the process name or PID before inferring
 
 ### `curl -w` timing
 
-For an HTTP(S) endpoint, use a read-only request to the same host and safe path the incident concerns:
+For an HTTP(S) endpoint, use a read-only request to the same host and safe path the incident concerns. Confirm the endpoint is a complete `http://` or `https://` URL, preserve the incident's original scheme, and pass it as one quoted argument rather than interpolating arbitrary incident text into the shell command:
 
 ```bash
 curl -sS -o /dev/null \
   -w 'dns=%{time_namelookup} connect=%{time_connect} tls=%{time_appconnect} ttfb=%{time_starttransfer} total=%{time_total}\n' \
-  --connect-timeout 5 --max-time 15 https://<host>/<safe-path>
+  --connect-timeout 5 --max-time 15 '<affected-http-or-https-url>'
 ```
 
 Interpret the cumulative timings carefully:

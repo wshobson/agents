@@ -78,7 +78,7 @@ Use a short `ping` sample when ICMP is a useful signal:
 ping -c 5 <destination>
 ```
 
-If the destination is unresolved, test the resolved address separately only when doing so helps distinguish DNS from path failure.
+If the hostname resolves, test the returned address separately only when doing so helps distinguish DNS behavior from path failure. If resolution currently fails, use an address only when it was previously observed from trustworthy incident evidence; otherwise leave address-level reachability unknown.
 
 Use a bounded numeric traceroute when path visibility would reduce uncertainty:
 
@@ -100,12 +100,12 @@ Use it to confirm whether the process is opening connections, which endpoints it
 
 ### 6. Time the application path
 
-For HTTP(S), use curl phase timing against the actual affected endpoint when a safe read-only request is available:
+For HTTP(S), use curl phase timing against the actual affected endpoint when a safe read-only request is available. Confirm the incident-supplied endpoint is a complete `http://` or `https://` URL, preserve its original scheme, and pass the URL as one quoted argument rather than interpolating arbitrary incident text into the shell command:
 
 ```bash
 curl -sS -o /dev/null \
   -w 'dns=%{time_namelookup} connect=%{time_connect} tls=%{time_appconnect} ttfb=%{time_starttransfer} total=%{time_total}\n' \
-  --connect-timeout 5 --max-time 15 https://<host>/<safe-path>
+  --connect-timeout 5 --max-time 15 '<affected-http-or-https-url>'
 ```
 
 Interpret the phases comparatively. High time-to-first-byte can include server processing, so it is not proof of network latency.
