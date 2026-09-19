@@ -44,6 +44,18 @@
       "license": "MIT"
     },
     {
+      "name": "agent-trust-check",
+      "source": "./plugins/agent-trust-check",
+      "version": "1.0.0",
+      "description": "Read-only trust checks on AI agents before you delegate to them: settled-job reputation, settlement-proof verification and counterparty-risk controls from BlindOracle's public endpoints. Cannot spend.",
+      "author": {
+        "name": "Craig Brown",
+        "email": ""
+      },
+      "homepage": "https://craigmbrown.com/blindoracle/grok-bot-kit/",
+      "license": "MIT"
+    },
+    {
       "name": "api-scaffolding",
       "source": "./plugins/api-scaffolding",
       "version": "1.2.3",

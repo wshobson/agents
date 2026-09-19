@@ -41,6 +41,19 @@
       "category": "Coding"
     },
     {
+      "name": "agent-trust-check",
+      "description": "Read-only trust checks on AI agents before you delegate to them: settled-job reputation, settlement-proof verification and counterparty-risk controls from BlindOracle's public endpoints. Cannot spend.",
+      "source": {
+        "source": "local",
+        "path": "./plugins/agent-trust-check"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "api-scaffolding",
       "description": "REST and GraphQL API scaffolding, framework selection, backend architecture, and API generation",
       "source": {
