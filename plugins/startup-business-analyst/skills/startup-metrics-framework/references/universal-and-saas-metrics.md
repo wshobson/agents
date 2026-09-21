@@ -25,7 +25,7 @@ YoY Growth = (This Year ARR - Last Year ARR) / Last Year ARR
 
 - Seed stage: 15-20% MoM growth
 - Series A: 10-15% MoM growth, 3-5x YoY
-- Series B+: 100%+ YoY (Rule of 40)
+- Series B+: 100%+ YoY growth
 
 ### Unit Economics
 
