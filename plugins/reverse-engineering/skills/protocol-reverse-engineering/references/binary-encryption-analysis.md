@@ -56,7 +56,11 @@ def parse_messages(data: bytes):
     messages = []
 
     while offset < len(data):
+        if len(data) - offset < 12:
+            raise ValueError("truncated message header")
         header = MessageHeader.from_bytes(data[offset:])
+        if header.length > len(data) - offset - 12:
+            raise ValueError("truncated message payload")
         payload = data[offset+12:offset+12+header.length]
         messages.append((header, payload))
         offset += 12 + header.length
@@ -69,8 +73,12 @@ def parse_tlv(data: bytes):
     offset = 0
 
     while offset < len(data):
+        if len(data) - offset < 3:
+            raise ValueError("truncated TLV header")
         field_type = data[offset]
         length = struct.unpack(">H", data[offset+1:offset+3])[0]
+        if length > len(data) - offset - 3:
+            raise ValueError("truncated TLV value")
         value = data[offset+3:offset+3+length]
         fields.append((field_type, value))
         offset += 3 + length

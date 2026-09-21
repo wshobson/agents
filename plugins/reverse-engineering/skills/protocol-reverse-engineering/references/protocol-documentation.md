@@ -2,7 +2,7 @@
 
 ### Protocol Specification Template
 
-```markdown
+````markdown
 # Protocol Name Specification
 
 ## Overview
@@ -64,7 +64,7 @@ Client -> Server: DATA (payload)
 
 ```
 
-```
+````
 
 ### Wireshark Dissector (Lua)
 
@@ -90,6 +90,11 @@ local msg_types = {
 }
 
 function proto.dissector(buffer, pinfo, tree)
+    -- Reject incomplete captures before creating any packet ranges.
+    if buffer:len() < 12 then return 0 end
+    local length = buffer(8, 4):uint()
+    if length > buffer:len() - 12 then return 0 end
+
     pinfo.cols.protocol = "CUSTOM"
 
     local subtree = tree:add(proto, buffer())
@@ -103,7 +108,6 @@ function proto.dissector(buffer, pinfo, tree)
         " (" .. (msg_types[msg_type] or "Unknown") .. ")"
     )
 
-    local length = buffer(8, 4):uint()
     subtree:add(f_length, buffer(8, 4))
 
     if length > 0 then

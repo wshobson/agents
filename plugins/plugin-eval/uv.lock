@@ -593,6 +593,7 @@ api = [
     { name = "anthropic" },
 ]
 dev = [
+    { name = "markdown-it-py" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
@@ -607,6 +608,7 @@ llm = [
 requires-dist = [
     { name = "anthropic", marker = "extra == 'api'", specifier = ">=0.122.0" },
     { name = "claude-agent-sdk", marker = "extra == 'llm'", specifier = ">=0.2.138" },
+    { name = "markdown-it-py", marker = "extra == 'dev'", specifier = ">=4.0.0" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.1.1" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=1.4.0" },
