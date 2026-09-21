@@ -20,7 +20,7 @@ Every tool call (`Bash`, `Edit`, `Write`, `WebFetch`) is:
    public key.
 
 An auditor, regulator, or counterparty can verify the full chain later with a
-single CLI command (`npx @veritasacta/verify receipts/*.json`). No network
+single CLI command (`pnpm exec verify receipts/*.json`). No network
 call, no vendor lookup, no trust in the operator.
 
 ## When to use the pattern
@@ -174,8 +174,10 @@ signature. Modifying any field after signing invalidates the signature.
 
 ## Step 5: Verify the receipt chain
 
+First complete the [pinned setup](references/cryptography-and-integration.md#cicd-integration).
+
 ```bash
-npx @veritasacta/verify ./receipts/*.json
+pnpm exec verify ./receipts/*.json
 ```
 
 Exit codes:
@@ -199,7 +201,7 @@ r['decision'] = 'deny'
 open(path, 'w').write(json.dumps(r))
 "
 
-npx @veritasacta/verify ./receipts/*.json
+pnpm exec verify ./receipts/*.json
 ```
 
 The verifier exits with code `1` and reports which receipt failed. The

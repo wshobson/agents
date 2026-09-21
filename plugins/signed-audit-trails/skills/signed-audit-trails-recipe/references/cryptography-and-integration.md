@@ -3,8 +3,8 @@
 Three invariants make receipts verifiable offline across any conformant
 implementation:
 
-1. **JCS canonicalization (RFC 8785)** before signing. Keys sorted,
-   whitespace minimized, strings NFC-normalized. Two independent
+1. **JCS canonicalization ([RFC 8785](https://www.rfc-editor.org/rfc/rfc8785.html))** before signing. Property names are sorted by UTF-16 code units,
+   whitespace is minimized, and Unicode string data is preserved without NFC normalization. Two independent
    implementations produce byte-identical signing payloads for the same
    receipt content.
 2. **Ed25519 signatures (RFC 8032)** over the canonical bytes.
@@ -37,6 +37,8 @@ is the contract.
 Gate merges on receipt chain verification so no build lands with a broken
 evidence chain:
 
+Prerequisite: select and review a verifier release, add `@veritasacta/verify` as an exact-version devDependency (no range or tag), and commit `package.json` plus `pnpm-lock.yaml`. Also pin the project's pnpm version in `packageManager`. This guide does not nominate an unreviewed release. The workflow below refuses a missing/ranged verifier dependency, installs only from that committed lockfile, and invokes its local `verify` binary; verification itself does not download a package.
+
 ```yaml
 # .github/workflows/verify-receipts.yml
 name: Verify Decision Receipts
@@ -49,10 +51,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
+      - uses: pnpm/action-setup@v4
+      - name: Require an exact reviewed verifier dependency
+        run: |
+          node - <<'JS'
+          const version = require('./package.json').devDependencies?.['@veritasacta/verify'];
+          if (typeof version !== 'string' || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
+            throw new Error('Commit an exact reviewed @veritasacta/verify version and lockfile first');
+          }
+          JS
+      - name: Install locked verifier
+        run: pnpm install --frozen-lockfile --ignore-scripts --prod=false
       - name: Run governed agent
         run: python scripts/run_agent.py > receipts.jsonl
       - name: Verify receipt chain
-        run: npx @veritasacta/verify receipts.jsonl
+        run: pnpm exec verify receipts.jsonl
 ```
 
 Archive the receipts as an artifact so the chain survives beyond the job run:
@@ -63,7 +76,7 @@ Archive the receipts as an artifact so the chain survives beyond the job run:
         uses: actions/upload-artifact@v4
         with:
           name: decision-receipts
-          path: receipts/
+          path: receipts.jsonl
 ```
 
 ## Composition with SLSA provenance for agent-built software
