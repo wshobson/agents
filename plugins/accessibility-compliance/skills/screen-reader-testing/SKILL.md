@@ -52,6 +52,8 @@ Comprehensive Coverage:
 
 Before testing on macOS, read [VoiceOver setup, commands, and checklists](references/voiceover.md).
 
+For the required iOS Safari coverage, read [VoiceOver touch setup and gestures](references/voiceover-ios.md).
+
 Before testing with NVDA, read [NVDA setup, modes, commands, and test scripts](references/nvda.md).
 
 Before testing with JAWS or TalkBack, read [platform setup and commands](references/jaws-talkback.md).

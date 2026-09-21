@@ -24,7 +24,7 @@ L                  Next list
 Forms Mode:
 Enter              Enter forms mode
 Numpad +           Exit forms mode
-F5                 List form fields
+Insert + F5        List form fields
 
 Lists:
 Insert + F7        Link list
@@ -34,6 +34,8 @@ Insert + F5        Form field list
 Tables:
 Ctrl + Alt + Arrows Table navigation
 ```
+
+The JAWS shortcuts above follow [Freedom Scientific's shortcut reference](https://www.freedomscientific.com/training/jaws/hotkeys/).
 
 ## TalkBack (Android)
 
