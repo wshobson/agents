@@ -19,8 +19,7 @@ Every tool call (`Bash`, `Edit`, `Write`, `WebFetch`) is:
    JCS-canonical, hash-chained, and verifiable offline by anyone with the
    public key.
 
-An auditor, regulator, or counterparty can verify the full chain later with a
-single CLI command (`pnpm exec verify receipts/*.json`). No network
+Auditors can verify a producer-ordered JSONL chain export offline. No network
 call, no vendor lookup, no trust in the operator.
 
 ## When to use the pattern
@@ -174,34 +173,27 @@ signature. Modifying any field after signing invalidates the signature.
 
 ## Step 5: Verify the receipt chain
 
-First complete the [pinned setup](references/cryptography-and-integration.md#cicd-integration).
+First complete the [pinned setup and verification procedure](references/cryptography-and-integration.md#verifying-receipts-and-chains), including a nonempty ordered JSONL export from the receipt producer.
 
 ```bash
-pnpm exec verify ./receipts/*.json
+pnpm exec verify --replay-chain receipts.jsonl --key "${VERIFY_PUBLIC_KEY:?Set public key}"
 ```
-
-Exit codes:
-
-| Code | Meaning |
-|------|---------|
-| `0`  | All receipts verified; chain intact |
-| `1`  | A receipt failed signature verification (tampered, or wrong key) |
-| `2`  | A receipt was malformed |
 
 ## Step 6: Demonstrate tamper detection
 
-Modify any receipt's `decision` field from `allow` to `deny`:
+Use a disposable synthetic test receipt; change `decision` from `allow` to `deny`:
 
 ```bash
-python3 -c "
+receipt=./receipts/receipt-to-test.json # Set to the test receipt.
+RECEIPT_PATH="$receipt" python3 -c "
 import json, os
-path = './receipts/' + sorted(os.listdir('./receipts'))[-1]
+path = os.environ['RECEIPT_PATH']
 r = json.loads(open(path).read())
 r['decision'] = 'deny'
 open(path, 'w').write(json.dumps(r))
 "
 
-pnpm exec verify ./receipts/*.json
+pnpm exec verify "$receipt" --key "${VERIFY_PUBLIC_KEY:?Set public key}"
 ```
 
 The verifier exits with code `1` and reports which receipt failed. The

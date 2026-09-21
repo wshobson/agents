@@ -32,12 +32,54 @@ A receipt produced by any of them verifies against
 The auditor does not need to trust the operator's tooling choice: the format
 is the contract.
 
+## Verifying receipts and chains
+
+First complete the [exact dependency and lockfile prerequisite](#cicd-integration).
+Set `VERIFY_PUBLIC_KEY` to the independently trusted signer public key (hex),
+obtained through a trusted channel rather than copied from an untrusted receipt.
+The verifier's [CLI argument parser](https://github.com/VeritasActa/verify/blob/main/cli.js)
+accepts one positional file; a shell glob expanding to multiple files is not a
+batch-verification interface. To inspect one receipt, pass its explicit path:
+
+```bash
+pnpm exec verify ./receipts/receipt-to-test.json --key "${VERIFY_PUBLIC_KEY:?Set public key}"
+```
+
+For a chain, the receipt producer must export `receipts.jsonl` in the actual
+chain order, with one complete receipt JSON object per line. Do not infer chain
+order from filenames or concatenate pretty-printed JSON files. Reject empty or whitespace-only exports before using that ordered
+export with the dedicated replay mode:
+
+```bash
+python3 - <<'PY' &&
+from pathlib import Path
+with Path("receipts.jsonl").open(encoding="utf-8") as receipts:
+    if not any(line.strip() for line in receipts):
+        raise SystemExit("Receipt export must contain at least one record")
+PY
+pnpm exec verify --replay-chain receipts.jsonl --key "${VERIFY_PUBLIC_KEY:?Set public key}"
+```
+
+Use the verification-key options required by the reviewed release and the
+independently trusted public key. A successful single-receipt check establishes
+that receipt's validity, not completeness or linkage of an entire collection.
+Replay validity likewise does not establish independently expected completeness;
+compare the export with the expected run or event inventory separately.
+
+Exit codes depend on mode. The reviewed upstream CLI's single-file path uses
+`0` for success, `1` for failed verification, and `2` for undecidable input or
+execution errors. Its replay path returns `0` for a valid aggregate and `1` for
+an invalid aggregate, including malformed JSONL rows or failed receipt checks;
+fatal execution errors return `2`. Treat every nonzero result as a failed gate,
+and inspect diagnostics rather than assuming every `1` proves signature tampering.
+Recheck these details when choosing the pinned release.
+
 ## CI/CD integration
 
 Gate merges on receipt chain verification so no build lands with a broken
 evidence chain:
 
-Prerequisite: select and review a verifier release, add `@veritasacta/verify` as an exact-version devDependency (no range or tag), and commit `package.json` plus `pnpm-lock.yaml`. Also pin the project's pnpm version in `packageManager`. This guide does not nominate an unreviewed release. The workflow below refuses a missing/ranged verifier dependency, installs only from that committed lockfile, and invokes its local `verify` binary; verification itself does not download a package.
+Prerequisite: select and review a verifier release, add `@veritasacta/verify` as an exact-version devDependency (no range or tag), and commit `package.json` plus `pnpm-lock.yaml`. Also pin the project's pnpm version in `packageManager` and configure the independently trusted public key in the repository variable `RECEIPT_PUBLIC_KEY` (public, not a secret). This guide does not nominate an unreviewed release. The workflow below refuses a missing/ranged verifier dependency, installs only from that committed lockfile, and invokes its local `verify` binary; verification itself does not download a package.
 
 ```yaml
 # .github/workflows/verify-receipts.yml
@@ -65,7 +107,16 @@ jobs:
       - name: Run governed agent
         run: python scripts/run_agent.py > receipts.jsonl
       - name: Verify receipt chain
-        run: pnpm exec verify --replay-chain receipts.jsonl
+        env:
+          VERIFY_PUBLIC_KEY: ${{ vars.RECEIPT_PUBLIC_KEY }}
+        run: |
+          python3 - <<'PY' &&
+          from pathlib import Path
+          with Path("receipts.jsonl").open(encoding="utf-8") as receipts:
+              if not any(line.strip() for line in receipts):
+                  raise SystemExit("Receipt export must contain at least one record")
+          PY
+          pnpm exec verify --replay-chain receipts.jsonl --key "${VERIFY_PUBLIC_KEY:?Set public key}"
 ```
 
 The verifier's [JSONL chain mode](https://github.com/VeritasActa/verify#enterprise-features) is selected explicitly with `--replay-chain`.
