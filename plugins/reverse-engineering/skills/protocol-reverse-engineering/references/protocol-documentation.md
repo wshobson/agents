@@ -13,7 +13,7 @@ Brief description of protocol purpose and design.
 
 - Layer: TCP/UDP
 - Port: XXXX
-- Encryption: TLS 1.2+
+- Encryption: TLS for TCP; DTLS for UDP (specify the negotiated protocol version)
 
 ## Message Format
 

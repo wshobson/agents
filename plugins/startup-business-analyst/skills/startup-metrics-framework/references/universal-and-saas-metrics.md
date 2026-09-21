@@ -199,6 +199,10 @@ Rule of 40 = Revenue Growth Rate% + Profit Margin%
 Quick Ratio = (New MRR + Expansion MRR) / (Churned MRR + Contraction MRR)
 ```
 
+If Churned MRR + Contraction MRR is zero, report **N/A (no losses)**,
+including when the numerator is also zero. Do not apply the numeric benchmarks
+to that period; report new and expansion MRR separately.
+
 **Benchmarks:**
 
 - > 4.0 = Healthy growth
