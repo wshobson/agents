@@ -592,7 +592,10 @@ class HarnessAdapter(ABC):
 
     def write_bytes(self, rel_path: str | Path, content: bytes) -> Path:
         """Binary counterpart of `write` — for mirroring non-UTF-8 reference assets."""
-        target = (self.output_root / rel_path).resolve()
+        unresolved = self.output_root / rel_path
+        # Resolve trusted parents for containment, retaining the leaf so an
+        # existing symlink is replaced rather than redirected to its referent.
+        target = unresolved.parent.resolve() / unresolved.name
         root = self.output_root.resolve()
         if not target.is_relative_to(root):
             raise ValueError(f"refusing to write outside output_root: {target} (root={root})")

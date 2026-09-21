@@ -2215,6 +2215,19 @@ class TestPiAdapter:
 class TestBinaryMirrorPublication:
     """A destination leaf swap must not redirect support bytes to an external file."""
 
+    @pytest.mark.parametrize("inside", [True, False])
+    def test_mirror_replaces_existing_leaf_symlink(self, tmp_path, inside):
+        output = tmp_path / "output"
+        output.mkdir()
+        victim = (output if inside else tmp_path) / "victim.bin"
+        victim.write_bytes(b"keep victim")
+        target = output / "asset.bin"
+        target.symlink_to(victim)
+        CopilotAdapter(output_root=output).write_bytes("asset.bin", b"new bytes")
+        assert victim.read_bytes() == b"keep victim"
+        assert not target.is_symlink()
+        assert target.read_bytes() == b"new bytes"
+
     def test_mirror_replaces_late_symlink_without_touching_victim(self, tmp_path, monkeypatch):
         output = tmp_path / "output"
         output.mkdir()

@@ -3,7 +3,7 @@
 ### Essential Commands
 
 ```
-Start: Desktop shortcut or Ctrl + Alt + J
+Start: Desktop shortcut (Ctrl + Alt + J only if configured on that shortcut)
 Virtual Cursor: Auto-enabled in browsers
 
 Navigation:
@@ -43,7 +43,7 @@ The JAWS shortcuts above follow [Freedom Scientific's shortcut reference](https:
 
 ```
 Enable: Settings → Accessibility → TalkBack
-Toggle: Hold both volume buttons 3 seconds
+Toggle: With the TalkBack volume-key shortcut enabled, hold both volume buttons
 ```
 
 ### Gestures
@@ -55,7 +55,7 @@ Previous: Swipe left
 Activate: Double tap
 Scroll: Two finger swipe
 
-Reading Controls (swipe up then right):
+Reading Controls (swipe up then down, or down then up, to select):
 - Headings
 - Links
 - Controls
@@ -64,3 +64,7 @@ Reading Controls (swipe up then right):
 - Lines
 - Paragraphs
 ```
+
+After selecting a reading control, swipe down or up with one finger to navigate
+using it. See Google's [TalkBack gestures](https://support.google.com/accessibility/android/answer/6151827)
+and [accessibility shortcut setup](https://support.google.com/accessibility/android/answer/7650693).
