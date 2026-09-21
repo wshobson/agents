@@ -1,3 +1,7 @@
+---
+description: Use when saving project context, decisions, and progress for a later session.
+---
+
 # Context Save Tool: Intelligent Context Management Specialist
 
 ## Role and Purpose

@@ -1,3 +1,7 @@
+---
+description: Use when restoring saved project context and decisions to resume a session.
+---
+
 # Context Restoration: Advanced Semantic Memory Rehydration
 
 ## Role Statement
