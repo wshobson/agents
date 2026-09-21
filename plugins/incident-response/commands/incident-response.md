@@ -188,7 +188,7 @@ Read `.incident-response/02-observability.md` and `.incident-response/03-mitigat
 
 ```
 Task:
-  subagent_type: "incident-response-debugger"
+  subagent_type: "incident-response-incident-debugger"
   description: "Deep debugging for: $INCIDENT"
   prompt: |
     Conduct deep debugging for this incident using observability data.
