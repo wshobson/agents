@@ -231,9 +231,9 @@ missing policy is treated as a hard failure.
 
 ## Related in this marketplace
 
-- [`protect-mcp`](../../protect-mcp/) — the runtime hook implementation
+- [`protect-mcp`](https://github.com/wshobson/agents/tree/main/plugins/protect-mcp) — the runtime hook implementation
   (use this plugin in production)
-- [`review-agent-governance`](../../review-agent-governance/) — require
+- [`review-agent-governance`](https://github.com/wshobson/agents/tree/main/plugins/review-agent-governance) — require
   human approval before review-surface actions; composes with protect-mcp
 
 ## References
