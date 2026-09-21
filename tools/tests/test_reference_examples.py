@@ -1,7 +1,9 @@
 """Exercise the documented parsers and nested Markdown fences as published."""
 
 import re
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 from markdown_it import MarkdownIt
@@ -10,38 +12,48 @@ ROOT = Path(__file__).resolve().parents[2]
 REFERENCES = ROOT / "plugins/reverse-engineering/skills/protocol-reverse-engineering/references"
 
 
-def parser_namespace() -> dict:
+def parser_namespace() -> dict[str, object]:
     """Load only the actual Python parser example, without other tutorial snippets."""
     text = (REFERENCES / "binary-encryption-analysis.md").read_text()
     section = text.split("### Python Protocol Parser", 1)[1]
     match = re.search(r"```python\n(.*?)\n```", section, re.DOTALL)
     assert match is not None
-    namespace = {"__name__": __name__}
+    namespace: dict[str, object] = {"__name__": __name__}
     exec(compile(match[1], "documented-parser", "exec", dont_inherit=True), namespace)
     return namespace
 
 
+def parser_function(name: str) -> Callable[[bytes], list[Any]]:
+    """Assert the dynamic example binding before applying its documented signature."""
+    value = parser_namespace()[name]
+    assert callable(value)
+    return cast(Callable[[bytes], list[Any]], value)
+
+
 @pytest.mark.parametrize("data", [b"x", b"x" * 11, b"PROT\x00\x01\x00\x01\x00\x00\x00\x02x"])
 def test_message_parser_rejects_truncated_records(data: bytes):
+    parser = parser_function("parse_messages")
     with pytest.raises(ValueError, match="truncated"):
-        parser_namespace()["parse_messages"](data)
+        parser(data)
 
 
 @pytest.mark.parametrize("data", [b"\x01", b"\x01\x00", b"\x01\x00\x02x"])
 def test_tlv_parser_rejects_truncated_records(data: bytes):
+    parser = parser_function("parse_tlv")
     with pytest.raises(ValueError, match="truncated"):
-        parser_namespace()["parse_tlv"](data)
+        parser(data)
 
 
 def test_documented_parsers_accept_complete_and_empty_inputs():
-    ns = parser_namespace()
+    parse_messages = parser_function("parse_messages")
+    parse_tlv = parser_function("parse_tlv")
     record = b"PROT\x00\x01\x00\x02\x00\x00\x00\x01x"
-    result = ns["parse_messages"](record + record)
+    result = parse_messages(record + record)
     assert len(result) == 2
     assert result[0][0].length == 1 and result[0][1] == b"x"
-    assert ns["parse_messages"](b"") == []
-    assert ns["parse_tlv"](b"\x01\x00\x01x\x02\x00\x00") == [(1, b"x"), (2, b"")]
-    assert ns["parse_tlv"](b"") == []
+    assert parse_messages(b"") == []
+    assert parse_tlv(b"\x01\x00\x01x\x02\x00\x00") == [(1, b"x"), (2, b"")]
+    assert parse_tlv(b"") == []
 
 
 def test_protocol_template_and_lua_have_distinct_complete_fences():
