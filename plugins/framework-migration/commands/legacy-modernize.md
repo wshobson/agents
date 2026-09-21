@@ -67,7 +67,7 @@ Extract the target description from `$ARGUMENTS` (everything before the flags). 
 
 ### Step 1: Comprehensive Legacy System Analysis
 
-Use the Task tool with subagent_type="framework-migration-legacy-modernizer-fable":
+Delegate to the legacy-modernizer agent with subagent_type="framework-migration-legacy-modernizer-fable":
 
 ```
 Task:
@@ -548,7 +548,7 @@ Do NOT proceed to Phase 5 until the user approves.
 
 Read `.legacy-modernize/01-legacy-assessment.md`, `.legacy-modernize/08-first-wave.md`, and `.legacy-modernize/11-rollout.md`.
 
-Use the Task tool with subagent_type="framework-migration-legacy-modernizer-fable":
+Delegate to the legacy-modernizer agent with subagent_type="framework-migration-legacy-modernizer-fable":
 
 ```
 Task:
