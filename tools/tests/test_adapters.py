@@ -2267,3 +2267,112 @@ class TestBinaryMirrorPublication:
         assert target.read_bytes() == b"new"
         assert stat.S_IMODE(target.stat().st_mode) == previous
         assert list(tmp_path.iterdir()) == [target]
+
+
+class TestMirrorSourceValidation:
+    """Source identity must remain regular and stable before any descriptor read."""
+
+    def test_source_swap_rejected_even_without_optional_open_flags(self, tmp_path, monkeypatch):
+        import os
+        from contextlib import contextmanager
+        from types import SimpleNamespace
+
+        source = tmp_path / "source.bin"
+        source.write_bytes(b"intended")
+        victim = tmp_path / "private.bin"
+        victim.write_bytes(b"do not copy")
+        output = tmp_path / "output"
+        output.mkdir()
+        original_lstat = Path.lstat
+        original_fdopen = os.fdopen
+        swapped = False
+
+        def swap_after_lstat(path, *args, **kwargs):
+            nonlocal swapped
+            result = original_lstat(path, *args, **kwargs)
+            if path == source and not swapped:
+                swapped = True
+                source.unlink()
+                source.symlink_to(victim)
+            return result
+
+        @contextmanager
+        def refuse_content_read(fd, mode):
+            with original_fdopen(fd, mode) as stream:
+
+                def read():
+                    raise AssertionError("unvalidated source content was read")
+
+                yield SimpleNamespace(fileno=stream.fileno, read=read)
+
+        monkeypatch.setattr(os, "fdopen", refuse_content_read)
+        monkeypatch.setattr(Path, "lstat", swap_after_lstat)
+        monkeypatch.setattr(os, "O_NOFOLLOW", 0, raising=False)
+        monkeypatch.setattr(os, "O_NONBLOCK", 0, raising=False)
+        with pytest.raises(ValueError, match="source"):
+            CopilotAdapter(output_root=output).mirror_file(source, "asset.bin")
+        assert victim.read_bytes() == b"do not copy"
+        assert list(output.iterdir()) == []
+
+    def test_regular_binary_source_is_copied(self, tmp_path):
+        source = tmp_path / "source.bin"
+        source.write_bytes(b"\xff\x00\x80")
+        output = tmp_path / "output"
+        CopilotAdapter(output_root=output).mirror_file(source, "asset.bin")
+        assert (output / "asset.bin").read_bytes() == b"\xff\x00\x80"
+
+    @pytest.mark.parametrize("replace", [False, True])
+    def test_changed_source_is_not_published(self, tmp_path, monkeypatch, replace):
+        import os
+        from contextlib import contextmanager
+        from types import SimpleNamespace
+
+        source = tmp_path / "source.bin"
+        source.write_bytes(b"original")
+        output = tmp_path / "output"
+        output.mkdir()
+        original_fdopen = os.fdopen
+
+        @contextmanager
+        def change_after_read(fd, mode):
+            with original_fdopen(fd, mode) as stream:
+
+                def read():
+                    data = stream.read()
+                    if replace:
+                        source.unlink()
+                    source.write_bytes(b"changed source contents")
+                    return data
+
+                yield SimpleNamespace(fileno=stream.fileno, read=read)
+
+        monkeypatch.setattr(os, "fdopen", change_after_read)
+        with pytest.raises(ValueError, match="source changed"):
+            CopilotAdapter(output_root=output).mirror_file(source, "asset.bin")
+        assert list(output.iterdir()) == []
+
+    def test_copilot_rejects_source_swapped_after_symlink_check(
+        self, synthetic_plugin, output_root, tmp_path, monkeypatch
+    ):
+        source = synthetic_plugin.skills[0].dir / "asset.bin"
+        source.write_bytes(b"intended")
+        victim = tmp_path / "private.bin"
+        victim.write_bytes(b"do not copy")
+        original = Path.is_symlink
+        swapped = False
+
+        def swap_after_check(path):
+            nonlocal swapped
+            result = original(path)
+            if path == source and not swapped:
+                swapped = True
+                source.unlink()
+                source.symlink_to(victim)
+            return result
+
+        monkeypatch.setattr(Path, "is_symlink", swap_after_check)
+        with pytest.raises(ValueError, match="source"):
+            CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        assert swapped
+        assert not list(output_root.rglob("asset.bin"))
+        assert victim.read_bytes() == b"do not copy"

@@ -26,6 +26,41 @@ def read_file(path: Path) -> str:
         return ""
 
 
+def _read_regular_source(src: Path) -> bytes:
+    """Read a stable regular source descriptor without trusting a checked leaf path.
+
+    Parents remain trusted. Optional no-follow/nonblocking flags harden POSIX;
+    the descriptor identity check precedes reads even when those flags are absent.
+    """
+
+    def identity(info: os.stat_result) -> tuple[int, ...]:
+        return (
+            info.st_dev,
+            info.st_ino,
+            info.st_mode,
+            info.st_size,
+            info.st_mtime_ns,
+            info.st_ctime_ns,
+        )
+
+    expected = src.lstat()
+    if not stat.S_ISREG(expected.st_mode) or not expected.st_ino:
+        raise ValueError(f"refusing non-regular or unidentified mirror source: {src}")
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0)
+    flags |= getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+    fd = os.open(src, flags)
+    with os.fdopen(fd, "rb") as source:
+        opened = os.fstat(source.fileno())
+        if identity(opened) != identity(expected) or identity(src.lstat()) != identity(opened):
+            raise ValueError(f"mirror source changed before read: {src}")
+        content = source.read()
+        if identity(os.fstat(source.fileno())) != identity(opened):
+            raise ValueError(f"mirror source changed during read: {src}")
+    if identity(src.lstat()) != identity(opened):
+        raise ValueError(f"mirror source changed after read: {src}")
+    return content
+
+
 def read_plugin_json(plugin_dir: Path) -> dict:
     """Read and parse plugin.json from plugin directory."""
     path = plugin_dir / ".claude-plugin" / "plugin.json"
@@ -598,7 +633,7 @@ class HarnessAdapter(ABC):
 
         Use this for `references/` assets (PDFs, images, etc.) that may not be UTF-8 text.
         """
-        return self.write_bytes(rel_path, src.read_bytes())
+        return self.write_bytes(rel_path, _read_regular_source(src))
 
     def strip_claude_tool_refs(self, body: str, tool_case: str = "lower") -> str:
         """Rewrite Claude Code tool names embedded in prose into harness-neutral verbs.
