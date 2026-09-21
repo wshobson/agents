@@ -78,18 +78,20 @@ CAC Payback = CAC / (ARPU × Gross Margin%)
 **Burn Rate**
 
 ```
-Monthly Burn = Monthly Revenue - Monthly Expenses
+Monthly Net Burn = Monthly Expenses - Monthly Revenue
 ```
 
-Negative burn = losing money (typical early-stage)
+Positive net burn means the business is losing cash (typical early-stage).
 
 **Runway**
 
 ```
-Runway (months) = Cash Balance / Monthly Burn Rate
+Runway (months) = Cash Balance / Positive Monthly Net Burn
 ```
 
 **Target:** Always maintain 12-18 months runway
+
+When net burn is zero or negative, this formula has no finite burn-based runway; report break-even or cash generation instead of dividing by zero or reporting negative months.
 
 **Burn Multiple**
 
