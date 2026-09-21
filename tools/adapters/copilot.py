@@ -140,6 +140,18 @@ class CopilotAdapter(HarnessAdapter):
         )
         result.written.append(self.write(skill_dir / "SKILL.md", content))
 
+        # References and binary assets must travel with the skill that links them.
+        # Keep generated files in the prune set and do not distribute hidden data
+        # or follow aliases outside the source skill's support tree.
+        for src in sorted(skill.dir.rglob("*")):
+            rel = src.relative_to(skill.dir)
+            if rel == Path("SKILL.md") or any(part.startswith(".") for part in rel.parts):
+                continue
+            if src.is_symlink():
+                raise ValueError(f"refusing skill support symlink: {src}")
+            if src.is_file():
+                result.written.append(self.mirror_file(src, skill_dir / rel))
+
     def _emit_command_as_skill(
         self, plugin: PluginSource, command: CommandSource, result: EmitResult
     ) -> None:

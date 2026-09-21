@@ -11,6 +11,7 @@ import json
 import re
 from pathlib import Path
 
+import pytest
 import yaml
 
 # tools.adapters.* imports happen via the conftest sys.path injection
@@ -1221,6 +1222,57 @@ class TestAntigravityAdapter:
 
 
 class TestCopilotAdapter:
+    def test_mirrors_nested_binary_support_and_prunes_removed_files(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        """Skill links survive generation and stale support files remain prune-owned."""
+        from tools.generate import prune_orphans
+
+        skill = synthetic_plugin.skills[0]
+        source = skill.dir / "references" / "nested" / "sample.bin"
+        source.parent.mkdir(parents=True)
+        source.write_bytes(b"\xff\x00\x89PNG\r\n")
+        hidden = skill.dir / ".private"
+        hidden.mkdir()
+        (hidden / "notes.md").write_text("do not distribute")
+        adapter = CopilotAdapter(output_root=output_root)
+        result = adapter.emit_plugin(synthetic_plugin)
+        target = (
+            output_root
+            / ".copilot"
+            / "skills"
+            / "demo__hello"
+            / "references"
+            / "nested"
+            / "sample.bin"
+        )
+        assert target.read_bytes() == source.read_bytes()
+        assert target in result.written
+        assert not (target.parents[2] / ".private").exists()
+        assert target not in prune_orphans("copilot", output_root, set(result.written))
+        source.unlink()
+        refreshed = adapter.emit_plugin(synthetic_plugin)
+        assert target in prune_orphans("copilot", output_root, set(refreshed.written))
+        assert not target.exists()
+
+    @pytest.mark.parametrize("directory", [False, True])
+    def test_rejects_support_symlinks_outside_skill(
+        self, synthetic_plugin: PluginSource, output_root: Path, tmp_path: Path, directory: bool
+    ):
+        """A linked file cannot pull unrelated local data into a generated skill."""
+        outside = tmp_path / "outside.txt"
+        if directory:
+            outside.mkdir()
+            (outside / "private.txt").write_text("outside source boundary")
+        else:
+            outside.write_text("outside source boundary")
+        (synthetic_plugin.skills[0].dir / "linked.txt").symlink_to(
+            outside, target_is_directory=directory
+        )
+        with pytest.raises(ValueError, match="symlink"):
+            CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        assert not (output_root / ".copilot" / "skills" / "demo__hello" / "linked.txt").exists()
+
     def test_emits_agent_profile(self, synthetic_plugin: PluginSource, output_root: Path):
         adapter = CopilotAdapter(output_root=output_root)
         result = adapter.emit_plugin(synthetic_plugin)
