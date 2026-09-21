@@ -7,7 +7,7 @@ description: Step-by-step cookbook for setting up cryptographically signed audit
 
 Cookbook-style walkthrough for cryptographically signed receipts on every
 Claude Code tool call. This is the teaching skill. For the runtime
-implementation, install the [`protect-mcp`](../../protect-mcp/) plugin.
+implementation, install the [`protect-mcp`](https://github.com/wshobson/agents/tree/main/plugins/protect-mcp) plugin.
 
 ## What this gives you
 
