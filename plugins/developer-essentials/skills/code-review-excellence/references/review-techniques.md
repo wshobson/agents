@@ -51,12 +51,12 @@ the performance impact with 100k users?"
 
 ❌ "You must change this to use async/await"
 ✅ "Suggestion: async/await might make this more readable:
-`typescript
+```typescript
     async function fetchUser(id: string) {
         const user = await db.query('SELECT * FROM users WHERE id = ?', id);
         return user;
     }
-    `
+```
 What do you think?"
 
 ❌ "Extract this into a function"

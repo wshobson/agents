@@ -47,10 +47,8 @@ Brief description of protocol purpose and design.
 ```
 
 [INIT] --HELLO--> [WAIT_ACK] --HELLO_ACK--> [CONNECTED]
-|
-DATA/DATA
-|
-[CLOSED] <--CLOSE--+
+[CONNECTED] --DATA--> [CONNECTED]
+[CONNECTED] --CLOSE--> [CLOSED]
 
 ```
 

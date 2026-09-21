@@ -4,8 +4,8 @@
 
 ```
 Download: nvaccess.org
-Start: Ctrl + Alt + N
-Stop: Insert + Q
+Start: Ctrl + Alt + N (when the Windows shortcut is enabled)
+Quit: Insert + Q
 ```
 
 ### Essential Commands
