@@ -26,6 +26,7 @@ Adapted for this marketplace, in the PR that added the plugin:
 - Removed the `install: npx skills add axelfreeman/marketing-mindset` frontmatter field and the `npx marketing-mindset utm` command line — the plugin must stand on its own here instead of pointing at an external repo. The UTM rules themselves are kept, applied by hand at publish time.
 - Rewrote the `scripts/first-client-gate.py` prompt as prose in `references/framework.md`, because only `references/` is mirrored to every harness.
 - Added an **Accuracy Boundary** section (with matching verification and anti-pattern lines) so the skill's bold-positioning language cannot be read as permission to exaggerate claims: presentation may be bold, but claims must be truthful and substantiated, and plans and hypotheses must be labelled as such. The upstream repository carries the same clarification in its own `AGENTS.md`.
+- Copy guidance tightened: competitor descriptions are for positioning research and the copy is written original; third-party wording is reused only with confirmed permission or an applicable licence.
 - Split the body across `SKILL.md` and `references/` per `docs/authoring.md`, and dropped the upstream "Spread the Word" promotion section.
 
 Every other upstream section is present verbatim.

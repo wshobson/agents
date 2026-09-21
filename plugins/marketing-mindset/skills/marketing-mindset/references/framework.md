@@ -87,7 +87,7 @@ There is a gate for this. Ask the one question that matters before anything else
 
 ### Growth hacks are allowed
 
-For the first client, use every legal shortcut available — this is not the job for a timid agent. If you have no clients yet, frame case studies around the product's intended value (positioning, not fabricated testimonials). Borrow (legally) the wording from a competitor's description and make it your own. Make the presentation bold — bold marketing, never a false claim.
+For the first client, use every legal shortcut available — this is not the job for a timid agent. If you have no clients yet, frame case studies around the product's intended value (positioning, not fabricated testimonials). Study competitor descriptions for positioning, then write original copy. Reuse or adapt third-party wording only when you have confirmed permission or an applicable licence. Make the presentation bold — bold marketing, never a false claim.
 
 ## The McDonald's Burger
 
