@@ -50,8 +50,9 @@ compliance for financial transactions.
 ### Option 3: MongoDB
 
 - **Pros**: Flexible schema, native JSON, horizontal scaling
-- **Cons**: No ACID for multi-document transactions (at decision time),
-  team has limited experience, requires schema design discipline
+- **Cons**: [Multi-document transactions](https://www.mongodb.com/docs/manual/core/write-operations-atomicity/)
+  are supported on replica sets and sharded clusters but can cost more than
+  single-document writes; the team has limited experience and needs schema design discipline.
 
 ## Decision
 
