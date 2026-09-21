@@ -36,7 +36,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 
 ### Plugin Distribution
 
-- **94 marketplace plugins** (92 local + 2 external via git-subdir) optimized for specific use cases
+- **95 marketplace plugins** (93 local + 2 external via git-subdir) optimized for specific use cases
 - **Skills-only distribution** through `gh skill install wshobson/agents` and `npx skills add wshobson/agents`, which read `plugins/*/skills/` directly (see [harnesses.md](./harnesses.md#skills-only-installers))
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
@@ -70,11 +70,11 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**183 Local Agent Skills**
+**184 Local Agent Skills**
 
 - Modular knowledge packages
 - Progressive disclosure architecture
-- Domain-specific expertise across 51 plugins
+- Domain-specific expertise across 52 plugins
 - Spec-compliant (Anthropic Agent Skills Specification)
 
 ## Repository Structure
@@ -82,7 +82,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ```
 claude-agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (94 plugins)
+│   └── marketplace.json          # Marketplace catalog (95 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -195,7 +195,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 183 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 184 skills.
 
 ## Model Configuration Strategy
 
@@ -394,5 +394,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 94 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 95 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows

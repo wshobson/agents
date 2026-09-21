@@ -26,7 +26,7 @@ claude-agents/
 ├── .claude-plugin/marketplace.json # Plugin registry (source of truth)
 ├── .antigravity/plugins/<p>/       # Generated Antigravity CLI plugins (gitignored)
 ├── .pi/{skills,prompts,agents}/    # Generated Pi skills, prompt templates, agents (gitignored)
-├── plugins/                        # SOURCE OF TRUTH (92 local plugins; 2 external in marketplace)
+├── plugins/                        # SOURCE OF TRUTH (93 local plugins; 2 external in marketplace)
 │   └── <name>/
 │       ├── .claude-plugin/plugin.json
 │       ├── agents/*.md

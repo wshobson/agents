@@ -1,0 +1,12 @@
+{
+  "name": "marketing-mindset",
+  "displayName": "Marketing Mindset",
+  "version": "0.3.0",
+  "description": "A professional marketer's operating mindset for marketing, growth, and client-acquisition work \u2014 competitor-first sources of truth, a three-month horizon, fast testable hypotheses, by-hand first clients, and honest feedback instead of tactical templates.",
+  "author": {
+    "name": "Axel Freeman",
+    "email": ""
+  },
+  "homepage": "https://github.com/axelfreeman/marketing-mindset",
+  "license": "MIT"
+}

@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Production-ready workflow orchestration with 92 marketplace plugins, 202 local specialized agents, and 181 local skills - optimized for granular installation and minimal token usage",
+    "description": "Production-ready workflow orchestration with 95 marketplace plugins, 202 local specialized agents, and 184 local skills - optimized for granular installation and minimal token usage",
     "version": "1.7.1"
   },
   "plugins": [
@@ -685,6 +685,19 @@
         "email": "seth@major7apps.com"
       },
       "license": "MIT"
+    },
+    {
+      "name": "marketing-mindset",
+      "source": "./plugins/marketing-mindset",
+      "version": "0.3.0",
+      "description": "A professional marketer's operating mindset for marketing, growth, and client-acquisition work \u2014 competitor-first sources of truth, a three-month horizon, fast testable hypotheses, by-hand first clients, and honest feedback instead of tactical templates.",
+      "author": {
+        "name": "Axel Freeman",
+        "email": ""
+      },
+      "homepage": "https://github.com/axelfreeman/marketing-mindset",
+      "license": "MIT",
+      "category": "marketing"
     },
     {
       "name": "meigen-ai-design",

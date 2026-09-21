@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **94 marketplace plugins** organized by category: 92 local plugins plus 2 externally hosted `git-subdir` entries (`pensyve` and `hol-guard`).
+Browse all **95 marketplace plugins** organized by category: 93 local plugins plus 2 externally hosted `git-subdir` entries (`pensyve` and `hol-guard`).
 
 ## Quick Start - Essential Plugins
 
@@ -258,7 +258,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **api-scaffolding**           | REST/GraphQL API generation | `/plugin install api-scaffolding`           |
 | **api-testing-observability** | API testing and monitoring  | `/plugin install api-testing-observability` |
 
-### 📢 Marketing (5 plugins)
+### 📢 Marketing (6 plugins)
 
 | Plugin                         | Description                             | Install                                      |
 | ------------------------------ | --------------------------------------- | -------------------------------------------- |
@@ -267,6 +267,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **seo-analysis-monitoring**    | Content analysis and authority building | `/plugin install seo-analysis-monitoring`    |
 | **content-marketing**          | Content strategy and web research       | `/plugin install content-marketing`          |
 | **social-publishing**          | Multi-platform social media publishing  | `/plugin install social-publishing`          |
+| **marketing-mindset**          | Marketing operating mindset: sources of truth, fast testable hypotheses, first-client strategy | `/plugin install marketing-mindset`          |
 
 ### 💼 Business (5 plugins)
 
@@ -365,7 +366,7 @@ plugins/python-development/
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 95 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -419,7 +420,7 @@ Selectors, install paths, and gotchas: [harnesses.md](./harnesses.md#skills-only
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 183 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 184 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles

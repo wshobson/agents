@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **183 local specialized skills** across 51 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **184 local specialized skills** across 52 plugins, enabling progressive disclosure and efficient token usage.
 
 Install any skill on its own, into any agent, with the Agent Skills installers:
 
@@ -403,6 +403,12 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **spark-training-gotchas**   | Preflight and diagnose the ten known failure modes for ML training on DGX Spark         |
 | **spark-memory-thermal-ops** | Manage unified memory and thermals during long-running ML jobs on GB10                  |
 
+### Marketing Mindset (1 skill)
+
+| Skill                  | Description                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **marketing-mindset**  | Marketing and client-acquisition operating mindset: sources of truth, three-month horizon, fast testable hypotheses, first-client strategy |
+
 ## How Skills Work
 
 ### Activation
@@ -447,7 +453,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 183 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
+All 184 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause
