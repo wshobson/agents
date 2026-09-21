@@ -42,8 +42,10 @@ compliance for financial transactions.
 ### Option 2: MySQL
 
 - **Pros**: Very familiar to team, simple replication, large community
-- **Cons**: Weaker JSON support, no built-in full-text search (need
-  Elasticsearch), no geospatial without extensions
+- **Cons**: JSON querying/indexing differs from PostgreSQL JSONB; validate the
+  required operators and indexes. Built-in FULLTEXT and spatial support exist,
+  but their functions and limitations must be checked against this workload.
+  See the [MySQL index reference](https://dev.mysql.com/doc/refman/8.4/en/create-index.html).
 
 ### Option 3: MongoDB
 
@@ -60,10 +62,11 @@ We will use **PostgreSQL 15** as our primary database.
 PostgreSQL provides the best balance of:
 
 1. **ACID compliance** essential for e-commerce transactions
-2. **Built-in capabilities** (full-text search, JSONB, PostGIS) reduce
-   infrastructure complexity
-3. **Team familiarity** with SQL databases reduces learning curve
-4. **Mature ecosystem** with excellent tooling and community support
+2. **Built-in capabilities** (full-text search, JSONB) reduce infrastructure complexity
+3. **Added extensions**: PostGIS supplies geospatial capabilities after server
+   installation and [database enablement](https://postgis.net/documentation/getting_started/).
+4. **Team familiarity** with SQL databases reduces learning curve
+5. **Mature ecosystem** with excellent tooling and community support
 
 The slight complexity in replication is outweighed by the reduction in
 additional services (no separate Elasticsearch needed).

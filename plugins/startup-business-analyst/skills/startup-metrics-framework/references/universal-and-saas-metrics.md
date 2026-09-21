@@ -96,8 +96,10 @@ When net burn is zero or negative, this formula has no finite burn-based runway;
 **Burn Multiple**
 
 ```
-Burn Multiple = Net Burn / Net New ARR
+Quarterly Burn Multiple = Total Net Burn During Quarter / Net New ARR Added During Quarter
 ```
+
+Sum the three monthly net-burn amounts for the numerator. The denominator is the change in annual recurring revenue over that same quarter (ending ARR minus starting ARR); do not substitute monthly revenue or annualize the quarterly burn again. Report the ratio only when net new ARR is positive. See [Craft Ventures' quarterly example](https://www.craftventures.com/articles/the-burn-multiple).
 
 **Benchmarks:**
 

@@ -65,8 +65,10 @@ jobs:
       - name: Run governed agent
         run: python scripts/run_agent.py > receipts.jsonl
       - name: Verify receipt chain
-        run: pnpm exec verify receipts.jsonl
+        run: pnpm exec verify --replay-chain receipts.jsonl
 ```
+
+The verifier's [JSONL chain mode](https://github.com/VeritasActa/verify#enterprise-features) is selected explicitly with `--replay-chain`.
 
 Archive the receipts as an artifact so the chain survives beyond the job run:
 
