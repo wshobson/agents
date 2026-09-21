@@ -2210,3 +2210,60 @@ class TestPiAdapter:
         assert not stale.exists()
         assert settings.is_file()
         assert extension.is_file()
+
+
+class TestBinaryMirrorPublication:
+    """A destination leaf swap must not redirect support bytes to an external file."""
+
+    def test_mirror_replaces_late_symlink_without_touching_victim(self, tmp_path, monkeypatch):
+        output = tmp_path / "output"
+        output.mkdir()
+        source = tmp_path / "source.bin"
+        source.write_bytes(b"new support bytes")
+        victim = tmp_path / "victim.bin"
+        victim.write_bytes(b"keep victim")
+        target = output / "asset.bin"
+        original_mkdir = Path.mkdir
+
+        def swap_after_validation(path, *args, **kwargs):
+            result = original_mkdir(path, *args, **kwargs)
+            if path == output and not target.is_symlink():
+                target.symlink_to(victim)
+            return result
+
+        monkeypatch.setattr(Path, "mkdir", swap_after_validation)
+        CopilotAdapter(output_root=output).mirror_file(source, "asset.bin")
+        assert victim.read_bytes() == b"keep victim"
+        assert target.read_bytes() == b"new support bytes"
+        assert not target.is_symlink()
+
+    def test_failed_binary_publication_preserves_target_and_cleans_stage(
+        self, tmp_path, monkeypatch
+    ):
+        import os
+
+        target = tmp_path / "asset.bin"
+        target.write_bytes(b"original")
+        failure = OSError("fixture publication failure")
+
+        def fail_replace(*args, **kwargs):
+            raise failure
+
+        monkeypatch.setattr(os, "replace", fail_replace)
+        with pytest.raises(OSError) as caught:
+            CopilotAdapter(output_root=tmp_path).write_bytes("asset.bin", b"replacement")
+        assert caught.value is failure
+        assert target.read_bytes() == b"original"
+        assert list(tmp_path.iterdir()) == [target]
+
+    def test_binary_replacement_preserves_regular_file_mode(self, tmp_path):
+        import stat
+
+        target = tmp_path / "asset.bin"
+        target.write_bytes(b"original")
+        target.chmod(0o640)
+        previous = stat.S_IMODE(target.stat().st_mode)
+        CopilotAdapter(output_root=tmp_path).write_bytes("asset.bin", b"new")
+        assert target.read_bytes() == b"new"
+        assert stat.S_IMODE(target.stat().st_mode) == previous
+        assert list(tmp_path.iterdir()) == [target]

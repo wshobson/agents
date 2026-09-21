@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import stat
+import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -559,7 +562,35 @@ class HarnessAdapter(ABC):
         if not target.is_relative_to(root):
             raise ValueError(f"refusing to write outside output_root: {target} (root={root})")
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(content)
+        # Publish a fresh inode rather than opening the destination leaf for writes:
+        # a leaf symlink swapped in after validation is replaced, never followed.
+        # Parent directories remain trusted; this is not a descriptor-root sandbox.
+        stage = target.with_name(f".mirror-{uuid.uuid4().hex}")
+        created = False
+        primary: BaseException | None = None
+        try:
+            try:
+                previous = target.lstat()
+            except FileNotFoundError:
+                previous = None
+            with stage.open("xb") as output:
+                created = True
+                output.write(content)
+            if previous is not None and stat.S_ISREG(previous.st_mode):
+                stage.chmod(stat.S_IMODE(previous.st_mode))
+            os.replace(stage, target)
+            created = False
+        except BaseException as error:
+            primary = error
+            raise
+        finally:
+            if created:
+                try:
+                    stage.unlink(missing_ok=True)
+                except OSError:
+                    if primary is None:
+                        raise
+                    primary.add_note("Could not remove binary mirror staging file")
         return target
 
     def mirror_file(self, src: Path, rel_path: str | Path) -> Path:
