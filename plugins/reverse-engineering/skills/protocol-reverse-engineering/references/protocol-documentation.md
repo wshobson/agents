@@ -68,6 +68,8 @@ Client -> Server: DATA (payload)
 
 ### Wireshark Dissector (Lua)
 
+Use Wireshark's [TCP PDU helper](https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Proto.html) for fragmented headers/payloads and multiple messages per segment. TCP desegmentation must be enabled; a capture missing bytes cannot be repaired by the dissector.
+
 ```lua
 -- custom_protocol.lua
 local proto = Proto("custom", "Custom Protocol")
@@ -89,7 +91,7 @@ local msg_types = {
     [0x04] = "CLOSE"
 }
 
-function proto.dissector(buffer, pinfo, tree)
+local function dissect_pdu(buffer, pinfo, tree)
     -- Reject incomplete captures before creating any packet ranges.
     if buffer:len() < 12 then return 0 end
     local length = buffer(8, 4):uint()
@@ -113,6 +115,16 @@ function proto.dissector(buffer, pinfo, tree)
     if length > 0 then
         subtree:add(f_payload, buffer(12, length))
     end
+    return buffer:len()
+end
+
+-- The helper requests missing TCP bytes and invokes dissect_pdu for every PDU.
+local function get_pdu_length(buffer, pinfo, offset)
+    return 12 + buffer(offset + 8, 4):uint()
+end
+
+function proto.dissector(buffer, pinfo, tree)
+    dissect_tcp_pdus(buffer, tree, 12, get_pdu_length, dissect_pdu, true)
 end
 
 -- Register for TCP port

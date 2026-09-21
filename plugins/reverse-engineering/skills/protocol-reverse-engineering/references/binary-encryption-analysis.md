@@ -7,7 +7,7 @@
 
 # Length-prefixed message
 struct Message {
-    uint32_t length;      # Total message length
+    uint32_t length;      # Payload length (excludes header)
     uint16_t msg_type;    # Message type identifier
     uint8_t  flags;       # Flags/options
     uint8_t  reserved;    # Padding/alignment
