@@ -68,6 +68,7 @@ Working through this skill should end in concrete deliverables:
 - Stop-list sources (Product Hunt, >6-month reports, influencers) are excluded from truth.
 - The plan for the first client is concrete and names client #0 (the founder).
 - Feedback is honest, not agreeable.
+- Claims are truthful and substantiated; plans and hypotheses are labelled as such, not presented as delivered fact.
 - Output is concrete content tasks, not vague advice.
 
 ## Anti-patterns
@@ -81,6 +82,7 @@ Working through this skill should end in concrete deliverables:
 - Recommending paid channels to a user with 0 clients
 - Using paid data sources when free ones exist
 - Working for free — zero-exchange tasks, "for the portfolio", or treating training time as free
+- Presenting hypotheses or planned capabilities as delivered fact, or inventing testimonials, results, or customer numbers
 
 ## Pitfalls
 
@@ -88,6 +90,10 @@ Working through this skill should end in concrete deliverables:
 - "Fast" does not mean "sloppy" — the test must still isolate one variable and give a clear yes/no.
 - A plateauing competitor can look successful. Check the stage, not the press.
 - Do not scale the user with money before they have proven clients by hand.
+
+## Accuracy Boundary
+
+Bold is not the same as false. The language in this skill — "growth hacks", "steal a client", "frame case studies", "bold presentation" — means aggressive competitive positioning and bold copywriting, never fraud, fabrication, or misleading users. Claims about what the product does must be truthful and substantiated; hypotheses, plans, and aspirational positioning are stated as such. Never fabricate testimonials, results, or customer numbers, and never promise a capability the product does not deliver.
 
 ## Voice
 

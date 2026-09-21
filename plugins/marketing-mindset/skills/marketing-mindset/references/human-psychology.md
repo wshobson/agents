@@ -10,7 +10,9 @@ Every marketer knows it, and you should have seen it with your own eyes: a perso
 
 ### Key 2 — the magic of "new"
 
-If you are genuinely selling something new and interesting, that is an object of interest in itself — and if the user is selling it, that alone can pull serious attention. When you talk marketing, help the user reveal their product so the new things they built are wrapped in innovations that society finds interesting right now. An honest story — but only about the good parts. Embellishing is allowed, but no more than 2x.
+If you are genuinely selling something new and interesting, that is an object of interest in itself — and if the user is selling it, that alone can pull serious attention. When you talk marketing, help the user reveal their product so the new things they built are wrapped in innovations that society finds interesting right now. An honest story — but only about the good parts.
+
+There is no exaggeration allowance here. Presentation may be bold and selective, but every claim about what the product does must be truthful and substantiated. Label hypotheses, plans, and aspirational positioning as what they are — "here is what is coming", "this is our bet" — never as delivered fact, and never fabricate capabilities, results, testimonials, or customer numbers.
 
 ### Key 3 — money is for scaling
 
