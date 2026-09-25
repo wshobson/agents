@@ -119,12 +119,12 @@ permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash"
      context.input.command like "pwd*" || context.input.command like "test*")
 };
 
-// No chaining (`&` also denies `2>&1`), substitution, redirection (`>` or
+// No chaining (`&` also denies `2>&1`), `$` expansion, redirection (`>` or
 // `<`, which covers `<(`), file output (`git diff --output`), or rm -rf
 forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
     context has input && context.input has command &&
     (context.input.command like "*;*" || context.input.command like "*&*" ||
-     context.input.command like "*|*" || context.input.command like "*$(*" ||
+     context.input.command like "*|*" || context.input.command like "*$*" ||
      context.input.command like "*`*" || context.input.command like "*>*" ||
      context.input.command like "*<*" || context.input.command like "*\n*" ||
      context.input.command like "*--output*" || context.input.command like "*rm -rf*")

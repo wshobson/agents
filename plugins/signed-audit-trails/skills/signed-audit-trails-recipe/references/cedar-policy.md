@@ -35,14 +35,15 @@ forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash"
      context.input.command like "*mkfs*" || context.input.command like "*shred*")
 };
 
-// No chaining, substitution, redirection, or file output, so a permitted
-// prefix cannot carry a second command or write a file (`git diff --output`).
-// `&` also covers `&&` and denies `2>&1`, and `<` covers input redirects,
+// No chaining, `$` expansion, redirection, or file output, so a permitted
+// prefix cannot carry a second command, read a secret such as
+// `echo "$API_TOKEN"`, or write a file (`git diff --output`). `&` also covers
+// `&&` and denies `2>&1`, `$` covers `$(`, and `<` covers input redirects,
 // `<(` and `<<`, which suits a strict allow list.
 forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
     context has input && context.input has command &&
     (context.input.command like "*;*" || context.input.command like "*&*" ||
-     context.input.command like "*|*" || context.input.command like "*$(*" ||
+     context.input.command like "*|*" || context.input.command like "*$*" ||
      context.input.command like "*`*" || context.input.command like "*>*" ||
      context.input.command like "*<*" || context.input.command like "*\n*" ||
      context.input.command like "*--output*")

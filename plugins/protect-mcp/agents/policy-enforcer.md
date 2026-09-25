@@ -51,8 +51,9 @@ When a user asks you to write a Cedar policy:
    and exposes the tool input at `context.input`. For `Bash`, match
    `context.input.command` with `like`: a narrow prefix (`"git status*"`,
    not `"git*"`) for an allow list, paired with a forbid on shell chaining,
-   substitution, and redirection (`;`, `&`, `|`, `$(`, a backtick, `>`, `<`,
-   a newline). `<` also covers process substitution `<(` and here-docs `<<`.
+   expansion, and redirection (`;`, `&`, `|`, `$`, a backtick, `>`, `<`, a
+   newline). `$` covers `$(` and variable expansion such as `$API_TOKEN`, and
+   `<` covers process substitution `<(` and here-docs `<<`.
    That forbid also denies harmless forms such as `2>&1` and
    `git log | head`, which suits a strict allow list. Use a substring
    (`"*rm -rf*"`) for a forbid so `cd x && rm -rf y` is caught.
@@ -167,8 +168,9 @@ permit (
 
 // No chaining, substitution, redirection, or file output, so a permitted
 // prefix cannot carry a second command or write a file (`git diff --output`).
-// `&` also covers `&&`, `|` covers `||`, and `<` covers input redirects,
-// `<(` and `<<`; this denies `2>&1` too.
+// `&` also covers `&&`, `|` covers `||`, `$` covers `$(` and variables such
+// as `$API_TOKEN`, and `<` covers input redirects, `<(` and `<<`; this
+// denies `2>&1` too.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -178,7 +180,7 @@ forbid (
     (context.input.command like "*;*" ||
      context.input.command like "*&*" ||
      context.input.command like "*|*" ||
-     context.input.command like "*$(*" ||
+     context.input.command like "*$*" ||
      context.input.command like "*`*" ||
      context.input.command like "*>*" ||
      context.input.command like "*<*" ||
@@ -234,8 +236,10 @@ forbid (
     (context.input.file_path like "*/../*" || context.input.file_path like "*/..")
 };
 
-// Shell only for explicit deployment commands, with no chaining,
-// substitution, or redirection (`>` or `<`; `&` also denies `2>&1`)
+// Shell only for explicit deployment commands, with no chaining, `$`
+// expansion, or redirection (`>` or `<`; `&` also denies `2>&1`).
+// Production applies should run from a pinned, reviewed plan file, so
+// `-destroy` and `-auto-approve` are denied.
 permit (
     principal,
     action == Action::"MCP::Tool::call",
@@ -256,11 +260,13 @@ forbid (
     (context.input.command like "*;*" ||
      context.input.command like "*&*" ||
      context.input.command like "*|*" ||
-     context.input.command like "*$(*" ||
+     context.input.command like "*$*" ||
      context.input.command like "*`*" ||
      context.input.command like "*>*" ||
      context.input.command like "*<*" ||
-     context.input.command like "*\n*")
+     context.input.command like "*\n*" ||
+     context.input.command like "*-destroy*" ||
+     context.input.command like "*-auto-approve*")
 };
 
 // Everything else is denied: Cedar denies any call that no permit matches,
