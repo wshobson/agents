@@ -12,6 +12,7 @@ import yaml
 _CROSS_REFERENCE_PATTERN = re.compile(
     r"(?<![\w-])((?:skill|skills|sub-skills)/[a-z0-9-]+(?:/[a-z0-9-]+)*)"
 )
+_CODE_FENCE_PATTERN = re.compile(r"^\s*(?:>\s*)*(`{3,}|~{3,})(\w*)(.*)")
 
 
 @dataclass
@@ -73,8 +74,7 @@ def parse_skill(skill_dir: Path) -> ParsedSkill:
     h2_count = sum(1 for line in lines if re.match(r"^## ", line))
     h3_count = sum(1 for line in lines if re.match(r"^### ", line))
 
-    code_blocks = re.findall(r"```(\w*)", content)
-    code_block_languages = [lang for lang in code_blocks if lang]
+    code_block_count, code_block_languages = _count_code_blocks(content)
 
     lower_body = body.lower()
     has_examples = bool(re.search(r"(## example|### example|## usage)", lower_body))
@@ -106,7 +106,7 @@ def parse_skill(skill_dir: Path) -> ParsedSkill:
         line_count=len(content.split("\n")),
         h2_count=h2_count,
         h3_count=h3_count,
-        code_block_count=len(code_blocks),
+        code_block_count=code_block_count,
         code_block_languages=code_block_languages,
         has_examples=has_examples,
         has_troubleshooting=has_troubleshooting,
@@ -183,6 +183,45 @@ def parse_plugin(plugin_dir: Path) -> ParsedPlugin:
         agents=agents,
         plugin_json=plugin_json,
     )
+
+
+def _count_code_blocks(content: str) -> tuple[int, list[str]]:
+    """Count fenced code blocks and collect the languages on their opening fences.
+
+    Every fenced block is delimited twice, so counting each fence run would report
+    double the number of blocks. Track the fence that opened the current block
+    instead and count only the openers. Markdown fences run on backticks or on
+    tildes, and a block closes only on a run of the same character at least as
+    long as its opener with nothing but whitespace after it, so a fence-like line
+    carrying other text is part of the block rather than the end of it.
+    """
+    count = 0
+    languages: list[str] = []
+    open_fence = ""
+
+    for line in content.split("\n"):
+        match = _CODE_FENCE_PATTERN.match(line)
+        if match is None:
+            continue
+        fence, language, trailing = match.group(1), match.group(2), match.group(3)
+        if open_fence:
+            if (
+                fence[0] == open_fence[0]
+                and len(fence) >= len(open_fence)
+                and not language
+                and not trailing.strip()
+            ):
+                open_fence = ""
+            continue
+        if fence[0] == "`" and "`" in trailing:
+            # CommonMark keeps backticks out of the info string of a backtick fence.
+            continue
+        open_fence = fence
+        count += 1
+        if language:
+            languages.append(language)
+
+    return count, languages
 
 
 def _split_frontmatter(content: str) -> tuple[dict, str]:
