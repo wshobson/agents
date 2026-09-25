@@ -51,8 +51,10 @@ When a user asks you to write a Cedar policy:
    and exposes the tool input at `context.input`. For `Bash`, match
    `context.input.command` with `like`: a narrow prefix (`"git status*"`,
    not `"git*"`) for an allow list, paired with a forbid on shell chaining,
-   substitution, and redirection (`;`, `&&`, `|`, `$(`, a backtick, `>`, a newline), and
-   a substring (`"*rm -rf*"`) for a forbid so `cd x && rm -rf y` is caught.
+   substitution, and redirection (`;`, `&`, `|`, `$(`, a backtick, `>`, a
+   newline). That forbid also denies harmless forms such as `2>&1` and
+   `git log | head`, which suits a strict allow list. Use a substring
+   (`"*rm -rf*"`) for a forbid so `cd x && rm -rf y` is caught.
    For `Edit`/`Write`, match `context.input.file_path` against an explicit
    root such as `"/path/to/project/src/*"`; Claude Code passes absolute
    paths, so `"./*"` never matches and `"*/src/*"` matches any `src`
@@ -162,8 +164,9 @@ permit (
      context.input.command like "make*")
 };
 
-// No chaining, substitution, or redirection, so a permitted prefix cannot
-// carry a second command (`|` also covers `||`)
+// No chaining, substitution, redirection, or file output, so a permitted
+// prefix cannot carry a second command or write a file (`git diff --output`).
+// `&` also covers `&&` and `|` covers `||`; this denies `2>&1` too.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -171,12 +174,13 @@ forbid (
 ) when {
     context has input && context.input has command &&
     (context.input.command like "*;*" ||
-     context.input.command like "*&&*" ||
+     context.input.command like "*&*" ||
      context.input.command like "*|*" ||
      context.input.command like "*$(*" ||
      context.input.command like "*`*" ||
      context.input.command like "*>*" ||
-     context.input.command like "*\n*")
+     context.input.command like "*\n*" ||
+     context.input.command like "*--output*")
 };
 
 // Never destructive (substring match, so compound commands are caught)
@@ -228,7 +232,7 @@ forbid (
 };
 
 // Shell only for explicit deployment commands, with no chaining,
-// substitution, or redirection
+// substitution, or redirection (`&` also denies `2>&1`)
 permit (
     principal,
     action == Action::"MCP::Tool::call",
@@ -247,7 +251,7 @@ forbid (
 ) when {
     context has input && context.input has command &&
     (context.input.command like "*;*" ||
-     context.input.command like "*&&*" ||
+     context.input.command like "*&*" ||
      context.input.command like "*|*" ||
      context.input.command like "*$(*" ||
      context.input.command like "*`*" ||
