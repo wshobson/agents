@@ -34,6 +34,8 @@ jobs:
       pull-requests: write
       issues: read
       id-token: write
+      actions: read  # read failed job logs with gh run view
+      checks: read   # read check results with gh pr checks
 
     steps:
       - name: Checkout repository
@@ -43,11 +45,13 @@ jobs:
           persist-credentials: false
 
       - name: Run Claude Code Review
-        uses: anthropics/claude-code-action@9cdae7f0d995e3ba7c33f226087fdf82a59cd520  # v1.0.223
+        uses: anthropics/claude-code-action@9171db3e57d6a3140a37ddc2ba92788584e0ead6  # v1.0.234
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           track_progress: true
           use_sticky_comment: true
+          additional_permissions: |
+            actions: read
 
           prompt: |
             REPO: ${{ github.repository }}
@@ -66,9 +70,20 @@ jobs:
             them is fine when it comes from the generator and wrong when it is
             typed by hand.
 
+            Many contributors are outside the project, and some represent
+            vendors, so the commercial and external-service rules in
+            `CONTRIBUTING.md` matter as much as code quality here.
+
             Read `AGENTS.md` at the repo root first. Use `docs/authoring.md`
             for frontmatter shapes, `docs/harnesses.md` for what each harness
-            supports, and `docs/plugins.md` for the catalog.
+            supports, `docs/plugins.md` for the catalog, and `CONTRIBUTING.md`
+            for the contribution rules.
+
+            Start from the linked issue (`Closes #N` in the PR body), read with
+            `gh issue view <number> --comments`. Check that the change does
+            what the issue asked and nothing unrelated. A new plugin, agent,
+            skill, or command needs a proposal issue that a maintainer
+            answered, in a comment dated before the PR opened.
 
             ## What to check
 
@@ -99,9 +114,13 @@ jobs:
                file and `CLAUDE.md` is a symlink to it. It must stay under
                150 lines.
 
-            6. Quality gates. Say whether the change could break
-               `make validate STRICT=1`, `make garden`, `make test`, or
-               `make smoke-test`, and name the gate.
+            6. Quality gates. CI runs `make validate STRICT=1`, `make garden`,
+               `make test`, and `make smoke-test` on every PR, and this job
+               can't run them. Read the results with `gh pr checks`, and read
+               a failed job's log with `gh run view <run-id> --log-failed`. If
+               a gate failed, name it and point to the cause in the diff. If
+               the gates haven't finished, say which gate the change could
+               break and why.
 
             7. Catalog counts. Added, removed, or renamed plugins, agents,
                skills, or commands must be reflected in `docs/plugins.md`,
@@ -118,23 +137,45 @@ jobs:
                allowlists. New workflows pin action SHAs and set
                `persist-credentials: false`, as `validate.yml` does.
 
+            10. Commercial content and external services. Apply the
+                "Commercial content and disclosure" and "External and vendor
+                plugins" sections of `CONTRIBUTING.md`. Flag a component that
+                calls or recommends a service its author runs without saying
+                so, a free tier with a paid tier behind it on the default
+                path, workspace data sent to a third party when a first-party
+                source answers the same question, runnable payment,
+                licensing, or access-control machinery in the payload,
+                requests to star a repo, and telemetry. Content that teaches
+                how to build payment or access control into the user's own
+                app is allowed.
+
             ## How to report
 
-            - Use the inline comment tool for findings tied to a line.
-            - Post one short summary comment with `gh pr comment`, ten lines
-              or fewer. If there is nothing important, post a single line
-              saying the review found no blocking issues, and stop. Do not
-              try to submit a formal review approval.
-            - Read the existing comments first with
-              `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments`
-              and do not repeat what `coderabbitai` already said.
+            - Use the inline comment tool for findings tied to a line, and
+              mark each one as blocking or non-blocking.
+            - Post one summary comment with `gh pr comment`. Lead with whether
+              anything blocks the merge, then list only the findings that
+              matter, so a maintainer can scan it. If there is nothing
+              important, post a single line saying the review found no
+              blocking issues, and stop. Don't submit a formal review
+              approval, because maintainers approve.
+            - Read the existing reviews and comments first with
+              `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews`,
+              `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments`,
+              and
+              `gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments`,
+              and don't repeat a finding that `coderabbitai` or
+              `chatgpt-codex-connector` already raised.
+            - Report only what you checked. Don't list commands you couldn't
+              run.
             - Skip formatting, import order, and naming style. ruff and ty
               cover those.
-            - Do not ask for extra documentation unless a public count or a
+            - Don't ask for extra documentation unless a public count or a
               catalog entry is wrong.
-            - One sentence per finding. Prefer a diff block over prose.
+            - Prefer a suggestion block over prose when the fix is small.
 
           claude_args: |
-            --model claude-opus-5
-            --max-turns 30
-            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api repos/*/pulls/*/comments:*)"
+            --model claude-opus-5-5
+            --effort high
+            --max-turns 60
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr checks:*),Bash(gh run view:*),Bash(gh issue view:*),Bash(gh api repos/*/pulls/*/reviews:*),Bash(gh api repos/*/pulls/*/comments:*),Bash(gh api repos/*/issues/*/comments:*)"
