@@ -13,115 +13,140 @@
 // Entity shape: protect-mcp >= 0.7 evaluates every tool call as
 //   action == Action::"MCP::Tool::call",
 //   resource == Tool::"<tool name>",
-// with the tool input at context.input (for Bash, context.input.command;
-// for Write/Edit, context.input.file_path; for WebFetch, context.input.url).
-// Command patterns use `like "<prefix>*"` so invocations with arguments are
-// caught (exact-match `contains` on the bare command never matches a real
-// call such as `gh pr merge 42`). See #705.
+// with the tool input at context.input (context.input.command for Bash,
+// context.input.file_path for Write and Edit). See #705.
+//
+// Matching is best-effort. Cedar sees only the raw command string, so the
+// rules use substring patterns with gaps: "*gh *pr merge*" also catches
+// `cd x && gh pr merge 1`, `env gh pr merge 1`, `/usr/bin/gh pr merge 1` and
+// `gh -R o/r pr merge 1`. Known gaps: a tab or extra spaces between `pr` and
+// `merge`, flags placed between `pr` and `merge`, gh or shell aliases, HTTP
+// clients such as curl, Bash commands that write CI files, and path case on
+// case-insensitive file systems. Substring matching also over-matches (for
+// example `echo gh pr merge`); open an approval window for those.
 
 // ─────────────────────────────────────────────────────────────────────────
 // Forbid rules: the set of actions that require human approval
 // ─────────────────────────────────────────────────────────────────────────
 
-// 1. Posting review-surface GitHub actions via gh CLI
+// 1. Review-surface GitHub actions via the gh CLI. The subcommand must follow
+//    its group directly (`pr merge`), so reads such as
+//    `gh pr view 42 --comments` or `gh pr list --state closed` still pass.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
     resource == Tool::"Bash"
 ) when {
     context has input && context.input has command &&
-    (context.input.command like "gh pr review*" ||
-     context.input.command like "gh pr comment*" ||
-     context.input.command like "gh pr close*" ||
-     context.input.command like "gh pr merge*" ||
-     context.input.command like "gh pr edit*" ||
-     context.input.command like "gh issue comment*" ||
-     context.input.command like "gh issue close*" ||
-     context.input.command like "gh issue edit*" ||
-     context.input.command like "gh release create*" ||
-     context.input.command like "gh release edit*" ||
-     context.input.command like "gh api repos*")
+    (context.input.command like "*gh *pr review*" ||
+     context.input.command like "*gh *pr comment*" ||
+     context.input.command like "*gh *pr close*" ||
+     context.input.command like "*gh *pr merge*" ||
+     context.input.command like "*gh *pr edit*" ||
+     context.input.command like "*gh *issue comment*" ||
+     context.input.command like "*gh *issue close*" ||
+     context.input.command like "*gh *issue edit*" ||
+     context.input.command like "*gh *release create*" ||
+     context.input.command like "*gh *release edit*")
 };
 
-// 2. Posting via GitLab / Bitbucket CLIs
+// 2. `gh api` calls that write: GraphQL (mutations such as mergePullRequest),
+//    an explicit method other than GET, or field / input flags, which make
+//    gh send a POST. Plain `gh api repos/o/r/pulls` reads still pass.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
     resource == Tool::"Bash"
 ) when {
     context has input && context.input has command &&
-    (context.input.command like "glab mr comment*" ||
-     context.input.command like "glab mr approve*" ||
-     context.input.command like "glab mr merge*" ||
-     context.input.command like "glab issue comment*")
+    context.input.command like "*gh *api *" &&
+    (context.input.command like "*graphql*" ||
+     ((context.input.command like "* -X*" ||
+       context.input.command like "*--method*" ||
+       context.input.command like "* -f *" ||
+       context.input.command like "* -F *" ||
+       context.input.command like "*--field*" ||
+       context.input.command like "*--raw-field*" ||
+       context.input.command like "*--input*") &&
+      !(context.input.command like "*-X GET*" ||
+        context.input.command like "*-XGET*" ||
+        context.input.command like "*--method GET*" ||
+        context.input.command like "*--method=GET*")))
 };
 
-// 3. Git operations on protected branches. The hook passes only the raw
-//    command string, so the branch is inferred by substring: a push naming
-//    a protected branch is gated. A bare `git push` with no branch argument
-//    cannot be attributed and is not gated by this rule — open an approval
-//    window first, or pair this plugin with protect-mcp for a stricter
-//    posture. Substring matching can over-match (e.g. a feature branch
-//    containing `main`); the approval flag covers those cases.
+// 3. Posting via the GitLab CLI
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
     resource == Tool::"Bash"
 ) when {
     context has input && context.input has command &&
-    context.input.command like "git push*" &&
-    (context.input.command like "*main*" ||
-     context.input.command like "*master*" ||
-     context.input.command like "*release*" ||
-     context.input.command like "*production*")
+    (context.input.command like "*glab *mr comment*" ||
+     context.input.command like "*glab *mr approve*" ||
+     context.input.command like "*glab *mr merge*" ||
+     context.input.command like "*glab *issue comment*")
 };
 
-// 4. Direct writes to CI / CD configuration paths. Modifying these files lets
+// 4. Pushes that name a protected branch as a whole word (`origin main`,
+//    `HEAD:main`, `refs/heads/main`), so branches such as `maintenance` or
+//    `fix-release-notes` pass. A bare `git push` is allowed: the evaluator
+//    sees only the command string, not the upstream the branch tracks.
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    context.input.command like "*git *push *" &&
+    (context.input.command like "* main" || context.input.command like "* main *" ||
+     context.input.command like "*:main" || context.input.command like "*:main *" ||
+     context.input.command like "*heads/main" || context.input.command like "*heads/main *" ||
+     context.input.command like "* master" || context.input.command like "* master *" ||
+     context.input.command like "*:master" || context.input.command like "*:master *" ||
+     context.input.command like "*heads/master" || context.input.command like "*heads/master *" ||
+     context.input.command like "* release" || context.input.command like "* release *" ||
+     context.input.command like "*:release" || context.input.command like "*:release *" ||
+     context.input.command like "*heads/release" || context.input.command like "*heads/release *" ||
+     context.input.command like "* production" || context.input.command like "* production *" ||
+     context.input.command like "*:production" || context.input.command like "*:production *" ||
+     context.input.command like "*heads/production" || context.input.command like "*heads/production *")
+};
+
+// 5. Force pushes to any branch (`--force`, `--force-with-lease`, `-f`).
+//    A `+branch` refspec also forces a push and is not matched.
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    context.input.command like "*git *push *" &&
+    (context.input.command like "*--force*" ||
+     context.input.command like "* -f" ||
+     context.input.command like "* -f *")
+};
+
+// 6. Direct writes to CI / CD configuration paths. Modifying these files lets
 //    an agent change how future builds or reviews run, bypassing every other
-//    safeguard. Always require human approval. (One rule per tool: Cedar
-//    scopes allow a single constraint per variable, so Write and Edit cannot
-//    share a rule with `||`.)
+//    safeguard. The gap in "*.github/*workflows/*" also catches
+//    `.github/./workflows/` and `.github//workflows/`.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
-    resource == Tool::"Write"
+    resource
 ) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
     context has input && context.input has file_path &&
-    (context.input.file_path like "*.github/workflows/*" ||
-     context.input.file_path like "*.github/CODEOWNERS*" ||
+    (context.input.file_path like "*.github/*workflows/*" ||
+     context.input.file_path like "*.github/*CODEOWNERS*" ||
      context.input.file_path like "*.gitlab-ci.yml*" ||
-     context.input.file_path like "*.circleci/config.yml*" ||
-     context.input.file_path like "*buildkite/pipeline.yml*")
+     context.input.file_path like "*.circleci/*config.yml*" ||
+     context.input.file_path like "*buildkite/*pipeline.yml*")
 };
 
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Edit"
-) when {
-    context has input && context.input has file_path &&
-    (context.input.file_path like "*.github/workflows/*" ||
-     context.input.file_path like "*.github/CODEOWNERS*" ||
-     context.input.file_path like "*.gitlab-ci.yml*" ||
-     context.input.file_path like "*.circleci/config.yml*" ||
-     context.input.file_path like "*buildkite/pipeline.yml*")
-};
-
-// 5. WebFetch requests to known review / chat platforms. The WebFetch tool
-//    input carries no HTTP method, so every request to these hosts is gated
-//    (previously POST-only).
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"WebFetch"
-) when {
-    context has input && context.input has url &&
-    (context.input.url like "*api.github.com*" ||
-     context.input.url like "*api.gitlab.com*" ||
-     context.input.url like "*api.bitbucket.org*" ||
-     context.input.url like "*hooks.slack.com*" ||
-     context.input.url like "*discord.com*")
-};
+// WebFetch is not gated. Claude Code's WebFetch tool only issues GET
+// requests, so it cannot post a review, comment, or webhook message, and
+// gating it by host would only block reads such as api.github.com lookups.
 
 // ─────────────────────────────────────────────────────────────────────────
 // Permit everything else

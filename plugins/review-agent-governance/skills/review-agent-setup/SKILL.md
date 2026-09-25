@@ -18,7 +18,8 @@ Install it in projects where a Claude Code agent:
 - Publishes releases (`gh release create`)
 - Modifies CI configuration (`.github/workflows/`, `.gitlab-ci.yml`)
 - Pushes to protected branches (`main`, `master`, `release`, `production`)
-- Posts to external notification surfaces (Slack webhooks, Discord)
+- Posts to external notification surfaces (Slack webhooks, Discord), once you
+  add a rule for the command that posts (the default policy does not gate them)
 
 If the agent is only doing local file edits and running tests, this plugin is
 overkill. Use `protect-mcp` for general tool-call policy enforcement and skip

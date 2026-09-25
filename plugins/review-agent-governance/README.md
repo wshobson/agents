@@ -46,15 +46,36 @@ The default policy forbids (unless approved):
 - **`gh pr review`, `gh pr comment`, `gh pr merge`, `gh pr close`, `gh pr edit`**
 - **`gh issue comment`, `gh issue close`, `gh issue edit`**
 - **`gh release create`, `gh release edit`**
-- **`gh api repos`** (catches arbitrary GitHub REST calls)
-- **GitLab / Bitbucket equivalents** (`glab mr comment` etc.)
-- **`git push` naming `main`, `master`, `release`, `production`**
-- **Writes to `.github/workflows/`, `.github/CODEOWNERS`, `.gitlab-ci.yml`, `.circleci/config.yml`, `buildkite/pipeline.yml`**
-- **`WebFetch` requests to `api.github.com`, `hooks.slack.com`, Discord** (the tool input carries no HTTP method, so all requests to these hosts are gated)
+- **`gh api` calls that write**: `graphql`, `-X` / `--method` other than `GET`,
+  or `-f` / `-F` / `--field` / `--raw-field` / `--input` (which make gh send a
+  POST). Read-only `gh api` calls pass.
+- **GitLab equivalents** (`glab mr comment`, `glab mr approve`, `glab mr merge`, `glab issue comment`)
+- **`git push` naming `main`, `master`, `release`, or `production`** as a whole
+  word (`origin main`, `HEAD:main`, `refs/heads/main`), so `maintenance` or
+  `fix-release-notes` pass
+- **Force pushes to any branch** (`--force`, `--force-with-lease`, `-f`)
+- **Writes and edits to `.github/workflows/`, `.github/CODEOWNERS`, `.gitlab-ci.yml`, `.circleci/config.yml`, `buildkite/pipeline.yml`**
 
 Everything else passes through. This plugin is focused on the review
 surface; use it alongside [protect-mcp](../protect-mcp/) if you want
 general tool-call policy enforcement.
+
+### Known limits
+
+Matching shell commands as strings is best-effort: the rules use substring
+patterns such as `*gh *pr merge*`, which also catch `cd x && gh pr merge 1`,
+`env gh ...`, `/usr/bin/gh ...`, and `gh -R o/r pr merge 1`, but a determined
+rewording (a tab or extra spaces between `pr` and `merge`, a gh alias, `curl`
+against the API, or a Bash redirect into `.github/workflows/`) can still get
+through. They can also over-match, for example `echo gh pr merge`; open an
+approval window for those. Other limits:
+
+- A bare `git push` is allowed. The evaluator sees only the command string,
+  not the upstream branch it pushes to.
+- `WebFetch` is not gated. Claude Code's WebFetch tool only issues GET
+  requests, so it cannot post a review, comment, or webhook message.
+- Path patterns are case-sensitive, so on a case-insensitive file system a
+  write to `.GITHUB/workflows/` is not matched.
 
 ## Installation
 
@@ -141,7 +162,7 @@ An agent working on a PR wants to post a review comment. Without approval:
 $ agent: gh pr review 42 --comment --body "LGTM"
   → PreToolUse hook runs
   → No ./.review-approved file, policy evaluates
-   → Cedar: forbid on context.input.command like "gh pr review*"
+  → Cedar: forbid on context.input.command like "*gh *pr review*"
   → Exit 2: Claude Code blocks the tool call
   → PostToolUse runs, signs a receipt with decision=deny
 ```
