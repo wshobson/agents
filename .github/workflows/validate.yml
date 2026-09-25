@@ -247,9 +247,17 @@ jobs:
 
       - name: Install Antigravity CLI
         # Bootstrapper defaults to $HOME/.local/bin; bump alongside any agy
-        # plugin-schema changes it ships.
+        # plugin-schema changes it ships. The CDN sometimes returns the script
+        # gzip-compressed, and bash can't run that from a pipe, so the step
+        # downloads it first and decompresses it when needed.
         run: |
-          curl -fsSL https://antigravity.google/cli/install.sh | bash
+          installer="$RUNNER_TEMP/agy-install.sh"
+          curl -fsSL --compressed --retry 3 -o "$installer" https://antigravity.google/cli/install.sh
+          if gzip -t "$installer" 2>/dev/null; then
+            gunzip -c "$installer" > "$installer.plain"
+            mv "$installer.plain" "$installer"
+          fi
+          bash "$installer"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Set up Node.js (for npx skills)
