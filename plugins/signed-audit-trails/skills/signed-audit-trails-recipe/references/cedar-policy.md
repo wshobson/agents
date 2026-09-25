@@ -14,8 +14,8 @@ permit (principal, action == Action::"MCP::Tool::call", resource) when {
 };
 
 // Allow Bash commands from a safe list only (prefix match; git limited to
-// read subcommands). Interpreter permits (npm, node, python, make) run
-// arbitrary code, so they are only as safe as the project's scripts.
+// read subcommands). Package-manager and build permits (npm, pnpm, yarn,
+// make) run arbitrary code, so they are only as safe as the project's scripts.
 permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
     context has input && context.input has command &&
     (context.input.command like "git status*" || context.input.command like "git diff*" ||
@@ -24,8 +24,7 @@ permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash"
      context.input.command like "pnpm*" || context.input.command like "yarn*" ||
      context.input.command like "ls*" || context.input.command like "cat*" ||
      context.input.command like "pwd*" || context.input.command like "echo*" ||
-     context.input.command like "test*" || context.input.command like "node*" ||
-     context.input.command like "python*" || context.input.command like "make*")
+     context.input.command like "test*" || context.input.command like "make*")
 };
 
 // Explicit deny on destructive commands. Cedar deny is authoritative.
@@ -38,13 +37,15 @@ forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash"
 
 // No chaining, substitution, redirection, or file output, so a permitted
 // prefix cannot carry a second command or write a file (`git diff --output`).
-// `&` also covers `&&` and denies `2>&1`, which suits a strict allow list.
+// `&` also covers `&&` and denies `2>&1`, and `<` covers input redirects,
+// `<(` and `<<`, which suits a strict allow list.
 forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
     context has input && context.input has command &&
     (context.input.command like "*;*" || context.input.command like "*&*" ||
      context.input.command like "*|*" || context.input.command like "*$(*" ||
      context.input.command like "*`*" || context.input.command like "*>*" ||
-     context.input.command like "*\n*" || context.input.command like "*--output*")
+     context.input.command like "*<*" || context.input.command like "*\n*" ||
+     context.input.command like "*--output*")
 };
 
 // Restrict writes to the project (Claude Code passes absolute paths).

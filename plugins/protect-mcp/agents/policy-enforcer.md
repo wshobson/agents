@@ -51,8 +51,9 @@ When a user asks you to write a Cedar policy:
    and exposes the tool input at `context.input`. For `Bash`, match
    `context.input.command` with `like`: a narrow prefix (`"git status*"`,
    not `"git*"`) for an allow list, paired with a forbid on shell chaining,
-   substitution, and redirection (`;`, `&`, `|`, `$(`, a backtick, `>`, a
-   newline). That forbid also denies harmless forms such as `2>&1` and
+   substitution, and redirection (`;`, `&`, `|`, `$(`, a backtick, `>`, `<`,
+   a newline). `<` also covers process substitution `<(` and here-docs `<<`.
+   That forbid also denies harmless forms such as `2>&1` and
    `git log | head`, which suits a strict allow list. Use a substring
    (`"*rm -rf*"`) for a forbid so `cd x && rm -rf y` is caught.
    For `Edit`/`Write`, match `context.input.file_path` against an explicit
@@ -166,7 +167,8 @@ permit (
 
 // No chaining, substitution, redirection, or file output, so a permitted
 // prefix cannot carry a second command or write a file (`git diff --output`).
-// `&` also covers `&&` and `|` covers `||`; this denies `2>&1` too.
+// `&` also covers `&&`, `|` covers `||`, and `<` covers input redirects,
+// `<(` and `<<`; this denies `2>&1` too.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -179,6 +181,7 @@ forbid (
      context.input.command like "*$(*" ||
      context.input.command like "*`*" ||
      context.input.command like "*>*" ||
+     context.input.command like "*<*" ||
      context.input.command like "*\n*" ||
      context.input.command like "*--output*")
 };
@@ -232,7 +235,7 @@ forbid (
 };
 
 // Shell only for explicit deployment commands, with no chaining,
-// substitution, or redirection (`&` also denies `2>&1`)
+// substitution, or redirection (`>` or `<`; `&` also denies `2>&1`)
 permit (
     principal,
     action == Action::"MCP::Tool::call",
@@ -256,6 +259,7 @@ forbid (
      context.input.command like "*$(*" ||
      context.input.command like "*`*" ||
      context.input.command like "*>*" ||
+     context.input.command like "*<*" ||
      context.input.command like "*\n*")
 };
 
