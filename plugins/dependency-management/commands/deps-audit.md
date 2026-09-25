@@ -1,5 +1,5 @@
 ---
-description: Audit dependencies for vulnerabilities, license compliance, and maintenance risks
+description: Audit project dependencies for vulnerabilities, outdated packages, license conflicts, and supply chain risks — then provide actionable remediation strategies.
 ---
 
 # Dependency Audit and Security Analysis
