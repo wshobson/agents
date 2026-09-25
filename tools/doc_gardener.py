@@ -72,6 +72,24 @@ COUNT_NOUN_ALIASES = {
 BOM = "\ufeff"
 BODY_LEADING_BLANKS_RE = re.compile(r"\A(?:[ \t]*\n)+")
 
+# Intentional variants, keyed by (plugin, agent file stem). These are workflow-specific
+# versions that share a name with the general agent shipped in other plugins:
+# backend-development's short feature-development trio, which sits beside the full
+# specialists, and incident-response's production-incident versions. They differ on
+# purpose, so they are left out of the divergence comparison instead of being renamed,
+# which would change their generated IDs and every `subagent_type` that calls them.
+INTENTIONAL_AGENT_VARIANTS = frozenset(
+    {
+        ("backend-development", "security-auditor"),
+        ("backend-development", "test-automator"),
+        ("backend-development", "performance-engineer"),
+        ("incident-response", "code-reviewer"),
+        ("incident-response", "debugger"),
+        ("incident-response", "error-detective"),
+        ("incident-response", "test-automator"),
+    }
+)
+
 
 # ── Findings ─────────────────────────────────────────────────────────────────
 
@@ -504,12 +522,13 @@ def canonical_frontmatter_value(value: object) -> object:
 
 
 def normalized_agent_text(text: str) -> str:
-    """Render an agent as its frontmatter fields minus `name`, plus its body.
+    """Render an agent as its frontmatter fields minus `name` and `model`, plus its body.
 
     Uses the same frontmatter parser the adapters use, so a copy is judged on its
     fields and body rather than on exact delimiter formatting. That keeps CRLF files,
     a closing `---` at end of file, and a trailing space after a delimiter from
     reading as drift. A `name:` line in the body is body content and still counts.
+    `model` is a per-plugin deployment choice, so a tier difference alone is not drift.
     """
     text = text.lstrip(BOM)
     trimmed = text.lstrip()
@@ -519,6 +538,7 @@ def normalized_agent_text(text: str) -> str:
         text = trimmed
     fields, body = parse_frontmatter(text)
     fields.pop("name", None)
+    fields.pop("model", None)
     rendered = "\n".join(
         f"{key}: {canonical_frontmatter_value(fields[key])!r}" for key in sorted(fields)
     )
@@ -601,11 +621,14 @@ def check_agent_divergence(report: Report) -> None:
     Plugins are installed individually, so a shared agent is genuinely copied into
     each plugin that offers it. A verbatim copy is therefore expected and is not
     reported at all. Only copies whose bodies have drifted apart are findings.
+    Copies named in INTENTIONAL_AGENT_VARIANTS are skipped.
     """
     if not PLUGINS_DIR.is_dir():
         return
     by_filename: dict[str, list[Path]] = defaultdict(list)
     for agent_path in sorted(PLUGINS_DIR.glob("*/agents/*.md")):
+        if (agent_path.parent.parent.name, agent_path.stem) in INTENTIONAL_AGENT_VARIANTS:
+            continue
         by_filename[agent_path.name].append(agent_path)
 
     for filename, paths in sorted(by_filename.items()):
@@ -632,8 +655,8 @@ def check_agent_divergence(report: Report) -> None:
                     f"versions: {variants}"
                 ),
                 fix=(
-                    "Reconcile the copies, or rename the intentional variants so the "
-                    "difference is visible in the agent name rather than hidden in the body."
+                    "Reconcile the copies. If one is an intentional variant, add its "
+                    "(plugin, agent) pair to INTENTIONAL_AGENT_VARIANTS in tools/doc_gardener.py."
                 ),
             )
 

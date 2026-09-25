@@ -791,12 +791,10 @@ class TestAgentDivergence:
         check_agent_divergence(report)
         assert report.findings == [], f"{label} was treated as drift"
 
-    def test_frontmatter_field_change_is_drift(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ):
-        """A real frontmatter difference other than `name` still counts."""
+    def test_model_difference_is_not_drift(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """`model:` is a per-plugin deployment choice, so a tier difference alone is not drift."""
         _patch_paths(monkeypatch, tmp_path)
-        for plugin, model in (("alpha", "opus"), ("beta", "sonnet")):
+        for plugin, model in (("alpha", "opus"), ("beta", "sonnet"), ("gamma", "inherit")):
             agents_dir = tmp_path / "plugins" / plugin / "agents"
             agents_dir.mkdir(parents=True, exist_ok=True)
             (agents_dir / "reviewer.md").write_text(
@@ -805,7 +803,74 @@ class TestAgentDivergence:
 
         report = Report()
         check_agent_divergence(report)
+        assert report.findings == []
+
+    @pytest.mark.parametrize(
+        ("field", "alpha_value", "beta_value"),
+        [
+            ("description", "Reviews code.", "Reviews docs."),
+            ("tools", "[Read, Write]", "[Read]"),
+        ],
+    )
+    def test_frontmatter_field_change_is_drift(
+        self,
+        field: str,
+        alpha_value: str,
+        beta_value: str,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ):
+        """A frontmatter difference other than `name` and `model` still counts."""
+        _patch_paths(monkeypatch, tmp_path)
+        for plugin, model, value in (
+            ("alpha", "opus", alpha_value),
+            ("beta", "sonnet", beta_value),
+        ):
+            agents_dir = tmp_path / "plugins" / plugin / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            (agents_dir / "reviewer.md").write_text(
+                f"---\nname: {plugin}-reviewer\nmodel: {model}\n{field}: {value}\n---\nReview.\n"
+            )
+
+        report = Report()
+        check_agent_divergence(report)
         assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+
+    def test_allowlisted_variant_is_not_reported(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A named intentional variant is left out; the remaining copies still match."""
+        _patch_paths(monkeypatch, tmp_path)
+        _write_agent(tmp_path, "backend-development", "security-auditor.md", "Feature checks.\n")
+        _write_agent(tmp_path, "alpha", "security-auditor.md", "Full security audit.\n")
+        _write_agent(tmp_path, "beta", "security-auditor.md", "Full security audit.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert report.findings == []
+
+    def test_non_allowlisted_divergence_is_still_reported(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """The allowlist names (plugin, agent) pairs, not whole plugins or agent names.
+
+        incident-response is on the list for other agents, but not for this one, so its
+        divergent copy is still reported. The allowlisted backend-development copy is
+        left out of the count rather than hiding the whole group.
+        """
+        _patch_paths(monkeypatch, tmp_path)
+        _write_agent(tmp_path, "backend-development", "security-auditor.md", "Feature checks.\n")
+        _write_agent(tmp_path, "incident-response", "security-auditor.md", "Incident checks.\n")
+        _write_agent(tmp_path, "alpha", "security-auditor.md", "Full security audit.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
+        finding = report.findings[0]
+        assert "2 copies in 2 different versions" in finding.message
+        assert "incident-response" in finding.message
+        assert "backend-development" not in finding.message
+        assert "INTENTIONAL_AGENT_VARIANTS" in finding.fix
 
     def test_leading_indentation_is_content(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """An indented body must not compare equal to the same text unindented."""
