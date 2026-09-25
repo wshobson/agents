@@ -124,7 +124,8 @@ read [`docs/authoring.md`](docs/authoring.md) for the full guide.
 
 ## Workflow
 
-1. Open an issue first (template-driven). Use the appropriate issue template.
+1. Open an issue first (template-driven). Use the appropriate issue template, and
+   wait for a maintainer to reply before you start the pull request.
 2. Fork the repo, branch from `main`.
 3. Make changes; run quality gates.
 4. Open a PR referencing the issue.
