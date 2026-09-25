@@ -58,10 +58,11 @@ The default policy forbids (unless approved):
   `fix-release-notes` pass
 - **Force pushes to any branch** (`--force`, `--force-with-lease`, `-f`,
   `--mirror`, or a `+`-prefixed refspec such as `+feature`)
-- **Chained pushes**: a `git push` that also contains `;`, `&`, `|`, a
-  newline, a backtick, `$`, or `<`, such as `git push origin main; true`.
-  This is conservative: a chained push, and a push with `2>&1`, needs an
-  approval window.
+- **Chained or quoted pushes**: a `git push` that also contains `;`, `&`,
+  `|`, a newline, a backtick, `$`, `<`, a quote, or a parenthesis, such as
+  `git push origin main; true`, `git push origin "main"`, or
+  `(git push origin main)`. This is conservative: a push with `2>&1` or a
+  push option such as `git push -o "ci.skip"` also needs an approval window.
 - **Remote branch deletes** (`--delete`, `-d`, `--prune`, or
   `git push origin :feature`) and **`git push --all`**, which updates `main`
   without naming it
@@ -83,10 +84,10 @@ approval window for those. Other limits:
 
 - A bare `git push` is allowed. The evaluator sees only the command string,
   not the upstream branch it pushes to.
-- Force and delete flags are matched alone or in two-letter bundles such as
-  `-uf` or `-df`. A bundle of three or more short flags is matched only when
-  it starts with one of those pairs (`-qdf` is, `-uvf` is not), because
-  Cedar `like` has no character classes.
+- Force and delete flags are matched alone, when a bundle starts with `-f`,
+  or in two-letter bundles such as `-uf` or `-df`. A longer bundle is matched
+  only when it starts with `-f` or one of those pairs (`-fuv` and `-qdf` are,
+  `-uvf` is not), because Cedar `like` has no character classes.
 - `gh pr create` and `gh issue create` are not gated on purpose: opening a PR
   or an issue is how an agent hands work to a human.
 - `WebFetch` is not gated. Claude Code's WebFetch tool only issues GET

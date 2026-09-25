@@ -118,10 +118,13 @@ forbid (
 //    followed by a space, so `git push origin main; true` or
 //    `git push origin main&&true` would slip past it. Rather than list every
 //    separator per branch, any push that also contains `;`, `&`, `|`, a
-//    newline, a backtick, `$` (variable or command substitution), or `<` is
-//    gated. This is conservative: a chained push, and a push with `2>&1`,
-//    needs an approval window. `>` is not listed, so a redirect with no space
-//    before it (`git push origin main>log`) is not matched.
+//    newline, a backtick, `$` (variable or command substitution), `<`, a
+//    quote (`"` or `'`), or a parenthesis is gated, so a quoted branch such
+//    as `git push origin "main"` or a subshell `(git push origin main)` is
+//    caught. This is conservative: a chained or quoted push, a push with
+//    `2>&1`, and a push option such as `git push -o "ci.skip"` need an
+//    approval window. `>` is not listed, so a redirect with no space before
+//    it (`git push origin main>log`) is not matched.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -135,21 +138,26 @@ forbid (
      context.input.command like "*\n*" ||
      context.input.command like "*`*" ||
      context.input.command like "*$*" ||
-     context.input.command like "*<*")
+     context.input.command like "*<*" ||
+     context.input.command like "*\"*" ||
+     context.input.command like "*'*" ||
+     context.input.command like "*(*" ||
+     context.input.command like "*)*")
 };
 
 // 6. Force pushes, remote branch deletes, and pushes of every branch:
-//    `--force`, `--force-with-lease`, `-f` alone or bundled with a common
-//    short flag (`-uf`, `-fu`, `-vf`, `-fv`, `-qf`, `-fq`, `-nf`, `-fn`),
+//    `--force`, `--force-with-lease`, `-f` alone or at the start of a bundle
+//    (`-f*`, so `-fu` or `-fd`), `-f` second in a common pair (`-uf`, `-vf`,
+//    `-qf`, `-nf`, `-df`),
 //    `--mirror` (which force-updates and deletes remote refs), a `+`-prefixed
 //    refspec such as `+feature` or `+src:dst`, deletes (`--delete`, `-d`
-//    alone or bundled as `-df`, `-fd`, `-ud`, `-du`, `-qd`, `-dq`, `-vd`,
-//    `-dv`, `-nd`, `-dn`, `--prune`, or an empty source such as `:feature`),
+//    alone or bundled as `-ud`, `-du`, `-qd`, `-dq`, `-vd`, `-dv`, `-nd`,
+//    `-dn`, `--prune`, or an empty source such as `:feature`),
 //    and `--all` (which updates `main` without naming it). A `src:dst`
 //    refspec such as `feature:feature` is not a delete and passes. Known
 //    limit: a bundle of three or more short flags is caught only when it
-//    starts with a listed pair (`-qdf` is, `-uvf` is not), because Cedar
-//    `like` has no character classes.
+//    starts with `-f` or a listed pair (`-fuv` and `-qdf` are, `-uvf` is
+//    not), because Cedar `like` has no character classes.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -159,18 +167,15 @@ forbid (
     context.input.command like "*git *push *" &&
     (context.input.command like "*--force*" ||
      context.input.command like "*--mirror*" ||
-     context.input.command like "* -f" ||
-     context.input.command like "* -f *" ||
-     context.input.command like "* -uf*" || context.input.command like "* -fu*" ||
-     context.input.command like "* -vf*" || context.input.command like "* -fv*" ||
-     context.input.command like "* -qf*" || context.input.command like "* -fq*" ||
-     context.input.command like "* -nf*" || context.input.command like "* -fn*" ||
+     context.input.command like "* -f*" ||
+     context.input.command like "* -uf*" || context.input.command like "* -vf*" ||
+     context.input.command like "* -qf*" || context.input.command like "* -nf*" ||
      context.input.command like "* +*" ||
      context.input.command like "* :*" ||
      context.input.command like "*--delete*" ||
      context.input.command like "* -d" ||
      context.input.command like "* -d *" ||
-     context.input.command like "* -df*" || context.input.command like "* -fd*" ||
+     context.input.command like "* -df*" ||
      context.input.command like "* -ud*" || context.input.command like "* -du*" ||
      context.input.command like "* -qd*" || context.input.command like "* -dq*" ||
      context.input.command like "* -vd*" || context.input.command like "* -dv*" ||
