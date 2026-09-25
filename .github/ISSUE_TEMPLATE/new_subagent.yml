@@ -149,9 +149,9 @@ body:
       label: Commercial relationship and external services
       description: >-
         List every external service, API, or package the component calls or
-        recommends. Say whether you own, work for, or earn money from any of
-        them, and whether any of them has a paid tier. Write "None" if the
-        component uses no external service.
+        recommends. Say whether you own, maintain, work for, or earn money
+        from any of them, and whether any of them has a paid tier. Write
+        "None" if the component calls or recommends no external service.
     validations:
       required: true
 
