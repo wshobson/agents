@@ -121,10 +121,13 @@ if command -v node >/dev/null 2>&1 && command -v npx >/dev/null 2>&1 && command 
   check_deny "a force push to any branch" <<<"$(payload Bash command 'git push --force-with-lease origin feature')"
   check_deny "a mirror push" <<<"$(payload Bash command 'git push --mirror origin')"
   check_deny "a +refspec force push" <<<"$(payload Bash command 'git push origin +feature')"
+  check_deny "a :branch remote delete" <<<"$(payload Bash command 'git push origin :feature')"
+  check_deny "a --delete remote delete" <<<"$(payload Bash command 'git push origin --delete feature')"
   check_deny "a workflow write through ./" <<<"$(payload Write file_path '/repo/.github/./workflows/ci.yml')"
   # False-positive guards: branch names that contain a protected name, a
   # read that mentions comments, and a plain gh api read.
   check_allow "'git push origin maintenance'" <<<"$(payload Bash command 'git push origin maintenance')"
+  check_allow "'git push origin feature:feature'" <<<"$(payload Bash command 'git push origin feature:feature')"
   check_allow "'gh pr view 42 --comments'" <<<"$(payload Bash command 'gh pr view 42 --comments')"
   check_allow "'gh api repos/o/r/pulls/42'" <<<"$(payload Bash command 'gh api repos/o/r/pulls/42')"
 

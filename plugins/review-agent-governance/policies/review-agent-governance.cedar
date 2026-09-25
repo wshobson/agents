@@ -112,9 +112,11 @@ forbid (
      context.input.command like "*heads/production" || context.input.command like "*heads/production *")
 };
 
-// 5. Force pushes to any branch: `--force`, `--force-with-lease`, `-f`,
-//    `--mirror` (which force-updates and deletes remote refs), and a
-//    `+`-prefixed refspec such as `+feature` or `+src:dst`.
+// 5. Force pushes and remote branch deletes on any branch: `--force`,
+//    `--force-with-lease`, `-f`, `--mirror` (which force-updates and deletes
+//    remote refs), a `+`-prefixed refspec such as `+feature` or `+src:dst`,
+//    and deletes (`--delete`, `-d`, or an empty source such as `:feature`).
+//    A `src:dst` refspec such as `feature:feature` is not a delete and passes.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -126,7 +128,11 @@ forbid (
      context.input.command like "*--mirror*" ||
      context.input.command like "* -f" ||
      context.input.command like "* -f *" ||
-     context.input.command like "* +*")
+     context.input.command like "* +*" ||
+     context.input.command like "* :*" ||
+     context.input.command like "*--delete*" ||
+     context.input.command like "* -d" ||
+     context.input.command like "* -d *")
 };
 
 // 6. Direct writes to CI / CD configuration paths. Modifying these files lets

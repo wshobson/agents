@@ -58,6 +58,7 @@ The default policy forbids (unless approved):
   `fix-release-notes` pass
 - **Force pushes to any branch** (`--force`, `--force-with-lease`, `-f`,
   `--mirror`, or a `+`-prefixed refspec such as `+feature`)
+- **Remote branch deletes** (`--delete`, `-d`, or `git push origin :feature`)
 - **Writes and edits to `.github/workflows/`, `.github/CODEOWNERS`, `.gitlab-ci.yml`, `.circleci/config.yml`, `buildkite/pipeline.yml`**
 
 Everything else passes through. This plugin is focused on the review
