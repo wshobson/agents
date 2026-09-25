@@ -1,5 +1,5 @@
 ---
-description: Use when reviewing software compliance controls, regulatory requirements, and audit readiness.
+description: Review software compliance controls, regulatory requirements, and audit readiness
 ---
 
 # Regulatory Compliance Check

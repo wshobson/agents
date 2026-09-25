@@ -1,5 +1,5 @@
 ---
-description: Use when auditing dependencies for vulnerabilities, license compliance, and maintenance risks.
+description: Audit dependencies for vulnerabilities, license compliance, and maintenance risks
 ---
 
 # Dependency Audit and Security Analysis
