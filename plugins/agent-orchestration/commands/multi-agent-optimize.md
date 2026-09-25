@@ -1,3 +1,7 @@
+---
+description: Optimize multi-agent system performance through profiling, context window tuning, coordination efficiency, and cost and latency tradeoffs
+---
+
 # Multi-Agent Optimization Toolkit
 
 ## Role: AI-Powered Multi-Agent Performance Engineering Specialist

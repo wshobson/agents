@@ -1,5 +1,5 @@
 ---
-description: Use when scanning dependencies for vulnerabilities and generating supply chain security evidence.
+description: Scan dependencies for vulnerabilities and generate supply chain security evidence
 ---
 
 # Dependency Vulnerability Scanning
