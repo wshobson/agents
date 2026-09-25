@@ -57,11 +57,13 @@ When writing a review-governance policy:
 
 2. **Extend for the project's specific surfaces.** If the team uses Linear,
    Jira, Notion, or a custom review tool, add `forbid` rules for the CLI
-   patterns or WebFetch hosts those tools use.
+   commands those tools use.
 
 3. **Do NOT gate read-only operations.** `gh pr view`, `gh issue list`, API
    GETs — all fine for agents to do unattended. The gate is on write /
-   post / merge / close actions only.
+   post / merge / close actions only. The one deliberate exception is the
+   default `gh api` rule, which also blocks GraphQL queries and parameterized
+   GETs because a command string cannot prove the request is a read.
 
 4. **Match commands as substrings, and treat it as best-effort.** The hook
    passes only the raw command string at `context.input.command`. Use
@@ -99,19 +101,12 @@ forbid (
 
 ### Teams with their own internal review bot
 
-```cedar
-// WebFetch only issues GETs, so gate a host here only when a GET to it has
-// side effects, such as an internal bot's trigger URL.
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"WebFetch"
-) when {
-    context has input && context.input has url &&
-    (context.input.url like "*review-bot.internal.company.com*" ||
-     context.input.url like "*code-review.internal.company.com*")
-};
-```
+Gate the commands that post to the bot (a CLI or `curl`) with a Bash rule.
+Do not rely on a WebFetch host rule for a bot endpoint that acts on a GET:
+Cedar's `like` is case-sensitive and URL hosts are not, so a rule for
+`*review-bot.internal.company.com*` misses
+`HTTPS://REVIEW-BOT.INTERNAL.COMPANY.COM/...`. Block side-effecting GET
+endpoints at the network or proxy layer instead.
 
 ### Per-identity rules are not available
 
@@ -127,10 +122,13 @@ When reviewing a `review-governance.cedar`:
 
 1. Confirm every review-surface CLI command the team uses has a matching
    `forbid` rule.
-2. Check for gaps in API coverage. The default gates `gh api` calls that
-   write (`graphql`, a method other than GET, or field / input flags);
-   without that rule, an agent can
-   `gh api -X POST repos/X/Y/pulls/42/reviews` and bypass the `gh pr` rules.
+2. Check for gaps in API coverage. The default gates every `gh api` call
+   with `graphql`, a method flag, or a field / input flag; without that rule,
+   an agent can `gh api -X POST repos/X/Y/pulls/42/reviews` and bypass the
+   `gh pr` rules. The rule is conservative: GraphQL queries and parameterized
+   GETs are blocked too, so the user opens an approval window for them.
+   Do not add a GET exemption: gh uses the last `-X`, and a shell comment can
+   hold `--method GET`.
 3. Verify protected-branch `git push` rules cover every branch that is
    actually protected in the repo settings.
 4. Confirm CI / CD path rules match the files that actually gate behavior

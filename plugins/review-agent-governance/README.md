@@ -46,14 +46,18 @@ The default policy forbids (unless approved):
 - **`gh pr review`, `gh pr comment`, `gh pr merge`, `gh pr close`, `gh pr edit`**
 - **`gh issue comment`, `gh issue close`, `gh issue edit`**
 - **`gh release create`, `gh release edit`**
-- **`gh api` calls that write**: `graphql`, `-X` / `--method` other than `GET`,
-  or `-f` / `-F` / `--field` / `--raw-field` / `--input` (which make gh send a
-  POST). Read-only `gh api` calls pass.
+- **`gh api` calls that can write**: any call with `graphql`, `-X` /
+  `--method`, or `-f` / `-F` / `--field` / `--raw-field` / `--input`
+  (including attached forms such as `-fbody=x`). This is conservative:
+  GraphQL queries and parameterized GETs (`-X GET -f q=...`) are blocked too,
+  because a command string cannot prove the request is a read. Open an
+  approval window for them. Plain `gh api repos/o/r/pulls` reads pass.
 - **GitLab equivalents** (`glab mr comment`, `glab mr approve`, `glab mr merge`, `glab issue comment`)
 - **`git push` naming `main`, `master`, `release`, or `production`** as a whole
   word (`origin main`, `HEAD:main`, `refs/heads/main`), so `maintenance` or
   `fix-release-notes` pass
-- **Force pushes to any branch** (`--force`, `--force-with-lease`, `-f`)
+- **Force pushes to any branch** (`--force`, `--force-with-lease`, `-f`,
+  `--mirror`, or a `+`-prefixed refspec such as `+feature`)
 - **Writes and edits to `.github/workflows/`, `.github/CODEOWNERS`, `.gitlab-ci.yml`, `.circleci/config.yml`, `buildkite/pipeline.yml`**
 
 Everything else passes through. This plugin is focused on the review

@@ -94,10 +94,16 @@ if command -v node >/dev/null 2>&1 && command -v npx >/dev/null 2>&1 && command 
       fail "hooks.json PreToolUse did not deny $1 by policy (exit $rc): $(printf '%s' "$out" | tail -n 1)"
     fi
   }
+  # An allow must come from the policy too: evaluate.sh also exits 0, with a
+  # "no policy file at" warning, when the policy path is wrong.
   check_allow() {
     local out rc
     out=$(hook); rc=$?
-    [ "$rc" -eq 0 ] && pass "hooks.json PreToolUse allows $1" || fail "hooks.json PreToolUse blocked $1 (exit $rc)"
+    if [ "$rc" -eq 0 ] && ! printf '%s' "$out" | grep -q 'no policy file at'; then
+      pass "hooks.json PreToolUse allows $1"
+    else
+      fail "hooks.json PreToolUse blocked $1 or skipped the policy (exit $rc)"
+    fi
   }
 
   # Regression test for #705: the shipped policy previously used an entity
@@ -109,13 +115,18 @@ if command -v node >/dev/null 2>&1 && command -v npx >/dev/null 2>&1 && command 
   check_deny "a --repo flag before the subcommand" <<<"$(payload Bash command 'gh --repo o/r pr merge 42')"
   check_deny "a gh api write" <<<"$(payload Bash command 'gh api -X PUT repos/o/r/pulls/42/merge')"
   check_deny "a gh api graphql call" <<<"$(payload Bash command 'gh api graphql -f query=mutation{mergePullRequest}')"
+  check_deny "a gh api attached field flag" <<<"$(payload Bash command 'gh api repos/o/r/issues/1/comments -fbody=x')"
+  check_deny "a gh api GET flag followed by POST" <<<"$(payload Bash command 'gh api repos/o/r/issues/1/comments -X GET -X POST -f body=x')"
   check_deny "git -C pushing to main" <<<"$(payload Bash command 'git -C . push origin main')"
   check_deny "a force push to any branch" <<<"$(payload Bash command 'git push --force-with-lease origin feature')"
+  check_deny "a mirror push" <<<"$(payload Bash command 'git push --mirror origin')"
+  check_deny "a +refspec force push" <<<"$(payload Bash command 'git push origin +feature')"
   check_deny "a workflow write through ./" <<<"$(payload Write file_path '/repo/.github/./workflows/ci.yml')"
-  # False-positive guards: branch names that contain a protected name, and a
-  # read that mentions comments.
+  # False-positive guards: branch names that contain a protected name, a
+  # read that mentions comments, and a plain gh api read.
   check_allow "'git push origin maintenance'" <<<"$(payload Bash command 'git push origin maintenance')"
   check_allow "'gh pr view 42 --comments'" <<<"$(payload Bash command 'gh pr view 42 --comments')"
+  check_allow "'gh api repos/o/r/pulls/42'" <<<"$(payload Bash command 'gh api repos/o/r/pulls/42')"
 
   touch "$WORKDIR/approved"
   CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" REVIEW_GOVERNANCE_POLICY="$WORKDIR/missing.cedar" REVIEW_APPROVAL_FLAG="$WORKDIR/approved" \

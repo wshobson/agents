@@ -50,9 +50,13 @@ forbid (
      context.input.command like "*gh *release edit*")
 };
 
-// 2. `gh api` calls that write: GraphQL (mutations such as mergePullRequest),
-//    an explicit method other than GET, or field / input flags, which make
-//    gh send a POST. Plain `gh api repos/o/r/pulls` reads still pass.
+// 2. `gh api` calls that can write. This rule is conservative: any `gh api`
+//    call with `graphql`, a method flag (`-X`, `--method`), or a field or
+//    input flag (`-f`, `-F`, `--field`, `--raw-field`, `--input`, including
+//    attached forms such as `-fbody=x`) is gated, even when it only reads.
+//    A GET flag is not trusted: gh uses the last `-X`, and a shell comment
+//    can hold any text. GraphQL queries and parameterized GETs therefore
+//    need an approval window too. Plain `gh api repos/o/r/pulls` reads pass.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -61,17 +65,13 @@ forbid (
     context has input && context.input has command &&
     context.input.command like "*gh *api *" &&
     (context.input.command like "*graphql*" ||
-     ((context.input.command like "* -X*" ||
-       context.input.command like "*--method*" ||
-       context.input.command like "* -f *" ||
-       context.input.command like "* -F *" ||
-       context.input.command like "*--field*" ||
-       context.input.command like "*--raw-field*" ||
-       context.input.command like "*--input*") &&
-      !(context.input.command like "*-X GET*" ||
-        context.input.command like "*-XGET*" ||
-        context.input.command like "*--method GET*" ||
-        context.input.command like "*--method=GET*")))
+     context.input.command like "* -X*" ||
+     context.input.command like "*--method*" ||
+     context.input.command like "* -f*" ||
+     context.input.command like "* -F*" ||
+     context.input.command like "*--field*" ||
+     context.input.command like "*--raw-field*" ||
+     context.input.command like "*--input*")
 };
 
 // 3. Posting via the GitLab CLI
@@ -112,8 +112,9 @@ forbid (
      context.input.command like "*heads/production" || context.input.command like "*heads/production *")
 };
 
-// 5. Force pushes to any branch (`--force`, `--force-with-lease`, `-f`).
-//    A `+branch` refspec also forces a push and is not matched.
+// 5. Force pushes to any branch: `--force`, `--force-with-lease`, `-f`,
+//    `--mirror` (which force-updates and deletes remote refs), and a
+//    `+`-prefixed refspec such as `+feature` or `+src:dst`.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -122,8 +123,10 @@ forbid (
     context has input && context.input has command &&
     context.input.command like "*git *push *" &&
     (context.input.command like "*--force*" ||
+     context.input.command like "*--mirror*" ||
      context.input.command like "* -f" ||
-     context.input.command like "* -f *")
+     context.input.command like "* -f *" ||
+     context.input.command like "* +*")
 };
 
 // 6. Direct writes to CI / CD configuration paths. Modifying these files lets

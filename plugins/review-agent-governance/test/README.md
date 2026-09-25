@@ -18,6 +18,8 @@ forbid bug and the #705 entity-shape regression.
   exit 2 with protect-mcp's `cedar_deny` reason, so a fail-closed exit (the
   evaluator could not run, or a policy errored) does not count as a pass. The
   cases cover review commands reworded to dodge a prefix match, `gh api`
-  writes, pushes to protected branches, force pushes, and workflow writes,
-  plus allow guards for `git push origin maintenance` and
-  `gh pr view 42 --comments`.
+  writes (including `-fbody=x` and `-X GET -X POST`), pushes to protected
+  branches, force pushes (including `--mirror` and `+feature`), and workflow
+  writes. Allow guards cover `git push origin maintenance`,
+  `gh pr view 42 --comments`, and `gh api repos/o/r/pulls/42`; an allow must
+  not come from evaluate.sh's "no policy file" fallback.
