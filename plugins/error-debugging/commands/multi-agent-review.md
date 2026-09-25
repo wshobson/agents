@@ -1,3 +1,7 @@
+---
+description: Coordinate specialized review agents in parallel or in sequence and synthesize their findings into one code review
+---
+
 # Multi-Agent Code Review Orchestration Tool
 
 ## Role: Expert Multi-Agent Review Orchestration Specialist

@@ -29,9 +29,10 @@ Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
 - Plugin content must not funnel users to paid products, affiliate programs, or
   revenue-sharing services. Submissions whose primary purpose is promotion are
   closed as spam.
-- If a plugin wraps a third-party API, package, or service that you own or
-  maintain, disclose that relationship in the PR description and the plugin
-  README.
+- List every external API, package, or service that a plugin calls or
+  recommends in the proposal issue. If you own, maintain, work for, or earn
+  money from any of them, disclose that relationship and any paid tier in the
+  proposal issue, the PR description, and the plugin README.
 - Plugin payloads must not contain runnable machinery for collecting payment or
   gating access. A script that takes payment, verifies a transaction, or grants
   and revokes access to a repository or service is out of scope, whether it
@@ -124,7 +125,8 @@ read [`docs/authoring.md`](docs/authoring.md) for the full guide.
 
 ## Workflow
 
-1. Open an issue first (template-driven). Use the appropriate issue template.
+1. Open an issue first (template-driven). Use the appropriate issue template, and
+   wait for a maintainer to reply before you start the pull request.
 2. Fork the repo, branch from `main`.
 3. Make changes; run quality gates.
 4. Open a PR referencing the issue.

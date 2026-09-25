@@ -20,6 +20,9 @@ body:
         use cases. Proposals for malicious or harmful capabilities will be
         rejected and may result in moderation action.
 
+        Please wait for a maintainer to reply on this issue before you open a
+        pull request, so that we can agree on scope first.
+
   - type: checkboxes
     id: preliminary-checks
     attributes:
@@ -137,6 +140,18 @@ body:
         **Example 2:**
         User: "Optimize this blockchain query..."
         Response: "Let me analyze the query..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: commercial-disclosure
+    attributes:
+      label: Commercial relationship and external services
+      description: >-
+        List every external service, API, or package the component calls or
+        recommends. Say whether you own, maintain, work for, or earn money
+        from any of them, and whether any of them has a paid tier. Write
+        "None" if the component calls or recommends no external service.
     validations:
       required: true
 
