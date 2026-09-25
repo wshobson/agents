@@ -136,6 +136,10 @@ if command -v node >/dev/null 2>&1 && command -v npx >/dev/null 2>&1 && command 
   # read that mentions comments, and a plain gh api read.
   check_allow "'git push origin maintenance'" <<<"$(payload Bash command 'git push origin maintenance')"
   check_allow "'git push origin feature:feature'" <<<"$(payload Bash command 'git push origin feature:feature')"
+  # Other git commands that mention push or main are not pushes.
+  check_allow "a commit message that mentions push" <<<"$(payload Bash command 'git commit -m "Add push notification handler"')"
+  check_allow "'git stash push -m \"wip\"'" <<<"$(payload Bash command 'git stash push -m "wip"')"
+  check_allow "a commit message that mentions main" <<<"$(payload Bash command 'git commit -m "fix main"')"
   check_allow "'gh pr view 42 --comments'" <<<"$(payload Bash command 'gh pr view 42 --comments')"
   check_allow "'gh api repos/o/r/pulls/42'" <<<"$(payload Bash command 'gh api repos/o/r/pulls/42')"
 
