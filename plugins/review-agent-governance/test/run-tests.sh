@@ -118,6 +118,8 @@ if command -v node >/dev/null 2>&1 && command -v npx >/dev/null 2>&1 && command 
   check_deny "a gh api attached field flag" <<<"$(payload Bash command 'gh api repos/o/r/issues/1/comments -fbody=x')"
   check_deny "a gh api GET flag followed by POST" <<<"$(payload Bash command 'gh api repos/o/r/issues/1/comments -X GET -X POST -f body=x')"
   check_deny "git -C pushing to main" <<<"$(payload Bash command 'git -C . push origin main')"
+  check_deny "a push to main followed by ; true" <<<"$(payload Bash command 'git push origin main; true')"
+  check_deny "a push to main followed by && true" <<<"$(payload Bash command 'git push origin main && true')"
   check_deny "a force push to any branch" <<<"$(payload Bash command 'git push --force-with-lease origin feature')"
   check_deny "a mirror push" <<<"$(payload Bash command 'git push --mirror origin')"
   check_deny "a +refspec force push" <<<"$(payload Bash command 'git push origin +feature')"

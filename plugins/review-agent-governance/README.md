@@ -58,6 +58,10 @@ The default policy forbids (unless approved):
   `fix-release-notes` pass
 - **Force pushes to any branch** (`--force`, `--force-with-lease`, `-f`,
   `--mirror`, or a `+`-prefixed refspec such as `+feature`)
+- **Chained pushes**: a `git push` that also contains `;`, `&`, `|`, a
+  newline, a backtick, `$`, or `<`, such as `git push origin main; true`.
+  This is conservative: a chained push, and a push with `2>&1`, needs an
+  approval window.
 - **Remote branch deletes** (`--delete`, `-d`, `--prune`, or
   `git push origin :feature`) and **`git push --all`**, which updates `main`
   without naming it

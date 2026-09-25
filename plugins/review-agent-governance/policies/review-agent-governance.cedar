@@ -114,7 +114,31 @@ forbid (
      context.input.command like "*heads/production" || context.input.command like "*heads/production *")
 };
 
-// 5. Force pushes, remote branch deletes, and pushes of every branch:
+// 5. Chained pushes. Rule 4 expects the branch name to end the command or be
+//    followed by a space, so `git push origin main; true` or
+//    `git push origin main&&true` would slip past it. Rather than list every
+//    separator per branch, any push that also contains `;`, `&`, `|`, a
+//    newline, a backtick, `$` (variable or command substitution), or `<` is
+//    gated. This is conservative: a chained push, and a push with `2>&1`,
+//    needs an approval window. `>` is not listed, so a redirect with no space
+//    before it (`git push origin main>log`) is not matched.
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    context.input.command like "*git *push *" &&
+    (context.input.command like "*;*" ||
+     context.input.command like "*&*" ||
+     context.input.command like "*|*" ||
+     context.input.command like "*\n*" ||
+     context.input.command like "*`*" ||
+     context.input.command like "*$*" ||
+     context.input.command like "*<*")
+};
+
+// 6. Force pushes, remote branch deletes, and pushes of every branch:
 //    `--force`, `--force-with-lease`, `-f` alone or bundled with a common
 //    short flag (`-uf`, `-fu`, `-vf`, `-fv`, `-qf`, `-fq`, `-nf`, `-fn`),
 //    `--mirror` (which force-updates and deletes remote refs), a `+`-prefixed
@@ -155,7 +179,7 @@ forbid (
      context.input.command like "*--all*")
 };
 
-// 6. Direct writes to CI / CD configuration paths. Modifying these files lets
+// 7. Direct writes to CI / CD configuration paths. Modifying these files lets
 //    an agent change how future builds or reviews run, bypassing every other
 //    safeguard. The gap in "*.github/*workflows/*" also catches
 //    `.github/./workflows/` and `.github//workflows/`.
