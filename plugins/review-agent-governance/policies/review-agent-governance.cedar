@@ -32,6 +32,8 @@
 // 1. Review-surface GitHub actions via the gh CLI. The subcommand must follow
 //    its group directly (`pr merge`), so reads such as
 //    `gh pr view 42 --comments` or `gh pr list --state closed` still pass.
+//    `gh pr create` and `gh issue create` are deliberately not gated: opening
+//    a PR or an issue is how an agent hands work to a human.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -112,11 +114,14 @@ forbid (
      context.input.command like "*heads/production" || context.input.command like "*heads/production *")
 };
 
-// 5. Force pushes and remote branch deletes on any branch: `--force`,
-//    `--force-with-lease`, `-f`, `--mirror` (which force-updates and deletes
-//    remote refs), a `+`-prefixed refspec such as `+feature` or `+src:dst`,
-//    and deletes (`--delete`, `-d`, or an empty source such as `:feature`).
-//    A `src:dst` refspec such as `feature:feature` is not a delete and passes.
+// 5. Force pushes, remote branch deletes, and pushes of every branch:
+//    `--force`, `--force-with-lease`, `-f` alone or bundled with a common
+//    short flag (`-uf`, `-fu`, `-vf`, `-fv`, `-qf`, `-fq`, `-nf`, `-fn`),
+//    `--mirror` (which force-updates and deletes remote refs), a `+`-prefixed
+//    refspec such as `+feature` or `+src:dst`, deletes (`--delete`, `-d`,
+//    `--prune`, or an empty source such as `:feature`), and `--all` (which
+//    updates `main` without naming it). A `src:dst` refspec such as
+//    `feature:feature` is not a delete and passes.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -128,11 +133,17 @@ forbid (
      context.input.command like "*--mirror*" ||
      context.input.command like "* -f" ||
      context.input.command like "* -f *" ||
+     context.input.command like "* -uf*" || context.input.command like "* -fu*" ||
+     context.input.command like "* -vf*" || context.input.command like "* -fv*" ||
+     context.input.command like "* -qf*" || context.input.command like "* -fq*" ||
+     context.input.command like "* -nf*" || context.input.command like "* -fn*" ||
      context.input.command like "* +*" ||
      context.input.command like "* :*" ||
      context.input.command like "*--delete*" ||
      context.input.command like "* -d" ||
-     context.input.command like "* -d *")
+     context.input.command like "* -d *" ||
+     context.input.command like "*--prune*" ||
+     context.input.command like "*--all*")
 };
 
 // 6. Direct writes to CI / CD configuration paths. Modifying these files lets

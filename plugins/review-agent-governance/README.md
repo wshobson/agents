@@ -58,7 +58,9 @@ The default policy forbids (unless approved):
   `fix-release-notes` pass
 - **Force pushes to any branch** (`--force`, `--force-with-lease`, `-f`,
   `--mirror`, or a `+`-prefixed refspec such as `+feature`)
-- **Remote branch deletes** (`--delete`, `-d`, or `git push origin :feature`)
+- **Remote branch deletes** (`--delete`, `-d`, `--prune`, or
+  `git push origin :feature`) and **`git push --all`**, which updates `main`
+  without naming it
 - **Writes and edits to `.github/workflows/`, `.github/CODEOWNERS`, `.gitlab-ci.yml`, `.circleci/config.yml`, `buildkite/pipeline.yml`**
 
 Everything else passes through. This plugin is focused on the review
@@ -77,6 +79,8 @@ approval window for those. Other limits:
 
 - A bare `git push` is allowed. The evaluator sees only the command string,
   not the upstream branch it pushes to.
+- `gh pr create` and `gh issue create` are not gated on purpose: opening a PR
+  or an issue is how an agent hands work to a human.
 - `WebFetch` is not gated. Claude Code's WebFetch tool only issues GET
   requests, so it cannot post a review, comment, or webhook message.
 - Path patterns are case-sensitive, so on a case-insensitive file system a
