@@ -102,7 +102,8 @@ permit (
 };
 
 // Writes and edits only inside the project. Claude Code passes absolute
-// paths, so match your project's path, not "./*".
+// paths, so match your project's path, not "./*". `like` matches the raw
+// string, so it is not a path containment check: the forbid rejects `..`.
 permit (
     principal,
     action == Action::"MCP::Tool::call",
@@ -111,6 +112,16 @@ permit (
     (resource == Tool::"Write" || resource == Tool::"Edit") &&
     context has input && context.input has file_path &&
     context.input.file_path like "/path/to/project/*"
+};
+
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource
+) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    (context.input.file_path like "*/../*" || context.input.file_path like "*/..")
 };
 
 // Never allow destructive shell commands. Substring patterns also catch

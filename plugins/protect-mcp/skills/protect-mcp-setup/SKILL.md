@@ -103,48 +103,47 @@ Writes the receipt to `./receipts/<timestamp>.json`.
 Create `./protect.cedar` at the project root:
 
 ```cedar
-// Read-only tools. One rule covers several tools: leave `resource` open
-// in the scope and compare it in `when`.
+// Read-only tools: one rule can name several tools in `when`
 permit (principal, action == Action::"MCP::Tool::call", resource) when {
     resource == Tool::"Read" || resource == Tool::"Glob" ||
     resource == Tool::"Grep" || resource == Tool::"WebFetch"
 };
 
-// Bash only for safe command prefixes
-permit (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Bash"
-) when {
+// Safe commands only; git limited to read subcommands
+permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
     context has input && context.input has command &&
-    (context.input.command like "git*" || context.input.command like "npm*" ||
-     context.input.command like "ls*" || context.input.command like "cat*" ||
-     context.input.command like "echo*" || context.input.command like "pwd*" ||
-     context.input.command like "test*")
+    (context.input.command like "git status*" || context.input.command like "git diff*" ||
+     context.input.command like "git log*" || context.input.command like "git show*" ||
+     context.input.command like "npm*" || context.input.command like "ls*" ||
+     context.input.command like "cat*" || context.input.command like "echo*" ||
+     context.input.command like "pwd*" || context.input.command like "test*")
 };
 
-// Never allow recursive deletion (substring, so `cd x && rm -rf y` is caught)
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Bash"
-) when {
+// No chaining, substitution, redirection, or rm -rf
+forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
     context has input && context.input has command &&
-    context.input.command like "*rm -rf*"
+    (context.input.command like "*;*" || context.input.command like "*&&*" ||
+     context.input.command like "*|*" || context.input.command like "*$(*" ||
+     context.input.command like "*`*" || context.input.command like "*>*" ||
+     context.input.command like "*rm -rf*")
 };
 
-// Writes and edits only inside the project. Claude Code passes absolute
-// paths, so use your project's path, not "./*".
+// Writes only inside the project (paths are absolute), never via `..`
 permit (principal, action == Action::"MCP::Tool::call", resource) when {
     (resource == Tool::"Write" || resource == Tool::"Edit") &&
     context has input && context.input has file_path &&
     context.input.file_path like "/path/to/project/*"
 };
+forbid (principal, action == Action::"MCP::Tool::call", resource) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    (context.input.file_path like "*/../*" || context.input.file_path like "*/..")
+};
 ```
 
-Matching shell commands as strings is best-effort: a reworded command can
-dodge a forbid, and a prefix permit such as `git*` also admits
-`git status; curl ... | sh`.
+String matching is best-effort: `like` checks the raw string, not a
+resolved path, and an `npm*` permit runs arbitrary code, so it is only as
+safe as the project's scripts.
 
 ## Verification
 
