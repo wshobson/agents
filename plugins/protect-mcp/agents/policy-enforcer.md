@@ -51,7 +51,7 @@ When a user asks you to write a Cedar policy:
    and exposes the tool input at `context.input`. For `Bash`, match
    `context.input.command` with `like`: a narrow prefix (`"git status*"`,
    not `"git*"`) for an allow list, paired with a forbid on shell chaining,
-   substitution, and redirection (`;`, `&&`, `|`, `$(`, a backtick, `>`), and
+   substitution, and redirection (`;`, `&&`, `|`, `$(`, a backtick, `>`, a newline), and
    a substring (`"*rm -rf*"`) for a forbid so `cd x && rm -rf y` is caught.
    For `Edit`/`Write`, match `context.input.file_path` against an explicit
    root such as `"/path/to/project/src/*"`; Claude Code passes absolute
@@ -175,7 +175,8 @@ forbid (
      context.input.command like "*|*" ||
      context.input.command like "*$(*" ||
      context.input.command like "*`*" ||
-     context.input.command like "*>*")
+     context.input.command like "*>*" ||
+     context.input.command like "*\n*")
 };
 
 // Never destructive (substring match, so compound commands are caught)
@@ -250,7 +251,8 @@ forbid (
      context.input.command like "*|*" ||
      context.input.command like "*$(*" ||
      context.input.command like "*`*" ||
-     context.input.command like "*>*")
+     context.input.command like "*>*" ||
+     context.input.command like "*\n*")
 };
 
 // Everything else is denied: Cedar denies any call that no permit matches,

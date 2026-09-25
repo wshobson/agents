@@ -125,7 +125,7 @@ forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash"
     (context.input.command like "*;*" || context.input.command like "*&&*" ||
      context.input.command like "*|*" || context.input.command like "*$(*" ||
      context.input.command like "*`*" || context.input.command like "*>*" ||
-     context.input.command like "*rm -rf*")
+     context.input.command like "*\n*" || context.input.command like "*rm -rf*")
 };
 
 // Writes only inside the project (paths are absolute), never via `..`

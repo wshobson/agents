@@ -118,7 +118,8 @@ forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash"
     context has input && context.input has command &&
     (context.input.command like "*;*" || context.input.command like "*&&*" ||
      context.input.command like "*|*" || context.input.command like "*$(*" ||
-     context.input.command like "*`*" || context.input.command like "*>*")
+     context.input.command like "*`*" || context.input.command like "*>*" ||
+     context.input.command like "*\n*")
 };
 
 // Restrict writes to the project (Claude Code passes absolute paths).
