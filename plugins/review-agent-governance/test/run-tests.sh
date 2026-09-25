@@ -126,6 +126,7 @@ if command -v node >/dev/null 2>&1 && command -v npx >/dev/null 2>&1 && command 
   check_deny "a --prune push" <<<"$(payload Bash command 'git push --prune origin')"
   check_deny "a --all push" <<<"$(payload Bash command 'git push --all origin')"
   check_deny "a bundled -uf force push" <<<"$(payload Bash command 'git push -uf origin feature')"
+  check_deny "a bundled -df delete" <<<"$(payload Bash command 'git push -df origin feature')"
   check_deny "a workflow write through ./" <<<"$(payload Write file_path '/repo/.github/./workflows/ci.yml')"
   # False-positive guards: branch names that contain a protected name, a
   # read that mentions comments, and a plain gh api read.

@@ -79,6 +79,10 @@ approval window for those. Other limits:
 
 - A bare `git push` is allowed. The evaluator sees only the command string,
   not the upstream branch it pushes to.
+- Force and delete flags are matched alone or in two-letter bundles such as
+  `-uf` or `-df`. A bundle of three or more short flags is matched only when
+  it starts with one of those pairs (`-qdf` is, `-uvf` is not), because
+  Cedar `like` has no character classes.
 - `gh pr create` and `gh issue create` are not gated on purpose: opening a PR
   or an issue is how an agent hands work to a human.
 - `WebFetch` is not gated. Claude Code's WebFetch tool only issues GET

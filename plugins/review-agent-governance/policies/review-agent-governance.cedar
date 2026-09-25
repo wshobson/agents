@@ -118,10 +118,14 @@ forbid (
 //    `--force`, `--force-with-lease`, `-f` alone or bundled with a common
 //    short flag (`-uf`, `-fu`, `-vf`, `-fv`, `-qf`, `-fq`, `-nf`, `-fn`),
 //    `--mirror` (which force-updates and deletes remote refs), a `+`-prefixed
-//    refspec such as `+feature` or `+src:dst`, deletes (`--delete`, `-d`,
-//    `--prune`, or an empty source such as `:feature`), and `--all` (which
-//    updates `main` without naming it). A `src:dst` refspec such as
-//    `feature:feature` is not a delete and passes.
+//    refspec such as `+feature` or `+src:dst`, deletes (`--delete`, `-d`
+//    alone or bundled as `-df`, `-fd`, `-ud`, `-du`, `-qd`, `-dq`, `-vd`,
+//    `-dv`, `-nd`, `-dn`, `--prune`, or an empty source such as `:feature`),
+//    and `--all` (which updates `main` without naming it). A `src:dst`
+//    refspec such as `feature:feature` is not a delete and passes. Known
+//    limit: a bundle of three or more short flags is caught only when it
+//    starts with a listed pair (`-qdf` is, `-uvf` is not), because Cedar
+//    `like` has no character classes.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -142,6 +146,11 @@ forbid (
      context.input.command like "*--delete*" ||
      context.input.command like "* -d" ||
      context.input.command like "* -d *" ||
+     context.input.command like "* -df*" || context.input.command like "* -fd*" ||
+     context.input.command like "* -ud*" || context.input.command like "* -du*" ||
+     context.input.command like "* -qd*" || context.input.command like "* -dq*" ||
+     context.input.command like "* -vd*" || context.input.command like "* -dv*" ||
+     context.input.command like "* -nd*" || context.input.command like "* -dn*" ||
      context.input.command like "*--prune*" ||
      context.input.command like "*--all*")
 };
