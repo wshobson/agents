@@ -80,41 +80,39 @@ echo "./receipts/" >> .gitignore
 Create `./protect.cedar`:
 
 ```cedar
-// Allow all read-oriented tools by default.
-permit (
-    principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep", Action::"WebSearch"],
-    resource
-);
+// protect-mcp >= 0.7 evaluates each call as Action::"MCP::Tool::call" on
+// Tool::"<name>", with the tool input at context.input.
 
-// Allow Bash commands from a safe list only.
-permit (
-    principal,
-    action == Action::"Bash",
-    resource
-) when {
-    context.command_pattern in [
-        "git", "npm", "pnpm", "yarn", "ls", "cat", "pwd",
-        "echo", "test", "node", "python", "make"
-    ]
+// Allow all read-oriented tools by default.
+permit (principal, action == Action::"MCP::Tool::call", resource) when {
+    resource == Tool::"Read" || resource == Tool::"Glob" ||
+    resource == Tool::"Grep" || resource == Tool::"WebSearch"
+};
+
+// Allow Bash commands from a safe list only (prefix match).
+permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
+    context has input && context.input has command &&
+    (context.input.command like "git*" || context.input.command like "npm*" ||
+     context.input.command like "pnpm*" || context.input.command like "yarn*" ||
+     context.input.command like "ls*" || context.input.command like "cat*" ||
+     context.input.command like "pwd*" || context.input.command like "echo*" ||
+     context.input.command like "test*" || context.input.command like "node*" ||
+     context.input.command like "python*" || context.input.command like "make*")
 };
 
 // Explicit deny on destructive commands. Cedar deny is authoritative.
-forbid (
-    principal,
-    action == Action::"Bash",
-    resource
-) when {
-    context.command_pattern in ["rm -rf", "dd", "mkfs", "shred"]
+// Substring matching on shell commands is best-effort.
+forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
+    context has input && context.input has command &&
+    (context.input.command like "*rm -rf*" || context.input.command like "*dd if=*" ||
+     context.input.command like "*mkfs*" || context.input.command like "*shred*")
 };
 
-// Restrict writes to the project directory.
-permit (
-    principal,
-    action in [Action::"Write", Action::"Edit"],
-    resource
-) when {
-    context.path_starts_with == "./"
+// Restrict writes to the project (Claude Code passes absolute paths).
+permit (principal, action == Action::"MCP::Tool::call", resource) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    context.input.file_path like "/path/to/project/*"
 };
 ```
 
@@ -123,7 +121,7 @@ Four rules:
 - Read-oriented tools always allowed
 - `Bash` allowed for safe command patterns (`git`, `npm`, etc.)
 - `Bash rm -rf` and similar destructive commands explicitly denied
-- Writes allowed only within the project (`./` prefix)
+- Writes allowed only within the project (its path prefix)
 
 Cedar `forbid` rules take precedence over `permit` rules, so destructive
 commands cannot be bypassed by a later permissive rule.

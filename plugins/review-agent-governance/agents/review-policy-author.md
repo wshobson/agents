@@ -63,13 +63,19 @@ When writing a review-governance policy:
    GETs — all fine for agents to do unattended. The gate is on write /
    post / merge / close actions only.
 
-4. **Gate branches by name, not by path.** The hook passes only the raw
-   command string, so match the branch name inside `context.input.command`
-   (e.g. `context.input.command like "*main*"`), not a resource path such as
-   `refs/heads/main`. Branch names are what humans reason about.
+4. **Match commands as substrings, and treat it as best-effort.** The hook
+   passes only the raw command string at `context.input.command`. Use
+   `"*gh *pr merge*"` rather than `"gh pr merge*"` so `cd x && gh pr merge 1`,
+   `env gh ...`, and `gh -R o/r pr merge 1` are caught. Match a branch as a
+   whole word (`"* main"`, `"* main *"`, `"*:main"`, `"*heads/main"`), not
+   `"*main*"`, which also catches `maintenance`. The evaluator cannot see the
+   upstream of a bare `git push`. String matching on shell commands can
+   always be dodged by a determined rewording, so say so in the policy.
 
 5. **Include the notification surfaces.** Slack and Discord webhooks are
-   where review-bot hallucinations amplify. Gate POSTs to those hosts.
+   where review-bot hallucinations amplify. Posting to them needs a POST,
+   which Claude Code's WebFetch tool cannot send (it only issues GETs), so
+   gate the Bash commands (`curl`) or MCP tools that can post.
 
 6. **Leave non-review actions alone.** This policy is focused. A permissive
    `permit (principal, action == Action::"MCP::Tool::call", resource);` at the
@@ -87,23 +93,15 @@ forbid (
     resource == Tool::"Bash"
 ) when {
     context has input && context.input has command &&
-    context.input.command like "linear*"
-};
-
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"WebFetch"
-) when {
-    context has input && context.input has url &&
-    context.input.url like "*api.linear.app*"
+    context.input.command like "*linear *"
 };
 ```
 
 ### Teams with their own internal review bot
 
 ```cedar
-// The WebFetch tool input carries no HTTP method, so gate by host.
+// WebFetch only issues GETs, so gate a host here only when a GET to it has
+// side effects, such as an internal bot's trigger URL.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -115,30 +113,13 @@ forbid (
 };
 ```
 
-### Teams that want to allow a specific bot account
+### Per-identity rules are not available
 
-If the team wants to allow an agent running under a dedicated "automation"
-identity but not a developer's personal account:
-
-```cedar
-permit (
-    principal == Principal::"gh-bot-reviewer",
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Bash"
-) when {
-    context has input && context.input has command &&
-    context.input.command like "gh pr comment*"
-};
-
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Bash"
-) unless {
-    principal == Principal::"gh-bot-reviewer" ||
-    context.human_approved == true
-};
-```
+`protect-mcp evaluate` runs every call as the principal `Agent::"unknown"`
+and passes only the tool name and input, so a rule cannot tell a bot account
+from a developer, and there is no `context.human_approved` attribute. The
+approval flag file is the approval mechanism: the hook skips the policy while
+`./.review-approved` exists.
 
 ## Auditing an existing policy
 
@@ -146,9 +127,10 @@ When reviewing a `review-governance.cedar`:
 
 1. Confirm every review-surface CLI command the team uses has a matching
    `forbid` rule.
-2. Check for gaps in API coverage. `gh api repos` catches arbitrary GitHub
-   REST calls; without it, an agent can `gh api repos/X/Y/pulls/42/reviews`
-   and bypass command-pattern-based rules.
+2. Check for gaps in API coverage. The default gates `gh api` calls that
+   write (`graphql`, a method other than GET, or field / input flags);
+   without that rule, an agent can
+   `gh api -X POST repos/X/Y/pulls/42/reviews` and bypass the `gh pr` rules.
 3. Verify protected-branch `git push` rules cover every branch that is
    actually protected in the repo settings.
 4. Confirm CI / CD path rules match the files that actually gate behavior

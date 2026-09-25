@@ -103,20 +103,19 @@ Writes the receipt to `./receipts/<timestamp>.json`.
 Create `./protect.cedar` at the project root:
 
 ```cedar
-// Allow read-only tools by default. Note: one rule per tool — Cedar scopes
-// accept a single resource constraint, so tools cannot share a rule via `||`.
-permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Read");
-permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Glob");
-permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Grep");
-permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"WebFetch");
+// Read-only tools. One rule covers several tools: leave `resource` open
+// in the scope and compare it in `when`.
+permit (principal, action == Action::"MCP::Tool::call", resource) when {
+    resource == Tool::"Read" || resource == Tool::"Glob" ||
+    resource == Tool::"Grep" || resource == Tool::"WebFetch"
+};
 
-// Require explicit allow for destructive tools
+// Bash only for safe command prefixes
 permit (
     principal,
     action == Action::"MCP::Tool::call",
     resource == Tool::"Bash"
 ) when {
-    // Allow safe commands only (prefix-match so arguments are caught)
     context has input && context.input has command &&
     (context.input.command like "git*" || context.input.command like "npm*" ||
      context.input.command like "ls*" || context.input.command like "cat*" ||
@@ -124,7 +123,7 @@ permit (
      context.input.command like "test*")
 };
 
-// Never allow recursive deletion
+// Never allow recursive deletion (substring, so `cd x && rm -rf y` is caught)
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -134,25 +133,18 @@ forbid (
     context.input.command like "*rm -rf*"
 };
 
-// Require confirmation for writes outside the project
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Write"
-) when {
+// Writes and edits only inside the project. Claude Code passes absolute
+// paths, so use your project's path, not "./*".
+permit (principal, action == Action::"MCP::Tool::call", resource) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
     context has input && context.input has file_path &&
-    !(context.input.file_path like "./*")
-};
-
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Edit"
-) when {
-    context has input && context.input has file_path &&
-    !(context.input.file_path like "./*")
+    context.input.file_path like "/path/to/project/*"
 };
 ```
+
+Matching shell commands as strings is best-effort: a reworded command can
+dodge a forbid, and a prefix permit such as `git*` also admits
+`git status; curl ... | sh`.
 
 ## Verification
 

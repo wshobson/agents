@@ -23,7 +23,9 @@ You understand Claude Code's tool surface:
 
 - Core tools: `Bash`, `Edit`, `Write`, `Read`, `Glob`, `Grep`, `WebFetch`, `WebSearch`
 - Tool input shapes (command strings, file paths, URLs, patterns)
-- The context available at evaluation time (user identity, session state, file paths)
+- The context available at evaluation time: the tool input at `context.input`
+  (command, file path, URL). protect-mcp passes no user identity, session
+  state, or trust tier, and the principal is always `Agent::"unknown"`.
 
 You understand the protect-mcp integration:
 
@@ -46,12 +48,18 @@ When a user asks you to write a Cedar policy:
 
 3. **Use context attributes.** protect-mcp evaluates every tool call as
    `action == Action::"MCP::Tool::call"` with `resource == Tool::"<tool>"`,
-   and exposes the tool input at `context.input`. For `Bash`, match command
-   families with `context.input.command like "git*"` (prefix-match so calls
-   with arguments are caught). For `Edit`/`Write`, restrict scope with
-   `context.input.file_path like "./*"`. For `WebFetch`, match
-   `context.input.url like "*example.com*"`. Guard optional fields first:
-   `context has input && context.input has command && ...`.
+   and exposes the tool input at `context.input`. For `Bash`, match
+   `context.input.command` with `like`: a prefix (`"git*"`) for an allow
+   list, a substring (`"*rm -rf*"`) for a forbid so `cd x && rm -rf y` is
+   caught. For `Edit`/`Write`, match `context.input.file_path`; Claude Code
+   passes absolute paths, so use `"*/src/*"` or the project's absolute path,
+   never `"./*"`. For `WebFetch`, match `context.input.url`. Guard optional
+   fields first: `context has input && context.input has command && ...`.
+   To cover several tools in one rule, leave `resource` open in the scope and
+   write `when { resource == Tool::"Write" || resource == Tool::"Edit" }`.
+   Matching shell commands as strings is best-effort: a forbid can miss a
+   reworded command, and a prefix permit such as `"git*"` also admits
+   `git status; curl ... | sh`.
 
 4. **Write paired rules.** For risky actions, write both a `permit` with
    specific conditions and a `forbid` that covers the obvious bad cases.
@@ -68,57 +76,25 @@ When a user asks you to write a Cedar policy:
 ### Research project (read-only, safe)
 
 ```cedar
-// Allow all read-oriented tools (one rule per tool: Cedar scopes take a
-// single resource constraint, so tools cannot share a rule with `||`).
+// Allow all read-oriented tools, plus web search (no fetch)
 permit (
     principal,
     action == Action::"MCP::Tool::call",
-    resource == Tool::"Read"
-);
+    resource
+) when {
+    resource == Tool::"Read" || resource == Tool::"Glob" ||
+    resource == Tool::"Grep" || resource == Tool::"WebSearch"
+};
 
-permit (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Glob"
-);
-
-permit (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Grep"
-);
-
-// Web searches are fine, no fetch
-permit (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"WebSearch"
-);
-
-// No writes, no shell
+// No writes, no shell, no fetch
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
-    resource == Tool::"Write"
-);
-
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Edit"
-);
-
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Bash"
-);
-
-forbid (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"WebFetch"
-);
+    resource
+) when {
+    resource == Tool::"Write" || resource == Tool::"Edit" ||
+    resource == Tool::"Bash" || resource == Tool::"WebFetch"
+};
 ```
 
 ### Development project (scoped writes, no destructive commands)
@@ -128,41 +104,23 @@ forbid (
 permit (
     principal,
     action == Action::"MCP::Tool::call",
-    resource == Tool::"Read"
-);
-
-permit (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Glob"
-);
-
-permit (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Grep"
-);
-
-// Writes only within the project directory
-permit (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Write"
+    resource
 ) when {
-    context has input && context.input has file_path &&
-    context.input.file_path like "./*"
+    resource == Tool::"Read" || resource == Tool::"Glob" || resource == Tool::"Grep"
 };
 
+// Writes and edits only inside the project (Claude Code passes absolute paths)
 permit (
     principal,
     action == Action::"MCP::Tool::call",
-    resource == Tool::"Edit"
+    resource
 ) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
     context has input && context.input has file_path &&
-    context.input.file_path like "./*"
+    context.input.file_path like "/path/to/project/*"
 };
 
-// Safe shell commands only (prefix-match so arguments are caught)
+// Safe shell commands only (prefix match: keep this list short)
 permit (
     principal,
     action == Action::"MCP::Tool::call",
@@ -183,7 +141,7 @@ permit (
      context.input.command like "make*")
 };
 
-// Never destructive
+// Never destructive (substring match, so compound commands are caught)
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -191,7 +149,7 @@ forbid (
 ) when {
     context has input && context.input has command &&
     (context.input.command like "*rm -rf*" ||
-     context.input.command like "dd *" ||
+     context.input.command like "*dd if=*" ||
      context.input.command like "*mkfs*" ||
      context.input.command like "*shred*")
 };
@@ -200,33 +158,24 @@ forbid (
 ### Production deployment (strict, explicit allow per action)
 
 ```cedar
-// Reads require evidenced trust tier
+// Reads are allowed
 permit (
     principal,
     action == Action::"MCP::Tool::call",
-    resource == Tool::"Read"
+    resource
 ) when {
-    context.trust_tier == "evidenced"
+    resource == Tool::"Read" || resource == Tool::"Grep"
 };
 
-permit (
-    principal,
-    action == Action::"MCP::Tool::call",
-    resource == Tool::"Grep"
-) when {
-    context.trust_tier == "evidenced"
-};
-
-// Writes only to approved paths
+// Writes only to deployment and config directories
 permit (
     principal,
     action == Action::"MCP::Tool::call",
     resource == Tool::"Write"
 ) when {
-    context.trust_tier == "institutional" &&
     context has input && context.input has file_path &&
-    (context.input.file_path like "./deployments/*" ||
-     context.input.file_path like "./config/*")
+    (context.input.file_path like "*/deployments/*" ||
+     context.input.file_path like "*/config/*")
 };
 
 // Shell only for explicit deployment commands
@@ -235,21 +184,14 @@ permit (
     action == Action::"MCP::Tool::call",
     resource == Tool::"Bash"
 ) when {
-    context.trust_tier == "institutional" &&
     context has input && context.input has command &&
     (context.input.command like "kubectl apply*" ||
      context.input.command like "terraform plan*" ||
      context.input.command like "terraform apply*")
 };
 
-// Block everything else
-forbid (
-    principal,
-    action,
-    resource
-) unless {
-    context.trust_tier in ["evidenced", "institutional"]
-};
+// Everything else is denied: Cedar denies any call that no permit matches,
+// so no catch-all forbid is needed.
 ```
 
 ## Auditing Existing Policies
