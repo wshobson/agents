@@ -621,13 +621,29 @@ def check_agent_divergence(report: Report) -> None:
     Plugins are installed individually, so a shared agent is genuinely copied into
     each plugin that offers it. A verbatim copy is therefore expected and is not
     reported at all. Only copies whose bodies have drifted apart are findings.
-    Copies named in INTENTIONAL_AGENT_VARIANTS are skipped.
+    Copies named in INTENTIONAL_AGENT_VARIANTS are skipped, and a pair whose agent
+    file no longer exists is reported so the allowlist cannot go stale.
     """
     if not PLUGINS_DIR.is_dir():
         return
+    for plugin, agent in sorted(INTENTIONAL_AGENT_VARIANTS):
+        variant_path = PLUGINS_DIR / plugin / "agents" / f"{agent}.md"
+        if not variant_path.is_file():
+            report.add(
+                kind="STALE_AGENT_VARIANT",
+                severity="warning",
+                path=variant_path,
+                message=f"INTENTIONAL_AGENT_VARIANTS names ({plugin}, {agent}), "
+                "but this agent file does not exist",
+                fix="Drop the pair from INTENTIONAL_AGENT_VARIANTS in tools/doc_gardener.py.",
+            )
+
     by_filename: dict[str, list[Path]] = defaultdict(list)
     for agent_path in sorted(PLUGINS_DIR.glob("*/agents/*.md")):
         if (agent_path.parent.parent.name, agent_path.stem) in INTENTIONAL_AGENT_VARIANTS:
+            # Left out of the comparison, but still read so an unreadable variant is
+            # reported: this check is where agent sources get their UTF-8 check.
+            read_text_or_none(agent_path, report)
             continue
         by_filename[agent_path.name].append(agent_path)
 

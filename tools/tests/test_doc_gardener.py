@@ -576,7 +576,18 @@ def _write_agent(tmp_path: Path, plugin: str, filename: str, body: str) -> None:
     (agents_dir / filename).write_text(f"---\nname: {plugin}-{filename[:-3]}\n---\n{body}")
 
 
+def _allow_variants(monkeypatch: pytest.MonkeyPatch, *pairs: tuple[str, str]) -> None:
+    import tools.doc_gardener as dg
+
+    monkeypatch.setattr(dg, "INTENTIONAL_AGENT_VARIANTS", frozenset(pairs))
+
+
 class TestAgentDivergence:
+    @pytest.fixture(autouse=True)
+    def _empty_allowlist(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Start every test from an empty allowlist so none depends on the real pairs."""
+        _allow_variants(monkeypatch)
+
     def test_single_copy_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         _patch_paths(monkeypatch, tmp_path)
         _write_agent(tmp_path, "alpha", "reviewer.md", "Review carefully.\n")
@@ -841,9 +852,10 @@ class TestAgentDivergence:
     ):
         """A named intentional variant is left out; the remaining copies still match."""
         _patch_paths(monkeypatch, tmp_path)
-        _write_agent(tmp_path, "backend-development", "security-auditor.md", "Feature checks.\n")
-        _write_agent(tmp_path, "alpha", "security-auditor.md", "Full security audit.\n")
-        _write_agent(tmp_path, "beta", "security-auditor.md", "Full security audit.\n")
+        _allow_variants(monkeypatch, ("feature", "reviewer"))
+        _write_agent(tmp_path, "feature", "reviewer.md", "Feature checks.\n")
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Full review.\n")
+        _write_agent(tmp_path, "beta", "reviewer.md", "Full review.\n")
 
         report = Report()
         check_agent_divergence(report)
@@ -854,23 +866,59 @@ class TestAgentDivergence:
     ):
         """The allowlist names (plugin, agent) pairs, not whole plugins or agent names.
 
-        incident-response is on the list for other agents, but not for this one, so its
-        divergent copy is still reported. The allowlisted backend-development copy is
-        left out of the count rather than hiding the whole group.
+        `incident` is on the list for another agent, but not for this one, so its
+        divergent copy is still reported. The allowlisted `feature` copy is left out
+        of the count rather than hiding the whole group.
         """
         _patch_paths(monkeypatch, tmp_path)
-        _write_agent(tmp_path, "backend-development", "security-auditor.md", "Feature checks.\n")
-        _write_agent(tmp_path, "incident-response", "security-auditor.md", "Incident checks.\n")
-        _write_agent(tmp_path, "alpha", "security-auditor.md", "Full security audit.\n")
+        _allow_variants(monkeypatch, ("feature", "reviewer"), ("incident", "linter"))
+        _write_agent(tmp_path, "feature", "reviewer.md", "Feature checks.\n")
+        _write_agent(tmp_path, "incident", "reviewer.md", "Incident checks.\n")
+        _write_agent(tmp_path, "incident", "linter.md", "Lint.\n")
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Full review.\n")
 
         report = Report()
         check_agent_divergence(report)
         assert [f.kind for f in report.findings] == ["AGENT_BODY_DIVERGENT"]
         finding = report.findings[0]
         assert "2 copies in 2 different versions" in finding.message
-        assert "incident-response" in finding.message
-        assert "backend-development" not in finding.message
+        assert "incident" in finding.message
+        assert "feature" not in finding.message
         assert "INTENTIONAL_AGENT_VARIANTS" in finding.fix
+
+    def test_unreadable_allowlisted_variant_is_still_reported(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Skipping a variant from comparison must not skip its UTF-8 check."""
+        _patch_paths(monkeypatch, tmp_path)
+        _allow_variants(monkeypatch, ("feature", "reviewer"))
+        agents_dir = tmp_path / "plugins" / "feature" / "agents"
+        agents_dir.mkdir(parents=True)
+        (agents_dir / "reviewer.md").write_bytes(b"\xff\xfe not utf-8\n")
+        _write_agent(tmp_path, "alpha", "reviewer.md", "Full review.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["UNREADABLE_FILE"]
+        assert report.findings[0].path == agents_dir / "reviewer.md"
+
+    def test_stale_allowlist_pair_is_reported(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """A pair whose agent file is gone is reported, so the allowlist cannot rot."""
+        _patch_paths(monkeypatch, tmp_path)
+        _allow_variants(monkeypatch, ("feature", "reviewer"), ("feature", "retired"))
+        _write_agent(tmp_path, "feature", "reviewer.md", "Feature checks.\n")
+
+        report = Report()
+        check_agent_divergence(report)
+        assert [f.kind for f in report.findings] == ["STALE_AGENT_VARIANT"]
+        finding = report.findings[0]
+        assert finding.severity == "warning"
+        assert finding.path == tmp_path / "plugins" / "feature" / "agents" / "retired.md"
+        assert (
+            finding.fix == "Drop the pair from INTENTIONAL_AGENT_VARIANTS in tools/doc_gardener.py."
+        )
 
     def test_leading_indentation_is_content(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         """An indented body must not compare equal to the same text unindented."""
