@@ -34,6 +34,8 @@ jobs:
       pull-requests: write
       issues: read
       id-token: write
+      actions: read  # read failed job logs with gh run view
+      checks: read   # read check results with gh pr checks
 
     steps:
       - name: Checkout repository
@@ -48,6 +50,8 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           track_progress: true
           use_sticky_comment: true
+          additional_permissions: |
+            actions: read
 
           prompt: |
             REPO: ${{ github.repository }}
@@ -76,9 +80,10 @@ jobs:
             for the contribution rules.
 
             Start from the linked issue (`Closes #N` in the PR body), read with
-            `gh issue view`. Check that the change does what the issue asked
-            and nothing unrelated. A new plugin, agent, skill, or command needs
-            a proposal issue that a maintainer answered before the PR opened.
+            `gh issue view <number> --comments`. Check that the change does
+            what the issue asked and nothing unrelated. A new plugin, agent,
+            skill, or command needs a proposal issue that a maintainer
+            answered, in a comment dated before the PR opened.
 
             ## What to check
 
@@ -111,10 +116,11 @@ jobs:
 
             6. Quality gates. CI runs `make validate STRICT=1`, `make garden`,
                `make test`, and `make smoke-test` on every PR, and this job
-               can't run them. Read the results with `gh pr checks`. If a gate
-               failed, name it and point to the cause in the diff. If the
-               gates haven't finished, say which gate the change could break
-               and why.
+               can't run them. Read the results with `gh pr checks`, and read
+               a failed job's log with `gh run view <run-id> --log-failed`. If
+               a gate failed, name it and point to the cause in the diff. If
+               the gates haven't finished, say which gate the change could
+               break and why.
 
             7. Catalog counts. Added, removed, or renamed plugins, agents,
                skills, or commands must be reflected in `docs/plugins.md`,
@@ -137,8 +143,11 @@ jobs:
                 calls or recommends a service its author runs without saying
                 so, a free tier with a paid tier behind it on the default
                 path, workspace data sent to a third party when a first-party
-                source answers the same question, payment or license tooling
-                in the payload, requests to star a repo, and telemetry.
+                source answers the same question, runnable payment,
+                licensing, or access-control machinery in the payload,
+                requests to star a repo, and telemetry. Content that teaches
+                how to build payment or access control into the user's own
+                app is allowed.
 
             ## How to report
 
@@ -150,8 +159,9 @@ jobs:
               important, post a single line saying the review found no
               blocking issues, and stop. Don't submit a formal review
               approval, because maintainers approve.
-            - Read the existing review comments first with
-              `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments`
+            - Read the existing reviews and comments first with
+              `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews`,
+              `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments`,
               and
               `gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments`,
               and don't repeat a finding that `coderabbitai` or
@@ -168,4 +178,4 @@ jobs:
             --model claude-opus-5-5
             --effort high
             --max-turns 60
-            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr checks:*),Bash(gh issue view:*),Bash(gh api repos/*/pulls/*/comments:*),Bash(gh api repos/*/issues/*/comments:*)"
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr checks:*),Bash(gh run view:*),Bash(gh issue view:*),Bash(gh api repos/*/pulls/*/reviews:*),Bash(gh api repos/*/pulls/*/comments:*),Bash(gh api repos/*/issues/*/comments:*)"
