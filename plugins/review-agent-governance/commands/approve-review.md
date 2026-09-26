@@ -1,5 +1,5 @@
 ---
-description: "Open a review-action approval window by creating the ./.review-approved flag file. Takes an optional reason string that is embedded in the receipt chain."
+description: "Open a review-action approval window by creating the ./.review-approved flag file. Takes an optional reason string that is recorded in the flag file and an unsigned approval log."
 argument-hint: "[reason for approval]"
 ---
 
@@ -27,7 +27,7 @@ flag file with `rm ./.review-approved` or restart the session.
 
 ## Implementation
 
-Run this in the Bash tool. Capture the full user argument as `$ARGUMENTS`
+Run this in a shell. Capture the full user argument as `$ARGUMENTS`
 (the marketplace slash-command convention) so a reason with spaces is
 preserved verbatim.
 
@@ -80,8 +80,9 @@ Reason: Approving LGTM on PR #42 after visual inspection
 Close the window with: rm ./.review-approved
 The next tool call will be permitted without policy evaluation.
 
-Remember: every attempt in the approval window still produces a signed
-receipt. Auditors can see exactly what you approved and when.
+Remember: every tool call that runs in the window still gets a signed
+receipt, but the receipt does not show that the window was open.
+The approval log records the reason and time, and it is not signed.
 ```
 
 ## Important notes
@@ -89,9 +90,9 @@ receipt. Auditors can see exactly what you approved and when.
 - **This does NOT grant blanket approval.** It opens a short window during
   which the Cedar policy's review-surface rules are bypassed. Everything
   else still runs through the policy.
-- **Every action in the window is still receipted.** The chain records
-  that the action happened under an approval window, including the reason
-  you provided.
+- **Every action in the window still gets a signed receipt.** The receipt
+  does not record the window or the reason. Only the unsigned approval log
+  under `./review-receipts/approvals/` does.
 - **The window stays open until closed.** If you forget to `rm ./.review-approved`,
   the agent could make additional review actions without prompting. Close
   the window immediately after the approved action.
@@ -104,4 +105,4 @@ receipt. Auditors can see exactly what you approved and when.
 - Plugin README: `../README.md`
 - Policy authoring: `../agents/review-policy-author.md`
 - Close the window: `rm ./.review-approved`
-- See recent denials: `/list-pending`
+- See calls blocked in this session: `/list-pending`

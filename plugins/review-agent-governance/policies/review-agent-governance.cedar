@@ -7,8 +7,8 @@
 // PreToolUse hook short-circuits to permit; when it is absent, this policy
 // evaluates.
 //
-// Every tool call, approved or not, still produces an Ed25519 receipt via
-// the PostToolUse hook. The chain records what was approved and when.
+// Every tool call that runs, approved or not, gets an Ed25519 receipt from
+// the PostToolUse hook. A denied call never runs, so it gets no receipt.
 //
 // Entity shape: protect-mcp >= 0.7 evaluates every tool call as
 //   action == Action::"MCP::Tool::call",

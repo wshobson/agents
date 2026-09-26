@@ -1,14 +1,19 @@
 ---
-description: "List recent denied review actions from the receipt chain. Shows what the agent tried to do that was blocked by the review-governance policy."
+description: "List the review actions that the review-governance policy blocked in this session. protect-mcp 0.7.4 writes no receipt for a denied call, so the list comes from the session, not from ./review-receipts/."
 argument-hint: "[--last N]"
 ---
 
 # List Pending Reviews
 
-Walk the receipt chain at `./review-receipts/` and print any recent
-`decision: deny` entries. These are the review-surface actions the agent
-attempted that were blocked by Cedar, and represent candidates for human
-approval via `/approve-review`.
+List the review-surface actions that the review-governance policy blocked in
+the current Claude Code session. These are candidates for human approval via
+`/approve-review`.
+
+protect-mcp 0.7.4 writes a receipt only for a tool call that ran. A denied
+call never runs, so it has no receipt, and `./review-receipts/receipts.jsonl`
+cannot show denials. The PreToolUse hook blocks a denied call with exit code
+2, and Claude Code shows that block in the session, so the session is where
+denials are visible.
 
 ## Usage
 
@@ -19,114 +24,46 @@ approval via `/approve-review`.
 
 ## What this does
 
-1. Reads all receipts under `./review-receipts/` (or the directory set by
-   `REVIEW_GOVERNANCE_RECEIPTS`).
-2. Filters to entries where `decision == "deny"`.
-3. Sorts by `event_time` descending.
-4. Prints the most recent N (default 10) with tool name, command pattern
-   or path, and timestamp.
+1. Looks back through the current session for tool calls that a PreToolUse
+   hook blocked.
+2. Keeps the most recent N (default 10).
+3. Prints each one with the tool name and the command or file path.
 
-## Implementation
+It cannot list denials from earlier sessions, because protect-mcp 0.7.4 does
+not log them.
 
-Run this in the Bash tool:
+## Check a command against the policy
+
+To check whether a specific command is denied right now, run the policy
+evaluation in a shell. Exit 2 means the policy denies it, and exit 0 means it
+is allowed:
 
 ```bash
-set -euo pipefail
-
-N="${1:-10}"
-N="${N#--last }"
-N="${N//--last/}"
-N="${N:-10}"
-
-RECEIPTS_DIR="${REVIEW_GOVERNANCE_RECEIPTS:-./review-receipts/}"
-
-if [ ! -d "$RECEIPTS_DIR" ]; then
-  echo "No receipt directory at $RECEIPTS_DIR"
-  echo "Either no actions have been attempted yet, or the plugin is not active."
-  exit 0
-fi
-
-python3 <<PY
-import json, os, sys
-from pathlib import Path
-from datetime import datetime
-
-d = Path("$RECEIPTS_DIR")
-if not d.exists():
-    print("No receipts directory.")
-    sys.exit(0)
-
-denies = []
-for f in d.rglob("*.json"):
-    if "approvals" in f.parts:
-        continue
-    try:
-        r = json.loads(f.read_text())
-    except Exception:
-        continue
-    if r.get("decision") != "deny":
-        continue
-    denies.append((r.get("event_time", ""), r, f))
-
-denies.sort(key=lambda x: x[0], reverse=True)
-
-if not denies:
-    print("No denied actions found. The review-governance policy is not currently blocking anything.")
-    sys.exit(0)
-
-print(f"Recent denials (most recent first, top $N):")
-print()
-
-for ts, r, f in denies[:$N]:
-    tool = r.get("tool_name", "?")
-    ti = r.get("tool_input") or {}
-    summary = (
-        ti.get("command") or
-        ti.get("file_path") or
-        ti.get("url") or
-        "(no detail)"
-    )
-    if len(summary) > 72:
-        summary = summary[:69] + "..."
-    policy = r.get("policy_id", "unknown")
-    print(f"  {ts}  {tool:10}  {summary}")
-    print(f"    policy={policy}  receipt={f.name}")
-    print()
-
-print("To approve one of these and retry, run:")
-print('  /approve-review "<reason>"')
-print("Then retry the original tool call.")
-print()
-print(f"To audit the full chain:  npx @veritasacta/verify $RECEIPTS_DIR/*.json")
-PY
+npx protect-mcp@0.7.4 evaluate --policy ./review-governance.cedar \
+  --tool Bash --input '{"command":"gh pr review 42 --approve"}'
 ```
+
+The evaluation ignores the approval flag, so it shows what the policy does
+when no approval window is open.
 
 ## What to show the user
 
 ```
-Recent denials (most recent first, top 10):
+Blocked in this session (most recent first, top 10):
 
-  2026-04-17T14:23:01Z  Bash        gh pr review 42 --approve --body 'LGTM'
-    policy=review-agent-governance  receipt=2026-04-17T14-23-01Z.json
-
-  2026-04-17T14:22:45Z  Write       .github/workflows/ci.yml
-    policy=review-agent-governance  receipt=2026-04-17T14-22-45Z.json
-
-  2026-04-17T14:20:11Z  Bash        gh issue comment 18 --body '...'
-    policy=review-agent-governance  receipt=2026-04-17T14-20-11Z.json
+  Bash   gh pr review 42 --approve --body 'LGTM'
+  Write  .github/workflows/ci.yml
+  Bash   gh issue comment 18 --body '...'
 
 To approve one of these and retry, run:
   /approve-review "<reason>"
 Then retry the original tool call.
-
-To audit the full chain:  npx @veritasacta/verify ./review-receipts/*.json
 ```
 
 ## When there are no denials
 
 ```
-No denied actions found. The review-governance policy is not currently
-blocking anything.
+No tool call was blocked in this session.
 ```
 
 This is the common state. It means either the agent has not attempted any
@@ -135,15 +72,14 @@ attempt.
 
 ## Notes
 
-- Denials recorded before the current `./review-receipts/` directory was
-  created will not appear here. Use `@veritasacta/verify` directly against
-  any older receipt location.
-- The command does not modify the receipt chain. It only reads.
-- `./review-receipts/approvals/` (the log of explicit approvals) is
-  excluded from this listing since those are not tool-call receipts.
+- The command reads the session only. It does not read or change
+  `./review-receipts/`.
+- A call made while `./.review-approved` exists skips the policy, so it is
+  never blocked and never appears here.
 
 ## References
 
 - Approve an action: `/approve-review "<reason>"`
-- Verify the chain: `npx @veritasacta/verify ./review-receipts/*.json`
+- Verify the signed receipts: the "Verifying the receipts" section of the
+  review-agent-setup skill
 - Plugin README: `../README.md`
