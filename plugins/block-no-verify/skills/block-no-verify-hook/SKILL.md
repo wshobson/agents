@@ -47,7 +47,7 @@ Add the following to your project's `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(node -p 'JSON.parse(require(\"fs\").readFileSync(0, \"utf8\")).tool_input.command') || { echo 'BLOCKED: node could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+            "command": "if grep -qE '(^|\"command\"[[:space:]]*:[[:space:]]*\"|&&|;|\\||\\\\n)[[:space:]]*git[[:space:]]+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
           }
         ]
       }
@@ -59,7 +59,7 @@ Add the following to your project's `.claude/settings.json`:
 ### How It Works
 
 1. **Matcher**: The hook targets only `Bash` tool calls, so it does not interfere with other tools (Read, Edit, Grep, etc.).
-2. **Inspection**: Claude Code sends the tool call to the hook as JSON on stdin and sets no `$TOOL_INPUT` variable. The hook reads the command with `node` and checks it for `--no-verify` or `--no-gpg-sign` only when the flag follows a `git` command. If `node` is missing or cannot parse the input, the hook blocks the call, so run `node --version` before you enable the hook. The npm install of Claude Code includes Node.js, and the native installer does not.
+2. **Inspection**: Claude Code sends the tool call to the hook as JSON on stdin and sets no `$TOOL_INPUT` variable. The hook searches that JSON with `grep -E`, so it needs no `jq` or `node`, and it matches `--no-verify` or `--no-gpg-sign` only after a `git` that starts the command or follows `&&`, `;`, `|`, or a newline. A false match, such as the flag appearing in the tool's description field, blocks the call, which is the safe way to fail.
 3. **Blocking**: If a bypass flag is found in a git command, the hook exits with code 2 and prints an error message. Exit code 2 signals Claude Code to reject the tool call entirely.
 4. **Pass-through**: If no bypass flag is found, the hook exits with code 0 and the command executes normally.
 
@@ -95,7 +95,7 @@ cat > .claude/settings.json << 'EOF'
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(node -p 'JSON.parse(require(\"fs\").readFileSync(0, \"utf8\")).tool_input.command') || { echo 'BLOCKED: node could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+            "command": "if grep -qE '(^|\"command\"[[:space:]]*:[[:space:]]*\"|&&|;|\\||\\\\n)[[:space:]]*git[[:space:]]+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
           }
         ]
       }
@@ -120,7 +120,7 @@ cat > ~/.claude/settings.json << 'EOF'
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(node -p 'JSON.parse(require(\"fs\").readFileSync(0, \"utf8\")).tool_input.command') || { echo 'BLOCKED: node could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+            "command": "if grep -qE '(^|\"command\"[[:space:]]*:[[:space:]]*\"|&&|;|\\||\\\\n)[[:space:]]*git[[:space:]]+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
           }
         ]
       }
@@ -157,7 +157,7 @@ To block additional flags (e.g., `--force`), extend the grep pattern:
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(node -p 'JSON.parse(require(\"fs\").readFileSync(0, \"utf8\")).tool_input.command') || { echo 'BLOCKED: node could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign|force-with-lease|force)'; then echo 'BLOCKED: Bypass flags are not allowed.' >&2; exit 2; fi"
+            "command": "if grep -qE '(^|\"command\"[[:space:]]*:[[:space:]]*\"|&&|;|\\||\\\\n)[[:space:]]*git[[:space:]]+.*--(no-verify|no-gpg-sign|force-with-lease|force)'; then echo 'BLOCKED: Bypass flags are not allowed.' >&2; exit 2; fi"
           }
         ]
       }
@@ -179,7 +179,7 @@ The block-no-verify hook works alongside other PreToolUse hooks:
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(node -p 'JSON.parse(require(\"fs\").readFileSync(0, \"utf8\")).tool_input.command') || { echo 'BLOCKED: node could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: Bypass flags not allowed.' >&2; exit 2; fi"
+            "command": "if grep -qE '(^|\"command\"[[:space:]]*:[[:space:]]*\"|&&|;|\\||\\\\n)[[:space:]]*git[[:space:]]+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: Bypass flags not allowed.' >&2; exit 2; fi"
           }
         ]
       },
@@ -188,7 +188,7 @@ The block-no-verify hook works alongside other PreToolUse hooks:
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(node -p 'JSON.parse(require(\"fs\").readFileSync(0, \"utf8\")).tool_input.command') || { echo 'BLOCKED: node could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE 'rm\\s+-rf\\s+/'; then echo 'BLOCKED: Dangerous rm command.' >&2; exit 2; fi"
+            "command": "if grep -qE 'rm[[:space:]]+-rf[[:space:]]+/'; then echo 'BLOCKED: Dangerous rm command.' >&2; exit 2; fi"
           }
         ]
       }
