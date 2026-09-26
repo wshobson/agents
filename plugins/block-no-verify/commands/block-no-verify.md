@@ -44,10 +44,12 @@ Add or merge the following PreToolUse hook configuration:
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hook": {
-          "type": "command",
-          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
-        }
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r .tool_input.command) || { echo 'BLOCKED: jq could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+          }
+        ]
       }
     ]
   }

@@ -44,10 +44,12 @@ Add the following to your project's `.claude/settings.json`:
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hook": {
-          "type": "command",
-          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
-        }
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r .tool_input.command) || { echo 'BLOCKED: jq could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+          }
+        ]
       }
     ]
   }
@@ -57,7 +59,7 @@ Add the following to your project's `.claude/settings.json`:
 ### How It Works
 
 1. **Matcher**: The hook targets only `Bash` tool calls, so it does not interfere with other tools (Read, Edit, Grep, etc.).
-2. **Inspection**: The `$TOOL_INPUT` environment variable contains the full command the agent is about to execute. The hook uses `printf` to safely pass input (avoiding `echo` pitfalls with special characters) and checks for `--no-verify` or `--no-gpg-sign` flags only when preceded by a `git` command.
+2. **Inspection**: Claude Code sends the tool call to the hook as JSON on stdin and sets no `$TOOL_INPUT` variable. The hook reads the command with `jq -r .tool_input.command` and checks it for `--no-verify` or `--no-gpg-sign` only when the flag follows a `git` command. If `jq` is missing or cannot parse the input, the hook blocks the call.
 3. **Blocking**: If a bypass flag is found in a git command, the hook exits with code 2 and prints an error message. Exit code 2 signals Claude Code to reject the tool call entirely.
 4. **Pass-through**: If no bypass flag is found, the hook exits with code 0 and the command executes normally.
 
@@ -90,10 +92,12 @@ cat > .claude/settings.json << 'EOF'
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hook": {
-          "type": "command",
-          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
-        }
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r .tool_input.command) || { echo 'BLOCKED: jq could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+          }
+        ]
       }
     ]
   }
@@ -113,10 +117,12 @@ cat > ~/.claude/settings.json << 'EOF'
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hook": {
-          "type": "command",
-          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
-        }
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r .tool_input.command) || { echo 'BLOCKED: jq could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+          }
+        ]
       }
     ]
   }
@@ -148,10 +154,12 @@ To block additional flags (e.g., `--force`), extend the grep pattern:
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hook": {
-          "type": "command",
-          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign|force-with-lease|force)'; then echo 'BLOCKED: Bypass flags are not allowed.' >&2; exit 2; fi"
-        }
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r .tool_input.command) || { echo 'BLOCKED: jq could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign|force-with-lease|force)'; then echo 'BLOCKED: Bypass flags are not allowed.' >&2; exit 2; fi"
+          }
+        ]
       }
     ]
   }
@@ -168,17 +176,21 @@ The block-no-verify hook works alongside other PreToolUse hooks:
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hook": {
-          "type": "command",
-          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: Bypass flags not allowed.' >&2; exit 2; fi"
-        }
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r .tool_input.command) || { echo 'BLOCKED: jq could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: Bypass flags not allowed.' >&2; exit 2; fi"
+          }
+        ]
       },
       {
         "matcher": "Bash",
-        "hook": {
-          "type": "command",
-          "command": "if printf '%s' \"$TOOL_INPUT\" | grep -qE 'rm\\s+-rf\\s+/'; then echo 'BLOCKED: Dangerous rm command.' >&2; exit 2; fi"
-        }
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r .tool_input.command) || { echo 'BLOCKED: jq could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE 'rm\\s+-rf\\s+/'; then echo 'BLOCKED: Dangerous rm command.' >&2; exit 2; fi"
+          }
+        ]
       }
     ]
   }

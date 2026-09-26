@@ -7,7 +7,7 @@ description: Step-by-step cookbook for setting up cryptographically signed audit
 
 Cookbook-style walkthrough for cryptographically signed receipts on every
 Claude Code tool call. This is the teaching skill. For the runtime
-implementation, install the [`protect-mcp`](../../protect-mcp/) plugin.
+implementation, install the [`protect-mcp`](../../../protect-mcp/) plugin.
 
 ## What this gives you
 
@@ -56,8 +56,8 @@ because it also holds the private key.
 Add the private key and receipt directory to `.gitignore`:
 
 ```bash
-echo "./protect-mcp.key" >> .gitignore
-echo "./receipts/" >> .gitignore
+echo "/protect-mcp.key" >> .gitignore
+echo "/receipts/" >> .gitignore
 ```
 
 ## Step 2: Write a Cedar policy
@@ -82,66 +82,57 @@ Claude: I will read README.md.
 ... summary of README ...
 ```
 
-A session of 20 tool calls produces 20 receipts, each hash-chained to its
-predecessor.
+A session of 20 tool calls appends 20 receipts to `./receipts/receipts.jsonl`.
 
 ## Step 4: Inspect a receipt
 
-```bash
-cat ./receipts/$(ls -t ./receipts/ | head -1)
-```
-
-```json
-{
-  "receipt_id": "rcpt-a8f3c9d2",
-  "receipt_version": "1.0",
-  "issuer_id": "claude-code-protect-mcp",
-  "event_time": "2026-04-17T12:34:56.123Z",
-  "tool_name": "Read",
-  "input_hash": "sha256:a3f8c9d2e1b7465f...",
-  "decision": "allow",
-  "policy_id": "protect.cedar",
-  "policy_digest": "sha256:b7e2f4a6c8d0e1f3...",
-  "parent_receipt_id": "rcpt-3d1ab7c2",
-  "public_key": "4437ca56815c0516...",
-  "signature": "4cde814b7889e987..."
-}
-```
-
-Every field except `signature` and `public_key` is covered by the Ed25519
-signature. Modifying any field after signing invalidates the signature.
-
-## Step 5: Verify the receipt chain
+protect-mcp 0.7.4 appends each receipt as one line of
+`./receipts/receipts.jsonl`. Print the newest one:
 
 ```bash
-npx @veritasacta/verify ./receipts/*.json
+tail -n 1 ./receipts/receipts.jsonl | python3 -m json.tool
+```
+
+The receipt is a signed v2 envelope that names the tool, and it holds no
+public key. See [`references/receipt-format.md`](references/receipt-format.md)
+for a sample and the signed fields.
+
+## Step 5: Verify the receipts
+
+Pass the `publicKey` value from `./protect-mcp.key` to the verifier:
+
+```bash
+PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
 ```
 
 Exit codes:
 
 | Code | Meaning |
 |------|---------|
-| `0`  | All receipts verified; chain intact |
-| `1`  | A receipt failed signature verification (tampered, or wrong key) |
-| `2`  | A receipt was malformed |
+| `0`  | Every receipt verified |
+| `1`  | A receipt failed verification (tampered, wrong key, or malformed line) |
+| `2`  | The receipts file could not be read |
 
 ## Step 6: Demonstrate tamper detection
 
-Modify any receipt's `decision` field from `allow` to `deny`:
+Change the newest receipt's `decision` from `allow` to `deny`:
 
 ```bash
 python3 -c "
-import json, os
-path = './receipts/' + sorted(os.listdir('./receipts'))[-1]
-r = json.loads(open(path).read())
-r['decision'] = 'deny'
-open(path, 'w').write(json.dumps(r))
+import json
+path = './receipts/receipts.jsonl'
+lines = open(path).read().splitlines()
+r = json.loads(lines[-1])
+r['payload']['decision'] = 'deny'
+lines[-1] = json.dumps(r)
+open(path, 'w').write('\n'.join(lines) + '\n')
 "
 
-npx @veritasacta/verify ./receipts/*.json
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
 ```
 
-The verifier exits with code `1` and reports which receipt failed. The
+The verifier exits with code `1` and reports which line failed. The
 Ed25519 signature no longer matches the JCS-canonical bytes of the
 tampered payload.
 
@@ -265,9 +256,9 @@ create the policy in Step 2.
 
 ## Related in this marketplace
 
-- [`protect-mcp`](../../protect-mcp/) — the runtime hook implementation
+- [`protect-mcp`](../../../protect-mcp/) — the runtime hook implementation
   (use this plugin in production)
-- [`review-agent-governance`](../../review-agent-governance/) — require
+- [`review-agent-governance`](../../../review-agent-governance/) — require
   human approval before review-surface actions; composes with protect-mcp
 
 ## References

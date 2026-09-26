@@ -48,13 +48,16 @@ policies.
 
 ```bash
 mkdir -p ./review-receipts
-echo "./review-receipts/" >> .gitignore
-echo "./review-governance.key" >> .gitignore
-echo "./.review-approved" >> .gitignore
+echo "/review-receipts/" >> .gitignore
+echo "/review-governance.key" >> .gitignore
+echo "/.review-approved" >> .gitignore
+d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./review-governance.key
 ```
 
-The first invocation of `protect-mcp sign` will create the key. Commit the
-public key from the first receipt so auditors can verify later.
+protect-mcp 0.7.4 `sign` does not create the key, so the last command creates
+it. Without a key, the receipts are unsigned. Give auditors the `publicKey`
+value from `./review-governance.key`. Do not commit the file, because it also
+holds the private key.
 
 ## Per-session workflow
 
@@ -102,15 +105,16 @@ List all receipts:
 ls -la ./review-receipts/
 ```
 
-Verify the entire chain offline:
+Verify every receipt offline with the public key:
 
 ```bash
-npx @veritasacta/verify ./review-receipts/*.json
+PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./review-governance.key")).publicKey')
+npx @veritasacta/verify@0.9.2 --replay-chain ./review-receipts/receipts.jsonl --key "$PUB"
 ```
 
-Exit 0 means every receipt is authentic and the chain is intact. Exit 1
-means one receipt has been tampered with. Exit 2 means a receipt is
-malformed.
+Exit 0 means every receipt verified. Exit 1 means a receipt failed
+verification, because it was tampered with, the key is wrong, or a line is
+malformed. Exit 2 means the receipts file could not be read.
 
 Look at recent denials:
 
