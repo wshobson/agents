@@ -50,11 +50,12 @@ class TraceRecord(BaseModel):
     """One headless Claude Code session run for one prompt.
 
     skills_available is the init event's skill list as reported, so plugin skills carry
-    their namespace ("plugin:skill"). skills_invoked holds the bare skill name of each Skill
-    tool call in order, so `prompt.target_skill in trace.skills_invoked` tells whether the
-    target fired. contaminated is True when the session saw a skill, tool, plugin, or MCP
-    server that the runner did not load, when a hook ran, or when the stream had no init
-    event. contamination_reasons names each cause, for example "unexpected skill: x".
+    their namespace ("plugin:skill"). skills_invoked holds the skill input of each Skill tool
+    call as given, in order, so plugin skills carry their namespace there too. Use
+    triggering.target_fired to tell whether the target fired. contaminated is True when the
+    session saw a skill, tool, plugin, or MCP server that the runner did not load, when a
+    loaded skill was missing, when a hook ran, or when the stream had no init event.
+    contamination_reasons names each cause, for example "unexpected skill: x".
     """
 
     prompt: PromptRecord

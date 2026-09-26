@@ -210,9 +210,12 @@ def test_run_batch_writes_an_error_trace_when_run_raises_and_keeps_going(
         return trace_for(rec, cost=0.2)
 
     ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
-    traces = run_batch([record(1), record(2)], tmp_path, 1, ledger, run=flaky)
+    traces = run_batch(
+        [record(1), record(2)], tmp_path, 1, ledger, run=flaky, model="claude-opus-5-5"
+    )
     assert [t.prompt.id for t in traces] == ["p001", "p002"]
     failed = TraceRecord.model_validate_json((tmp_path / "p001.json").read_text())
+    assert failed.model == "claude-opus-5-5"
     assert failed.is_error is True
     assert failed.error is not None and "RuntimeError: boom" in failed.error
     assert ledger.spent == pytest.approx(1.5 + 0.2)
@@ -297,6 +300,8 @@ def test_run_one_runs_claude_in_an_isolated_session(
         return subprocess.CompletedProcess(argv, 0, FIXTURE.read_text(), "")
 
     monkeypatch.setattr(runner.subprocess, "run", fake_subprocess_run)
+    # The fixture session loaded only database-design, so load only that plugin here.
+    monkeypatch.setattr(runner, "choose_plugins", lambda *args, **kwargs: ["database-design"])
     trace = run_one(
         record(),
         plugins_dir=plugins,
@@ -321,7 +326,7 @@ def test_run_one_runs_claude_in_an_isolated_session(
     dirs = [call["argv"][i + 1] for i, a in enumerate(call["argv"]) if a == "--plugin-dir"]
     assert str(plugins / "database-design") in dirs
     assert trace.plugins_loaded == [Path(d).name for d in dirs]
-    assert trace.skills_invoked == ["postgresql-table-design"]
+    assert trace.skills_invoked == ["database-design:postgresql-table-design"]
     assert trace.contaminated is False
     assert trace.is_error is False
 
@@ -375,7 +380,7 @@ def test_run_one_saves_and_parses_the_partial_stream_on_timeout(
     )
     assert (tmp_path / "raw" / "p001.stream.jsonl").read_text() == partial
     assert trace.error == "timeout"
-    assert trace.skills_invoked == ["postgresql-table-design"]
+    assert trace.skills_invoked == ["database-design:postgresql-table-design"]
     assert trace.cost_usd == 0.0
 
 
@@ -422,7 +427,15 @@ def cli_args(tmp_path: Path, *extra: str) -> list[str]:
     return [*args, "--marketplace", str(market), *extra]
 
 
-@pytest.mark.parametrize(("invoked", "code"), [(["postgresql-table-design"], 0), ([], 1)])
+@pytest.mark.parametrize(
+    ("invoked", "code"),
+    [
+        (["postgresql-table-design"], 0),
+        (["database-design:postgresql-table-design"], 0),
+        (["other-plugin:postgresql-table-design"], 1),
+        ([], 1),
+    ],
+)
 def test_cli_smoke_fails_loudly_without_a_skill_call(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, invoked: list[str], code: int
 ) -> None:
@@ -507,7 +520,7 @@ def test_cli_run_counts_earlier_spend_against_the_total(
 ) -> None:
     out = tmp_path / "traces"
     out.mkdir()
-    (out / "p001.json").write_text(trace_for(record(1), cost=2.0).model_dump_json())
+    (out / "p001.json").write_text(trace_for(record(1, "near_miss"), cost=2.0).model_dump_json())
     seen: list[str] = []
 
     def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
@@ -528,7 +541,7 @@ def test_cli_run_bills_an_earlier_timeout_at_the_cap(
 ) -> None:
     out = tmp_path / "traces"
     out.mkdir()
-    timeout = trace_for(record(1), cost=0.0, is_error=True, error="timeout")
+    timeout = trace_for(record(1, "near_miss"), cost=0.0, is_error=True, error="timeout")
     (out / "p001.json").write_text(timeout.model_dump_json())
     seen: list[str] = []
 
@@ -559,3 +572,33 @@ def test_cli_run_refuses_when_marketplace_and_plugins_dir_disagree(
     assert result.exit_code == 2
     assert "db-tools" in result.output
     assert "--plugins-dir" in result.output
+
+
+@pytest.mark.parametrize(
+    "earlier",
+    [
+        trace_for(record(2).model_copy(update={"query": "A different question."})),
+        trace_for(record(2)).model_copy(update={"model": "claude-fable-5"}),
+    ],
+)
+def test_cli_run_refuses_to_resume_over_traces_from_another_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, earlier: TraceRecord
+) -> None:
+    out = tmp_path / "traces"
+    out.mkdir()
+    (out / "p001.json").write_text(trace_for(record(1, "near_miss")).model_dump_json())
+    (out / "p002.json").write_text(earlier.model_dump_json())
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a session"))
+    result = CliRunner().invoke(app, cli_args(tmp_path))
+    assert result.exit_code == 2
+    assert "p002" in result.output
+    assert "--out" in result.output
+    assert "p001" not in result.output
+
+
+def test_cli_run_help_explains_what_resume_keeps() -> None:
+    result = CliRunner().invoke(app, ["traces", "run", "--help"])
+    assert result.exit_code == 0
+    text = " ".join(result.output.replace("\u2502", " ").split())
+    assert "A resumed run keeps every existing trace" in text
+    assert "delete its .json and .stream.jsonl files" in text

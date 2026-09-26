@@ -292,13 +292,15 @@ def run_batch(
     concurrency: int,
     ledger: BudgetLedger,
     run: Callable[[PromptRecord], TraceRecord],
+    model: str = "",
 ) -> list[TraceRecord]:
     """Run records that have no out_dir/<id>.json yet, writing one file per trace.
 
     A trace starts only after the ledger reserves its cap, and at most concurrency run at
     once. When the ledger refuses and nothing is running, scheduling stops. Each trace is
     settled at billed_usd, so unknown cost counts as the cap. If run raises, an error trace
-    is written for that record and the batch goes on. A trace that costs more than the cap
+    is written for that record, with model as its model, and the batch goes on. A trace
+    that costs more than the cap
     is logged and records the overshoot in over_cap_usd. Returns the new traces in input
     order.
     """
@@ -318,7 +320,7 @@ def run_batch(
                 )
                 trace = TraceRecord(
                     prompt=record,
-                    model="",
+                    model=model,
                     plugins_loaded=[],
                     is_error=True,
                     error=f"runner raised {type(exc).__name__}: {exc}",

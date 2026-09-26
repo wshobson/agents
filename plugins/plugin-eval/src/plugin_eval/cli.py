@@ -260,11 +260,17 @@ def traces_run(
         False, "--smoke", help="Run the first should_trigger prompt and check its skill fired"
     ),
 ) -> None:
-    """Run prompts through isolated headless Claude Code sessions and save the traces."""
+    """Run prompts through isolated headless Claude Code sessions and save the traces.
+
+    A resumed run keeps every existing trace in the output directory, including error and
+    timeout traces that were billed at the cap. To retry a trace, delete its .json and
+    .stream.jsonl files.
+    """
     from functools import partial
 
     from plugin_eval.traces import runner
     from plugin_eval.traces.models import PromptRecord, TraceRecord
+    from plugin_eval.traces.triggering import target_fired
 
     for p in (prompts, plugins_dir, marketplace):
         if not p.exists():
@@ -299,7 +305,9 @@ def traces_run(
             raise typer.Exit(code=2)
         smoke_dir = out / "smoke"
         (smoke_dir / f"{target.id}.json").unlink(missing_ok=True)
-        traces = runner.run_batch([target], smoke_dir, 1, ledger, partial(run, raw_dir=smoke_dir))
+        traces = runner.run_batch(
+            [target], smoke_dir, 1, ledger, partial(run, raw_dir=smoke_dir), model=model
+        )
         trace = traces[0] if traces else None
         if trace is None:
             console.print("[red]Smoke failed: the budget did not allow one trace[/red]")
@@ -311,7 +319,7 @@ def traces_run(
             soft_wrap=True,
         )
         problems = []
-        if target.target_skill not in trace.skills_invoked:
+        if not target_fired(trace):
             problems.append(f"it did not invoke {target.target_skill}")
         if trace.contaminated:
             problems.append(
@@ -329,10 +337,27 @@ def traces_run(
 
     # Traces from earlier runs into the same directory count against the total, so a
     # resumed run cannot spend the whole budget again. Unknown cost counts as the cap.
-    earlier = [TraceRecord.model_validate_json(p.read_text()) for p in out.glob("*.json")]
-    ledger.spent = earlier_usd = sum(runner.billed_usd(t, per_trace_usd) for t in earlier)
+    earlier = {
+        p.stem: TraceRecord.model_validate_json(p.read_text(encoding="utf-8"))
+        for p in out.glob("*.json")
+    }
+    ledger.spent = earlier_usd = sum(runner.billed_usd(t, per_trace_usd) for t in earlier.values())
     selected = records[:limit] if limit is not None else records
-    traces = runner.run_batch(selected, out, concurrency, ledger, partial(run, raw_dir=out))
+    # A resumed run skips ids that already have a trace, so those traces must come from the
+    # same prompt and model. Check them all before any session starts.
+    for record in selected:
+        saved = earlier.get(record.id)
+        if saved is not None and (saved.prompt != record or saved.model != model):
+            console.print(
+                f"[red]Error: {out / (record.id + '.json')} was written for a different "
+                f"prompt or model than {record.id} in {prompts} with --model {model}. Pick a "
+                "new --out for this run.[/red]",
+                soft_wrap=True,
+            )
+            raise typer.Exit(code=2)
+    traces = runner.run_batch(
+        selected, out, concurrency, ledger, partial(run, raw_dir=out), model=model
+    )
     errors = sum(t.is_error for t in traces)
     contaminated = sum(t.contaminated for t in traces)
     console.print(

@@ -59,9 +59,22 @@ def test_non_trigger_routing_without_target_is_correct_abstain(routing: str) -> 
     assert trigger_outcome(trace(routing, [])) == "correct_abstain"
 
 
-def test_error_takes_precedence_over_routing() -> None:
-    assert trigger_outcome(trace("should_trigger", [TARGET], is_error=True)) == "error"
-    assert trigger_outcome(trace("off_topic", [], is_error=True)) == "error"
+def test_error_without_the_target_firing_is_error() -> None:
+    assert trigger_outcome(trace("should_trigger", [], is_error=True)) == "error"
+    assert trigger_outcome(trace("off_topic", ["other-skill"], is_error=True)) == "error"
+
+
+def test_target_fired_then_hit_the_turn_cap_is_still_routed() -> None:
+    fired = [f"database-design:{TARGET}"]
+    assert trigger_outcome(trace("should_trigger", fired, is_error=True)) == "hit"
+    assert trigger_outcome(trace("near_miss", fired, is_error=True)) == "false_trigger"
+
+
+def test_namespaced_target_fires_and_a_same_named_distractor_does_not() -> None:
+    assert trigger_outcome(trace("should_trigger", [f"database-design:{TARGET}"])) == "hit"
+    distractor = [f"other-plugin:{TARGET}"]
+    assert trigger_outcome(trace("should_trigger", distractor)) == "missed"
+    assert trigger_outcome(trace("near_miss", distractor)) == "correct_abstain"
 
 
 def test_contaminated_takes_precedence_over_error_and_routing() -> None:
@@ -78,10 +91,11 @@ def test_outcome_counts_on_mixed_list() -> None:
         trace("near_miss", [TARGET]),
         trace("off_topic", []),
         trace("near_miss", []),
-        trace("should_trigger", [TARGET], is_error=True),
+        trace("should_trigger", [], is_error=True),
+        trace("should_trigger", [f"database-design:{TARGET}"], is_error=True),
     ]
     assert outcome_counts(traces) == {
-        "hit": 2,
+        "hit": 3,
         "missed": 1,
         "false_trigger": 1,
         "correct_abstain": 2,

@@ -84,7 +84,7 @@ def test_fixture_round_trip() -> None:
     trace = parse_stream(lines, prompt, ["database-design"], EXPECTED)
     assert trace.prompt == prompt
     assert trace.plugins_loaded == ["database-design"]
-    assert trace.skills_invoked == ["postgresql-table-design"]
+    assert trace.skills_invoked == ["database-design:postgresql-table-design"]
     assert "database-design:postgresql-table-design" in trace.skills_available
     assert trace.cost_usd > 0
     assert trace.num_turns >= 1
@@ -331,3 +331,12 @@ def test_odd_subtypes_and_non_finite_numbers_do_not_raise() -> None:
     assert trace.is_error is False
     assert trace.final_text == "Done."
     assert trace.contaminated is False
+
+
+def test_a_loaded_skill_missing_from_init_marks_contamination() -> None:
+    lines = [init_event(["simplify"]), result_event()]
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert trace.contaminated is True
+    assert trace.contamination_reasons == [
+        "expected skill missing: database-design:postgresql-table-design"
+    ]

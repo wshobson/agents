@@ -121,7 +121,9 @@ def _subtype(event: dict[str, Any]) -> str:
 def _contamination(
     init: dict[str, Any] | None, plugins_loaded: list[str], expected: set[str]
 ) -> list[str]:
-    """List every way the init event differs from what the runner loaded.
+    """List every way the init event differs from what the runner loaded, in both
+    directions: skills, tools, plugins, or MCP servers the runner did not load, and skills of
+    the loaded plugins that the session does not list.
 
     An entry the parser cannot read (a skill or tool that is not a string, a plugin that is
     not an object with a string name, a plugins value that is not a list) is skipped, but it
@@ -134,6 +136,9 @@ def _contamination(
     skills, bad_skills = _strings(init.get("skills"))
     tools, bad_tools = _strings(init.get("tools"))
     reasons += [f"unexpected skill: {s}" for s in skills if s not in expected | BUILTIN_SKILLS]
+    # A loaded plugin whose skills are missing did not load as the runner intended, for
+    # example because Claude Code rejected its plugin.json.
+    reasons += [f"expected skill missing: {s}" for s in sorted(expected - set(skills))]
     reasons += [f"unexpected tool: {t}" for t in tools if t not in ALLOWED_TOOLS]
     plugins = init.get("plugins")
     if plugins is not None and not isinstance(plugins, list):
@@ -205,7 +210,7 @@ def parse_stream(
                         tool_input.get(SKILL_INPUT_FIELD) if isinstance(tool_input, dict) else None
                     )
                     if call.name == SKILL_TOOL and skill:
-                        invoked.append(str(skill).split(":")[-1])
+                        invoked.append(str(skill))
         elif kind == "user":
             for block in _blocks(event):
                 tool_use_id = block.get("tool_use_id")
