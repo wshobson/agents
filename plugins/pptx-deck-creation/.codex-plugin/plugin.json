@@ -1,6 +1,6 @@
 {
   "name": "pptx-deck-creation",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create production-ready, editable PowerPoint decks through a spec-first, coordinate-explicit workflow with read-only reference analysis and quality gates.",
   "skills": "./skills/",
   "author": {
