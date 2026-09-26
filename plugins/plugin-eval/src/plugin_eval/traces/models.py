@@ -78,10 +78,13 @@ class TraceRecord(BaseModel):
     over_cap_usd: float = 0.0
     # The run settings that produced this trace. model above is the id the session
     # reported, which differs from requested_model when the run used an alias like "opus".
-    # A resumed run compares requested_model, seed, per_trace_cap_usd, and max_turns, and
-    # bills an unknown cost at per_trace_cap_usd. Traces written before these fields existed
-    # have the defaults, and a default is not compared.
+    # A resumed run compares these with its own settings, and bills an unknown cost at
+    # per_trace_cap_usd. plugins_digest covers the files of the loaded plugins (see
+    # runner.plugins_digest). Traces written before a field existed have its default, and a
+    # default is not compared.
     requested_model: str = ""
     seed: int | None = None
     per_trace_cap_usd: float = 0.0
     max_turns: int = 0
+    timeout_s: int = 0
+    plugins_digest: str = ""

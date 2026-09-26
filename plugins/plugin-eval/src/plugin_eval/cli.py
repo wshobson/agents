@@ -286,8 +286,14 @@ def traces_run(
                 soft_wrap=True,
             )
             raise typer.Exit(code=2)
-    lines = prompts.read_text(encoding="utf-8").splitlines()
+    # Split on "\n" only: JSON leaves U+2028 raw inside a query, and splitlines splits there.
+    lines = prompts.read_text(encoding="utf-8").split("\n")
     records = [PromptRecord.model_validate_json(line) for line in lines if line.strip()]
+    try:
+        runner.check_prompt_ids(records)
+    except ValueError as exc:
+        console.print(f"Error: {exc}", style="red", markup=False, soft_wrap=True)
+        raise typer.Exit(code=2) from None
     run = partial(
         runner.run_isolated,
         plugins_dir=plugins_dir.resolve(),
@@ -320,6 +326,7 @@ def traces_run(
                 model=model,
                 seed=seed,
                 max_turns=max_turns,
+                timeout_s=timeout_s,
             )
             trace = traces[0] if traces else None
             if trace is None:
@@ -363,23 +370,60 @@ def traces_run(
     ledger.spent = earlier_usd = sum(runner.billed_usd(t, per_trace_usd) for t in earlier.values())
     selected = records[:limit] if limit is not None else records
     # A resumed run skips ids that already have a trace, so those traces must come from the
-    # same prompt and run settings, or one directory would mix traces that ran under
-    # different limits. Check them all before any session starts. Traces written before a
-    # setting was recorded leave it empty or zero; that value is unknown and not compared.
+    # same prompt and run settings, or one directory would mix traces that saw different
+    # plugins or ran under different limits. Check them all before any session starts. A
+    # setting that an older trace did not record is empty or zero and is not compared.
+    digests: dict[tuple[str, ...], str] = {}
+    installed: list[str] = []
+
+    def mismatches(saved: TraceRecord, record: PromptRecord) -> list[str]:
+        found = []
+        if saved.prompt != record:
+            found.append("prompt")
+        if saved.requested_model and saved.requested_model != model:
+            found.append("requested_model")
+        if saved.seed is not None and saved.seed != seed:
+            found.append("seed")
+        if saved.per_trace_cap_usd and saved.per_trace_cap_usd != per_trace_usd:
+            found.append("per_trace_cap_usd")
+        if saved.max_turns and saved.max_turns != max_turns:
+            found.append("max_turns")
+        if saved.timeout_s and saved.timeout_s != timeout_s:
+            found.append("timeout_s")
+        if saved.plugins_loaded:
+            try:
+                expected = runner.choose_plugins(
+                    record.target_plugin, marketplace, runner.trace_seed(seed, record.id)
+                )
+            except ValueError:
+                expected = []
+            if saved.plugins_loaded != expected:
+                found.append("plugins_loaded")
+            elif saved.plugins_digest:
+                key = tuple(expected)
+                if key not in digests:
+                    dirs = [(plugins_dir / name).resolve() for name in expected]
+                    digests[key] = runner.plugins_digest(dirs)
+                if digests[key] != saved.plugins_digest:
+                    found.append("plugins_digest")
+        if saved.claude_version:
+            if not installed:
+                installed.append(runner.claude_version())
+            if installed[0] and installed[0] != saved.claude_version:
+                found.append("claude_version")
+        return found
+
     for record in selected:
         saved = earlier.get(record.id)
-        if saved is not None and (
-            saved.prompt != record
-            or (saved.requested_model and saved.requested_model != model)
-            or (saved.seed is not None and saved.seed != seed)
-            or (saved.per_trace_cap_usd and saved.per_trace_cap_usd != per_trace_usd)
-            or (saved.max_turns and saved.max_turns != max_turns)
-        ):
+        found = mismatches(saved, record) if saved is not None else []
+        if found:
             console.print(
-                f"[red]Error: {out / (record.id + '.json')} was written for a different "
-                f"prompt or run settings than {record.id} in {prompts} with --model {model}, "
-                f"--seed {seed}, --per-trace-usd {per_trace_usd}, and --max-turns "
-                f"{max_turns}. Pick a new --out for this run.[/red]",
+                f"[red]Error: {out / (record.id + '.json')} does not match this run for "
+                f"{record.id} ({', '.join(found)} differ). This run uses {prompts}, --model "
+                f"{model}, --seed {seed}, --per-trace-usd {per_trace_usd}, --max-turns "
+                f"{max_turns}, --timeout-s {timeout_s}, --plugins-dir {plugins_dir}, "
+                f"--marketplace {marketplace}, and the installed claude. Pick a new --out "
+                "for this run.[/red]",
                 soft_wrap=True,
             )
             raise typer.Exit(code=2)
@@ -392,6 +436,7 @@ def traces_run(
         model=model,
         seed=seed,
         max_turns=max_turns,
+        timeout_s=timeout_s,
     )
     errors = sum(t.is_error for t in traces)
     contaminated = sum(t.contaminated for t in traces)

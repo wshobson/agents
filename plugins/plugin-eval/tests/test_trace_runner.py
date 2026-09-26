@@ -17,7 +17,9 @@ from plugin_eval.traces.runner import (
     billed_usd,
     build_argv,
     build_env,
+    check_prompt_ids,
     choose_plugins,
+    plugins_digest,
     run_batch,
     run_one,
 )
@@ -82,9 +84,8 @@ def record(i: int = 1, routing: str = "should_trigger") -> PromptRecord:
 
 
 def trace_for(rec: PromptRecord, cost: float = 0.1, **extra: Any) -> TraceRecord:
-    return TraceRecord(
-        prompt=rec, model="claude-opus-5-5", plugins_loaded=[], cost_usd=cost, **extra
-    )
+    fields: dict[str, Any] = {"model": "claude-opus-5-5", "plugins_loaded": [], "cost_usd": cost}
+    return TraceRecord(prompt=rec, **(fields | extra))
 
 
 def test_build_argv_has_every_flag() -> None:
@@ -235,6 +236,7 @@ def test_run_batch_writes_an_error_trace_when_run_raises_and_keeps_going(
         model="claude-opus-5-5",
         seed=7,
         max_turns=12,
+        timeout_s=300,
     )
     assert [t.prompt.id for t in traces] == ["p001", "p002"]
     failed = TraceRecord.model_validate_json((tmp_path / "p001.json").read_text())
@@ -245,6 +247,7 @@ def test_run_batch_writes_an_error_trace_when_run_raises_and_keeps_going(
         1.5,
     )
     assert failed.max_turns == 12
+    assert failed.timeout_s == 300
     assert failed.is_error is True
     assert failed.error is not None and "RuntimeError: boom" in failed.error
     assert ledger.spent == pytest.approx(1.5 + 0.2)
@@ -364,6 +367,8 @@ def test_run_one_runs_claude_in_an_isolated_session(
         1.5,
     )
     assert trace.max_turns == 12
+    assert trace.timeout_s == 600
+    assert trace.plugins_digest == plugins_digest([(plugins / "database-design").resolve()])
 
 
 def test_run_one_reports_a_timeout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -668,6 +673,9 @@ def test_cli_run_refuses_when_marketplace_and_plugins_dir_disagree(
         trace_for(record(2), requested_model="claude-opus-5-5", seed=1),
         trace_for(record(2), per_trace_cap_usd=1.0),
         trace_for(record(2), max_turns=20),
+        trace_for(record(2), timeout_s=300),
+        trace_for(record(2), plugins_loaded=["database-design"]),
+        trace_for(record(2), claude_version="2.1.200"),
     ],
 )
 def test_cli_run_refuses_to_resume_over_traces_from_another_run(
@@ -677,6 +685,7 @@ def test_cli_run_refuses_to_resume_over_traces_from_another_run(
     out.mkdir()
     (out / "p001.json").write_text(trace_for(record(1, "near_miss")).model_dump_json())
     (out / "p002.json").write_text(earlier.model_dump_json())
+    monkeypatch.setattr(runner, "claude_version", lambda: "2.1.283")
     monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a session"))
     result = CliRunner().invoke(app, cli_args(tmp_path))
     assert result.exit_code == 2
@@ -748,3 +757,128 @@ def test_cli_run_resumes_over_older_traces_without_run_settings(
     result = CliRunner().invoke(app, cli_args(tmp_path, "--model", "opus", "--seed", "5"))
     assert result.exit_code == 0, result.output
     assert sorted(seen) == ["p002", "p003"]
+
+
+def test_plugins_digest_tracks_content_and_skips_caches(tmp_path: Path) -> None:
+    plugins, _ = fake_repo(tmp_path)
+    dirs = [plugins / "database-design", plugins / "db-tools"]
+    first = plugins_digest(dirs)
+    assert first == plugins_digest(list(reversed(dirs)))
+    (plugins / "db-tools" / ".venv").mkdir()
+    (plugins / "db-tools" / ".venv" / "big.bin").write_text("ignored")
+    (plugins / "db-tools" / "__pycache__").mkdir()
+    (plugins / "db-tools" / "__pycache__" / "x.pyc").write_text("ignored")
+    assert plugins_digest(dirs) == first
+    skill = plugins / "db-tools" / "skills" / "db-tools-skill" / "SKILL.md"
+    skill.write_text(skill.read_text() + "One more line.\n")
+    assert plugins_digest(dirs) != first
+
+
+def resume_with_saved_plugins(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """Write p001 as a matching earlier trace from the same plugins, and return plugins/."""
+    plugins, market = fake_repo(tmp_path)
+    rec = record(1, "near_miss")
+    loaded = choose_plugins(rec.target_plugin, market, runner.trace_seed(20260926, rec.id))
+    digest = plugins_digest([(plugins / name).resolve() for name in loaded])
+    out = tmp_path / "traces"
+    out.mkdir()
+    saved = trace_for(rec, plugins_loaded=loaded, plugins_digest=digest, claude_version="2.1.283")
+    (out / "p001.json").write_text(saved.model_dump_json())
+    monkeypatch.setattr(runner, "claude_version", lambda: "2.1.283")
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: trace_for(rec, cost=0.25))
+    return plugins
+
+
+def resume_args(tmp_path: Path, *extra: str) -> list[str]:
+    args = ["traces", "run", "--prompts", str(write_prompts(tmp_path))]
+    args += ["--out", str(tmp_path / "traces"), "--plugins-dir", str(tmp_path / "plugins")]
+    return [*args, "--marketplace", str(tmp_path / ".claude-plugin" / "marketplace.json"), *extra]
+
+
+def test_cli_run_resumes_when_plugins_and_version_match(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    resume_with_saved_plugins(tmp_path, monkeypatch)
+    result = CliRunner().invoke(app, resume_args(tmp_path))
+    assert result.exit_code == 0, result.output
+    assert "2 traces written" in plain(result.output)
+
+
+def test_cli_run_refuses_to_resume_after_a_plugin_changed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    plugins = resume_with_saved_plugins(tmp_path, monkeypatch)
+    skill = plugins / "database-design" / "skills" / "postgresql-table-design" / "SKILL.md"
+    skill.write_text(skill.read_text() + "Edited after the first run.\n")
+    result = CliRunner().invoke(app, resume_args(tmp_path))
+    assert result.exit_code == 2
+    assert "p001" in plain(result.output)
+    assert "plugins_digest" in plain(result.output)
+
+
+def test_cli_run_refuses_to_resume_under_another_claude_version(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    resume_with_saved_plugins(tmp_path, monkeypatch)
+    monkeypatch.setattr(runner, "claude_version", lambda: "2.1.300")
+    result = CliRunner().invoke(app, resume_args(tmp_path))
+    assert result.exit_code == 2
+    assert "claude_version" in plain(result.output)
+
+
+def write_ids(tmp_path: Path, ids: list[str]) -> list[str]:
+    plugins, market = fake_repo(tmp_path)
+    rows = [record(2).model_copy(update={"id": i}) for i in ids]
+    prompts = tmp_path / "ids.jsonl"
+    prompts.write_text("".join(r.model_dump_json() + "\n" for r in rows))
+    args = ["traces", "run", "--prompts", str(prompts), "--out", str(tmp_path / "traces")]
+    return [*args, "--plugins-dir", str(plugins), "--marketplace", str(market)]
+
+
+@pytest.mark.parametrize("bad", ["../victim", "a/b"])
+@pytest.mark.parametrize("smoke", [False, True])
+def test_cli_run_rejects_unsafe_prompt_ids(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, bad: str, smoke: bool
+) -> None:
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a session"))
+    args = write_ids(tmp_path, ["p001", bad]) + (["--smoke"] if smoke else [])
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 2
+    assert bad in plain(result.output)
+    assert not (tmp_path / "victim.json").exists()
+
+
+def test_cli_run_rejects_duplicate_prompt_ids(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a session"))
+    result = CliRunner().invoke(app, write_ids(tmp_path, ["p001", "p002", "p001"]))
+    assert result.exit_code == 2
+    assert "duplicate" in plain(result.output)
+    assert "p001" in plain(result.output)
+
+
+def test_check_prompt_ids_accepts_plain_ids() -> None:
+    check_prompt_ids([record(1), record(2).model_copy(update={"id": "Case_7-b"})])
+    with pytest.raises(ValueError, match="-x"):
+        check_prompt_ids([record(1).model_copy(update={"id": "-x"})])
+
+
+def test_cli_run_reads_a_prompt_with_u2028_as_one_record(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    seen: list[str] = []
+
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        seen.append(rec.query)
+        return trace_for(rec, cost=0.25)
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    args = write_ids(tmp_path, ["p001"])
+    prompts = Path(args[args.index("--prompts") + 1])
+    row = record(1).model_copy(update={"query": "first part second part"})
+    prompts.write_text(row.model_dump_json() + "\n", encoding="utf-8")
+    assert " " in prompts.read_text(encoding="utf-8")
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 0, result.output
+    assert seen == ["first part second part"]

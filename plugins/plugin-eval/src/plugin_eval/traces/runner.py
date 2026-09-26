@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import random
+import re
 import subprocess
 import tempfile
 import threading
@@ -30,6 +31,12 @@ from plugin_eval.traces.prompts import skill_names
 logger = logging.getLogger(__name__)
 
 README_TEXT = "Scratch project for a Claude Code session.\n"
+# Prompt ids become file names in the output directory, so they must be plain names.
+PROMPT_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+# plugins_digest skips hidden entries other than these, and cache directories, so a local
+# .venv or .pytest_cache does not count as plugin content.
+DIGEST_HIDDEN_KEEP = frozenset({".claude-plugin", ".mcp.json"})
+DIGEST_SKIP = frozenset({"__pycache__", "node_modules"})
 STREAM_SUFFIX = ".stream.jsonl"  # the raw stream file; it never matches the *.json traces
 # Plugin hooks run shell commands on every tool call (protect-mcp's run npx), and the init
 # event does not list them. Flag settings keep the config dir empty. A probe on Claude Code
@@ -103,6 +110,59 @@ def local_plugin_dirs(marketplace_json: Path) -> dict[str, Path]:
         for e in entries
         if isinstance(e.get("source"), str)
     }
+
+
+def check_prompt_ids(records: Iterable[PromptRecord]) -> None:
+    """Raise ValueError unless every prompt id is a plain file name and appears only once."""
+    seen: set[str] = set()
+    for record in records:
+        if not PROMPT_ID_PATTERN.fullmatch(record.id):
+            raise ValueError(
+                f"prompt id {record.id!r} is not allowed. Ids must match "
+                f"{PROMPT_ID_PATTERN.pattern}, because they become file names."
+            )
+        if record.id in seen:
+            raise ValueError(f"prompt id {record.id!r} is a duplicate. Each id must be unique.")
+        seen.add(record.id)
+
+
+def _skipped(name: str) -> bool:
+    return (name.startswith(".") and name not in DIGEST_HIDDEN_KEEP) or name in DIGEST_SKIP
+
+
+def plugins_digest(plugin_dirs: Iterable[Path]) -> str:
+    """Return a short digest of the files a session can read from the given plugins.
+
+    The digest covers each file's path and bytes, in a fixed order, so it changes when any
+    plugin file changes and not when the load order does.
+    """
+    digest = hashlib.sha256()
+    for plugin in sorted(plugin_dirs, key=lambda d: d.name):
+        for root, dirs, files in os.walk(plugin):
+            dirs[:] = sorted(d for d in dirs if not _skipped(d))
+            for name in sorted(f for f in files if not _skipped(f)):
+                path = Path(root) / name
+                digest.update(f"{plugin.name}/{path.relative_to(plugin).as_posix()}\n".encode())
+                digest.update(hashlib.sha256(path.read_bytes()).digest())
+    return digest.hexdigest()[:16]
+
+
+def claude_version() -> str:
+    """Return the installed Claude Code version, such as "2.1.283", or "" if claude cannot run."""
+    with tempfile.TemporaryDirectory(prefix="plugin-eval-cfg-") as config_dir:
+        try:
+            proc = subprocess.run(
+                ["claude", "--version"],
+                env=build_env(Path(config_dir)),
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+        except (OSError, subprocess.SubprocessError):
+            return ""
+    words = proc.stdout.split()
+    return words[0] if proc.returncode == 0 and words else ""
 
 
 def trace_seed(seed: int, prompt_id: str) -> int:
@@ -214,6 +274,7 @@ def run_one(
     plugins = choose_plugins(record.target_plugin, marketplace_json, trace_seed(seed, record.id))
     plugin_dirs = [(plugins_dir / name).resolve() for name in plugins]
     expected = {f"{d.name}:{skill}" for d in plugin_dirs for skill in skill_names(d)}
+    digest = plugins_digest(plugin_dirs)
     (workdir / "README.md").write_text(README_TEXT, encoding="utf-8")
     argv = build_argv(record.query, plugin_dirs, model, per_trace_usd, max_turns)
     timed_out = False
@@ -240,7 +301,7 @@ def run_one(
     trace = parse_stream(stdout.split("\n"), record, plugins, expected)
     trace.model = trace.model or model
     trace.requested_model, trace.seed, trace.per_trace_cap_usd = model, seed, per_trace_usd
-    trace.max_turns = max_turns
+    trace.max_turns, trace.timeout_s, trace.plugins_digest = max_turns, timeout_s, digest
     if timed_out:
         trace.is_error = True
         trace.error = "timeout"
@@ -300,14 +361,15 @@ def run_batch(
     model: str = "",
     seed: int | None = None,
     max_turns: int = 0,
+    timeout_s: int = 0,
 ) -> list[TraceRecord]:
     """Run records that have no out_dir/<id>.json yet, writing one file per trace.
 
     A trace starts only after the ledger reserves its cap, and at most concurrency run at
     once. When the ledger refuses and nothing is running, scheduling stops. Each trace is
     settled at billed_usd, so unknown cost counts as the cap. If run raises, an error trace
-    is written for that record, with the run's model, seed, cap, and max_turns, and the
-    batch goes on.
+    is written for that record, with the run's model, seed, cap, max_turns, and timeout_s,
+    and the batch goes on.
     A trace that costs more than the cap
     is logged and records the overshoot in over_cap_usd. Returns the new traces in input
     order.
@@ -336,6 +398,7 @@ def run_batch(
                     seed=seed,
                     per_trace_cap_usd=cap,
                     max_turns=max_turns,
+                    timeout_s=timeout_s,
                 )
             cost = billed_usd(trace, cap)
             if trace.cost_usd > cap:
