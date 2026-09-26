@@ -93,13 +93,14 @@ forbid (
 //    `HEAD:main`, `refs/heads/main`), so branches such as `maintenance` or
 //    `fix-release-notes` pass. A bare `git push` is allowed: the evaluator
 //    sees only the command string, not the upstream the branch tracks.
-//    Rules 4 to 6 recognize a push as `git push`, or `git` with a global
-//    option before `push` (`-C <dir>`, `-c <key=value>`, or a long option
-//    such as `--no-pager`), not any git command that mentions "push" later.
-//    So `git commit -m "Add push notification handler"` and
-//    `git stash push -m "wip"` pass. A command with a global option before
-//    a later " push" word, such as `git -C repo commit -m "Add push x"`, is
-//    still treated as a push.
+//    Rules 4 to 6 recognize a push as `git push`, `git` with any global
+//    option before `push` (`-C <dir>`, `-c <key=value>`, `-P`, `-p`, or a
+//    long option such as `--no-pager`), or `git` followed by two or more
+//    spaces or a tab before `push`. They do not match any git command that
+//    mentions "push" later, so `git commit -m "Add push notification
+//    handler"` and `git stash push -m "wip"` pass. A command with a global
+//    option before a later " push" word, such as `git -P log --grep " push"`
+//    or `git -C repo commit -m "Add push x"`, is still treated as a push.
 forbid (
     principal,
     action == Action::"MCP::Tool::call",
@@ -108,9 +109,9 @@ forbid (
     context has input && context.input has command &&
     (context.input.command like "*git push *" ||
      context.input.command like "*git push" ||
-     context.input.command like "*git -C * push*" ||
-     context.input.command like "*git -c * push*" ||
-     context.input.command like "*git --* push*") &&
+     context.input.command like "*git -* push*" ||
+     context.input.command like "*git  *push *" ||
+     context.input.command like "*git\t*push *") &&
     (context.input.command like "* main" || context.input.command like "* main *" ||
      context.input.command like "*:main" || context.input.command like "*:main *" ||
      context.input.command like "*heads/main" || context.input.command like "*heads/main *" ||
@@ -144,9 +145,9 @@ forbid (
     context has input && context.input has command &&
     (context.input.command like "*git push *" ||
      context.input.command like "*git push" ||
-     context.input.command like "*git -C * push*" ||
-     context.input.command like "*git -c * push*" ||
-     context.input.command like "*git --* push*") &&
+     context.input.command like "*git -* push*" ||
+     context.input.command like "*git  *push *" ||
+     context.input.command like "*git\t*push *") &&
     (context.input.command like "*;*" ||
      context.input.command like "*&*" ||
      context.input.command like "*|*" ||
@@ -181,9 +182,9 @@ forbid (
     context has input && context.input has command &&
     (context.input.command like "*git push *" ||
      context.input.command like "*git push" ||
-     context.input.command like "*git -C * push*" ||
-     context.input.command like "*git -c * push*" ||
-     context.input.command like "*git --* push*") &&
+     context.input.command like "*git -* push*" ||
+     context.input.command like "*git  *push *" ||
+     context.input.command like "*git\t*push *") &&
     (context.input.command like "*--force*" ||
      context.input.command like "*--mirror*" ||
      context.input.command like "* -f*" ||
