@@ -37,3 +37,11 @@ with `--key`.
 
 The receipts carry no hash of the previous receipt. The verifier checks each
 signature, so it cannot detect a deleted or reordered line.
+
+## Rotating the signing key
+
+Each receipts file verifies against one public key, so the setup command
+never replaces an existing `./protect-mcp.key`. To rotate the key, first move
+`./protect-mcp.key` and `./receipts/receipts.jsonl` to an archive, then run
+the setup command again. Verify the archived receipts with the old public
+key and the new receipts with the new one.

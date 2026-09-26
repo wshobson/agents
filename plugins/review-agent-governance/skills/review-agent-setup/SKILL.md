@@ -51,11 +51,15 @@ mkdir -p ./review-receipts
 echo "/review-receipts/" >> .gitignore
 echo "/review-governance.key" >> .gitignore
 echo "/.review-approved" >> .gitignore
-d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./review-governance.key
+if [ ! -e ./review-governance.key ]; then
+  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./review-governance.key
+fi
 ```
 
 protect-mcp 0.7.4 `sign` does not create the key, so the last command creates
-it. Without a key, the receipts are unsigned. Give auditors the `publicKey`
+it, and it never replaces an existing key. Without a key, the receipts are
+unsigned. To rotate the key, archive `./review-governance.key` and
+`./review-receipts/receipts.jsonl` first, then run the command again. Give auditors the `publicKey`
 value from `./review-governance.key`. Do not commit the file, because it also
 holds the private key.
 

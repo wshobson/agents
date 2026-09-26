@@ -42,10 +42,13 @@ read the hook event from stdin, because Claude Code sets no `TOOL_NAME` or
 configuration and what each script passes to protect-mcp.
 
 protect-mcp 0.7.4 does not create the signing key, and without a key the
-receipts are unsigned. Create `./protect-mcp.key` once:
+receipts are unsigned. Create `./protect-mcp.key` once. The command never
+replaces an existing key:
 
 ```bash
-d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+if [ ! -e ./protect-mcp.key ]; then
+  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+fi
 ```
 
 Give auditors the `publicKey` value from that file. Do not commit the file,
@@ -173,38 +176,9 @@ is the contract.
 ## CI/CD integration
 
 Gate merges on receipt verification so no build lands with a tampered
-receipt. Store the `publicKey` value as the repository variable
-`PROTECT_MCP_PUBLIC_KEY`:
-
-```yaml
-# .github/workflows/verify-receipts.yml
-name: Verify Decision Receipts
-on: [push, pull_request]
-
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - name: Run governed agent
-        run: python scripts/run_agent.py
-      - name: Verify receipts
-        env: { PUB: '${{ vars.PROTECT_MCP_PUBLIC_KEY }}' }
-        run: npx @veritasacta/verify@0.9.2 --replay-chain receipts/receipts.jsonl --key "$PUB"
-```
-
-Archive the receipts as an artifact so they survive beyond the job run:
-
-```yaml
-      - name: Upload receipts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: decision-receipts
-          path: receipts/
-```
+receipt. [`references/ci-cd.md`](references/ci-cd.md) has a GitHub Actions
+workflow that installs the signing key from a secret, runs the agent,
+verifies the receipts, and uploads them.
 
 ## Composition with SLSA provenance for agent-built software
 
@@ -239,8 +213,9 @@ for the composition discussion.
 
 **Private key in version control.** The generated `./protect-mcp.key` must
 not be committed. The examples above add it to `.gitignore`. If a key is
-accidentally committed, rotate immediately (delete the key file and create
-a new one with the Step 1 command).
+accidentally committed, rotate it immediately. Move the key and
+`./receipts/receipts.jsonl` to an archive, then run the Step 1 command again.
+Verify the archived receipts with the old public key.
 
 **Hook payload on stdin.** Claude Code sets no `$TOOL_NAME` or `$TOOL_INPUT`
 variables. A hook command that passes `--tool "$TOOL_NAME"` sends an empty

@@ -45,8 +45,11 @@ claude plugin install wshobson/agents/protect-mcp
 
 # 2. Create ./protect.cedar (see below). The plugin installs the hooks.
 
-# 3. Create the signing key once (protect-mcp 0.7.4 sign does not create it)
-d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+# 3. Create the signing key once (protect-mcp 0.7.4 sign does not create it).
+#    An existing key is never replaced. See references/receipt-format.md to rotate.
+if [ ! -e ./protect-mcp.key ]; then
+  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+fi
 echo "/protect-mcp.key" >> .gitignore
 
 # 4. Use Claude Code normally. Every tool call is now policy-evaluated
