@@ -3,9 +3,9 @@ description: Full quality certification with badge
 argument-hint: <path>
 ---
 
-Run the complete PluginEval certification pipeline (all three layers + Elo ranking) and assign a quality badge.
+Run PluginEval at deep depth and assign a quality badge. For a skill directory, deep depth runs the static layer plus the experimental LLM judge and Monte Carlo layers. For a plugin directory, only the static layer runs.
 
-This takes 15-20 minutes and uses your Max plan for all LLM calls.
+For a skill, this makes 55 model calls through your Max plan. For a plugin directory, it makes none.
 
 ## Running
 

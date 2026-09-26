@@ -22,7 +22,7 @@ UV_TOOLS := uv run $(EVAL_PROJECT) python
 RUFF_PATHS := ../../tools/ src/plugin_eval/
 TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/install_pi.py ../../tools/check_agent_name_collisions.py ../../tools/tests/ src/plugin_eval/
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity install-pi uninstall-pi validate garden lint format test smoke-test
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity install-pi uninstall-pi validate garden lint format test smoke-test eval-snapshot
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
@@ -46,6 +46,7 @@ help:
 	@echo "  make format                                      Apply ruff format and safe fixes"
 	@echo "  make test                                        Full pytest suite (plugin-eval + tools)"
 	@echo "  make smoke-test                                  Real-CLI smoke test (skips CLIs not on PATH)"
+	@echo "  make eval-snapshot                               Regenerate evals/static-score-snapshot.json after an intended scoring change"
 	@echo ""
 	@echo "YouTube Design Extractor Setup (run in order):"
 	@echo "  make install-ocr     Install system tools (tesseract + ffmpeg)"
@@ -220,6 +221,12 @@ format:
 # Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
 test:
 	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/ --ignore=tools/tests/test_cli_smoke.py
+
+# Per-skill static score snapshot, keyed by a hash of each skill's content.
+# tools/tests/test_static_score_snapshot.py fails when a skill whose content did not
+# change scores differently. Run this after an intended scoring change and commit the result.
+eval-snapshot:
+	cd plugins/plugin-eval && uv run --extra dev python -c "from pathlib import Path; from plugin_eval.snapshot import build_snapshot, write_snapshot; write_snapshot(Path('../../evals/static-score-snapshot.json'), build_snapshot(Path('../../plugins')))"
 
 # Real-CLI smoke test. Generates artifacts (if not present), then invokes whichever
 # of opencode / agy / codex / claude / pi are on PATH. Per-CLI tests skip gracefully

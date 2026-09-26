@@ -350,7 +350,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 
 | Skill                       | Description                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------------ |
-| **evaluation-methodology**  | PluginEval quality methodology — dimensions, rubrics, statistical methods, scoring formulas |
+| **evaluation-methodology**  | PluginEval quality methodology, covering dimensions, rubrics, and scoring formulas         |
 
 ### Block No-Verify (1 skill)
 

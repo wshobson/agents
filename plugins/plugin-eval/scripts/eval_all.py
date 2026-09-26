@@ -8,10 +8,13 @@ since their source does not exist locally. Outputs:
   reports/summary.md             — aggregated markdown report
   reports/summary.json           — machine-readable aggregate
 
+Plugin-level evaluation runs the static layer only, so `--depth` accepts only
+`quick`. Other values exit with code 2 and point to per-skill scoring.
+
 Intended for CI usage but works locally too:
 
   uv run python scripts/eval_all.py --depth quick
-  uv run python scripts/eval_all.py --depth standard --output-dir /tmp/reports
+  uv run python scripts/eval_all.py --output-dir /tmp/reports
 """
 
 from __future__ import annotations
@@ -43,8 +46,6 @@ class PluginRow:
     score: float | None
     badge: str | None
     confidence: str | None
-    ci_lower: float | None
-    ci_upper: float | None
     anti_patterns: list[str]
     weakest_dimensions: list[tuple[str, float]]
     duration_ms: int | None
@@ -68,8 +69,6 @@ def row_from_result(name: str, result: PluginEvalResult, duration_ms: int) -> Pl
             score=None,
             badge=None,
             confidence=None,
-            ci_lower=None,
-            ci_upper=None,
             anti_patterns=[],
             weakest_dimensions=[],
             duration_ms=duration_ms,
@@ -100,8 +99,6 @@ def row_from_result(name: str, result: PluginEvalResult, duration_ms: int) -> Pl
         score=comp.score,
         badge=badge_val,
         confidence=comp.confidence_label,
-        ci_lower=comp.ci_lower,
-        ci_upper=comp.ci_upper,
         anti_patterns=anti_patterns,
         weakest_dimensions=weakest,
         duration_ms=duration_ms,
@@ -123,8 +120,6 @@ def evaluate_one(
             score=None,
             badge=None,
             confidence=None,
-            ci_lower=None,
-            ci_upper=None,
             anti_patterns=[],
             weakest_dimensions=[],
             duration_ms=int((time.monotonic() - start) * 1000),
@@ -140,12 +135,6 @@ def evaluate_one(
 def format_score(v: float | None) -> str:
     """Composite scores are 0-100."""
     return f"{v:.1f}" if v is not None else "—"
-
-
-def format_ci(lo: float | None, hi: float | None) -> str:
-    if lo is None or hi is None:
-        return "—"
-    return f"[{lo:.1f}–{hi:.1f}]"
 
 
 def format_dim_score(v: float) -> str:
@@ -214,13 +203,12 @@ def build_summary_md(rows: list[PluginRow], depth: str, started_at: str) -> str:
     # Full ranked table
     lines.append("## All plugins (ranked by score ascending)")
     lines.append("")
-    lines.append("| Plugin | Score | 95% CI | Badge | Confidence | Duration |")
-    lines.append("|---|---|---|---|---|---|")
+    lines.append("| Plugin | Score | Badge | Confidence | Duration |")
+    lines.append("|---|---|---|---|---|")
     for r in sorted(rows, key=lambda r: (r.score or 0.0)):
         dur = f"{(r.duration_ms or 0) / 1000:.1f}s" if r.duration_ms else "—"
         lines.append(
             f"| `{r.name}` | {format_score(r.score)} | "
-            f"{format_ci(r.ci_lower, r.ci_upper)} | "
             f"{r.badge or '—'} | {r.confidence or '—'} | {dur} |"
         )
     lines.append("")
@@ -237,7 +225,7 @@ def main() -> int:
         "--concurrency",
         type=int,
         default=4,
-        help="Max concurrent LLM calls for Layer 2/3",
+        help="Has no effect, because this script runs only the static layer and makes no LLM calls",
     )
     parser.add_argument(
         "--threshold",
@@ -251,6 +239,14 @@ def main() -> int:
         help="Comma-separated plugin names to limit evaluation to",
     )
     args = parser.parse_args()
+
+    if args.depth != "quick":
+        print(
+            "plugin-level evaluation runs the static layer only; use "
+            '"plugin-eval score <skill-dir> --depth standard" for the experimental LLM layers',
+            file=sys.stderr,
+        )
+        return 2
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
