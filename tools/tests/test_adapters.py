@@ -11,6 +11,7 @@ import json
 import re
 from pathlib import Path
 
+import pytest
 import yaml
 
 # tools.adapters.* imports happen via the conftest sys.path injection
@@ -1221,6 +1222,57 @@ class TestAntigravityAdapter:
 
 
 class TestCopilotAdapter:
+    def test_mirrors_nested_binary_support_and_prunes_removed_files(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        """Skill links survive generation and stale support files remain prune-owned."""
+        from tools.generate import prune_orphans
+
+        skill = synthetic_plugin.skills[0]
+        source = skill.dir / "references" / "nested" / "sample.bin"
+        source.parent.mkdir(parents=True)
+        source.write_bytes(b"\xff\x00\x89PNG\r\n")
+        hidden = skill.dir / ".private"
+        hidden.mkdir()
+        (hidden / "notes.md").write_text("do not distribute")
+        adapter = CopilotAdapter(output_root=output_root)
+        result = adapter.emit_plugin(synthetic_plugin)
+        target = (
+            output_root
+            / ".copilot"
+            / "skills"
+            / "demo__hello"
+            / "references"
+            / "nested"
+            / "sample.bin"
+        )
+        assert target.read_bytes() == source.read_bytes()
+        assert target in result.written
+        assert not (target.parents[2] / ".private").exists()
+        assert target not in prune_orphans("copilot", output_root, set(result.written))
+        source.unlink()
+        refreshed = adapter.emit_plugin(synthetic_plugin)
+        assert target in prune_orphans("copilot", output_root, set(refreshed.written))
+        assert not target.exists()
+
+    @pytest.mark.parametrize("directory", [False, True])
+    def test_rejects_support_symlinks_outside_skill(
+        self, synthetic_plugin: PluginSource, output_root: Path, tmp_path: Path, directory: bool
+    ):
+        """A linked file cannot pull unrelated local data into a generated skill."""
+        outside = tmp_path / "outside.txt"
+        if directory:
+            outside.mkdir()
+            (outside / "private.txt").write_text("outside source boundary")
+        else:
+            outside.write_text("outside source boundary")
+        (synthetic_plugin.skills[0].dir / "linked.txt").symlink_to(
+            outside, target_is_directory=directory
+        )
+        with pytest.raises(ValueError, match="symlink"):
+            CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        assert not (output_root / ".copilot" / "skills" / "demo__hello" / "linked.txt").exists()
+
     def test_emits_agent_profile(self, synthetic_plugin: PluginSource, output_root: Path):
         adapter = CopilotAdapter(output_root=output_root)
         result = adapter.emit_plugin(synthetic_plugin)
@@ -2158,3 +2210,182 @@ class TestPiAdapter:
         assert not stale.exists()
         assert settings.is_file()
         assert extension.is_file()
+
+
+class TestBinaryMirrorPublication:
+    """A destination leaf swap must not redirect support bytes to an external file."""
+
+    @pytest.mark.parametrize("inside", [True, False])
+    def test_mirror_replaces_existing_leaf_symlink(self, tmp_path, inside):
+        output = tmp_path / "output"
+        output.mkdir()
+        victim = (output if inside else tmp_path) / "victim.bin"
+        victim.write_bytes(b"keep victim")
+        target = output / "asset.bin"
+        target.symlink_to(victim)
+        CopilotAdapter(output_root=output).write_bytes("asset.bin", b"new bytes")
+        assert victim.read_bytes() == b"keep victim"
+        assert not target.is_symlink()
+        assert target.read_bytes() == b"new bytes"
+
+    def test_mirror_replaces_late_symlink_without_touching_victim(self, tmp_path, monkeypatch):
+        output = tmp_path / "output"
+        output.mkdir()
+        source = tmp_path / "source.bin"
+        source.write_bytes(b"new support bytes")
+        victim = tmp_path / "victim.bin"
+        victim.write_bytes(b"keep victim")
+        target = output / "asset.bin"
+        original_mkdir = Path.mkdir
+
+        def swap_after_validation(path, *args, **kwargs):
+            result = original_mkdir(path, *args, **kwargs)
+            if path == output and not target.is_symlink():
+                target.symlink_to(victim)
+            return result
+
+        monkeypatch.setattr(Path, "mkdir", swap_after_validation)
+        CopilotAdapter(output_root=output).mirror_file(source, "asset.bin")
+        assert victim.read_bytes() == b"keep victim"
+        assert target.read_bytes() == b"new support bytes"
+        assert not target.is_symlink()
+
+    def test_failed_binary_publication_preserves_target_and_cleans_stage(
+        self, tmp_path, monkeypatch
+    ):
+        import os
+
+        target = tmp_path / "asset.bin"
+        target.write_bytes(b"original")
+        failure = OSError("fixture publication failure")
+
+        def fail_replace(*args, **kwargs):
+            raise failure
+
+        monkeypatch.setattr(os, "replace", fail_replace)
+        with pytest.raises(OSError) as caught:
+            CopilotAdapter(output_root=tmp_path).write_bytes("asset.bin", b"replacement")
+        assert caught.value is failure
+        assert target.read_bytes() == b"original"
+        assert list(tmp_path.iterdir()) == [target]
+
+    def test_binary_replacement_preserves_regular_file_mode(self, tmp_path):
+        import stat
+
+        target = tmp_path / "asset.bin"
+        target.write_bytes(b"original")
+        target.chmod(0o640)
+        previous = stat.S_IMODE(target.stat().st_mode)
+        CopilotAdapter(output_root=tmp_path).write_bytes("asset.bin", b"new")
+        assert target.read_bytes() == b"new"
+        assert stat.S_IMODE(target.stat().st_mode) == previous
+        assert list(tmp_path.iterdir()) == [target]
+
+
+class TestMirrorSourceValidation:
+    """Source identity must remain regular and stable before any descriptor read."""
+
+    def test_source_swap_rejected_even_without_optional_open_flags(self, tmp_path, monkeypatch):
+        import os
+        from contextlib import contextmanager
+        from types import SimpleNamespace
+
+        source = tmp_path / "source.bin"
+        source.write_bytes(b"intended")
+        victim = tmp_path / "private.bin"
+        victim.write_bytes(b"do not copy")
+        output = tmp_path / "output"
+        output.mkdir()
+        original_lstat = Path.lstat
+        original_fdopen = os.fdopen
+        swapped = False
+
+        def swap_after_lstat(path, *args, **kwargs):
+            nonlocal swapped
+            result = original_lstat(path, *args, **kwargs)
+            if path == source and not swapped:
+                swapped = True
+                source.unlink()
+                source.symlink_to(victim)
+            return result
+
+        @contextmanager
+        def refuse_content_read(fd, mode):
+            with original_fdopen(fd, mode) as stream:
+
+                def read():
+                    raise AssertionError("unvalidated source content was read")
+
+                yield SimpleNamespace(fileno=stream.fileno, read=read)
+
+        monkeypatch.setattr(os, "fdopen", refuse_content_read)
+        monkeypatch.setattr(Path, "lstat", swap_after_lstat)
+        monkeypatch.setattr(os, "O_NOFOLLOW", 0, raising=False)
+        monkeypatch.setattr(os, "O_NONBLOCK", 0, raising=False)
+        with pytest.raises(ValueError, match="source"):
+            CopilotAdapter(output_root=output).mirror_file(source, "asset.bin")
+        assert victim.read_bytes() == b"do not copy"
+        assert list(output.iterdir()) == []
+
+    def test_regular_binary_source_is_copied(self, tmp_path):
+        source = tmp_path / "source.bin"
+        source.write_bytes(b"\xff\x00\x80")
+        output = tmp_path / "output"
+        CopilotAdapter(output_root=output).mirror_file(source, "asset.bin")
+        assert (output / "asset.bin").read_bytes() == b"\xff\x00\x80"
+
+    @pytest.mark.parametrize("replace", [False, True])
+    def test_changed_source_is_not_published(self, tmp_path, monkeypatch, replace):
+        import os
+        from contextlib import contextmanager
+        from types import SimpleNamespace
+
+        source = tmp_path / "source.bin"
+        source.write_bytes(b"original")
+        output = tmp_path / "output"
+        output.mkdir()
+        original_fdopen = os.fdopen
+
+        @contextmanager
+        def change_after_read(fd, mode):
+            with original_fdopen(fd, mode) as stream:
+
+                def read():
+                    data = stream.read()
+                    if replace:
+                        source.unlink()
+                    source.write_bytes(b"changed source contents")
+                    return data
+
+                yield SimpleNamespace(fileno=stream.fileno, read=read)
+
+        monkeypatch.setattr(os, "fdopen", change_after_read)
+        with pytest.raises(ValueError, match="source changed"):
+            CopilotAdapter(output_root=output).mirror_file(source, "asset.bin")
+        assert list(output.iterdir()) == []
+
+    def test_copilot_rejects_source_swapped_after_symlink_check(
+        self, synthetic_plugin, output_root, tmp_path, monkeypatch
+    ):
+        source = synthetic_plugin.skills[0].dir / "asset.bin"
+        source.write_bytes(b"intended")
+        victim = tmp_path / "private.bin"
+        victim.write_bytes(b"do not copy")
+        original = Path.is_symlink
+        swapped = False
+
+        def swap_after_check(path):
+            nonlocal swapped
+            result = original(path)
+            if path == source and not swapped:
+                swapped = True
+                source.unlink()
+                source.symlink_to(victim)
+            return result
+
+        monkeypatch.setattr(Path, "is_symlink", swap_after_check)
+        with pytest.raises(ValueError, match="source"):
+            CopilotAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        assert swapped
+        assert not list(output_root.rglob("asset.bin"))
+        assert victim.read_bytes() == b"do not copy"

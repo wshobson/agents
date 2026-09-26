@@ -2,6 +2,8 @@
 
 Complete reference for all **202 local specialized AI agents** organized by category with model assignments.
 
+For renamed feature-development, incident-response, and model-policy variants, see the [agent identity migration](agent-identity-migration.md) before updating custom callers.
+
 ## Agent Categories
 
 ### Architecture & System Design
@@ -223,7 +225,7 @@ Complete reference for all **202 local specialized AI agents** organized by cate
 | [arm-cortex-expert](../plugins/arm-cortex-microcontrollers/agents/arm-cortex-expert.md) | inherit| ARM Cortex-M firmware and peripheral driver development |
 | [blockchain-developer](../plugins/blockchain-web3/agents/blockchain-developer.md)       | sonnet | Web3 apps, smart contracts, DeFi protocols              |
 | [payment-integration](../plugins/payment-processing/agents/payment-integration.md)      | sonnet | Payment processor integration (Stripe, PayPal)          |
-| [legacy-modernizer](../plugins/framework-migration/agents/legacy-modernizer.md)         | fable  | Legacy code refactoring and modernization               |
+| [legacy-modernizer-fable](../plugins/framework-migration/agents/legacy-modernizer-fable.md)         | fable  | Legacy code refactoring and modernization               |
 | [context-manager](../plugins/agent-orchestration/agents/context-manager.md)             | haiku  | Multi-agent context management                          |
 | [pptx-deck-creation-builder](../plugins/pptx-deck-creation/agents/pptx-deck-creation-builder.md) | inherit | Production-ready editable PPTX decks from briefs or reference decks |
 

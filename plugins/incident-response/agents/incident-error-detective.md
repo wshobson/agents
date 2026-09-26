@@ -1,5 +1,5 @@
 ---
-name: incident-response-error-detective
+name: incident-response-incident-error-detective
 description: Analyzes error traces, logs, and observability data to identify error signatures, reproduction steps, user impact, and timeline context for production issues.
 model: sonnet
 ---

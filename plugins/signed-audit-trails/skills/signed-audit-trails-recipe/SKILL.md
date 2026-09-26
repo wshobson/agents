@@ -7,7 +7,7 @@ description: Step-by-step cookbook for setting up cryptographically signed audit
 
 Cookbook-style walkthrough for cryptographically signed receipts on every
 Claude Code tool call. This is the teaching skill. For the runtime
-implementation, install the [`protect-mcp`](../../protect-mcp/) plugin.
+implementation, install the [`protect-mcp`](https://github.com/wshobson/agents/tree/main/plugins/protect-mcp) plugin.
 
 ## What this gives you
 
@@ -19,8 +19,7 @@ Every tool call (`Bash`, `Edit`, `Write`, `WebFetch`) is:
    JCS-canonical, hash-chained, and verifiable offline by anyone with the
    public key.
 
-An auditor, regulator, or counterparty can verify the full chain later with a
-single CLI command (`npx @veritasacta/verify receipts/*.json`). No network
+Auditors can verify a producer-ordered JSONL chain export offline. No network
 call, no vendor lookup, no trust in the operator.
 
 ## When to use the pattern
@@ -128,32 +127,27 @@ signature. Modifying any field after signing invalidates the signature.
 
 ## Step 5: Verify the receipt chain
 
+First complete the [pinned setup and verification procedure](references/cryptography-and-integration.md#verifying-receipts-and-chains), including a nonempty ordered JSONL export from the receipt producer.
+
 ```bash
-npx @veritasacta/verify ./receipts/*.json
+pnpm exec verify --replay-chain receipts.jsonl --key "${VERIFY_PUBLIC_KEY:?Set public key}"
 ```
-
-Exit codes:
-
-| Code | Meaning |
-|------|---------|
-| `0`  | All receipts verified; chain intact |
-| `1`  | A receipt failed signature verification (tampered, or wrong key) |
-| `2`  | A receipt was malformed |
 
 ## Step 6: Demonstrate tamper detection
 
-Modify any receipt's `decision` field from `allow` to `deny`:
+Use a disposable synthetic test receipt; change `decision` from `allow` to `deny`:
 
 ```bash
-python3 -c "
+receipt=./receipts/receipt-to-test.json # Set to the test receipt.
+RECEIPT_PATH="$receipt" python3 -c "
 import json, os
-path = './receipts/' + sorted(os.listdir('./receipts'))[-1]
+path = os.environ['RECEIPT_PATH']
 r = json.loads(open(path).read())
 r['decision'] = 'deny'
 open(path, 'w').write(json.dumps(r))
 "
 
-npx @veritasacta/verify ./receipts/*.json
+pnpm exec verify "$receipt" --key "${VERIFY_PUBLIC_KEY:?Set public key}"
 ```
 
 The verifier exits with code `1` and reports which receipt failed. The
@@ -162,102 +156,7 @@ tampered payload.
 
 Restore the field and verification passes again.
 
-## How the cryptography works
-
-Three invariants make receipts verifiable offline across any conformant
-implementation:
-
-1. **JCS canonicalization (RFC 8785)** before signing. Keys sorted,
-   whitespace minimized, strings NFC-normalized. Two independent
-   implementations produce byte-identical signing payloads for the same
-   receipt content.
-2. **Ed25519 signatures (RFC 8032)** over the canonical bytes.
-   Deterministic, fixed-size, no nonce dependency.
-3. **Hash chain linkage.** Each receipt's `parent_receipt_hash` is the
-   SHA-256 of the predecessor's canonical form. Insertions, deletions, and
-   reorderings break later receipts.
-
-For the formal wire format see
-[draft-farley-acta-signed-receipts](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/).
-
-## Cross-implementation interop
-
-The receipt format has four independent implementations today:
-
-| Implementation | Language | Use case |
-|----------------|----------|----------|
-| [protect-mcp](https://www.npmjs.com/package/protect-mcp) | TypeScript | Claude Code, Cursor, MCP hosts |
-| [protect-mcp-adk](https://pypi.org/project/protect-mcp-adk/) | Python | Google Agent Development Kit |
-| [sb-runtime](https://github.com/ScopeBlind/sb-runtime) | Rust | OS-level sandbox (Landlock + seccomp) |
-| APS governance hook | Python | CrewAI, LangChain |
-
-A receipt produced by any of them verifies against
-[`@veritasacta/verify`](https://www.npmjs.com/package/@veritasacta/verify).
-The auditor does not need to trust the operator's tooling choice: the format
-is the contract.
-
-## CI/CD integration
-
-Gate merges on receipt chain verification so no build lands with a broken
-evidence chain:
-
-```yaml
-# .github/workflows/verify-receipts.yml
-name: Verify Decision Receipts
-on: [push, pull_request]
-
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - name: Run governed agent
-        run: python scripts/run_agent.py > receipts.jsonl
-      - name: Verify receipt chain
-        run: npx @veritasacta/verify receipts.jsonl
-```
-
-Archive the receipts as an artifact so the chain survives beyond the job run:
-
-```yaml
-      - name: Upload receipts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: decision-receipts
-          path: receipts/
-```
-
-## Composition with SLSA provenance for agent-built software
-
-When Claude Code builds and releases software (running `npm install`,
-`npm build`, `npm publish` as tool calls), the receipt chain is the
-per-step build log. SLSA Provenance v1 has an extension point for this: the
-`byproducts` field can reference the receipt chain alongside the build
-attestation.
-
-The [agent-commit build type](https://refs.arewm.com/agent-commit/v0.2)
-documents the pattern using the ResourceDescriptor shape:
-
-```json
-{
-  "name": "decision-receipts",
-  "digest": { "sha256": "..." },
-  "uri": "oci://registry/org/build-xyz/receipts:sha256-...",
-  "annotations": {
-    "predicateType": "https://veritasacta.com/attestation/decision-receipt/v0.1",
-    "signerRole": "supervisor-hook"
-  }
-}
-```
-
-The SLSA provenance is signed by the builder identity; the receipt
-attestation is signed by the supervisor-hook identity. Two trust domains,
-cross-referenced at the byproduct layer. See
-[slsa-framework/slsa#1594](https://github.com/slsa-framework/slsa/issues/1594)
-for the composition discussion.
+Before verifying cryptographic behavior, interoperability, CI integration, or SLSA composition, read [cryptography and integration details](references/cryptography-and-integration.md).
 
 ## Common pitfalls
 
@@ -280,9 +179,9 @@ missing policy is treated as a hard failure.
 
 ## Related in this marketplace
 
-- [`protect-mcp`](../../protect-mcp/) — the runtime hook implementation
+- [`protect-mcp`](https://github.com/wshobson/agents/tree/main/plugins/protect-mcp) — the runtime hook implementation
   (use this plugin in production)
-- [`review-agent-governance`](../../review-agent-governance/) — require
+- [`review-agent-governance`](https://github.com/wshobson/agents/tree/main/plugins/review-agent-governance) — require
   human approval before review-surface actions; composes with protect-mcp
 
 ## References

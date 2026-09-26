@@ -19,6 +19,7 @@ api = [
     "anthropic>=0.122.0",
 ]
 dev = [
+    "markdown-it-py>=4.0.0",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=6.0",

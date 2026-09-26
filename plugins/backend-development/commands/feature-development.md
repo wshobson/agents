@@ -253,7 +253,7 @@ Launch three agents in parallel using multiple Task tool calls in a single respo
 
 ```
 Task:
-  subagent_type: "backend-development-test-automator"
+  subagent_type: "backend-development-feature-test-automator"
   description: "Create test suite for $FEATURE"
   prompt: |
     Create a comprehensive test suite for this feature.
@@ -280,7 +280,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "backend-development-security-auditor"
+  subagent_type: "backend-development-feature-security-auditor"
   description: "Security review of $FEATURE"
   prompt: |
     Perform a security review of this feature implementation.
@@ -304,7 +304,7 @@ Task:
 
 ```
 Task:
-  subagent_type: "backend-development-performance-engineer"
+  subagent_type: "backend-development-feature-performance-engineer"
   description: "Performance review of $FEATURE"
   prompt: |
     Review the performance of this feature implementation.

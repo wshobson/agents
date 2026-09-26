@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import stat
+import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -21,6 +24,41 @@ def read_file(path: Path) -> str:
         return path.read_text(encoding="utf-8")
     except OSError:
         return ""
+
+
+def _read_regular_source(src: Path) -> bytes:
+    """Read a stable regular source descriptor without trusting a checked leaf path.
+
+    Parents remain trusted. Optional no-follow/nonblocking flags harden POSIX;
+    the descriptor identity check precedes reads even when those flags are absent.
+    """
+
+    def identity(info: os.stat_result) -> tuple[int, ...]:
+        return (
+            info.st_dev,
+            info.st_ino,
+            info.st_mode,
+            info.st_size,
+            info.st_mtime_ns,
+            info.st_ctime_ns,
+        )
+
+    expected = src.lstat()
+    if not stat.S_ISREG(expected.st_mode) or not expected.st_ino:
+        raise ValueError(f"refusing non-regular or unidentified mirror source: {src}")
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0)
+    flags |= getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+    fd = os.open(src, flags)
+    with os.fdopen(fd, "rb") as source:
+        opened = os.fstat(source.fileno())
+        if identity(opened) != identity(expected) or identity(src.lstat()) != identity(opened):
+            raise ValueError(f"mirror source changed before read: {src}")
+        content = source.read()
+        if identity(os.fstat(source.fileno())) != identity(opened):
+            raise ValueError(f"mirror source changed during read: {src}")
+    if identity(src.lstat()) != identity(opened):
+        raise ValueError(f"mirror source changed after read: {src}")
+    return content
 
 
 def read_plugin_json(plugin_dir: Path) -> dict:
@@ -554,12 +592,43 @@ class HarnessAdapter(ABC):
 
     def write_bytes(self, rel_path: str | Path, content: bytes) -> Path:
         """Binary counterpart of `write` — for mirroring non-UTF-8 reference assets."""
-        target = (self.output_root / rel_path).resolve()
+        unresolved = self.output_root / rel_path
+        # Resolve trusted parents for containment, retaining the leaf so an
+        # existing symlink is replaced rather than redirected to its referent.
+        target = unresolved.parent.resolve() / unresolved.name
         root = self.output_root.resolve()
         if not target.is_relative_to(root):
             raise ValueError(f"refusing to write outside output_root: {target} (root={root})")
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(content)
+        # Publish a fresh inode rather than opening the destination leaf for writes:
+        # a leaf symlink swapped in after validation is replaced, never followed.
+        # Parent directories remain trusted; this is not a descriptor-root sandbox.
+        stage = target.with_name(f".mirror-{uuid.uuid4().hex}")
+        created = False
+        primary: BaseException | None = None
+        try:
+            try:
+                previous = target.lstat()
+            except FileNotFoundError:
+                previous = None
+            with stage.open("xb") as output:
+                created = True
+                output.write(content)
+            if previous is not None and stat.S_ISREG(previous.st_mode):
+                stage.chmod(stat.S_IMODE(previous.st_mode))
+            os.replace(stage, target)
+            created = False
+        except BaseException as error:
+            primary = error
+            raise
+        finally:
+            if created:
+                try:
+                    stage.unlink(missing_ok=True)
+                except OSError:
+                    if primary is None:
+                        raise
+                    primary.add_note("Could not remove binary mirror staging file")
         return target
 
     def mirror_file(self, src: Path, rel_path: str | Path) -> Path:
@@ -567,7 +636,7 @@ class HarnessAdapter(ABC):
 
         Use this for `references/` assets (PDFs, images, etc.) that may not be UTF-8 text.
         """
-        return self.write_bytes(rel_path, src.read_bytes())
+        return self.write_bytes(rel_path, _read_regular_source(src))
 
     def strip_claude_tool_refs(self, body: str, tool_case: str = "lower") -> str:
         """Rewrite Claude Code tool names embedded in prose into harness-neutral verbs.
