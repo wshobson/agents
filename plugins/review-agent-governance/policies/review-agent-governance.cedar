@@ -110,6 +110,7 @@ forbid (
     (context.input.command like "*git push *" ||
      context.input.command like "*git push" ||
      context.input.command like "*git -* push*" ||
+     context.input.command like "*git -*\tpush*" ||
      context.input.command like "*git  *push *" ||
      context.input.command like "*git\t*push *") &&
     (context.input.command like "* main" || context.input.command like "* main *" ||
@@ -146,6 +147,7 @@ forbid (
     (context.input.command like "*git push *" ||
      context.input.command like "*git push" ||
      context.input.command like "*git -* push*" ||
+     context.input.command like "*git -*\tpush*" ||
      context.input.command like "*git  *push *" ||
      context.input.command like "*git\t*push *") &&
     (context.input.command like "*;*" ||
@@ -183,6 +185,7 @@ forbid (
     (context.input.command like "*git push *" ||
      context.input.command like "*git push" ||
      context.input.command like "*git -* push*" ||
+     context.input.command like "*git -*\tpush*" ||
      context.input.command like "*git  *push *" ||
      context.input.command like "*git\t*push *") &&
     (context.input.command like "*--force*" ||
