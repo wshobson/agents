@@ -57,22 +57,32 @@ When writing a review-governance policy:
 
 2. **Extend for the project's specific surfaces.** If the team uses Linear,
    Jira, Notion, or a custom review tool, add `forbid` rules for the CLI
-   patterns or WebFetch hosts those tools use.
+   commands those tools use.
 
 3. **Do NOT gate read-only operations.** `gh pr view`, `gh issue list`, API
    GETs — all fine for agents to do unattended. The gate is on write /
-   post / merge / close actions only.
+   post / merge / close actions only. The one deliberate exception is the
+   default `gh api` rule, which also blocks GraphQL queries and parameterized
+   GETs because a command string cannot prove the request is a read.
 
-4. **Gate branches by name, not by path.** Use `context.target_branch in
-   ["main", ...]` not `context.resource_path starts with "refs/heads/main"`.
-   Branch names are what humans reason about.
+4. **Match commands as substrings, and treat it as best-effort.** The hook
+   passes only the raw command string at `context.input.command`. Use
+   `"*gh *pr merge*"` rather than `"gh pr merge*"` so `cd x && gh pr merge 1`,
+   `env gh ...`, and `gh -R o/r pr merge 1` are caught. Match a branch as a
+   whole word (`"* main"`, `"* main *"`, `"*:main"`, `"*heads/main"`), not
+   `"*main*"`, which also catches `maintenance`. The evaluator cannot see the
+   upstream of a bare `git push`. String matching on shell commands can
+   always be dodged by a determined rewording, so say so in the policy.
 
 5. **Include the notification surfaces.** Slack and Discord webhooks are
-   where review-bot hallucinations amplify. Gate POSTs to those hosts.
+   where review-bot hallucinations amplify. Posting to them needs a POST,
+   which Claude Code's WebFetch tool cannot send (it only issues GETs), so
+   gate the Bash commands (`curl`) or MCP tools that can post.
 
 6. **Leave non-review actions alone.** This policy is focused. A permissive
-   `permit (principal, action, resource);` at the end lets everything else
-   through. Combine with `protect-mcp` for broader policy enforcement.
+   `permit (principal, action == Action::"MCP::Tool::call", resource);` at the
+   end lets everything else through. Combine with `protect-mcp` for broader
+   policy enforcement.
 
 ## Example extensions
 
@@ -81,61 +91,30 @@ When writing a review-governance policy:
 ```cedar
 forbid (
     principal,
-    action == Action::"Bash",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
 ) when {
-    context.command_pattern starts with "linear"
-};
-
-forbid (
-    principal,
-    action == Action::"WebFetch",
-    resource
-) when {
-    context.method == "POST" &&
-    context.url_host == "api.linear.app"
+    context has input && context.input has command &&
+    context.input.command like "*linear *"
 };
 ```
 
 ### Teams with their own internal review bot
 
-```cedar
-forbid (
-    principal,
-    action == Action::"WebFetch",
-    resource
-) when {
-    context.method in ["POST", "PUT", "PATCH", "DELETE"] &&
-    context.url_host in [
-        "review-bot.internal.company.com",
-        "code-review.internal.company.com"
-    ]
-};
-```
+Gate the commands that post to the bot (a CLI or `curl`) with a Bash rule.
+Do not rely on a WebFetch host rule for a bot endpoint that acts on a GET:
+Cedar's `like` is case-sensitive and URL hosts are not, so a rule for
+`*review-bot.internal.company.com*` misses
+`HTTPS://REVIEW-BOT.INTERNAL.COMPANY.COM/...`. Block side-effecting GET
+endpoints at the network or proxy layer instead.
 
-### Teams that want to allow a specific bot account
+### Per-identity rules are not available
 
-If the team wants to allow an agent running under a dedicated "automation"
-identity but not a developer's personal account:
-
-```cedar
-permit (
-    principal == Principal::"gh-bot-reviewer",
-    action == Action::"Bash",
-    resource
-) when {
-    context.command_pattern in ["gh pr comment"]
-};
-
-forbid (
-    principal,
-    action == Action::"Bash",
-    resource
-) unless {
-    principal == Principal::"gh-bot-reviewer" ||
-    context.human_approved == true
-};
-```
+`protect-mcp evaluate` runs every call as the principal `Agent::"unknown"`
+and passes only the tool name and input, so a rule cannot tell a bot account
+from a developer, and there is no `context.human_approved` attribute. The
+approval flag file is the approval mechanism: the hook skips the policy while
+`./.review-approved` exists.
 
 ## Auditing an existing policy
 
@@ -143,9 +122,13 @@ When reviewing a `review-governance.cedar`:
 
 1. Confirm every review-surface CLI command the team uses has a matching
    `forbid` rule.
-2. Check for gaps in API coverage. `gh api repos` catches arbitrary GitHub
-   REST calls; without it, an agent can `gh api repos/X/Y/pulls/42/reviews`
-   and bypass command-pattern-based rules.
+2. Check for gaps in API coverage. The default gates every `gh api` call
+   with `graphql`, a method flag, or a field / input flag; without that rule,
+   an agent can `gh api -X POST repos/X/Y/pulls/42/reviews` and bypass the
+   `gh pr` rules. The rule is conservative: GraphQL queries and parameterized
+   GETs are blocked too, so the user opens an approval window for them.
+   Do not add a GET exemption: gh uses the last `-X`, and a shell comment can
+   hold `--method GET`.
 3. Verify protected-branch `git push` rules cover every branch that is
    actually protected in the repo settings.
 4. Confirm CI / CD path rules match the files that actually gate behavior

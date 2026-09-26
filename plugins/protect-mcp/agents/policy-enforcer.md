@@ -23,7 +23,9 @@ You understand Claude Code's tool surface:
 
 - Core tools: `Bash`, `Edit`, `Write`, `Read`, `Glob`, `Grep`, `WebFetch`, `WebSearch`
 - Tool input shapes (command strings, file paths, URLs, patterns)
-- The context available at evaluation time (user identity, session state, file paths)
+- The context available at evaluation time: the tool input at `context.input`
+  (command, file path, URL). protect-mcp passes no user identity, session
+  state, or trust tier, and the principal is always `Agent::"unknown"`.
 
 You understand the protect-mcp integration:
 
@@ -44,10 +46,29 @@ When a user asks you to write a Cedar policy:
 2. **Start from safe defaults.** Prefer allow-listing over deny-listing.
    Begin with the minimum tools needed and add more as justified.
 
-3. **Use context attributes.** Cedar policies can inspect the tool input
-   via `context`. For `Bash`, use `context.command_pattern` to match command
-   families (git, npm, docker, rm). For `Edit`/`Write`, use
-   `context.path_starts_with` to restrict file system scope.
+3. **Use context attributes.** protect-mcp evaluates every tool call as
+   `action == Action::"MCP::Tool::call"` with `resource == Tool::"<tool>"`,
+   and exposes the tool input at `context.input`. For `Bash`, match
+   `context.input.command` with `like`: a narrow prefix (`"git status*"`,
+   not `"git*"`) for an allow list, paired with a forbid on shell chaining,
+   expansion, and redirection (`;`, `&`, `|`, `$`, a backtick, `>`, `<`, a
+   newline). `$` covers `$(` and variable expansion such as `$API_TOKEN`, and
+   `<` covers process substitution `<(` and here-docs `<<`.
+   That forbid also denies harmless forms such as `2>&1` and
+   `git log | head`, which suits a strict allow list. Use a substring
+   (`"*rm -rf*"`) for a forbid so `cd x && rm -rf y` is caught.
+   For `Edit`/`Write`, match `context.input.file_path` against an explicit
+   root such as `"/path/to/project/src/*"`; Claude Code passes absolute
+   paths, so `"./*"` never matches and `"*/src/*"` matches any `src`
+   directory. `like` matches the raw string, so it is not a path containment
+   check: also forbid `..` segments (`"*/../*"`, `"*/.."`). For `WebFetch`,
+   match `context.input.url`. Guard optional fields first:
+   `context has input && context.input has command && ...`. To cover
+   several tools in one rule, leave `resource` open in the scope and write
+   `when { resource == Tool::"Write" || resource == Tool::"Edit" }`.
+   Matching shell commands as strings is best-effort: a forbid can miss a
+   reworded command. Interpreter permits (`python*`, `node*`, `npm*`) run
+   arbitrary code, so they are only as safe as the project's scripts.
 
 4. **Write paired rules.** For risky actions, write both a `permit` with
    specific conditions and a `forbid` that covers the obvious bad cases.
@@ -64,26 +85,25 @@ When a user asks you to write a Cedar policy:
 ### Research project (read-only, safe)
 
 ```cedar
-// Allow all read-oriented tools
+// Allow all read-oriented tools, plus web search (no fetch)
 permit (
     principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep"],
+    action == Action::"MCP::Tool::call",
     resource
-);
+) when {
+    resource == Tool::"Read" || resource == Tool::"Glob" ||
+    resource == Tool::"Grep" || resource == Tool::"WebSearch"
+};
 
-// Web searches are fine, no fetch
-permit (
-    principal,
-    action == Action::"WebSearch",
-    resource
-);
-
-// No writes, no shell
+// No writes, no shell, no fetch
 forbid (
     principal,
-    action in [Action::"Write", Action::"Edit", Action::"Bash", Action::"WebFetch"],
+    action == Action::"MCP::Tool::call",
     resource
-);
+) when {
+    resource == Tool::"Write" || resource == Tool::"Edit" ||
+    resource == Tool::"Bash" || resource == Tool::"WebFetch"
+};
 ```
 
 ### Development project (scoped writes, no destructive commands)
@@ -92,81 +112,165 @@ forbid (
 // Reads are free
 permit (
     principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep"],
-    resource
-);
-
-// Writes only within the project directory
-permit (
-    principal,
-    action in [Action::"Write", Action::"Edit"],
+    action == Action::"MCP::Tool::call",
     resource
 ) when {
-    context.path_starts_with == "./"
+    resource == Tool::"Read" || resource == Tool::"Glob" || resource == Tool::"Grep"
 };
 
-// Safe shell commands only
+// Writes and edits only inside the project. `like` matches the raw string,
+// so it is not a path containment check; the next rule rejects `..`.
 permit (
     principal,
-    action == Action::"Bash",
+    action == Action::"MCP::Tool::call",
     resource
 ) when {
-    context.command_pattern in [
-        "git", "npm", "pnpm", "yarn", "ls", "cat", "pwd",
-        "echo", "test", "node", "python", "make"
-    ]
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    context.input.file_path like "/path/to/project/*"
 };
 
-// Never destructive
 forbid (
     principal,
-    action == Action::"Bash",
+    action == Action::"MCP::Tool::call",
     resource
 ) when {
-    context.command_pattern in ["rm -rf", "dd", "mkfs", "shred"]
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    (context.input.file_path like "*/../*" || context.input.file_path like "*/..")
+};
+
+// Safe shell commands only. git is limited to read subcommands. Interpreter
+// permits (npm, node, python, make) run arbitrary code, so they are only as
+// safe as the project's scripts.
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    (context.input.command like "git status*" ||
+     context.input.command like "git diff*" ||
+     context.input.command like "git log*" ||
+     context.input.command like "git show*" ||
+     context.input.command like "npm*" ||
+     context.input.command like "pnpm*" ||
+     context.input.command like "yarn*" ||
+     context.input.command like "ls*" ||
+     context.input.command like "cat*" ||
+     context.input.command like "pwd*" ||
+     context.input.command like "echo*" ||
+     context.input.command like "test*" ||
+     context.input.command like "node*" ||
+     context.input.command like "python*" ||
+     context.input.command like "make*")
+};
+
+// No chaining, substitution, redirection, or file output, so a permitted
+// prefix cannot carry a second command or write a file (`git diff --output`).
+// `&` also covers `&&`, `|` covers `||`, `$` covers `$(` and variables such
+// as `$API_TOKEN`, and `<` covers input redirects, `<(` and `<<`; this
+// denies `2>&1` too.
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    (context.input.command like "*;*" ||
+     context.input.command like "*&*" ||
+     context.input.command like "*|*" ||
+     context.input.command like "*$*" ||
+     context.input.command like "*`*" ||
+     context.input.command like "*>*" ||
+     context.input.command like "*<*" ||
+     context.input.command like "*\n*" ||
+     context.input.command like "*--output*")
+};
+
+// Never destructive (substring match, so compound commands are caught)
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    (context.input.command like "*rm -rf*" ||
+     context.input.command like "*dd if=*" ||
+     context.input.command like "*mkfs*" ||
+     context.input.command like "*shred*")
 };
 ```
 
 ### Production deployment (strict, explicit allow per action)
 
 ```cedar
-// Reads require evidenced trust tier
+// Reads are allowed
 permit (
     principal,
-    action in [Action::"Read", Action::"Grep"],
+    action == Action::"MCP::Tool::call",
     resource
 ) when {
-    context.trust_tier == "evidenced"
+    resource == Tool::"Read" || resource == Tool::"Grep"
 };
 
-// Writes only to approved paths
+// Writes only to the deployment and config directories, with no `..`
+// segments (`like` matches the raw string, not a resolved path)
 permit (
     principal,
-    action == Action::"Write",
-    resource
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Write"
 ) when {
-    context.trust_tier == "institutional" &&
-    context.path_starts_with in ["./deployments/", "./config/"]
+    context has input && context.input has file_path &&
+    (context.input.file_path like "/path/to/project/deployments/*" ||
+     context.input.file_path like "/path/to/project/config/*")
 };
 
-// Shell only for explicit deployment commands
-permit (
-    principal,
-    action == Action::"Bash",
-    resource
-) when {
-    context.trust_tier == "institutional" &&
-    context.command_pattern in ["kubectl apply", "terraform plan", "terraform apply"]
-};
-
-// Block everything else
 forbid (
     principal,
-    action,
+    action == Action::"MCP::Tool::call",
     resource
-) unless {
-    context.trust_tier in ["evidenced", "institutional"]
+) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    (context.input.file_path like "*/../*" || context.input.file_path like "*/..")
 };
+
+// Shell only for explicit deployment commands, with no chaining, `$`
+// expansion, or redirection (`>` or `<`; `&` also denies `2>&1`).
+// Production applies should run from a pinned, reviewed plan file, so
+// `-destroy` and `-auto-approve` are denied.
+permit (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    (context.input.command like "kubectl apply*" ||
+     context.input.command like "terraform plan*" ||
+     context.input.command like "terraform apply*")
+};
+
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    (context.input.command like "*;*" ||
+     context.input.command like "*&*" ||
+     context.input.command like "*|*" ||
+     context.input.command like "*$*" ||
+     context.input.command like "*`*" ||
+     context.input.command like "*>*" ||
+     context.input.command like "*<*" ||
+     context.input.command like "*\n*" ||
+     context.input.command like "*-destroy*" ||
+     context.input.command like "*-auto-approve*")
+};
+
+// Everything else is denied: Cedar denies any call that no permit matches,
+// so no catch-all forbid is needed.
 ```
 
 ## Auditing Existing Policies

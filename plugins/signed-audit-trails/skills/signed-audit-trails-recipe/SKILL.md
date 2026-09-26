@@ -77,56 +77,10 @@ echo "./receipts/" >> .gitignore
 
 ## Step 2: Write a Cedar policy
 
-Create `./protect.cedar`:
-
-```cedar
-// Allow all read-oriented tools by default.
-permit (
-    principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep", Action::"WebSearch"],
-    resource
-);
-
-// Allow Bash commands from a safe list only.
-permit (
-    principal,
-    action == Action::"Bash",
-    resource
-) when {
-    context.command_pattern in [
-        "git", "npm", "pnpm", "yarn", "ls", "cat", "pwd",
-        "echo", "test", "node", "python", "make"
-    ]
-};
-
-// Explicit deny on destructive commands. Cedar deny is authoritative.
-forbid (
-    principal,
-    action == Action::"Bash",
-    resource
-) when {
-    context.command_pattern in ["rm -rf", "dd", "mkfs", "shred"]
-};
-
-// Restrict writes to the project directory.
-permit (
-    principal,
-    action in [Action::"Write", Action::"Edit"],
-    resource
-) when {
-    context.path_starts_with == "./"
-};
-```
-
-Four rules:
-
-- Read-oriented tools always allowed
-- `Bash` allowed for safe command patterns (`git`, `npm`, etc.)
-- `Bash rm -rf` and similar destructive commands explicitly denied
-- Writes allowed only within the project (`./` prefix)
-
-Cedar `forbid` rules take precedence over `permit` rules, so destructive
-commands cannot be bypassed by a later permissive rule.
+Create `./protect.cedar` from the example in
+[`references/cedar-policy.md`](references/cedar-policy.md). It allows read-only
+tools and a short list of Bash commands, denies shell chaining and destructive
+commands, and limits writes to the project with `..` segments denied.
 
 ## Step 3: Use Claude Code normally
 

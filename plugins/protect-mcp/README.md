@@ -91,29 +91,52 @@ plugins/protect-mcp/
 ## Example Cedar Policy
 
 ```cedar
-// Allow all read operations
+// Allow read-only tools. One rule can cover several tools: leave `resource`
+// open in the scope and compare it in `when`.
 permit (
     principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep"],
-    resource
-);
-
-// Writes only within the project directory
-permit (
-    principal,
-    action in [Action::"Write", Action::"Edit"],
+    action == Action::"MCP::Tool::call",
     resource
 ) when {
-    context.path_starts_with == "./"
+    resource == Tool::"Read" || resource == Tool::"Glob" || resource == Tool::"Grep"
 };
 
-// Never allow destructive shell commands
-forbid (
+// Writes and edits only inside the project. Claude Code passes absolute
+// paths, so match your project's path, not "./*". `like` matches the raw
+// string, so it is not a path containment check: the forbid rejects `..`.
+permit (
     principal,
-    action == Action::"Bash",
+    action == Action::"MCP::Tool::call",
     resource
 ) when {
-    context.command_pattern in ["rm -rf", "dd if=", "mkfs", "shred"]
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    context.input.file_path like "/path/to/project/*"
+};
+
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource
+) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    (context.input.file_path like "*/../*" || context.input.file_path like "*/..")
+};
+
+// Never allow destructive shell commands. Substring patterns also catch
+// `cd x && rm -rf y`, but matching shell commands as strings is best-effort:
+// a determined rewording can still get through.
+forbid (
+    principal,
+    action == Action::"MCP::Tool::call",
+    resource == Tool::"Bash"
+) when {
+    context has input && context.input has command &&
+    (context.input.command like "*rm -rf*" ||
+     context.input.command like "*dd if=*" ||
+     context.input.command like "*mkfs*" ||
+     context.input.command like "*shred*")
 };
 ```
 

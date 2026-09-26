@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "gh pr merge 42"
+  },
+  "session_id": "test-session-deny-merge"
+}

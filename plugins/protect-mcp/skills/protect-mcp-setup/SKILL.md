@@ -103,41 +103,49 @@ Writes the receipt to `./receipts/<timestamp>.json`.
 Create `./protect.cedar` at the project root:
 
 ```cedar
-// Allow read-only tools by default
-permit (
-    principal,
-    action in [Action::"Read", Action::"Glob", Action::"Grep", Action::"WebFetch"],
-    resource
-);
-
-// Require explicit allow for destructive tools
-permit (
-    principal,
-    action == Action::"Bash",
-    resource
-) when {
-    // Allow safe commands only
-    context.command_pattern in ["git", "npm", "ls", "cat", "echo", "pwd", "test"]
+// Read-only tools: one rule can name several tools in `when`. Add WebFetch
+// with your own URL rule.
+permit (principal, action == Action::"MCP::Tool::call", resource) when {
+    resource == Tool::"Read" || resource == Tool::"Glob" || resource == Tool::"Grep"
 };
 
-// Never allow recursive deletion
-forbid (
-    principal,
-    action == Action::"Bash",
-    resource
-) when {
-    context.command_pattern == "rm -rf"
+// Safe commands only; git limited to read subcommands
+permit (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
+    context has input && context.input has command &&
+    (context.input.command like "git status*" || context.input.command like "git diff*" ||
+     context.input.command like "git log*" || context.input.command like "git show*" ||
+     context.input.command like "npm*" || context.input.command like "ls*" ||
+     context.input.command like "cat*" || context.input.command like "echo*" ||
+     context.input.command like "pwd*" || context.input.command like "test*")
 };
 
-// Require confirmation for writes outside the project
-forbid (
-    principal,
-    action in [Action::"Edit", Action::"Write"],
-    resource
-) when {
-    context.path_starts_with != "."
+// No chaining (`&` also denies `2>&1`), `$` expansion, redirection (`>` or
+// `<`, which covers `<(`), file output (`git diff --output`), or rm -rf
+forbid (principal, action == Action::"MCP::Tool::call", resource == Tool::"Bash") when {
+    context has input && context.input has command &&
+    (context.input.command like "*;*" || context.input.command like "*&*" ||
+     context.input.command like "*|*" || context.input.command like "*$*" ||
+     context.input.command like "*`*" || context.input.command like "*>*" ||
+     context.input.command like "*<*" || context.input.command like "*\n*" ||
+     context.input.command like "*--output*" || context.input.command like "*rm -rf*")
+};
+
+// Writes only inside the project (paths are absolute), never via `..`
+permit (principal, action == Action::"MCP::Tool::call", resource) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    context.input.file_path like "/path/to/project/*"
+};
+forbid (principal, action == Action::"MCP::Tool::call", resource) when {
+    (resource == Tool::"Write" || resource == Tool::"Edit") &&
+    context has input && context.input has file_path &&
+    (context.input.file_path like "*/../*" || context.input.file_path like "*/..")
 };
 ```
+
+String matching is best-effort: `like` checks the raw string, not a
+resolved path, and an `npm*` permit runs arbitrary code, so it is only as
+safe as the project's scripts.
 
 ## Verification
 
