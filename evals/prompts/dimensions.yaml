@@ -1,0 +1,55 @@
+# Dimensions for the synthetic prompt set that we run through Claude Code to get
+# traces for error analysis.
+#
+# Generation has two steps. Code in plugins/plugin-eval/src/plugin_eval/traces/prompts.py
+# samples skills across marketplace categories and builds the tuples. Each sampled skill
+# gets three tuples: two should_trigger and one near_miss, each at a different
+# explicitness level. Task shapes are spread evenly over all tuples. Ten off_topic tuples
+# each target a randomly chosen sampled skill and ask for unrelated work. The tuples do
+# not cover every combination of dimension values. A separate LLM call then writes one
+# user message for each tuple.
+# Each dimension targets a failure we expect when a plugin skill should or should not
+# load. Add a dimension only when traces show failures along a new axis.
+#
+# Command:
+#   plugin-eval traces prompts --plugins-dir plugins \
+#     --marketplace .claude-plugin/marketplace.json \
+#     --n-skills 30 --seed 20260926 --out evals/prompts/prompts-v1.jsonl
+
+explicitness:
+  description: Whether the prompt names the topic of the target skill.
+  why: >-
+    Skill descriptions may only match literal topic words. A prompt that describes the
+    problem without naming the topic tests whether the skill is chosen because the task
+    needs it, and not because a keyword matched.
+  values:
+    names_topic: The prompt names the technology or topic directly.
+    describes_problem: The prompt describes the problem or goal without naming the technology or topic.
+    vague: The prompt is brief and underspecified, the way people type quick requests.
+
+routing:
+  description: Whether the target skill should load for the prompt.
+  why: >-
+    should_trigger prompts test recall: the skill must load when the task needs it.
+    near_miss and off_topic prompts test false triggers: the skill must stay quiet when
+    the task only looks related, or when it is unrelated.
+  values:
+    should_trigger: The prompt clearly needs the knowledge the skill provides.
+    near_miss: The prompt is about an adjacent topic that the skill does not cover, so the skill must not fire.
+    off_topic: The prompt is about ordinary software work unrelated to the skill.
+  mix: >-
+    Each sampled skill gets two should_trigger tuples and one near_miss tuple. Ten
+    off_topic tuples each target a randomly chosen sampled skill, so that its plugin is
+    loaded during the run.
+
+task_shape:
+  description: The kind of work the prompt asks for.
+  why: >-
+    A skill can help with one kind of task and be ignored or misused in another. Varying
+    the shape shows whether skills are used for designs, new code, reviews, and
+    explanations alike.
+  values:
+    design: The prompt asks for a design, plan, or recommendation.
+    write_code: The prompt asks for code to be written.
+    review_snippet: The prompt includes a short inline code snippet and asks for a review or fix.
+    explain: The prompt asks for an explanation.

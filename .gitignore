@@ -66,3 +66,6 @@ opencode.json
 
 # Superpowers plugin artifacts (specs/plans are session-local, never committed)
 docs/superpowers/
+
+# plugin-eval traces from `plugin-eval traces run` (large; not committed for now)
+evals/traces/
