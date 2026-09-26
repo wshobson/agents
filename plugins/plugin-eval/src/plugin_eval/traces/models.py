@@ -76,3 +76,10 @@ class TraceRecord(BaseModel):
     # How far cost_usd went past the per-trace cap. Claude Code checks --max-budget-usd
     # between turns, so the turn that crosses the cap still completes.
     over_cap_usd: float = 0.0
+    # The run settings that produced this trace. model above is the id the session
+    # reported, which differs from requested_model when the run used an alias like "opus".
+    # A resumed run compares requested_model and seed, and bills an unknown cost at
+    # per_trace_cap_usd. Traces written before these fields existed have the defaults.
+    requested_model: str = ""
+    seed: int | None = None
+    per_trace_cap_usd: float = 0.0

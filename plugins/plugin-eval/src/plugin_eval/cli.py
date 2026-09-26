@@ -306,7 +306,7 @@ def traces_run(
         smoke_dir = out / "smoke"
         (smoke_dir / f"{target.id}.json").unlink(missing_ok=True)
         traces = runner.run_batch(
-            [target], smoke_dir, 1, ledger, partial(run, raw_dir=smoke_dir), model=model
+            [target], smoke_dir, 1, ledger, partial(run, raw_dir=smoke_dir), model=model, seed=seed
         )
         trace = traces[0] if traces else None
         if trace is None:
@@ -344,19 +344,25 @@ def traces_run(
     ledger.spent = earlier_usd = sum(runner.billed_usd(t, per_trace_usd) for t in earlier.values())
     selected = records[:limit] if limit is not None else records
     # A resumed run skips ids that already have a trace, so those traces must come from the
-    # same prompt and model. Check them all before any session starts.
+    # same prompt, requested model, and seed. Check them all before any session starts.
+    # Traces written before requested_model and seed were recorded leave them empty; an
+    # empty field is unknown, so only the fields a trace records are compared.
     for record in selected:
         saved = earlier.get(record.id)
-        if saved is not None and (saved.prompt != record or saved.model != model):
+        if saved is not None and (
+            saved.prompt != record
+            or (saved.requested_model and saved.requested_model != model)
+            or (saved.seed is not None and saved.seed != seed)
+        ):
             console.print(
                 f"[red]Error: {out / (record.id + '.json')} was written for a different "
-                f"prompt or model than {record.id} in {prompts} with --model {model}. Pick a "
-                "new --out for this run.[/red]",
+                f"prompt, model, or seed than {record.id} in {prompts} with --model {model} "
+                f"and --seed {seed}. Pick a new --out for this run.[/red]",
                 soft_wrap=True,
             )
             raise typer.Exit(code=2)
     traces = runner.run_batch(
-        selected, out, concurrency, ledger, partial(run, raw_dir=out), model=model
+        selected, out, concurrency, ledger, partial(run, raw_dir=out), model=model, seed=seed
     )
     errors = sum(t.is_error for t in traces)
     contaminated = sum(t.contaminated for t in traces)

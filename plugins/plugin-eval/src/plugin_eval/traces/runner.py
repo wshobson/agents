@@ -239,6 +239,7 @@ def run_one(
     # leaves raw inside strings.
     trace = parse_stream(stdout.split("\n"), record, plugins, expected)
     trace.model = trace.model or model
+    trace.requested_model, trace.seed, trace.per_trace_cap_usd = model, seed, per_trace_usd
     if timed_out:
         trace.is_error = True
         trace.error = "timeout"
@@ -260,9 +261,12 @@ def billed_usd(trace: TraceRecord, cap: float) -> float:
 
     A session that ran always costs more than zero, so a zero cost means the cost is
     unknown (a timeout, a crash, an interrupted run, or a missing cost field). Unknown cost
-    is billed at the per-trace cap.
+    is billed at the cap the trace ran under, when the trace records it, and otherwise at
+    cap. So a later run with a lower cap cannot under-count an earlier trace.
     """
-    return trace.cost_usd if trace.cost_usd > 0 else cap
+    if trace.cost_usd > 0:
+        return trace.cost_usd
+    return trace.per_trace_cap_usd if trace.per_trace_cap_usd > 0 else cap
 
 
 def _write_atomic(path: Path, text: str) -> None:
@@ -293,14 +297,15 @@ def run_batch(
     ledger: BudgetLedger,
     run: Callable[[PromptRecord], TraceRecord],
     model: str = "",
+    seed: int | None = None,
 ) -> list[TraceRecord]:
     """Run records that have no out_dir/<id>.json yet, writing one file per trace.
 
     A trace starts only after the ledger reserves its cap, and at most concurrency run at
     once. When the ledger refuses and nothing is running, scheduling stops. Each trace is
     settled at billed_usd, so unknown cost counts as the cap. If run raises, an error trace
-    is written for that record, with model as its model, and the batch goes on. A trace
-    that costs more than the cap
+    is written for that record, with the run's model, seed, and cap, and the batch goes on.
+    A trace that costs more than the cap
     is logged and records the overshoot in over_cap_usd. Returns the new traces in input
     order.
     """
@@ -324,6 +329,9 @@ def run_batch(
                     plugins_loaded=[],
                     is_error=True,
                     error=f"runner raised {type(exc).__name__}: {exc}",
+                    requested_model=model,
+                    seed=seed,
+                    per_trace_cap_usd=cap,
                 )
             cost = billed_usd(trace, cap)
             if trace.cost_usd > cap:

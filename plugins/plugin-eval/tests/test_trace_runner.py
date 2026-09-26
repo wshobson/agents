@@ -1,4 +1,5 @@
 import json
+import re
 import subprocess
 import threading
 import time
@@ -8,7 +9,7 @@ from typing import Any
 import pytest
 from typer.testing import CliRunner
 
-from plugin_eval.cli import app
+from plugin_eval.cli import app, traces_run
 from plugin_eval.traces import runner
 from plugin_eval.traces.models import PromptRecord, TraceRecord
 from plugin_eval.traces.runner import (
@@ -22,6 +23,14 @@ from plugin_eval.traces.runner import (
 )
 
 FIXTURE = Path(__file__).parent / "fixtures" / "traces" / "sample-stream.jsonl"
+ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def plain(text: str) -> str:
+    """Drop color codes and line wrapping, which Rich adds when CI forces color."""
+    return " ".join(ANSI.sub("", text).split())
+
+
 CATEGORIES = {
     "database-design": "database",
     "database-migrations": "database",
@@ -188,6 +197,13 @@ def test_run_batch_resumes_and_writes_one_file_per_id(tmp_path: Path) -> None:
     assert ledger.spent == pytest.approx(0.2)
 
 
+def test_billed_usd_prefers_the_cap_stored_on_the_trace() -> None:
+    stored = trace_for(record(), cost=0.0, per_trace_cap_usd=1.5)
+    assert billed_usd(stored, 0.5) == pytest.approx(1.5)
+    assert billed_usd(trace_for(record(), cost=0.0), 0.5) == pytest.approx(0.5)
+    assert billed_usd(trace_for(record(), cost=0.2, per_trace_cap_usd=1.5), 0.5) == 0.2
+
+
 def test_billed_usd_uses_the_cap_when_cost_is_unknown() -> None:
     assert billed_usd(trace_for(record(), cost=0.3), 1.5) == pytest.approx(0.3)
     assert billed_usd(trace_for(record(), cost=0.0), 1.5) == pytest.approx(1.5)
@@ -211,11 +227,16 @@ def test_run_batch_writes_an_error_trace_when_run_raises_and_keeps_going(
 
     ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
     traces = run_batch(
-        [record(1), record(2)], tmp_path, 1, ledger, run=flaky, model="claude-opus-5-5"
+        [record(1), record(2)], tmp_path, 1, ledger, run=flaky, model="claude-opus-5-5", seed=7
     )
     assert [t.prompt.id for t in traces] == ["p001", "p002"]
     failed = TraceRecord.model_validate_json((tmp_path / "p001.json").read_text())
     assert failed.model == "claude-opus-5-5"
+    assert (failed.requested_model, failed.seed, failed.per_trace_cap_usd) == (
+        "claude-opus-5-5",
+        7,
+        1.5,
+    )
     assert failed.is_error is True
     assert failed.error is not None and "RuntimeError: boom" in failed.error
     assert ledger.spent == pytest.approx(1.5 + 0.2)
@@ -329,6 +350,11 @@ def test_run_one_runs_claude_in_an_isolated_session(
     assert trace.skills_invoked == ["database-design:postgresql-table-design"]
     assert trace.contaminated is False
     assert trace.is_error is False
+    assert (trace.requested_model, trace.seed, trace.per_trace_cap_usd) == (
+        "claude-opus-5-5",
+        20260926,
+        1.5,
+    )
 
 
 def test_run_one_reports_a_timeout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -382,6 +408,11 @@ def test_run_one_saves_and_parses_the_partial_stream_on_timeout(
     assert trace.error == "timeout"
     assert trace.skills_invoked == ["database-design:postgresql-table-design"]
     assert trace.cost_usd == 0.0
+    assert (trace.requested_model, trace.seed, trace.per_trace_cap_usd) == (
+        "claude-opus-5-5",
+        1,
+        1.5,
+    )
 
 
 def test_run_one_splits_the_stream_on_newlines_only(
@@ -454,7 +485,7 @@ def test_cli_smoke_fails_loudly_without_a_skill_call(
     assert result.exit_code == code, result.output
     assert seen == ["p002"]
     if code:
-        assert "did not invoke postgresql-table-design" in result.output
+        assert "did not invoke postgresql-table-design" in plain(result.output)
 
 
 def test_cli_smoke_names_the_contamination_reasons(
@@ -471,8 +502,8 @@ def test_cli_smoke_names_the_contamination_reasons(
     monkeypatch.setattr(runner, "run_one", fake_run_one)
     result = CliRunner().invoke(app, cli_args(tmp_path, "--smoke"))
     assert result.exit_code == 1
-    assert "unexpected skill: evil-skill; hook event: PreToolUse:Read" in result.output
-    assert "p002.stream.jsonl" in result.output
+    assert "unexpected skill: evil-skill; hook event: PreToolUse:Read" in plain(result.output)
+    assert "p002.stream.jsonl" in plain(result.output)
 
 
 def test_cli_run_passes_timeout_and_raw_dir_and_ignores_stream_files(
@@ -493,7 +524,7 @@ def test_cli_run_passes_timeout_and_raw_dir_and_ignores_stream_files(
     result = CliRunner().invoke(app, cli_args(tmp_path, "--limit", "1", "--timeout-s", "42"))
     assert result.exit_code == 0, result.output
     assert seen == ["p001"]
-    assert "USD 0.25 including earlier runs" in result.output
+    assert "USD 0.25 including earlier runs" in plain(result.output)
 
 
 def test_cli_run_writes_traces_and_prints_a_summary(
@@ -509,10 +540,10 @@ def test_cli_run_writes_traces_and_prints_a_summary(
         "p001.json",
         "p002.json",
     ]
-    assert "2 traces written" in result.output
-    assert "0 errors" in result.output
-    assert "1 contaminated" in result.output
-    assert "USD 0.50" in result.output
+    assert "2 traces written" in plain(result.output)
+    assert "0 errors" in plain(result.output)
+    assert "1 contaminated" in plain(result.output)
+    assert "USD 0.50" in plain(result.output)
 
 
 def test_cli_run_counts_earlier_spend_against_the_total(
@@ -532,8 +563,8 @@ def test_cli_run_counts_earlier_spend_against_the_total(
     result = CliRunner().invoke(app, args)
     assert result.exit_code == 0, result.output
     assert seen == []
-    assert "0 traces written" in result.output
-    assert "USD 2.00 including earlier runs" in result.output
+    assert "0 traces written" in plain(result.output)
+    assert "USD 2.00 including earlier runs" in plain(result.output)
 
 
 def test_cli_run_bills_an_earlier_timeout_at_the_cap(
@@ -554,7 +585,7 @@ def test_cli_run_bills_an_earlier_timeout_at_the_cap(
     result = CliRunner().invoke(app, args)
     assert result.exit_code == 0, result.output
     assert seen == ["p002"]
-    assert "USD 1.75 including earlier runs" in result.output
+    assert "USD 1.75 including earlier runs" in plain(result.output)
 
 
 def test_cli_run_refuses_when_marketplace_and_plugins_dir_disagree(
@@ -570,15 +601,16 @@ def test_cli_run_refuses_when_marketplace_and_plugins_dir_disagree(
     monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a trace"))
     result = CliRunner().invoke(app, args)
     assert result.exit_code == 2
-    assert "db-tools" in result.output
-    assert "--plugins-dir" in result.output
+    assert "db-tools" in plain(result.output)
+    assert "--plugins-dir" in plain(result.output)
 
 
 @pytest.mark.parametrize(
     "earlier",
     [
         trace_for(record(2).model_copy(update={"query": "A different question."})),
-        trace_for(record(2)).model_copy(update={"model": "claude-fable-5"}),
+        trace_for(record(2), requested_model="claude-fable-5", seed=20260926),
+        trace_for(record(2), requested_model="claude-opus-5-5", seed=1),
     ],
 )
 def test_cli_run_refuses_to_resume_over_traces_from_another_run(
@@ -591,14 +623,71 @@ def test_cli_run_refuses_to_resume_over_traces_from_another_run(
     monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a session"))
     result = CliRunner().invoke(app, cli_args(tmp_path))
     assert result.exit_code == 2
-    assert "p002" in result.output
-    assert "--out" in result.output
-    assert "p001" not in result.output
+    assert "p002" in plain(result.output)
+    assert "--out" in plain(result.output)
+    assert "p001" not in plain(result.output)
 
 
 def test_cli_run_help_explains_what_resume_keeps() -> None:
-    result = CliRunner().invoke(app, ["traces", "run", "--help"])
-    assert result.exit_code == 0
-    text = " ".join(result.output.replace("\u2502", " ").split())
+    # Check the help source, not the rendered help: Rich wraps it and adds color codes in CI.
+    assert traces_run.__doc__ is not None
+    text = " ".join(traces_run.__doc__.split())
     assert "A resumed run keeps every existing trace" in text
     assert "delete its .json and .stream.jsonl files" in text
+
+
+def test_cli_run_resumes_when_the_model_was_an_alias(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "traces"
+    out.mkdir()
+    # The session reports the full id; the run was started with the alias.
+    earlier = trace_for(record(1, "near_miss"), requested_model="opus", seed=20260926)
+    assert earlier.model == "claude-opus-5-5"
+    (out / "p001.json").write_text(earlier.model_dump_json())
+    seen: list[str] = []
+
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        seen.append(rec.id)
+        return trace_for(rec, cost=0.25)
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    result = CliRunner().invoke(app, cli_args(tmp_path, "--model", "opus"))
+    assert result.exit_code == 0, result.output
+    assert seen == ["p002", "p003"]
+
+
+def test_cli_run_bills_an_earlier_unknown_cost_at_its_own_cap(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "traces"
+    out.mkdir()
+    timeout = trace_for(
+        record(1, "near_miss"), cost=0.0, is_error=True, error="timeout", per_trace_cap_usd=1.5
+    )
+    (out / "p001.json").write_text(timeout.model_dump_json())
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: trace_for(rec, cost=0.25))
+    args = cli_args(tmp_path, "--per-trace-usd", "0.5", "--limit", "1")
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 0, result.output
+    assert "USD 1.50 including earlier runs" in plain(result.output)
+
+
+def test_cli_run_resumes_over_older_traces_without_run_settings(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "traces"
+    out.mkdir()
+    older = trace_for(record(1, "near_miss"))
+    assert (older.requested_model, older.seed) == ("", None)
+    (out / "p001.json").write_text(older.model_dump_json())
+    seen: list[str] = []
+
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        seen.append(rec.id)
+        return trace_for(rec, cost=0.25)
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    result = CliRunner().invoke(app, cli_args(tmp_path, "--model", "opus", "--seed", "5"))
+    assert result.exit_code == 0, result.output
+    assert seen == ["p002", "p003"]
