@@ -349,7 +349,8 @@ plugins/plugin-eval/
 │   └── evaluation-methodology/
 │       ├── SKILL.md             # Full methodology reference
 │       └── references/
-│           └── rubrics.md       # Detailed rubric anchors
+│           ├── rubrics.md       # Detailed rubric anchors
+│           └── improving-scores.md  # How to raise each static sub-score
 ├── src/plugin_eval/
 │   ├── __init__.py
 │   ├── cli.py                   # Typer CLI (score, certify, compare, init)
@@ -360,6 +361,7 @@ plugins/plugin-eval/
 │   ├── corpus.py                # Corpus index written by `init`
 │   ├── elo.py                   # Elo calculator (no command calls it)
 │   ├── stats.py                 # Statistical methods (Wilson, bootstrap, Clopper-Pearson)
+│   ├── snapshot.py              # Static score snapshot (`make eval-snapshot`)
 │   └── layers/
 │       ├── __init__.py
 │       ├── static.py            # Layer 1: deterministic structural analysis
@@ -381,6 +383,8 @@ plugins/plugin-eval/
 │   ├── test_corpus.py
 │   ├── test_elo.py
 │   ├── test_stats.py
+│   ├── test_snapshot.py
+│   ├── test_eval_all.py
 │   └── test_e2e.py              # End-to-end tests against real plugins
 ├── pyproject.toml               # uv/hatch project config
 └── uv.lock

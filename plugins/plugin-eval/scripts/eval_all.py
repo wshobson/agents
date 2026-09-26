@@ -46,8 +46,6 @@ class PluginRow:
     score: float | None
     badge: str | None
     confidence: str | None
-    ci_lower: float | None
-    ci_upper: float | None
     anti_patterns: list[str]
     weakest_dimensions: list[tuple[str, float]]
     duration_ms: int | None
@@ -71,8 +69,6 @@ def row_from_result(name: str, result: PluginEvalResult, duration_ms: int) -> Pl
             score=None,
             badge=None,
             confidence=None,
-            ci_lower=None,
-            ci_upper=None,
             anti_patterns=[],
             weakest_dimensions=[],
             duration_ms=duration_ms,
@@ -103,8 +99,6 @@ def row_from_result(name: str, result: PluginEvalResult, duration_ms: int) -> Pl
         score=comp.score,
         badge=badge_val,
         confidence=comp.confidence_label,
-        ci_lower=comp.ci_lower,
-        ci_upper=comp.ci_upper,
         anti_patterns=anti_patterns,
         weakest_dimensions=weakest,
         duration_ms=duration_ms,
@@ -126,8 +120,6 @@ def evaluate_one(
             score=None,
             badge=None,
             confidence=None,
-            ci_lower=None,
-            ci_upper=None,
             anti_patterns=[],
             weakest_dimensions=[],
             duration_ms=int((time.monotonic() - start) * 1000),

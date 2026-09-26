@@ -17,7 +17,7 @@ from pydantic import BaseModel
 
 from plugin_eval.engine import EvalEngine
 from plugin_eval.models import Depth, EvalConfig
-from plugin_eval.parser import _CROSS_REFERENCE_PATTERN
+from plugin_eval.parser import parse_skill, resolve_cross_reference
 
 
 class SnapshotEntry(BaseModel):
@@ -40,8 +40,9 @@ def skill_digest(skill_dir: Path) -> str:
 
     CRLF line endings are hashed as LF, because the parser reads text with
     universal newlines and scores both the same. When SKILL.md cross-references
-    other skills, the names of the sibling skill directories are hashed too,
-    because the static layer resolves those references against them.
+    other skills, each reference is hashed with whether its target exists,
+    resolved the way the static layer resolves it, because a missing target
+    lowers the score.
     """
     files = sorted(
         (p for p in skill_dir.rglob("*") if p.is_file()),
@@ -53,15 +54,12 @@ def skill_digest(skill_dir: Path) -> str:
         h.update(b"\0")
         h.update(path.read_bytes().replace(b"\r\n", b"\n"))
         h.update(b"\0")
-    skill_md = skill_dir / "SKILL.md"
-    if skill_md.is_file() and _CROSS_REFERENCE_PATTERN.search(skill_md.read_text(encoding="utf-8")):
-        siblings = sorted(
-            p.name for p in skill_dir.parent.iterdir() if p.is_dir() and p != skill_dir
-        )
-        h.update(b"\0siblings\0")
-        for name in siblings:
-            h.update(name.encode("utf-8"))
-            h.update(b"\0")
+    refs = sorted(set(parse_skill(skill_dir).cross_references))
+    if refs:
+        h.update(b"\0cross-references\0")
+        for ref in refs:
+            exists = resolve_cross_reference(skill_dir, ref).exists()
+            h.update(f"{ref}\0{int(exists)}\0".encode())
     return h.hexdigest()
 
 

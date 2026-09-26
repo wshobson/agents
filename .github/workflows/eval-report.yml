@@ -79,9 +79,9 @@ jobs:
                       "only_changed": os.environ.get("ONLY_CHANGED",""),
                       "run_id": os.environ.get("GITHUB_RUN_ID","")},
           )
-          table = wandb.Table(columns=["plugin", "score", "ci_lower", "ci_upper", "confidence", "errored"])
+          table = wandb.Table(columns=["plugin", "score", "confidence", "errored"])
           for r in rows:
-            table.add_data(r.get("name"), r.get("score"), r.get("ci_lower"), r.get("ci_upper"), r.get("confidence"), r.get("errored"))
+            table.add_data(r.get("name"), r.get("score"), r.get("confidence"), r.get("errored"))
           scored = [r["score"] for r in rows if not r.get("errored") and r.get("score") is not None]
           run.log({"eval/mean_score": sum(scored)/len(scored) if scored else float("nan"),
                    "eval/plugins_evaluated": len(rows),

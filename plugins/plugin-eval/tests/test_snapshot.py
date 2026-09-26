@@ -29,15 +29,28 @@ def test_digest_covers_references(tmp_path: Path) -> None:
     assert skill_digest(d) != first
 
 
-def test_digest_tracks_siblings_only_for_cross_referencing_skills(tmp_path: Path) -> None:
-    # The static layer resolves cross-references against sibling skill directories,
-    # so a new sibling can change the score of a skill whose own files did not change.
-    a = make_skill(tmp_path, "See skills/b for the details.", name="a")
+def test_digest_tracks_whether_cross_reference_targets_exist(tmp_path: Path) -> None:
+    # The static layer flags a cross-reference whose target is missing, so creating
+    # the target can change the score of a skill whose own files did not change.
+    a = make_skill(tmp_path, "See skills/b and skills/c/extra for the details.", name="a")
+    missing = skill_digest(a)
     b = make_skill(tmp_path, "No references here.", name="b")
-    a_before, b_before = skill_digest(a), skill_digest(b)
-    make_skill(tmp_path, "one", name="c")
-    assert skill_digest(a) != a_before
+    after_b = skill_digest(a)
+    assert after_b != missing
+    c = make_skill(tmp_path, "one", name="c")
+    assert skill_digest(a) == after_b  # c exists, but the nested c/extra does not
+    (c / "extra").mkdir()
+    assert skill_digest(a) != after_b
+    b_before = skill_digest(b)
+    make_skill(tmp_path, "one", name="d")
     assert skill_digest(b) == b_before
+
+
+def test_digest_uses_the_sub_skills_fallback(tmp_path: Path) -> None:
+    d = make_skill(tmp_path, "See sub-skills/part.", name="a")
+    before = skill_digest(d)
+    (d / "sub-skills" / "part").mkdir(parents=True)
+    assert skill_digest(d) != before
 
 
 def test_digest_ignores_line_endings(tmp_path: Path) -> None:
