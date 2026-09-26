@@ -3,8 +3,10 @@
 The fixture tests/fixtures/traces/sample-stream.jsonl was captured from one real run on
 2026-09-26 with the runner's build_argv and build_env (so --tools with ALLOWED_TOOLS,
 --permission-mode acceptEdits, and an empty CLAUDE_CONFIG_DIR), loading only the
-database-design plugin. The --allowedTools read rules for plugin dirs were added after the
-capture; a probe showed they leave the init event unchanged. Facts taken from the fixture:
+database-design plugin. Three argv changes came after the capture: the --allowedTools
+read rules for plugin dirs, --settings with disableAllHooks, and the query moving to the
+end after "--". Probes showed each leaves the init event unchanged. Facts taken from the
+fixture:
 
 - claude --version: 2.1.283 (Claude Code). The init event reports claude_code_version 2.1.283.
 - The Skill tool is named "Skill". Its input field "skill" carries the skill name, with the
@@ -22,7 +24,12 @@ import json
 from pathlib import Path
 
 from plugin_eval.traces.models import PromptRecord
-from plugin_eval.traces.parse import ALLOWED_TOOLS, BUILTIN_SKILLS, parse_stream
+from plugin_eval.traces.parse import (
+    ALLOWED_TOOLS,
+    BUILTIN_SKILLS,
+    NO_RESULT_ERROR,
+    parse_stream,
+)
 
 FIXTURE = Path(__file__).parent / "fixtures" / "traces" / "sample-stream.jsonl"
 EXPECTED = {"database-design:postgresql-table-design"}
@@ -172,7 +179,7 @@ def test_error_subtype_without_result_text() -> None:
 def test_missing_result_event_is_an_error() -> None:
     trace = parse_stream([init_event(sorted(EXPECTED))], record(), [], EXPECTED)
     assert trace.is_error is True
-    assert trace.error == "no result event"
+    assert trace.error == NO_RESULT_ERROR
     assert trace.cost_usd == 0.0
 
 
@@ -223,3 +230,62 @@ def test_long_tool_input_and_result_are_truncated() -> None:
     assert len(call.result_summary) == 4000
     assert call.is_error is True
     assert trace.skills_invoked == []
+
+
+def test_a_hook_event_marks_trace_contaminated() -> None:
+    hook = {"type": "system", "subtype": "hook_started", "hook_name": "PreToolUse:Read"}
+    lines = [init_event(sorted(EXPECTED)), json.dumps(hook), result_event()]
+    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
+
+
+def test_malformed_message_and_tool_input_are_skipped() -> None:
+    lines = [
+        init_event(sorted(EXPECTED)),
+        json.dumps({"type": "assistant", "message": "not a dict"}),
+        json.dumps({"type": "user", "message": ["not", "a", "dict"]}),
+        json.dumps(
+            {
+                "type": "assistant",
+                "message": {
+                    "content": [
+                        {"type": "tool_use", "id": "t1", "name": "Skill", "input": ["x"]},
+                        {"type": "tool_use", "id": ["unhashable"], "name": "Read", "input": {}},
+                    ]
+                },
+            }
+        ),
+        json.dumps(
+            {
+                "type": "user",
+                "message": {"content": [{"type": "tool_result", "tool_use_id": {"a": 1}}]},
+            }
+        ),
+        result_event(total_cost_usd="n/a", num_turns=None, duration_ms=[1]),
+    ]
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert [step.tool.name for step in trace.steps if step.tool] == ["Skill", "Read"]
+    assert trace.skills_invoked == []
+    assert (trace.cost_usd, trace.num_turns, trace.duration_ms) == (0.0, 0, 0)
+    assert trace.contaminated is False
+
+
+def test_malformed_plugin_entry_is_skipped_and_marks_contamination() -> None:
+    plugins = ["database-design", {"name": "database-design", "path": "/REPO/x"}]
+    lines = [init_event(sorted(EXPECTED), plugins=plugins), result_event()]
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert trace.contaminated is True
+
+
+def test_unhashable_skill_entries_are_skipped_and_mark_contamination() -> None:
+    skills = [*sorted(EXPECTED), {"name": "evil-skill"}, ["x"]]
+    lines = [init_event(skills), result_event()]
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert trace.skills_available == sorted(EXPECTED)
+    assert trace.contaminated is True
+
+
+def test_unhashable_tool_entries_are_skipped_and_mark_contamination() -> None:
+    lines = [init_event(sorted(EXPECTED), tools=[*ALLOWED_TOOLS, {"name": "Bash"}]), result_event()]
+    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
+    lines = [init_event(sorted(EXPECTED), tools="Read,Bash"), result_event()]
+    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True

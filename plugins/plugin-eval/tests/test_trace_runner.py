@@ -13,6 +13,7 @@ from plugin_eval.traces import runner
 from plugin_eval.traces.models import PromptRecord, TraceRecord
 from plugin_eval.traces.runner import (
     BudgetLedger,
+    billed_usd,
     build_argv,
     build_env,
     choose_plugins,
@@ -80,7 +81,11 @@ def trace_for(rec: PromptRecord, cost: float = 0.1, **extra: Any) -> TraceRecord
 def test_build_argv_has_every_flag() -> None:
     dirs = [Path("/r/plugins/a"), Path("/r/plugins/b"), Path("/r/plugins/c")]
     argv = build_argv("Design a table", dirs, "claude-opus-5-5", 1.5, 12)
-    assert argv[:3] == ["claude", "-p", "Design a table"]
+    assert argv[:2] == ["claude", "-p"]
+    assert argv[-2:] == ["--", "Design a table"]
+    assert argv.count("Design a table") == 1
+    settings = argv[argv.index("--settings") + 1]
+    assert json.loads(settings) == {"disableAllHooks": True}
     joined = " ".join(argv)
     assert "--output-format stream-json --verbose" in joined
     assert "--model claude-opus-5-5" in joined
@@ -102,6 +107,13 @@ def test_build_argv_has_every_flag() -> None:
         str(d) for d in dirs
     ]
     assert "--bare" not in argv
+
+
+def test_build_argv_ends_options_before_a_query_that_starts_with_a_dash() -> None:
+    query = "- list the tables\n- add an index"
+    argv = build_argv(query, [Path("/r/plugins/a")], "claude-opus-5-5", 1.5, 12)
+    assert argv.index("--") == len(argv) - 2
+    assert argv[-1] == query
 
 
 def test_build_env_keeps_only_what_the_session_needs(
@@ -172,6 +184,60 @@ def test_run_batch_resumes_and_writes_one_file_per_id(tmp_path: Path) -> None:
     assert saved.prompt.id == "p003"
     assert (tmp_path / "p002.json").read_text() == "{}"
     assert ledger.spent == pytest.approx(0.2)
+
+
+def test_billed_usd_uses_the_cap_when_cost_is_unknown() -> None:
+    assert billed_usd(trace_for(record(), cost=0.3), 1.5) == pytest.approx(0.3)
+    assert billed_usd(trace_for(record(), cost=0.0), 1.5) == pytest.approx(1.5)
+    timeout = trace_for(record(), cost=0.0, is_error=True, error="timeout")
+    assert billed_usd(timeout, 1.5) == pytest.approx(1.5)
+
+
+def test_run_batch_settles_a_zero_cost_success_at_the_cap(tmp_path: Path) -> None:
+    ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
+    run_batch([record(1)], tmp_path, 1, ledger, run=lambda rec: trace_for(rec, cost=0.0))
+    assert ledger.spent == pytest.approx(1.5)
+
+
+def test_run_batch_writes_an_error_trace_when_run_raises_and_keeps_going(
+    tmp_path: Path,
+) -> None:
+    def flaky(rec: PromptRecord) -> TraceRecord:
+        if rec.id == "p001":
+            raise RuntimeError("boom")
+        return trace_for(rec, cost=0.2)
+
+    ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
+    traces = run_batch([record(1), record(2)], tmp_path, 1, ledger, run=flaky)
+    assert [t.prompt.id for t in traces] == ["p001", "p002"]
+    failed = TraceRecord.model_validate_json((tmp_path / "p001.json").read_text())
+    assert failed.is_error is True
+    assert failed.error is not None and "RuntimeError: boom" in failed.error
+    assert ledger.spent == pytest.approx(1.5 + 0.2)
+
+
+def test_run_batch_records_and_warns_about_a_trace_over_the_cap(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
+    run_batch([record(1)], tmp_path, 1, ledger, run=lambda rec: trace_for(rec, cost=1.75))
+    saved = TraceRecord.model_validate_json((tmp_path / "p001.json").read_text())
+    assert saved.over_cap_usd == pytest.approx(0.25)
+    assert "p001 cost USD 1.75" in caplog.text
+    assert ledger.spent == pytest.approx(1.75)
+
+
+def test_run_batch_writes_traces_atomically(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fail_replace(src: str, dst: str) -> None:
+        raise OSError("disk full")
+
+    monkeypatch.setattr(runner.os, "replace", fail_replace)
+    ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
+    with pytest.raises(OSError, match="disk full"):
+        run_batch([record(1)], tmp_path, 1, ledger, run=lambda rec: trace_for(rec))
+    assert list(tmp_path.iterdir()) == []
 
 
 def test_run_batch_stops_scheduling_when_the_budget_is_spent(tmp_path: Path) -> None:
@@ -245,6 +311,8 @@ def test_run_one_runs_claude_in_an_isolated_session(
     assert call["env"]["CLAUDE_CONFIG_DIR"] == str(config_dir)
     assert call["stdin"] is subprocess.DEVNULL
     assert call["timeout"] == 600
+    assert call["argv"][-2:] == ["--", record().query]
+    assert "--settings" in call["argv"]
     assert (workdir / "README.md").read_text() == "Scratch project for a Claude Code session.\n"
     dirs = [call["argv"][i + 1] for i, a in enumerate(call["argv"]) if a == "--plugin-dir"]
     assert str(plugins / "database-design") in dirs
@@ -350,3 +418,41 @@ def test_cli_run_counts_earlier_spend_against_the_total(
     assert seen == []
     assert "0 traces written" in result.output
     assert "USD 2.00 including earlier runs" in result.output
+
+
+def test_cli_run_bills_an_earlier_timeout_at_the_cap(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "traces"
+    out.mkdir()
+    timeout = trace_for(record(1), cost=0.0, is_error=True, error="timeout")
+    (out / "p001.json").write_text(timeout.model_dump_json())
+    seen: list[str] = []
+
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        seen.append(rec.id)
+        return trace_for(rec, cost=0.25)
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    args = cli_args(tmp_path, "--total-usd", "3.2", "--per-trace-usd", "1.5")
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 0, result.output
+    assert seen == ["p002"]
+    assert "USD 1.75 including earlier runs" in result.output
+
+
+def test_cli_run_refuses_when_marketplace_and_plugins_dir_disagree(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    args = cli_args(tmp_path)
+    market = Path(args[args.index("--marketplace") + 1])
+    data = json.loads(market.read_text())
+    for entry in data["plugins"]:
+        if entry["name"] == "db-tools":
+            entry["source"] = "./vendor/db-tools"
+    market.write_text(json.dumps(data))
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a trace"))
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 2
+    assert "db-tools" in result.output
+    assert "--plugins-dir" in result.output

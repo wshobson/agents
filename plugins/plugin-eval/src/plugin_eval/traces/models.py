@@ -70,3 +70,6 @@ class TraceRecord(BaseModel):
     error: str | None = None
     contaminated: bool = False
     claude_version: str = ""
+    # How far cost_usd went past the per-trace cap. Claude Code checks --max-budget-usd
+    # between turns, so the turn that crosses the cap still completes.
+    over_cap_usd: float = 0.0

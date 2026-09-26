@@ -22,12 +22,16 @@ from pathlib import Path
 from typing import Any
 
 from plugin_eval.traces.models import PromptRecord, TraceRecord
-from plugin_eval.traces.parse import ALLOWED_TOOLS, parse_stream
-from plugin_eval.traces.prompts import _skill_names
+from plugin_eval.traces.parse import ALLOWED_TOOLS, NO_RESULT_ERROR, parse_stream
+from plugin_eval.traces.prompts import skill_names
 
 logger = logging.getLogger(__name__)
 
 README_TEXT = "Scratch project for a Claude Code session.\n"
+# Plugin hooks run shell commands on every tool call (protect-mcp's run npx), and the init
+# event does not list them. Flag settings keep the config dir empty. A probe on Claude Code
+# 2.1.283 showed this stops a plugin's hooks; the parser flags any hook event that still runs.
+SESSION_SETTINGS = json.dumps({"disableAllHooks": True})
 # The only variables a trace session inherits. Anything else in the caller's environment
 # can carry the maintainer's Claude Code configuration: a parent Claude Code session exports
 # its settings.json "env" block (for example ENABLE_TOOL_SEARCH) and its own CLAUDE_* values
@@ -63,7 +67,6 @@ def choose_plugins(
     target does not always load first. Pass a seed derived from the prompt id (see
     trace_seed) to get a different but repeatable set for each prompt.
     """
-    root = marketplace_json.parent.parent
     entries = json.loads(marketplace_json.read_text(encoding="utf-8"))["plugins"]
     local = {
         e["name"]: e.get("category", "uncategorized")
@@ -72,10 +75,8 @@ def choose_plugins(
     }
     if target_plugin not in local:
         raise ValueError(f"{target_plugin} is not a local plugin in {marketplace_json}")
-    sources = {e["name"]: e["source"] for e in entries if e["name"] in local}
-    candidates = {
-        n: c for n, c in local.items() if n != target_plugin and _skill_names(root / sources[n])
-    }
+    dirs = local_plugin_dirs(marketplace_json)
+    candidates = {n: c for n, c in local.items() if n != target_plugin and skill_names(dirs[n])}
     category = local[target_plugin]
     same = sorted(n for n, c in candidates.items() if c == category)
     other = sorted(n for n, c in candidates.items() if c != category)
@@ -87,6 +88,18 @@ def choose_plugins(
     ]
     rng.shuffle(picked)
     return picked
+
+
+def local_plugin_dirs(marketplace_json: Path) -> dict[str, Path]:
+    """Map each local marketplace plugin to its directory, resolved against the marketplace
+    root (the directory that holds .claude-plugin/), as Claude Code resolves it."""
+    root = marketplace_json.parent.parent
+    entries = json.loads(marketplace_json.read_text(encoding="utf-8"))["plugins"]
+    return {
+        e["name"]: (root / e["source"]).resolve()
+        for e in entries
+        if isinstance(e.get("source"), str)
+    }
 
 
 def trace_seed(seed: int, prompt_id: str) -> int:
@@ -101,12 +114,12 @@ def build_argv(
     """Build the claude command line for one headless trace session.
 
     plugin_dirs must be absolute, because the session runs in another directory and the
-    read rules use absolute paths.
+    read rules use absolute paths. The query comes last, after "--", so a query that starts
+    with "-" (a Markdown bullet, for example) is not read as an option.
     """
     return [
         "claude",
         "-p",
-        query,
         "--output-format",
         "stream-json",
         "--verbose",
@@ -123,12 +136,16 @@ def build_argv(
         # still denied in -p mode, because no one is there to approve them.
         "--permission-mode",
         "acceptEdits",
+        "--settings",
+        SESSION_SETTINGS,
         # -p mode also denies reads outside the working directories, which would stop a skill
         # from opening its own references/. These rules allow reads, and only reads, of the
         # loaded plugins. --add-dir would also allow edits there under acceptEdits.
         "--allowedTools",
         *[f"Read(/{d}/**)" for d in plugin_dirs],
         *[arg for d in plugin_dirs for arg in ("--plugin-dir", str(d))],
+        "--",
+        query,
     ]
 
 
@@ -183,7 +200,7 @@ def run_one(
     """Run one prompt in a headless session and parse its stream into a TraceRecord."""
     plugins = choose_plugins(record.target_plugin, marketplace_json, trace_seed(seed, record.id))
     plugin_dirs = [(plugins_dir / name).resolve() for name in plugins]
-    expected = {f"{d.name}:{skill}" for d in plugin_dirs for skill in _skill_names(d)}
+    expected = {f"{d.name}:{skill}" for d in plugin_dirs for skill in skill_names(d)}
     (workdir / "README.md").write_text(README_TEXT, encoding="utf-8")
     argv = build_argv(record.query, plugin_dirs, model, per_trace_usd, max_turns)
     try:
@@ -201,11 +218,33 @@ def run_one(
             prompt=record, model=model, plugins_loaded=plugins, is_error=True, error="timeout"
         )
     trace = parse_stream(proc.stdout.splitlines(), record, plugins, expected)
-    if proc.returncode != 0 or trace.error == "no result event":
+    if proc.returncode != 0 or trace.error == NO_RESULT_ERROR:
         details = [trace.error, f"exit code {proc.returncode}", proc.stderr.strip()[-500:]]
         trace.is_error = True
         trace.error = "; ".join(d for d in details if d)
     return trace
+
+
+def billed_usd(trace: TraceRecord, cap: float) -> float:
+    """What a trace counts against the total budget.
+
+    A session that ran always costs more than zero, so a zero cost means the cost is
+    unknown (a timeout, a crash, an interrupted run, or a missing cost field). Unknown cost
+    is billed at the per-trace cap.
+    """
+    return trace.cost_usd if trace.cost_usd > 0 else cap
+
+
+def _write_atomic(path: Path, text: str) -> None:
+    """Write through a temp file in the same directory, so a crash never leaves half a file."""
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
 
 
 def run_isolated(record: PromptRecord, **kwargs: Any) -> TraceRecord:
@@ -227,22 +266,43 @@ def run_batch(
     """Run records that have no out_dir/<id>.json yet, writing one file per trace.
 
     A trace starts only after the ledger reserves its cap, and at most concurrency run at
-    once. When the ledger refuses and nothing is running, scheduling stops. A trace that
-    failed without reporting a cost is settled at the cap, since its real spend is unknown.
-    Returns the new traces in input order.
+    once. When the ledger refuses and nothing is running, scheduling stops. Each trace is
+    settled at billed_usd, so unknown cost counts as the cap. If run raises, an error trace
+    is written for that record and the batch goes on. A trace that costs more than the cap
+    is logged and records the overshoot in over_cap_usd. Returns the new traces in input
+    order.
     """
     out_dir.mkdir(parents=True, exist_ok=True)
     pending = [r for r in records if not (out_dir / f"{r.id}.json").exists()]
 
+    cap = ledger.per_trace_usd
+
     def run_and_save(record: PromptRecord) -> TraceRecord:
-        cost = ledger.per_trace_usd
+        cost = cap
         try:
-            trace = run(record)
-            if trace.cost_usd > 0 or not trace.is_error:
-                cost = trace.cost_usd
-            (out_dir / f"{record.id}.json").write_text(
-                trace.model_dump_json(indent=2), encoding="utf-8"
-            )
+            try:
+                trace = run(record)
+            except Exception as exc:
+                logger.exception(
+                    "Trace %s raised; writing an error trace billed at the cap.", record.id
+                )
+                trace = TraceRecord(
+                    prompt=record,
+                    model="",
+                    plugins_loaded=[],
+                    is_error=True,
+                    error=f"runner raised {type(exc).__name__}: {exc}",
+                )
+            cost = billed_usd(trace, cap)
+            if trace.cost_usd > cap:
+                trace.over_cap_usd = trace.cost_usd - cap
+                logger.warning(
+                    "Trace %s cost USD %.2f, over the per-trace cap of USD %.2f.",
+                    record.id,
+                    trace.cost_usd,
+                    cap,
+                )
+            _write_atomic(out_dir / f"{record.id}.json", trace.model_dump_json(indent=2))
             return trace
         finally:
             ledger.settle(cost)

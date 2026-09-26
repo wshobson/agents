@@ -87,7 +87,7 @@ class QueryWriter(Protocol):
     def write(self, prompt: str) -> str: ...
 
 
-def _skill_names(plugin_dir: Path) -> list[str]:
+def skill_names(plugin_dir: Path) -> list[str]:
     """Return the sorted names of skill directories that contain a SKILL.md."""
     skills_dir = plugin_dir / "skills"
     if not skills_dir.is_dir():
@@ -111,7 +111,7 @@ def sample_skills(
     for entry in entries:
         if not isinstance(entry.get("source"), str):
             continue
-        skills = _skill_names(plugins_dir / entry["name"])
+        skills = skill_names(plugins_dir / entry["name"])
         if skills:
             by_category[entry.get("category", "uncategorized")][entry["name"]] = skills
 

@@ -267,6 +267,14 @@ def traces_run(
         if not p.exists():
             console.print(f"[red]Error: Path does not exist: {p}[/red]")
             raise typer.Exit(code=2)
+    for name, source_dir in runner.local_plugin_dirs(marketplace).items():
+        if source_dir != (plugins_dir / name).resolve():
+            console.print(
+                f"[red]Error: {marketplace} places {name} at {source_dir}, but --plugins-dir "
+                f"gives {(plugins_dir / name).resolve()}. Point both at the same repo.[/red]",
+                soft_wrap=True,
+            )
+            raise typer.Exit(code=2)
     lines = prompts.read_text(encoding="utf-8").splitlines()
     records = [PromptRecord.model_validate_json(line) for line in lines if line.strip()]
     run = partial(
@@ -309,9 +317,9 @@ def traces_run(
         return
 
     # Traces from earlier runs into the same directory count against the total, so a
-    # resumed run cannot spend the whole budget again.
+    # resumed run cannot spend the whole budget again. Unknown cost counts as the cap.
     earlier = [TraceRecord.model_validate_json(p.read_text()) for p in out.glob("*.json")]
-    ledger.spent = earlier_usd = sum(t.cost_usd for t in earlier)
+    ledger.spent = earlier_usd = sum(runner.billed_usd(t, per_trace_usd) for t in earlier)
     selected = records[:limit] if limit is not None else records
     traces = runner.run_batch(selected, out, concurrency, ledger, run)
     errors = sum(t.is_error for t in traces)
