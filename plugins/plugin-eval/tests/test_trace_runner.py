@@ -33,6 +33,15 @@ def plain(text: str) -> str:
     return " ".join(ANSI.sub("", text).split())
 
 
+@pytest.fixture(autouse=True)
+def installed_claude(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Report an installed claude, because `traces run` checks for one before any session.
+
+    CI has no claude binary. Tests that need another answer patch it again.
+    """
+    monkeypatch.setattr(runner, "claude_version", lambda: "2.1.283")
+
+
 CATEGORIES = {
     "database-design": "database",
     "database-migrations": "database",
@@ -856,6 +865,24 @@ def test_cli_run_rejects_duplicate_prompt_ids(
     assert result.exit_code == 2
     assert "duplicate" in plain(result.output)
     assert "p001" in plain(result.output)
+
+
+def test_check_prompt_ids_compares_ids_without_case() -> None:
+    with pytest.raises(ValueError, match="P001"):
+        check_prompt_ids([record(1), record(2).model_copy(update={"id": "P001"})])
+
+
+@pytest.mark.parametrize("smoke", [False, True])
+def test_cli_run_stops_before_any_session_when_claude_is_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, smoke: bool
+) -> None:
+    monkeypatch.setattr(runner, "claude_version", lambda: "")
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a session"))
+    args = write_ids(tmp_path, ["p001", "p002"]) + (["--smoke"] if smoke else [])
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 2
+    assert "claude --version failed" in plain(result.output)
+    assert not list(tmp_path.rglob("p00*.json"))
 
 
 def test_check_prompt_ids_accepts_plain_ids() -> None:

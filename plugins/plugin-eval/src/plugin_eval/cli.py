@@ -294,6 +294,16 @@ def traces_run(
     except ValueError as exc:
         console.print(f"Error: {exc}", style="red", markup=False, soft_wrap=True)
         raise typer.Exit(code=2) from None
+    # Every session needs claude. Check once, before any budget is reserved, so a missing
+    # binary cannot turn every prompt into an error trace billed at the cap.
+    installed_version = runner.claude_version()
+    if not installed_version:
+        console.print(
+            "[red]Error: claude --version failed, so no session can start. Install Claude "
+            "Code or fix PATH, then run again.[/red]",
+            soft_wrap=True,
+        )
+        raise typer.Exit(code=2)
     run = partial(
         runner.run_isolated,
         plugins_dir=plugins_dir.resolve(),
@@ -374,7 +384,6 @@ def traces_run(
     # plugins or ran under different limits. Check them all before any session starts. A
     # setting that an older trace did not record is empty or zero and is not compared.
     digests: dict[tuple[str, ...], str] = {}
-    installed: list[str] = []
 
     def mismatches(saved: TraceRecord, record: PromptRecord) -> list[str]:
         found = []
@@ -406,11 +415,8 @@ def traces_run(
                     digests[key] = runner.plugins_digest(dirs)
                 if digests[key] != saved.plugins_digest:
                     found.append("plugins_digest")
-        if saved.claude_version:
-            if not installed:
-                installed.append(runner.claude_version())
-            if installed[0] and installed[0] != saved.claude_version:
-                found.append("claude_version")
+        if saved.claude_version and saved.claude_version != installed_version:
+            found.append("claude_version")
         return found
 
     for record in selected:

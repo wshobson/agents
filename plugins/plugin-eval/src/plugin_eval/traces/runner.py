@@ -121,9 +121,14 @@ def check_prompt_ids(records: Iterable[PromptRecord]) -> None:
                 f"prompt id {record.id!r} is not allowed. Ids must match "
                 f"{PROMPT_ID_PATTERN.pattern}, because they become file names."
             )
-        if record.id in seen:
-            raise ValueError(f"prompt id {record.id!r} is a duplicate. Each id must be unique.")
-        seen.add(record.id)
+        # Compare without case, because macOS and Windows file systems usually ignore it,
+        # so p001 and P001 would write the same trace file.
+        if record.id.casefold() in seen:
+            raise ValueError(
+                f"prompt id {record.id!r} is a duplicate (ids are compared without case). "
+                "Each id must be unique."
+            )
+        seen.add(record.id.casefold())
 
 
 def _skipped(name: str) -> bool:
