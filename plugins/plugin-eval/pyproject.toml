@@ -15,9 +15,6 @@ dependencies = [
 llm = [
     "claude-agent-sdk>=0.2.138",
 ]
-api = [
-    "anthropic>=0.122.0",
-]
 dev = [
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
