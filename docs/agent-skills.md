@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **183 local specialized skills** across 51 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **184 local specialized skills** across 51 plugins, enabling progressive disclosure and efficient token usage.
 
 Install any skill on its own, into any agent, with the Agent Skills installers:
 
@@ -258,12 +258,13 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 | **gdpr-data-handling**            | Implement GDPR-compliant data processing with consent management |
 | **employment-contract-templates** | Generate employment contracts with jurisdiction-specific clauses |
 
-### Incident Response (3 skills)
+### Incident Response (4 skills)
 
 | Skill                          | Description                                                           |
 | ------------------------------ | --------------------------------------------------------------------- |
 | **postmortem-writing**         | Write blameless postmortems with root cause analysis and action items |
 | **incident-runbook-templates** | Create runbooks for common incident scenarios with escalation paths   |
+| **connectivity-triage**        | Diagnose active macOS connectivity failures and localize the likely fault domain |
 | **on-call-handoff-patterns**   | Design on-call handoffs with context preservation and alert routing   |
 
 ### Quantitative Trading (2 skills)
@@ -447,7 +448,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 183 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
+All 184 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause
