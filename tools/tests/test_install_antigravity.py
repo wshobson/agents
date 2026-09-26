@@ -25,8 +25,8 @@ def test_default_config_dir_prefers_antigravity_config_dir(tmp_path: Path):
     assert default_config_dir(env) == tmp_path / "custom"
 
 
-def test_default_config_dir_defaults_to_gemini_antigravity_cli():
-    assert default_config_dir({}) == Path.home() / ".gemini" / "antigravity-cli"
+def test_default_config_dir_defaults_to_gemini_config_dir():
+    assert default_config_dir({}) == Path.home() / ".gemini" / "config"
 
 
 def test_install_creates_idempotent_symlinks(tmp_path: Path):

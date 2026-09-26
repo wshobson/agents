@@ -402,7 +402,7 @@ async function withTimeout(promise, ms) {
 
 Functional programming in JavaScript centers on pure functions, immutability, and composable transformations.
 
-Key topics covered in [references/advanced-patterns.md](references/advanced-patterns.md):
+Key topics covered in [references/advanced-patterns.md](./advanced-patterns.md):
 - **Array methods** — `map`, `filter`, `reduce`, `find`, `findIndex`, `some`, `every`, `flatMap`, `Array.from`
 - **Higher-order functions** — custom `forEach`/`map`/`filter`, currying, partial application, memoization
 - **Composition and piping** — `compose`/`pipe` utilities with practical data transformation examples
@@ -410,7 +410,7 @@ Key topics covered in [references/advanced-patterns.md](references/advanced-patt
 
 ## Modern Class Features
 
-ES2022 classes support private fields (`#field`), static fields, getters/setters, and private methods. See [references/advanced-patterns.md](references/advanced-patterns.md) for a full example with inheritance.
+ES2022 classes support private fields (`#field`), static fields, getters/setters, and private methods. See [references/advanced-patterns.md](./advanced-patterns.md) for a full example with inheritance.
 
 ## Modules (ES6)
 
@@ -429,11 +429,11 @@ import multiply, { PI, add } from "./math.js";
 const { add } = await import("./math.js");
 ```
 
-For re-exports, namespace imports, and conditional dynamic loading see [references/advanced-patterns.md](references/advanced-patterns.md).
+For re-exports, namespace imports, and conditional dynamic loading see [references/advanced-patterns.md](./advanced-patterns.md).
 
 ## Iterators and Generators
 
-Generators (`function*`) and async generators (`async function*`) enable lazy sequences and async pagination. See [references/advanced-patterns.md](references/advanced-patterns.md) for custom iterator, range generator, fibonacci, and `for await...of` examples.
+Generators (`function*`) and async generators (`async function*`) enable lazy sequences and async pagination. See [references/advanced-patterns.md](./advanced-patterns.md) for custom iterator, range generator, fibonacci, and `for await...of` examples.
 
 ## Modern Operators
 
@@ -454,4 +454,4 @@ obj.count &&= 2;   // assign if truthy
 
 ## Performance Optimization
 
-See [references/advanced-patterns.md](references/advanced-patterns.md) for debounce, throttle, and lazy evaluation with generators.
+See [references/advanced-patterns.md](./advanced-patterns.md) for debounce, throttle, and lazy evaluation with generators.
