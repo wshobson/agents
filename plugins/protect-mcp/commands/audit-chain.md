@@ -47,8 +47,13 @@ while [ $# -gt 0 ]; do
         *) shift ;;
     esac
 done
+case "$N" in
+    *[!0-9]*) echo "--last takes a positive whole number" >&2; exit 2 ;;
+esac
 FILE="$RECEIPT_DIR/receipts.jsonl"
 if [ -n "$N" ]; then
+    N=$((10#$N))
+    [ "$N" -gt 0 ] || { echo "--last takes a positive whole number" >&2; exit 2; }
     TOTAL=$(wc -l < "$FILE"); OFFSET=$(( TOTAL > N ? TOTAL - N : 0 ))
     echo "Checking lines $((OFFSET + 1)) to $((TOTAL)). Add $OFFSET to each reported line number."
     TMP="$(mktemp)"; tail -n "$N" "$FILE" > "$TMP"; FILE="$TMP"

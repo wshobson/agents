@@ -175,10 +175,12 @@ is the contract.
 
 ## CI/CD integration
 
-Gate merges on receipt verification so no build lands with a tampered
-receipt. [`references/ci-cd.md`](references/ci-cd.md) has a GitHub Actions
-workflow that installs the signing key from a secret, runs the agent,
-verifies the receipts, and uploads them.
+Verify receipts in CI so a tampered receipt fails the build.
+[`references/ci-cd.md`](references/ci-cd.md) has a GitHub Actions workflow
+that runs on pushes to the default branch. It installs the signing key from a
+branch-limited environment, runs the agent, verifies the receipts, and uploads
+them. It does not run on pull requests, because that would hand the key to
+unreviewed code.
 
 ## Composition with SLSA provenance for agent-built software
 
