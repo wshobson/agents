@@ -1,5 +1,6 @@
 """Guards for the removal of the trace harness and the Anthropic prompt writer."""
 
+import re
 import tomllib
 from pathlib import Path
 
@@ -16,7 +17,8 @@ def test_cli_has_no_traces_command() -> None:
 
 
 def test_package_does_not_import_the_anthropic_sdk() -> None:
-    hits = [p for p in SRC.rglob("*.py") if "import anthropic" in p.read_text(encoding="utf-8")]
+    pattern = re.compile(r"^\s*(?:import|from)\s+anthropic\b", re.MULTILINE)
+    hits = [p for p in SRC.rglob("*.py") if pattern.search(p.read_text(encoding="utf-8"))]
     assert hits == []
 
 

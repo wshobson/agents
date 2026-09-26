@@ -49,9 +49,6 @@ uv sync
 # Install with LLM support (Layers 2 & 3)
 uv sync --extra llm
 
-# Install with direct API support
-uv sync --extra api
-
 # Install dev dependencies (tests, linting)
 uv sync --extra dev
 ```
@@ -60,7 +57,7 @@ uv sync --extra dev
 
 - Python ≥ 3.12
 - Core: `pydantic`, `typer`, `rich`, `pyyaml`
-- LLM layers: `claude-agent-sdk` (uses Claude Code Max plan by default)
+- LLM layers: `claude-agent-sdk`. It runs the `claude` CLI, which bills `ANTHROPIC_API_KEY` when that variable is set and otherwise uses your Claude Code login.
 
 ## CLI Commands
 
