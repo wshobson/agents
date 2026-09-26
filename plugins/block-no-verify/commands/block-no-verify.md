@@ -29,6 +29,13 @@ Look for an existing `.claude/settings.json` in the project root:
 cat .claude/settings.json 2>/dev/null || echo "No existing settings found"
 ```
 
+Confirm that Node.js is installed, because the hook reads its input with
+`node` and blocks every Bash call without it:
+
+```bash
+node --version || echo "Install Node.js before you enable this hook"
+```
+
 ### 2. Determine Scope
 
 - If `--global` flag is passed, target `~/.claude/settings.json`
@@ -47,7 +54,7 @@ Add or merge the following PreToolUse hook configuration:
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(jq -r .tool_input.command) || { echo 'BLOCKED: jq could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+            "command": "cmd=$(node -p 'JSON.parse(require(\"fs\").readFileSync(0, \"utf8\")).tool_input.command') || { echo 'BLOCKED: node could not read the hook input.' >&2; exit 2; }; if printf '%s' \"$cmd\" | grep -qE '(^|&&|;|\\|)\\s*git\\s+.*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
           }
         ]
       }
