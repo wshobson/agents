@@ -127,8 +127,9 @@ plugin-eval compare ./skill-a ./skill-b             # quick depth by default
 plugin-eval score ./path/to/skill --depth quick --output json --threshold 70
 ```
 
-At `standard` depth or deeper, `score` and `certify` print a note on stderr that the judge and
-Monte Carlo layers are experimental. With `--threshold`, the command exits with code 1 when the
+At `standard` depth or deeper, `score`, `certify`, and `compare` print a note on stderr that the
+judge and Monte Carlo layers are experimental. For a plugin directory, the CLI prints a warning
+that only the static layer runs instead. With `--threshold`, the command exits with code 1 when the
 composite is below the value. `plugin-eval init` writes a corpus index, but no other command
 reads it.
 

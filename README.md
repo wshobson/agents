@@ -119,12 +119,11 @@ Codex and Cursor install from source via committed registries; Antigravity, Open
 
 ## Quality evaluation
 
-[`plugin-eval`](plugins/plugin-eval/) is a three-layer evaluation framework for measuring
-and certifying plugin/skill quality:
+[`plugin-eval`](plugins/plugin-eval/) scores plugin and skill quality in up to three layers:
 
-- **Static** — deterministic structural analysis (<2s, free)
-- **LLM Judge** — semantic evaluation across 4 dimensions (~30s, Haiku + Sonnet)
-- **Monte Carlo** — statistical reliability via 50-100 simulated runs (~2-5 min)
+- **Static:** a deterministic lint of structure, such as frontmatter, headings, and links. It makes no model calls.
+- **LLM judge (experimental):** Haiku and Sonnet rate a skill on 4 dimensions. It is not validated against human labels.
+- **Monte Carlo (experimental):** runs a skill 50 or 100 times on generated prompts. It is not validated against human labels.
 
 ```bash
 uv run plugin-eval score path/to/skill --depth quick

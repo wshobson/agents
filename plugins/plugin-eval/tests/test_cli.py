@@ -123,3 +123,26 @@ def test_score_plugin_at_standard_omits_experimental_note(sample_plugin_dir):
     assert result.exit_code == 0
     assert NOTE_FRAGMENT not in result.stderr
     assert "plugin-level" in result.stderr.lower()
+
+
+def test_compare_standard_prints_experimental_note(sample_skill_dir):
+    fake = PluginEvalResult(
+        plugin_path=str(sample_skill_dir),
+        timestamp="t",
+        config=EvalConfig(depth=Depth.STANDARD),
+        layers=[LayerResult(layer="static", score=0.8, sub_scores={})],
+        composite=CompositeResult(score=80.0),
+    )
+    with patch("plugin_eval.cli.EvalEngine") as Eng:
+        Eng.return_value.evaluate_skill.return_value = fake
+        result = CliRunner().invoke(
+            app, ["compare", str(sample_skill_dir), str(sample_skill_dir), "--depth", "standard"]
+        )
+    assert result.exit_code == 0
+    assert NOTE_FRAGMENT in result.stderr
+
+
+def test_compare_quick_omits_experimental_note(sample_skill_dir):
+    result = CliRunner().invoke(app, ["compare", str(sample_skill_dir), str(sample_skill_dir)])
+    assert result.exit_code == 0
+    assert NOTE_FRAGMENT not in result.stderr

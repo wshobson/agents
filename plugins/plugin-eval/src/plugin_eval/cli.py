@@ -166,6 +166,8 @@ def compare(
         if not p.exists():
             console.print(f"[red]Error: Path does not exist: {p}[/red]")
             raise typer.Exit(code=2)
+    if depth != Depth.QUICK:
+        typer.echo(EXPERIMENTAL_NOTE, err=True)
     config = EvalConfig(depth=depth, output_format=output)
     engine = EvalEngine(config)
     result_a = engine.evaluate_skill(skill_a)

@@ -1816,9 +1816,9 @@
   },
   "plugin-eval/evaluation-methodology": {
     "badge": "silver",
-    "composite": 77.36413724017031,
-    "digest": "45a9e84e32938939a4c8babf4e83a48a012d6b15f9628b2eaa8dd19d0de1e228",
-    "static_score": 0.799304958677686,
+    "composite": 77.36462990561353,
+    "digest": "1d5a09c4a1b51da52eb670409135b50bec238dc8b091dd1a40fdda7dd911bf80",
+    "static_score": 0.7993098360655738,
     "sub_scores": {
       "ecosystem_coherence": 0.75,
       "frontmatter_quality": 0.77,
@@ -1826,7 +1826,7 @@
       "orchestration_wiring": 0.75,
       "progressive_disclosure": 0.65,
       "structural_completeness": 0.9500000000000001,
-      "token_efficiency": 0.9933884297520661
+      "token_efficiency": 0.9934426229508196
     }
   },
   "pptx-deck-creation/pptx-deck-context": {

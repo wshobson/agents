@@ -10,7 +10,7 @@ The LLM judge and Monte Carlo layers are experimental, not validated against hum
 
 Badges come from the composite score alone, because no command computes an Elo rating. Plugin-level scores come from the static layer alone, so plugin badges, including the ones in the weekly CI report, reflect the lint only.
 
-For the trace-based eval program, see `evals/README.md` at the repository root.
+For the static score snapshot and the trace-based eval program, see [`evals/README.md`](../evals/README.md).
 
 ### Weekly CI report
 
@@ -96,7 +96,7 @@ uv run plugin-eval score path/to/skill --threshold 70
 | `--concurrency` | `4` | Max concurrent LLM calls (1–20) |
 | `--threshold` | none | Minimum score; exit 1 if below |
 
-At `standard` depth or deeper, `score` and `certify` print a note on stderr that the judge and Monte Carlo layers are experimental. For a plugin directory, the CLI also warns that only the static layer runs.
+At `standard` depth or deeper, `score`, `certify`, and `compare` print a note on stderr that the judge and Monte Carlo layers are experimental. For a plugin directory, the CLI prints a warning that only the static layer runs instead.
 
 ### `certify`: score at deep depth and assign a badge
 

@@ -336,8 +336,8 @@ Example characteristics:
 
 ### What a reviewer should check for output quality
 
-The judge prompt doesn't ask for any of the checks below. A reviewer can check code examples and
-technical instructions for the following:
+No judge prompt asks for the checks below, and the Monte Carlo layer does not check them either.
+A reviewer can check code examples and technical instructions for the following:
 - All code blocks are syntactically correct and would run without modification
 - Workflows are shown end-to-end, not as fragments requiring integration
 - Error handling is included for the most common failure modes

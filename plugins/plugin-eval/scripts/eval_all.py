@@ -233,7 +233,7 @@ def main() -> int:
         "--concurrency",
         type=int,
         default=4,
-        help="Max concurrent LLM calls for Layer 2/3",
+        help="Has no effect, because this script runs only the static layer and makes no LLM calls",
     )
     parser.add_argument(
         "--threshold",
