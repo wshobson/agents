@@ -775,7 +775,7 @@
     {
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 receipts independently verifiable offline.",
       "author": {
         "name": "Tom Farley",

@@ -1159,7 +1159,7 @@
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
       "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 decisions are policy-gated before they run and every decision produces a tamper-evident receipt verifiable offline.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": {
         "name": "Tom Farley",
         "email": "tommy@scopeblind.com",

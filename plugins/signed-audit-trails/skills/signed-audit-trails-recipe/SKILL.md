@@ -16,12 +16,10 @@ Every tool call (`Bash`, `Edit`, `Write`, `WebFetch`) is:
 1. **Evaluated against a Cedar policy** before execution. If the policy denies
    the call, the tool does not run.
 2. **Signed as an Ed25519 receipt** after execution. Receipts are
-   JCS-canonical, hash-chained, and verifiable offline by anyone with the
-   public key.
+   JCS-canonical and verifiable offline by anyone with the public key.
 
-An auditor, regulator, or counterparty can verify the full chain later with a
-single CLI command (`npx @veritasacta/verify receipts/*.json`). No network
-call, no vendor lookup, no trust in the operator.
+An auditor, regulator, or counterparty can verify every receipt later
+(Step 5). No network call, no vendor lookup, no trust in the operator.
 
 ## When to use the pattern
 
@@ -140,7 +138,7 @@ Restore the field and verification passes again.
 
 ## How the cryptography works
 
-Three invariants make receipts verifiable offline across any conformant
+Two invariants make receipts verifiable offline across any conformant
 implementation:
 
 1. **JCS canonicalization (RFC 8785)** before signing. Keys sorted,
@@ -149,9 +147,9 @@ implementation:
    receipt content.
 2. **Ed25519 signatures (RFC 8032)** over the canonical bytes.
    Deterministic, fixed-size, no nonce dependency.
-3. **Hash chain linkage.** Each receipt's `parent_receipt_hash` is the
-   SHA-256 of the predecessor's canonical form. Insertions, deletions, and
-   reorderings break later receipts.
+
+protect-mcp 0.7.4 receipts carry no link to the previous receipt, so a
+deleted receipt goes undetected.
 
 For the formal wire format see
 [draft-farley-acta-signed-receipts](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/).
@@ -174,8 +172,9 @@ is the contract.
 
 ## CI/CD integration
 
-Gate merges on receipt chain verification so no build lands with a broken
-evidence chain:
+Gate merges on receipt verification so no build lands with a tampered
+receipt. Store the `publicKey` value as the repository variable
+`PROTECT_MCP_PUBLIC_KEY`:
 
 ```yaml
 # .github/workflows/verify-receipts.yml
@@ -190,12 +189,13 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
       - name: Run governed agent
-        run: python scripts/run_agent.py > receipts.jsonl
-      - name: Verify receipt chain
-        run: npx @veritasacta/verify receipts.jsonl
+        run: python scripts/run_agent.py
+      - name: Verify receipts
+        env: { PUB: '${{ vars.PROTECT_MCP_PUBLIC_KEY }}' }
+        run: npx @veritasacta/verify@0.9.2 --replay-chain receipts/receipts.jsonl --key "$PUB"
 ```
 
-Archive the receipts as an artifact so the chain survives beyond the job run:
+Archive the receipts as an artifact so they survive beyond the job run:
 
 ```yaml
       - name: Upload receipts
@@ -248,7 +248,7 @@ tool name, so the policy denies every call. Read the payload from stdin as the
 plugin scripts do.
 
 **Receipts directory in CI.** If Claude Code runs in CI, upload receipts as
-an artifact at the end of the job or the chain is lost at job end.
+an artifact at the end of the job or the receipts are lost at job end.
 
 **Policy is missing.** When `./protect.cedar` does not exist, `evaluate.sh`
 prints a warning to stderr and allows the call. No call is gated until you
