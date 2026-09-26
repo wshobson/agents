@@ -1277,7 +1277,7 @@
       "name": "pptx-deck-creation",
       "source": "./plugins/pptx-deck-creation",
       "description": "Create production-ready, editable PowerPoint decks through a spec-first, coordinate-explicit workflow with read-only reference analysis and quality gates.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "kimtth"
       },
