@@ -1,14 +1,18 @@
 """Tests for the stream-json trace parser.
 
 The fixture tests/fixtures/traces/sample-stream.jsonl was captured from one real run on
-2026-09-26 with the runner's argv and an empty CLAUDE_CONFIG_DIR, loading only the
-database-design plugin. Facts taken from that fixture:
+2026-09-26 with the runner's build_argv and build_env (so --tools with ALLOWED_TOOLS,
+--permission-mode acceptEdits, and an empty CLAUDE_CONFIG_DIR), loading only the
+database-design plugin. The --allowedTools read rules for plugin dirs were added after the
+capture; a probe showed they leave the init event unchanged. Facts taken from the fixture:
 
 - claude --version: 2.1.283 (Claude Code). The init event reports claude_code_version 2.1.283.
 - The Skill tool is named "Skill". Its input field "skill" carries the skill name, with the
   plugin namespace: {"skill": "database-design:postgresql-table-design"}.
 - The init event's "skills" list names plugin skills as "<plugin>:<skill>" and built-in
   skills without a namespace.
+- The init event's "tools" list is exactly ALLOWED_TOOLS. Claude Code adds no tool of its
+  own when --tools is given.
 
 Paths in the fixture were rewritten: the worktree root became /REPO and the temp directory
 became /TMP. No key or token appears in it.
@@ -18,7 +22,7 @@ import json
 from pathlib import Path
 
 from plugin_eval.traces.models import PromptRecord
-from plugin_eval.traces.parse import BUILTIN_SKILLS, parse_stream
+from plugin_eval.traces.parse import ALLOWED_TOOLS, BUILTIN_SKILLS, parse_stream
 
 FIXTURE = Path(__file__).parent / "fixtures" / "traces" / "sample-stream.jsonl"
 EXPECTED = {"database-design:postgresql-table-design"}
@@ -115,6 +119,22 @@ def test_extra_skill_marks_trace_contaminated() -> None:
     trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
     assert trace.contaminated is True
     assert "evil-skill" in trace.skills_available
+
+
+def test_fixture_tools_are_the_allowlist() -> None:
+    first = json.loads(FIXTURE.read_text(encoding="utf-8").splitlines()[0])
+    assert sorted(first["tools"]) == sorted(ALLOWED_TOOLS)
+    assert first["permissionMode"] == "acceptEdits"
+
+
+def test_tool_outside_the_allowlist_marks_trace_contaminated() -> None:
+    lines = [
+        init_event(sorted(EXPECTED), tools=[*ALLOWED_TOOLS, "PushNotification"]),
+        result_event(),
+    ]
+    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
+    lines = [init_event(sorted(EXPECTED), tools=list(ALLOWED_TOOLS)), result_event()]
+    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is False
 
 
 def test_unexpected_plugin_or_mcp_server_marks_trace_contaminated() -> None:

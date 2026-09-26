@@ -22,12 +22,11 @@ from pathlib import Path
 from typing import Any
 
 from plugin_eval.traces.models import PromptRecord, TraceRecord
-from plugin_eval.traces.parse import parse_stream
+from plugin_eval.traces.parse import ALLOWED_TOOLS, parse_stream
 from plugin_eval.traces.prompts import _skill_names
 
 logger = logging.getLogger(__name__)
 
-DISALLOWED_TOOLS = ("Bash", "WebFetch", "WebSearch", "Task", "Agent")
 README_TEXT = "Scratch project for a Claude Code session.\n"
 # The only variables a trace session inherits. Anything else in the caller's environment
 # can carry the maintainer's Claude Code configuration: a parent Claude Code session exports
@@ -57,11 +56,14 @@ def choose_plugins(
 ) -> list[str]:
     """Return the target plugin plus distractors, in a seeded random order.
 
-    Distractors are local marketplace plugins: same_category from the target's category and
-    random_other from the other categories. The order is shuffled so the target does not
-    always load first. Pass a seed derived from the prompt id (see trace_seed) to get a
-    different but repeatable set for each prompt.
+    Distractors are local marketplace plugins with at least one skill, since a plugin with
+    no skills competes with nothing: same_category from the target's category and
+    random_other from the other categories. A local source is resolved against the
+    marketplace root, the directory that holds .claude-plugin/. The order is shuffled so the
+    target does not always load first. Pass a seed derived from the prompt id (see
+    trace_seed) to get a different but repeatable set for each prompt.
     """
+    root = marketplace_json.parent.parent
     entries = json.loads(marketplace_json.read_text(encoding="utf-8"))["plugins"]
     local = {
         e["name"]: e.get("category", "uncategorized")
@@ -70,9 +72,13 @@ def choose_plugins(
     }
     if target_plugin not in local:
         raise ValueError(f"{target_plugin} is not a local plugin in {marketplace_json}")
+    sources = {e["name"]: e["source"] for e in entries if e["name"] in local}
+    candidates = {
+        n: c for n, c in local.items() if n != target_plugin and _skill_names(root / sources[n])
+    }
     category = local[target_plugin]
-    same = sorted(n for n, c in local.items() if c == category and n != target_plugin)
-    other = sorted(n for n, c in local.items() if c != category)
+    same = sorted(n for n, c in candidates.items() if c == category)
+    other = sorted(n for n, c in candidates.items() if c != category)
     rng = random.Random(seed)
     picked = [
         target_plugin,
@@ -92,7 +98,11 @@ def trace_seed(seed: int, prompt_id: str) -> int:
 def build_argv(
     query: str, plugin_dirs: list[Path], model: str, per_trace_usd: float, max_turns: int
 ) -> list[str]:
-    """Build the claude command line for one headless trace session."""
+    """Build the claude command line for one headless trace session.
+
+    plugin_dirs must be absolute, because the session runs in another directory and the
+    read rules use absolute paths.
+    """
     return [
         "claude",
         "-p",
@@ -107,8 +117,17 @@ def build_argv(
         "--max-turns",
         str(max_turns),
         "--no-session-persistence",
-        "--disallowedTools",
-        *DISALLOWED_TOOLS,
+        "--tools",
+        *ALLOWED_TOOLS,
+        # Writes land in the fresh temporary cwd. Edits outside the working directories are
+        # still denied in -p mode, because no one is there to approve them.
+        "--permission-mode",
+        "acceptEdits",
+        # -p mode also denies reads outside the working directories, which would stop a skill
+        # from opening its own references/. These rules allow reads, and only reads, of the
+        # loaded plugins. --add-dir would also allow edits there under acceptEdits.
+        "--allowedTools",
+        *[f"Read(/{d}/**)" for d in plugin_dirs],
         *[arg for d in plugin_dirs for arg in ("--plugin-dir", str(d))],
     ]
 
@@ -163,7 +182,7 @@ def run_one(
 ) -> TraceRecord:
     """Run one prompt in a headless session and parse its stream into a TraceRecord."""
     plugins = choose_plugins(record.target_plugin, marketplace_json, trace_seed(seed, record.id))
-    plugin_dirs = [plugins_dir / name for name in plugins]
+    plugin_dirs = [(plugins_dir / name).resolve() for name in plugins]
     expected = {f"{d.name}:{skill}" for d in plugin_dirs for skill in _skill_names(d)}
     (workdir / "README.md").write_text(README_TEXT, encoding="utf-8")
     argv = build_argv(record.query, plugin_dirs, model, per_trace_usd, max_turns)

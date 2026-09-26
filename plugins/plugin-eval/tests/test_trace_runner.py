@@ -33,8 +33,12 @@ CATEGORIES = {
 }
 
 
+SKILL_LESS = {"db-agents-only": "database", "lang-commands-only": "languages"}
+
+
 def fake_repo(tmp_path: Path) -> tuple[Path, Path]:
-    """A repo with local plugins, one external plugin, and one skill per plugin."""
+    """A repo with local plugins that have one skill each, local plugins with no skills,
+    and one external plugin."""
     plugins = tmp_path / "plugins"
     entries: list[dict[str, Any]] = []
     for name, category in CATEGORIES.items():
@@ -43,6 +47,9 @@ def fake_repo(tmp_path: Path) -> tuple[Path, Path]:
         (plugins / name / "skills" / skill / "SKILL.md").write_text(
             f"---\nname: {skill}\ndescription: Use for {name}.\n---\nBody\n"
         )
+        entries.append({"name": name, "source": f"./plugins/{name}", "category": category})
+    for name, category in SKILL_LESS.items():
+        (plugins / name / "agents").mkdir(parents=True)
         entries.append({"name": name, "source": f"./plugins/{name}", "category": category})
     entries.append({"name": "remote", "source": {"source": "github"}, "category": "database"})
     market = tmp_path / ".claude-plugin" / "marketplace.json"
@@ -80,7 +87,16 @@ def test_build_argv_has_every_flag() -> None:
     assert "--max-budget-usd 1.50" in joined
     assert "--max-turns 12" in joined
     assert "--no-session-persistence" in argv
-    assert "--disallowedTools Bash WebFetch WebSearch Task Agent" in joined
+    assert "--tools Read Glob Grep Edit Write NotebookEdit Skill --" in joined
+    assert "--permission-mode acceptEdits" in joined
+    for name in ("Bash", "WebFetch", "WebSearch", "Task", "Agent", "Workflow"):
+        assert name not in argv
+    assert "--disallowedTools" not in argv
+    assert "--restricted" not in argv
+    assert "--add-dir" not in argv
+    rules = argv[argv.index("--allowedTools") + 1 : argv.index("--plugin-dir")]
+    assert rules == [f"Read(/{d}/**)" for d in dirs]
+    assert rules[0] == "Read(//r/plugins/a/**)"
     assert argv.count("--plugin-dir") == 3
     assert [argv[i + 1] for i, a in enumerate(argv) if a == "--plugin-dir"] == [
         str(d) for d in dirs
@@ -115,6 +131,8 @@ def test_choose_plugins_is_deterministic_and_includes_the_target(tmp_path: Path)
     assert sum(CATEGORIES[p] == "database" for p in distractors) == 2
     assert sum(CATEGORIES[p] != "database" for p in distractors) == 2
     assert any(choose_plugins("database-design", market, seed=s) != first for s in range(20))
+    for s in range(50):
+        assert not set(choose_plugins("database-design", market, s)) & set(SKILL_LESS)
     positions = {
         choose_plugins("database-design", market, s).index("database-design") for s in range(20)
     }

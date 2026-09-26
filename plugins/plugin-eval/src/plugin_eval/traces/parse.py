@@ -2,7 +2,7 @@
 
 The stream is one JSON event per line. The events this parser reads are:
 
-- `system` with subtype `init`: the model, the Claude Code version, and the skills,
+- `system` with subtype `init`: the model, the Claude Code version, and the tools, skills,
   plugins, and MCP servers the session loaded.
 - `assistant`: message content blocks. Text blocks become steps, and `tool_use` blocks
   become tool calls. Thinking blocks are skipped.
@@ -24,6 +24,12 @@ SKILL_TOOL = "Skill"  # the tool Claude Code calls to load a skill
 SKILL_INPUT_FIELD = "skill"  # its input field, e.g. {"skill": "database-design:some-skill"}
 INPUT_CHARS = 2000
 RESULT_CHARS = 4000
+
+# The only tools a trace session gets, passed to claude with --tools. Every other built-in
+# tool (Bash, WebFetch, WebSearch, Task, Agent, Workflow, and tools such as PushNotification
+# or CronCreate that act outside the session) is left out. An allowlist does not drift when
+# Claude Code adds a tool. With --tools, Claude Code 2.1.283 adds no tool of its own.
+ALLOWED_TOOLS = ("Read", "Glob", "Grep", "Edit", "Write", "NotebookEdit", "Skill")
 
 # Skills that ship with Claude Code 2.1.283 and appear in every session's init event, even
 # with an empty CLAUDE_CONFIG_DIR and no plugins. Taken from the init event of the fixture
@@ -87,7 +93,8 @@ def _is_contaminated(init: dict[str, Any], plugins_loaded: list[str], expected: 
         for plugin in init.get("plugins") or []
         if plugin.get("path") != "builtin" and plugin.get("name") not in plugins_loaded
     }
-    return bool(extra_skills or extra_plugins or init.get("mcp_servers"))
+    extra_tools = set(init.get("tools") or []) - set(ALLOWED_TOOLS)
+    return bool(extra_skills or extra_plugins or extra_tools or init.get("mcp_servers"))
 
 
 def parse_stream(
@@ -100,7 +107,8 @@ def parse_stream(
 
     expected_skills holds the loaded plugins' skills as the init event names them,
     "<plugin>:<skill>". The trace is contaminated when the init event lists a skill that is
-    neither expected nor built in, a plugin that was not loaded, or any MCP server.
+    neither expected nor built in, a plugin that was not loaded, a tool outside
+    ALLOWED_TOOLS, or any MCP server.
     """
     init: dict[str, Any] = {}
     result: dict[str, Any] | None = None
