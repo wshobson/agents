@@ -36,37 +36,22 @@ call, no vendor lookup, no trust in the operator.
 
 ## Step 1: Install the hook configuration
 
-Create `.claude/settings.json` in your project root:
+Install the `protect-mcp` plugin with `/plugin install protect-mcp`. Its hooks
+run `evaluate.sh` before each tool call and `sign.sh` after it. Both scripts
+read the hook event from stdin, because Claude Code sets no `TOOL_NAME` or
+`TOOL_INPUT` variables. See
+[`references/hook-wiring.md`](references/hook-wiring.md) for the hook
+configuration and what each script passes to protect-mcp.
 
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": ".*",
-        "hook": {
-          "type": "command",
-          "command": "npx protect-mcp@latest evaluate --policy ./protect.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
-        }
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": ".*",
-        "hook": {
-          "type": "command",
-          "command": "npx protect-mcp@latest sign --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --output \"$TOOL_OUTPUT\" --receipts ./receipts/ --key ./protect-mcp.key"
-        }
-      }
-    ]
-  }
-}
+protect-mcp 0.7.4 does not create the signing key, and without a key the
+receipts are unsigned. Create `./protect-mcp.key` once:
+
+```bash
+d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
 ```
 
-The first run of `protect-mcp sign` generates `./protect-mcp.key` (Ed25519
-private key) if one does not exist. Commit the **public** key fingerprint
-(visible in any receipt's `public_key` field); do not commit the private
-key.
+Give auditors the `publicKey` value from that file. Do not commit the file,
+because it also holds the private key.
 
 Add the private key and receipt directory to `.gitignore`:
 
@@ -263,20 +248,20 @@ for the composition discussion.
 
 **Private key in version control.** The generated `./protect-mcp.key` must
 not be committed. The examples above add it to `.gitignore`. If a key is
-accidentally committed, rotate immediately (delete the key file and let the
-hook regenerate on next run).
+accidentally committed, rotate immediately (delete the key file and create
+a new one with the Step 1 command).
 
-**Hook command quoting.** The hooks receive `$TOOL_NAME` and `$TOOL_INPUT`
-as environment variables. Keep the quoting `"$TOOL_INPUT"` so inputs with
-spaces or special characters pass through intact.
+**Hook payload on stdin.** Claude Code sets no `$TOOL_NAME` or `$TOOL_INPUT`
+variables. A hook command that passes `--tool "$TOOL_NAME"` sends an empty
+tool name, so the policy denies every call. Read the payload from stdin as the
+plugin scripts do.
 
 **Receipts directory in CI.** If Claude Code runs in CI, upload receipts as
 an artifact at the end of the job or the chain is lost at job end.
 
-**Policy is missing.** The example `PreToolUse` hook uses
-`--fail-on-missing-policy false` so an absent `./protect.cedar` does not
-break Claude Code out of the box. Remove this flag in production so a
-missing policy is treated as a hard failure.
+**Policy is missing.** When `./protect.cedar` does not exist, `evaluate.sh`
+prints a warning to stderr and allows the call. No call is gated until you
+create the policy in Step 2.
 
 ## Related in this marketplace
 

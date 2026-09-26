@@ -1182,7 +1182,7 @@
       "name": "signed-audit-trails",
       "source": "./plugins/signed-audit-trails",
       "description": "Teaching skill: cookbook-style walkthrough for signed audit trails on every Claude Code tool call. Cedar policy, Ed25519 receipts, offline verification, CI/CD integration, SLSA composition. Pairs with the protect-mcp runtime plugin.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Tom Farley",
         "email": "tommy@scopeblind.com",
