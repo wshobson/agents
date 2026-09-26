@@ -131,6 +131,23 @@ def check_prompt_ids(records: Iterable[PromptRecord]) -> None:
         seen.add(record.id.casefold())
 
 
+def check_prompt_targets(records: Iterable[PromptRecord], marketplace_json: Path) -> None:
+    """Raise ValueError unless every prompt's target plugin and skill still exist.
+
+    A prompt file can outlive a plugin or skill rename. A missing plugin would become an
+    error trace billed at the cap, and a missing skill would look like a real routing miss.
+    """
+    local = local_plugin_dirs(marketplace_json)
+    for record in records:
+        plugin_dir = local.get(record.target_plugin)
+        if plugin_dir is None or record.target_skill not in skill_names(plugin_dir):
+            raise ValueError(
+                f"prompt {record.id} targets {record.target_plugin}:{record.target_skill}, "
+                "which is not a local plugin skill in the marketplace. Regenerate or fix the "
+                "prompt file."
+            )
+
+
 def _skipped(name: str) -> bool:
     return (name.startswith(".") and name not in DIGEST_HIDDEN_KEEP) or name in DIGEST_SKIP
 

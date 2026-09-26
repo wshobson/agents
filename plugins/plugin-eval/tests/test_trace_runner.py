@@ -867,6 +867,25 @@ def test_cli_run_rejects_duplicate_prompt_ids(
     assert "p001" in plain(result.output)
 
 
+@pytest.mark.parametrize(
+    ("plugin", "skill"), [("gone-plugin", "some-skill"), (None, "renamed-skill")]
+)
+def test_cli_run_refuses_prompts_whose_target_no_longer_exists(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, plugin: str | None, skill: str
+) -> None:
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a session"))
+    args = write_ids(tmp_path, ["p001", "p002"])
+    prompts = Path(args[args.index("--prompts") + 1])
+    rows = [PromptRecord.model_validate_json(line) for line in prompts.read_text().splitlines()]
+    stale = rows[1].model_copy(
+        update={"target_plugin": plugin or rows[1].target_plugin, "target_skill": skill}
+    )
+    prompts.write_text(rows[0].model_dump_json() + "\n" + stale.model_dump_json() + "\n")
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 2
+    assert f"prompt p002 targets {stale.target_plugin}:{skill}" in plain(result.output)
+
+
 def test_check_prompt_ids_compares_ids_without_case() -> None:
     with pytest.raises(ValueError, match="P001"):
         check_prompt_ids([record(1), record(2).model_copy(update={"id": "P001"})])

@@ -291,6 +291,7 @@ def traces_run(
     records = [PromptRecord.model_validate_json(line) for line in lines if line.strip()]
     try:
         runner.check_prompt_ids(records)
+        runner.check_prompt_targets(records, marketplace)
     except ValueError as exc:
         console.print(f"Error: {exc}", style="red", markup=False, soft_wrap=True)
         raise typer.Exit(code=2) from None
