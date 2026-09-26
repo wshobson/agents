@@ -47,9 +47,6 @@ def _run_score(
         console.print(f"[red]Error: Path does not exist: {path}[/red]")
         raise typer.Exit(code=2)
 
-    if depth != Depth.QUICK:
-        typer.echo(EXPERIMENTAL_NOTE, err=True)
-
     config = EvalConfig(
         depth=depth,
         output_format=output,
@@ -60,6 +57,8 @@ def _run_score(
 
     target = _detect_target(path)
     if target == "skill":
+        if depth != Depth.QUICK:
+            typer.echo(EXPERIMENTAL_NOTE, err=True)
         result = engine.evaluate_skill(path)
     elif target == "plugin":
         if depth != Depth.QUICK:

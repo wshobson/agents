@@ -145,12 +145,6 @@ def format_score(v: float | None) -> str:
     return f"{v:.1f}" if v is not None else "—"
 
 
-def format_ci(lo: float | None, hi: float | None) -> str:
-    if lo is None or hi is None:
-        return "—"
-    return f"[{lo:.1f}–{hi:.1f}]"
-
-
 def format_dim_score(v: float) -> str:
     """Dimension scores are 0-1, expressed as 0-100 for readability."""
     return f"{v * 100:.0f}"
@@ -217,13 +211,12 @@ def build_summary_md(rows: list[PluginRow], depth: str, started_at: str) -> str:
     # Full ranked table
     lines.append("## All plugins (ranked by score ascending)")
     lines.append("")
-    lines.append("| Plugin | Score | 95% CI | Badge | Confidence | Duration |")
-    lines.append("|---|---|---|---|---|---|")
+    lines.append("| Plugin | Score | Badge | Confidence | Duration |")
+    lines.append("|---|---|---|---|---|")
     for r in sorted(rows, key=lambda r: (r.score or 0.0)):
         dur = f"{(r.duration_ms or 0) / 1000:.1f}s" if r.duration_ms else "—"
         lines.append(
             f"| `{r.name}` | {format_score(r.score)} | "
-            f"{format_ci(r.ci_lower, r.ci_upper)} | "
             f"{r.badge or '—'} | {r.confidence or '—'} | {dur} |"
         )
     lines.append("")

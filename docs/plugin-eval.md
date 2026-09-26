@@ -128,11 +128,11 @@ PluginEval is also a Claude Code plugin with agents and commands.
 
 ### Slash Commands
 
-| Command            | Description                                              |
-| ------------------ | -------------------------------------------------------- |
-| `/eval <path>`     | Evaluate a plugin or skill (orchestrates static + judge) |
-| `/certify <path>`  | Full certification pipeline with badge                   |
-| `/compare <a> <b>` | Head-to-head skill comparison                            |
+| Command            | Description                                                  |
+| ------------------ | ------------------------------------------------------------ |
+| `/eval <path>`     | Evaluate a plugin or skill (orchestrates static + judge)     |
+| `/certify <path>`  | Runs `plugin-eval certify` at deep depth and assigns a badge |
+| `/compare <a> <b>` | Head-to-head skill comparison                                |
 
 ### Agents
 
@@ -195,6 +195,8 @@ Haiku writes 15 prompts that should trigger the skill. If the Haiku call fails, 
 | Output consistency | Mean and coefficient of variation of reply length divided by 500, capped at 1.0 | Bootstrap CI (1000 resamples) |
 | Failure rate       | Share of runs that errored                                              | Clopper-Pearson exact CI          |
 | Token efficiency   | Median tokens, IQR, outlier count                                       | `1 - median / 8000`               |
+
+The layer's own score, shown in the report's layer breakdown, is `0.40 * activation_rate + 0.30 * (1 - min(1, cv)) + 0.20 * (1 - p_fail) + 0.10 * efficiency_norm`. Here `cv` is the coefficient of variation of the quality score, `p_fail` is the failure rate, and `efficiency_norm` is the token efficiency. The composite doesn't use the layer score. It blends the individual measures instead, as the dimension table below shows.
 
 The layer has the following known limits:
 

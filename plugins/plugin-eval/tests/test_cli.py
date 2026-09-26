@@ -114,3 +114,12 @@ def test_score_quick_omits_experimental_note(sample_skill_dir):
     result = CliRunner().invoke(app, ["score", str(sample_skill_dir), "--depth", "quick"])
     assert result.exit_code == 0
     assert NOTE_FRAGMENT not in result.stderr
+
+
+def test_score_plugin_at_standard_omits_experimental_note(sample_plugin_dir):
+    """Plugin targets run the static layer only, so the note about the LLM layers
+    does not apply; the plugin-level warning covers that case instead."""
+    result = CliRunner().invoke(app, ["score", str(sample_plugin_dir), "--depth", "standard"])
+    assert result.exit_code == 0
+    assert NOTE_FRAGMENT not in result.stderr
+    assert "plugin-level" in result.stderr.lower()

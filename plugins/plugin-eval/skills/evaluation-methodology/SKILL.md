@@ -134,7 +134,7 @@ reads it.
 
 ## Examples
 
-The JSON output has this top-level shape, and scripts can read `composite.score` from it:
+An abridged example of the JSON output follows. Scripts can read `composite.score` from it:
 
 ```json
 {

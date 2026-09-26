@@ -334,9 +334,10 @@ Example characteristics:
 - A user following the instructions would produce output comparable to an expert
 - Troubleshooting guidance is provided for failure modes
 
-### Judge Checks for Output Quality
+### What a reviewer should check for output quality
 
-When assessing code examples and technical instructions, the judge verifies:
+The judge prompt doesn't ask for any of the checks below. A reviewer can check code examples and
+technical instructions for the following:
 - All code blocks are syntactically correct and would run without modification
 - Workflows are shown end-to-end, not as fragments requiring integration
 - Error handling is included for the most common failure modes

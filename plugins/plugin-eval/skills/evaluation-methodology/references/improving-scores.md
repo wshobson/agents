@@ -59,7 +59,8 @@ Describe what the skill receives and what it returns.
 ### output_quality (weight 0.15) and scope_calibration (weight 0.12)
 
 Only the experimental layers score these dimensions, so a quick-depth score ignores them. The
-anchors in [rubrics.md](rubrics.md) describe what the judge is asked to look for.
+anchors in [rubrics.md](rubrics.md) describe what a high score should mean, and the judge doesn't
+load them.
 
 ### progressive_disclosure (weight 0.10)
 

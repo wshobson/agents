@@ -22,3 +22,10 @@ def test_quick_depth_still_accepted_in_help() -> None:
     proc = run("--help")
     assert proc.returncode == 0
     assert "--depth" in proc.stdout
+
+
+def test_summary_has_no_interval_column(tmp_path: Path) -> None:
+    proc = run("--only-changed", "plugin-eval", "--output-dir", str(tmp_path))
+    assert proc.returncode == 0
+    assert "95% CI" not in proc.stdout
+    assert "| Plugin | Score | Badge | Confidence | Duration |" in proc.stdout
