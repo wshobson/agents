@@ -1,0 +1,334 @@
+import json
+import subprocess
+import threading
+import time
+from pathlib import Path
+from typing import Any
+
+import pytest
+from typer.testing import CliRunner
+
+from plugin_eval.cli import app
+from plugin_eval.traces import runner
+from plugin_eval.traces.models import PromptRecord, TraceRecord
+from plugin_eval.traces.runner import (
+    BudgetLedger,
+    build_argv,
+    build_env,
+    choose_plugins,
+    run_batch,
+    run_one,
+)
+
+FIXTURE = Path(__file__).parent / "fixtures" / "traces" / "sample-stream.jsonl"
+CATEGORIES = {
+    "database-design": "database",
+    "database-migrations": "database",
+    "db-tools": "database",
+    "db-extra": "database",
+    "python-development": "languages",
+    "rust-development": "languages",
+    "security-scanning": "security",
+    "docs-writer": "documentation",
+}
+
+
+def fake_repo(tmp_path: Path) -> tuple[Path, Path]:
+    """A repo with local plugins, one external plugin, and one skill per plugin."""
+    plugins = tmp_path / "plugins"
+    entries: list[dict[str, Any]] = []
+    for name, category in CATEGORIES.items():
+        skill = "postgresql-table-design" if name == "database-design" else f"{name}-skill"
+        (plugins / name / "skills" / skill).mkdir(parents=True)
+        (plugins / name / "skills" / skill / "SKILL.md").write_text(
+            f"---\nname: {skill}\ndescription: Use for {name}.\n---\nBody\n"
+        )
+        entries.append({"name": name, "source": f"./plugins/{name}", "category": category})
+    entries.append({"name": "remote", "source": {"source": "github"}, "category": "database"})
+    market = tmp_path / ".claude-plugin" / "marketplace.json"
+    market.parent.mkdir()
+    market.write_text(json.dumps({"plugins": entries}))
+    return plugins, market
+
+
+def record(i: int = 1, routing: str = "should_trigger") -> PromptRecord:
+    return PromptRecord(
+        id=f"p{i:03d}",
+        target_plugin="database-design",
+        target_skill="postgresql-table-design",
+        explicitness="names_topic",
+        routing=routing,  # type: ignore[arg-type]
+        task_shape="design",
+        query=f"Design an invoices table, variant {i}.",
+        generator_model="claude-opus-5",
+    )
+
+
+def trace_for(rec: PromptRecord, cost: float = 0.1, **extra: Any) -> TraceRecord:
+    return TraceRecord(
+        prompt=rec, model="claude-opus-5-5", plugins_loaded=[], cost_usd=cost, **extra
+    )
+
+
+def test_build_argv_has_every_flag() -> None:
+    dirs = [Path("/r/plugins/a"), Path("/r/plugins/b"), Path("/r/plugins/c")]
+    argv = build_argv("Design a table", dirs, "claude-opus-5-5", 1.5, 12)
+    assert argv[:3] == ["claude", "-p", "Design a table"]
+    joined = " ".join(argv)
+    assert "--output-format stream-json --verbose" in joined
+    assert "--model claude-opus-5-5" in joined
+    assert "--max-budget-usd 1.50" in joined
+    assert "--max-turns 12" in joined
+    assert "--no-session-persistence" in argv
+    assert "--disallowedTools Bash WebFetch WebSearch Task Agent" in joined
+    assert argv.count("--plugin-dir") == 3
+    assert [argv[i + 1] for i, a in enumerate(argv) if a == "--plugin-dir"] == [
+        str(d) for d in dirs
+    ]
+    assert "--bare" not in argv
+
+
+def test_build_env_keeps_only_what_the_session_needs(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("CLAUDECODE", "1")
+    monkeypatch.setenv("CLAUDE_EFFORT", "xhigh")
+    monkeypatch.setenv("CLAUDE_CONFIG_DIR", "/home/me/.claude")
+    monkeypatch.setenv("ENABLE_TOOL_SEARCH", "1")
+    env = build_env(tmp_path)
+    assert env["CLAUDE_CONFIG_DIR"] == str(tmp_path)
+    assert env["ANTHROPIC_API_KEY"] == "test-key"
+    assert env["PATH"]
+    for name in ("CLAUDECODE", "CLAUDE_EFFORT", "ENABLE_TOOL_SEARCH"):
+        assert name not in env
+
+
+def test_choose_plugins_is_deterministic_and_includes_the_target(tmp_path: Path) -> None:
+    _, market = fake_repo(tmp_path)
+    first = choose_plugins("database-design", market, seed=11)
+    assert first == choose_plugins("database-design", market, seed=11)
+    assert "database-design" in first
+    assert len(first) == len(set(first)) == 5
+    assert "remote" not in first
+    distractors = [p for p in first if p != "database-design"]
+    assert sum(CATEGORIES[p] == "database" for p in distractors) == 2
+    assert sum(CATEGORIES[p] != "database" for p in distractors) == 2
+    assert any(choose_plugins("database-design", market, seed=s) != first for s in range(20))
+    positions = {
+        choose_plugins("database-design", market, s).index("database-design") for s in range(20)
+    }
+    assert len(positions) > 1, "the target should not always load first"
+
+
+def test_ledger_reserves_the_cap_before_each_trace() -> None:
+    ledger = BudgetLedger(total_usd=3.0, per_trace_usd=1.5)
+    assert ledger.try_reserve() is True
+    assert ledger.try_reserve() is True
+    assert ledger.try_reserve() is False
+    ledger.settle(0.2)
+    ledger.settle(0.2)
+    assert ledger.spent == pytest.approx(0.4)
+    assert ledger.try_reserve() is True
+
+
+def test_run_batch_resumes_and_writes_one_file_per_id(tmp_path: Path) -> None:
+    records = [record(i) for i in (1, 2, 3)]
+    (tmp_path / "p002.json").write_text("{}")
+    seen: list[str] = []
+
+    def fake_run(rec: PromptRecord) -> TraceRecord:
+        seen.append(rec.id)
+        return trace_for(rec)
+
+    ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
+    traces = run_batch(records, tmp_path, concurrency=2, ledger=ledger, run=fake_run)
+    assert sorted(seen) == ["p001", "p003"]
+    assert [t.prompt.id for t in traces] == ["p001", "p003"]
+    assert sorted(p.name for p in tmp_path.glob("*.json")) == [
+        "p001.json",
+        "p002.json",
+        "p003.json",
+    ]
+    saved = TraceRecord.model_validate_json((tmp_path / "p003.json").read_text())
+    assert saved.prompt.id == "p003"
+    assert (tmp_path / "p002.json").read_text() == "{}"
+    assert ledger.spent == pytest.approx(0.2)
+
+
+def test_run_batch_stops_scheduling_when_the_budget_is_spent(tmp_path: Path) -> None:
+    ledger = BudgetLedger(total_usd=3.0, per_trace_usd=1.5)
+    records = [record(i) for i in range(1, 5)]
+    traces = run_batch(records, tmp_path, 1, ledger, run=lambda rec: trace_for(rec, cost=1.5))
+    assert [t.prompt.id for t in traces] == ["p001", "p002"]
+    assert ledger.spent == pytest.approx(3.0)
+
+
+def test_run_batch_never_starts_more_traces_than_the_budget_covers(tmp_path: Path) -> None:
+    lock = threading.Lock()
+    active = 0
+    peak = 0
+
+    def slow_run(rec: PromptRecord) -> TraceRecord:
+        nonlocal active, peak
+        with lock:
+            active += 1
+            peak = max(peak, active)
+        time.sleep(0.05)
+        with lock:
+            active -= 1
+        return trace_for(rec, cost=0.1)
+
+    ledger = BudgetLedger(total_usd=3.0, per_trace_usd=1.5)
+    records = [record(i) for i in range(1, 7)]
+    traces = run_batch(records, tmp_path, concurrency=4, ledger=ledger, run=slow_run)
+    assert peak <= 2
+    assert len(traces) == 6
+    assert ledger.spent == pytest.approx(0.6)
+
+
+def test_run_batch_settles_unknown_cost_at_the_cap(tmp_path: Path) -> None:
+    ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
+
+    def timed_out(rec: PromptRecord) -> TraceRecord:
+        return trace_for(rec, cost=0.0, is_error=True, error="timeout")
+
+    run_batch([record(1)], tmp_path, 1, ledger, run=timed_out)
+    assert ledger.spent == pytest.approx(1.5)
+
+
+def test_run_one_runs_claude_in_an_isolated_session(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    plugins, market = fake_repo(tmp_path)
+    workdir, config_dir = tmp_path / "work", tmp_path / "config"
+    workdir.mkdir()
+    config_dir.mkdir()
+    calls: list[dict[str, Any]] = []
+
+    def fake_subprocess_run(argv: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+        calls.append({"argv": argv, **kwargs})
+        return subprocess.CompletedProcess(argv, 0, FIXTURE.read_text(), "")
+
+    monkeypatch.setattr(runner.subprocess, "run", fake_subprocess_run)
+    trace = run_one(
+        record(),
+        plugins_dir=plugins,
+        marketplace_json=market,
+        seed=20260926,
+        model="claude-opus-5-5",
+        per_trace_usd=1.5,
+        max_turns=12,
+        workdir=workdir,
+        config_dir=config_dir,
+    )
+    (call,) = calls
+    assert call["cwd"] == workdir
+    assert call["env"]["CLAUDE_CONFIG_DIR"] == str(config_dir)
+    assert call["stdin"] is subprocess.DEVNULL
+    assert call["timeout"] == 600
+    assert (workdir / "README.md").read_text() == "Scratch project for a Claude Code session.\n"
+    dirs = [call["argv"][i + 1] for i, a in enumerate(call["argv"]) if a == "--plugin-dir"]
+    assert str(plugins / "database-design") in dirs
+    assert trace.plugins_loaded == [Path(d).name for d in dirs]
+    assert trace.skills_invoked == ["postgresql-table-design"]
+    assert trace.contaminated is False
+    assert trace.is_error is False
+
+
+def test_run_one_reports_a_timeout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    plugins, market = fake_repo(tmp_path)
+
+    def hang(argv: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+        raise subprocess.TimeoutExpired(argv, kwargs["timeout"])
+
+    monkeypatch.setattr(runner.subprocess, "run", hang)
+    trace = run_one(
+        record(),
+        plugins_dir=plugins,
+        marketplace_json=market,
+        seed=1,
+        model="claude-opus-5-5",
+        per_trace_usd=1.5,
+        max_turns=12,
+        workdir=tmp_path,
+        config_dir=tmp_path,
+        timeout_s=5,
+    )
+    assert trace.is_error is True
+    assert trace.error == "timeout"
+    assert "database-design" in trace.plugins_loaded
+
+
+def write_prompts(tmp_path: Path) -> Path:
+    path = tmp_path / "prompts.jsonl"
+    rows = [record(1, "near_miss"), record(2), record(3)]
+    path.write_text("".join(r.model_dump_json() + "\n" for r in rows))
+    return path
+
+
+def cli_args(tmp_path: Path, *extra: str) -> list[str]:
+    plugins, market = fake_repo(tmp_path)
+    args = ["traces", "run", "--prompts", str(write_prompts(tmp_path))]
+    args += ["--out", str(tmp_path / "traces"), "--plugins-dir", str(plugins)]
+    return [*args, "--marketplace", str(market), *extra]
+
+
+@pytest.mark.parametrize(("invoked", "code"), [(["postgresql-table-design"], 0), ([], 1)])
+def test_cli_smoke_fails_loudly_without_a_skill_call(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, invoked: list[str], code: int
+) -> None:
+    seen: list[str] = []
+
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        seen.append(rec.id)
+        assert kwargs["model"] == "claude-opus-5-5"
+        assert Path(kwargs["config_dir"]).is_dir()
+        return trace_for(rec, skills_invoked=invoked)
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    result = CliRunner().invoke(app, cli_args(tmp_path, "--smoke"))
+    assert result.exit_code == code, result.output
+    assert seen == ["p002"]
+    if code:
+        assert "did not invoke postgresql-table-design" in result.output
+
+
+def test_cli_run_writes_traces_and_prints_a_summary(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        return trace_for(rec, cost=0.25, contaminated=rec.id == "p002")
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    result = CliRunner().invoke(app, cli_args(tmp_path, "--limit", "2"))
+    assert result.exit_code == 0, result.output
+    assert sorted(p.name for p in (tmp_path / "traces").glob("*.json")) == [
+        "p001.json",
+        "p002.json",
+    ]
+    assert "2 traces written" in result.output
+    assert "0 errors" in result.output
+    assert "1 contaminated" in result.output
+    assert "USD 0.50" in result.output
+
+
+def test_cli_run_counts_earlier_spend_against_the_total(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "traces"
+    out.mkdir()
+    (out / "p001.json").write_text(trace_for(record(1), cost=2.0).model_dump_json())
+    seen: list[str] = []
+
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        seen.append(rec.id)
+        return trace_for(rec, cost=0.25)
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    args = cli_args(tmp_path, "--total-usd", "3", "--per-trace-usd", "1.5")
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 0, result.output
+    assert seen == []
+    assert "0 traces written" in result.output
+    assert "USD 2.00 including earlier runs" in result.output
