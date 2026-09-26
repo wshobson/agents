@@ -227,7 +227,14 @@ def test_run_batch_writes_an_error_trace_when_run_raises_and_keeps_going(
 
     ledger = BudgetLedger(total_usd=10.0, per_trace_usd=1.5)
     traces = run_batch(
-        [record(1), record(2)], tmp_path, 1, ledger, run=flaky, model="claude-opus-5-5", seed=7
+        [record(1), record(2)],
+        tmp_path,
+        1,
+        ledger,
+        run=flaky,
+        model="claude-opus-5-5",
+        seed=7,
+        max_turns=12,
     )
     assert [t.prompt.id for t in traces] == ["p001", "p002"]
     failed = TraceRecord.model_validate_json((tmp_path / "p001.json").read_text())
@@ -237,6 +244,7 @@ def test_run_batch_writes_an_error_trace_when_run_raises_and_keeps_going(
         7,
         1.5,
     )
+    assert failed.max_turns == 12
     assert failed.is_error is True
     assert failed.error is not None and "RuntimeError: boom" in failed.error
     assert ledger.spent == pytest.approx(1.5 + 0.2)
@@ -355,6 +363,7 @@ def test_run_one_runs_claude_in_an_isolated_session(
         20260926,
         1.5,
     )
+    assert trace.max_turns == 12
 
 
 def test_run_one_reports_a_timeout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -476,7 +485,8 @@ def test_cli_smoke_fails_loudly_without_a_skill_call(
         seen.append(rec.id)
         assert kwargs["model"] == "claude-opus-5-5"
         assert Path(kwargs["config_dir"]).is_dir()
-        assert kwargs["raw_dir"] == tmp_path / "traces" / "smoke"
+        assert kwargs["raw_dir"].parent == tmp_path / "traces" / "smoke"
+        assert kwargs["raw_dir"].name.startswith(".smoke-run-")
         assert kwargs["timeout_s"] == 600
         return trace_for(rec, skills_invoked=invoked)
 
@@ -484,8 +494,53 @@ def test_cli_smoke_fails_loudly_without_a_skill_call(
     result = CliRunner().invoke(app, cli_args(tmp_path, "--smoke"))
     assert result.exit_code == code, result.output
     assert seen == ["p002"]
+    assert sorted(p.name for p in (tmp_path / "traces" / "smoke").iterdir()) == ["p002.json"]
     if code:
         assert "did not invoke postgresql-table-design" in plain(result.output)
+
+
+def write_smoke_pair(tmp_path: Path) -> Path:
+    smoke = tmp_path / "traces" / "smoke"
+    smoke.mkdir(parents=True)
+    (smoke / "p002.json").write_text("old trace")
+    (smoke / "p002.stream.jsonl").write_text("old stream")
+    return smoke
+
+
+def test_cli_smoke_keeps_the_old_pair_when_the_budget_refuses(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    smoke = write_smoke_pair(tmp_path)
+    monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: pytest.fail("ran a session"))
+    args = cli_args(tmp_path, "--smoke", "--total-usd", "1", "--per-trace-usd", "1.5")
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 1
+    assert "budget did not allow one trace" in plain(result.output)
+    assert (smoke / "p002.json").read_text() == "old trace"
+    assert (smoke / "p002.stream.jsonl").read_text() == "old stream"
+    assert sorted(p.name for p in smoke.iterdir()) == ["p002.json", "p002.stream.jsonl"]
+
+
+@pytest.mark.parametrize("new_stream", ["new stream", None])
+def test_cli_smoke_replaces_the_old_pair_together(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, new_stream: str | None
+) -> None:
+    smoke = write_smoke_pair(tmp_path)
+
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        if new_stream is not None:
+            (kwargs["raw_dir"] / f"{rec.id}.stream.jsonl").write_text(new_stream)
+        return trace_for(rec, cost=0.3, skills_invoked=["database-design:postgresql-table-design"])
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    result = CliRunner().invoke(app, cli_args(tmp_path, "--smoke"))
+    assert result.exit_code == 0, result.output
+    assert TraceRecord.model_validate_json((smoke / "p002.json").read_text()).cost_usd == 0.3
+    if new_stream is None:
+        assert sorted(p.name for p in smoke.iterdir()) == ["p002.json"]
+    else:
+        assert (smoke / "p002.stream.jsonl").read_text() == new_stream
+        assert sorted(p.name for p in smoke.iterdir()) == ["p002.json", "p002.stream.jsonl"]
 
 
 def test_cli_smoke_names_the_contamination_reasons(
@@ -611,6 +666,8 @@ def test_cli_run_refuses_when_marketplace_and_plugins_dir_disagree(
         trace_for(record(2).model_copy(update={"query": "A different question."})),
         trace_for(record(2), requested_model="claude-fable-5", seed=20260926),
         trace_for(record(2), requested_model="claude-opus-5-5", seed=1),
+        trace_for(record(2), per_trace_cap_usd=1.0),
+        trace_for(record(2), max_turns=20),
     ],
 )
 def test_cli_run_refuses_to_resume_over_traces_from_another_run(
@@ -654,7 +711,7 @@ def test_cli_run_resumes_when_the_model_was_an_alias(
     monkeypatch.setattr(runner, "run_one", fake_run_one)
     result = CliRunner().invoke(app, cli_args(tmp_path, "--model", "opus"))
     assert result.exit_code == 0, result.output
-    assert seen == ["p002", "p003"]
+    assert sorted(seen) == ["p002", "p003"]
 
 
 def test_cli_run_bills_an_earlier_unknown_cost_at_its_own_cap(
@@ -662,15 +719,15 @@ def test_cli_run_bills_an_earlier_unknown_cost_at_its_own_cap(
 ) -> None:
     out = tmp_path / "traces"
     out.mkdir()
-    timeout = trace_for(
-        record(1, "near_miss"), cost=0.0, is_error=True, error="timeout", per_trace_cap_usd=1.5
-    )
-    (out / "p001.json").write_text(timeout.model_dump_json())
+    timeout = trace_for(record(3), cost=0.0, is_error=True, error="timeout", per_trace_cap_usd=1.5)
+    # p003 is outside the --limit 1 selection below, so it counts toward the spend but is not
+    # compared; a selected trace with another cap would stop the run.
+    (out / "p003.json").write_text(timeout.model_dump_json())
     monkeypatch.setattr(runner, "run_one", lambda rec, **kwargs: trace_for(rec, cost=0.25))
     args = cli_args(tmp_path, "--per-trace-usd", "0.5", "--limit", "1")
     result = CliRunner().invoke(app, args)
     assert result.exit_code == 0, result.output
-    assert "USD 1.50 including earlier runs" in plain(result.output)
+    assert "USD 0.25 spent (USD 1.75 including earlier runs)" in plain(result.output)
 
 
 def test_cli_run_resumes_over_older_traces_without_run_settings(
@@ -690,4 +747,4 @@ def test_cli_run_resumes_over_older_traces_without_run_settings(
     monkeypatch.setattr(runner, "run_one", fake_run_one)
     result = CliRunner().invoke(app, cli_args(tmp_path, "--model", "opus", "--seed", "5"))
     assert result.exit_code == 0, result.output
-    assert seen == ["p002", "p003"]
+    assert sorted(seen) == ["p002", "p003"]

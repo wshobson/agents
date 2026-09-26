@@ -240,6 +240,7 @@ def run_one(
     trace = parse_stream(stdout.split("\n"), record, plugins, expected)
     trace.model = trace.model or model
     trace.requested_model, trace.seed, trace.per_trace_cap_usd = model, seed, per_trace_usd
+    trace.max_turns = max_turns
     if timed_out:
         trace.is_error = True
         trace.error = "timeout"
@@ -298,13 +299,15 @@ def run_batch(
     run: Callable[[PromptRecord], TraceRecord],
     model: str = "",
     seed: int | None = None,
+    max_turns: int = 0,
 ) -> list[TraceRecord]:
     """Run records that have no out_dir/<id>.json yet, writing one file per trace.
 
     A trace starts only after the ledger reserves its cap, and at most concurrency run at
     once. When the ledger refuses and nothing is running, scheduling stops. Each trace is
     settled at billed_usd, so unknown cost counts as the cap. If run raises, an error trace
-    is written for that record, with the run's model, seed, and cap, and the batch goes on.
+    is written for that record, with the run's model, seed, cap, and max_turns, and the
+    batch goes on.
     A trace that costs more than the cap
     is logged and records the overshoot in over_cap_usd. Returns the new traces in input
     order.
@@ -332,6 +335,7 @@ def run_batch(
                     requested_model=model,
                     seed=seed,
                     per_trace_cap_usd=cap,
+                    max_turns=max_turns,
                 )
             cost = billed_usd(trace, cap)
             if trace.cost_usd > cap:

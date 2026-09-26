@@ -266,6 +266,8 @@ def traces_run(
     timeout traces that were billed at the cap. To retry a trace, delete its .json and
     .stream.jsonl files.
     """
+    import os
+    import tempfile
     from functools import partial
 
     from plugin_eval.traces import runner
@@ -303,15 +305,32 @@ def traces_run(
         if target is None:
             console.print("[red]Error: No should_trigger prompt to smoke test[/red]")
             raise typer.Exit(code=2)
+        # Run into a temporary directory, and replace the previous smoke pair only when a new
+        # trace comes back, so a refused reservation or a crash keeps the last result.
         smoke_dir = out / "smoke"
-        (smoke_dir / f"{target.id}.json").unlink(missing_ok=True)
-        traces = runner.run_batch(
-            [target], smoke_dir, 1, ledger, partial(run, raw_dir=smoke_dir), model=model, seed=seed
-        )
-        trace = traces[0] if traces else None
-        if trace is None:
-            console.print("[red]Smoke failed: the budget did not allow one trace[/red]")
-            raise typer.Exit(code=1)
+        smoke_dir.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=smoke_dir, prefix=".smoke-run-") as tmp:
+            staging = Path(tmp)
+            traces = runner.run_batch(
+                [target],
+                staging,
+                1,
+                ledger,
+                partial(run, raw_dir=staging),
+                model=model,
+                seed=seed,
+                max_turns=max_turns,
+            )
+            trace = traces[0] if traces else None
+            if trace is None:
+                console.print("[red]Smoke failed: the budget did not allow one trace[/red]")
+                raise typer.Exit(code=1)
+            stream_name = f"{target.id}{runner.STREAM_SUFFIX}"
+            if (staging / stream_name).exists():
+                os.replace(staging / stream_name, smoke_dir / stream_name)
+            else:
+                (smoke_dir / stream_name).unlink(missing_ok=True)
+            os.replace(staging / f"{target.id}.json", smoke_dir / f"{target.id}.json")
         console.print(
             f"Smoke {target.id}: invoked {trace.skills_invoked}, "
             f"contaminated {trace.contaminated}, error {trace.error}, "
@@ -344,25 +363,35 @@ def traces_run(
     ledger.spent = earlier_usd = sum(runner.billed_usd(t, per_trace_usd) for t in earlier.values())
     selected = records[:limit] if limit is not None else records
     # A resumed run skips ids that already have a trace, so those traces must come from the
-    # same prompt, requested model, and seed. Check them all before any session starts.
-    # Traces written before requested_model and seed were recorded leave them empty; an
-    # empty field is unknown, so only the fields a trace records are compared.
+    # same prompt and run settings, or one directory would mix traces that ran under
+    # different limits. Check them all before any session starts. Traces written before a
+    # setting was recorded leave it empty or zero; that value is unknown and not compared.
     for record in selected:
         saved = earlier.get(record.id)
         if saved is not None and (
             saved.prompt != record
             or (saved.requested_model and saved.requested_model != model)
             or (saved.seed is not None and saved.seed != seed)
+            or (saved.per_trace_cap_usd and saved.per_trace_cap_usd != per_trace_usd)
+            or (saved.max_turns and saved.max_turns != max_turns)
         ):
             console.print(
                 f"[red]Error: {out / (record.id + '.json')} was written for a different "
-                f"prompt, model, or seed than {record.id} in {prompts} with --model {model} "
-                f"and --seed {seed}. Pick a new --out for this run.[/red]",
+                f"prompt or run settings than {record.id} in {prompts} with --model {model}, "
+                f"--seed {seed}, --per-trace-usd {per_trace_usd}, and --max-turns "
+                f"{max_turns}. Pick a new --out for this run.[/red]",
                 soft_wrap=True,
             )
             raise typer.Exit(code=2)
     traces = runner.run_batch(
-        selected, out, concurrency, ledger, partial(run, raw_dir=out), model=model, seed=seed
+        selected,
+        out,
+        concurrency,
+        ledger,
+        partial(run, raw_dir=out),
+        model=model,
+        seed=seed,
+        max_turns=max_turns,
     )
     errors = sum(t.is_error for t in traces)
     contaminated = sum(t.contaminated for t in traces)
