@@ -53,6 +53,19 @@ def test_digest_uses_the_sub_skills_fallback(tmp_path: Path) -> None:
     assert skill_digest(d) != before
 
 
+def test_digest_does_not_depend_on_the_parser(tmp_path: Path, monkeypatch) -> None:
+    # A change to the parser's pattern must move scores, not digests, so the
+    # snapshot test fails instead of marking the skill stale.
+    import re
+
+    from plugin_eval import parser
+
+    d = make_skill(tmp_path, "See skills/b for the details.", name="a")
+    before = skill_digest(d)
+    monkeypatch.setattr(parser, "_CROSS_REFERENCE_PATTERN", re.compile(r"(references/[a-z-]+)"))
+    assert skill_digest(d) == before
+
+
 def test_digest_ignores_line_endings(tmp_path: Path) -> None:
     d = make_skill(tmp_path, "one\ntwo")
     lf = skill_digest(d)

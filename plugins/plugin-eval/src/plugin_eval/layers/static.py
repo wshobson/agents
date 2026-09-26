@@ -9,13 +9,7 @@ from plugin_eval.layers.harness_portability import (
     score_skill_portability,
 )
 from plugin_eval.models import AntiPattern, LayerResult
-from plugin_eval.parser import (
-    ParsedAgent,
-    ParsedSkill,
-    parse_plugin,
-    parse_skill,
-    resolve_cross_reference,
-)
+from plugin_eval.parser import ParsedAgent, ParsedSkill, parse_plugin, parse_skill
 
 # Weights for skill sub-scores. Rebalanced from original to make room for
 # harness_portability (~6% weight) without changing relative order.
@@ -236,8 +230,12 @@ class StaticAnalyzer:
                     )
 
         # DEAD_CROSS_REF: references a skill/agent that cannot be resolved
+        skill_parent = skill.path.parent  # skills/ dir
         for ref in skill.cross_references:
-            if not resolve_cross_reference(skill.path, ref).exists():
+            ref_path = skill_parent / ref
+            if not ref_path.exists() and ref.startswith("sub-skills/"):
+                ref_path = skill.path / ref
+            if not ref_path.exists():
                 patterns.append(
                     AntiPattern(
                         flag="DEAD_CROSS_REF",

@@ -241,19 +241,6 @@ def _split_frontmatter(content: str) -> tuple[dict, str]:
     return frontmatter, parts[2]
 
 
-def resolve_cross_reference(skill_dir: Path, reference: str) -> Path:
-    """Return the path a cross-reference points at.
-
-    References resolve against the directory that holds the skill. A
-    `sub-skills/` reference that does not exist there falls back to the
-    skill's own directory.
-    """
-    path = skill_dir.parent / reference
-    if not path.exists() and reference.startswith("sub-skills/"):
-        path = skill_dir / reference
-    return path
-
-
 def _extract_cross_references(body: str) -> list[str]:
     """Extract skill paths while keeping references to nested skills intact."""
     references = []

@@ -1247,7 +1247,7 @@
   "incident-response/on-call-handoff-patterns": {
     "badge": "bronze",
     "composite": 65.8894584139265,
-    "digest": "b6b80d891764b9468999c16b64e2363474237b6321e462ba7c780a63d3629fc8",
+    "digest": "59badcc391ad9ec9c2f753386645a797cd8b409e5fefef2efae76d202ff523a4",
     "static_score": 0.6689106382978723,
     "sub_scores": {
       "ecosystem_coherence": 0.91,

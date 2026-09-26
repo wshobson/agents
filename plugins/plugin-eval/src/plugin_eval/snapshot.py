@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -17,7 +18,13 @@ from pydantic import BaseModel
 
 from plugin_eval.engine import EvalEngine
 from plugin_eval.models import Depth, EvalConfig
-from plugin_eval.parser import parse_skill, resolve_cross_reference
+
+# A frozen copy of the parser's cross-reference pattern. The digest must not call
+# scoring code. If it did, a change to that code would move the digest as well as
+# the score, and the snapshot would report the skill as stale instead of failing.
+_REFERENCE_PATTERN = re.compile(
+    r"(?<![\w-])((?:skill|skills|sub-skills)/[a-z0-9-]+(?:/[a-z0-9-]+)*)"
+)
 
 
 class SnapshotEntry(BaseModel):
@@ -40,9 +47,10 @@ def skill_digest(skill_dir: Path) -> str:
 
     CRLF line endings are hashed as LF, because the parser reads text with
     universal newlines and scores both the same. When SKILL.md cross-references
-    other skills, each reference is hashed with whether its target exists,
-    resolved the way the static layer resolves it, because a missing target
-    lowers the score.
+    other skills, each reference is hashed with whether it exists next to the
+    skill and inside the skill, because the static layer lowers the score when
+    it finds neither. The digest finds references with its own copy of the
+    pattern, so a change to the parser cannot hide a change in the score.
     """
     files = sorted(
         (p for p in skill_dir.rglob("*") if p.is_file()),
@@ -54,12 +62,20 @@ def skill_digest(skill_dir: Path) -> str:
         h.update(b"\0")
         h.update(path.read_bytes().replace(b"\r\n", b"\n"))
         h.update(b"\0")
-    refs = sorted(set(parse_skill(skill_dir).cross_references))
+    skill_md = skill_dir / "SKILL.md"
+    text = skill_md.read_text(encoding="utf-8") if skill_md.is_file() else ""
+    refs = sorted(
+        {
+            ref.split("/", 1)[1] if ref.startswith(("skill/", "skills/")) else ref
+            for ref in _REFERENCE_PATTERN.findall(text)
+        }
+    )
     if refs:
         h.update(b"\0cross-references\0")
         for ref in refs:
-            exists = resolve_cross_reference(skill_dir, ref).exists()
-            h.update(f"{ref}\0{int(exists)}\0".encode())
+            beside = int((skill_dir.parent / ref).exists())
+            inside = int((skill_dir / ref).exists())
+            h.update(f"{ref}\0{beside}{inside}\0".encode())
     return h.hexdigest()
 
 
