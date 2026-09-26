@@ -23,3 +23,5 @@ Run `make eval-snapshot` and commit the updated file in either of these cases:
 The LLM judge and Monte Carlo layers of plugin-eval are experimental. They have not been checked against human labels.
 
 A trace-based eval program is in progress. It follows the method that Hamel Husain and Shreya Shankar teach, which starts with error analysis. People read traces of real Claude Code sessions that use these skills and write down what went wrong. Checks are then written for the failures they find, and an LLM judge is trusted only after it has been checked against human labels.
+
+The traces come from Claude Code subagents that run on the maintainer's Claude plan. Nothing in this repository calls a model API to make them, and the traces stay outside the repository because they contain local file paths.

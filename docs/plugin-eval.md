@@ -61,7 +61,6 @@ uv sync --extra dev
 - Python ≥ 3.12
 - Core: `pydantic`, `typer`, `rich`, `pyyaml`
 - LLM layers: `claude-agent-sdk` (uses Claude Code Max plan by default)
-- API alternative: `anthropic` SDK (requires `ANTHROPIC_API_KEY`)
 
 ## CLI Commands
 
