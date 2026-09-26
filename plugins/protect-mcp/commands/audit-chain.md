@@ -1,136 +1,124 @@
 ---
-description: "Walk the receipt chain in ./receipts/ verifying every signature and hash link. Detects insertions, deletions, and tampering across the entire audit trail."
+description: "Verify every receipt in ./receipts/receipts.jsonl against the signer's public key. Detects tampered or malformed receipts across the audit trail."
 argument-hint: "[--last N] [--dir path]"
 ---
 
 # Audit Chain
 
-Verify the integrity of an entire receipt chain, not just a single receipt.
-Walks every receipt in `./receipts/` (or the specified directory), verifies
-each signature individually, and confirms that each `parent_receipt_id`
-correctly links to the previous receipt.
+Verify every receipt in the audit trail, not just a single receipt.
+protect-mcp 0.7.4 appends receipts to `receipts.jsonl` in `./receipts/` (or
+the specified directory), one per line, and this command checks the signature
+on each line.
 
 ## Usage
 
 ```
-/audit-chain                    # Walk all receipts in ./receipts/
+/audit-chain                    # Verify all receipts in ./receipts/
 /audit-chain --last 50          # Verify only the last 50 receipts
 /audit-chain --dir /var/log/receipts  # Use a different directory
 ```
 
 ## What This Command Does
 
-1. Lists all `*.json` files in the target directory
-2. Sorts them by `event_time` to establish chronological order
-3. For each receipt:
-   - Verifies the Ed25519 signature independently
-   - Confirms `parent_receipt_id` matches the previous receipt's `receipt_id`
-4. Reports any failures with specific diagnostic information
+1. Reads `receipts.jsonl` in the target directory
+2. Keeps only the last N lines when `--last N` is given
+3. Verifies each Ed25519 signature against the `publicKey` value in
+   `./protect-mcp.key` (or the file named by `PROTECT_MCP_KEY`)
+4. Reports the line number of each receipt that fails. With `--last N`, the
+   verifier numbers the selected lines from 1, so the command prints the
+   offset to add to get the line in `receipts.jsonl`
+
+protect-mcp 0.7.4 receipts carry no link to the previous receipt, so this
+check cannot detect a deleted, inserted, or reordered line. To detect deleted
+lines, keep a copy of the receipts file where the operator cannot change it.
 
 ## Implementation
 
 ```bash
-# Default: all receipts
-RECEIPT_DIR="${2:-./receipts}"
-
-# Run verification
-if [ -n "$1" ] && [ "$1" = "--last" ]; then
-    N="$2"
-    ls -1 "$RECEIPT_DIR"/*.json | sort | tail -n "$N" | xargs npx @veritasacta/verify
-else
-    npx @veritasacta/verify "$RECEIPT_DIR"/*.json
+RECEIPT_DIR="./receipts"; N=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --last|--dir)
+            if [ $# -lt 2 ]; then
+                echo "usage: /audit-chain [--last N] [--dir path]" >&2; exit 2
+            fi
+            if [ "$1" = "--last" ]; then
+                case "$2" in
+                    ''|*[!0-9]*) echo "--last takes a positive whole number" >&2; exit 2 ;;
+                esac
+                N="$2"
+            else
+                RECEIPT_DIR="$2"
+            fi
+            shift 2 ;;
+        *) shift ;;
+    esac
+done
+FILE="$RECEIPT_DIR/receipts.jsonl"
+if [ -n "$N" ]; then
+    N=$((10#$N))
+    [ "$N" -gt 0 ] || { echo "--last takes a positive whole number" >&2; exit 2; }
+    TOTAL=$(wc -l < "$FILE"); OFFSET=$(( TOTAL > N ? TOTAL - N : 0 ))
+    echo "Checking lines $((OFFSET + 1)) to $((TOTAL)). Add $OFFSET to each reported line number."
+    TMP="$(mktemp)"; tail -n "$N" "$FILE" > "$TMP"; FILE="$TMP"
 fi
+PUB=$(node -p 'JSON.parse(require("fs").readFileSync(process.env.PROTECT_MCP_KEY || "./protect-mcp.key")).publicKey')
+npx @veritasacta/verify@0.9.2 --replay-chain "$FILE" --key "$PUB"
 ```
 
-For chain-link verification (which `@veritasacta/verify` handles with
-`--chain` flag):
+Exit 0 means every receipt verified. Exit 1 means at least one receipt
+failed, because it was tampered with, a line is malformed, the key is wrong or
+missing, or the algorithm is unsupported. With `--replay-chain`, the verifier
+reports those cases per line with exit 1. Exit 2 means the check could not
+run, e.g., because the file could not be read or an option had no value.
 
-```bash
-npx @veritasacta/verify --chain "$RECEIPT_DIR"/*.json
-```
+`npx` downloads `@veritasacta/verify@0.9.2` the first time it runs. For an
+offline machine, install it in the project first with
+`npm install --no-save @veritasacta/verify@0.9.2`, and `npx` then runs the
+local copy without network access.
 
 ## What to Show the User
 
-### Successful chain
+### All receipts verify
 
 ```
-Audit chain verification: PASSED
+Audit verification: PASSED
 
-Scanned:     247 receipts
-Time range:  2026-04-12T08:00:00Z to 2026-04-15T10:30:00Z
-Chain head:  rec_8f92a3b1
-Chain root:  rec_0a1b2c3d
-
-Signatures:    247/247 valid ✓
-Chain links:   246/246 correct ✓
-Parent breaks: 0
-Signer keys:   1 unique (4437ca56815c0516...)
-
-All 247 receipts in the chain verify correctly. No tampering detected.
-```
-
-### Chain with breaks
-
-```
-Audit chain verification: FAILED
-
-Scanned:     247 receipts
+Scanned:     247 receipts in ./receipts/receipts.jsonl
 Signatures:  247/247 valid ✓
-Chain links: 245/246 correct (1 break detected)
+Key:         0faf558a90dfbf88...
 
-BREAK DETECTED at receipt #142:
-  Receipt:          rec_7a3b9c1e
-  Claimed parent:   rec_8d4f2e91
-  Expected parent:  rec_6b5c1a8d
-
-This means either:
-- A receipt was inserted between #141 and #142 (insertion attack)
-- A receipt was deleted from the chain at position #142 (deletion attack)
-- The signer used the wrong parent reference (bug)
-
-To diagnose:
-1. Check if rec_8d4f2e91 exists anywhere in the receipt directory
-2. Check if rec_6b5c1a8d's successor is missing
-3. Compare against any external witness or backup
-
-All individual signatures are valid, so the receipts themselves are
-authentic. The chain structure is compromised.
+All 247 receipts verify. A deleted or reordered line would not show here,
+because 0.7.4 receipts carry no link to the previous receipt.
 ```
 
-### Tampered individual receipt
+### Tampered receipt
 
 ```
-Audit chain verification: FAILED
+Audit verification: FAILED
 
-Scanned:       247 receipts
-Signatures:    246/247 valid (1 tampered)
+Scanned:     247 receipts
+Signatures:  246/247 valid (1 failed)
 
-TAMPERED RECEIPT at position #89:
-  Receipt:      rec_3e8a9c7d
-  Event time:   2026-04-13T14:22:01Z
-  Tool:         Bash
-  Signer:       4437ca56815c0516...
+FAILED at line 89: invalid_signature
+  Request:     tu-1790427588265-c8x5
+  Tool:        Bash
+  Issued at:   2026-09-26T14:22:01Z
 
-The signature for this receipt does not verify. The receipt has been
-modified after signing.
-
-The chain links ARE intact (parent/child references are consistent),
-so this is a payload tampering event rather than a structural attack.
-
-Compare the payload against any known-good copy. The altered field is
-hidden in the canonicalized data.
+The signature on this line does not verify, so the receipt was modified
+after signing, or the key is not the signer's key. Compare the line against
+a known-good copy to find the altered field.
 ```
 
 ## When to Run This
 
-- Before shipping a release — confirm no tampering in the development chain
-- During security audits — demonstrate chain integrity to auditors
+- Before shipping a release, to confirm that no development receipt was altered
+- During security audits, to show auditors that every receipt verifies
 - After incidents — verify logs were not tampered with during the incident
 - Periodically — CI/CD job to catch silent corruption
 - Before compliance reviews — provide evidence of continuous integrity
 
 ## References
 
-- [Full chain verification in @veritasacta/verify](https://www.npmjs.com/package/@veritasacta/verify)
-- [Hash-chained audit trail explainer](https://veritasacta.com/docs/chains)
+- [@veritasacta/verify on npm](https://www.npmjs.com/package/@veritasacta/verify)
 - Use `/verify-receipt` for single-receipt verification

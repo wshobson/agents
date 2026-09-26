@@ -14,8 +14,8 @@ the [`protect-mcp`](../protect-mcp/) plugin for the actual hooks.
 
 - **Learning** the pattern before committing to infrastructure
 - **Evaluating** whether signed audit trails fit your compliance need
-- **Teaching** team members the three-invariant cryptographic model
-  (JCS canonicalization + Ed25519 signatures + hash chains)
+- **Teaching** team members the cryptographic model
+  (JCS canonicalization + Ed25519 signatures)
 - **Walking a client or auditor** through a live demonstration of tamper
   detection
 
@@ -33,7 +33,7 @@ A single skill file containing:
 
 - Step-by-step setup (Cedar policy, hook configuration, first receipt)
 - Live tamper detection walkthrough
-- Receipt format explanation (three invariants)
+- Receipt format explanation (two invariants)
 - Cross-implementation interoperability table
 - CI/CD integration snippet (GitHub Actions)
 - Composition with SLSA provenance for agent-built software

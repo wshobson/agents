@@ -7,7 +7,7 @@ description: Step-by-step cookbook for setting up cryptographically signed audit
 
 Cookbook-style walkthrough for cryptographically signed receipts on every
 Claude Code tool call. This is the teaching skill. For the runtime
-implementation, install the [`protect-mcp`](../../protect-mcp/) plugin.
+implementation, install the [`protect-mcp`](../../../protect-mcp/) plugin.
 
 ## What this gives you
 
@@ -16,12 +16,10 @@ Every tool call (`Bash`, `Edit`, `Write`, `WebFetch`) is:
 1. **Evaluated against a Cedar policy** before execution. If the policy denies
    the call, the tool does not run.
 2. **Signed as an Ed25519 receipt** after execution. Receipts are
-   JCS-canonical, hash-chained, and verifiable offline by anyone with the
-   public key.
+   JCS-canonical and verifiable offline by anyone with the public key.
 
-An auditor, regulator, or counterparty can verify the full chain later with a
-single CLI command (`npx @veritasacta/verify receipts/*.json`). No network
-call, no vendor lookup, no trust in the operator.
+An auditor, regulator, or counterparty can verify every receipt later
+(Step 5). No network call, no vendor lookup, no trust in the operator.
 
 ## When to use the pattern
 
@@ -36,43 +34,31 @@ call, no vendor lookup, no trust in the operator.
 
 ## Step 1: Install the hook configuration
 
-Create `.claude/settings.json` in your project root:
+Install the `protect-mcp` plugin with `/plugin install protect-mcp`. Its hooks
+run `evaluate.sh` before each tool call and `sign.sh` after it. Both scripts
+read the hook event from stdin, because Claude Code sets no `TOOL_NAME` or
+`TOOL_INPUT` variables. See
+[`references/hook-wiring.md`](references/hook-wiring.md) for the hook
+configuration and what each script passes to protect-mcp.
 
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": ".*",
-        "hook": {
-          "type": "command",
-          "command": "npx protect-mcp@latest evaluate --policy ./protect.cedar --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --fail-on-missing-policy false"
-        }
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": ".*",
-        "hook": {
-          "type": "command",
-          "command": "npx protect-mcp@latest sign --tool \"$TOOL_NAME\" --input \"$TOOL_INPUT\" --output \"$TOOL_OUTPUT\" --receipts ./receipts/ --key ./protect-mcp.key"
-        }
-      }
-    ]
-  }
-}
+protect-mcp 0.7.4 does not create the signing key, and without a key the
+receipts are unsigned. Create `./protect-mcp.key` once. The command never
+replaces an existing key:
+
+```bash
+if [ ! -e ./protect-mcp.key ]; then
+  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+fi
 ```
 
-The first run of `protect-mcp sign` generates `./protect-mcp.key` (Ed25519
-private key) if one does not exist. Commit the **public** key fingerprint
-(visible in any receipt's `public_key` field); do not commit the private
-key.
+Give auditors the `publicKey` value from that file. Do not commit the file,
+because it also holds the private key.
 
 Add the private key and receipt directory to `.gitignore`:
 
 ```bash
-echo "./protect-mcp.key" >> .gitignore
-echo "./receipts/" >> .gitignore
+echo "/protect-mcp.key" >> .gitignore
+echo "/receipts/" >> .gitignore
 ```
 
 ## Step 2: Write a Cedar policy
@@ -97,66 +83,57 @@ Claude: I will read README.md.
 ... summary of README ...
 ```
 
-A session of 20 tool calls produces 20 receipts, each hash-chained to its
-predecessor.
+A session of 20 tool calls appends 20 receipts to `./receipts/receipts.jsonl`.
 
 ## Step 4: Inspect a receipt
 
-```bash
-cat ./receipts/$(ls -t ./receipts/ | head -1)
-```
-
-```json
-{
-  "receipt_id": "rcpt-a8f3c9d2",
-  "receipt_version": "1.0",
-  "issuer_id": "claude-code-protect-mcp",
-  "event_time": "2026-04-17T12:34:56.123Z",
-  "tool_name": "Read",
-  "input_hash": "sha256:a3f8c9d2e1b7465f...",
-  "decision": "allow",
-  "policy_id": "protect.cedar",
-  "policy_digest": "sha256:b7e2f4a6c8d0e1f3...",
-  "parent_receipt_id": "rcpt-3d1ab7c2",
-  "public_key": "4437ca56815c0516...",
-  "signature": "4cde814b7889e987..."
-}
-```
-
-Every field except `signature` and `public_key` is covered by the Ed25519
-signature. Modifying any field after signing invalidates the signature.
-
-## Step 5: Verify the receipt chain
+protect-mcp 0.7.4 appends each receipt as one line of
+`./receipts/receipts.jsonl`. Print the newest one:
 
 ```bash
-npx @veritasacta/verify ./receipts/*.json
+tail -n 1 ./receipts/receipts.jsonl | python3 -m json.tool
+```
+
+The receipt is a signed v2 envelope that names the tool, and it holds no
+public key. See [`references/receipt-format.md`](references/receipt-format.md)
+for a sample and the signed fields.
+
+## Step 5: Verify the receipts
+
+Pass the `publicKey` value from `./protect-mcp.key` to the verifier:
+
+```bash
+PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
 ```
 
 Exit codes:
 
 | Code | Meaning |
 |------|---------|
-| `0`  | All receipts verified; chain intact |
-| `1`  | A receipt failed signature verification (tampered, or wrong key) |
-| `2`  | A receipt was malformed |
+| `0`  | Every receipt verified |
+| `1`  | A receipt failed verification (tampered, wrong key, or malformed line) |
+| `2`  | The receipts file could not be read |
 
 ## Step 6: Demonstrate tamper detection
 
-Modify any receipt's `decision` field from `allow` to `deny`:
+Change the newest receipt's `decision` from `allow` to `deny`:
 
 ```bash
 python3 -c "
-import json, os
-path = './receipts/' + sorted(os.listdir('./receipts'))[-1]
-r = json.loads(open(path).read())
-r['decision'] = 'deny'
-open(path, 'w').write(json.dumps(r))
+import json
+path = './receipts/receipts.jsonl'
+lines = open(path).read().splitlines()
+r = json.loads(lines[-1])
+r['payload']['decision'] = 'deny'
+lines[-1] = json.dumps(r)
+open(path, 'w').write('\n'.join(lines) + '\n')
 "
 
-npx @veritasacta/verify ./receipts/*.json
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
 ```
 
-The verifier exits with code `1` and reports which receipt failed. The
+The verifier exits with code `1` and reports which line failed. The
 Ed25519 signature no longer matches the JCS-canonical bytes of the
 tampered payload.
 
@@ -164,7 +141,7 @@ Restore the field and verification passes again.
 
 ## How the cryptography works
 
-Three invariants make receipts verifiable offline across any conformant
+Two invariants make receipts verifiable offline across any conformant
 implementation:
 
 1. **JCS canonicalization (RFC 8785)** before signing. Keys sorted,
@@ -173,9 +150,9 @@ implementation:
    receipt content.
 2. **Ed25519 signatures (RFC 8032)** over the canonical bytes.
    Deterministic, fixed-size, no nonce dependency.
-3. **Hash chain linkage.** Each receipt's `parent_receipt_hash` is the
-   SHA-256 of the predecessor's canonical form. Insertions, deletions, and
-   reorderings break later receipts.
+
+protect-mcp 0.7.4 receipts carry no link to the previous receipt, so a
+deleted receipt goes undetected.
 
 For the formal wire format see
 [draft-farley-acta-signed-receipts](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/).
@@ -198,37 +175,12 @@ is the contract.
 
 ## CI/CD integration
 
-Gate merges on receipt chain verification so no build lands with a broken
-evidence chain:
-
-```yaml
-# .github/workflows/verify-receipts.yml
-name: Verify Decision Receipts
-on: [push, pull_request]
-
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - name: Run governed agent
-        run: python scripts/run_agent.py > receipts.jsonl
-      - name: Verify receipt chain
-        run: npx @veritasacta/verify receipts.jsonl
-```
-
-Archive the receipts as an artifact so the chain survives beyond the job run:
-
-```yaml
-      - name: Upload receipts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: decision-receipts
-          path: receipts/
-```
+Verify receipts in CI so a tampered receipt fails the build.
+[`references/ci-cd.md`](references/ci-cd.md) has a GitHub Actions workflow
+that runs on pushes to the default branch. It installs the signing key from a
+branch-limited environment, runs the agent, verifies the receipts, and uploads
+them. It does not run on pull requests, because that would hand the key to
+unreviewed code.
 
 ## Composition with SLSA provenance for agent-built software
 
@@ -263,26 +215,27 @@ for the composition discussion.
 
 **Private key in version control.** The generated `./protect-mcp.key` must
 not be committed. The examples above add it to `.gitignore`. If a key is
-accidentally committed, rotate immediately (delete the key file and let the
-hook regenerate on next run).
+accidentally committed, rotate it immediately. Move the key and
+`./receipts/receipts.jsonl` to an archive, then run the Step 1 command again.
+Verify the archived receipts with the old public key.
 
-**Hook command quoting.** The hooks receive `$TOOL_NAME` and `$TOOL_INPUT`
-as environment variables. Keep the quoting `"$TOOL_INPUT"` so inputs with
-spaces or special characters pass through intact.
+**Hook payload on stdin.** Claude Code sets no `$TOOL_NAME` or `$TOOL_INPUT`
+variables. A hook command that passes `--tool "$TOOL_NAME"` sends an empty
+tool name, so the policy denies every call. Read the payload from stdin as the
+plugin scripts do.
 
 **Receipts directory in CI.** If Claude Code runs in CI, upload receipts as
-an artifact at the end of the job or the chain is lost at job end.
+an artifact at the end of the job or the receipts are lost at job end.
 
-**Policy is missing.** The example `PreToolUse` hook uses
-`--fail-on-missing-policy false` so an absent `./protect.cedar` does not
-break Claude Code out of the box. Remove this flag in production so a
-missing policy is treated as a hard failure.
+**Policy is missing.** When `./protect.cedar` does not exist, `evaluate.sh`
+prints a warning to stderr and allows the call. No call is gated until you
+create the policy in Step 2.
 
 ## Related in this marketplace
 
-- [`protect-mcp`](../../protect-mcp/) — the runtime hook implementation
+- [`protect-mcp`](../../../protect-mcp/) — the runtime hook implementation
   (use this plugin in production)
-- [`review-agent-governance`](../../review-agent-governance/) — require
+- [`review-agent-governance`](../../../review-agent-governance/) — require
   human approval before review-surface actions; composes with protect-mcp
 
 ## References

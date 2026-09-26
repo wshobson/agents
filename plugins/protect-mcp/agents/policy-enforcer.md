@@ -31,8 +31,8 @@ You understand the protect-mcp integration:
 
 - PreToolUse hooks call Cedar evaluation before every tool invocation
 - Cedar `deny` blocks the tool call with exit code 2
-- Every decision produces an Ed25519-signed receipt
-- Receipts are hash-chained and offline-verifiable
+- Every tool call that runs produces an Ed25519-signed receipt
+- Receipts are verifiable offline with the signer's public key
 
 ## How to Help
 

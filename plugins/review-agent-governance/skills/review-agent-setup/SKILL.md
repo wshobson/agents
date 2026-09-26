@@ -48,13 +48,20 @@ policies.
 
 ```bash
 mkdir -p ./review-receipts
-echo "./review-receipts/" >> .gitignore
-echo "./review-governance.key" >> .gitignore
-echo "./.review-approved" >> .gitignore
+echo "/review-receipts/" >> .gitignore
+echo "/review-governance.key" >> .gitignore
+echo "/.review-approved" >> .gitignore
+if [ ! -e ./review-governance.key ]; then
+  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./review-governance.key
+fi
 ```
 
-The first invocation of `protect-mcp sign` will create the key. Commit the
-public key from the first receipt so auditors can verify later.
+protect-mcp 0.7.4 `sign` does not create the key, so the last command creates
+it, and it never replaces an existing key. Without a key, the receipts are
+unsigned. To rotate the key, archive `./review-governance.key` and
+`./review-receipts/receipts.jsonl` first, then run the command again. Give auditors the `publicKey`
+value from `./review-governance.key`. Do not commit the file, because it also
+holds the private key.
 
 ## Per-session workflow
 
@@ -80,8 +87,9 @@ rm ./.review-approved
 ```
 
 This creates `./.review-approved` with the given reason embedded as a note,
-and writes a human-approved receipt to the chain. A follow-up `rm` is still
-needed to close the window.
+and records the reason in an unsigned approval log under
+`./review-receipts/approvals/`. A follow-up `rm` is still needed to close the
+window.
 
 ### Dry-run everything (force full policy evaluation)
 
@@ -94,7 +102,7 @@ export REVIEW_APPROVAL_FLAG=./.never-approve
 Any tool call matching a forbid rule will be denied; approved windows have
 no effect. Useful for CI or for a locked-down audit run.
 
-## Verifying the chain
+## Verifying the receipts
 
 List all receipts:
 
@@ -102,34 +110,35 @@ List all receipts:
 ls -la ./review-receipts/
 ```
 
-Verify the entire chain offline:
+Verify every receipt offline with the public key:
 
 ```bash
-npx @veritasacta/verify ./review-receipts/*.json
+PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./review-governance.key")).publicKey')
+npx @veritasacta/verify@0.9.2 --replay-chain ./review-receipts/receipts.jsonl --key "$PUB"
 ```
 
-Exit 0 means every receipt is authentic and the chain is intact. Exit 1
-means one receipt has been tampered with. Exit 2 means a receipt is
-malformed.
+Exit 0 means every receipt verified. Exit 1 means a receipt failed
+verification, because it was tampered with, the key is wrong, or a line is
+malformed. Exit 2 means the receipts file could not be read.
 
-Look at recent denials:
+A denied call never runs, so it has no receipt. To see what the policy
+blocked, run this inside Claude Code:
 
 ```
 /list-pending
 ```
 
-Within Claude Code this slash command walks the receipt chain and prints
-any recent `decision: deny` entries with the tool name, command pattern,
-and timestamp.
+It lists the tool calls that the PreToolUse hook blocked in the current
+session, with the tool name and the command or path.
 
 ## Example: approving a PR review
 
 ```bash
 # 1. Human reviews the agent's proposed comment
 $ /list-pending
-  Recent denials:
-  - 2026-04-17T14:23:01Z  Bash "gh pr review 42 --approve --body 'LGTM'"
-  - 2026-04-17T14:23:02Z  Bash "gh pr comment 42 --body 'Looking good'"
+  Blocked in this session:
+  - Bash "gh pr review 42 --approve --body 'LGTM'"
+  - Bash "gh pr comment 42 --body 'Looking good'"
 
 # 2. Human decides the first one is appropriate, approves it
 $ /approve-review "Approving LGTM on PR 42 after visual inspection"
@@ -137,15 +146,15 @@ $ /approve-review "Approving LGTM on PR 42 after visual inspection"
 
 # 3. Agent retries the action; this time it succeeds
 $ agent: gh pr review 42 --approve --body "LGTM"
-  [receipt: rec_XXX, decision=allow, reason=human_approved]
+  [receipt appended to ./review-receipts/receipts.jsonl, decision=allow]
 
 # 4. Human closes the window
 $ rm ./.review-approved
 ```
 
-Every step is in the receipt chain. The chain is offline-verifiable for
-regulators, counterparties, or downstream auditors who want to confirm
-that no review action bypassed the human gate.
+The allowed call has a signed receipt that anyone with the public key can
+verify offline. The denied attempt has no receipt, and the approval log is
+not signed, so keep both in mind when you show the trail to an auditor.
 
 ## Composing with protect-mcp
 

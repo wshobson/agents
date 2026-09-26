@@ -4,19 +4,20 @@ Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool ca
 
 [![npm version](https://img.shields.io/npm/v/protect-mcp)](https://www.npmjs.com/package/protect-mcp)
 [![Downloads](https://img.shields.io/npm/dm/protect-mcp)](https://www.npmjs.com/package/protect-mcp)
-[![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue)](../../LICENSE)
 
 The first Claude Code plugin that enforces declarative authorization policies
 and produces cryptographically verifiable audit trails. Every tool call is
-evaluated against a Cedar policy, every decision is signed with Ed25519, and
-every receipt is independently verifiable offline by anyone.
+evaluated against a Cedar policy, every tool call that runs gets an
+Ed25519-signed receipt, and every receipt is verifiable offline by anyone
+with the public key.
 
 ## What You Get
 
 - **Cedar policy enforcement** — Block tool calls that violate your rules before they execute. Cedar is AWS's open authorization engine, formally verified.
-- **Ed25519 signed receipts** — Every allow/deny decision produces a tamper-evident receipt. RFC 8032 signatures with RFC 8785 JCS canonicalization.
-- **Hash-chained audit trail** — Receipts link to their predecessors. Insertions, deletions, and modifications are all detectable.
-- **Offline verification** — `npx @veritasacta/verify receipt.json` requires no network, no vendor lookup, no account. Works air-gapped.
+- **Ed25519 signed receipts**: every tool call that runs produces a tamper-evident receipt, signed with RFC 8032 Ed25519 over RFC 8785 JCS canonical bytes.
+- **Receipts file**: receipts are appended to `./receipts/receipts.jsonl`. A modified receipt fails verification, but receipts carry no link to the previous receipt, so a deleted line goes undetected.
+- **Offline verification**: `npx @veritasacta/verify@0.9.2 --replay-chain` with the public key needs no vendor lookup or account. `npx` downloads the verifier on first use, so run `npm install --no-save @veritasacta/verify@0.9.2` in the project before you go offline.
 
 ## Quick Start
 
@@ -27,8 +28,13 @@ claude plugin install wshobson/agents/protect-mcp
 # 2. Create a Cedar policy file at ./protect.cedar
 #    (see skills/protect-mcp-setup/SKILL.md for examples)
 
-# 3. Add the hooks to .claude/settings.json
-#    (copy from hooks/hooks.json in this plugin)
+# 3. Create the signing key once (protect-mcp 0.7.4 sign does not create it).
+#    Installing the plugin already registers the hooks. An existing key is
+#    never replaced. To rotate it, archive the key and receipts.jsonl first.
+if [ ! -e ./protect-mcp.key ]; then
+  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+fi
+echo "/protect-mcp.key" >> .gitignore
 
 # 4. Run Claude Code normally — every tool call is now policy-evaluated
 #    and produces a signed receipt in ./receipts/
@@ -77,14 +83,14 @@ plugins/protect-mcp/
 ┌─────────────────────────────────────────────┐
 │  PostToolUse hook → Ed25519 signed receipt  │
 │                                             │
-│  Receipt fields:                            │
-│    - tool_name, input_hash, output_hash     │
-│    - decision (allow/deny)                  │
-│    - policy_id + policy_digest              │
-│    - parent_receipt_id (chain link)         │
-│    - public_key + signature                 │
+│  Receipt fields (v2 envelope):              │
+│    - payload.tool, payload.decision         │
+│    - payload.request_id, issued_at, kid     │
+│    - signature over every other field       │
+│    - no public key, no link to the          │
+│      previous receipt                       │
 │                                             │
-│  Written to ./receipts/<timestamp>.json     │
+│  Appended to ./receipts/receipts.jsonl      │
 └─────────────────────────────────────────────┘
 ```
 
@@ -145,21 +151,19 @@ project's threat model.
 
 ## Verification
 
-Every receipt can be verified by any party, offline, without trusting the
-operator:
+Every receipt can be verified by any party, offline, with the `publicKey`
+value from `./protect-mcp.key`:
 
 ```bash
-npx @veritasacta/verify receipts/2026-04-15T10-30-00Z.json
-# Exit 0 = valid
-# Exit 1 = tampered
-# Exit 2 = malformed
+PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
+# Exit 0 = every receipt verified
+# Exit 1 = a receipt failed (tampered, wrong key, or malformed line)
+# Exit 2 = the file could not be read
 ```
 
-Or verify an entire chain:
-
-```bash
-npx @veritasacta/verify receipts/*.json
-```
+The receipts carry no link to the previous receipt, so a deleted line goes
+undetected.
 
 Use the `receipt-verifier` agent for help interpreting verification failures.
 
@@ -181,4 +185,4 @@ Use the `receipt-verifier` agent for help interpreting verification failures.
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+MIT. See [LICENSE](../../LICENSE).

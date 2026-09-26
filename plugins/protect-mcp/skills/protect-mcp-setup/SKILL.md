@@ -17,8 +17,8 @@ decided after the fact. `protect-mcp` closes all three gaps:
 
 - **Cedar policies** (AWS's open authorization engine) evaluate every tool call
   before execution. Cedar deny is authoritative.
-- **Ed25519 receipts** record each decision with its inputs, the policy that
-  governed it, and the outcome. Receipts are hash-chained.
+- **Ed25519 receipts** record the name of each tool that ran, signed with
+  your key.
 - **Offline verification** via `npx @veritasacta/verify`. No server, no account,
   no trust in the operator.
 
@@ -45,8 +45,12 @@ claude plugin install wshobson/agents/protect-mcp
 
 # 2. Create ./protect.cedar (see below). The plugin installs the hooks.
 
-# 3. Start the receipt-signing server (runs locally, no external calls)
-npx protect-mcp@latest serve --enforce
+# 3. Create the signing key once (protect-mcp 0.7.4 sign does not create it).
+#    An existing key is never replaced. See references/receipt-format.md to rotate.
+if [ ! -e ./protect-mcp.key ]; then
+  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+fi
+echo "/protect-mcp.key" >> .gitignore
 
 # 4. Use Claude Code normally. Every tool call is now policy-evaluated
 #    and produces a signed receipt in ./receipts/
@@ -94,9 +98,9 @@ warning to stderr and allows the call.
 your Cedar policy file. If Cedar returns `deny`, the hook exits with code 2 and
 Claude Code blocks the tool call entirely.
 
-**PostToolUse** — Runs AFTER the tool completes. Signs a receipt containing the
-tool name, input hash, output hash, decision, policy digest, and timestamp.
-Writes the receipt to `./receipts/<timestamp>.json`.
+**PostToolUse** runs AFTER the tool completes. It signs a receipt that names
+the tool and appends it to `./receipts/receipts.jsonl`. protect-mcp 0.7.4 does
+not record the tool input or output.
 
 ## Cedar Policy File
 
@@ -149,53 +153,34 @@ safe as the project's scripts.
 
 ## Verification
 
-Verify a single receipt:
+Verify every receipt against the public key in `./protect-mcp.key`:
 
 ```bash
-npx @veritasacta/verify receipts/2026-04-15T10-30-00Z.json
-# Exit 0 = valid
-# Exit 1 = tampered
-# Exit 2 = malformed
+PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')
+npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
+# Exit 0 = every receipt verified
+# Exit 1 = a receipt failed (tampered, wrong key, or malformed line)
+# Exit 2 = the file could not be read
 ```
 
-Verify the entire chain:
-
-```bash
-npx @veritasacta/verify receipts/*.json
-```
-
-Use the plugin's slash commands from within Claude Code:
+The plugin's slash commands do the same inside Claude Code. `/verify-receipt`
+takes one receipt in its own file, e.g., from
+`tail -n 1 ./receipts/receipts.jsonl > receipt.json`.
 
 ```
-/verify-receipt receipts/latest.json
-/audit-chain ./receipts/ --last 20
+/verify-receipt receipt.json
+/audit-chain --last 20
 ```
 
 ## Receipt Format
 
-Each receipt is a JSON file with this structure:
+Each receipt is one line of `./receipts/receipts.jsonl`. See
+[`references/receipt-format.md`](references/receipt-format.md) for a sample.
 
-```json
-{
-  "receipt_id": "rec_8f92a3b1",
-  "receipt_version": "1.0",
-  "issuer_id": "claude-code-protect-mcp",
-  "event_time": "2026-04-15T10:30:00.000Z",
-  "tool_name": "Bash",
-  "input_hash": "sha256:a3f8...",
-  "decision": "allow",
-  "policy_id": "autoresearch-safe",
-  "policy_digest": "sha256:b7e2...",
-  "parent_receipt_id": "rec_3d1ab7c2",
-  "public_key": "4437ca56815c0516...",
-  "signature": "4cde814b7889e987..."
-}
-```
-
-- **Ed25519** signatures (RFC 8032)
+- **Ed25519** signatures (RFC 8032) over all fields but `signature`
 - **JCS canonicalization** (RFC 8785) before signing
-- **Hash-chained** to the previous receipt via `parent_receipt_id`
-- **Offline verifiable** — no network call, no vendor lookup
+- **No public key** in the receipt, so pass it with `--key`
+- **No link to the previous receipt**, so a deleted line goes undetected
 
 ## Why This Matters
 

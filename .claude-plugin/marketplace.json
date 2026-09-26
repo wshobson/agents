@@ -1103,7 +1103,7 @@
       "name": "block-no-verify",
       "source": "./plugins/block-no-verify",
       "description": "PreToolUse hook that prevents AI agents from using --no-verify, --no-gpg-sign, and other bypass flags that skip git hooks",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": {
         "name": "cskwork"
       },
@@ -1159,7 +1159,7 @@
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
       "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 decisions are policy-gated before they run and every decision produces a tamper-evident receipt verifiable offline.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": {
         "name": "Tom Farley",
         "email": "tommy@scopeblind.com",
@@ -1182,7 +1182,7 @@
       "name": "signed-audit-trails",
       "source": "./plugins/signed-audit-trails",
       "description": "Teaching skill: cookbook-style walkthrough for signed audit trails on every Claude Code tool call. Cedar policy, Ed25519 receipts, offline verification, CI/CD integration, SLSA composition. Pairs with the protect-mcp runtime plugin.",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "author": {
         "name": "Tom Farley",
         "email": "tommy@scopeblind.com",
@@ -1206,7 +1206,7 @@
       "name": "review-agent-governance",
       "source": "./plugins/review-agent-governance",
       "description": "Require a human approval signal before an AI agent can post PR reviews, comments, merges, or writes to CI configuration. Joins protect-mcp and signed-audit-trails in the governance category; composes with protect-mcp for runtime enforcement.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": {
         "name": "Tom Farley",
         "email": "tommy@scopeblind.com",
