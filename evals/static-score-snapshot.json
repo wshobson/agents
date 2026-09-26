@@ -1,0 +1,2747 @@
+{
+  "accessibility-compliance/screen-reader-testing": {
+    "badge": "silver",
+    "composite": 77.11108700368844,
+    "digest": "da3ebdbe9b51ff5daaea1949f89976b43c6eef51a1c7d0baec1a1f5bd2598638",
+    "static_score": 0.7680997613365156,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.8500000000000001,
+      "token_efficiency": 0.9322195704057279
+    }
+  },
+  "accessibility-compliance/wcag-audit-patterns": {
+    "badge": "bronze",
+    "composite": 67.3876698014629,
+    "digest": "47e93738b7b1c13921d16f0aaf1cffffac28c92ad765798e458d774f1469f074",
+    "static_score": 0.6718379310344827,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9793103448275862
+    }
+  },
+  "agent-teams/multi-reviewer-patterns": {
+    "badge": "bronze",
+    "composite": 68.16990125978889,
+    "digest": "ed525f9c572132c19a0711544420a938cdf97a81fba93d197162086f62092e0f",
+    "static_score": 0.68338202247191,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9820224719101124
+    }
+  },
+  "agent-teams/parallel-debugging": {
+    "badge": "silver",
+    "composite": 73.59726295210166,
+    "digest": "ed1f50c9fa24bc396471bdb3edb8369c0b140a0277e02b9994f90d98242426ba",
+    "static_score": 0.7341129032258065,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9956989247311828
+    }
+  },
+  "agent-teams/parallel-feature-development": {
+    "badge": "silver",
+    "composite": 70.81357048748353,
+    "digest": "884c9cec5496e566a3b40d75821c96f2a2efe9f6952b350f7a90f5406c38b59d",
+    "static_score": 0.725704347826087,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.6,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9478260869565217
+    }
+  },
+  "agent-teams/task-coordination-strategies": {
+    "badge": "silver",
+    "composite": 70.01340842048806,
+    "digest": "7ba1ffa8f57259561cbd9fb4780a39805972b90072332243174e173d1fd83d21",
+    "static_score": 0.7036327433628319,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.968141592920354
+    }
+  },
+  "agent-teams/team-communication-protocols": {
+    "badge": "silver",
+    "composite": 73.96153846153845,
+    "digest": "bcf3cbe23ada671663d25ac9d2ff002f3f2aa86769b894ceec40a1e149985710",
+    "static_score": 0.7553692307692308,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.9107692307692308
+    }
+  },
+  "agent-teams/team-composition-patterns": {
+    "badge": "silver",
+    "composite": 71.28787878787878,
+    "digest": "fac5a11c339bc9475f8f21310f44aabeb3a4f2508021010ee3d8f5e810da2e27",
+    "static_score": 0.7262000000000001,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 0.9299999999999999,
+      "orchestration_wiring": 0.6,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 1.0
+    }
+  },
+  "api-scaffolding/fastapi-templates": {
+    "badge": "bronze",
+    "composite": 69.15151515151516,
+    "digest": "0caf4fcd52dc44bd0541d49e6167c07b8d63739b995023b597f3383c4d13080a",
+    "static_score": 0.6840999999999999,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 0.9733333333333334
+    }
+  },
+  "avoid-ai-writing/avoid-ai-writing": {
+    "badge": "bronze",
+    "composite": 64.24242424242424,
+    "digest": "77a2d30136dcb452c71d42e2658ff6c5de50c65a6dfac17a139313a6d769f7b9",
+    "static_score": 0.6337,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.5599999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.30000000000000004,
+      "token_efficiency": 1.0
+    }
+  },
+  "backend-development/api-design-principles": {
+    "badge": "silver",
+    "composite": 76.20326643053916,
+    "digest": "c6a7d9a6d6820b7e21b1bd0b5cfd43c4917fdbde2025e7a331b1934fd341c4b4",
+    "static_score": 0.7446623376623377,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.8,
+      "structural_completeness": 0.39999999999999997,
+      "token_efficiency": 0.974025974025974
+    }
+  },
+  "backend-development/architecture-patterns": {
+    "badge": "silver",
+    "composite": 73.7937062937063,
+    "digest": "250d7547452d3b33d18bdf3d5dc8fec874c9eaa02b2def1ee9d04933624e053c",
+    "static_score": 0.7427076923076923,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.5000000000000001,
+      "token_efficiency": 0.9923076923076923
+    }
+  },
+  "backend-development/cqrs-implementation": {
+    "badge": "bronze",
+    "composite": 68.61400894187778,
+    "digest": "aa45e5ff1bffc36b8ff09fd9087f9903196121355882688454452a3c82844bb6",
+    "static_score": 0.6804786885245901,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7999999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9475409836065574
+    }
+  },
+  "backend-development/event-store-design": {
+    "badge": "bronze",
+    "composite": 65.93939393939394,
+    "digest": "7a2387dca48618652b4106eb917a564cb40e52187c6792c2137a0ab70e1ec775",
+    "static_score": 0.661,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9866666666666667
+    }
+  },
+  "backend-development/microservices-patterns": {
+    "badge": "bronze",
+    "composite": 65.15151515151514,
+    "digest": "88e85f68d26afee0a26631abb9f79124942e130fedd67f709568ca7623a66173",
+    "static_score": 0.6422,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.25,
+      "token_efficiency": 1.0
+    }
+  },
+  "backend-development/projection-patterns": {
+    "badge": "bronze",
+    "composite": 65.97796143250689,
+    "digest": "e09b47728ceb13143964301f47ad14c1df13c6185c2b7ba3eff5f6454ee9aa56",
+    "static_score": 0.6613818181818182,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.990909090909091
+    }
+  },
+  "backend-development/saga-orchestration": {
+    "badge": "bronze",
+    "composite": 68.51010101010101,
+    "digest": "6e2d0292e697d2e77694ded5b6fa1dfde40d019fb823847e52147c3c96ce95c9",
+    "static_score": 0.7007,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.6,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.5000000000000001,
+      "token_efficiency": 0.9944444444444445
+    }
+  },
+  "backend-development/temporal-python-testing": {
+    "badge": "bronze",
+    "composite": 69.96179183135705,
+    "digest": "4f859e250adef5fd3b303c6cce77806558367b9439fc55fd40bbc204f7d1975b",
+    "static_score": 0.6866217391304348,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 0.9791304347826086
+    }
+  },
+  "backend-development/workflow-orchestration-patterns": {
+    "badge": "no_badge",
+    "composite": 58.33333333333333,
+    "digest": "3ebab19bb577167059705e32af9b3e1fdc2f1accdfe0a01f2817e6fa6ea398d9",
+    "static_score": 0.5884999999999999,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.5499999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.25,
+      "token_efficiency": 1.0
+    }
+  },
+  "before-you-build/before-you-build": {
+    "badge": "bronze",
+    "composite": 63.78787878787878,
+    "digest": "2e22f95c4643900698ffb80c5349a7403b46b4fc8b2eed647a7d54cdbe61e54a",
+    "static_score": 0.6237,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.5599999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.2,
+      "token_efficiency": 1.0
+    }
+  },
+  "block-no-verify/block-no-verify-hook": {
+    "badge": "bronze",
+    "composite": 69.58931419457734,
+    "digest": "e7fbf6b8b19bf6379b9337ed017158e19e1e4c65752c43cd1433192839968c39",
+    "static_score": 0.6954842105263157,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 0.98,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.6,
+      "token_efficiency": 0.8131578947368421
+    }
+  },
+  "blockchain-web3/defi-protocol-templates": {
+    "badge": "silver",
+    "composite": 71.51010101010101,
+    "digest": "5464551ea2f7447785a608c76322e0bd1abd21b844b6b1d804cda3948b717fad",
+    "static_score": 0.7001999999999999,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.3,
+      "token_efficiency": 0.9244444444444444
+    }
+  },
+  "blockchain-web3/nft-standards": {
+    "badge": "silver",
+    "composite": 77.69296740994854,
+    "digest": "9147507a4a9de8078f00b8cc7e5a55af1ba8bfb40192d7dd063674ab5163f29c",
+    "static_score": 0.7648603773584906,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.8962264150943396
+    }
+  },
+  "blockchain-web3/solidity-security": {
+    "badge": "silver",
+    "composite": 71.46613190730838,
+    "digest": "91d6dbb6aa42d4536e4e16cf199283e95b0d9bda2f2464db493f996ba58d9ba7",
+    "static_score": 0.706464705882353,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.39999999999999997,
+      "token_efficiency": 0.9529411764705882
+    }
+  },
+  "blockchain-web3/web3-testing": {
+    "badge": "silver",
+    "composite": 74.66716343765525,
+    "digest": "e2c24095e770b4d2f217c5bbc311b0e22846793b0a5c8e0c5d8f53b5e585ba6e",
+    "static_score": 0.7419049180327869,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.8967213114754098
+    }
+  },
+  "brand-landingpage/brand-landingpage": {
+    "badge": "silver",
+    "composite": 74.89047097480832,
+    "digest": "c86e96ef5dcc95a861f2732f31ee82473c10867ed7e5d0b7feec7b5458568e36",
+    "static_score": 0.7393156626506023,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6199999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.49999999999999994,
+      "token_efficiency": 0.9879518072289156
+    }
+  },
+  "business-analytics/data-storytelling": {
+    "badge": "bronze",
+    "composite": 67.35312306740879,
+    "digest": "caa790c0bf52d41f01ef24278dab1dc91952c9f43e4a338ad7bca8803e2f52c6",
+    "static_score": 0.6714959183673469,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9755102040816327
+    }
+  },
+  "business-analytics/kpi-dashboard-design": {
+    "badge": "silver",
+    "composite": 73.4090909090909,
+    "digest": "b4d456f1ac5b039aa8d9ded1aa2eaee94dac9b4195db8cde382216b1a14a8f4c",
+    "static_score": 0.755,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.8,
+      "token_efficiency": 0.9666666666666667
+    }
+  },
+  "cicd-automation/deployment-pipeline-design": {
+    "badge": "silver",
+    "composite": 76.18544600938968,
+    "digest": "791dbf6eb26565669b989a039292c10d9dc1a447c5e988c645058c2222b7624e",
+    "static_score": 0.7738859154929578,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.9887323943661972
+    }
+  },
+  "cicd-automation/github-actions-templates": {
+    "badge": "silver",
+    "composite": 72.51082251082252,
+    "digest": "a772e5fbc9cf2bfde8c2c4c7915d7c98ff218376dc767b0ca20e13dc93b30e48",
+    "static_score": 0.7240571428571428,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.8761904761904762
+    }
+  },
+  "cicd-automation/gitlab-ci-patterns": {
+    "badge": "silver",
+    "composite": 72.46753246753246,
+    "digest": "628602f9e728969c9ac8f865c399039e4dd880c17d12b8a944db87df3da6cf58",
+    "static_score": 0.7236285714285714,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.8714285714285714
+    }
+  },
+  "cicd-automation/secrets-management": {
+    "badge": "silver",
+    "composite": 71.41711229946524,
+    "digest": "ff0f06ca5a97d053c34287722f2f07362a00872ece8f44971a95e81686f90205",
+    "static_score": 0.7247794117647058,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9308823529411765
+    }
+  },
+  "cloud-infrastructure/cost-optimization": {
+    "badge": "silver",
+    "composite": 73.92573806736897,
+    "digest": "e5e6a910b6d57d0b7176f8d687dd9608542c31fdcf38a18bf530efcc083a1037",
+    "static_score": 0.7400648068669528,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9484978540772532
+    }
+  },
+  "cloud-infrastructure/hybrid-cloud-networking": {
+    "badge": "silver",
+    "composite": 74.96937459703418,
+    "digest": "001ebf92af44752fb167e2f5a024c930677df7b861733dc2817621caf3c9d251",
+    "static_score": 0.7641468085106383,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.9382978723404255
+    }
+  },
+  "cloud-infrastructure/istio-traffic-management": {
+    "badge": "bronze",
+    "composite": 68.50114043662431,
+    "digest": "2ace5d0b97ba6052ad0042c973c03b0b6e35824d9ed539cf110e2709a1c9644b",
+    "static_score": 0.6946612903225806,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.65,
+      "token_efficiency": 0.8351254480286738
+    }
+  },
+  "cloud-infrastructure/linkerd-patterns": {
+    "badge": "silver",
+    "composite": 71.37806637806638,
+    "digest": "817d53aeece25a4654b278d79739c31e2f2ef42627cf5b0243229f6364debd43",
+    "static_score": 0.7198428571428571,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.65,
+      "token_efficiency": 0.9015873015873016
+    }
+  },
+  "cloud-infrastructure/mtls-configuration": {
+    "badge": "bronze",
+    "composite": 64.51790633608816,
+    "digest": "dbf81198a721865f6720b7fd62d89d70ff52ec9c0ee34d199833c04f714688f4",
+    "static_score": 0.6412272727272728,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 0.9636363636363636
+    }
+  },
+  "cloud-infrastructure/multi-cloud-architecture": {
+    "badge": "bronze",
+    "composite": 69.00634249471457,
+    "digest": "dcaaaed428c8d7eabb9319c05c40e91567afd321fe8cc75b7f95bb9976c54356",
+    "static_score": 0.6991627906976744,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9906976744186047
+    }
+  },
+  "cloud-infrastructure/service-mesh-observability": {
+    "badge": "bronze",
+    "composite": 65.98155467720684,
+    "digest": "d6cac5d92112f4843e30e2cb31c1ee05a662118f58f2cb3f1d08de1d99ac92a8",
+    "static_score": 0.6614173913043478,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.991304347826087
+    }
+  },
+  "cloud-infrastructure/terraform-module-library": {
+    "badge": "silver",
+    "composite": 78.57164610933455,
+    "digest": "e50de29e347839aa006c6cd7910fde09d863c5cbd8818a642a8ebc65dbe025db",
+    "static_score": 0.7810592964824121,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9095477386934674
+    }
+  },
+  "conductor/context-driven-development": {
+    "badge": "bronze",
+    "composite": 64.69696969696969,
+    "digest": "a8391f332d3ab886af31f21b71ad17328ce605dd17b276da25c6a7c8ea284d25",
+    "static_score": 0.6322,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.15000000000000002,
+      "token_efficiency": 1.0
+    }
+  },
+  "conductor/track-management": {
+    "badge": "bronze",
+    "composite": 62.424242424242415,
+    "digest": "8973ef1d2be5a1ca15b403c5cb9ab66f9ecb39e33e1486750fb63a98988c96d9",
+    "static_score": 0.613,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.15000000000000002,
+      "token_efficiency": 1.0
+    }
+  },
+  "conductor/workflow-patterns": {
+    "badge": "bronze",
+    "composite": 65.45454545454544,
+    "digest": "2b53ad36e3d92d5429c1386e867a3db7f2b1d10c399be169e992be3ac73d087a",
+    "static_score": 0.636,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7999999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.15000000000000002,
+      "token_efficiency": 1.0
+    }
+  },
+  "data-engineering/airflow-dag-patterns": {
+    "badge": "bronze",
+    "composite": 69.00534759358288,
+    "digest": "017585e65c4a8ff304f43760d53be756bd4b5098c0dcf16a27108f6f44d58ba5",
+    "static_score": 0.6918529411764706,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.65,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9905882352941177
+    }
+  },
+  "data-engineering/data-quality-frameworks": {
+    "badge": "silver",
+    "composite": 74.03297682709447,
+    "digest": "fc4b7f76e7b6ab6de7b58082adfcdb9e03840baf36ce73052e73f1b8a0853893",
+    "static_score": 0.7393764705882353,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.6,
+      "token_efficiency": 0.9686274509803922
+    }
+  },
+  "data-engineering/dbt-transformation-patterns": {
+    "badge": "silver",
+    "composite": 74.37878787878789,
+    "digest": "d61a91900a3ffc599e5112fb8bcd9c73e8b98854fd54ff4353db26c75b44b201",
+    "static_score": 0.7375,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.49999999999999994,
+      "token_efficiency": 0.9733333333333334
+    }
+  },
+  "data-engineering/spark-optimization": {
+    "badge": "bronze",
+    "composite": 68.88604353393086,
+    "digest": "506def8477effd2fd36a7d539df2216c8cec3a66e3ed1d6b8e1179c9090dbe99",
+    "static_score": 0.6831718309859155,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9774647887323944
+    }
+  },
+  "database-design/postgresql-table-design": {
+    "badge": "silver",
+    "composite": 70.50802139037432,
+    "digest": "e5a4cc6b150fc21b69ce71d98bffbccbbee705b4dfd1aa6e4d4f6fd1c7cb63a8",
+    "static_score": 0.7140294117647059,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.65,
+      "token_efficiency": 0.9725490196078431
+    }
+  },
+  "developer-essentials/auth-implementation-patterns": {
+    "badge": "bronze",
+    "composite": 68.18181818181817,
+    "digest": "dd83e9798b42cd97ab7af61090214592d94aab3ae2d018bd4bdf5bb775bc8604",
+    "static_score": 0.6652,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7999999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.25,
+      "token_efficiency": 1.0
+    }
+  },
+  "developer-essentials/bazel-build-optimization": {
+    "badge": "bronze",
+    "composite": 65.91800356506238,
+    "digest": "9f6f803d0170e1e8f8006b1945c3d8326e604160bc2579bd61b207456109eabf",
+    "static_score": 0.6607882352941177,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9843137254901961
+    }
+  },
+  "developer-essentials/code-review-excellence": {
+    "badge": "silver",
+    "composite": 76.90079183797776,
+    "digest": "55ecfe4625219343c554d8b063c5e26ffd5263b38e772d301713c1cda2a1e910",
+    "static_score": 0.7485678391959799,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9507537688442211
+    }
+  },
+  "developer-essentials/debugging-strategies": {
+    "badge": "silver",
+    "composite": 74.36374749944432,
+    "digest": "63842bb107deeda861d7e2586719671aa79dd26177dc0ce1f6d8d158695a4c1a",
+    "static_score": 0.7359511002444987,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.9550122249388753
+    }
+  },
+  "developer-essentials/e2e-testing-patterns": {
+    "badge": "silver",
+    "composite": 74.6945773524721,
+    "digest": "3fd450781acafb4a62d45147c88b6f509f49cb77bed079e017ff2ac2fdcd7003",
+    "static_score": 0.7314263157894737,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.39999999999999997,
+      "token_efficiency": 0.9747368421052631
+    }
+  },
+  "developer-essentials/error-handling-patterns": {
+    "badge": "silver",
+    "composite": 72.34519104084322,
+    "digest": "2a08cde2658136d32af11a922bf1a8ec8f86416de48e01639244805dcb92d32c",
+    "static_score": 0.7087173913043479,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 0.991304347826087
+    }
+  },
+  "developer-essentials/git-advanced-workflows": {
+    "badge": "bronze",
+    "composite": 69.3809523809524,
+    "digest": "e1574618fe755c8be527c1ade6060056c25ec9fcc0a362ed16959e0fe53c6c27",
+    "static_score": 0.6918714285714286,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9485714285714286
+    }
+  },
+  "developer-essentials/monorepo-management": {
+    "badge": "silver",
+    "composite": 72.93084476045371,
+    "digest": "a01918f8ed2b003783107b1ac69dab2a97c9c7960353a19f83403f28c80d99fc",
+    "static_score": 0.7307653631284916,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9307262569832402
+    }
+  },
+  "developer-essentials/nx-workspace-patterns": {
+    "badge": "bronze",
+    "composite": 65.98930481283422,
+    "digest": "7c37a207789f1b18846d4ee6f65d83e2db8650eecf28050e82976064042230b1",
+    "static_score": 0.6614941176470588,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9921568627450981
+    }
+  },
+  "developer-essentials/sql-optimization-patterns": {
+    "badge": "silver",
+    "composite": 72.82022680795689,
+    "digest": "756773afe23c57de046a79571ef067785f678b6c1108a1f7c5cc00777770bf06",
+    "static_score": 0.726920245398773,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.943558282208589
+    }
+  },
+  "developer-essentials/turborepo-caching": {
+    "badge": "silver",
+    "composite": 73.02779450130444,
+    "digest": "7eb976c2a4971131ce36d7dd77e150af7d7b41ec1f6b43a7741e8100ba1edf23",
+    "static_score": 0.7354251655629139,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.8913907284768212
+    }
+  },
+  "dgx-spark-ops/spark-environment-setup": {
+    "badge": "gold",
+    "composite": 80.67222861526659,
+    "digest": "1843bed7debe3741531b387ce5db32a04f3f3ea7469cc6372890b51a75be0c04",
+    "static_score": 0.8064050632911393,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.9822784810126582
+    }
+  },
+  "dgx-spark-ops/spark-memory-thermal-ops": {
+    "badge": "gold",
+    "composite": 86.3782991202346,
+    "digest": "7d3a0e6ed0d6eba1ba088ba406639651d777a0c0d658a0836c100bbe8e58cc3d",
+    "static_score": 0.8718451612903226,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.9,
+      "structural_completeness": 0.9500000000000001,
+      "token_efficiency": 0.9849462365591398
+    }
+  },
+  "dgx-spark-ops/spark-training-gotchas": {
+    "badge": "silver",
+    "composite": 79.83608815426997,
+    "digest": "53d0b84b203934318f0145c2c5de9e63be58e9d5cef6cacb57abdd8ea8aaccce",
+    "static_score": 0.8043272727272728,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.5599999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.9,
+      "structural_completeness": 0.75,
+      "token_efficiency": 0.9903030303030302
+    }
+  },
+  "documentation-generation/architecture-decision-records": {
+    "badge": "silver",
+    "composite": 71.9090909090909,
+    "digest": "aae8098292356e7237b6f3b5f3e736d2bdb544eb70a20e7288e3298edec46686",
+    "static_score": 0.7233999999999999,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.65,
+      "token_efficiency": 0.96
+    }
+  },
+  "documentation-generation/changelog-automation": {
+    "badge": "silver",
+    "composite": 71.77033492822967,
+    "digest": "de056009734c07f44c7d95cdb37e012c41a0ccd13c346613587e99b1c7f48190",
+    "static_score": 0.7175263157894737,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9947368421052631
+    }
+  },
+  "documentation-generation/openapi-spec-generation": {
+    "badge": "bronze",
+    "composite": 68.33333333333333,
+    "digest": "a48288aba83051b46e7e957b22a0239a5dac433b9c71ad58e55ccf6015e41caf",
+    "static_score": 0.6775,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 1.0
+    }
+  },
+  "documentation-standards/grounded-vault": {
+    "badge": "silver",
+    "composite": 74.06911581569116,
+    "digest": "78393fab6c4a2ce433320b036dc63f9ce8a351658580bed8c147f6b78a0bfabd",
+    "static_score": 0.7397342465753425,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.6,
+      "token_efficiency": 0.9726027397260274
+    }
+  },
+  "documentation-standards/hads": {
+    "badge": "bronze",
+    "composite": 69.27748559979965,
+    "digest": "faa7fe124937c1e5d384196032aaa033604054e1a59a9930c87f347df6e7fa7e",
+    "static_score": 0.6963471074380165,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.44999999999999996,
+      "token_efficiency": 0.9371900826446281
+    }
+  },
+  "dotnet-contribution/dotnet-backend-patterns": {
+    "badge": "silver",
+    "composite": 72.60845537441281,
+    "digest": "eb2154770be126388a34bdcb822153c767679e15976f8e0563bf75e79b6e0843",
+    "static_score": 0.721823708206687,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.55,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.8869300911854103
+    }
+  },
+  "file-conversion/file-conversion": {
+    "badge": "bronze",
+    "composite": 66.13636363636364,
+    "digest": "2777899e8526b38dd0223ce77bae668115ab068e27edda5bbea359bfaed39624",
+    "static_score": 0.6462,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.5599999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.2,
+      "structural_completeness": 0.35,
+      "token_efficiency": 0.9333333333333333
+    }
+  },
+  "framework-migration/angular-migration": {
+    "badge": "silver",
+    "composite": 75.29156102861282,
+    "digest": "057f187ad9b93d1aec7f0904cafe8935590c697050159727820093a5ab5644f3",
+    "static_score": 0.744386454183267,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.8820717131474104
+    }
+  },
+  "framework-migration/database-migration": {
+    "badge": "silver",
+    "composite": 74.45124678519514,
+    "digest": "78e769c35017a05fae85a0785d0f82fe6368a3d783939d231b34774187c15f7f",
+    "static_score": 0.7425173431734318,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.8479704797047971
+    }
+  },
+  "framework-migration/dependency-upgrade": {
+    "badge": "silver",
+    "composite": 72.03478446436192,
+    "digest": "5367d3861c799fed3889bd1e47cfc8b44b3292c220f733320a044cf8ce683ac3",
+    "static_score": 0.719894366197183,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9154929577464789
+    }
+  },
+  "framework-migration/react-modernization": {
+    "badge": "silver",
+    "composite": 74.90298239310097,
+    "digest": "a2f61817ed17a0c50c99b24e58078c3a3a7fd6cda7eb75c2a15770570ccdb66f",
+    "static_score": 0.7350395256916996,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.8893280632411067
+    }
+  },
+  "frontend-mobile-development/nextjs-app-router-patterns": {
+    "badge": "silver",
+    "composite": 76.37741046831957,
+    "digest": "33d98c836feebf8966c213873ad2cb06cc570e29e7937565258070959cb796d1",
+    "static_score": 0.7473363636363637,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9681818181818181
+    }
+  },
+  "frontend-mobile-development/react-native-architecture": {
+    "badge": "silver",
+    "composite": 74.1800920598389,
+    "digest": "ddb5b84fa17c561376722c474cbda98323d953c0114aed2a41a618297aaec0b0",
+    "static_score": 0.740832911392405,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.6,
+      "token_efficiency": 0.9848101265822785
+    }
+  },
+  "frontend-mobile-development/react-state-management": {
+    "badge": "silver",
+    "composite": 75.00142938822184,
+    "digest": "d292c331733399d9ce7725749a21fd4900f575de22db1c2ca2f80fc1f11be133",
+    "static_score": 0.7472641509433962,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.49999999999999994,
+      "token_efficiency": 0.9584905660377359
+    }
+  },
+  "frontend-mobile-development/tailwind-design-system": {
+    "badge": "silver",
+    "composite": 72.9480052321779,
+    "digest": "59d785326bd509b9d069356215767294308e5677c5935459945e1424b090d5e8",
+    "static_score": 0.7231352517985612,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.49999999999999994,
+      "token_efficiency": 0.8992805755395683
+    }
+  },
+  "game-development/godot-gdscript-patterns": {
+    "badge": "bronze",
+    "composite": 69.79437229437228,
+    "digest": "be81fd1fac66b5eed60c616511a42edd7b73e636fbda21bf191e5d7163a902bf",
+    "static_score": 0.6804142857142857,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.3,
+      "token_efficiency": 0.9857142857142858
+    }
+  },
+  "game-development/unity-ecs-patterns": {
+    "badge": "bronze",
+    "composite": 63.7052341597796,
+    "digest": "61b7ea2e100ae3f9a16422527ad31aa218fea2612548506359f16e10799bf8a8",
+    "static_score": 0.6421818181818182,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.990909090909091
+    }
+  },
+  "hermes-tweet/hermes-tweet": {
+    "badge": "gold",
+    "composite": 83.79038317054845,
+    "digest": "c66b530260cf7953ad2afbfc3511458a61a103388cd1008ec2bd48e8ebe6df61",
+    "static_score": 0.8498247933884298,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.74,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 1.0,
+      "token_efficiency": 0.9669421487603306
+    }
+  },
+  "hr-legal-compliance/employment-contract-templates": {
+    "badge": "bronze",
+    "composite": 65.97979797979797,
+    "digest": "a8a82965b72a4029ccd4548384ca2a3868e5a37b1374d23d5b76e633c639f974",
+    "static_score": 0.6614,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.991111111111111
+    }
+  },
+  "hr-legal-compliance/gdpr-data-handling": {
+    "badge": "bronze",
+    "composite": 67.36992567181247,
+    "digest": "2dc145ac70d7bd2293e003e7455f4b8c11c4943f7c73fba54752571f5d71dce6",
+    "static_score": 0.6716622641509434,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9773584905660377
+    }
+  },
+  "incident-response/incident-runbook-templates": {
+    "badge": "silver",
+    "composite": 73.6455463728191,
+    "digest": "1092b093dfdf2c1dc5ab64a9ae5101cc45f2f9d03e9b6fa772545ba6b16cbbcf",
+    "static_score": 0.7600909090909092,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.8500000000000001,
+      "token_efficiency": 0.9676767676767677
+    }
+  },
+  "incident-response/on-call-handoff-patterns": {
+    "badge": "bronze",
+    "composite": 65.8894584139265,
+    "digest": "62d471c1f89ced946d9e50088317886b0dfffe5d3ac478d909ad479588bb39f9",
+    "static_score": 0.6689106382978723,
+    "sub_scores": {
+      "ecosystem_coherence": 0.91,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7999999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9914893617021276
+    }
+  },
+  "incident-response/postmortem-writing": {
+    "badge": "silver",
+    "composite": 71.42007321537524,
+    "digest": "d6dd4ebbf495550b00c88f5c2bc5b101e98b429aa44e5b1b8144c0dca82348a2",
+    "static_score": 0.7138087248322147,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.49999999999999994,
+      "token_efficiency": 0.9812080536912752
+    }
+  },
+  "javascript-typescript/javascript-testing-patterns": {
+    "badge": "gold",
+    "composite": 82.3982174688057,
+    "digest": "46493add3cfe4c180402a56ac8bafb33257c274b9d38f55b686f1a9672324652",
+    "static_score": 0.8054423529411765,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.85,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.8804705882352941
+    }
+  },
+  "javascript-typescript/modern-javascript-patterns": {
+    "badge": "bronze",
+    "composite": 64.69696969696969,
+    "digest": "c7fdc3071f8b7c77e6426ba15da48829a738df126d2228b8e14cb64d374156fb",
+    "static_score": 0.6322,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.15000000000000002,
+      "token_efficiency": 1.0
+    }
+  },
+  "javascript-typescript/nodejs-backend-patterns": {
+    "badge": "bronze",
+    "composite": 67.95454545454544,
+    "digest": "33dc6e804bbc1300dd78a3f61126d4ffa8ef18821c1b8360c561b166c0b30384",
+    "static_score": 0.6602,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7999999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.2,
+      "token_efficiency": 1.0
+    }
+  },
+  "javascript-typescript/typescript-advanced-types": {
+    "badge": "silver",
+    "composite": 77.87163480296527,
+    "digest": "ef67f824d2108544d9204f61f661be74f1949621f152b241f4f53861f4df1c5e",
+    "static_score": 0.7666291845493562,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9158798283261802
+    }
+  },
+  "kubernetes-operations/gitops-workflow": {
+    "badge": "silver",
+    "composite": 74.52716823406479,
+    "digest": "9630d0711fdfb1079d567f516303abf02ea2b7a4f45683046ae5412807814934",
+    "static_score": 0.7597689655172414,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.8896551724137931
+    }
+  },
+  "kubernetes-operations/helm-chart-scaffolding": {
+    "badge": "silver",
+    "composite": 70.73737373737374,
+    "digest": "2859cf38647a42ed29914d7ae70dd23c59c3039355cda20b603984fd185c6d8c",
+    "static_score": 0.7165,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9644444444444444
+    }
+  },
+  "kubernetes-operations/k8s-manifest-generator": {
+    "badge": "silver",
+    "composite": 70.37878787878789,
+    "digest": "58270203cc790414c0c2acffb29856815685aa1f1edfb46ce5cb9926a670cb3a",
+    "static_score": 0.7047,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.39999999999999997,
+      "token_efficiency": 1.0
+    }
+  },
+  "kubernetes-operations/k8s-security-policies": {
+    "badge": "silver",
+    "composite": 79.6590909090909,
+    "digest": "ff517be40c8fb2d10c29704be90ac8912d681f9ded1471560a4bca535f20cea8",
+    "static_score": 0.802075,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.9,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.8708333333333333
+    }
+  },
+  "llm-application-dev/embedding-strategies": {
+    "badge": "bronze",
+    "composite": 65.98323662153447,
+    "digest": "6c23607b2aa46ff21eedd92835436d367a1fb2f7e8f5f1d6ca5b8c6e828ad8ff",
+    "static_score": 0.6614340425531915,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9914893617021276
+    }
+  },
+  "llm-application-dev/hybrid-search-implementation": {
+    "badge": "bronze",
+    "composite": 65.96491228070175,
+    "digest": "e797d4ba608d90894f2eecbd2a8cb3980f1c0885950c94d505643fb305b7fbf6",
+    "static_score": 0.6612526315789473,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9894736842105263
+    }
+  },
+  "llm-application-dev/langchain-architecture": {
+    "badge": "silver",
+    "composite": 70.25472112428635,
+    "digest": "f64dde3eb9b975a1a4412de62c45ed0efa4de61f7e57551fc8271ca44c1bf345",
+    "static_score": 0.7032217391304348,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.65,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.961352657004831
+    }
+  },
+  "llm-application-dev/llm-evaluation": {
+    "badge": "silver",
+    "composite": 72.31934731934732,
+    "digest": "6ee704ac5c78468052e0a246f9dbcf462b4bb842f0743227d5bef0c39073c73f",
+    "static_score": 0.7084615384615385,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 0.9884615384615385
+    }
+  },
+  "llm-application-dev/prompt-engineering-patterns": {
+    "badge": "silver",
+    "composite": 71.28787878787878,
+    "digest": "ae8ca4636c348abeb210841e8244c5ba8548fd068cf2f717bd11ac6fe9ad387f",
+    "static_score": 0.7017,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.5599999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.8,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 1.0
+    }
+  },
+  "llm-application-dev/rag-implementation": {
+    "badge": "silver",
+    "composite": 72.08520852085208,
+    "digest": "22f49e38d027cd87992e6c8bbf85ea2d83ea1d536aebcf268b525a44cee4fb4e",
+    "static_score": 0.7153435643564356,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.996039603960396
+    }
+  },
+  "llm-application-dev/similarity-search-patterns": {
+    "badge": "bronze",
+    "composite": 69.01185770750988,
+    "digest": "181db40128ed052fe9c466457d561c1dec1087301c56ac2bffe9475139554767",
+    "static_score": 0.6844173913043479,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7999999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.991304347826087
+    }
+  },
+  "llm-application-dev/vector-index-tuning": {
+    "badge": "bronze",
+    "composite": 68.11069882498452,
+    "digest": "f924ffcd77d6b521601294689b1770fa459f0dee71afc6a8847ef23ef92a6e4e",
+    "static_score": 0.6752959183673469,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9755102040816327
+    }
+  },
+  "llm-finetuning/checkpoint-promotion": {
+    "badge": "gold",
+    "composite": 80.41368743615934,
+    "digest": "3e595d2f30a2953d5efcf0e64809c8f9fcccd7cd4ca78e618c50fbb1f8e81af9",
+    "static_score": 0.7902955056179776,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.95,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9955056179775281
+    }
+  },
+  "llm-finetuning/dataset-curation": {
+    "badge": "gold",
+    "composite": 82.58881922675026,
+    "digest": "55545be0c43f02be0a16c439b1a64da15422236471c9b097087f92c82342377a",
+    "static_score": 0.8165793103448276,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.6,
+      "token_efficiency": 0.993103448275862
+    }
+  },
+  "llm-finetuning/eval-harness-first": {
+    "badge": "silver",
+    "composite": 79.97945557267592,
+    "digest": "e6db5c2546ee070cefdaa5f94a591c24e354bf2c9d4377a14f043d4f267262ef",
+    "static_score": 0.7804966101694915,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.95,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 0.9977401129943503
+    }
+  },
+  "llm-finetuning/finetuning-method-selection": {
+    "badge": "gold",
+    "composite": 80.41414141414141,
+    "digest": "adf23af7d1ae064bd525d6837ab01de534f3e61d441d928b205123e1ba9b67bf",
+    "static_score": 0.7903,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.95,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9955555555555555
+    }
+  },
+  "llm-finetuning/grpo-rlvr-training": {
+    "badge": "gold",
+    "composite": 80.4335260115607,
+    "digest": "80a87bbd4c868e677d5cf41961cb7225c8f4ea7857e132b28af40ff31c5dfcd0",
+    "static_score": 0.7904919075144509,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.95,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9976878612716763
+    }
+  },
+  "llm-finetuning/lora-qlora-recipes": {
+    "badge": "gold",
+    "composite": 80.30058651026393,
+    "digest": "6a94e812f4e554e23080cda1653357903628159ca9c44e8b6be8694e21ce78f6",
+    "static_score": 0.7972258064516129,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.6,
+      "token_efficiency": 0.9913978494623656
+    }
+  },
+  "llm-finetuning/preference-optimization": {
+    "badge": "gold",
+    "composite": 80.43364681295716,
+    "digest": "aacec0789d3c47f0c01d8744f2c7c25359250af09f101d30fe2783a0525f7e74",
+    "static_score": 0.7904931034482758,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.95,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9977011494252873
+    }
+  },
+  "llm-finetuning/quantized-export": {
+    "badge": "gold",
+    "composite": 82.4055944055944,
+    "digest": "935c171e7bb88a7e8a8b65438da6204d369bdf8880567efcbff031b30cbe10b7",
+    "static_score": 0.8120153846153846,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.997948717948718
+    }
+  },
+  "llm-finetuning/trace-to-training-data": {
+    "badge": "silver",
+    "composite": 79.54545454545455,
+    "digest": "7f734a12585c3081b4bdf168e2c0ab053fc1f1d0f82ddbf16e0ff21933e30354",
+    "static_score": 0.7706999999999999,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.95,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.25,
+      "token_efficiency": 1.0
+    }
+  },
+  "llm-finetuning/vision-sft": {
+    "badge": "gold",
+    "composite": 80.45454545454545,
+    "digest": "c7c785d54849105f95ca8aae0ea6e6edff4977737e0295b6b05c0975094f5392",
+    "static_score": 0.7907,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.95,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 1.0
+    }
+  },
+  "machine-learning-ops/ml-pipeline-workflow": {
+    "badge": "silver",
+    "composite": 73.6122211122211,
+    "digest": "15fb40fc0bfd8813f878bc29ed368e73753709bf1194c985ca50380e37ae9bf3",
+    "static_score": 0.757710989010989,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.8,
+      "token_efficiency": 0.989010989010989
+    }
+  },
+  "machine-learning-ops/recsys-pipeline-architect": {
+    "badge": "silver",
+    "composite": 70.15151515151514,
+    "digest": "ad1d0ca8e7e4b5ab192f6a539a117cc4cb8792bdde6c978c4431dc01bf914d47",
+    "static_score": 0.6885,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 1.0
+    }
+  },
+  "observability-monitoring/distributed-tracing": {
+    "badge": "bronze",
+    "composite": 67.04545454545455,
+    "digest": "3110fa666579d6c332d4179793539c6980b21155cb1c2db02348d829f3e242de",
+    "static_score": 0.6822,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.5000000000000001,
+      "token_efficiency": 1.0
+    }
+  },
+  "observability-monitoring/grafana-dashboards": {
+    "badge": "silver",
+    "composite": 71.55303030303031,
+    "digest": "c00e86e63753191ba21af50267e7e3c3e7b27be717ab1ebf73f5b2cc0bbfedad",
+    "static_score": 0.726325,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.8625
+    }
+  },
+  "observability-monitoring/prometheus-configuration": {
+    "badge": "bronze",
+    "composite": 68.44155844155844,
+    "digest": "9ae8b1655708c3f762908837586520c3d8bcfcc1e56a51ea1a28075a162a85d0",
+    "static_score": 0.6952714285714285,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9619047619047619
+    }
+  },
+  "observability-monitoring/slo-implementation": {
+    "badge": "silver",
+    "composite": 73.63636363636364,
+    "digest": "71b7d9d4fabbbd85bac9a29e8f8a8c2d5b20fb50065e1c3f59726b6d91da3fb4",
+    "static_score": 0.7407,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.65,
+      "token_efficiency": 0.9
+    }
+  },
+  "payment-processing/billing-automation": {
+    "badge": "bronze",
+    "composite": 64.7112635791881,
+    "digest": "a3fc3f3e1a4908df18f8e11e5179349d426f650b3417c4c756d004e7e9cc7564",
+    "static_score": 0.6431415094339622,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 0.9849056603773585
+    }
+  },
+  "payment-processing/paypal-integration": {
+    "badge": "silver",
+    "composite": 73.58628659476118,
+    "digest": "de05aa7bcd6ded716cde60362e87eb64274ea8f5c38ececf79e34571233b0740",
+    "static_score": 0.7294542372881356,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.49999999999999994,
+      "token_efficiency": 0.9694915254237289
+    }
+  },
+  "payment-processing/pci-compliance": {
+    "badge": "silver",
+    "composite": 77.83636363636364,
+    "digest": "0a0bcdd4902f958134db9ec9a4b4a31fe0327b248b5492ef2e14a375ff71cb31",
+    "static_score": 0.76078,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.962
+    }
+  },
+  "payment-processing/stripe-integration": {
+    "badge": "silver",
+    "composite": 71.36914600550965,
+    "digest": "8f95a9ae28768b9d1370b284e2f10cdf5fb09569ff9a6a884a45403d0ef2aba9",
+    "static_score": 0.7027545454545454,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 0.9672727272727273
+    }
+  },
+  "plugin-eval/evaluation-methodology": {
+    "badge": "silver",
+    "composite": 77.36413724017031,
+    "digest": "45a9e84e32938939a4c8babf4e83a48a012d6b15f9628b2eaa8dd19d0de1e228",
+    "static_score": 0.799304958677686,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.9500000000000001,
+      "token_efficiency": 0.9933884297520661
+    }
+  },
+  "pptx-deck-creation/pptx-deck-context": {
+    "badge": "no_badge",
+    "composite": 55.984848484848484,
+    "digest": "673231920d791cba70edf20a7542d23953bc753964166a74d4a5a7297f0e9533",
+    "static_score": 0.5625,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6000000000000001,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.5499999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.15000000000000002,
+      "token_efficiency": 1.0
+    }
+  },
+  "pptx-deck-creation/pptx-quality-gates": {
+    "badge": "no_badge",
+    "composite": 57.65151515151514,
+    "digest": "1901e14467b0509f018077d82b5c415014765dc0198f93639ed577a26e5bea6e",
+    "static_score": 0.5735,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.5499999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.1,
+      "token_efficiency": 1.0
+    }
+  },
+  "pptx-deck-creation/pptx-reference-deck-analysis": {
+    "badge": "no_badge",
+    "composite": 59.39393939393939,
+    "digest": "f2d01a2e3453de1cdb79d1c9b5acd162fdd1fb34aa71b1ce7c815a22a553b91e",
+    "static_score": 0.59,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.6,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.15,
+      "token_efficiency": 1.0
+    }
+  },
+  "pptx-deck-creation/pptx-slide-specification": {
+    "badge": "no_badge",
+    "composite": 55.757575757575765,
+    "digest": "230104a621d628664d59f368dc06f8cdf9417577459e255479c9a351b9946d79",
+    "static_score": 0.5575,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6000000000000001,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.5499999999999999,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.1,
+      "token_efficiency": 1.0
+    }
+  },
+  "pptx-deck-creation/pptx-visual-assets": {
+    "badge": "bronze",
+    "composite": 62.19696969696968,
+    "digest": "6f2b49641346cfce6c44be8c96488ec41b543f5d41b3726135c3b95adec81691",
+    "static_score": 0.608,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.1,
+      "token_efficiency": 1.0
+    }
+  },
+  "protect-mcp/protect-mcp-setup": {
+    "badge": "silver",
+    "composite": 74.92424242424242,
+    "digest": "4cc894334ccc182f8bc85268ed55ab954626e37b4460809887d778529406944a",
+    "static_score": 0.749,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.9333333333333333
+    }
+  },
+  "python-development/async-python-patterns": {
+    "badge": "silver",
+    "composite": 72.56508749466497,
+    "digest": "13b48ed612547db11e10179ec1a0d6848ab78f7adc1fd631402cd6905f91bcee",
+    "static_score": 0.7243943661971831,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9154929577464789
+    }
+  },
+  "python-development/python-anti-patterns": {
+    "badge": "silver",
+    "composite": 75.29017108352902,
+    "digest": "ccb1afe28ba581e1ebd82ba1ec2c5713145a931265c5ffcc60372b3ba36630c2",
+    "static_score": 0.7425726937269372,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.8819188191881919
+    }
+  },
+  "python-development/python-background-jobs": {
+    "badge": "silver",
+    "composite": 75.5116741182315,
+    "digest": "91a7404e95a43a1000cf0fb98b19d373ce729e5bbc5174c95a1a8dda02fb29d2",
+    "static_score": 0.7410655737704918,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9562841530054644
+    }
+  },
+  "python-development/python-code-style": {
+    "badge": "silver",
+    "composite": 75.96871759419288,
+    "digest": "7656af6ad246ed68bd1da0bb7295f1a6066400de0bb910c16cea41953eaf8f16",
+    "static_score": 0.7520403041825096,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9315589353612167
+    }
+  },
+  "python-development/python-configuration": {
+    "badge": "silver",
+    "composite": 75.66985645933015,
+    "digest": "6c91728661cc3868e7f0288f1c049d19fb06428e885235e7a6319761e124e789",
+    "static_score": 0.7593315789473685,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9236842105263158
+    }
+  },
+  "python-development/python-design-patterns": {
+    "badge": "silver",
+    "composite": 73.86363636363636,
+    "digest": "422cc8fd8cc7797bd5098e3a1b82b6ac33d358f8f9fb30e624716b99eafe85db",
+    "static_score": 0.7359,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.5000000000000001,
+      "token_efficiency": 1.0
+    }
+  },
+  "python-development/python-error-handling": {
+    "badge": "silver",
+    "composite": 76.76520449247722,
+    "digest": "06976806febaad6b84dcafd383a37f211dc7310253bcd5a8b9563495ce635982",
+    "static_score": 0.7566755244755246,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9608391608391609
+    }
+  },
+  "python-development/python-observability": {
+    "badge": "gold",
+    "composite": 80.21943573667713,
+    "digest": "833457fab4629005d7bdf14342f555b96c2d11766ca12a1a3980a76dadc2ac7e",
+    "static_score": 0.7865724137931035,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.9241379310344827
+    }
+  },
+  "python-development/python-packaging": {
+    "badge": "silver",
+    "composite": 71.38257575757576,
+    "digest": "21c40a6c70701a6be8561b1ff55e75b6d043f692131d16c58006f0dd8e7b3ecf",
+    "static_score": 0.7083875000000001,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.91875
+    }
+  },
+  "python-development/python-performance-optimization": {
+    "badge": "bronze",
+    "composite": 69.39393939393939,
+    "digest": "68702104c6aa371ba28af165db1ab14d95dce320334ed337d0057dbfa8c40251",
+    "static_score": 0.6865,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 1.0
+    }
+  },
+  "python-development/python-project-structure": {
+    "badge": "bronze",
+    "composite": 69.23914823914824,
+    "digest": "4ddb36c0310b0b4be6dd7bea3b3c7e56cc30f3449c1994f9567b4992b70ab832",
+    "static_score": 0.6984675675675676,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.932972972972973
+    }
+  },
+  "python-development/python-resilience": {
+    "badge": "silver",
+    "composite": 75.75757575757575,
+    "digest": "2c5a09bc2049b35335187acef35632369d79f1bd7ba691e737115d11114e3021",
+    "static_score": 0.7412,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9
+    }
+  },
+  "python-development/python-resource-management": {
+    "badge": "silver",
+    "composite": 77.55282555282555,
+    "digest": "1d26e2a215e0203e5b73c05e0c39700b1b642744c24e33f45ef9f82ab6a16a6a",
+    "static_score": 0.757972972972973,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9308108108108109
+    }
+  },
+  "python-development/python-testing-patterns": {
+    "badge": "silver",
+    "composite": 78.0909090909091,
+    "digest": "22d53be9812ee5f69e91bf38dd0a9605245294a1c4dff8aec37c42ba23310f71",
+    "static_score": 0.7688,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.94
+    }
+  },
+  "python-development/python-type-safety": {
+    "badge": "silver",
+    "composite": 77.67676767676768,
+    "digest": "55807f16173aac544a28e8fba8d59a55b5e0ae89f0cd86f6961947f3ae0d81d6",
+    "static_score": 0.7592,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9444444444444444
+    }
+  },
+  "python-development/uv-package-manager": {
+    "badge": "silver",
+    "composite": 75.84626755358464,
+    "digest": "4c926965ef29c32d065f2fc6909795d9a9f96fb703de7e218301e087e38c3613",
+    "static_score": 0.7498780487804878,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.55,
+      "token_efficiency": 0.943089430894309
+    }
+  },
+  "quantitative-trading/backtesting-frameworks": {
+    "badge": "silver",
+    "composite": 71.5058275058275,
+    "digest": "3e733e6fc95fbf1d61a39f8e9bb1211b1236c2925565be6e8d3f503ea5e35095",
+    "static_score": 0.7021076923076923,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9323076923076923
+    }
+  },
+  "quantitative-trading/risk-metrics-calculation": {
+    "badge": "bronze",
+    "composite": 67.4891774891775,
+    "digest": "f2541b9497b45c0a232d998302faa7597bd52f705eb6fd3ed3b3198e541e4992",
+    "static_score": 0.6728428571428572,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9904761904761905
+    }
+  },
+  "reverse-engineering/anti-reversing-techniques": {
+    "badge": "silver",
+    "composite": 73.07792207792207,
+    "digest": "992b89b4de897442ea5bbcccd439a297d7433a7ab4945c52b6e622ccec94e6a6",
+    "static_score": 0.7198714285714286,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.35,
+      "token_efficiency": 0.9885714285714285
+    }
+  },
+  "reverse-engineering/binary-analysis-patterns": {
+    "badge": "silver",
+    "composite": 71.54297520661157,
+    "digest": "2e68c7d33a992895b2cc45d023fc5b38dfb37babbe6515e15cd62f830c408201",
+    "static_score": 0.7205254545454546,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9447272727272727
+    }
+  },
+  "reverse-engineering/memory-forensics": {
+    "badge": "silver",
+    "composite": 73.78427128427128,
+    "digest": "9e81dcf0e13b43d84e4d4072297c9873909f8fc897d07acd0c0ec6981b8659bd",
+    "static_score": 0.7467142857142857,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9412698412698413
+    }
+  },
+  "reverse-engineering/protocol-reverse-engineering": {
+    "badge": "silver",
+    "composite": 73.94495588799387,
+    "digest": "f17ac4ac203892e21a965a4e70f5421e1eb924ff70b70bb92de5a07d4dc4a9ec",
+    "static_score": 0.7410050632911392,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.8,
+      "token_efficiency": 0.9422784810126582
+    }
+  },
+  "review-agent-governance/review-agent-setup": {
+    "badge": "bronze",
+    "composite": 69.64667685255921,
+    "digest": "0ee3eb66191fa907f0df25a8e21d209aa8e7c7afcab9dd644f1d1bf13ec305ec",
+    "static_score": 0.7062521008403362,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.9361344537815126
+    }
+  },
+  "security-scanning/attack-tree-construction": {
+    "badge": "bronze",
+    "composite": 63.653198653198636,
+    "digest": "ca93f87d33d5828f34d6c1b275ac9473e3acdede6cfdd5e2782956fedb1115eb",
+    "static_score": 0.6416666666666666,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9851851851851852
+    }
+  },
+  "security-scanning/sast-configuration": {
+    "badge": "silver",
+    "composite": 79.53896103896105,
+    "digest": "5635e6836e21d4affc1005a0575bb8b1e653ee36492c651cf6ecec515eeca6a0",
+    "static_score": 0.7998857142857143,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 1.0,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.8,
+      "token_efficiency": 0.9742857142857143
+    }
+  },
+  "security-scanning/security-requirement-extraction": {
+    "badge": "bronze",
+    "composite": 65.98323662153447,
+    "digest": "d346ba719b47a509adafa9220a746e5de95cb28a0625e0c0eb6fe036fb477821",
+    "static_score": 0.6614340425531915,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9914893617021276
+    }
+  },
+  "security-scanning/stride-analysis-patterns": {
+    "badge": "bronze",
+    "composite": 65.98484848484848,
+    "digest": "3e0ab082d9b2fe7dd6247e6eb60e07b43abb8ab25982a38260ab691aab132a3f",
+    "static_score": 0.66145,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9916666666666667
+    }
+  },
+  "security-scanning/threat-mitigation-mapping": {
+    "badge": "silver",
+    "composite": 70.37145650048875,
+    "digest": "1b7c297c9a6b2eff77ffc1eb114183e686e869860f4120e334959cd18ee9697f",
+    "static_score": 0.6943774193548387,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9741935483870967
+    }
+  },
+  "shell-scripting/bash-defensive-patterns": {
+    "badge": "bronze",
+    "composite": 62.424242424242415,
+    "digest": "37fbe39a01c2f7312ba0aacf5a90cdde44ba6bb18e4301edbae66a0d7d09c635",
+    "static_score": 0.613,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.15000000000000002,
+      "token_efficiency": 1.0
+    }
+  },
+  "shell-scripting/bats-testing-patterns": {
+    "badge": "silver",
+    "composite": 75.70809248554914,
+    "digest": "ead46043ad3d234aa3081a66981d23d6ed68cdc4f4251a549af4a141733e5fce",
+    "static_score": 0.7512601156069364,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9028901734104047
+    }
+  },
+  "shell-scripting/shellcheck-configuration": {
+    "badge": "bronze",
+    "composite": 62.424242424242415,
+    "digest": "acbff48a14170ca46ebb45c3ee7eae8b2e0e5f161a8b541e502f6d05df91056d",
+    "static_score": 0.613,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.15000000000000002,
+      "token_efficiency": 1.0
+    }
+  },
+  "ship-mate/scan": {
+    "badge": "bronze",
+    "composite": 65.55361305361305,
+    "digest": "92952a50727d5693f8dcee4d3b26408b6b9571c2c05a1793872cf5b271be6d4f",
+    "static_score": 0.6497307692307692,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 0.65,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.4,
+      "token_efficiency": 0.9692307692307692
+    }
+  },
+  "signed-audit-trails/signed-audit-trails-recipe": {
+    "badge": "silver",
+    "composite": 77.30361555468852,
+    "digest": "31f69829116d85b3ee4a9abbc5e1bc5ba728c692d31930bb7b0482ecb1b82ffa",
+    "static_score": 0.7800557939914163,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.7000000000000001,
+      "token_efficiency": 0.9450643776824035
+    }
+  },
+  "skill-forge-essentials/ai-debt-detector": {
+    "badge": "bronze",
+    "composite": 69.6969696969697,
+    "digest": "f84d37cc2df27a456d6b46ff6d5a288ede6bf5e7b655bd5595d194e0511e0e48",
+    "static_score": 0.6749,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.2,
+      "structural_completeness": 0.25,
+      "token_efficiency": 1.0
+    }
+  },
+  "skill-forge-essentials/session-guard": {
+    "badge": "bronze",
+    "composite": 67.12121212121212,
+    "digest": "aca0bd410d7ae846eface6bb91345a3d8a3152090944022792bcf480a3dd0ee0",
+    "static_score": 0.6619,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.77,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.2,
+      "structural_completeness": 0.35000000000000003,
+      "token_efficiency": 1.0
+    }
+  },
+  "skill-forge-essentials/visual-edit-precision": {
+    "badge": "bronze",
+    "composite": 62.65151515151515,
+    "digest": "36071fe8d675248faba30321ff7862d73671b57083427e9fccfc44e8d88bd070",
+    "static_score": 0.6162,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.2,
+      "structural_completeness": 0.2,
+      "token_efficiency": 1.0
+    }
+  },
+  "social-publishing/social-publishing": {
+    "badge": "bronze",
+    "composite": 64.81907308377896,
+    "digest": "c80bcea2d836c18db51a1b094e6c9a7b97b55ca6a3788ea899f85fc94a4a2ddf",
+    "static_score": 0.6641588235294118,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.5599999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.5,
+      "structural_completeness": 0.65,
+      "token_efficiency": 0.971764705882353
+    }
+  },
+  "startup-business-analyst/competitive-landscape": {
+    "badge": "silver",
+    "composite": 71.36363636363636,
+    "digest": "60f5c5d7e6b6896b21f28d20c52d8475b64bea861ea6204d3e0e50c62058a838",
+    "static_score": 0.70975,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.49999999999999994,
+      "token_efficiency": 0.975
+    }
+  },
+  "startup-business-analyst/market-sizing-analysis": {
+    "badge": "bronze",
+    "composite": 65.68181818181817,
+    "digest": "150ef79dca7a075bc96b1f5bd76e48cd780dfe3e14bdfcabb4e238cf387e711b",
+    "static_score": 0.6522,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.2,
+      "token_efficiency": 1.0
+    }
+  },
+  "startup-business-analyst/startup-financial-modeling": {
+    "badge": "silver",
+    "composite": 71.04040404040404,
+    "digest": "457d7d1e15ce3203fa733f204da94f1a3f200e50b598c75e48fbe65d689eb889",
+    "static_score": 0.7073,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9644444444444444
+    }
+  },
+  "startup-business-analyst/startup-metrics-framework": {
+    "badge": "bronze",
+    "composite": 69.6861471861472,
+    "digest": "6d13db8af8c23d89e96e85e803214f3c8bd06b7802cec4bb2a24222f6956c858",
+    "static_score": 0.6801428571428572,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 0.85,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.6,
+      "structural_completeness": 0.4,
+      "token_efficiency": 0.9238095238095239
+    }
+  },
+  "startup-business-analyst/team-composition-analysis": {
+    "badge": "silver",
+    "composite": 73.39817387852324,
+    "digest": "a0f6efa622a2492a5c43d406ca469aaa86519fa4114993cd44542ceda3a089f6",
+    "static_score": 0.72734192139738,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9737991266375545
+    }
+  },
+  "superself/superself": {
+    "badge": "bronze",
+    "composite": 61.74242424242424,
+    "digest": "00937ffb633f7bb6910feb3910c564a23499ccdfc6f44ffed584e3cf162963b2",
+    "static_score": 0.6077,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.5599999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.2,
+      "structural_completeness": 0.25,
+      "token_efficiency": 1.0
+    }
+  },
+  "systems-programming/go-concurrency-patterns": {
+    "badge": "silver",
+    "composite": 73.3601841196778,
+    "digest": "2b623f88b7e51ccb55cc6a13dbab3f8cb5449fea3d674ede6cf5214232a6ee37",
+    "static_score": 0.7244658227848102,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.969620253164557
+    }
+  },
+  "systems-programming/memory-safety-patterns": {
+    "badge": "bronze",
+    "composite": 66.68096054888508,
+    "digest": "f9e735695a956bf8bcc3fa68b2f0a45fad41e3eb6679fd7aef3d98947d073259",
+    "static_score": 0.6646415094339623,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.6499999999999999,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9849056603773585
+    }
+  },
+  "systems-programming/rust-async-patterns": {
+    "badge": "bronze",
+    "composite": 68.04978354978356,
+    "digest": "97d31d6afc0b28839afd8758e54c2ea3223ad94d15af223c431715f2ffe8989f",
+    "static_score": 0.6866428571428571,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.6,
+      "token_efficiency": 0.9771428571428571
+    }
+  },
+  "ui-design/accessibility-compliance": {
+    "badge": "bronze",
+    "composite": 65.6060606060606,
+    "digest": "49d9957c65a2ae93ee98ff4b900d273d7a57ffc7dee7a0fef07f718b53f3409a",
+    "static_score": 0.6522,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.35,
+      "token_efficiency": 1.0
+    }
+  },
+  "ui-design/design-system-patterns": {
+    "badge": "silver",
+    "composite": 70.6357048748353,
+    "digest": "ec610ad219072b07dd67a087671fea212dd39e73fb0178ac3209a9badf3fd9bf",
+    "static_score": 0.7072434782608695,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.5000000000000001,
+      "token_efficiency": 0.9782608695652174
+    }
+  },
+  "ui-design/interaction-design": {
+    "badge": "silver",
+    "composite": 78.72984562607205,
+    "digest": "830a542128c1258072432874cb3363a5e47bfad5f219026b45f6ce1dfb69f2fa",
+    "static_score": 0.7888754716981132,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.9,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.8,
+      "token_efficiency": 0.8852830188679245
+    }
+  },
+  "ui-design/mobile-android-design": {
+    "badge": "silver",
+    "composite": 70.0,
+    "digest": "3efe94f8d1182a680440eaa7d1b8e296eb7a08ab036eb47953f57ec82b81b980",
+    "static_score": 0.6982,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9333333333333333
+    }
+  },
+  "ui-design/mobile-ios-design": {
+    "badge": "silver",
+    "composite": 76.45282878041499,
+    "digest": "98b5ecf4fd4bb1d32a9e40ac58a46c5debb1e3960025094e795431e4a843c28e",
+    "static_score": 0.7588330049261084,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.85,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.6000000000000001,
+      "token_efficiency": 0.9014778325123153
+    }
+  },
+  "ui-design/react-native-design": {
+    "badge": "silver",
+    "composite": 71.92104531554074,
+    "digest": "2b3e9a33508f42a434ee9c2d8ac0c6a1ccc18cf5885a12d7da6a48b127bd2a42",
+    "static_score": 0.7137183486238532,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.75,
+      "progressive_disclosure": 0.65,
+      "structural_completeness": 0.45,
+      "token_efficiency": 0.9779816513761468
+    }
+  },
+  "ui-design/responsive-design": {
+    "badge": "bronze",
+    "composite": 65.6060606060606,
+    "digest": "793411d7d6c66a9c5c75b87c88e2b94f8879315c09ba2f0c9d1b9d698645518e",
+    "static_score": 0.6522,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.7,
+      "progressive_disclosure": 0.35,
+      "structural_completeness": 0.35,
+      "token_efficiency": 1.0
+    }
+  },
+  "ui-design/visual-design-foundations": {
+    "badge": "silver",
+    "composite": 76.32634032634033,
+    "digest": "4db73294a9d982900601f11da848bc199b5a98ca4e2606f50635f8686975216a",
+    "static_score": 0.7748307692307692,
+    "sub_scores": {
+      "ecosystem_coherence": 0.5,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.8500000000000001,
+      "token_efficiency": 0.9292307692307692
+    }
+  },
+  "ui-design/web-component-design": {
+    "badge": "silver",
+    "composite": 77.14876033057851,
+    "digest": "7d7ef66ec90b241ea62e7fbc7b086e8e74010ddd9fef91912b35b1c84e354262",
+    "static_score": 0.7904727272727273,
+    "sub_scores": {
+      "ecosystem_coherence": 0.75,
+      "frontmatter_quality": 0.71,
+      "harness_portability": 1.0,
+      "orchestration_wiring": 0.8,
+      "progressive_disclosure": 0.75,
+      "structural_completeness": 0.8500000000000001,
+      "token_efficiency": 0.9363636363636364
+    }
+  }
+}
