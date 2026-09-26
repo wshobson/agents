@@ -111,7 +111,7 @@ leave everything else under `.pi/` alone.
 - **Antigravity** — no one-step-from-URL install (the lean tradeoff). Clone the repo, then
   `make generate HARNESS=antigravity` and either `agy plugin install .antigravity/plugins/<name>`
   per plugin, or `make install-antigravity` to symlink every generated plugin into
-  `~/.gemini/antigravity-cli/plugins/` (agy's config dir) at once.
+  `~/.gemini/config/plugins/` (agy's config dir) at once.
 - **OpenCode** — no one-step-from-URL install. Clone the repo, then `make install-opencode`
   (runs generate + symlinks `.opencode/` → `~/.config/opencode/`).
 - **Pi** — no one-step-from-URL install. Clone the repo, then `make install-pi` symlinks every
@@ -230,7 +230,7 @@ make uninstall-opencode
 make install-copilot     # symlink .copilot/ → ~/.copilot/
 make uninstall-copilot
 
-make install-antigravity    # symlink each .antigravity/plugins/<p>/ → ~/.gemini/antigravity-cli/plugins/<p>/
+make install-antigravity    # symlink each .antigravity/plugins/<p>/ → ~/.gemini/config/plugins/<p>/
 make uninstall-antigravity
 
 make install-pi          # symlink each .pi/ skill, prompt, and agent → ~/.pi/agent/

@@ -29,7 +29,7 @@ def default_config_dir(env: dict[str, str] | None = None) -> Path:
     resolved: dict[str, str] = env if env is not None else dict(os.environ)
     if resolved.get("ANTIGRAVITY_CONFIG_DIR"):
         return Path(resolved["ANTIGRAVITY_CONFIG_DIR"]).expanduser()
-    return Path.home() / ".gemini" / "antigravity-cli"
+    return Path.home() / ".gemini" / "config"
 
 
 def _is_relative_to(child: Path, parent: Path) -> bool:
