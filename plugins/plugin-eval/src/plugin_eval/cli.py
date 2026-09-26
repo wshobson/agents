@@ -189,3 +189,48 @@ def compare(
             name = da.name.replace("_", " ").title()
             lines.append(f"| {name} | {da.score:.2f} | {db.score:.2f} | {winner} |")
     console.print("\n".join(lines))
+
+
+traces_app = typer.Typer(help="Build prompts and traces for error analysis.")
+app.add_typer(traces_app, name="traces")
+
+
+@traces_app.command("prompts")
+def traces_prompts(
+    plugins_dir: Path = typer.Option(..., help="The repo's plugins directory"),  # noqa: B008
+    marketplace: Path = typer.Option(..., help="Path to .claude-plugin/marketplace.json"),  # noqa: B008
+    n_skills: int = typer.Option(30, help="Number of skills to sample"),  # noqa: B008
+    seed: int = typer.Option(20260926, help="Seed for sampling and tuple building"),  # noqa: B008
+    out: Path = typer.Option(..., help="JSONL file to write"),  # noqa: B008
+    dry_run: bool = typer.Option(False, "--dry-run", help="Write tuples without queries"),  # noqa: B008
+) -> None:
+    """Sample skills, build prompt tuples, and write one user message per tuple."""
+    from plugin_eval.traces.prompts import (
+        AnthropicQueryWriter,
+        build_tuples,
+        render_queries,
+        sample_skills,
+    )
+
+    for p in (plugins_dir, marketplace):
+        if not p.exists():
+            console.print(f"[red]Error: Path does not exist: {p}[/red]")
+            raise typer.Exit(code=2)
+    skills = sample_skills(plugins_dir, marketplace, n=n_skills, seed=seed)
+    if not skills:
+        console.print(f"[red]Error: No local skills found under {plugins_dir}[/red]")
+        raise typer.Exit(code=2)
+    tuples = build_tuples(skills, seed=seed)
+    if dry_run:
+        rows = tuples
+    else:
+        rows = render_queries(
+            tuples,
+            skill_text=lambda plugin, skill: (
+                plugins_dir / plugin / "skills" / skill / "SKILL.md"
+            ).read_text(encoding="utf-8"),
+            client=AnthropicQueryWriter(),
+        )
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("".join(row.model_dump_json() + "\n" for row in rows), encoding="utf-8")
+    console.print(f"Wrote {len(rows)} rows for {len(tuples)} tuples to {out}")
