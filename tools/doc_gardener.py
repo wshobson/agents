@@ -10,6 +10,7 @@ Per the OpenAI harness engineering pattern, a recurring task scans for:
 6. Plugins missing from marketplace.json
 7. Component counts quoted in README.md / AGENTS.md that no longer match reality
 8. Same-named agents whose bodies have diverged across plugins
+9. Generated Markdown artifacts with invalid YAML frontmatter
 
 Each finding ships with a `Fix:` remediation line.
 
@@ -30,6 +31,8 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, cast
+
+import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -351,7 +354,66 @@ def check_stale_artifacts(report: Report) -> None:
             )
 
 
+GENERATED_MARKDOWN_ROOTS = (".codex", ".opencode", ".copilot", ".antigravity")
+
+
+def check_generated_frontmatter_yaml(report: Report) -> None:
+    """Parse generated Markdown frontmatter with a real YAML loader.
+
+    Adapter-level smoke tests can miss syntax that tolerant line-oriented readers
+    accept.  Scan only generated harness outputs and fail on malformed or
+    non-mapping frontmatter so broken artifacts cannot be published silently.
+    """
+    for root_name in GENERATED_MARKDOWN_ROOTS:
+        root = WORKTREE / root_name
+        if not root.is_dir():
+            continue
+        for path in sorted(root.rglob("*.md")):
+            text = read_text_or_none(path, report)
+            if text is None:
+                continue
+            lines = text.lstrip(BOM).splitlines()
+            first_content = next((index for index, line in enumerate(lines) if line.strip()), None)
+            if first_content is None or lines[first_content].strip() != "---":
+                continue
+            lines = lines[first_content:]
+            closing = next(
+                (index for index, line in enumerate(lines[1:], 1) if line.rstrip() == "---"), None
+            )
+            if closing is None:
+                report.add(
+                    kind="INVALID_GENERATED_FRONTMATTER",
+                    severity="error",
+                    path=path,
+                    message="frontmatter opens with `---` but has no closing delimiter",
+                    fix="Fix the source metadata or adapter, then regenerate this artifact.",
+                )
+                continue
+            raw = "\n".join(lines[1:closing])
+            try:
+                parsed = yaml.safe_load(raw)
+            except yaml.YAMLError as exc:
+                detail = str(exc).splitlines()[0]
+                report.add(
+                    kind="INVALID_GENERATED_FRONTMATTER",
+                    severity="error",
+                    path=path,
+                    message=f"frontmatter is not valid YAML: {detail}",
+                    fix="Fix the source metadata or adapter, then regenerate this artifact.",
+                )
+                continue
+            if not isinstance(parsed, dict):
+                report.add(
+                    kind="INVALID_GENERATED_FRONTMATTER",
+                    severity="error",
+                    path=path,
+                    message=f"frontmatter is {type(parsed).__name__}, expected a YAML mapping",
+                    fix="Emit key/value frontmatter from the adapter, then regenerate this artifact.",
+                )
+
+
 def check_oversized_context_files(report: Report) -> None:
+    """Report context files that exceed their configured line budgets."""
     for name, cap in CONTEXT_FILES.items():
         path = WORKTREE / name
         if not path.is_file():
@@ -760,6 +822,7 @@ def check_arguments_framing(report: Report) -> None:
 CHECKS = {
     "stale": check_stale_artifacts,
     "context": check_oversized_context_files,
+    "frontmatter-yaml": check_generated_frontmatter_yaml,
     "links": check_dead_links,
     "codex-cap": check_codex_skill_caps,
     "marketplace": check_marketplace_consistency,
