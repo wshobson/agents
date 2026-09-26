@@ -128,14 +128,58 @@ def test_render_retries_similar_query_once_and_drops_empty() -> None:
     assert records[0].generator_model == "ScriptedWriter"
 
 
-def test_anthropic_writer_returns_empty_on_refusal(monkeypatch) -> None:
-    anthropic = pytest.importorskip("anthropic")
-    replies = [
-        SimpleNamespace(stop_reason="refusal", content=[]),
-        SimpleNamespace(
-            stop_reason="end_turn", content=[SimpleNamespace(type="text", text="hi there")]
-        ),
+def test_render_keeps_first_query_when_retry_is_empty() -> None:
+    tuples = [
+        PromptTuple(
+            id=f"p00{i}",
+            target_plugin="plug",
+            target_skill="skill",
+            explicitness="vague",
+            routing="should_trigger",
+            task_shape="explain",
+        )
+        for i in range(1, 3)
     ]
+    writer = ScriptedWriter(
+        ["design a postgres schema for invoices", "design a postgres schema for invoice", ""]
+    )
+    records = render_queries(tuples, skill_text=lambda p, s: "desc", client=writer)
+    assert writer.calls == 3
+    assert [r.query for r in records] == [
+        "design a postgres schema for invoices",
+        "design a postgres schema for invoice",
+    ]
+
+
+class MeteredWriter:
+    """Reports 100 input and 10,000 output tokens per call, about USD 0.25."""
+
+    max_tokens = 10_000
+
+    def __init__(self) -> None:
+        self.calls = 0
+        self.last_usage = (0, 0)
+
+    def write(self, prompt: str) -> str:
+        self.calls += 1
+        self.last_usage = (100, 10_000)
+        return f"query {self.calls}"
+
+
+def test_render_stops_before_the_budget_could_be_passed(tmp_path: Path, caplog) -> None:
+    plugins, market = fake_repo(tmp_path)
+    tuples = build_tuples(
+        sample_skills(plugins, market, n=2, seed=1), seed=1, per_skill=3, off_topic=0
+    )
+    writer = MeteredWriter()
+    records = render_queries(tuples, skill_text=lambda p, s: "desc", client=writer, max_usd=1.0)
+    assert writer.calls == 3
+    assert [r.id for r in records] == ["p001", "p002", "p003"]
+    assert "3 tuples are left unwritten" in caplog.text
+
+
+def fake_anthropic(monkeypatch, replies: list[SimpleNamespace]) -> list[dict]:
+    anthropic = pytest.importorskip("anthropic")
     calls: list[dict] = []
 
     class FakeMessages:
@@ -148,11 +192,34 @@ def test_anthropic_writer_returns_empty_on_refusal(monkeypatch) -> None:
             self.messages = FakeMessages()
 
     monkeypatch.setattr(anthropic, "Anthropic", FakeAnthropic)
+    return calls
+
+
+def reply(stop_reason: str, text: str) -> SimpleNamespace:
+    return SimpleNamespace(
+        stop_reason=stop_reason,
+        content=[SimpleNamespace(type="text", text=text)] if text else [],
+        usage=SimpleNamespace(input_tokens=700, output_tokens=300),
+    )
+
+
+def test_anthropic_writer_returns_empty_on_refusal(monkeypatch) -> None:
+    calls = fake_anthropic(monkeypatch, [reply("refusal", ""), reply("end_turn", "hi there")])
     writer = AnthropicQueryWriter()
     assert writer.write("p") == ""
     assert writer.write("p") == "hi there"
     assert calls[0]["model"] == "claude-opus-5"
-    assert calls[0]["max_tokens"] == 1024
+    assert calls[0]["max_tokens"] == 2048
+    assert calls[0]["output_config"] == {"effort": "low"}
+    assert "thinking" not in calls[0]
+    assert writer.last_usage == (700, 300)
+
+
+def test_anthropic_writer_returns_empty_when_cut_off(monkeypatch) -> None:
+    fake_anthropic(monkeypatch, [reply("max_tokens", "Please review this snippet:")])
+    writer = AnthropicQueryWriter()
+    assert writer.write("p") == ""
+    assert writer.last_usage == (700, 300)
 
 
 def test_cli_dry_run_writes_tuples(tmp_path: Path) -> None:

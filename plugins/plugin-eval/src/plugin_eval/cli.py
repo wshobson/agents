@@ -202,6 +202,7 @@ def traces_prompts(
     n_skills: int = typer.Option(30, help="Number of skills to sample"),  # noqa: B008
     seed: int = typer.Option(20260926, help="Seed for sampling and tuple building"),  # noqa: B008
     out: Path = typer.Option(..., help="JSONL file to write"),  # noqa: B008
+    max_usd: float = typer.Option(5.0, help="Stop writing before API spend could pass this"),  # noqa: B008
     dry_run: bool = typer.Option(False, "--dry-run", help="Write tuples without queries"),  # noqa: B008
 ) -> None:
     """Sample skills, build prompt tuples, and write one user message per tuple."""
@@ -230,6 +231,7 @@ def traces_prompts(
                 plugins_dir / plugin / "skills" / skill / "SKILL.md"
             ).read_text(encoding="utf-8"),
             client=AnthropicQueryWriter(),
+            max_usd=max_usd,
         )
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("".join(row.model_dump_json() + "\n" for row in rows), encoding="utf-8")

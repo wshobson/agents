@@ -32,6 +32,10 @@ EXPLICITNESS: tuple[Explicitness, ...] = ("names_topic", "describes_problem", "v
 TASK_SHAPES: tuple[TaskShape, ...] = ("design", "write_code", "review_snippet", "explain")
 SKILL_ROUTING: tuple[Routing, ...] = ("should_trigger", "should_trigger", "near_miss")
 EXCERPT_CHARS = 1500
+# claude-opus-5 list prices in USD per million tokens, from the claude-api skill. Thinking
+# tokens are billed as output tokens.
+INPUT_USD_PER_MTOK = 5.0
+OUTPUT_USD_PER_MTOK = 25.0
 
 ROUTING_INSTRUCTIONS: dict[str, str] = {
     "should_trigger": "the message clearly needs the knowledge this skill provides",
@@ -73,7 +77,12 @@ Reply with the message only.
 
 
 class QueryWriter(Protocol):
-    """Anything that turns a query-writing prompt into one user message."""
+    """Anything that turns a query-writing prompt into one user message.
+
+    A writer that calls a paid API should also expose two attributes so render_queries can
+    keep the spend under budget: max_tokens, the output cap of one call, and last_usage,
+    the input and output token counts of its latest call.
+    """
 
     def write(self, prompt: str) -> str: ...
 
@@ -196,27 +205,60 @@ def _query_prompt(item: PromptTuple, skill_md: str) -> str:
     )
 
 
+def _usd(input_tokens: int, output_tokens: int) -> float:
+    """Return the cost of one call at the claude-opus-5 list prices."""
+    return (input_tokens * INPUT_USD_PER_MTOK + output_tokens * OUTPUT_USD_PER_MTOK) / 1e6
+
+
 def render_queries(
     tuples: list[PromptTuple],
     skill_text: Callable[[str, str], str],
     client: QueryWriter,
+    max_usd: float = 5.0,
 ) -> list[PromptRecord]:
     """Write one user message per tuple, with one writer call each.
 
     skill_text(plugin, skill) returns the raw SKILL.md text of the target skill. When a
     query is too similar to an earlier query for the same target, the writer is called once
-    more and the second attempt is kept. Empty queries, such as refusals, are dropped and
-    logged.
+    more. The second attempt is kept unless it is empty. Empty queries, such as refusals,
+    are dropped and logged.
+
+    Spend is added up from the writer's last_usage after each call. Before each call, the
+    worst case for that call is added to the spend so far: the prompt's UTF-8 byte length
+    bounds its input tokens, and max_tokens bounds its output. When that total could pass
+    max_usd, writing stops, and the number of tuples left unwritten is logged.
     """
     model = getattr(client, "model", type(client).__name__)
+    spent = 0.0
+
+    def write(prompt: str) -> str | None:
+        """Call the writer, or return None when the call could pass the budget."""
+        nonlocal spent
+        worst = _usd(len(prompt.encode("utf-8")), getattr(client, "max_tokens", 0))
+        if spent + worst > max_usd:
+            return None
+        query = client.write(prompt).strip()
+        spent += _usd(*getattr(client, "last_usage", (0, 0)))
+        return query
+
     earlier: dict[tuple[str, str], list[str]] = defaultdict(list)
     records: list[PromptRecord] = []
-    for item in tuples:
+    for index, item in enumerate(tuples):
         target = (item.target_plugin, item.target_skill)
         prompt = _query_prompt(item, skill_text(*target))
-        query = client.write(prompt).strip()
+        query = write(prompt)
+        if query is None:
+            logger.warning(
+                "Stopped at %s: the next call could pass the USD %.2f budget after spending "
+                "USD %.2f, so %d tuples are left unwritten.",
+                item.id,
+                max_usd,
+                spent,
+                len(tuples) - index,
+            )
+            break
         if any(too_similar(query, other) for other in earlier[target]):
-            query = client.write(prompt).strip()
+            query = write(prompt) or query
         if not query:
             logger.warning("Dropped %s because the writer returned an empty query.", item.id)
             continue
@@ -232,22 +274,26 @@ class AnthropicQueryWriter:
     writer is created.
     """
 
+    max_tokens = 2048
+
     def __init__(self, model: str = "claude-opus-5") -> None:
         import anthropic
 
         self.model = model
+        self.last_usage = (0, 0)
         self._client = anthropic.Anthropic()
 
     def write(self, prompt: str) -> str:
-        """Return the model's message, or an empty string when the model refuses."""
+        """Return the model's message, or an empty string when it refuses or is cut off."""
         response = self._client.messages.create(
             model=self.model,
-            max_tokens=1024,
+            max_tokens=self.max_tokens,
             # Opus 5 thinks by default, and max_tokens caps thinking plus text. Low effort
-            # keeps the thinking short so the message itself fits in 1024 tokens.
+            # keeps the thinking short so the message itself fits under the cap.
             output_config={"effort": "low"},
             messages=[{"role": "user", "content": prompt}],
         )
-        if response.stop_reason == "refusal":
+        self.last_usage = (response.usage.input_tokens, response.usage.output_tokens)
+        if response.stop_reason in ("refusal", "max_tokens"):
             return ""
         return "".join(block.text for block in response.content if block.type == "text")
