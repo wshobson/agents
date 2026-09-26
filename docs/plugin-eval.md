@@ -1,35 +1,38 @@
-# PluginEval: Quality Evaluation Framework
+# PluginEval quality evaluation framework
 
-PluginEval is a three-layer quality evaluation framework for Claude Code plugins and skills. It combines deterministic static analysis, LLM-based semantic judging, and Monte Carlo simulation to produce calibrated quality scores with confidence intervals.
+PluginEval scores Claude Code plugins and skills in up to three layers, which are a static lint, an LLM judge, and a Monte Carlo simulation. It combines the layer scores into a composite score from 0 to 100, and it reports letter grades, anti-pattern flags, and a badge from Bronze to Platinum.
 
-## Overview
+## Status of each layer
 
-PluginEval answers the question: **"How good is this plugin or skill?"** It evaluates across 10 quality dimensions, detects anti-patterns, assigns letter grades, and awards quality badges (Bronze through Platinum).
+The static layer is a lint. It's fast and deterministic, and it's useful for checking structure, e.g., frontmatter, headings, reference links, and portability. It doesn't run the skill, so it can't tell whether the skill helps an agent finish a task.
+
+The LLM judge and Monte Carlo layers are experimental, not validated against human labels. The sections on each layer below list their known limits.
+
+Badges come from the composite score alone, because no command computes an Elo rating. Plugin-level scores come from the static layer alone, so plugin badges, including the ones in the weekly CI report, reflect the lint only.
+
+For the trace-based eval program, see `evals/README.md` at the repository root.
+
+### Weekly CI report
+
+The `Plugin Eval Report` workflow in `.github/workflows/eval-report.yml` runs `plugins/plugin-eval/scripts/eval_all.py` over every local plugin each Monday, and its job is named `Static lint report`. The script accepts only `--depth quick`. Any other depth exits with code 2, because plugin-level evaluation runs the static layer only.
 
 ### Architecture
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                   CLI / Commands                │
-│       score · certify · compare · init          │
+│                  CLI / Commands                 │
+│          score, certify, compare, init          │
 ├─────────────────────────────────────────────────┤
 │                   Eval Engine                   │
-│         Composite scoring, layer blending       │
+│        Composite scoring, layer blending        │
 ├────────────┬────────────────┬───────────────────┤
-│  Layer 1   │    Layer 2     │     Layer 3       │
-│  Static    │   LLM Judge    │   Monte Carlo     │
-│  Analysis  │   (Semantic)   │   (Statistical)   │
-│  <2s, free │  ~30s, 4 calls │  ~2min, 50 calls  │
+│  Layer 1   │    Layer 2     │      Layer 3      │
+│   Static   │   LLM Judge    │    Monte Carlo    │
+│    lint    │  experimental  │    experimental   │
+│  no calls  │ 4 model calls  │  51 or 101 calls  │
 ├────────────┴────────────────┴───────────────────┤
-│                  Parser Layer                   │
-│       SKILL.md, agents/*.md, plugin.json        │
-├─────────────────────────────────────────────────┤
-│              Statistical Methods                │
-│    Wilson CI · Bootstrap CI · Clopper-Pearson    │
-│    Cohen's κ · Coefficient of Variation         │
-├─────────────────────────────────────────────────┤
-│              Corpus & Elo Ranking               │
-│    Gold standard index · Pairwise comparison    │
+│                   Parser Layer                  │
+│        SKILL.md, agents/*.md, plugin.json       │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -62,16 +65,16 @@ uv sync --extra dev
 
 ## CLI Commands
 
-### `score` — Evaluate a plugin or skill
+### `score`: evaluate a plugin or skill
 
 ```bash
 # Quick evaluation (static only, instant)
 uv run plugin-eval score path/to/skill --depth quick
 
-# Standard evaluation (static + LLM judge)
+# Standard evaluation (static + LLM judge, experimental)
 uv run plugin-eval score path/to/skill --depth standard
 
-# Deep evaluation (all three layers)
+# Deep evaluation (all three layers, two of them experimental)
 uv run plugin-eval score path/to/skill --depth deep
 
 # Output formats
@@ -93,15 +96,17 @@ uv run plugin-eval score path/to/skill --threshold 70
 | `--concurrency` | `4` | Max concurrent LLM calls (1–20) |
 | `--threshold` | none | Minimum score; exit 1 if below |
 
-### `certify` — Full certification with badge
+At `standard` depth or deeper, `score` and `certify` print a note on stderr that the judge and Monte Carlo layers are experimental. For a plugin directory, the CLI also warns that only the static layer runs.
 
-Runs at `deep` depth (all three layers). Takes 15–20 minutes.
+### `certify`: score at deep depth and assign a badge
+
+Runs at `deep` depth, so it includes the two experimental layers. For a plugin directory, it runs the static layer only.
 
 ```bash
 uv run plugin-eval certify path/to/skill --output markdown
 ```
 
-### `compare` — Head-to-head comparison
+### `compare`: head-to-head comparison
 
 Compare two skills side-by-side across all dimensions.
 
@@ -109,9 +114,9 @@ Compare two skills side-by-side across all dimensions.
 uv run plugin-eval compare path/to/skill-a path/to/skill-b
 ```
 
-### `init` — Initialize corpus
+### `init`: write a corpus index
 
-Build a gold-standard corpus index from a plugins directory for Elo ranking.
+Write a JSON index of the skills in a plugins directory. No other command reads the index.
 
 ```bash
 uv run plugin-eval init plugins/ --corpus-dir ~/.plugineval/corpus
@@ -140,13 +145,11 @@ PluginEval is also a Claude Code plugin with agents and commands.
 
 The `evaluation-methodology` skill provides the full scoring methodology reference, including dimension definitions, rubric anchors, blend weights, and improvement guidance.
 
-## The Three Evaluation Layers
+## The three evaluation layers
 
-### Layer 1: Static Analysis
+### Layer 1: Static analysis (lint)
 
-**Speed:** < 2 seconds. **Cost:** Free (no LLM calls). **Deterministic.**
-
-Runs seven structural sub-checks against the parsed SKILL.md:
+The static layer runs in under two seconds, makes no model calls, and gives the same result on every run. It computes seven sub-scores from the parsed SKILL.md:
 
 | Sub-check                 | Weight | What it measures                                                                  |
 | ------------------------- | ------ | --------------------------------------------------------------------------------- |
@@ -156,82 +159,100 @@ Runs seven structural sub-checks against the parsed SKILL.md:
 | `structural_completeness` | 10%    | Heading density, code blocks, examples section, troubleshooting section           |
 | `token_efficiency`        | 9%     | MUST/NEVER/ALWAYS density, duplicate-line detection                               |
 | `ecosystem_coherence`     | 6%     | Cross-references to other skills/agents, "related"/"see also" mentions            |
-| `harness_portability`     | 6%     | Codex/Cursor/OpenCode/Antigravity portability — body cap, tool refs, model aliases, name collisions |
+| `harness_portability`     | 6%     | Portability of the skill body to Codex, Cursor, OpenCode, and Antigravity, which covers the size cap and tool references |
 
-Also detects anti-patterns (see below) and applies a multiplicative penalty.
+The first six sub-scores feed composite dimensions. `harness_portability` maps to no dimension, so it doesn't change a skill's composite score. Its findings are not counted as anti-patterns either. It does carry 6% of the static layer's own score, as the table shows. A plugin's composite is built from that layer score, so portability findings can lower a plugin's score a little.
 
-### Layer 2: LLM Judge
+For a plugin directory, the static layer averages the static scores of the plugin's skills with a simpler score for each agent. The layer also flags anti-patterns, which are described below.
 
-**Speed:** ~30 seconds. **Cost:** 4 LLM calls (Haiku + Sonnet). **Requires `claude-agent-sdk`.**
+### Layer 2: LLM judge (experimental)
 
-Uses Claude as a semantic evaluator across 4 dimensions with anchored rubrics:
+The judge layer makes four model calls, one to Haiku and three to Sonnet, and it needs `claude-agent-sdk`. It returns four holistic scores from 0 to 1:
 
-| Dimension               | Model  | Method                                                                       |
-| ----------------------- | ------ | ---------------------------------------------------------------------------- |
-| `triggering_accuracy`   | Haiku  | Generates 10 synthetic prompts (5 should-trigger, 5 should-not), computes F1 |
-| `orchestration_fitness` | Sonnet | Rates worker-vs-orchestrator role using 5-point anchored rubric              |
-| `output_quality`        | Sonnet | Simulates 3 realistic tasks, evaluates expected output quality               |
-| `scope_calibration`     | Sonnet | Rates scope appropriateness using 5-point anchored rubric                    |
+| Dimension               | Model  | Method                                                                                          |
+| ----------------------- | ------ | ----------------------------------------------------------------------------------------------- |
+| `triggering_accuracy`   | Haiku  | Reads only the description, writes 10 test prompts (5 should trigger, 5 should not), predicts the outcome for each, and reports its own F1 |
+| `orchestration_fitness` | Sonnet | Rates worker versus orchestrator role on a five-point rubric                                    |
+| `output_quality`        | Sonnet | Imagines 3 realistic tasks and rates the output it expects                                      |
+| `scope_calibration`     | Sonnet | Rates scope on a five-point rubric                                                              |
 
-All 4 assessments run concurrently with semaphore-based throttling.
+All 4 assessments run concurrently with semaphore-based throttling. The layer has the following known limits:
 
-### Layer 3: Monte Carlo Simulation
+- Nobody has validated its scores against human labels. Only one judge runs, because nothing reads the `judges` setting.
+- The three Sonnet calls see only the first 3,000 characters of SKILL.md.
+- The triggering judge writes its own test prompts and grades its own predictions. Nothing checks them against real triggering.
+- Scores change between runs, because each call writes new prompts or tasks.
 
-**Speed:** ~2 minutes (50 runs) to ~5 minutes (100 runs). **Cost:** 50–100 LLM calls. **Requires `claude-agent-sdk`.**
+### Layer 3: Monte Carlo simulation (experimental)
 
-Generates 15 varied prompts via Haiku, then runs N simulations to compute statistical reliability:
+The Monte Carlo layer makes one Haiku call to write prompts and then one model call per run, with 50 runs at `deep` and 100 at `thorough`. It needs `claude-agent-sdk`.
 
-| Metric             | Measure                                 | Statistical Method                |
-| ------------------ | --------------------------------------- | --------------------------------- |
-| Activation rate    | % of runs where skill activated         | Wilson score CI                   |
-| Output consistency | Mean quality + coefficient of variation | Bootstrap CI (1000 resamples)     |
-| Failure rate       | % of runs that errored                  | Clopper-Pearson exact CI          |
-| Token efficiency   | Median tokens, IQR, outlier detection   | Normalized against 8000-token cap |
+Haiku writes 15 prompts that should trigger the skill. If the Haiku call fails, the layer uses 15 fixed template prompts instead. The layer repeats the prompts to reach the run count. Each run sends the SKILL.md text and one prompt to the model, and the layer records four measures:
 
-## Evaluation Depths
+| Metric             | Measure                                                                 | Statistical method                |
+| ------------------ | ----------------------------------------------------------------------- | --------------------------------- |
+| Activation rate    | Share of runs with any non-empty reply                                  | Wilson score CI                   |
+| Output consistency | Mean and coefficient of variation of reply length divided by 500, capped at 1.0 | Bootstrap CI (1000 resamples) |
+| Failure rate       | Share of runs that errored                                              | Clopper-Pearson exact CI          |
+| Token efficiency   | Median tokens, IQR, outlier count                                       | `1 - median / 8000`               |
 
-| Depth      | Layers                                  | Confidence Label | Time   | Cost           |
-| ---------- | --------------------------------------- | ---------------- | ------ | -------------- |
-| `quick`    | Static only                             | Estimated        | < 2s   | Free           |
-| `standard` | Static + Judge                          | Assessed         | ~30s   | 4 LLM calls    |
-| `deep`     | Static + Judge + Monte Carlo (50 runs)  | Certified        | ~3 min | ~54 LLM calls  |
-| `thorough` | Static + Judge + Monte Carlo (100 runs) | Certified+       | ~6 min | ~104 LLM calls |
+The layer has the following known limits:
 
-## The 10 Quality Dimensions
+- Activation counts any non-empty reply, so it shows whether the model answered, not whether the skill should have fired.
+- The quality score measures reply length, not whether the reply is correct.
+- Every prompt is one that should trigger, so the layer never checks that the skill stays out of unrelated requests.
+- The 15 prompts repeat to fill 50 or 100 runs, so the runs cover only 15 distinct prompts.
 
-Each dimension has a weight and receives scores from different layers, blended using per-dimension weights:
+## Evaluation depths
+
+| Depth      | Layers                                  | Confidence label | Model calls |
+| ---------- | --------------------------------------- | ---------------- | ----------- |
+| `quick`    | Static only                             | Estimated        | 0           |
+| `standard` | Static + Judge                          | Assessed         | 4           |
+| `deep`     | Static + Judge + Monte Carlo (50 runs)  | Certified        | 55          |
+| `thorough` | Static + Judge + Monte Carlo (100 runs) | Certified+       | 105         |
+
+The confidence label names the depth that ran. It doesn't mean anyone checked the score against human judgment. A plugin directory gets the static layer only and the label Estimated, whatever depth you ask for.
+
+## The 10 quality dimensions
+
+Each dimension has a weight in the composite. The Static, Judge, and Monte Carlo columns give each layer's blend weight for that dimension, and "none" means the layer produces no score for it:
 
 | Dimension                 | Weight | Static | Judge | Monte Carlo | What it measures                                 |
 | ------------------------- | ------ | ------ | ----- | ----------- | ------------------------------------------------ |
 | `triggering_accuracy`     | 25%    | 0.15   | 0.25  | 0.60        | Does the description fire for the right prompts? |
-| `orchestration_fitness`   | 20%    | 0.10   | 0.70  | 0.20        | Is it a composable worker, not an orchestrator?  |
-| `output_quality`          | 15%    | 0.00   | 0.40  | 0.60        | Would it produce correct, useful output?         |
-| `scope_calibration`       | 12%    | 0.30   | 0.55  | 0.15        | Is the scope well-sized for its domain?          |
-| `progressive_disclosure`  | 10%    | 0.80   | 0.20  | 0.00        | Does it use references/ for large content?       |
-| `token_efficiency`        | 6%     | 0.40   | 0.10  | 0.50        | Is it concise without repetition?                |
-| `robustness`              | 5%     | 0.00   | 0.20  | 0.80        | Does it handle varied inputs reliably?           |
-| `structural_completeness` | 3%     | 0.90   | 0.10  | 0.00        | Does it have headings, code, examples?           |
-| `code_template_quality`   | 2%     | 0.30   | 0.70  | 0.00        | Are code examples production-ready?              |
-| `ecosystem_coherence`     | 2%     | 0.85   | 0.15  | 0.00        | Does it link to related skills/agents?           |
+| `orchestration_fitness`   | 20%    | 0.10   | 0.70  | none        | Is it a composable worker, not an orchestrator?  |
+| `output_quality`          | 15%    | none   | 0.40  | 0.60        | Would it produce correct, useful output?         |
+| `scope_calibration`       | 12%    | none   | 0.55  | none        | Is the scope well-sized for its domain?          |
+| `progressive_disclosure`  | 10%    | 0.80   | none  | none        | Does it use references/ for large content?       |
+| `token_efficiency`        | 6%     | 0.40   | none  | 0.50        | Is it concise without repetition?                |
+| `robustness`              | 5%     | none   | none  | 0.80        | Does it handle varied inputs reliably?           |
+| `structural_completeness` | 3%     | 0.90   | none  | none        | Does it have headings, code, examples?           |
+| `code_template_quality`   | 2%     | none   | none  | none        | Are code examples production-ready?              |
+| `ecosystem_coherence`     | 2%     | 0.85   | none  | none        | Does it link to related skills/agents?           |
 
-### Composite Score Formula
+`LAYER_BLENDS` in `engine.py` also lists weights for the cells marked none, but the engine only blends layers that produced a score. No layer produces `code_template_quality`, so it's always unmeasured.
+
+### Composite score formula
 
 ```
 Final = Σ(dimension_weight × blended_score) × 100 × anti_pattern_penalty
 ```
 
-Where `blended_score` for each dimension is a weighted combination of available layer scores, renormalized to the layers actually present.
+Here `blended_score` is the blend of the layer scores that exist for that dimension, renormalized over those layers. The sum covers measured dimensions only, and their weights are renormalized to add up to 1.
 
-## Quality Badges
+For a plugin directory, the composite is the static layer's mean score across the plugin's skills and agents, times 100, times the penalty for the plugin's total anti-pattern count.
 
-| Badge    | Score | Elo    | Stars | Meaning                  |
-| -------- | ----- | ------ | ----- | ------------------------ |
-| Platinum | ≥ 90  | ≥ 1600 | ★★★★★ | Reference quality        |
-| Gold     | ≥ 80  | ≥ 1500 | ★★★★  | Production ready         |
-| Silver   | ≥ 70  | ≥ 1400 | ★★★   | Functional, needs polish |
-| Bronze   | ≥ 60  | ≥ 1300 | ★★    | Minimum viable           |
+## Quality badges
 
-Badges require both score AND Elo thresholds when Elo data is available.
+| Badge    | Score | Stars |
+| -------- | ----- | ----- |
+| Platinum | ≥ 90  | ★★★★★ |
+| Gold     | ≥ 80  | ★★★★  |
+| Silver   | ≥ 70  | ★★★   |
+| Bronze   | ≥ 60  | ★★    |
+
+Badges come from the composite score alone. `Badge.from_scores` accepts an Elo rating, but no command computes one. Plugin-level badges, including the ones in the weekly CI report, come from the static layer alone. Skill-level badges at `standard` depth or deeper also include the experimental layers.
 
 ## Letter Grades
 
@@ -253,9 +274,9 @@ Scores are also converted to letter grades:
 | D-    | ≥ 60        |
 | F     | < 60        |
 
-## Anti-Pattern Detection
+## Anti-pattern detection
 
-The static analyzer detects these anti-patterns, each with a severity that contributes to a multiplicative penalty:
+The static layer flags six anti-patterns. Each flag has a severity that the report prints, but the penalty counts flags and ignores severity:
 
 | Flag                | Severity | Trigger                                       |
 | ------------------- | -------- | --------------------------------------------- |
@@ -265,47 +286,32 @@ The static analyzer detects these anti-patterns, each with a severity that contr
 | `BLOATED_SKILL`        | 10%      | > 800 lines without a references/ directory                         |
 | `ORPHAN_REFERENCE`     | 5%       | Dead link to a file in references/                                  |
 | `DEAD_CROSS_REF`       | 5%       | Cross-reference to a non-existent skill/agent                       |
-| `SKILL_OVER_CODEX_CAP` | 15%      | Skill body > 8 KB without references/ (Codex hard-truncates)        |
-| `CLAUDE_TOOL_REFS`     | 2–10%    | Backticked CamelCase tool names (`` `Read` ``, `` `Bash` ``)        |
-| `CLAUDE_TOOL_PROSE`    | 5%       | Prose like "use the Read tool" (Codex prefers action verbs)         |
-| `AGENT_NAME_COLLISION` | 10%      | Agent named `default`/`worker`/`explorer` (Codex built-ins)         |
-| `BARE_MODEL_ALIAS`     | 3%       | Bare `opus`/`sonnet`/`haiku` (use `inherit` for portability)        |
 
-Each `harness_portability` finding carries a `remediation` string surfaced via the
-AntiPattern description, so the fix is in-context when the lint fires.
+The penalty is `penalty = max(0.5, 1.0 - 0.05 * count)`, so each anti-pattern cuts the score by 5%, down to a floor of 50%.
 
-**Penalty formula:** `penalty = max(0.5, 1.0 − 0.05 × count)` — each anti-pattern reduces the score by 5%, flooring at 50%.
+### Harness portability findings
 
-## Elo Ranking System
+Portability findings lower the `harness_portability` sub-score, which is 1.0 minus the sum of their severities. They are not anti-patterns, so they don't trigger the penalty. The report doesn't list them either, so check the sub-score in the JSON output.
 
-For relative quality comparison against a corpus of known skills:
+| Finding                | Severity             | Trigger                                                        |
+| ---------------------- | -------------------- | -------------------------------------------------------------- |
+| `SKILL_OVER_CODEX_CAP` | 0.15                 | SKILL.md over 8 KB without a references/ directory             |
+| `CLAUDE_TOOL_REFS`     | 0.02 per tool, up to 0.10 | Backticked CamelCase tool names used as tools (`` `Read` ``, `` `Bash` ``) |
+| `CLAUDE_TOOL_PROSE`    | 0.05                 | Prose like "use the Read tool" (Codex prefers action verbs)    |
 
-- **Initial rating:** 1500
-- **K-factor:** 32
-- **Confidence intervals:** Bootstrap resampling (500 resamples)
-- **Corpus management:** `init` command indexes all skills from a plugins directory
-- **Reference selection:** Matches by category and similar line count
+The code also defines checks for agent files, e.g., `AGENT_NAME_COLLISION` and `BARE_MODEL_ALIAS`, but no score uses them.
 
-The Elo system uses the standard formula: `E(A) = 1 / (1 + 10^((Rb - Ra) / 400))`.
+## Corpus index
 
-## Corpus Management
-
-The corpus is a JSON index of all skills used for Elo comparisons:
+`plugin-eval init` writes `index.json`, a list of the skills in a plugins directory. For each skill, the index stores the name, path, plugin name as the category, line count, and a rating field that starts at 1500. No other command reads the index.
 
 ```bash
-# Build corpus from your plugins directory
 uv run plugin-eval init plugins/ --corpus-dir ~/.plugineval/corpus
-
-# The corpus stores:
-# - Skill name, path, category, line count
-# - Current Elo rating (updated after each comparison)
 ```
 
-Reference skills are selected by matching category and approximate line count.
+## Statistical methods
 
-## Statistical Methods
-
-PluginEval uses rigorous statistical methods throughout:
+The Monte Carlo layer reports the following intervals for its own measures:
 
 | Method                   | Used For                   | Details                                   |
 | ------------------------ | -------------------------- | ----------------------------------------- |
@@ -313,9 +319,8 @@ PluginEval uses rigorous statistical methods throughout:
 | Bootstrap CI             | Output quality confidence  | 1000 resamples, percentile method         |
 | Clopper-Pearson          | Failure rate confidence    | Exact CI for small failure counts         |
 | Coefficient of variation | Output consistency         | std/mean ratio; lower = more consistent   |
-| Cohen's kappa            | Inter-rater agreement      | For multi-judge scenarios                 |
 
-All statistical functions are pure Python with no external dependencies (no scipy/numpy required).
+All statistical functions are pure Python with no external dependencies (no scipy/numpy required). The composite score has no interval. Its `ci_lower` and `ci_upper` fields, and the same fields on each dimension, are always null.
 
 ## Parser
 
@@ -350,14 +355,17 @@ plugins/plugin-eval/
 │   ├── models.py                # Pydantic models (Depth, Badge, EvalConfig, results)
 │   ├── parser.py                # Plugin/skill/agent parser
 │   ├── reporter.py              # JSON/Markdown/HTML output
-│   ├── corpus.py                # Gold standard corpus for Elo ranking
-│   ├── elo.py                   # Elo rating calculator with bootstrap CI
+│   ├── corpus.py                # Corpus index written by `init`
+│   ├── elo.py                   # Elo calculator (no command calls it)
 │   ├── stats.py                 # Statistical methods (Wilson, bootstrap, Clopper-Pearson)
 │   └── layers/
 │       ├── __init__.py
 │       ├── static.py            # Layer 1: deterministic structural analysis
-│       ├── judge.py             # Layer 2: LLM semantic evaluation
-│       └── monte_carlo.py       # Layer 3: statistical reliability simulation
+│       ├── harness_portability.py  # Portability findings for the static layer
+│       ├── judge.py             # Layer 2: LLM judge (experimental)
+│       └── monte_carlo.py       # Layer 3: Monte Carlo simulation (experimental)
+├── scripts/
+│   └── eval_all.py              # Static sweep of every plugin, used by the weekly CI report
 ├── tests/                       # Comprehensive test suite
 │   ├── conftest.py
 │   ├── test_cli.py

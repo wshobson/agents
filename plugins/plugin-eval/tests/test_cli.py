@@ -87,3 +87,30 @@ def test_score_warns_when_judge_unmeasured(sample_skill_dir):
     assert result.exit_code == 0
     assert "judge" in result.stderr.lower()
     assert "unmeasured" in result.stderr.lower() or "could not" in result.stderr.lower()
+
+
+NOTE_FRAGMENT = "judge and Monte Carlo layers are experimental"
+
+
+def test_score_standard_prints_experimental_note(sample_skill_dir):
+    fake = PluginEvalResult(
+        plugin_path=str(sample_skill_dir),
+        timestamp="t",
+        config=EvalConfig(depth=Depth.STANDARD),
+        layers=[LayerResult(layer="static", score=0.8, sub_scores={})],
+        composite=CompositeResult(score=80.0),
+    )
+    with patch("plugin_eval.cli.EvalEngine") as Eng:
+        Eng.return_value.evaluate_skill.return_value = fake
+        result = CliRunner().invoke(
+            app, ["score", str(sample_skill_dir), "--depth", "standard", "--output", "json"]
+        )
+    assert result.exit_code == 0
+    assert NOTE_FRAGMENT in result.stderr
+    assert "evals/README.md" in result.stderr
+
+
+def test_score_quick_omits_experimental_note(sample_skill_dir):
+    result = CliRunner().invoke(app, ["score", str(sample_skill_dir), "--depth", "quick"])
+    assert result.exit_code == 0
+    assert NOTE_FRAGMENT not in result.stderr

@@ -8,10 +8,13 @@ since their source does not exist locally. Outputs:
   reports/summary.md             — aggregated markdown report
   reports/summary.json           — machine-readable aggregate
 
+Plugin-level evaluation runs the static layer only, so `--depth` accepts only
+`quick`. Other values exit with code 2 and point to per-skill scoring.
+
 Intended for CI usage but works locally too:
 
   uv run python scripts/eval_all.py --depth quick
-  uv run python scripts/eval_all.py --depth standard --output-dir /tmp/reports
+  uv run python scripts/eval_all.py --output-dir /tmp/reports
 """
 
 from __future__ import annotations
@@ -251,6 +254,14 @@ def main() -> int:
         help="Comma-separated plugin names to limit evaluation to",
     )
     args = parser.parse_args()
+
+    if args.depth != "quick":
+        print(
+            "plugin-level evaluation runs the static layer only; use "
+            '"plugin-eval score <skill-dir> --depth standard" for the experimental LLM layers',
+            file=sys.stderr,
+        )
+        return 2
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)

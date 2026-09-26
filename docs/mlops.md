@@ -89,11 +89,12 @@ The `eval-report.yml` workflow supports a `log_wandb` dispatch input that
 pushes per-plugin scores to W&B. To run it manually from the GitHub Actions
 UI, set `log_wandb = true`.
 
-Or from the CLI (local GPU, full depth):
+Or run the same static sweep locally. The script runs the static layer
+only, so it doesn't need a GPU or a model:
 
 ```bash
 cd plugins/plugin-eval
-uv run python scripts/eval_all.py --depth deep --output-dir /tmp/eval-reports
+uv run python scripts/eval_all.py --output-dir /tmp/eval-reports
 ```
 
 The W&B logging step reads `eval-reports/summary.json` and logs a table plus

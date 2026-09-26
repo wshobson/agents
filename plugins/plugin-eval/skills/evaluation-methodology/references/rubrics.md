@@ -1,12 +1,13 @@
-# Judge Rubrics — Anchored Scoring Reference
+# Judge rubric anchors
 
-This document contains the full anchored rubrics used by the `eval-judge` agent (Layer 2) to
-score skills on each of the four dimensions it assesses. Each dimension uses a 0.0–1.0 scale
-with five anchor points. The judge interpolates between anchors based on the evidence gathered
-from reading SKILL.md and any `references/` files.
+This file describes the four dimensions that the LLM judge scores, with anchor points on a 0.0 to
+1.0 scale. Neither the CLI judge in `judge.py` nor the `eval-judge` agent loads this file. The CLI
+judge prompt has short rubrics for orchestration fitness and scope only, and the agent prompt has
+its own short rubrics. Treat these anchors as guidance for authors and reviewers.
 
-These rubrics are the authoritative scoring standard. When calibrating expectations, filing
-score disputes, or training new judge models, use these anchors as ground truth.
+The judge layer is experimental, and nobody has validated these anchors or the judge's scores
+against human labels. For the trace-based eval program, see `evals/README.md` at the repository
+root.
 
 ---
 
@@ -26,13 +27,10 @@ precision and recall across a representative prompt distribution.
 
 ### How the judge scores it
 
-The judge generates 10 mental test prompts: 5 that should trigger the skill and 5 that
-should not. It assesses whether the description would lead Claude Code's routing model to
-activate (or not activate) for each prompt. The F1 score of this 10-prompt evaluation
-becomes the dimension score.
-
-The judge also considers whether the description provides actionable trigger signals rather
-than just naming or describing the skill in passive terms.
+The CLI judge sends only the description to Haiku. Haiku writes 10 test prompts, 5 that should
+trigger the skill and 5 that should not, and it predicts whether each one would trigger. It also
+reports its own precision, recall, and F1, and that F1 becomes the dimension score. Nothing checks
+the predictions against how Claude Code actually routes prompts.
 
 ### Anchored Rubric
 
@@ -87,7 +85,8 @@ Example of a 0.70-scoring description:
 > "PluginEval quality methodology. Use this skill when understanding how plugin quality is
 > measured or when interpreting evaluation results."
 
-Good — two explicit trigger contexts — but misses calibration and stakeholder scenarios.
+The description has two explicit trigger contexts, but it misses the threshold and stakeholder
+scenarios.
 
 **0.80 – 1.00 (Grade A/B) — Excellent trigger**
 
@@ -96,13 +95,13 @@ Description is precise and comprehensive:
 - Would correctly handle all 5 should-trigger prompts
 - Would correctly NOT trigger on all 5 should-not prompts
 - Contexts are concrete and discriminative (not "when evaluating" but "when interpreting
-  dimension scores and letter grades" or "when calibrating scoring thresholds")
+  dimension scores and letter grades" or "when setting score thresholds")
 - Optionally includes "proactively" for skills that should auto-activate
 
 Example of a 0.90-scoring description:
 > "PluginEval quality methodology — dimensions, rubrics, statistical methods. Use this skill
 > when understanding how plugin quality is measured, interpreting evaluation results,
-> calibrating scoring thresholds, or explaining quality badges to stakeholders."
+> setting score thresholds, or explaining quality badges to stakeholders."
 
 Four specific, distinct contexts. Fires on exactly the right prompts.
 
@@ -128,7 +127,8 @@ Four specific, distinct contexts. Fires on exactly the right prompts.
 
 **Weight in composite:** 0.20 (second highest)
 
-**Layer blend (deep depth):** static 10%, judge 70%, Monte Carlo 20%
+**Layer blend (deep depth):** static 10% and judge 70%. The Monte Carlo layer produces no score
+for this dimension, so the engine renormalizes over the other two.
 
 ### What is being measured
 
@@ -145,9 +145,10 @@ cannot reliably detect orchestration intent from surface patterns alone.
 
 ### How the judge scores it
 
-The judge reads the SKILL.md in full and asks: does this skill's instruction set define
-a worker (receives task → executes → returns output) or an orchestrator (plans → delegates
-→ aggregates)? It looks for specific signals in both directions.
+The CLI judge sends the first 3,000 characters of SKILL.md to Sonnet with a five-point rubric.
+The question is whether the instructions define a worker or an orchestrator. A worker receives a
+task, does it, and returns output. An orchestrator plans, delegates, and combines results. The
+signals below point in each direction.
 
 **Worker signals (positive):**
 - Documents what it receives (inputs/parameters)
@@ -256,23 +257,20 @@ Example characteristics:
 ### What is being measured
 
 Output quality measures whether the skill's instructions would guide Claude to produce
-correct, complete, and useful output across a representative range of real-world tasks.
-This dimension is entirely empirical — static analysis cannot assess whether instructions
-will produce quality outputs, so the layer blend is 0% static.
+correct, complete, and useful output across a representative range of real-world tasks. The
+static layer doesn't score this dimension, so its blend weight is 0%.
 
-At deep depth, Monte Carlo simulation (60% blend) produces actual outputs from real prompts
-and scores them. At standard depth (judge only), the judge simulates three tasks mentally.
+At deep depth, the Monte Carlo layer supplies 60% of the blend, but its quality measure is only
+reply length divided by 500, capped at 1.0. At standard depth, the judge score is the only input.
 
 ### How the judge scores it
 
-The judge selects three realistic tasks that the skill is designed to handle — varying from
-simple to complex. For each task, it mentally executes the skill's instructions and assesses
-whether the resulting output would be:
+The CLI judge sends the first 3,000 characters of SKILL.md to Sonnet and asks it to imagine
+three realistic tasks and rate the output that the instructions would produce. Sonnet returns one
+holistic score from 0 to 1. The criteria below describe what a high score should mean:
 - **Correct** — factually accurate, technically valid
 - **Complete** — covers all aspects the task requires
 - **Useful** — actionable, well-formatted, appropriate length
-
-The average across three tasks becomes the dimension score.
 
 ### Anchored Rubric
 
@@ -359,7 +357,8 @@ When assessing code examples and technical instructions, the judge verifies:
 
 **Weight in composite:** 0.12 (fourth highest)
 
-**Layer blend (deep depth):** static 30%, judge 55%, Monte Carlo 15%
+**Layer blend (deep depth):** judge only. The static and Monte Carlo layers produce no score for
+this dimension, although `LAYER_BLENDS` lists weights of 30% and 15% for them.
 
 ### What is being measured
 
@@ -368,20 +367,21 @@ Scope calibration measures whether the skill is the right size for its purpose. 
 model, and overlaps with sibling skills. The ideal skill is exactly as large as it needs
 to be — comprehensive for its defined domain, not a line longer.
 
-This dimension requires human judgment (55% judge blend) because "right size" is
-context-dependent. A skill covering a complex framework legitimately needs more content
-than a skill covering a simple utility function.
+Only the judge scores this dimension, because the right size depends on context. A skill
+covering a complex framework legitimately needs more content than a skill covering a simple
+utility function.
 
 ### How the judge scores it
 
-The judge assesses scope by asking:
+The CLI judge sends the first 3,000 characters of SKILL.md to Sonnet with a five-point rubric.
+A reviewer can assess scope with these questions:
 1. Does the skill cover all the important aspects of its stated domain?
 2. Does it cover anything outside its stated domain?
 3. Is the depth appropriate — neither superficial nor excessively detailed?
 4. Is the content density high (every line earns its place) or padded?
 
-The judge also considers the skill's category (reference documentation, workflow assistant,
-code generator, etc.) when calibrating expectations.
+The CLI judge prompt doesn't tell the model the skill's category. The category targets at the
+end of this section are guidance for authors and reviewers.
 
 ### Anchored Rubric
 
@@ -474,38 +474,10 @@ Scope expectations vary by skill category. Use these as baseline calibration gui
 
 ---
 
-## Rubric Calibration and Consistency
+## Limits of these rubrics
 
-### Inter-Judge Agreement
-
-When running with `judges > 1`, PluginEval reports Cohen's kappa to measure agreement
-between judge instances. Target kappa ≥ 0.70 for a stable, well-defined skill.
-
-| Kappa range | Interpretation |
-|---|---|
-| ≥ 0.80 | Strong agreement — skill is clearly written |
-| 0.60 – 0.79 | Moderate agreement — skill has some ambiguous sections |
-| 0.40 – 0.59 | Fair agreement — skill needs clarity improvements |
-| < 0.40 | Poor agreement — skill is ambiguous or judges are not calibrated |
-
-Low kappa on a specific dimension points to the area needing clarification. Low
-triggering_accuracy kappa usually means the description maps to multiple different
-interpretations of when to use the skill.
-
-### Calibration Corpus
-
-The gold corpus (initialized via `plugin-eval init`) provides Platinum and Gold-badged
-skills as calibration anchors. Before running a batch evaluation, compare your expected
-scores against one or two corpus entries to verify your judge is calibrated correctly.
-
-If your judge consistently scores a known Platinum skill below 85 on any dimension, check
-for model version drift or prompt injection in the skill content that may be confusing the
-judge.
-
-### Score Drift Across Model Versions
-
-Judge model upgrades can shift scores by ± 5–10 points on subjective dimensions
-(output_quality, scope_calibration). After any model upgrade, re-certify the top 10 corpus
-entries to establish new baseline calibration. If drift exceeds 5 points on any dimension,
-update the anchored examples in this rubric document to reflect the new model's scoring
-behavior.
+The judge layer is experimental. Nobody has checked the judge's scores against human labels.
+Only one judge runs, because nothing reads the `judges` setting. The CLI judge sees only the first
+3,000 characters of SKILL.md, so it can miss instructions later in the file. Scores can also
+change between runs and between model versions, because the model writes new test prompts and
+tasks each time.

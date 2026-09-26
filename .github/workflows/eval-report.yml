@@ -3,15 +3,6 @@ name: Plugin Eval Report
 on:
   workflow_dispatch:
     inputs:
-      depth:
-        description: 'Evaluation depth (quick = static only, standard = +LLM judge, deep = +Monte Carlo)'
-        required: true
-        default: 'quick'
-        type: choice
-        options:
-          - quick
-          - standard
-          - deep
       only_changed:
         description: 'Comma-separated plugin names to evaluate (blank = all)'
         required: false
@@ -39,11 +30,11 @@ permissions:
 
 jobs:
   eval:
-    name: Evaluate plugins (${{ inputs.depth || 'quick' }})
+    name: Static lint report
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
-      DEPTH: ${{ inputs.depth || 'quick' }}
+      DEPTH: quick
       ONLY_CHANGED: ${{ inputs.only_changed || '' }}
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
@@ -61,8 +52,6 @@ jobs:
 
       - name: Run eval sweep
         working-directory: plugins/plugin-eval
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           args=( --depth "$DEPTH" --output-dir "$GITHUB_WORKSPACE/eval-reports" --concurrency 4 )
           if [ -n "$ONLY_CHANGED" ]; then

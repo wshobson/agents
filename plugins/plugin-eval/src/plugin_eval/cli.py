@@ -19,6 +19,11 @@ app = typer.Typer(
 console = Console()
 stderr_console = Console(stderr=True)
 
+EXPERIMENTAL_NOTE = (
+    "note: the judge and Monte Carlo layers are experimental and not validated "
+    "against human labels; see evals/README.md"
+)
+
 
 def _detect_target(path: Path) -> str:
     """Return 'skill' if SKILL.md exists, 'plugin' if .claude-plugin/ exists, else 'unknown'."""
@@ -41,6 +46,9 @@ def _run_score(
     if not path.exists():
         console.print(f"[red]Error: Path does not exist: {path}[/red]")
         raise typer.Exit(code=2)
+
+    if depth != Depth.QUICK:
+        typer.echo(EXPERIMENTAL_NOTE, err=True)
 
     config = EvalConfig(
         depth=depth,
