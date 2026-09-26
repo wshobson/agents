@@ -19,6 +19,13 @@ jobs:
     # Gate on author_association so only repo owners / members /
     # collaborators (who already have write access) can trigger this
     # workflow — required because the job is granted write scopes below.
+    #
+    # Pull requests from forks are skipped. claude-code-action checks out
+    # the fork's head for them, so the fork's Makefile and scripts would run
+    # under the `make`/`uv`/`python` allowlist below in a job that holds the
+    # OAuth secret and a write token (see the action's docs/security.md).
+    # Review events carry the head repo, so the `if:` filters them; a PR
+    # comment does not, so the first step checks and replies instead.
     if: |
       (
         github.event_name == 'issue_comment' &&
@@ -27,11 +34,13 @@ jobs:
       ) ||
       (
         github.event_name == 'pull_request_review_comment' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
         contains(github.event.comment.body, '@claude') &&
         contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
       ) ||
       (
         github.event_name == 'pull_request_review' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
         contains(github.event.review.body, '@claude') &&
         contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.review.author_association)
       ) ||
@@ -48,7 +57,22 @@ jobs:
       id-token: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
+      - name: Skip pull requests from forks
+        id: fork
+        if: github.event_name == 'issue_comment' && github.event.issue.pull_request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          cross=$(gh pr view "$PR" --repo "$REPO" --json isCrossRepository --jq .isCrossRepository)
+          echo "cross=$cross" >> "$GITHUB_OUTPUT"
+          if [ "$cross" = "true" ]; then
+            gh pr comment "$PR" --repo "$REPO" --body "Claude doesn't run on pull requests from forks, because the action would check out the fork's code in a job that holds repository secrets. Please review this pull request by hand."
+          fi
+
       - name: Checkout repository
+        if: steps.fork.outputs.cross != 'true'
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           fetch-depth: 1
@@ -57,12 +81,14 @@ jobs:
       # The allowlist below includes `uv` and `make`, and the runner image
       # does not ship uv.
       - name: Install uv
+        if: steps.fork.outputs.cross != 'true'
         uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5
         with:
           enable-cache: true
 
       - name: Run Claude Code
         id: claude
+        if: steps.fork.outputs.cross != 'true'
         uses: anthropics/claude-code-action@9171db3e57d6a3140a37ddc2ba92788584e0ead6  # v1.0.234
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
