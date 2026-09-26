@@ -47,7 +47,7 @@ Add or merge the following PreToolUse hook configuration:
         "hooks": [
           {
             "type": "command",
-            "command": "if grep -qE 'git([[:space:]]|\\\\t).*--(no-verify|no-gpg-sign)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
+            "command": "if grep -qE '(--no-(ver|g)|commit.*[[:space:]]-[a-zA-Z]*n)'; then echo 'BLOCKED: --no-verify and --no-gpg-sign flags are not allowed. Run the commit without bypass flags so that pre-commit hooks execute properly.' >&2; exit 2; fi"
           }
         ]
       }

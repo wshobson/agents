@@ -42,14 +42,18 @@ while [ $# -gt 0 ]; do
             if [ $# -lt 2 ]; then
                 echo "usage: /audit-chain [--last N] [--dir path]" >&2; exit 2
             fi
-            if [ "$1" = "--last" ]; then N="$2"; else RECEIPT_DIR="$2"; fi
+            if [ "$1" = "--last" ]; then
+                case "$2" in
+                    ''|*[!0-9]*) echo "--last takes a positive whole number" >&2; exit 2 ;;
+                esac
+                N="$2"
+            else
+                RECEIPT_DIR="$2"
+            fi
             shift 2 ;;
         *) shift ;;
     esac
 done
-case "$N" in
-    *[!0-9]*) echo "--last takes a positive whole number" >&2; exit 2 ;;
-esac
 FILE="$RECEIPT_DIR/receipts.jsonl"
 if [ -n "$N" ]; then
     N=$((10#$N))
