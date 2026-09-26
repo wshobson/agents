@@ -11,7 +11,7 @@ This directory holds evaluation data for the skills in this repository.
 - The first test scores every skill again and compares the numbers with the snapshot. It fails when a skill's files did not change but its numbers did, which means the scoring code changed. The failure lists each skill whose numbers moved.
 - The second test checks that the snapshot is fresh. It fails when fewer than half of the entries still match the skills in the repository.
 
-The snapshot is keyed by a hash of each skill's content. When you edit a skill, its digest changes and the tests skip it, so editing a skill never fails the first test. When a skill links to other skills, its digest also covers the names of the skill directories next to it, so adding a skill does not fail the test either.
+The snapshot is keyed by a hash of each skill's content. When you edit a skill, its digest changes and the tests skip it, so editing a skill never fails the first test. When a skill links to other skills, its digest also records whether each linked skill exists. Adding or removing a linked skill makes the entry stale instead of failing the test.
 
 Run `make eval-snapshot` and commit the updated file in either of these cases:
 

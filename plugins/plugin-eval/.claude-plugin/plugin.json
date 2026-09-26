@@ -1,5 +1,5 @@
 {
   "name": "plugin-eval",
   "version": "0.1.1",
-  "description": "Static lint and experimental LLM scoring for Claude Code plugins and skills"
+  "description": "Static lint for Claude Code plugins and skills, with experimental LLM scoring for skills"
 }
