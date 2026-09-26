@@ -81,7 +81,7 @@ User: Is this receipt valid?
 
 1. Check the structure — are all required fields present?
 2. Ask for the signer's public key, because the receipt does not hold it
-3. Run `npx @veritasacta/verify@0.9.2 <path> --key <hex>` via the Bash tool
+3. Run `npx @veritasacta/verify@0.9.2 <path> --key <hex>` in a shell
 4. Interpret the result:
    - Exit 0: "Verified. Signed by key `{pub_key_short}`, no tampering detected."
    - Exit 1: "Tampered. The signature does not match the payload. Someone

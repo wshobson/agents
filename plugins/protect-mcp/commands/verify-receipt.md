@@ -5,9 +5,12 @@ argument-hint: "<path-to-receipt.json> [public-key-hex]"
 
 # Verify Receipt
 
-Verify an Ed25519 signed receipt produced by `protect-mcp`. The verification
-runs entirely offline using `@veritasacta/verify` from npm. No network
-requests, no vendor lookups, no trust in the operator required.
+Verify an Ed25519 signed receipt produced by `protect-mcp` with
+`@veritasacta/verify` from npm. The check itself makes no network requests
+and needs no vendor lookup. `npx` downloads `@veritasacta/verify@0.9.2` the first time it runs. For an
+offline machine, install it in the project first with
+`npm install --no-save @veritasacta/verify@0.9.2`, and `npx` then runs the
+local copy without network access.
 
 ## Usage
 
@@ -32,7 +35,7 @@ verify the whole file.
 
 ## Implementation
 
-Run this in the Bash tool:
+Run this in a shell:
 
 ```bash
 PUB="${2:-$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')}"

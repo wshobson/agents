@@ -17,7 +17,7 @@ with the public key.
 - **Cedar policy enforcement** — Block tool calls that violate your rules before they execute. Cedar is AWS's open authorization engine, formally verified.
 - **Ed25519 signed receipts**: every tool call that runs produces a tamper-evident receipt, signed with RFC 8032 Ed25519 over RFC 8785 JCS canonical bytes.
 - **Receipts file**: receipts are appended to `./receipts/receipts.jsonl`. A modified receipt fails verification, but receipts carry no link to the previous receipt, so a deleted line goes undetected.
-- **Offline verification**: `npx @veritasacta/verify@0.9.2 --replay-chain` with the public key needs no network, vendor lookup, or account, and it works air-gapped.
+- **Offline verification**: `npx @veritasacta/verify@0.9.2 --replay-chain` with the public key needs no vendor lookup or account. `npx` downloads the verifier on first use, so run `npm install --no-save @veritasacta/verify@0.9.2` in the project before you go offline.
 
 ## Quick Start
 
