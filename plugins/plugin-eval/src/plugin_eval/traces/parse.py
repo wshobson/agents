@@ -8,7 +8,7 @@ The stream is one JSON event per line. The events this parser reads are:
   become tool calls. Thinking blocks are skipped.
 - `user`: `tool_result` blocks, matched to their tool call by `tool_use_id`.
 - `result`: cost, turn count, duration, the final text, and the error flag.
-- `system` with subtype `hook_started` or `hook_response`: a hook ran.
+- `system` with a subtype such as `hook_started` or `hook_response`: a hook ran.
 
 Every other event type is skipped, and so are lines that are not JSON.
 """
@@ -16,6 +16,7 @@ Every other event type is skipped, and so are lines that are not JSON.
 from __future__ import annotations
 
 import json
+import math
 from collections.abc import Iterable
 from typing import Any
 
@@ -26,8 +27,9 @@ SKILL_INPUT_FIELD = "skill"  # its input field, e.g. {"skill": "database-design:
 INPUT_CHARS = 2000
 RESULT_CHARS = 4000
 NO_RESULT_ERROR = "no result event"  # the error of a trace whose stream has no result event
-# System event subtypes Claude Code writes to the stream when a hook runs.
-HOOK_EVENTS = frozenset({"hook_started", "hook_response"})
+# Claude Code writes system events with these subtypes when a hook runs. The runner passes
+# --include-hook-events so that PreToolUse and PostToolUse hooks show up too.
+HOOK_EVENT_PREFIX = "hook_"
 
 # The only tools a trace session gets, passed to claude with --tools. Every other built-in
 # tool (Bash, WebFetch, WebSearch, Task, Agent, Workflow, and tools such as PushNotification
@@ -102,42 +104,54 @@ def _strings(value: Any) -> tuple[list[str], bool]:
 
 
 def _number(value: Any) -> float:
+    """Read a number from the result event, or 0 when it is missing, not a number, or not
+    finite (JSON from Claude Code can carry NaN or Infinity)."""
     try:
-        return float(value or 0)
+        number = float(value or 0)
     except (TypeError, ValueError):
         return 0.0
+    return number if math.isfinite(number) else 0.0
 
 
-def _is_contaminated(init: dict[str, Any], plugins_loaded: list[str], expected: set[str]) -> bool:
-    """Check the init event against what the runner loaded.
+def _subtype(event: dict[str, Any]) -> str:
+    subtype = event.get("subtype")
+    return subtype if isinstance(subtype, str) else ""
+
+
+def _contamination(
+    init: dict[str, Any] | None, plugins_loaded: list[str], expected: set[str]
+) -> list[str]:
+    """List every way the init event differs from what the runner loaded.
 
     An entry the parser cannot read (a skill or tool that is not a string, a plugin that is
-    not an object with a string name) is skipped, but it also marks the trace contaminated,
-    because the session's isolation can no longer be confirmed.
+    not an object with a string name, a plugins value that is not a list) is skipped, but it
+    is still a reason, because the session's isolation can no longer be confirmed. So is a
+    stream with no init event at all.
     """
+    if init is None:
+        return ["missing init event"]
+    reasons: list[str] = []
     skills, bad_skills = _strings(init.get("skills"))
     tools, bad_tools = _strings(init.get("tools"))
+    reasons += [f"unexpected skill: {s}" for s in skills if s not in expected | BUILTIN_SKILLS]
+    reasons += [f"unexpected tool: {t}" for t in tools if t not in ALLOWED_TOOLS]
     plugins = init.get("plugins")
-    plugins = plugins if isinstance(plugins, list) else []
-    bad_plugins = any(
-        not isinstance(p, dict) or not isinstance(p.get("name"), str) for p in plugins
-    )
-    extra_plugins = [
-        p
-        for p in plugins
-        if isinstance(p, dict)
-        and p.get("path") != "builtin"
-        and p.get("name") not in plugins_loaded
-    ]
-    return bool(
-        set(skills) - expected - BUILTIN_SKILLS
-        or set(tools) - set(ALLOWED_TOOLS)
-        or extra_plugins
-        or init.get("mcp_servers")
-        or bad_skills
-        or bad_tools
-        or bad_plugins
-    )
+    if plugins is not None and not isinstance(plugins, list):
+        reasons.append("unreadable plugins list")
+    for plugin in plugins if isinstance(plugins, list) else []:
+        if not isinstance(plugin, dict) or not isinstance(plugin.get("name"), str):
+            reasons.append("unreadable plugins entry")
+        elif plugin.get("path") != "builtin" and plugin["name"] not in plugins_loaded:
+            reasons.append(f"unexpected plugin: {plugin['name']}")
+    servers = init.get("mcp_servers")
+    for server in servers if isinstance(servers, list) else [servers] if servers else []:
+        name = server.get("name") if isinstance(server, dict) else None
+        reasons.append(f"MCP server: {name if isinstance(name, str) else json.dumps(server)}")
+    if bad_skills:
+        reasons.append("unreadable skills entry")
+    if bad_tools:
+        reasons.append("unreadable tools entry")
+    return reasons
 
 
 def parse_stream(
@@ -151,23 +165,27 @@ def parse_stream(
     expected_skills holds the loaded plugins' skills as the init event names them,
     "<plugin>:<skill>". The trace is contaminated when the init event lists a skill that is
     neither expected nor built in, a plugin that was not loaded, a tool outside
-    ALLOWED_TOOLS, any MCP server, or an entry the parser cannot read, and also when any hook
-    runs during the session (the runner disables hooks, so a hook event means that failed).
-    Malformed events and blocks are skipped rather than raising.
+    ALLOWED_TOOLS, any MCP server, or an entry the parser cannot read. It is also
+    contaminated when the stream has no init event, or when any hook runs during the session
+    (the runner disables hooks, so a hook event means that failed). contamination_reasons
+    lists each cause. Malformed events and blocks are skipped rather than raising.
     """
-    init: dict[str, Any] = {}
+    init: dict[str, Any] | None = None
     result: dict[str, Any] | None = None
     steps: list[Step] = []
     calls: dict[str, ToolCall] = {}
     invoked: list[str] = []
-    hook_ran = False
+    hooks: list[str] = []
 
     for event in _events(lines):
         kind = event.get("type")
-        if kind == "system" and event.get("subtype") == "init":
+        if kind == "system" and _subtype(event) == "init":
             init = event
-        elif kind == "system" and event.get("subtype") in HOOK_EVENTS:
-            hook_ran = True
+        elif kind == "system" and _subtype(event).startswith(HOOK_EVENT_PREFIX):
+            name = event.get("hook_name")
+            reason = f"hook event: {name if isinstance(name, str) else _subtype(event)}"
+            if reason not in hooks:
+                hooks.append(reason)
         elif kind == "assistant":
             for block in _blocks(event):
                 if block.get("type") == "text" and block.get("text"):
@@ -199,23 +217,26 @@ def parse_stream(
             result = event
 
     texts = [step.text for step in steps if step.kind == "assistant_text" and step.text]
+    reasons = _contamination(init, plugins_loaded, expected_skills) + hooks
+    info = init or {}
     trace = TraceRecord(
         prompt=prompt,
-        model=str(init.get("model", "")),
+        model=str(info.get("model", "")),
         plugins_loaded=list(plugins_loaded),
-        skills_available=_strings(init.get("skills"))[0],
+        skills_available=_strings(info.get("skills"))[0],
         skills_invoked=invoked,
         steps=steps,
         final_text=texts[-1] if texts else "",
-        contaminated=hook_ran or _is_contaminated(init, plugins_loaded, expected_skills),
-        claude_version=str(init.get("claude_code_version", "")),
+        contaminated=bool(reasons),
+        contamination_reasons=reasons,
+        claude_version=str(info.get("claude_code_version", "")),
     )
     if result is None:
         trace.is_error = True
         trace.error = NO_RESULT_ERROR
         return trace
 
-    subtype = str(result.get("subtype", ""))
+    subtype = _subtype(result)
     trace.cost_usd = _number(result.get("total_cost_usd"))
     trace.num_turns = int(_number(result.get("num_turns")))
     trace.duration_ms = int(_number(result.get("duration_ms")))

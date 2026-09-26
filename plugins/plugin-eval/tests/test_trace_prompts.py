@@ -233,3 +233,73 @@ def test_cli_dry_run_writes_tuples(tmp_path: Path) -> None:
     assert len(rows) == 2 * 3 + 10
     assert all("query" not in row for row in rows)
     assert [PromptTuple.model_validate(row).id for row in rows][:2] == ["p001", "p002"]
+
+
+class FailingWriter:
+    """Returns distinct queries, then raises on the given call, as a writer does when an
+    API error outlasts the SDK's retries."""
+
+    def __init__(self, fail_on: int) -> None:
+        self.calls = 0
+        self.fail_on = fail_on
+
+    def write(self, prompt: str) -> str:
+        self.calls += 1
+        if self.calls == self.fail_on:
+            raise RuntimeError("overloaded")
+        return f"query number {self.calls} about topic {self.calls * 7}"
+
+
+def test_render_stops_and_keeps_written_queries_when_a_call_fails(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    plugins, market = fake_repo(tmp_path)
+    tuples = build_tuples(
+        sample_skills(plugins, market, n=2, seed=1), seed=1, per_skill=3, off_topic=0
+    )
+    writer = FailingWriter(fail_on=3)
+    records = render_queries(tuples, skill_text=lambda p, s: "desc", client=writer)
+    assert writer.calls == 3
+    assert [r.id for r in records] == ["p001", "p002"]
+    assert "overloaded" in caplog.text
+    assert "4 tuples are left unwritten" in caplog.text
+
+
+def test_cli_prompts_defaults_match_traces_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    plugins, market = fake_repo(tmp_path)
+    (tmp_path / ".claude-plugin").mkdir()
+    market.rename(tmp_path / ".claude-plugin" / "marketplace.json")
+    monkeypatch.chdir(tmp_path)
+    args = ["traces", "prompts", "--n-skills", "2", "--out", "out.jsonl", "--dry-run"]
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 0, result.output
+    assert len((tmp_path / "out.jsonl").read_text().splitlines()) == 2 * 3 + 10
+
+
+def test_render_keeps_first_query_when_the_retry_fails(caplog: pytest.LogCaptureFixture) -> None:
+    class RetryFails:
+        calls = 0
+
+        def write(self, prompt: str) -> str:
+            self.calls += 1
+            if self.calls == 3:
+                raise RuntimeError("overloaded")
+            return "design a postgres schema for invoices"
+
+    tuples = [
+        PromptTuple(
+            id=f"p00{i}",
+            target_plugin="db",
+            target_skill="pg",
+            explicitness="vague",
+            routing="should_trigger",
+            task_shape="design",
+        )
+        for i in (1, 2, 3)
+    ]
+    records = render_queries(tuples, skill_text=lambda p, s: "desc", client=RetryFails())
+    assert [r.id for r in records] == ["p001", "p002"]
+    assert "Stopped at p003" in caplog.text
+    assert "1 tuples are left unwritten" in caplog.text

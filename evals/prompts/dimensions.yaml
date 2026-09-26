@@ -2,8 +2,12 @@
 # traces for error analysis.
 #
 # Generation has two steps. Code in plugins/plugin-eval/src/plugin_eval/traces/prompts.py
-# samples skills across marketplace categories and builds one tuple per combination of
-# dimension values. A separate LLM call then writes one user message for each tuple.
+# samples skills across marketplace categories and builds the tuples. Each sampled skill
+# gets three tuples: two should_trigger and one near_miss, each at a different
+# explicitness level. Task shapes are spread evenly over all tuples. Ten off_topic tuples
+# each target a randomly chosen sampled skill and ask for unrelated work. The tuples do
+# not cover every combination of dimension values. A separate LLM call then writes one
+# user message for each tuple.
 # Each dimension targets a failure we expect when a plugin skill should or should not
 # load. Add a dimension only when traces show failures along a new axis.
 #

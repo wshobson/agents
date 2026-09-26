@@ -197,8 +197,10 @@ app.add_typer(traces_app, name="traces")
 
 @traces_app.command("prompts")
 def traces_prompts(
-    plugins_dir: Path = typer.Option(..., help="The repo's plugins directory"),  # noqa: B008
-    marketplace: Path = typer.Option(..., help="Path to .claude-plugin/marketplace.json"),  # noqa: B008
+    plugins_dir: Path = typer.Option(Path("plugins"), help="The repo's plugins directory"),  # noqa: B008
+    marketplace: Path = typer.Option(  # noqa: B008
+        Path(".claude-plugin/marketplace.json"), help="Path to the marketplace.json"
+    ),
     n_skills: int = typer.Option(30, help="Number of skills to sample"),  # noqa: B008
     seed: int = typer.Option(20260926, help="Seed for sampling and tuple building"),  # noqa: B008
     out: Path = typer.Option(..., help="JSONL file to write"),  # noqa: B008
@@ -253,6 +255,7 @@ def traces_run(
     ),
     seed: int = typer.Option(20260926, help="Seed for choosing distractor plugins"),  # noqa: B008
     limit: int | None = typer.Option(None, help="Run only the first N prompts"),  # noqa: B008
+    timeout_s: int = typer.Option(600, help="Seconds before one session is stopped"),  # noqa: B008
     smoke: bool = typer.Option(  # noqa: B008
         False, "--smoke", help="Run the first should_trigger prompt and check its skill fired"
     ),
@@ -285,6 +288,7 @@ def traces_run(
         model=model,
         per_trace_usd=per_trace_usd,
         max_turns=max_turns,
+        timeout_s=timeout_s,
     )
     ledger = runner.BudgetLedger(total_usd=total_usd, per_trace_usd=per_trace_usd)
 
@@ -295,7 +299,7 @@ def traces_run(
             raise typer.Exit(code=2)
         smoke_dir = out / "smoke"
         (smoke_dir / f"{target.id}.json").unlink(missing_ok=True)
-        traces = runner.run_batch([target], smoke_dir, 1, ledger, run)
+        traces = runner.run_batch([target], smoke_dir, 1, ledger, partial(run, raw_dir=smoke_dir))
         trace = traces[0] if traces else None
         if trace is None:
             console.print("[red]Smoke failed: the budget did not allow one trace[/red]")
@@ -306,11 +310,18 @@ def traces_run(
             f"USD {trace.cost_usd:.2f}. Trace saved to {smoke_dir / (target.id + '.json')}",
             soft_wrap=True,
         )
-        if target.target_skill not in trace.skills_invoked or trace.contaminated:
+        problems = []
+        if target.target_skill not in trace.skills_invoked:
+            problems.append(f"it did not invoke {target.target_skill}")
+        if trace.contaminated:
+            problems.append(
+                f"the session was contaminated ({'; '.join(trace.contamination_reasons)})"
+            )
+        if problems:
+            stream = smoke_dir / f"{target.id}{runner.STREAM_SUFFIX}"
             console.print(
-                f"[red]Smoke failed: {target.id} did not invoke {target.target_skill} in a "
-                "clean session. Check the Skill tool name and the init event before a full "
-                "run.[/red]",
+                f"[red]Smoke failed for {target.id}: {' and '.join(problems)}. Fix this "
+                f"before a full run. The raw stream is in {stream}.[/red]",
                 soft_wrap=True,
             )
             raise typer.Exit(code=1)
@@ -321,7 +332,7 @@ def traces_run(
     earlier = [TraceRecord.model_validate_json(p.read_text()) for p in out.glob("*.json")]
     ledger.spent = earlier_usd = sum(runner.billed_usd(t, per_trace_usd) for t in earlier)
     selected = records[:limit] if limit is not None else records
-    traces = runner.run_batch(selected, out, concurrency, ledger, run)
+    traces = runner.run_batch(selected, out, concurrency, ledger, partial(run, raw_dir=out))
     errors = sum(t.is_error for t in traces)
     contaminated = sum(t.contaminated for t in traces)
     console.print(

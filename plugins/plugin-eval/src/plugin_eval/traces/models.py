@@ -52,8 +52,9 @@ class TraceRecord(BaseModel):
     skills_available is the init event's skill list as reported, so plugin skills carry
     their namespace ("plugin:skill"). skills_invoked holds the bare skill name of each Skill
     tool call in order, so `prompt.target_skill in trace.skills_invoked` tells whether the
-    target fired. contaminated is True when the session saw a skill, plugin, or MCP server
-    that the runner did not load.
+    target fired. contaminated is True when the session saw a skill, tool, plugin, or MCP
+    server that the runner did not load, when a hook ran, or when the stream had no init
+    event. contamination_reasons names each cause, for example "unexpected skill: x".
     """
 
     prompt: PromptRecord
@@ -69,6 +70,7 @@ class TraceRecord(BaseModel):
     is_error: bool = False
     error: str | None = None
     contaminated: bool = False
+    contamination_reasons: list[str] = []
     claude_version: str = ""
     # How far cost_usd went past the per-trace cap. Claude Code checks --max-budget-usd
     # between turns, so the turn that crosses the cap still completes.

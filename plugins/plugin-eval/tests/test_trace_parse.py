@@ -3,10 +3,10 @@
 The fixture tests/fixtures/traces/sample-stream.jsonl was captured from one real run on
 2026-09-26 with the runner's build_argv and build_env (so --tools with ALLOWED_TOOLS,
 --permission-mode acceptEdits, and an empty CLAUDE_CONFIG_DIR), loading only the
-database-design plugin. Three argv changes came after the capture: the --allowedTools
-read rules for plugin dirs, --settings with disableAllHooks, and the query moving to the
-end after "--". Probes showed each leaves the init event unchanged. Facts taken from the
-fixture:
+database-design plugin. Some changes came after the capture: the --allowedTools read
+rules for plugin dirs, --settings with disableAllHooks, --include-hook-events, the query
+moving to the end after "--", and DISABLE_AUTOUPDATER in the environment. Probes showed
+each leaves the init event unchanged. Facts taken from the fixture:
 
 - claude --version: 2.1.283 (Claude Code). The init event reports claude_code_version 2.1.283.
 - The Skill tool is named "Skill". Its input field "skill" carries the skill name, with the
@@ -95,6 +95,7 @@ def test_fixture_round_trip() -> None:
     assert trace.is_error is False
     assert trace.error is None
     assert trace.contaminated is False
+    assert trace.contamination_reasons == []
 
 
 def test_fixture_steps_pair_tool_calls_with_results() -> None:
@@ -126,6 +127,7 @@ def test_extra_skill_marks_trace_contaminated() -> None:
     trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
     assert trace.contaminated is True
     assert "evil-skill" in trace.skills_available
+    assert trace.contamination_reasons == ["unexpected skill: evil-skill"]
 
 
 def test_fixture_tools_are_the_allowlist() -> None:
@@ -139,7 +141,9 @@ def test_tool_outside_the_allowlist_marks_trace_contaminated() -> None:
         init_event(sorted(EXPECTED), tools=[*ALLOWED_TOOLS, "PushNotification"]),
         result_event(),
     ]
-    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert trace.contaminated is True
+    assert trace.contamination_reasons == ["unexpected tool: PushNotification"]
     lines = [init_event(sorted(EXPECTED), tools=list(ALLOWED_TOOLS)), result_event()]
     assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is False
 
@@ -151,10 +155,14 @@ def test_unexpected_plugin_or_mcp_server_marks_trace_contaminated() -> None:
         {"name": "superpowers", "path": "/HOME/.claude/plugins/cache/superpowers"},
     ]
     lines = [init_event(sorted(EXPECTED), plugins=plugins), result_event()]
-    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert trace.contaminated is True
+    assert trace.contamination_reasons == ["unexpected plugin: superpowers"]
 
     lines = [init_event(sorted(EXPECTED), mcp_servers=[{"name": "linear"}]), result_event()]
-    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert trace.contaminated is True
+    assert trace.contamination_reasons == ["MCP server: linear"]
 
 
 def test_error_result_sets_error_fields() -> None:
@@ -234,8 +242,11 @@ def test_long_tool_input_and_result_are_truncated() -> None:
 
 def test_a_hook_event_marks_trace_contaminated() -> None:
     hook = {"type": "system", "subtype": "hook_started", "hook_name": "PreToolUse:Read"}
-    lines = [init_event(sorted(EXPECTED)), json.dumps(hook), result_event()]
-    assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
+    done = {"type": "system", "subtype": "hook_response", "hook_name": "PreToolUse:Read"}
+    lines = [init_event(sorted(EXPECTED)), json.dumps(hook), json.dumps(done), result_event()]
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert trace.contaminated is True
+    assert trace.contamination_reasons == ["hook event: PreToolUse:Read"]
 
 
 def test_malformed_message_and_tool_input_are_skipped() -> None:
@@ -274,6 +285,7 @@ def test_malformed_plugin_entry_is_skipped_and_marks_contamination() -> None:
     lines = [init_event(sorted(EXPECTED), plugins=plugins), result_event()]
     trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
     assert trace.contaminated is True
+    assert trace.contamination_reasons == ["unreadable plugins entry"]
 
 
 def test_unhashable_skill_entries_are_skipped_and_mark_contamination() -> None:
@@ -282,6 +294,7 @@ def test_unhashable_skill_entries_are_skipped_and_mark_contamination() -> None:
     trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
     assert trace.skills_available == sorted(EXPECTED)
     assert trace.contaminated is True
+    assert trace.contamination_reasons == ["unreadable skills entry"]
 
 
 def test_unhashable_tool_entries_are_skipped_and_mark_contamination() -> None:
@@ -289,3 +302,32 @@ def test_unhashable_tool_entries_are_skipped_and_mark_contamination() -> None:
     assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
     lines = [init_event(sorted(EXPECTED), tools="Read,Bash"), result_event()]
     assert parse_stream(lines, record(), ["database-design"], EXPECTED).contaminated is True
+
+
+def test_a_stream_without_an_init_event_is_contaminated() -> None:
+    trace = parse_stream([result_event()], record(), ["database-design"], EXPECTED)
+    assert trace.contaminated is True
+    assert trace.contamination_reasons == ["missing init event"]
+    assert trace.is_error is False
+
+
+def test_non_list_plugins_value_marks_contamination() -> None:
+    lines = [init_event(sorted(EXPECTED), plugins={"name": "database-design"}), result_event()]
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert trace.contaminated is True
+    assert trace.contamination_reasons == ["unreadable plugins list"]
+
+
+def test_odd_subtypes_and_non_finite_numbers_do_not_raise() -> None:
+    lines = [
+        init_event(sorted(EXPECTED)),
+        json.dumps({"type": "system", "subtype": ["hook_started"]}),
+        json.dumps({"type": "system", "subtype": {"a": 1}}),
+        '{"type": "result", "subtype": ["error"], "is_error": false, "result": "Done.",'
+        ' "total_cost_usd": NaN, "num_turns": Infinity, "duration_ms": -Infinity}',
+    ]
+    trace = parse_stream(lines, record(), ["database-design"], EXPECTED)
+    assert (trace.cost_usd, trace.num_turns, trace.duration_ms) == (0.0, 0, 0)
+    assert trace.is_error is False
+    assert trace.final_text == "Done."
+    assert trace.contaminated is False

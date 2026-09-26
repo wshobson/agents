@@ -226,18 +226,26 @@ def render_queries(
     Spend is added up from the writer's last_usage after each call. Before each call, the
     worst case for that call is added to the spend so far: the prompt's UTF-8 byte length
     bounds its input tokens, and max_tokens bounds its output. When that total could pass
-    max_usd, writing stops, and the number of tuples left unwritten is logged.
+    max_usd, writing stops, and the number of tuples left unwritten is logged. When a writer
+    call raises, writing stops the same way, so the caller still gets the queries written
+    so far. If a retry raises, the first query for that tuple is kept.
     """
     model = getattr(client, "model", type(client).__name__)
     spent = 0.0
+    failure: Exception | None = None
 
     def write(prompt: str) -> str | None:
-        """Call the writer, or return None when the call could pass the budget."""
-        nonlocal spent
+        """Call the writer, or return None when the call could pass the budget or a call has
+        failed. The SDK retries API errors itself, so an error that reaches here is final."""
+        nonlocal spent, failure
         worst = _usd(len(prompt.encode("utf-8")), getattr(client, "max_tokens", 0))
-        if spent + worst > max_usd:
+        if failure is not None or spent + worst > max_usd:
             return None
-        query = client.write(prompt).strip()
+        try:
+            query = client.write(prompt).strip()
+        except Exception as exc:
+            failure = exc
+            return None
         spent += _usd(*getattr(client, "last_usage", (0, 0)))
         return query
 
@@ -247,6 +255,15 @@ def render_queries(
         target = (item.target_plugin, item.target_skill)
         prompt = _query_prompt(item, skill_text(*target))
         query = write(prompt)
+        if query is None and failure is not None:
+            logger.error(
+                "Stopped at %s: a writer call failed (%s: %s), so %d tuples are left unwritten.",
+                item.id,
+                type(failure).__name__,
+                failure,
+                len(tuples) - index,
+            )
+            break
         if query is None:
             logger.warning(
                 "Stopped at %s: the next call could pass the USD %.2f budget after spending "

@@ -86,6 +86,7 @@ def test_build_argv_has_every_flag() -> None:
     assert argv.count("Design a table") == 1
     settings = argv[argv.index("--settings") + 1]
     assert json.loads(settings) == {"disableAllHooks": True}
+    assert "--include-hook-events" in argv
     joined = " ".join(argv)
     assert "--output-format stream-json --verbose" in joined
     assert "--model claude-opus-5-5" in joined
@@ -128,6 +129,7 @@ def test_build_env_keeps_only_what_the_session_needs(
     assert env["CLAUDE_CONFIG_DIR"] == str(tmp_path)
     assert env["ANTHROPIC_API_KEY"] == "test-key"
     assert env["PATH"]
+    assert env["DISABLE_AUTOUPDATER"] == "1"
     for name in ("CLAUDECODE", "CLAUDE_EFFORT", "ENABLE_TOOL_SEARCH"):
         assert name not in env
 
@@ -305,7 +307,9 @@ def test_run_one_runs_claude_in_an_isolated_session(
         max_turns=12,
         workdir=workdir,
         config_dir=config_dir,
+        raw_dir=tmp_path / "raw",
     )
+    assert (tmp_path / "raw" / "p001.stream.jsonl").read_text() == FIXTURE.read_text()
     (call,) = calls
     assert call["cwd"] == workdir
     assert call["env"]["CLAUDE_CONFIG_DIR"] == str(config_dir)
@@ -346,6 +350,64 @@ def test_run_one_reports_a_timeout(tmp_path: Path, monkeypatch: pytest.MonkeyPat
     assert "database-design" in trace.plugins_loaded
 
 
+def test_run_one_saves_and_parses_the_partial_stream_on_timeout(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    plugins, market = fake_repo(tmp_path)
+    partial = "\n".join(FIXTURE.read_text().splitlines()[:5]) + "\n"
+
+    def hang(argv: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+        raise subprocess.TimeoutExpired(argv, kwargs["timeout"], output=partial.encode())
+
+    monkeypatch.setattr(runner.subprocess, "run", hang)
+    trace = run_one(
+        record(),
+        plugins_dir=plugins,
+        marketplace_json=market,
+        seed=1,
+        model="claude-opus-5-5",
+        per_trace_usd=1.5,
+        max_turns=12,
+        workdir=tmp_path,
+        config_dir=tmp_path,
+        timeout_s=5,
+        raw_dir=tmp_path / "raw",
+    )
+    assert (tmp_path / "raw" / "p001.stream.jsonl").read_text() == partial
+    assert trace.error == "timeout"
+    assert trace.skills_invoked == ["postgresql-table-design"]
+    assert trace.cost_usd == 0.0
+
+
+def test_run_one_splits_the_stream_on_newlines_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    plugins, market = fake_repo(tmp_path)
+    init = FIXTURE.read_text().splitlines()[0]
+    result = {"type": "result", "subtype": "success", "is_error": False, "num_turns": 1}
+    result |= {"result": "line one\u2028line two", "total_cost_usd": 0.1, "duration_ms": 5}
+    stdout = init + "\n" + json.dumps(result, ensure_ascii=False) + "\n"
+    assert "\u2028" in stdout
+
+    def fake(argv: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+        return subprocess.CompletedProcess(argv, 0, stdout, "")
+
+    monkeypatch.setattr(runner.subprocess, "run", fake)
+    trace = run_one(
+        record(),
+        plugins_dir=plugins,
+        marketplace_json=market,
+        seed=1,
+        model="claude-opus-5-5",
+        per_trace_usd=1.5,
+        max_turns=12,
+        workdir=tmp_path,
+        config_dir=tmp_path,
+    )
+    assert trace.is_error is False
+    assert trace.final_text == "line one\u2028line two"
+
+
 def write_prompts(tmp_path: Path) -> Path:
     path = tmp_path / "prompts.jsonl"
     rows = [record(1, "near_miss"), record(2), record(3)]
@@ -370,6 +432,8 @@ def test_cli_smoke_fails_loudly_without_a_skill_call(
         seen.append(rec.id)
         assert kwargs["model"] == "claude-opus-5-5"
         assert Path(kwargs["config_dir"]).is_dir()
+        assert kwargs["raw_dir"] == tmp_path / "traces" / "smoke"
+        assert kwargs["timeout_s"] == 600
         return trace_for(rec, skills_invoked=invoked)
 
     monkeypatch.setattr(runner, "run_one", fake_run_one)
@@ -378,6 +442,45 @@ def test_cli_smoke_fails_loudly_without_a_skill_call(
     assert seen == ["p002"]
     if code:
         assert "did not invoke postgresql-table-design" in result.output
+
+
+def test_cli_smoke_names_the_contamination_reasons(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        return trace_for(
+            rec,
+            skills_invoked=["postgresql-table-design"],
+            contaminated=True,
+            contamination_reasons=["unexpected skill: evil-skill", "hook event: PreToolUse:Read"],
+        )
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    result = CliRunner().invoke(app, cli_args(tmp_path, "--smoke"))
+    assert result.exit_code == 1
+    assert "unexpected skill: evil-skill; hook event: PreToolUse:Read" in result.output
+    assert "p002.stream.jsonl" in result.output
+
+
+def test_cli_run_passes_timeout_and_raw_dir_and_ignores_stream_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = tmp_path / "traces"
+    out.mkdir()
+    (out / "p001.stream.jsonl").write_text("partial stream from an interrupted run\n")
+    seen: list[str] = []
+
+    def fake_run_one(rec: PromptRecord, **kwargs: Any) -> TraceRecord:
+        seen.append(rec.id)
+        assert kwargs["timeout_s"] == 42
+        assert kwargs["raw_dir"] == out
+        return trace_for(rec, cost=0.25)
+
+    monkeypatch.setattr(runner, "run_one", fake_run_one)
+    result = CliRunner().invoke(app, cli_args(tmp_path, "--limit", "1", "--timeout-s", "42"))
+    assert result.exit_code == 0, result.output
+    assert seen == ["p001"]
+    assert "USD 0.25 including earlier runs" in result.output
 
 
 def test_cli_run_writes_traces_and_prints_a_summary(

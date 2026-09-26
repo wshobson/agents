@@ -3,7 +3,9 @@
 Each session gets a fresh temporary CLAUDE_CONFIG_DIR and a fresh working directory, so the
 maintainer's own skills, plugins, settings, and CLAUDE.md never reach it. Plugins load only
 through --plugin-dir. The parser marks a trace contaminated if anything else shows up in the
-session's init event.
+session's init event. Each session's raw stream is kept next to its trace as
+<id>.stream.jsonl, because the trace keeps only summaries (for example, the text a skill
+loads is only in the raw stream).
 """
 
 from __future__ import annotations
@@ -28,6 +30,7 @@ from plugin_eval.traces.prompts import skill_names
 logger = logging.getLogger(__name__)
 
 README_TEXT = "Scratch project for a Claude Code session.\n"
+STREAM_SUFFIX = ".stream.jsonl"  # the raw stream file; it never matches the *.json traces
 # Plugin hooks run shell commands on every tool call (protect-mcp's run npx), and the init
 # event does not list them. Flag settings keep the config dir empty. A probe on Claude Code
 # 2.1.283 showed this stops a plugin's hooks; the parser flags any hook event that still runs.
@@ -138,6 +141,9 @@ def build_argv(
         "acceptEdits",
         "--settings",
         SESSION_SETTINGS,
+        # Hook events go to the stream, so a PreToolUse or PostToolUse hook that still ran
+        # marks the trace contaminated. Without this flag only SessionStart hooks show up.
+        "--include-hook-events",
         # -p mode also denies reads outside the working directories, which would stop a skill
         # from opening its own references/. These rules allow reads, and only reads, of the
         # loaded plugins. --add-dir would also allow edits there under acceptEdits.
@@ -153,6 +159,8 @@ def build_env(config_dir: Path) -> dict[str, str]:
     """Return the environment for one session: the allowlist plus an empty config dir."""
     env = {k: v for k, v in os.environ.items() if k in ENV_ALLOWLIST}
     env["CLAUDE_CONFIG_DIR"] = str(config_dir)
+    # Keep one Claude Code version for the whole run; a new version can add built-in skills.
+    env["DISABLE_AUTOUPDATER"] = "1"
     return env
 
 
@@ -196,13 +204,19 @@ def run_one(
     workdir: Path,
     config_dir: Path,
     timeout_s: int = 600,
+    raw_dir: Path | None = None,
 ) -> TraceRecord:
-    """Run one prompt in a headless session and parse its stream into a TraceRecord."""
+    """Run one prompt in a headless session and parse its stream into a TraceRecord.
+
+    When raw_dir is given, the session's stdout is saved there as <id>.stream.jsonl. On a
+    timeout, the partial stdout is saved and parsed, and the trace's error is "timeout".
+    """
     plugins = choose_plugins(record.target_plugin, marketplace_json, trace_seed(seed, record.id))
     plugin_dirs = [(plugins_dir / name).resolve() for name in plugins]
     expected = {f"{d.name}:{skill}" for d in plugin_dirs for skill in skill_names(d)}
     (workdir / "README.md").write_text(README_TEXT, encoding="utf-8")
     argv = build_argv(record.query, plugin_dirs, model, per_trace_usd, max_turns)
+    timed_out = False
     try:
         proc = subprocess.run(
             argv,
@@ -213,16 +227,32 @@ def run_one(
             text=True,
             timeout=timeout_s,
         )
-    except subprocess.TimeoutExpired:
-        return TraceRecord(
-            prompt=record, model=model, plugins_loaded=plugins, is_error=True, error="timeout"
-        )
-    trace = parse_stream(proc.stdout.splitlines(), record, plugins, expected)
-    if proc.returncode != 0 or trace.error == NO_RESULT_ERROR:
-        details = [trace.error, f"exit code {proc.returncode}", proc.stderr.strip()[-500:]]
+        stdout, stderr, returncode = proc.stdout, proc.stderr, proc.returncode
+    except subprocess.TimeoutExpired as exc:
+        # The partial output arrives as bytes even with text=True.
+        timed_out = True
+        stdout, stderr, returncode = _decode(exc.stdout), _decode(exc.stderr), None
+    if raw_dir is not None:
+        raw_dir.mkdir(parents=True, exist_ok=True)
+        _write_atomic(raw_dir / f"{record.id}{STREAM_SUFFIX}", stdout)
+    # Split on "\n" only: str.splitlines also splits on U+2028 and U+2029, which JSON
+    # leaves raw inside strings.
+    trace = parse_stream(stdout.split("\n"), record, plugins, expected)
+    trace.model = trace.model or model
+    if timed_out:
+        trace.is_error = True
+        trace.error = "timeout"
+    elif returncode != 0 or trace.error == NO_RESULT_ERROR:
+        details = [trace.error, f"exit code {returncode}", stderr.strip()[-500:]]
         trace.is_error = True
         trace.error = "; ".join(d for d in details if d)
     return trace
+
+
+def _decode(output: bytes | str | None) -> str:
+    if isinstance(output, bytes):
+        return output.decode("utf-8", errors="replace")
+    return output or ""
 
 
 def billed_usd(trace: TraceRecord, cap: float) -> float:
