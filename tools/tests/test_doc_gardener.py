@@ -202,6 +202,55 @@ class TestDeadLinks:
         check_dead_links(report)
         assert not [f for f in report.findings if f.kind == "DEAD_LINK"]
 
+    def test_references_file_link_resolves_from_its_own_folder(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """`references/references/x.md` is the bug class #735 fixed by hand."""
+        _patch_paths(monkeypatch, tmp_path)
+        refs = tmp_path / "plugins" / "p" / "skills" / "s" / "references"
+        refs.mkdir(parents=True)
+        (refs / "advanced.md").write_text("# Advanced\n")
+        (refs / "details.md").write_text(
+            "[wrong](references/advanced.md)\n[right](./advanced.md)\n"
+        )
+        report = Report()
+        check_dead_links(report)
+        findings = [f for f in report.findings if f.kind == "DEAD_LINK"]
+        assert [(f.path, "references/advanced.md" in f.message) for f in findings] == [
+            (refs / "details.md", True)
+        ]
+
+    def test_skill_md_dead_link_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        skill = tmp_path / "plugins" / "p" / "skills" / "s"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text("[gone](../missing-skill/SKILL.md)\n")
+        report = Report()
+        check_dead_links(report)
+        findings = [f for f in report.findings if f.kind == "DEAD_LINK"]
+        assert len(findings) == 1
+        assert findings[0].severity == "error"
+
+    def test_skill_links_in_code_are_skipped(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """Example links inside fenced blocks (including nested fences) and inline code
+        are sample content, not navigation."""
+        _patch_paths(monkeypatch, tmp_path)
+        skill = tmp_path / "plugins" / "p" / "skills" / "s"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            "````markdown\n"
+            "```\n[inner](inner.md)\n```\n"
+            "[template](adr/0001.md)\n"
+            "````\n"
+            "~~~\n[tilde](tilde.md)\n~~~\n"
+            "Write `[x](y.md)` in the doc.\n"
+            "[after](after.md)\n"
+        )
+        report = Report()
+        check_dead_links(report)
+        messages = [f.message for f in report.findings if f.kind == "DEAD_LINK"]
+        assert messages == ["link to `after.md` does not resolve"]
+
 
 # ── Codex skill cap ──────────────────────────────────────────────────────────
 
