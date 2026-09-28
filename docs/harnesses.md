@@ -202,23 +202,20 @@ For generated harnesses, use Pensyve's upstream harness-native integration:
 | OpenCode | `integrations/opencode-plugin` |
 | Copilot | `.copilot/` (repo-level) or `~/.copilot/` (global install via `make install-copilot`) |
 
-## External HOL Guard integration
+## External HOL Guard entry
 
-The Claude Code marketplace includes HOL Guard as an external `git-subdir` plugin from
-`https://github.com/hashgraph-online/hol-guard-plugin.git`, path `distributions/wshobson-agents`.
-The reviewed payload exposes the portable `hol-guard` and `plugin-scanner` skills and
-keeps decisioning local by default. Guard Cloud is neither required nor promoted. This
-marketplace entry is a Claude Code discovery surface only; it does not add HOL Guard to the
-generated Codex, Cursor, OpenCode, Antigravity, Copilot, or Pi outputs.
+The Claude Code marketplace lists HOL Guard as an external `git-subdir` entry from
+`hashgraph-online/hol-guard-plugin`, path `distributions/wshobson-agents`, pinned to a reviewed
+commit on upstream's `main` branch. The payload is two Markdown skills, and they install the
+`hol-guard` and `plugin-scanner` CLIs only after the user approves. When a user asks for
+protection, the `hol-guard` CLI edits that harness's hook and settings files. The entry is not
+generated for any other harness.
 
-The reviewed payload is pinned to commit `43b2dda59e9f07057c52e69fd7426188faae1488` and installs the exact local CLI versions
-`hol-guard==2.2.119` and `plugin-scanner==2.2.119`, with user approval required before
-installation. For a reviewed payload update, advance the marketplace `sha` and matching
-marketplace/external manifest versions together.
-
-When the user explicitly requests protection, the local HOL Guard runtime can modify
-supported harness hook/settings configuration. Generated harness outputs in this repository
-do not vendor or rewrite the external HOL Guard payload.
+To update the entry, review the payload at a newer upstream `main` commit, then change the
+marketplace `sha`, and change `version` too if the payload's `plugin.json` version changed.
+The review checks that the payload adds no hooks, `.mcp.json`, scripts, or hosted endpoints,
+that the default path needs no account or paid service, and that each CLI install is pinned to
+an exact version.
 
 ## Global install
 
