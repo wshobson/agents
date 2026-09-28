@@ -432,9 +432,10 @@ def check_oversized_context_files(report: Report) -> None:
             )
 
 
-_LINK_PATTERN = re.compile(r"\[[^\]]+\]\(([^)#]+)\)")
+_LINK_PATTERN = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 _FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})")
-_INLINE_CODE_PATTERN = re.compile(r"`[^`\n]*`")
+# A code span closes on a backtick run of the same length as the one that opened it.
+_INLINE_CODE_PATTERN = re.compile(r"(`+)(?!`).*?(?<!`)\1(?!`)")
 
 
 def _strip_code(content: str) -> str:
@@ -461,17 +462,20 @@ def _strip_code(content: str) -> str:
 
 def _report_dead_links(md: Path, content: str, report: Report) -> None:
     for link in _LINK_PATTERN.findall(content):
-        # Skip external links and anchors
-        if link.startswith(("http://", "https://", "mailto:", "#")):
+        # Skip external links and same-page anchors
+        target = link.split("#", 1)[0]
+        if not target or link.startswith(("http://", "https://", "mailto:")):
             continue
-        link_path = (md.parent / link).resolve()
+        # A leading `/` resolves from the repository root, as it does on GitHub.
+        base = WORKTREE if target.startswith("/") else md.parent
+        link_path = (base / target.lstrip("/")).resolve()
         if not link_path.exists():
             report.add(
                 kind="DEAD_LINK",
                 severity="error",
                 path=md,
                 message=f"link to `{link}` does not resolve",
-                fix="Update the link target, or create the missing file. Links resolve from the file's own folder, so a link inside a skill's `references/` file is `./other.md`, not `references/other.md`. If the link points into generated output (`.codex/`, `.opencode/`, etc.), the generated tree may need to be regenerated.",
+                fix="Update the link target, or create the missing file. Links resolve from the file's own folder (or from the repository root when they start with `/`), so a link inside a skill's `references/` file is `./other.md`, not `references/other.md`. If the link points into generated output (`.codex/`, `.opencode/`, etc.), the generated tree may need to be regenerated.",
             )
 
 

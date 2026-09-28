@@ -385,6 +385,38 @@ class TestDeadLinks:
         messages = [f.message for f in report.findings if f.kind == "DEAD_LINK"]
         assert messages == ["link to `after.md` does not resolve"]
 
+    def test_fragment_links_check_the_file(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        (tmp_path / "docs").mkdir()
+        (tmp_path / "docs" / "b.md").write_text("# B\n")
+        (tmp_path / "docs" / "a.md").write_text("[ok](b.md#b)\n[gone](missing.md#x)\n")
+        report = Report()
+        check_dead_links(report)
+        messages = [f.message for f in report.findings if f.kind == "DEAD_LINK"]
+        assert messages == ["link to `missing.md#x` does not resolve"]
+
+    def test_root_relative_links_resolve_from_the_repo_root(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        (tmp_path / "docs" / "sub").mkdir(parents=True)
+        (tmp_path / "README.md").write_text("# R\n")
+        (tmp_path / "docs" / "sub" / "a.md").write_text("[root](/README.md)\n")
+        report = Report()
+        check_dead_links(report)
+        assert not [f for f in report.findings if f.kind == "DEAD_LINK"]
+
+    def test_skill_links_in_multi_backtick_code_are_skipped(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        skill = tmp_path / "plugins" / "p" / "skills" / "s"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text("Use ``[x](a.md)`` or ``a`[y](b.md)``.\n")
+        report = Report()
+        check_dead_links(report)
+        assert not [f for f in report.findings if f.kind == "DEAD_LINK"]
+
 
 # ── Codex skill cap ──────────────────────────────────────────────────────────
 

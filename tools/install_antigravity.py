@@ -87,10 +87,10 @@ def _legacy_plugins_dir(config_dir: Path, legacy_config_dir: Path | None) -> Pat
     """Return the old plugins dir to clean, or None when it is the config dir itself."""
     if legacy_config_dir is None:
         return None
-    legacy = legacy_config_dir.expanduser()
-    if legacy.resolve(strict=False) == config_dir.resolve(strict=False):
+    legacy_plugins = legacy_config_dir.expanduser() / "plugins"
+    if legacy_plugins.resolve(strict=False) == (config_dir / "plugins").resolve(strict=False):
         return None
-    return legacy / "plugins"
+    return legacy_plugins
 
 
 def _is_repo_link(path: Path, generated_root: Path) -> bool:
@@ -128,6 +128,14 @@ def install(
         if _is_repo_link(old, generated_root):
             old.unlink()
             report.migrated += 1
+
+    # Plugins removed or renamed since the old install have no new link to wait for.
+    if report.ok and legacy_plugins is not None and legacy_plugins.is_dir():
+        current = {src.name for src in plugins}
+        for old in sorted(legacy_plugins.iterdir()):
+            if old.name not in current and _is_repo_link(old, generated_root):
+                old.unlink()
+                report.migrated += 1
     return report
 
 
