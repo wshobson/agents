@@ -155,6 +155,24 @@ class TestAntigravitySmoke:
                 )
         assert not failures, "agy plugin validate failures:\n" + "\n".join(failures[:10])
 
+    def test_agy_discovers_every_agent_after_install(self, tmp_path: Path):
+        """`make install-antigravity` links into `~/.gemini/config/plugins/`, and agy
+        must list every generated agent from there. `validate` checks structure only,
+        so without this a wrong install directory would pass CI. `agy agents` makes
+        no model call."""
+        from tools.install_antigravity import install
+
+        home = tmp_path / "home"
+        report = install(config_dir=home / ".gemini" / "config")
+        assert report.ok, report.errors
+
+        proc = _run(["agy", "agents"], env={**os.environ, "HOME": str(home)})
+        assert proc.returncode == 0, proc.stderr
+        listed = set(proc.stdout.split())
+        expected = {p.stem for p in (WORKTREE / ".antigravity" / "plugins").glob("*/agents/*.md")}
+        missing = sorted(expected - listed)
+        assert not missing, f"agy agents did not list {len(missing)} agents: {missing[:10]}"
+
 
 # ── Pi ───────────────────────────────────────────────────────────────────────
 

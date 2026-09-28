@@ -4,7 +4,7 @@
 Per the OpenAI harness engineering pattern, a recurring task scans for:
 1. Generated artifacts whose source file is newer (regenerate needed)
 2. Context files (AGENTS.md, CLAUDE.md) above ~150 lines
-3. Dead links from docs/ into plugins/ or other docs/
+3. Dead links from docs/ into plugins/ or other docs/, and inside skill files
 4. Skills above 8 KB body without `references/` (Codex hard cap)
 5. Plugin entries in marketplace.json without a corresponding plugins/<name>/ directory
 6. Plugins missing from marketplace.json
@@ -432,8 +432,59 @@ def check_oversized_context_files(report: Report) -> None:
             )
 
 
+_LINK_PATTERN = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+_FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})")
+# A code span closes on a backtick run of the same length as the one that opened it.
+_INLINE_CODE_PATTERN = re.compile(r"(`+)(?!`).*?(?<!`)\1(?!`)")
+
+
+def _strip_code(content: str) -> str:
+    """Drop fenced blocks and inline code, so example links in skills aren't checked.
+
+    A fence closes only on a bare run of the same character at least as long as the
+    opener, so a ```` block can hold ``` examples.
+    """
+    kept: list[str] = []
+    fence: str | None = None
+    for line in content.splitlines():
+        match = _FENCE_PATTERN.match(line)
+        if fence is None:
+            if match:
+                fence = match.group(1)
+            else:
+                kept.append(_INLINE_CODE_PATTERN.sub("", line))
+            continue
+        run = line.strip()
+        if match and set(run) == {fence[0]} and len(run) >= len(fence):
+            fence = None
+    return "\n".join(kept)
+
+
+def _report_dead_links(md: Path, content: str, report: Report) -> None:
+    for link in _LINK_PATTERN.findall(content):
+        # Skip external links and same-page anchors
+        target = link.split("#", 1)[0]
+        if not target or link.startswith(("http://", "https://", "mailto:")):
+            continue
+        # A leading `/` resolves from the repository root, as it does on GitHub.
+        base = WORKTREE if target.startswith("/") else md.parent
+        link_path = (base / target.lstrip("/")).resolve()
+        if not link_path.exists():
+            report.add(
+                kind="DEAD_LINK",
+                severity="error",
+                path=md,
+                message=f"link to `{link}` does not resolve",
+                fix="Update the link target, or create the missing file. Links resolve from the file's own folder (or from the repository root when they start with `/`), so a link inside a skill's `references/` file is `./other.md`, not `references/other.md`. If the link points into generated output (`.codex/`, `.opencode/`, etc.), the generated tree may need to be regenerated.",
+            )
+
+
 def check_dead_links(report: Report) -> None:
-    """Find markdown links from docs/ and top-level guides that point at missing files."""
+    """Find markdown links that point at missing files.
+
+    Covers docs/, the top-level guides, and every skill's SKILL.md and references/
+    files. Skill files skip links inside code, because skills carry sample documents.
+    """
     targets = [DOCS_DIR] if DOCS_DIR.is_dir() else []
     for top_file in (
         "README.md",
@@ -444,27 +495,20 @@ def check_dead_links(report: Report) -> None:
         if p.is_file():
             targets.append(p)
 
-    link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+)\)")
-
     for target in targets:
         files = list(target.rglob("*.md")) if target.is_dir() else [target]
         for md in files:
             content = read_text_or_none(md, report)
             if content is None:
                 continue
-            for link in link_pattern.findall(content):
-                # Skip external links and anchors
-                if link.startswith(("http://", "https://", "mailto:", "#")):
-                    continue
-                link_path = (md.parent / link).resolve()
-                if not link_path.exists():
-                    report.add(
-                        kind="DEAD_LINK",
-                        severity="error",
-                        path=md,
-                        message=f"link to `{link}` does not resolve",
-                        fix="Update the link target, or create the missing file. If the link points into generated output (`.codex/`, `.opencode/`, etc.), the generated tree may need to be regenerated.",
-                    )
+            _report_dead_links(md, content, report)
+
+    if PLUGINS_DIR.is_dir():
+        for md in sorted(PLUGINS_DIR.glob("*/skills/*/**/*.md")):
+            content = read_text_or_none(md, report)
+            if content is None:
+                continue
+            _report_dead_links(md, _strip_code(content), report)
 
 
 def check_codex_skill_caps(report: Report) -> None:

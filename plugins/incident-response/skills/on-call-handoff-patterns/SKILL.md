@@ -66,5 +66,5 @@ Add a standard step: outgoing engineer fires a test alert and confirms incoming 
 
 ## Related Skills
 
-- [incident-classification](../../skills/incident-classification/SKILL.md) — Classify and prioritize incidents that need to be included in the handoff document
-- [postmortem-facilitation](../../skills/postmortem-facilitation/SKILL.md) — Turn resolved incidents from the shift into structured postmortems
+- [incident-runbook-templates](../incident-runbook-templates/SKILL.md) — Runbooks for the incidents that are handed over mid-response
+- [postmortem-writing](../postmortem-writing/SKILL.md) — Turn resolved incidents from the shift into structured postmortems

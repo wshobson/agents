@@ -484,7 +484,7 @@ func receive_hit(hitbox: HitboxComponent) -> void:
         health_component.take_damage(hitbox.damage, hitbox.owner_node)
 ```
 
-For advanced Godot patterns, performance tips, and best practices, see [references/advanced-patterns.md](references/advanced-patterns.md):
+For advanced Godot patterns, performance tips, and best practices, see [references/advanced-patterns.md](./advanced-patterns.md):
 
 - **Pattern 6: Scene Management** — Autoload `SceneManager` with async threaded loading (`ResourceLoader.load_threaded_request`), `ResourceLoader.has_cached` check, transition overlay support, and scene swapping with `queue_free`
 - **Pattern 7: Save System** — Autoload `SaveManager` with AES-encrypted save files (`FileAccess.open_encrypted_with_pass`), JSON serialization, and a reusable `Saveable` component node for per-node save/load lifecycle

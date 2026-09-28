@@ -269,7 +269,7 @@ if ((end - start) > 500) {
 
 **Bypass:** Use bare-metal environment, harden VM (remove guest tools, randomize MAC, delete artifact files), patch detection branches in the binary, or use FLARE-VM/REMnux with hardened settings.
 
-For advanced VM detection (RDTSC delta calibration, VMware backdoor port, hypervisor leaf enumeration, guest driver artifact checks), see [references/advanced-techniques.md](references/advanced-techniques.md).
+For advanced VM detection (RDTSC delta calibration, VMware backdoor port, hypervisor leaf enumeration, guest driver artifact checks), see [references/advanced-techniques.md](./advanced-techniques.md).
 
 ---
 
@@ -399,7 +399,7 @@ xor eax, eax  →  sub eax, eax  |  mov eax, 0  |  and eax, 0
 mov eax, 1    →  xor eax, eax; inc eax  |  push 1; pop eax
 ```
 
-For advanced anti-disassembly tricks (overlapping instructions, junk byte insertion, self-modifying code, ROP as obfuscation), see [references/advanced-techniques.md](references/advanced-techniques.md).
+For advanced anti-disassembly tricks (overlapping instructions, junk byte insertion, self-modifying code, ROP as obfuscation), see [references/advanced-techniques.md](./advanced-techniques.md).
 
 ---
 
