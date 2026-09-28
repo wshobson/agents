@@ -213,6 +213,9 @@ generated for any other harness.
 
 To update the entry, review the payload at a newer upstream `main` commit, then change the
 marketplace `sha`, and change `version` too if the payload's `plugin.json` version changed.
+The review checks that the payload adds no hooks, `.mcp.json`, scripts, or hosted endpoints,
+that the default path needs no account or paid service, and that each CLI install is pinned to
+an exact version.
 
 ## Global install
 
