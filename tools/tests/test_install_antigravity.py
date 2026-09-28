@@ -100,6 +100,76 @@ def test_uninstall_removes_only_repo_owned_symlinks(tmp_path: Path):
     assert real_dir.is_dir()
 
 
+def _legacy_link(repo_root: Path, legacy_dir: Path, name: str = "demo") -> Path:
+    link = legacy_dir / "plugins" / name
+    link.parent.mkdir(parents=True, exist_ok=True)
+    link.symlink_to(repo_root / ".antigravity" / "plugins" / name)
+    return link
+
+
+def test_install_moves_repo_links_out_of_the_legacy_dir(tmp_path: Path):
+    repo_root = tmp_path / "repo"
+    config_dir = tmp_path / "config"
+    legacy_dir = tmp_path / "antigravity-cli"
+    _write_generated_antigravity(repo_root)
+    old = _legacy_link(repo_root, legacy_dir)
+    unrelated_target = tmp_path / "unrelated-plugin"
+    unrelated_target.mkdir()
+    unrelated = legacy_dir / "plugins" / "unrelated"
+    unrelated.symlink_to(unrelated_target)
+
+    report = install(repo_root=repo_root, config_dir=config_dir, legacy_config_dir=legacy_dir)
+
+    assert report.ok
+    assert report.linked == 1
+    assert report.migrated == 1
+    assert (config_dir / "plugins" / "demo").is_symlink()
+    assert not old.is_symlink()
+    assert unrelated.is_symlink()
+
+
+def test_install_keeps_legacy_link_when_new_link_fails(tmp_path: Path):
+    repo_root = tmp_path / "repo"
+    config_dir = tmp_path / "config"
+    legacy_dir = tmp_path / "antigravity-cli"
+    _write_generated_antigravity(repo_root)
+    old = _legacy_link(repo_root, legacy_dir)
+    (config_dir / "plugins" / "demo").mkdir(parents=True)
+
+    report = install(repo_root=repo_root, config_dir=config_dir, legacy_config_dir=legacy_dir)
+
+    assert not report.ok
+    assert report.migrated == 0
+    assert old.is_symlink()
+
+
+def test_install_ignores_legacy_dir_when_it_is_the_config_dir(tmp_path: Path):
+    """ANTIGRAVITY_CONFIG_DIR pointed at the old path must not unlink the new links."""
+    repo_root = tmp_path / "repo"
+    config_dir = tmp_path / "antigravity-cli"
+    _write_generated_antigravity(repo_root)
+
+    report = install(repo_root=repo_root, config_dir=config_dir, legacy_config_dir=config_dir)
+
+    assert report.ok
+    assert report.migrated == 0
+    assert (config_dir / "plugins" / "demo").is_symlink()
+
+
+def test_uninstall_also_removes_repo_links_from_the_legacy_dir(tmp_path: Path):
+    repo_root = tmp_path / "repo"
+    config_dir = tmp_path / "config"
+    legacy_dir = tmp_path / "antigravity-cli"
+    _write_generated_antigravity(repo_root)
+    old = _legacy_link(repo_root, legacy_dir)
+
+    report = uninstall(repo_root=repo_root, config_dir=config_dir, legacy_config_dir=legacy_dir)
+
+    assert report.ok
+    assert report.removed == 1
+    assert not old.is_symlink()
+
+
 def test_install_errors_when_nothing_generated(tmp_path: Path):
     repo_root = tmp_path / "repo"
     config_dir = tmp_path / "config"
