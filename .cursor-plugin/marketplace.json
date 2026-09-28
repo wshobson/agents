@@ -601,7 +601,7 @@
     {
       "name": "incident-response",
       "source": "./plugins/incident-response",
-      "version": "1.3.2",
+      "version": "1.4.0",
       "description": "Production incident management, triage workflows, and automated incident resolution",
       "author": {
         "name": "Seth Hobson",
