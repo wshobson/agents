@@ -157,7 +157,9 @@ class TestStaleArtifacts:
 
 
 class TestGeneratedFrontmatterYaml:
-    @pytest.mark.parametrize("root_name", [".codex", ".opencode", ".copilot", ".antigravity"])
+    @pytest.mark.parametrize(
+        "root_name", [".codex", ".opencode", ".copilot", ".antigravity", ".pi"]
+    )
     def test_malformed_generated_frontmatter_errors(
         self, root_name: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ):

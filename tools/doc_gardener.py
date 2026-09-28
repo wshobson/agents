@@ -336,7 +336,7 @@ def check_stale_artifacts(report: Report) -> None:
             )
 
 
-GENERATED_MARKDOWN_ROOTS = (".codex", ".opencode", ".copilot", ".antigravity")
+GENERATED_MARKDOWN_ROOTS = (".codex", ".opencode", ".copilot", ".antigravity", ".pi")
 
 
 def check_generated_frontmatter_yaml(report: Report) -> None:
