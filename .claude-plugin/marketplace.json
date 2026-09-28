@@ -273,7 +273,7 @@
     {
       "name": "incident-response",
       "description": "Production incident management, triage workflows, and automated incident resolution",
-      "version": "1.3.2",
+      "version": "1.4.0",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
