@@ -339,4 +339,4 @@ print(f"Inline: {inline_time:.4f}s")
 print(f"Function calls: {function_time:.4f}s")
 ```
 
-For advanced optimization techniques including NumPy vectorization, caching, memory management, parallelization, async I/O, database optimization, and benchmarking tools, see [references/advanced-patterns.md](references/advanced-patterns.md)
+For advanced optimization techniques including NumPy vectorization, caching, memory management, parallelization, async I/O, database optimization, and benchmarking tools, see [references/advanced-patterns.md](./advanced-patterns.md)

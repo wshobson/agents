@@ -54,11 +54,6 @@ Quarterly: Review patterns across incidents
 
 Full template library and detailed worked examples live in `references/details.md`. Read that file when you need the concrete templates.
 
-## References
-- [Connection Pool Best Practices](internal-wiki/connection-pools)
-- [Deployment Runbook](internal-wiki/deployment-runbook)
-```
-
 ### Template 2: 5 Whys Analysis
 
 ```markdown

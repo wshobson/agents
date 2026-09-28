@@ -116,7 +116,7 @@ Update when:
 - Track status changes
 - Tracks are completed or archived
 
-See [references/artifact-templates.md](references/artifact-templates.md) for copy-paste starter templates.
+See [references/artifact-templates.md](./artifact-templates.md) for copy-paste starter templates.
 
 ## Context Maintenance Principles
 
