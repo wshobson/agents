@@ -417,6 +417,28 @@ class TestDeadLinks:
         check_dead_links(report)
         assert not [f for f in report.findings if f.kind == "DEAD_LINK"]
 
+    def test_skill_reference_pointers_resolve_from_the_skill_folder(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        """`**Reference:** See `references/x.md`` pointers that were never created (#742)."""
+        _patch_paths(monkeypatch, tmp_path)
+        skill = tmp_path / "plugins" / "p" / "skills" / "s"
+        (skill / "references").mkdir(parents=True)
+        (skill / "references" / "real.md").write_text("# Real\n")
+        (skill / "SKILL.md").write_text(
+            "**Reference:** See `references/real.md` and `references/gone.md`\n"
+        )
+        (skill / "references" / "details.md").write_text(
+            "**Reference:** See `references/real.md`\n**Reference:** See `assets/gone.json`\n"
+        )
+        report = Report()
+        check_dead_links(report)
+        findings = [f for f in report.findings if f.kind == "DEAD_LINK"]
+        assert sorted((f.path.name, f.message) for f in findings) == [
+            ("SKILL.md", "**Reference:** to `references/gone.md` does not resolve"),
+            ("details.md", "**Reference:** to `assets/gone.json` does not resolve"),
+        ]
+
 
 # ── Codex skill cap ──────────────────────────────────────────────────────────
 

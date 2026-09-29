@@ -105,8 +105,6 @@ Design effective Grafana dashboards for monitoring applications, infrastructure,
 }
 ```
 
-**Reference:** See `assets/api-dashboard.json`
-
 ## Panel Types
 
 ### 1. Stat Panel (Single Value)
@@ -308,8 +306,6 @@ providers:
 - Pod count by namespace
 - Node status
 
-**Reference:** See `assets/infrastructure-dashboard.json`
-
 ### Database Dashboard
 
 **Key Panels:**
@@ -321,8 +317,6 @@ providers:
 - Database size
 - Replication lag
 - Slow queries
-
-**Reference:** See `assets/database-dashboard.json`
 
 ### Application Dashboard
 

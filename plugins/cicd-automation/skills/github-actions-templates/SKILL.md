@@ -64,8 +64,6 @@ jobs:
           files: ./coverage/lcov.info
 ```
 
-**Reference:** See `assets/test-workflow.yml`
-
 ### Pattern 2: Build and Push Docker Image
 
 ```yaml
@@ -118,8 +116,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 ```
-
-**Reference:** See `assets/deploy-workflow.yml`
 
 ### Pattern 3: Deploy to Kubernetes
 
@@ -192,8 +188,6 @@ jobs:
       - name: Run tests
         run: pytest
 ```
-
-**Reference:** See `assets/matrix-build.yml`
 
 ## Workflow Best Practices
 

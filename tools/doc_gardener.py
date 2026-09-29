@@ -479,11 +479,34 @@ def _report_dead_links(md: Path, content: str, report: Report) -> None:
             )
 
 
+_SKILL_REFERENCE_PATTERN = re.compile(r"^\*\*Reference:\*\*.*$", re.MULTILINE)
+_SKILL_REFERENCE_PATH_PATTERN = re.compile(r"`((?:references|assets|scripts)/[^`\s]+)`")
+
+
+def _report_dead_skill_references(md: Path, content: str, report: Report) -> None:
+    """Check `**Reference:** See `references/x.md`` pointers, which aren't markdown links.
+
+    These paths are written relative to the skill folder, even inside references/.
+    """
+    skill_dir = md.parent if md.name == "SKILL.md" else md.parent.parent
+    for line in _SKILL_REFERENCE_PATTERN.findall(content):
+        for target in _SKILL_REFERENCE_PATH_PATTERN.findall(line):
+            if not (skill_dir / target).exists():
+                report.add(
+                    kind="DEAD_LINK",
+                    severity="error",
+                    path=md,
+                    message=f"**Reference:** to `{target}` does not resolve",
+                    fix="Create the missing file in the skill folder, or remove the **Reference:** line.",
+                )
+
+
 def check_dead_links(report: Report) -> None:
     """Find markdown links that point at missing files.
 
     Covers docs/, the top-level guides, and every skill's SKILL.md and references/
-    files. Skill files skip links inside code, because skills carry sample documents.
+    files. Skill files skip links inside code, because skills carry sample documents,
+    and also have their `**Reference:**` pointers checked.
     """
     targets = [DOCS_DIR] if DOCS_DIR.is_dir() else []
     for top_file in (
@@ -509,6 +532,7 @@ def check_dead_links(report: Report) -> None:
             if content is None:
                 continue
             _report_dead_links(md, _strip_code(content), report)
+            _report_dead_skill_references(md, content, report)
 
 
 def check_codex_skill_caps(report: Report) -> None:
