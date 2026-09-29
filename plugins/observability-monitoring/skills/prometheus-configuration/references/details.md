@@ -136,8 +136,6 @@ scrape_configs:
       key_file: /etc/prometheus/client.key
 ```
 
-**Reference:** See `assets/prometheus.yml.template`
-
 ## Scrape Configurations
 
 ### Static Targets
@@ -201,8 +199,6 @@ scrape_configs:
         regex: (.+)
 ```
 
-**Reference:** See `references/scrape-configs.md`
-
 ## Recording Rules
 
 Create pre-computed metrics for frequently queried expressions:
@@ -250,8 +246,6 @@ groups:
         expr: |
           100 - ((node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100)
 ```
-
-**Reference:** See `references/recording-rules.md`
 
 ## Alert Rules
 
@@ -331,5 +325,3 @@ promtool check rules /etc/prometheus/rules/*.yml
 # Test query
 promtool query instant http://localhost:9090 'up'
 ```
-
-**Reference:** See `scripts/validate-prometheus.sh`

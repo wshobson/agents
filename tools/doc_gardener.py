@@ -438,11 +438,12 @@ _FENCE_PATTERN = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 _INLINE_CODE_PATTERN = re.compile(r"(`+)(?!`).*?(?<!`)\1(?!`)")
 
 
-def _strip_code(content: str) -> str:
+def _strip_code(content: str, *, inline: bool = True) -> str:
     """Drop fenced blocks and inline code, so example links in skills aren't checked.
 
     A fence closes only on a bare run of the same character at least as long as the
-    opener, so a ```` block can hold ``` examples.
+    opener, so a ```` block can hold ``` examples. With `inline=False`, inline code
+    is kept.
     """
     kept: list[str] = []
     fence: str | None = None
@@ -452,7 +453,7 @@ def _strip_code(content: str) -> str:
             if match:
                 fence = match.group(1)
             else:
-                kept.append(_INLINE_CODE_PATTERN.sub("", line))
+                kept.append(_INLINE_CODE_PATTERN.sub("", line) if inline else line)
             continue
         run = line.strip()
         if match and set(run) == {fence[0]} and len(run) >= len(fence):
@@ -479,11 +480,37 @@ def _report_dead_links(md: Path, content: str, report: Report) -> None:
             )
 
 
+_SKILL_REFERENCE_PATTERN = re.compile(r"^\*\*Reference:\*\*.*$", re.MULTILINE)
+_SKILL_REFERENCE_PATH_PATTERN = re.compile(r"`((?:references|assets|scripts)/[^`\s]+)`")
+
+
+def _report_dead_skill_references(md: Path, content: str, report: Report) -> None:
+    """Check `**Reference:** See `references/x.md`` pointers, which aren't markdown links.
+
+    These paths are written relative to the skill folder, even inside references/,
+    and must stay inside it.
+    """
+    # `plugins/<plugin>/skills/<skill>/...`, however deep the file is.
+    skill_dir = PLUGINS_DIR.joinpath(*md.relative_to(PLUGINS_DIR).parts[:3]).resolve()
+    for line in _SKILL_REFERENCE_PATTERN.findall(content):
+        for target in _SKILL_REFERENCE_PATH_PATTERN.findall(line):
+            resolved = (skill_dir / target).resolve()
+            if not resolved.is_relative_to(skill_dir) or not resolved.exists():
+                report.add(
+                    kind="DEAD_LINK",
+                    severity="error",
+                    path=md,
+                    message=f"**Reference:** to `{target}` does not exist in the skill folder",
+                    fix="Create the missing file in the skill folder, or remove the **Reference:** line.",
+                )
+
+
 def check_dead_links(report: Report) -> None:
     """Find markdown links that point at missing files.
 
     Covers docs/, the top-level guides, and every skill's SKILL.md and references/
-    files. Skill files skip links inside code, because skills carry sample documents.
+    files. Skill files skip links inside code, because skills carry sample documents,
+    and also have their `**Reference:**` pointers checked.
     """
     targets = [DOCS_DIR] if DOCS_DIR.is_dir() else []
     for top_file in (
@@ -509,6 +536,7 @@ def check_dead_links(report: Report) -> None:
             if content is None:
                 continue
             _report_dead_links(md, _strip_code(content), report)
+            _report_dead_skill_references(md, _strip_code(content, inline=False), report)
 
 
 def check_codex_skill_caps(report: Report) -> None:

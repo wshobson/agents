@@ -71,8 +71,6 @@ services:
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
 ```
 
-**Reference:** See `references/jaeger-setup.md`
-
 ## Application Instrumentation
 
 ### OpenTelemetry (Recommended)
@@ -220,8 +218,6 @@ func getUsers(ctx context.Context) ([]User, error) {
 }
 ```
 
-**Reference:** See `references/instrumentation.md`
-
 ## Context Propagation
 
 ### HTTP Headers
@@ -312,8 +308,6 @@ spec:
           configMap:
             name: tempo-config
 ```
-
-**Reference:** See `assets/jaeger-config.yaml.template`
 
 ## Sampling Strategies
 
