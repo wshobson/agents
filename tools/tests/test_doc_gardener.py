@@ -431,13 +431,52 @@ class TestDeadLinks:
         (skill / "references" / "details.md").write_text(
             "**Reference:** See `references/real.md`\n**Reference:** See `assets/gone.json`\n"
         )
+        # Nested files still resolve from the skill folder, not from their parent.
+        (skill / "references" / "examples").mkdir()
+        (skill / "references" / "examples" / "nested.md").write_text(
+            "**Reference:** See `references/real.md`\n"
+        )
         report = Report()
         check_dead_links(report)
         findings = [f for f in report.findings if f.kind == "DEAD_LINK"]
         assert sorted((f.path.name, f.message) for f in findings) == [
-            ("SKILL.md", "**Reference:** to `references/gone.md` does not resolve"),
-            ("details.md", "**Reference:** to `assets/gone.json` does not resolve"),
+            (
+                "SKILL.md",
+                "**Reference:** to `references/gone.md` does not exist in the skill folder",
+            ),
+            (
+                "details.md",
+                "**Reference:** to `assets/gone.json` does not exist in the skill folder",
+            ),
         ]
+
+    def test_skill_reference_pointers_in_fenced_examples_are_skipped(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        skill = tmp_path / "plugins" / "p" / "skills" / "s"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            "```markdown\n**Reference:** See `assets/example.yml`\n```\n"
+        )
+        report = Report()
+        check_dead_links(report)
+        assert not [f for f in report.findings if f.kind == "DEAD_LINK"]
+
+    def test_skill_reference_pointers_cannot_leave_the_skill_folder(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        _patch_paths(monkeypatch, tmp_path)
+        skills = tmp_path / "plugins" / "p" / "skills"
+        (skills / "other" / "references").mkdir(parents=True)
+        (skills / "other" / "references" / "x.md").write_text("# X\n")
+        (skills / "s").mkdir()
+        (skills / "s" / "SKILL.md").write_text(
+            "**Reference:** See `references/../../other/references/x.md`\n"
+        )
+        report = Report()
+        check_dead_links(report)
+        assert len([f for f in report.findings if f.kind == "DEAD_LINK"]) == 1
 
 
 # ── Codex skill cap ──────────────────────────────────────────────────────────
