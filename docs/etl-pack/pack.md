@@ -74,7 +74,53 @@ Files on disk are enough for agents to load modules; these matter only for a lat
 ---
 
 ## Extract
-*(slice 3)*
+
+### Coverage
+
+| Row | Concern | Rating | Best source |
+|---|---|---|---|
+| E1 | Confluence REST client: auth, pagination, 429/Retry-After, timeouts | adaptable | python-resilience (retry policy) + python-error-handling (`Retry-After` parsing) + python-configuration (token) |
+| E2 | Space/page-tree traversal, attachment download | **none** | — no asset covers tree walking or binary download **V** (searched with the slice 1 scan; no hits beyond generic HTTP) |
+| E3 | Incremental sync, resume, upstream deletions | adaptable (concept only) | data-pipeline command (watermark idea), python-background-jobs (idempotency strategies) |
+| G3 | Concurrency within rate limits | adaptable | async-python-patterns (semaphore, `httpx.AsyncClient`) |
+
+### Asset cards
+
+#### `python-development/skills/python-resilience` — use it for the HTTP retry policy
+- **Use.** Retry only transient failures, exponential backoff with jitter, a cap on total time, and a log line before every retry. `python-development/skills/python-resilience/SKILL.md:189` "`stop_after_attempt(5) | stop_after_delay(60)`" **V**; `python-development/skills/python-resilience/SKILL.md:169` "before_sleep=before_sleep_log(logger, logging.WARNING)," **V**
+- **Fix before using — 429 ignores the server's wait.** It retries 429 like any 5xx, on its own exponential schedule. `python-development/skills/python-resilience/SKILL.md:117` "RETRY_STATUS_CODES = {429, 502, 503, 504}" **V** with `python-development/skills/python-resilience/SKILL.md:126` "wait=wait_exponential_jitter(initial=1, max=10)," **V**. Confluence Cloud sends `Retry-After` on 429; a 10-second cap can retry too early and burn the attempt budget. **I**. The parsing you need is in the next card; join the two with a custom tenacity `wait` that prefers `Retry-After` and falls back to jittered backoff. **I**
+
+#### `python-development/skills/python-error-handling` — use it for 429 and per-page failures
+- **Retry-After parsing.** A `RateLimitError` that carries the server's wait. `python-development/skills/python-error-handling/references/details.md:43` "retry_after = int(response.headers.get(\"Retry-After\", 60))" **V**
+- **One bad page must not stop the space.** The `BatchResult` pattern records successes and failures per item. `python-development/skills/python-error-handling/references/details.md:79` "### Pattern 7: Batch Processing with Partial Failures" **V**. Key it by page id rather than list index so a failed page can be re-fetched by id. **I**
+
+#### `python-development/skills/python-configuration` — use it for the Confluence token
+- **Secrets have no default and fail at startup.** `python-development/skills/python-configuration/SKILL.md:149` "# Always required - no default for secrets" **V**
+- **Mounted secrets.** `python-development/skills/python-configuration/references/details.md:134` "\"secrets_dir\": \"/run/secrets\"," **V**. Useful if the extractor runs in a container next to the SharePoint sibling. **I**
+
+#### `python-development/skills/async-python-patterns` — use it only if sync is too slow
+- **Start sync.** The skill's own decision table points a batch script with few connections at sync code. `python-development/skills/async-python-patterns/SKILL.md:30` "Simple scripts, few connections" **V**. A Confluence space export is rate-limited by the server, so concurrency buys less than it seems. **I**
+- **Pagination example does not fit.** It is a simulated page-number loop. `python-development/skills/async-python-patterns/references/details.md:57` "\"url\": f\"{url}?page={page}\"," **V**. Confluence's v2 API pages with a cursor in the response's next link, so keep the async-generator shape (`python-development/skills/async-python-patterns/references/details.md:51` "async def fetch_pages") and change the loop condition. **I**
+- **"Rate limiting" is a concurrency cap.** `python-development/skills/async-python-patterns/references/details.md:129` "### Pattern 9: Semaphore for Rate Limiting" **V** — the code limits requests in flight (`python-development/skills/async-python-patterns/references/details.md:144` "semaphore = asyncio.Semaphore(max_concurrent)") **V**, not requests per second. Pair it with the Retry-After handling above. **I**
+
+#### `data-engineering/commands/data-pipeline.md` — take the incremental idea, not the code
+- **Idea.** "Incremental loading with watermark columns" `data-engineering/commands/data-pipeline.md:41` **V**, plus `_extracted_at` / `_source` metadata on every record `data-engineering/commands/data-pipeline.md:44` "Metadata tracking" **V**. For Confluence the watermark is each page's version number or last-modified time, and the metadata maps onto the T3 frontmatter. **I**
+- **The code is illustrative.** It imports a module that does not exist in the repo. `data-engineering/commands/data-pipeline.md:134` "from batch_ingestion import BatchDataIngester" **V**
+- **Rest of the command.** It is aimed at warehouses (Delta Lake, Iceberg, dbt, Great Expectations), so skip it for this project. **V** (read in full)
+
+#### `python-development/skills/python-background-jobs` — take the idempotency list, skip the queue
+- **Use.** Four idempotency strategies, of which "check-before-write" and "deduplication window" apply directly to re-running an extract. `python-development/skills/python-background-jobs/SKILL.md:176` "**Idempotency Strategies:**" **V**
+- **Skip.** Celery, job queues and status-polling endpoints solve a web-app problem this batch job does not have. **I**
+
+### Extract gaps — what you build
+
+| Gap | Proposed fill | Tag |
+|---|---|---|
+| E1 client | One `ConfluenceClient` on `httpx` with: token from settings, cursor pagination as a generator, tenacity retry whose `wait` honours `Retry-After`, a timeout on every call | I |
+| E2 traversal | Walk the space by page id (children/descendants), write a `pageId → parentId, title, version` manifest before converting anything — the T2 link rewriter needs it | I |
+| E2 attachments | Download per page into `raw/attachments/<pageId>/`, record media type and size; images referenced by `ri:attachment` resolve against this folder | I |
+| E3 incremental | Store the last manifest; on each run compare versions, fetch only changed pages, and treat pages missing upstream as deletions → `archive/` (grounded-vault) | I |
+| E3 resume | Persist the manifest as pages complete so a crashed run restarts from the last finished page | I |
 
 ## Load, Quality, Operations, Engineering
 *(slices 4–6)*
