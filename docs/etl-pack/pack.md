@@ -1,7 +1,7 @@
 # Confluence → Markdown knowledge modules — suggestion pack
 
-> **Status:** draft · Transform + Extract reviewed · Load, Quality, Ops, Engineering, Install pending
-> **Assumed:** Confluence HTML export as input, GitHub Copilot as the main harness (both from the prior Confluence→SharePoint project — confirm)
+> **Status:** complete · 2026-10-02 · every asset claim cited below and checked by `docs/etl-pack/check_citations.py`
+> **Inputs:** Confluence HTML export · GitHub Copilot (Claude Opus 4.8 / Sonnet 5)
 > **Legend:** **Use** as-is · **Adapt** needs changes · **Skip** · **Gap** nothing exists
 
 ---
@@ -11,8 +11,11 @@
 - **Nothing in the marketplace touches Confluence.** 4 passing mentions, no tooling.
 - **The core conversion is yours to build** (or carry over from the prior project's patterns). No HTML→Markdown tooling exists in the repo.
 - **The marketplace adds three things worth taking:** per-claim provenance + drift (grounded-vault), an agent/human module format (HADS), and skill packaging rules (authoring.md).
-- **Skip** the RAG skills, Celery/background jobs, and the warehouse-oriented data-pipeline command.
-- **One upstream bug found and reproduced** in grounded-vault (see Caveats).
+- **Plus six python-development skills** for the engineering around it: error handling, observability, testing, configuration, layout, typing.
+- **Still yours to build:** HTML→Markdown converter, link rewriting, machine manifest + count check, secrets/PII pass, golden-file tests, question-set pilot.
+- **Skip** the RAG skills, Celery/background jobs, warehouse data-quality tooling, and SAST.
+- **Install:** copy 8 skill folders into `.github/skills/` (see Install).
+- **Bugs found:** one reproduced in grounded-vault; several more read-only findings (see Caveats).
 
 ---
 
@@ -65,6 +68,18 @@
 | `plugins/plugin-eval` (CLI) | **Use** (static only) | Lint modules packaged as skills; CI gate with `--threshold` | Judge + Monte Carlo layers are experimental and need the `claude` CLI or an Anthropic key |
 | `tools/doc_gardener.py` (repo tool) | **Adapt** | Copy the ~60-line dead-link check for your module tree | Repo tooling, not an installable plugin |
 | `llm-application-dev` eval snippets | **Adapt** | Score the question-set pilot: did the answer cite the expected page? | Divides by zero when nothing is retrieved |
+| `python-development/skills/python-observability` | **Use** | Structured JSON logs; run id on every line; per-stage timing | Metrics examples are HTTP-shaped — count pages/rejects instead |
+| `python-development/skills/python-testing-patterns` | **Use** | Fixtures, `tmp_path` for file output, parametrize per macro | No golden-file / snapshot guidance anywhere in the marketplace |
+| `python-development/skills/python-project-structure` | **Use** | `src/` layout, explicit public API | — |
+| `python-development/skills/python-type-safety` | **Use** | Typed page/manifest records, Protocols for parsers | One example subscripts a non-generic alias |
+| `python-development/skills/uv-package-manager` | **Adapt** | Dependency + lockfile workflow | Several commands look wrong (unverified) — check before copying |
+| `python-development/commands/python-scaffold.md` | **Adapt** | CLI branch (Typer) for the extractor entry point | Mixed-up run paths and `mypy` vs. `ty` |
+| `ship-mate/skills/scan` | **Adapt** (idea) | Write agent-facing copies as DO/DON'T instructions; patch, never rewrite | Tied to its own pipeline files |
+| `documentation-generation/agents/docs-architect.md` | **Adapt** | Reading paths per audience for the human copy | Built for 10–100 page manuals about code |
+| `llm-finetuning/skills/trace-to-training-data` | **Adapt** (policy) | "Scan for secrets/PII; fail closed; log what was dropped" | Policy only — no detector, no regexes |
+| `data-engineering/skills/data-quality-frameworks` | Skip | Completeness as a check dimension, nothing more | Warehouse-shaped; file truncated mid-string |
+| `security-scanning/skills/sast-configuration` | Skip | — | Scans code, not text; points at files that don't exist |
+| `data-engineering/agents/data-engineer.md` · `context-management/agents/context-manager.md` | Skip | — | Warehouse/streaming focus; Confluence is a one-line mention |
 | `python-development/skills/async-python-patterns` | Skip | — | Exports are local files; sync is simpler |
 | `llm-application-dev` RAG skills | Skip | Only for a later vector index | Preprocessor strips Markdown; header splitter ignores code fences |
 | `data-engineering/commands/data-pipeline.md` | Skip | Watermark idea only | Example imports a module that doesn't exist |
@@ -85,6 +100,9 @@
 | Deterministic output | Stable ordering, normalised whitespace, sorted frontmatter keys |
 | Machine manifest + count check | One row per page: source id, version, output path, status; assert source = manifest = output |
 | Idempotent writes | Write to temp + rename; delete outputs whose source vanished (→ `archive/`); `--dry-run` + `--limit N` |
+| Secrets / PII in page text | Detector pass before write (e.g. a secrets scanner + a few domain regexes); fail closed, log what was dropped |
+| Restricted pages | Export with an account scoped to the target spaces; record space/restriction in the manifest |
+| Golden-file tests | Fixture HTML per macro/element → expected `.md` checked in; test diffs output against it |
 | Question-set pilot | 20–30 real questions × expected page × expected answer; score citation hit-rate per run |
 
 ---
@@ -102,17 +120,71 @@
 | plugin-eval `/eval` command | Its manual blend weights disagree with the CLI engine (e.g. robustness, code-template quality) — `/eval` and `plugin-eval score` can report different numbers | Read both |
 | plugin-eval Monte Carlo | "Activation" counts any non-empty reply, not correct triggering | Documented by the repo |
 | rag-implementation eval | `precision = … / len(retrieved_ids)` → ZeroDivisionError on an empty retrieval | Read |
+| data-quality-frameworks | Reference file ends mid-string; a section header is fused into code | Read |
+| sast-configuration | Points at `references/semgrep-rules.md` and `scripts/run-sast.sh`, neither exists | Read |
+| uv-package-manager | Flags such as `uv lock --no-install` and `uv add --path` look invalid; `requires-python >=3.8` is end-of-life | Subagent inference, not run |
+| python-scaffold | `uvicorn src.project_name.main:app` doesn't fit the src layout it creates; recommends mypy | Subagent inference |
+| python-type-safety | Subscripts a non-generic `TypeAlias` | Subagent inference |
 | docs/harnesses.md | Copilot missing from the supported-harness and capability tables, though the repo generates and installs Copilot output | Read |
 
 ---
 
-## Pending
+## Install for GitHub Copilot
 
-| Slice | Covers |
+**Models:** the repo maps `model: opus` → `claude-opus-4.8` and `model: sonnet` → `claude-sonnet-5` for Copilot — your two models, no change needed.
+
+**Install these 8 skills**
+
+| Skill | Plugin | Why |
+|---|---|---|
+| `grounded-vault` | documentation-standards | Store layout, provenance, grounding gate — apply the `.md`-regex fix in your copy |
+| `hads` | documentation-standards | Module body format |
+| `python-error-handling` | python-development | Per-page partial failures |
+| `python-observability` | python-development | Run-scoped structured logs |
+| `python-testing-patterns` | python-development | Fixtures + parametrize (add golden files yourself) |
+| `python-configuration` | python-development | Typed settings |
+| `python-project-structure` | python-development | Layout + public API |
+| `python-type-safety` | python-development | Typed records + Protocols |
+
+**Three ways in — pick one**
+
+| Route | How | Fits when | Watch out |
+|---|---|---|---|
+| **A. Copy into the project** *(recommended)* | Copy each skill folder into the new repo's `.github/skills/<skill>/` | You want the skills versioned with the project and editable (e.g. the grounded-vault fix) | Manual refresh when upstream changes |
+| B. `gh skill install` | `gh skill install workslo/agents <skill>` (GitHub CLI 2.90+) | You want one command per skill | Installs track `main` unless the repo cuts a release; pick the Copilot target in the prompt |
+| C. `make install-copilot` | Clone, then `make install-copilot` → symlinks `.copilot/` into `~/.copilot/` | You want every plugin, user-wide | Needs `make` + `uv`; installs all ~180 skills, renamed `<plugin>__<skill>`; symlinks on Windows need Developer Mode |
+
+**Dev tool (not a skill):** `plugin-eval` — `uv run plugin-eval score <module-dir> --depth quick --threshold 70` in CI, if you package modules as skills.
+
+**`.github/copilot-instructions.md` snippet** (keep it a table of contents — under ~150 lines):
+
+```md
+## Knowledge-module pipeline
+- Source pages live in `raw/` and are never edited. Snapshots, not URLs.
+- Modules live in `wiki/`; each opens with the grounded-vault header (Raw / Fingerprint / Status)
+  and uses HADS blocks: [SPEC] facts, [NOTE] context, [BUG] known failure + fix, [?] unverified.
+- Every number, date, and quote links to its `raw/` source. Missing evidence is a [?] block, never a guess.
+- Superseded or deleted pages move to `archive/` with a reason; `log.md` gets one line per change.
+- Before committing: run the grounding check, link check, and tests. A failing gate blocks the commit.
+
+| When you are… | Load skill |
 |---|---|
-| 4 | Load + Quality: idempotent writes, grounding/HADS gates, plugin-eval for modules, restricted-content safety |
-| 5–6 | Ops + Engineering: CLI, logging, golden-file tests, project setup |
-| 7 | Install for the chosen harness + instructions-file snippet |
+| writing or converting a module | `hads`, `grounded-vault` |
+| changing the extractor | `python-error-handling`, `python-type-safety` |
+| adding logs or run reports | `python-observability` |
+| writing tests | `python-testing-patterns` |
+| touching settings or secrets | `python-configuration` |
+```
+
+---
+
+## Not covered by this pack
+
+| Topic | Why |
+|---|---|
+| Vector search / RAG layer | Optional later; see Skip rows above |
+| SharePoint upload + agent configuration | Platform work outside the marketplace |
+| Scheduling | A batch export doesn't need an orchestrator; add one only if exports become automated |
 
 ---
 
@@ -184,6 +256,27 @@
 - Copilot model aliases match your models — `docs/authoring.md:155` "claude-opus-4.8" · V; `docs/authoring.md:156` "claude-sonnet-5" · V
 - Copilot output paths — `docs/harnesses.md:244` "Copilot discovers agents from `.copilot/agents/`" · V
 - Missing from the harness table — `docs/harnesses.md:19` "Agent Skills installers" (last row; no Copilot row above it) · V
+- `make install-copilot` symlinks into `~/.copilot/` — `docs/harnesses.md:229` "make install-copilot" · V
+- Skills renamed `<plugin>__<skill>` — `tools/adapters/copilot.py:60` ".copilot/skills/<plugin>__<skill>/SKILL.md" · V
+- `gh skill` tracks `main` without releases — `docs/harnesses.md:156` "installs from the latest GitHub release when one exists" · V
+- Context file as table of contents — `docs/authoring.md:10` "Context file is a table of contents, not an encyclopedia." · V
+- VS Code Copilot reads `.github/skills/` (route A) — from the prior project's working setup, not from this repo · I
+- Windows symlinks need Developer Mode · I
+
+**Tier-2 sweep** (read in full by a subagent; citations re-checked by `check_citations.py`)
+- Observability: run-scoped context via contextvars — `python-development/skills/python-observability/SKILL.md:67` "structlog.contextvars.merge_contextvars," · V
+- Testing: `tmp_path` file fixtures — `python-development/skills/python-testing-patterns/references/advanced-patterns.md:116` "def test_file_operations(tmp_path):" · V
+- Project structure: public API — `python-development/skills/python-project-structure/SKILL.md:27` "Define what's public with `__all__`." · V
+- Type safety: runtime protocols — `python-development/skills/python-type-safety/references/details.md:83` "@runtime_checkable" · V; alias misuse — `python-development/skills/python-type-safety/references/details.md:175` "handler: Handler[Response]" · I
+- uv: usable lock check — `python-development/skills/uv-package-manager/references/advanced-patterns.md:136` "uv lock --check" · V; suspect flag — `python-development/skills/uv-package-manager/SKILL.md:242` "uv lock --no-install" · I
+- Scaffold CLI branch — `python-development/commands/python-scaffold.md:30` "**CLI**: Command-line tools, automation scripts" · V; run path — `python-development/commands/python-scaffold.md:306` "uv run uvicorn src.project_name.main:app --reload" · I
+- ship-mate: agent instructions, not doc copies — `ship-mate/skills/scan/SKILL.md:112` "it is rewritten as agent instructions" · V; patch rule — `ship-mate/skills/scan/SKILL.md:204` "Never rewrite the full file." · V
+- docs-architect: audience paths — `documentation-generation/agents/docs-architect.md:65` "Provide reading paths for different audiences" · V; scope — `documentation-generation/agents/docs-architect.md:39` "Comprehensive documents (10-100+ pages)" · V
+- PII policy — `llm-finetuning/skills/trace-to-training-data/SKILL.md:152` "run a secret/PII scan" · V; fail closed — `llm-finetuning/skills/trace-to-training-data/SKILL.md:154` "conversion fails closed" · V
+- Data-quality truncation — `data-engineering/skills/data-quality-frameworks/references/details.md:452` "report.append(f\"" · V
+- SAST dead refs — `security-scanning/skills/sast-configuration/SKILL.md:133` "See references/semgrep-rules.md" · V; `security-scanning/skills/sast-configuration/SKILL.md:127` "./scripts/run-sast.sh --setup" · V
+- context-manager — `context-management/agents/context-manager.md:72` "Integration with enterprise systems (SharePoint, Confluence, Notion)" · V
+- No golden-file guidance: subagent grep for golden/snapshot/syrupy/approval found only one-line mentions in non-Python agents and a Jest section · V
 
 **Absence checks**
 - No HTML→MD tooling: repo-wide `grep -w` for BeautifulSoup, bs4, markdownify, html2text, pandoc, lxml, html.parser, xhtml → 0 hits · V
