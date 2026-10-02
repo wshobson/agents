@@ -8,6 +8,10 @@ Decision log
 - D1 (2026-10-02): user accepted defaults, but Q1-6 assumed dataframe->warehouse ETL.
   Replaced with this document-pipeline rubric. Defaults kept: generic Python,
   Claude Code primary harness (+ portable), batch, single machine, new project.
+- D3 (2026-10-02): user shared the prior Confluence->SharePoint project's AGENTS.md as
+  context only ("this is the old project" - don't get too specific). Taken from it, as
+  assumptions to confirm: HTML export input, GitHub Copilot harness.
+- D4: pack reformatted for skimming - verdict tables first, citations collapsed.
 - D2: slice order changed. Riskiest concern is Transform (storage XHTML -> md,
   knowledge-module shaping), not Load. Slice 2 = Transform.
 

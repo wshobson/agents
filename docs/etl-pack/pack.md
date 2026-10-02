@@ -112,7 +112,7 @@
 - 8 KB cap — `docs/authoring.md:62` "Codex hard-truncates `SKILL.md` bodies at 8 KB" · V
 - Trigger phrase — `docs/authoring.md:35` "**Description triggers.**" · V
 - `name` = directory — `docs/authoring.md:32` "`name` must equal the directory name" · V
-- Repo as system of record — `docs/authoring.md:13` "No Slack threads, no Google Docs, no Notion." · V
+- Repo as system of record — `docs/authoring.md:14` "No Slack threads, no Google Docs, no Notion." · V
 
 **python-development**
 - Per-item batch results — `python-development/skills/python-error-handling/references/details.md:79` "### Pattern 7: Batch Processing with Partial Failures" · V
