@@ -3,7 +3,7 @@ fragment appears on that line. Paths resolve under plugins/ then repo root."""
 import re, sys, pathlib
 root = pathlib.Path(__file__).resolve().parents[2]
 text = (root / "docs/etl-pack/pack.md").read_text()
-cite = re.compile(r"`([\w./-]+\.md):(\d+)`(?:\s+\"((?:[^\"\\]|\\.)+)\")?")
+cite = re.compile(r"`([\w./-]+\.(?:md|py|json|toml)):(\d+)`(?:\s+\"((?:[^\"\\]|\\.)+)\")?")
 bad = n = 0
 for m in cite.finditer(text):
     n += 1

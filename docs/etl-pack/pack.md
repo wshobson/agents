@@ -16,6 +16,21 @@
 
 ---
 
+## Design principles → what supports them
+
+| Principle | Marketplace support | Verdict |
+|---|---|---|
+| Preserve the original source | grounded-vault `raw/` (immutable, snapshots not URLs) | **Use** |
+| Produce a governed derivative | HADS body + authoring.md packaging | **Use** |
+| Record provenance + transformations | grounded-vault page header + append-only `log.md` | **Adapt** |
+| Keep an index + manifest | grounded-vault `index.md` (human); no machine manifest | **Gap** for the manifest |
+| Validate counts + references | repo's dead-link checker (`tools/doc_gardener.py`); no count check | **Adapt** links · **Gap** counts |
+| Reserve meaning-level decisions for a human | HADS `[?]` blocks; grounded-vault "write gaps as gaps" | **Use** |
+| Make agent work inspectable + recoverable | `log.md` + git; grounding gate as pre-commit | **Use** |
+| Prove retrieval works (question-set pilot) | RAG eval metrics (precision/recall/MRR) | **Adapt** — plugin-eval is not a substitute |
+
+---
+
 ## Coverage by concern
 
 | Concern | Marketplace | Verdict |
@@ -30,6 +45,10 @@
 | Packaging for agents | Progressive disclosure, 8 KB cap, triggers | **Use** authoring.md |
 | Partial failures per page | `BatchResult` pattern | **Use** error-handling |
 | Chunking for search | Header splitter | Skip unless you add RAG |
+| Idempotent writes, orphan removal | Idempotency checklist only | **Gap** |
+| Link + image integrity | Dead-link checker that skips code fences | **Adapt** `tools/doc_gardener.py` |
+| Module lint (if packaged as skills) | plugin-eval static layer: triggers, size, dead refs | **Use** (`--depth quick` only) |
+| "Do agents answer correctly?" | Retrieval metrics, LLM-judge sketch | **Adapt** into a question-set test |
 
 ---
 
@@ -43,6 +62,9 @@
 | `python-development/skills/python-error-handling` | **Use** | One bad page never stops a run | Key results by page id, not list index |
 | `python-development/skills/python-configuration` | **Use** | Typed settings, fail-fast secrets | Only needed once a token is involved |
 | `python-development/skills/python-resilience` | **Adapt** | Retry policy, if you use the API | Treats 429 like a 5xx; ignores `Retry-After` |
+| `plugins/plugin-eval` (CLI) | **Use** (static only) | Lint modules packaged as skills; CI gate with `--threshold` | Judge + Monte Carlo layers are experimental and need the `claude` CLI or an Anthropic key |
+| `tools/doc_gardener.py` (repo tool) | **Adapt** | Copy the ~60-line dead-link check for your module tree | Repo tooling, not an installable plugin |
+| `llm-application-dev` eval snippets | **Adapt** | Score the question-set pilot: did the answer cite the expected page? | Divides by zero when nothing is retrieved |
 | `python-development/skills/async-python-patterns` | Skip | — | Exports are local files; sync is simpler |
 | `llm-application-dev` RAG skills | Skip | Only for a later vector index | Preprocessor strips Markdown; header splitter ignores code fences |
 | `data-engineering/commands/data-pipeline.md` | Skip | Watermark idea only | Example imports a module that doesn't exist |
@@ -61,6 +83,9 @@
 | HADS validator | Script the skill's 5 rules into your quality gates |
 | Upstream deletions | Pages missing from a new export → `archive/` with reason |
 | Deterministic output | Stable ordering, normalised whitespace, sorted frontmatter keys |
+| Machine manifest + count check | One row per page: source id, version, output path, status; assert source = manifest = output |
+| Idempotent writes | Write to temp + rename; delete outputs whose source vanished (→ `archive/`); `--dry-run` + `--limit N` |
+| Question-set pilot | 20–30 real questions × expected page × expected answer; score citation hit-rate per run |
 
 ---
 
@@ -74,6 +99,10 @@
 | embedding-strategies | Header chunker splits on `# ` inside code fences | Inferred from code |
 | async-python-patterns | "Rate limiting" pattern is a concurrency cap, not requests/sec | Read |
 | data-pipeline command | Example imports `batch_ingestion`, which doesn't exist | Read |
+| plugin-eval `/eval` command | Its manual blend weights disagree with the CLI engine (e.g. robustness, code-template quality) — `/eval` and `plugin-eval score` can report different numbers | Read both |
+| plugin-eval Monte Carlo | "Activation" counts any non-empty reply, not correct triggering | Documented by the repo |
+| rag-implementation eval | `precision = … / len(retrieved_ids)` → ZeroDivisionError on an empty retrieval | Read |
+| docs/harnesses.md | Copilot missing from the supported-harness and capability tables, though the repo generates and installs Copilot output | Read |
 
 ---
 
@@ -132,6 +161,29 @@
 - Markdown header splitter — `llm-application-dev/skills/rag-implementation/references/details.md:171` "### Markdown Header Splitter" · V
 - Destructive preprocessor — `llm-application-dev/skills/embedding-strategies/references/details.md:321` "text = re.sub(r'[^\w\s.,!?-]', '', text)" · V
 - No fence tracking — `llm-application-dev/skills/embedding-strategies/references/details.md:211` "if re.match(headers_pattern, line" · V
+
+**plugin-eval**
+- Static layer is a deterministic lint — `docs/plugin-eval.md:7` "The static layer is a lint." · V
+- Judge + Monte Carlo experimental — `docs/plugin-eval.md:9` "experimental, not validated against human labels" · V
+- LLM layers run the `claude` CLI — `docs/plugin-eval.md:60` "It runs the `claude` CLI" · V
+- CI gate — `docs/plugin-eval.md:82` "--threshold 70" · V
+- Size sweet spot 200–600 lines — `docs/plugin-eval.md:154` "sweet spot (200–600 lines)" · V
+- Activation = any reply — `docs/plugin-eval.md:199` "Activation counts any non-empty reply" · V
+- `/eval` blend vs. engine — `plugin-eval/commands/eval.md:47` "robustness: 0.0:1.0 (judge only)" vs. `docs/plugin-eval.md:227` "| `robustness`" (Monte Carlo only) · V; `plugin-eval/commands/eval.md:49` "code_template_quality: 0.3:0.7" vs. `docs/plugin-eval.md:232` "always unmeasured" · V
+
+**Repo tooling**
+- Dead-link check skips fenced + inline code — `tools/doc_gardener.py:441` "def _strip_code" · V
+- Relative resolution from the file's folder — `tools/doc_gardener.py:471` "base = WORKTREE if target.startswith" · V
+- Image links match too (`![alt](path)` contains `[alt](path)`) — `tools/doc_gardener.py:435` "_LINK_PATTERN" · I
+
+**Evaluation snippets**
+- Retrieval metrics: precision@k, recall@k, MRR, nDCG — `llm-application-dev/skills/embedding-strategies/references/details.md:436` "def evaluate_retrieval_quality(" · V
+- Divide-by-zero — `llm-application-dev/skills/rag-implementation/references/details.md:392` "/ len(retrieved_ids)" · V
+
+**Copilot**
+- Copilot model aliases match your models — `docs/authoring.md:155` "claude-opus-4.8" · V; `docs/authoring.md:156` "claude-sonnet-5" · V
+- Copilot output paths — `docs/harnesses.md:244` "Copilot discovers agents from `.copilot/agents/`" · V
+- Missing from the harness table — `docs/harnesses.md:19` "Agent Skills installers" (last row; no Copilot row above it) · V
 
 **Absence checks**
 - No HTML→MD tooling: repo-wide `grep -w` for BeautifulSoup, bs4, markdownify, html2text, pandoc, lxml, html.parser, xhtml → 0 hits · V
