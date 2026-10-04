@@ -181,8 +181,11 @@ data:
 Create secrets from files supplied by your secret manager or deployment environment.
 Keep those files outside the repository and restrict their local permissions. Replace
 the paths below with the intended inputs, and set `APP_NAME` and `NAMESPACE` for the
-application. Use the same namespace as the Deployment (`production` in
-`references/deployment-spec.md`). These names and keys match its Secret references.
+application. Use the same namespace as the Deployment (`production` in the full
+example in `references/deployment-spec.md`). The commands below match that full
+example. For the Step 2 template or `assets/deployment-template.yaml`, first change
+`envFrom[].secretRef.name` from `<app-name>-secret` to `app-secrets` to match the
+application Secret created below.
 Do not copy placeholder credentials into a manifest. Plain Kubernetes YAML does not
 expand shell environment variables.
 
