@@ -6,9 +6,9 @@ Top-level architectural map for agents, skills, and commands shared across seven
 
 1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/skills/`, `.codex/agents/`, `.opencode/`, `.copilot/`, `.antigravity/`, `.pi/`) are produced by adapters and gitignored. The exception: small native-install registries (`.agents/plugins/marketplace.json`, `plugins/*/.codex-plugin/plugin.json`, `.cursor-plugin/`, `.cursor/rules/`) are committed — they only point at the source `plugins/`, so the invariant holds. Never hand-edit generated files.
 
-2. One canonical context file. `AGENTS.md` at repo root is the only context file authored directly. Claude Code reads `CLAUDE.md`, a symlink to `AGENTS.md`. Codex, Cursor, OpenCode, Antigravity CLI (`agy`), GitHub Copilot, and Pi read `AGENTS.md` natively.
+2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. Claude Code reads `CLAUDE.md`, a symlink to `AGENTS.md`. Codex, Cursor, OpenCode, Antigravity CLI (`agy`), GitHub Copilot, and Pi read `AGENTS.md` natively.
 
-3. Adapters handle tool-specific formats. Authors write portable Markdown in the canonical Claude Code source format. Adapters under `tools/adapters/` rewrite frontmatter, map model aliases and tool names, and enforce body-size caps. Source files do not need separate versions for each tool.
+3. **Adapters handle tool-specific formats.** Authors write portable Markdown in the canonical Claude Code source format. Adapters under `tools/adapters/` rewrite frontmatter, map model aliases and tool names, and enforce body-size caps. Source files do not need separate versions for each tool.
 
 4. **Mechanical enforcement with remediation hints.** Every lint / validator finding ships with a concrete fix string. `make validate`, `make garden`, and the `plugin-eval` `harness_portability` dimension all follow this convention.
 
