@@ -89,15 +89,18 @@ pandoc --from=markdown --to=docx --standalone "$conversion_input" \
 **Office document to PDF:** use a separate profile to avoid sharing an open instance.
 Python 3 encodes its file URI. A fresh profile and headless mode do not block network
 access or macros; meet step 3 first. The PDF uses the input basename. Check it even
-after exit 0, then remove only this temporary profile after LibreOffice exits.
+after exit 0. The subshell removes only its temporary profile on exit.
 
 ```bash
-conversion_profile="$(mktemp -d)" || exit 1
-conversion_profile_uri="$(python3 -c \
-  'import pathlib, sys; print(pathlib.Path(sys.argv[1]).resolve().as_uri())' \
-  "$conversion_profile")" || exit 1
-soffice "-env:UserInstallation=$conversion_profile_uri" \
-  --headless --convert-to pdf --outdir "$conversion_dir" "$conversion_input"
+(
+  conversion_profile="$(mktemp -d)" || exit 1
+  trap 'rm -rf -- "$conversion_profile"' EXIT
+  conversion_profile_uri="$(python3 -c \
+    'import pathlib, sys; print(pathlib.Path(sys.argv[1]).resolve().as_uri())' \
+    "$conversion_profile")" || exit 1
+  soffice "-env:UserInstallation=$conversion_profile_uri" \
+    --headless --convert-to pdf --outdir "$conversion_dir" "$conversion_input"
+)
 ```
 
 **Small CSV to JSON:** for UTF-8, comma-separated input with one unique header row and
