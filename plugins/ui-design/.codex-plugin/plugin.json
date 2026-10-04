@@ -7,7 +7,20 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/ui-design",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "accessibility-compliance",
+    "design-system-patterns",
+    "interaction-design",
+    "mobile-android-design",
+    "mobile-ios-design",
+    "react-native-design",
+    "responsive-design",
+    "visual-design-foundations",
+    "web-component-design"
+  ],
   "interface": {
     "displayName": "Ui Design",
     "shortDescription": "Comprehensive UI/UX design plugin for mobile (iOS, Android, React Native) and web applications with design systems\u2026",

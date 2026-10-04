@@ -7,7 +7,13 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/quantitative-trading",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "backtesting-frameworks",
+    "risk-metrics-calculation"
+  ],
   "interface": {
     "displayName": "Quantitative Trading",
     "shortDescription": "Quantitative analysis, algorithmic trading strategies, financial modeling, portfolio risk management, and backtesting",

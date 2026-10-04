@@ -7,7 +7,16 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/security-scanning",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "attack-tree-construction",
+    "sast-configuration",
+    "security-requirement-extraction",
+    "stride-analysis-patterns",
+    "threat-mitigation-mapping"
+  ],
   "interface": {
     "displayName": "Security Scanning",
     "shortDescription": "SAST analysis, dependency vulnerability scanning, OWASP Top 10 compliance, container security scanning, and\u2026",

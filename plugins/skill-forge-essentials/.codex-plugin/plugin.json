@@ -7,7 +7,14 @@
     "name": "Adit Jain",
     "email": "aditjain2005@gmail.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/skill-forge-essentials",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "ai-debt-detector",
+    "session-guard",
+    "visual-edit-precision"
+  ],
   "interface": {
     "displayName": "Skill Forge Essentials",
     "shortDescription": "Three behavioral skills addressing AI-specific failure patterns: hidden code debt from agent generation, context\u2026",

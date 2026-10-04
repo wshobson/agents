@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import json
 import re
+from dataclasses import replace
 from pathlib import Path
 
+import pytest
 import yaml
 
 # tools.adapters.* imports happen via the conftest sys.path injection
@@ -191,6 +193,7 @@ class TestCodexAdapter:
             name="no-desc",
             dir=empty_repo / "no-desc",
             plugin_json={"name": "no-desc", "version": "0.1.0"},
+            skills=synthetic_plugin.skills,
         )
         adapter.emit_global([synthetic_plugin, no_desc_plugin])
 
@@ -208,7 +211,7 @@ class TestCodexAdapter:
         )
 
     def test_plugin_manifest_description_falls_back_to_name(
-        self, tmp_path: Path, output_root: Path
+        self, synthetic_plugin: PluginSource, tmp_path: Path, output_root: Path
     ):
         """`codex-marketplace`'s installer parses each plugin's
         `.codex-plugin/plugin.json` with `pluginManifestSchema`, which requires
@@ -229,6 +232,7 @@ class TestCodexAdapter:
             name="no-description-plugin",
             dir=plugin_dir,
             plugin_json={"name": "no-description-plugin", "version": "0.1.0"},
+            skills=synthetic_plugin.skills,
         )
         assert plugin.description == ""  # sanity: this is the empty-description case
 
@@ -239,6 +243,119 @@ class TestCodexAdapter:
         )
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         assert manifest["description"] == "no-description-plugin"
+
+    @pytest.mark.parametrize("components", ["skills", "commands", "agents", "agents-commands"])
+    def test_native_discovery_requires_source_skills(
+        self, synthetic_plugin: PluginSource, output_root: Path, components: str
+    ):
+        plugin = replace(
+            synthetic_plugin,
+            skills=synthetic_plugin.skills if components == "skills" else [],
+            agents=synthetic_plugin.agents if "agents" in components else [],
+            commands=synthetic_plugin.commands if "commands" in components else [],
+        )
+        adapter = CodexAdapter(output_root=output_root)
+        result = adapter.emit_plugin(plugin)
+        adapter.emit_global([plugin])
+
+        manifest_dir = output_root / "plugins" / "demo" / ".codex-plugin"
+        manifest = manifest_dir / "plugin.json"
+        registry = json.loads((output_root / ".agents/plugins/marketplace.json").read_text())
+        assert [entry["name"] for entry in registry["plugins"]] == (
+            ["demo"] if plugin.skills else []
+        )
+        assert manifest.is_file() == bool(plugin.skills)
+        assert (manifest in result.written) == bool(plugin.skills)
+        assert manifest_dir.exists() == bool(plugin.skills)
+        if plugin.skills:
+            assert json.loads(manifest.read_text())["skills"] == "./skills/"
+        if plugin.agents:
+            assert (output_root / ".codex/agents/demo__greeter.toml").is_file()
+        if plugin.commands:
+            assert (output_root / ".codex/skills/demo__say-hi/SKILL.md").is_file()
+
+    @pytest.mark.parametrize("keep_adjacent_file", [False, True])
+    def test_losing_last_skill_removes_only_native_manifest(
+        self, synthetic_plugin: PluginSource, output_root: Path, keep_adjacent_file: bool
+    ):
+        adapter = CodexAdapter(output_root=output_root)
+        adapter.emit_plugin(synthetic_plugin)
+        adapter.emit_global([synthetic_plugin])
+        manifest_dir = output_root / "plugins/demo/.codex-plugin"
+        author_file = manifest_dir / "notes.md"
+        if keep_adjacent_file:
+            author_file.write_text("Author-maintained notes.\n")
+        source_file = output_root / "plugins/demo/README.md"
+        source_file.write_text("Plugin documentation.\n")
+        artifacts = [
+            output_root / ".codex/agents/demo__greeter.toml",
+            output_root / ".codex/skills/demo__say-hi/SKILL.md",
+        ]
+        before = {path: path.read_bytes() for path in artifacts}
+
+        plugin = replace(synthetic_plugin, skills=[])
+        result = adapter.emit_plugin(plugin)
+        adapter.emit_global([plugin])
+
+        assert not (manifest_dir / "plugin.json").exists()
+        assert (manifest_dir / "plugin.json") not in result.written
+        assert manifest_dir.exists() == keep_adjacent_file
+        if keep_adjacent_file:
+            assert author_file.read_text() == "Author-maintained notes.\n"
+        assert source_file.read_text() == "Plugin documentation.\n"
+        assert {path: path.read_bytes() for path in artifacts} == before
+        registry = json.loads((output_root / ".agents/plugins/marketplace.json").read_text())
+        assert registry["plugins"] == []
+
+    def test_gaining_first_skill_restores_native_discovery(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        adapter = CodexAdapter(output_root=output_root)
+        without_skills = replace(synthetic_plugin, skills=[])
+        adapter.emit_plugin(without_skills)
+        adapter.emit_global([without_skills])
+        manifest = output_root / "plugins/demo/.codex-plugin/plugin.json"
+        assert not manifest.exists()
+
+        adapter.emit_plugin(synthetic_plugin)
+        adapter.emit_global([synthetic_plugin])
+
+        assert json.loads(manifest.read_text())["skills"] == "./skills/"
+        registry = json.loads((output_root / ".agents/plugins/marketplace.json").read_text())
+        assert [entry["name"] for entry in registry["plugins"]] == ["demo"]
+        assert (output_root / ".codex/skills/demo__hello/SKILL.md").is_file()
+
+    def test_native_manifest_preserves_explicit_metadata(
+        self, synthetic_plugin: PluginSource, output_root: Path
+    ):
+        metadata = {
+            "author": {"name": "Contributor", "url": "https://example.com/author"},
+            "homepage": "https://example.com/plugin",
+            "repository": "https://example.com/repository",
+            "license": "Apache-2.0",
+            "keywords": ["greetings", "documentation"],
+        }
+        plugin = replace(synthetic_plugin, plugin_json={**synthetic_plugin.plugin_json, **metadata})
+        CodexAdapter(output_root=output_root).emit_plugin(plugin)
+        manifest = json.loads((output_root / "plugins/demo/.codex-plugin/plugin.json").read_text())
+        assert {key: manifest[key] for key in metadata} == metadata
+
+    def test_native_manifest_metadata_defaults_describe_source_repository(
+        self, synthetic_plugin: PluginSource, output_root: Path, tmp_path: Path
+    ):
+        repo_root = tmp_path / "repo"
+        (repo_root / ".claude-plugin").mkdir(parents=True)
+        owner = {"name": "Repository Owner", "url": "https://example.com/owner"}
+        (repo_root / ".claude-plugin/marketplace.json").write_text(json.dumps({"owner": owner}))
+        plugin = replace(synthetic_plugin, plugin_json={"name": "demo"})
+        CodexAdapter(output_root=output_root, repo_root=repo_root).emit_plugin(plugin)
+        manifest = json.loads((output_root / "plugins/demo/.codex-plugin/plugin.json").read_text())
+        assert manifest["author"] == owner
+        assert manifest["homepage"] == "https://github.com/wshobson/agents/tree/main/plugins/demo"
+        assert manifest["repository"] == "https://github.com/wshobson/agents"
+        assert manifest["license"] == "MIT"
+        assert manifest["keywords"] == ["hello"]
+        assert all(isinstance(keyword, str) for keyword in manifest["keywords"])
 
     def test_emit_global_validates_committed_agents_md(
         self, synthetic_plugin: PluginSource, output_root: Path, tmp_path: Path

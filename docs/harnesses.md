@@ -111,12 +111,19 @@ leave everything else under `.pi/` alone.
 ## Native install
 
 - **Codex**. Run `codex plugin marketplace add wshobson/agents`, then
-  `codex plugin add python-development@claude-code-workflows` (or choose another local plugin).
+  `codex plugin add python-development@claude-code-workflows` (or choose another plugin
+  with source skills). The native registry includes only local plugins with a
+  `skills/<name>/SKILL.md` source file; agent-only and command-only plugins use the generated
+  setup linked below.
   The native manifests expose source skills from `plugins/<name>/skills/`, and skill bodies over
   the 8 KB cap are truncated by Codex at load. Generated TOML agents and command-derived skills
   use a separate adapter route. The gitignored `.codex/skills/` copies split oversized bodies
   into reference files. Follow the [generated Codex setup](round-trip-results.md#codex-round-trip)
   to generate and link skills into `~/.codex/skills/` and TOML agents into `~/.codex/agents/`.
+  Native manifests preserve explicit plugin metadata. Missing values use the repository owner,
+  repository URL, plugin source URL, root MIT license, and source skill names as keywords.
+  Regeneration removes the native manifest and registry entry when a plugin loses its last
+  source skill; generated agents and command-derived skills remain available.
 - **Cursor** — add the marketplace, then `/plugin install <name>`. Entries point at source
   `./plugins/<name>`; Cursor reads `SKILL.md` + `.md` agents from source directly.
 - **Antigravity** — no one-step-from-URL install (the lean tradeoff). Clone the repo, then

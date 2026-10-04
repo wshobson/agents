@@ -6,6 +6,7 @@
   "author": {
     "name": "kimtth"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/pptx-deck-creation",
   "repository": "https://github.com/kimtth/agent-pptify-kit",
   "license": "MIT",
   "keywords": [

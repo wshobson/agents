@@ -7,7 +7,15 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/data-engineering",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "airflow-dag-patterns",
+    "data-quality-frameworks",
+    "dbt-transformation-patterns",
+    "spark-optimization"
+  ],
   "interface": {
     "displayName": "Data Engineering",
     "shortDescription": "ETL pipeline construction, data warehouse design, batch processing workflows, and data-driven feature development",

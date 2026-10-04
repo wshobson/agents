@@ -7,7 +7,14 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/systems-programming",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "go-concurrency-patterns",
+    "memory-safety-patterns",
+    "rust-async-patterns"
+  ],
   "interface": {
     "displayName": "Systems Programming",
     "shortDescription": "Systems programming with Rust, Go, C, and C++ for performance-critical and low-level development",

@@ -7,7 +7,12 @@
     "name": "bin1874",
     "url": "https://github.com/bin1874/before-you-build-skill"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/before-you-build",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "before-you-build"
+  ],
   "interface": {
     "displayName": "Before You Build",
     "shortDescription": "Pre-build product risk review for founders, product teams, and AI-assisted builders before implementation starts.",

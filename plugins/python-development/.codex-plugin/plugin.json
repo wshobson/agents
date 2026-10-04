@@ -7,7 +7,27 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/python-development",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "async-python-patterns",
+    "python-anti-patterns",
+    "python-background-jobs",
+    "python-code-style",
+    "python-configuration",
+    "python-design-patterns",
+    "python-error-handling",
+    "python-observability",
+    "python-packaging",
+    "python-performance-optimization",
+    "python-project-structure",
+    "python-resilience",
+    "python-resource-management",
+    "python-testing-patterns",
+    "python-type-safety",
+    "uv-package-manager"
+  ],
   "interface": {
     "displayName": "Python Development",
     "shortDescription": "Modern Python development with Python 3.12+, Django, FastAPI, async patterns, and production best practices",

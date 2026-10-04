@@ -7,7 +7,12 @@
     "name": "Travis D. Elliott",
     "url": "https://github.com/travis-d-elliott"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/brand-landingpage",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "brand-landingpage"
+  ],
   "interface": {
     "displayName": "Brand Landingpage",
     "shortDescription": "Guides developers from brand discovery through iterative design to deployment-ready HTML via Stitch.",

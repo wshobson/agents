@@ -7,7 +7,19 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/cloud-infrastructure",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "cost-optimization",
+    "hybrid-cloud-networking",
+    "istio-traffic-management",
+    "linkerd-patterns",
+    "mtls-configuration",
+    "multi-cloud-architecture",
+    "service-mesh-observability",
+    "terraform-module-library"
+  ],
   "interface": {
     "displayName": "Cloud Infrastructure",
     "shortDescription": "Cloud architecture design for AWS/Azure/GCP/OCI, Kubernetes cluster configuration, Terraform infrastructure-as-code\u2026",

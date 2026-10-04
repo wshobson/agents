@@ -7,7 +7,15 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/observability-monitoring",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "distributed-tracing",
+    "grafana-dashboards",
+    "prometheus-configuration",
+    "slo-implementation"
+  ],
   "interface": {
     "displayName": "Observability Monitoring",
     "shortDescription": "Metrics collection, logging infrastructure, distributed tracing, SLO implementation, and monitoring dashboards",

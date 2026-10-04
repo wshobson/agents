@@ -7,7 +7,21 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/llm-finetuning",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "checkpoint-promotion",
+    "dataset-curation",
+    "eval-harness-first",
+    "finetuning-method-selection",
+    "grpo-rlvr-training",
+    "lora-qlora-recipes",
+    "preference-optimization",
+    "quantized-export",
+    "trace-to-training-data",
+    "vision-sft"
+  ],
   "interface": {
     "displayName": "Llm Finetuning",
     "shortDescription": "Eval-gated LLM fine-tuning lifecycle: LoRA/QLoRA SFT, preference optimization (DPO/ORPO/KTO), GRPO/RLVR, vision SFT\u2026",

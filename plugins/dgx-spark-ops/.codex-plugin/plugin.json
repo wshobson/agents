@@ -7,7 +7,14 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/dgx-spark-ops",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "spark-environment-setup",
+    "spark-memory-thermal-ops",
+    "spark-training-gotchas"
+  ],
   "interface": {
     "displayName": "Dgx Spark Ops",
     "shortDescription": "NVIDIA DGX Spark (GB10 Grace Blackwell) environment operations: aarch64/CUDA-13 stack setup, training gotcha\u2026",

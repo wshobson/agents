@@ -3,6 +3,17 @@
   "version": "0.1.2",
   "description": "Static lint for Claude Code plugins and skills, with experimental LLM scoring for skills",
   "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com",
+    "url": "https://github.com/wshobson"
+  },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/plugin-eval",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "evaluation-methodology"
+  ],
   "interface": {
     "displayName": "Plugin Eval",
     "shortDescription": "Static lint for Claude Code plugins and skills, with experimental LLM scoring for skills",

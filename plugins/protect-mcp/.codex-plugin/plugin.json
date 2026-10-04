@@ -7,7 +7,12 @@
     "name": "Tom Farley",
     "email": "tommy@scopeblind.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/protect-mcp",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "protect-mcp-setup"
+  ],
   "interface": {
     "displayName": "Protect Mcp",
     "shortDescription": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance\u2026",

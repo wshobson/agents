@@ -7,7 +7,15 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/framework-migration",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "angular-migration",
+    "database-migration",
+    "dependency-upgrade",
+    "react-modernization"
+  ],
   "interface": {
     "displayName": "Framework Migration",
     "shortDescription": "Framework updates, migration planning, and architectural transformation workflows",
