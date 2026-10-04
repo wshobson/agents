@@ -115,9 +115,13 @@ spec:
 
 ### 1. Installation
 
+The example uses Homebrew. For other systems, follow the
+[official Flux installation guide](https://fluxcd.io/flux/installation/).
+
 ```bash
-# Install Flux CLI
-curl -s https://fluxcd.io/install.sh | sudo bash
+# Install the Flux CLI with Homebrew
+brew install fluxcd/tap/flux
+flux check --pre
 
 # Bootstrap Flux
 flux bootstrap github \

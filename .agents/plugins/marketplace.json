@@ -263,7 +263,7 @@
     },
     {
       "name": "file-conversion",
-      "description": "Convert files between 999 routes \u2014 PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI \u2014 via the free ChangeThisFile API. MCP-aware with a zero-dependency script fallback; no API key required.",
+      "description": "Convert common image, audio, video, document, and data formats with installed local tools while preserving originals.",
       "source": {
         "source": "local",
         "path": "./plugins/file-conversion"

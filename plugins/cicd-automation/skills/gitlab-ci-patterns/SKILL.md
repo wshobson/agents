@@ -95,11 +95,16 @@ build-docker:
 
 ## Multi-Environment Deployment
 
+Set `KUBE_CA_PEM` as a GitLab file variable containing the cluster CA certificate,
+and provide `KUBE_TOKEN` through a protected, masked CI variable. The file variable
+contains a path that kubectl uses to verify the API server certificate. Protect both
+`develop` and `main` so the deployment jobs can read the protected token.
+
 ```yaml
 .deploy_template: &deploy_template
   image: bitnami/kubectl:1.31
   before_script:
-    - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
+    - kubectl config set-cluster k8s --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM" --embed-certs=true
     - kubectl config set-credentials admin --token="$KUBE_TOKEN"
     - kubectl config set-context default --cluster=k8s --user=admin
     - kubectl config use-context default

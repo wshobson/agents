@@ -1,11 +1,13 @@
 {
   "name": "file-conversion",
-  "version": "1.0.0",
-  "description": "Convert files between 999 routes — PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI — via the free ChangeThisFile API. MCP-aware with a zero-dependency script fallback; no API key required.",
+  "version": "2.0.0",
+  "description": "Convert common image, audio, video, document, and data formats with installed local tools while preserving originals.",
   "author": {
-    "name": "Aadil Razvi",
-    "url": "https://changethisfile.com"
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com",
+    "url": "https://github.com/wshobson"
   },
-  "homepage": "https://github.com/aadilr/changethisfile-mcp",
-  "license": "MIT"
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/file-conversion",
+  "license": "MIT",
+  "repository": "https://github.com/wshobson/agents"
 }
