@@ -20,8 +20,9 @@ unavailable, report the access gap. Keep conversion and output delivery local.
    Check the installed version and its readers, writers, codecs, or delegates. Use a
    tool only for a route it supports. Follow the session's existing permission policy
    for installation if a required tool is missing; otherwise report the missing tool.
-3. Check local assets and fonts needed by documents. Do not fetch linked URLs or enable
-   macros or external document content. Request local assets if they are required.
+3. Check local assets and fonts. If inspection cannot rule out external links or
+   macros, convert only with network access blocked and macros disabled; otherwise
+   stop. Request local assets instead of fetching linked URLs.
 4. Choose the smallest suitable route:
 
 | Input and goal | Local tool | Check before converting |
@@ -85,11 +86,18 @@ pandoc --from=markdown --to=docx --standalone "$conversion_input" \
   --output="$conversion_dir/output.docx"
 ```
 
-**Office document to PDF:** LibreOffice chooses the output basename from the input.
-Check that the expected PDF was produced even if the process exits successfully.
+**Office document to PDF:** use a separate profile to avoid sharing an open instance.
+Python 3 encodes its file URI. A fresh profile and headless mode do not block network
+access or macros; meet step 3 first. The PDF uses the input basename. Check it even
+after exit 0, then remove only this temporary profile after LibreOffice exits.
 
 ```bash
-soffice --headless --convert-to pdf --outdir "$conversion_dir" "$conversion_input"
+conversion_profile="$(mktemp -d)" || exit 1
+conversion_profile_uri="$(python3 -c \
+  'import pathlib, sys; print(pathlib.Path(sys.argv[1]).resolve().as_uri())' \
+  "$conversion_profile")" || exit 1
+soffice "-env:UserInstallation=$conversion_profile_uri" \
+  --headless --convert-to pdf --outdir "$conversion_dir" "$conversion_input"
 ```
 
 **Small CSV to JSON:** for UTF-8, comma-separated input with one unique header row and

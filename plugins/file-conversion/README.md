@@ -33,6 +33,8 @@ layout review. Unsupported routes stop with an explanation.
 
 URL inputs can first be retrieved through an already-authorized method; report an
 access gap if retrieval is unavailable. Conversion runs on local copies and local assets.
+For documents with external links or macros, use an environment with network access
+blocked and macros disabled, or stop. A temporary profile alone provides neither control.
 
 ## Migration from version 1
 

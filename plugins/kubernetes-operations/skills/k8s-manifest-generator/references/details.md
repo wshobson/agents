@@ -181,12 +181,22 @@ data:
 Create secrets from files supplied by your secret manager or deployment environment.
 Keep those files outside the repository and restrict their local permissions. Replace
 the paths below with the intended inputs, and set `APP_NAME` and `NAMESPACE` for the
-application. Do not copy placeholder credentials into a manifest. Plain Kubernetes YAML does not expand shell environment variables.
+application. Use the same namespace as the Deployment (`production` in
+`references/deployment-spec.md`). These names and keys match its Secret references.
+Do not copy placeholder credentials into a manifest. Plain Kubernetes YAML does not
+expand shell environment variables.
+
+`--from-file` preserves every byte, including trailing newlines. Ensure credential files
+contain exactly the intended value; use `printf '%s'` rather than `echo` when creating
+a value that must not end with a newline.
 
 ```bash
-kubectl create secret generic "${APP_NAME}-secret" \
+kubectl create secret generic db-credentials \
   --namespace "$NAMESPACE" \
-  --from-file=DATABASE_PASSWORD=/secure/path/database-password \
+  --from-file=url=/secure/path/database-url
+
+kubectl create secret generic app-secrets \
+  --namespace "$NAMESPACE" \
   --from-file=API_KEY=/secure/path/api-key
 ```
 
