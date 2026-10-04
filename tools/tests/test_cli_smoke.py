@@ -178,8 +178,26 @@ class TestAntigravitySmoke:
 
 
 def _pi_env(config_dir: Path) -> dict[str, str]:
-    """Offline, sandboxed, and guaranteed to fail before any tokens are billed."""
-    env = dict(os.environ)
+    """Offline Pi settings with only the runtime environment needed to launch the CLI."""
+    # Do not inherit provider credentials or unrelated developer settings: pytest
+    # can include fixture values in failure output.
+    runtime_keys = (
+        "PATH",
+        "HOME",
+        "USERPROFILE",
+        "PI_PACKAGE_DIR",
+        "TMPDIR",
+        "TMP",
+        "TEMP",
+        "SYSTEMROOT",
+        "WINDIR",
+        "COMSPEC",
+        "PATHEXT",
+        "LANG",
+        "LC_ALL",
+        "LC_CTYPE",
+    )
+    env = {key: os.environ[key] for key in runtime_keys if key in os.environ}
     env.update(
         {
             "PI_CODING_AGENT_DIR": str(config_dir),
@@ -199,6 +217,54 @@ def _pi_env(config_dir: Path) -> dict[str, str]:
         }
     )
     return env
+
+
+def test_pi_env_excludes_ambient_secrets_and_preserves_runtime_paths(tmp_path, monkeypatch):
+    runtime = {
+        "PATH": "/runtime/bin",
+        "HOME": "/runtime/home",
+        "USERPROFILE": "C:/Users/smoke",
+        "PI_PACKAGE_DIR": "/runtime/pi-package",
+        "TMPDIR": "/runtime/tmp",
+        "TMP": "C:/Temp",
+        "TEMP": "C:/Temp",
+        "SYSTEMROOT": "C:/Windows",
+        "WINDIR": "C:/Windows",
+        "COMSPEC": "C:/Windows/System32/cmd.exe",
+        "PATHEXT": ".COM;.EXE;.BAT;.CMD",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "LC_CTYPE": "C.UTF-8",
+    }
+    monkeypatch.setattr(
+        os,
+        "environ",
+        {
+            **runtime,
+            "SMOKE_SECRET_CANARY": "synthetic-secret-not-for-the-child",
+            "UNRELATED_SETTING": "not-needed",
+            "ANTHROPIC_API_KEY": "synthetic-ambient-key",
+            "ANTHROPIC_AUTH_TOKEN": "synthetic-ambient-token",
+            "ANTHROPIC_OAUTH_TOKEN": "synthetic-ambient-oauth-token",
+            "ANTHROPIC_BASE_URL": "https://example.invalid",
+            "PI_CODING_AGENT_DIR": "/ambient/pi",
+            "PI_OFFLINE": "0",
+            "PI_SKIP_VERSION_CHECK": "0",
+        },
+    )
+
+    env = _pi_env(tmp_path)
+
+    assert "SMOKE_SECRET_CANARY" not in env
+    assert "UNRELATED_SETTING" not in env
+    assert {key: env.get(key) for key in runtime} == runtime
+    assert env["PI_CODING_AGENT_DIR"] == str(tmp_path)
+    assert env["PI_OFFLINE"] == env["PI_SKIP_VERSION_CHECK"] == "1"
+    assert all(
+        env[key] == "sk-ant-invalid-smoke-test"
+        for key in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_OAUTH_TOKEN")
+    )
+    assert env["ANTHROPIC_BASE_URL"] == "http://127.0.0.1:1"
 
 
 def _pi_expand(message: str, env: dict[str, str]) -> str:
