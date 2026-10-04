@@ -80,7 +80,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 ## Repository Structure
 
 ```
-claude-agents/
+agents/
 ├── .claude-plugin/
 │   └── marketplace.json          # Marketplace catalog (94 plugins)
 ├── plugins/                       # Isolated plugin directories
