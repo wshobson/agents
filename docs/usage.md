@@ -1,17 +1,22 @@
 # Usage Guide
 
-Complete guide to using agents, slash commands, and multi-agent workflows.
+The repository supports agents, skills, and commands across seven coding tools. See the [tool setup guide](./harnesses.md) for installation routes and capability differences. The slash-command catalog and workflow examples below use Claude Code syntax.
 
 ## Overview
 
-The plugin ecosystem provides two primary interfaces:
+1. Choose your coding tool and follow its installation route in the [setup guide](./harnesses.md).
+2. Describe the task and choose an installed skill or agent that fits it. Available components depend on the tool and installation route.
+3. Use your tool's native command form for explicit workflows. The [capability matrix](./harnesses.md#capability-matrix) explains which tools use commands, skills, or prompt templates.
 
-1. **Slash Commands** - Direct invocation of tools and workflows
-2. **Natural Language** - Claude reasons about which agents to use
+For example, after installing a Python testing skill, give your coding tool a concrete task:
+
+```text
+Use the installed Python testing skill to add pytest coverage for this endpoint's error path.
+```
 
 ## How Installation Actually Works
 
-The **plugin** is the unit of installation; skills and agents come along with it.
+In Claude Code, a plugin is the unit of installation. It includes its agents, commands, and skills. Other tools use the installation routes in the [setup guide](./harnesses.md#native-install).
 
 1. `/plugin marketplace add wshobson/agents` registers the catalog. It loads
    nothing into context.
@@ -30,7 +35,7 @@ The **plugin** is the unit of installation; skills and agents come along with it
 
 ## Slash Commands
 
-Slash commands are the primary interface for working with agents and workflows. Each plugin provides namespaced commands that you can run directly.
+In Claude Code, plugin slash commands provide direct access to named workflows. The following format and command catalog use Claude Code namespacing.
 
 ### Command Format
 
@@ -55,7 +60,7 @@ List all available slash commands from installed plugins:
 
 ## Natural Language
 
-Agents can also be invoked through natural language when you need Claude to reason about which specialist to use:
+The following natural-language examples ask Claude Code to choose a specialist:
 
 ```
 "Use backend-architect to design the authentication API"
@@ -407,7 +412,7 @@ User: "Implement Kubernetes deployment with Helm"
 → Result: Production-grade K8s manifests with Helm charts
 ```
 
-See [Agent Skills](./agent-skills.md) for details on the 183 specialized skills.
+See [Agent Skills](./agent-skills.md) for details on the 184 specialized skills.
 
 ## See Also
 

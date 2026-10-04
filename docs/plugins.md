@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all **94 marketplace plugins** organized by category: 92 local plugins plus 2 externally hosted `git-subdir` entries (`pensyve` and `hol-guard`).
+Browse all 94 marketplace plugins organized by category: 92 local plugins plus 2 external Claude Code marketplace entries (`pensyve` and `hol-guard`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
 
 ## Quick Start - Essential Plugins
 
@@ -359,6 +359,8 @@ plugins/python-development/
 
 ## Installation
 
+The marketplace commands in this section run inside Claude Code. Other tools use the [per-tool installation routes](./harnesses.md#native-install).
+
 ### Step 1: Add the Marketplace
 
 ```bash
@@ -382,7 +384,7 @@ Install only the plugins you need:
 /plugin install backend-development
 ```
 
-Each installed plugin loads **only its specific agents, commands, and skills** into Claude's context.
+Installing a Claude Code plugin makes its agents, commands, and skills available. Claude loads skill guidance when relevant to the task.
 
 ### Skills Only (Any Agent)
 

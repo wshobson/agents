@@ -1,6 +1,6 @@
 # Architecture & Design Principles
 
-This marketplace follows industry best practices with a focus on granularity, composability, and minimal token usage.
+The repository shares agents, skills, and commands across seven AI coding tools. Source files under `plugins/` use the Claude Code format, and adapters generate the formats used by other tools. See the [capability matrix](./harnesses.md) for supported components and installation routes.
 
 ## Core Philosophy
 
@@ -70,7 +70,7 @@ This marketplace follows industry best practices with a focus on granularity, co
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**183 Local Agent Skills**
+**184 Local Agent Skills**
 
 - Modular knowledge packages
 - Progressive disclosure architecture
@@ -80,7 +80,7 @@ This marketplace follows industry best practices with a focus on granularity, co
 ## Repository Structure
 
 ```
-claude-agents/
+agents/
 ├── .claude-plugin/
 │   └── marketplace.json          # Marketplace catalog (94 plugins)
 ├── plugins/                       # Isolated plugin directories
@@ -195,13 +195,13 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 183 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 184 skills.
 
 ## Model Configuration Strategy
 
 ### Five-Tier Architecture
 
-The system uses Claude Fable, Opus, Sonnet, Haiku, and Inherit assignments strategically:
+The shared source assigns Claude Code model aliases: Fable, Opus, Sonnet, Haiku, and Inherit. Adapters map the aliases to each tool's model IDs, and some use a fixed default for `inherit`. See the [model mappings](../tools/adapters/capabilities.py). The counts below describe source assignments:
 
 | Model   | Count     | Use Case                                        |
 | ------- | --------- | ----------------------------------------------- |

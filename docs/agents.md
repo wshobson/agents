@@ -1,6 +1,6 @@
 # Agent Reference
 
-Complete reference for all **202 local specialized AI agents** organized by category with model assignments.
+Reference for 202 local AI agents organized by category. The model column lists aliases in the shared Claude Code source format. Adapters provide agent formats and model mappings for other tools. See the [capability matrix](./harnesses.md) for setup and tool-specific limits.
 
 ## Agent Categories
 
@@ -229,7 +229,7 @@ Complete reference for all **202 local specialized AI agents** organized by cate
 
 ## Model Configuration
 
-Agents are assigned to specific Claude models based on task complexity and computational requirements.
+Source agents specify Claude Code model aliases. Other tools use the [adapter model mappings](../tools/adapters/capabilities.py), including fixed defaults for some `inherit` entries. The distribution below counts source assignments.
 
 ### Model Distribution Summary
 
@@ -352,9 +352,11 @@ Haiku: Setup observability stack
 
 ## Agent Invocation
 
+The examples below use Claude Code. Agent names and invocation methods vary by tool. See the [setup guide](./harnesses.md) for generated agent formats and installation routes.
+
 ### Natural Language
 
-Agents can be invoked through natural language when you need Claude to reason about which specialist to use:
+The following natural-language examples ask Claude Code to choose a specialist:
 
 ```
 "Use backend-architect to design the authentication API"
@@ -364,7 +366,7 @@ Agents can be invoked through natural language when you need Claude to reason ab
 
 ### Slash Commands
 
-Many agents are accessible through plugin slash commands for direct invocation:
+Claude Code plugin slash commands invoke workflows that can delegate to agents:
 
 ```bash
 /backend-development:feature-development user authentication

@@ -1,8 +1,8 @@
-# Contributing to claude-agents
+# Contributing
 
-Thanks for your interest in contributing. This marketplace ships to seven agentic
-harnesses (Claude Code, OpenAI Codex CLI, Cursor, OpenCode, the Antigravity CLI, GitHub Copilot, Pi) from a single
-Markdown source.
+<a id="contributing-to-claude-agents"></a>
+
+The repository supports seven coding tools: Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Antigravity CLI, GitHub Copilot, and Pi. Author shared Markdown under `plugins/` in the canonical Claude Code source format. Adapters handle the formats used by other tools.
 
 ## Start here
 
@@ -105,8 +105,8 @@ Your content ships to seven harnesses — some have stricter conventions than Cl
 - **OpenCode** requires lowercase tool names. Don't write `` `Read` `` inline — write
   *"open the file"* or use the lowercase form.
 - **Cursor** doesn't honor per-agent `tools:` allowlists — use it as a hint only.
-- **Copilot** maps Claude model aliases (`opus`/`sonnet`/`haiku`) to the GPT-5 family;
-  agent `description` must be a plain string.
+- **Copilot** maps Claude model aliases to native Claude model IDs, including `claude-opus-4.8`,
+  `claude-sonnet-5`, and `claude-haiku-4.5`. Agent `description` must be a plain string.
 - **Antigravity CLI** passes unmapped tool names through its allowlist unchanged;
   maps model aliases to tier values (`pro`/`flash`/`inherit`); commands transpile
   to Gemini-style TOML with the body always inlined.
