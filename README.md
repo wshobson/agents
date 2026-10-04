@@ -1,172 +1,158 @@
-# Agentic Plugin Marketplace
+# Claude Code plugins, agents, and skills
 
-> Production-ready agentic workflow building blocks: **94 plugins**, **202 agents**,
-> **184 skills**, **105 commands** — built for Claude Code and consumed natively by
-> OpenAI Codex CLI, Cursor, OpenCode, the Antigravity CLI, GitHub Copilot, and Pi from a single Markdown source.
+<a id="agentic-plugin-marketplace"></a>
 
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-native-blueviolet)](#claude-code) [![Codex CLI](https://img.shields.io/badge/Codex%20CLI-supported-black)](docs/harnesses.md) [![Cursor](https://img.shields.io/badge/Cursor-supported-purple)](docs/harnesses.md) [![OpenCode](https://img.shields.io/badge/OpenCode-supported-green)](docs/harnesses.md) [![Antigravity CLI](https://img.shields.io/badge/Antigravity%20CLI-supported-blue)](docs/harnesses.md) [![Copilot](https://img.shields.io/badge/Copilot-supported-lightgrey)](docs/harnesses.md) [![Pi](https://img.shields.io/badge/Pi-supported-orange)](docs/harnesses.md)
+Install plugins to add task-specific agents, skills, and commands to your AI coding tools. Plugins cover Python and JavaScript development, code review, testing, infrastructure, security, and other work.
 
-> [!NOTE]
-> One source-of-truth (`plugins/`), six target harnesses. Each harness gets idiomatic,
-> harness-native artifacts — not lowest-common-denominator translations.
-> See [docs/harnesses.md](docs/harnesses.md) for the capability matrix.
+The catalog contains 94 plugins, including 92 local plugins and 2 external entries. The local source contains 202 agents, 184 skills, and 105 commands. Claude Code reads the source plugins directly, and adapters provide support for OpenAI Codex CLI, Cursor, OpenCode, Antigravity CLI, GitHub Copilot, and Pi.
 
 ## Quick start
 
-Pick your harness:
-
 ### Claude Code
 
-```bash
+Run these commands inside Claude Code to register the marketplace and install the Python development plugin:
+
+```text
 /plugin marketplace add wshobson/agents
-/plugin install python-development          # or any of 94 plugins
+/plugin install python-development@claude-code-workflows
 ```
 
-[→ Full Claude Code setup, troubleshooting, and plugin catalog](docs/usage.md)
+Then ask Claude to use the Python agents for your task, or run the plugin's scaffolding command:
 
-### Codex CLI · Cursor · OpenCode · Antigravity CLI · Copilot · Pi
-
-Codex and Cursor install natively from the committed registries (which point at the source `plugins/`):
-
-```bash
-npx codex-marketplace add wshobson/agents        # Codex; then install individual plugins
-# Cursor: add the marketplace, then `/plugin install <name>` (reads .cursor-plugin/ + source)
+```text
+/python-development:python-scaffold Create a FastAPI service with tests
 ```
 
-Antigravity, OpenCode, and Pi install via clone + generate (the transformed trees are gitignored):
+Choose a plugin for the work you do:
+
+| Plugin | Use it for |
+|---|---|
+| [python-development](plugins/python-development/) | Python, Django, FastAPI, testing, and packaging |
+| [javascript-typescript](plugins/javascript-typescript/) | JavaScript and TypeScript development and project setup |
+| [developer-essentials](plugins/developer-essentials/) | Code review, debugging, Git, and testing patterns |
+| [security-scanning](plugins/security-scanning/) | Security review, dependency checks, and code scanning |
+
+See the [plugin catalog](docs/plugins.md) for all 94 plugins and the [usage guide](docs/usage.md) for commands and examples.
+
+### Codex CLI
+
+Run these commands in a terminal with a current Codex CLI:
 
 ```bash
-gh repo clone wshobson/agents ~/agents && cd ~/agents
-make generate HARNESS=antigravity && make install-antigravity  # Antigravity (agy)
-make install-opencode                                          # OpenCode (runs generate + symlinks)
-make generate HARNESS=pi && make install-pi                    # Pi
+codex plugin marketplace add wshobson/agents
+codex plugin add python-development@claude-code-workflows
 ```
 
-### Skills only: `gh skill` · `npx skills`
+The native Codex manifests expose source skills. The generated TOML agents and command-derived skills use a separate adapter path. Native installation also reads the original skill bodies, while generated copies split oversized bodies into reference files for the 8 KB budget. See the [Codex setup details](docs/harnesses.md#native-install) before choosing an installation route.
 
-Both Agent Skills installers read `plugins/*/skills/` straight from GitHub, into whichever agent you use. No clone, no marketplace, no generate step. Skills only: no agents, commands, or hooks.
+<a id="skills-only-gh-skill-npx-skills"></a>
+<a id="skills-only-gh-skill--npx-skills"></a>
+
+### Skills only
+
+Install an individual skill with GitHub CLI's `gh skill` command or the `npx skills` installer. Both read the skills from GitHub without cloning this repository, and they install skills without their plugin's agents, commands, or hooks.
 
 ```bash
-gh skill install wshobson/agents                                 # browse, then pick a skill or --all
 gh skill install wshobson/agents python-testing-patterns --agent claude-code
-npx skills add wshobson/agents --skill python-testing-patterns   # add -a claude-code, -g for user scope
+npx skills add wshobson/agents --skill python-testing-patterns -a claude-code
 ```
 
-Setup details and per-harness gotchas: [docs/harnesses.md](docs/harnesses.md).
+`gh skill` requires GitHub CLI 2.90 or later. The `npx` command requires Node.js and npm. See [skills-only installation](docs/harnesses.md#skills-only-installers) for other agents, install scopes, and version pinning.
+
+<a id="codex-cli--cursor--opencode--antigravity-cli--copilot--pi"></a>
+
+### OpenCode, Antigravity CLI, Copilot, and Pi
+
+For these tools, clone the repository and use its installer. Install [uv](https://docs.astral.sh/uv/getting-started/installation/), Python 3.12 or later, and the coding tool you want to use. The following clone command uses GitHub CLI:
+
+```bash
+gh repo clone wshobson/agents ~/agents
+cd ~/agents
+```
+
+Run the command for your tool. Each target generates the artifacts and links all local plugins into that tool's user configuration:
+
+```bash
+make install-opencode
+make install-antigravity
+make install-copilot
+make install-pi
+```
+
+Pi's agents require its reference `subagent` extension or a compatible extension. Cursor can install through its plugin marketplace using the committed registry. See the [per-tool setup guide](docs/harnesses.md#native-install) for Cursor and the [global install guide](docs/harnesses.md#global-install) for configuration paths and uninstall commands.
 
 ## What's inside
 
-| | Count | What it is |
+| Component | Count | Purpose |
 |---|---:|---|
-| **Plugins** | 94 | Granular, single-purpose installable units (92 local + 2 external via git-subdir) |
-| **Agents** | 202 | Domain experts (architecture, languages, infra, security, data, ML, docs, business, SEO) |
-| **Skills** | 184 | Modular knowledge packages with progressive disclosure (load when activated) |
-| **Commands** | 105 | Slash commands: scaffolding, security scans, test gen, infrastructure setup |
-| **Orchestrators** | 16 | Multi-agent coordination workflows (full-stack, security, ML, incident response) |
+| Plugins | 94 | Installable groups of components, including 92 local plugins and 2 external entries |
+| Agents | 202 | Instructions for specialist subagents that handle delegated work |
+| Skills | 184 | Guidance and reference material that an agent loads when relevant |
+| Commands | 105 | Named workflows you invoke, such as project scaffolding or a security scan |
 
-Browse the catalog: [docs/plugins.md](docs/plugins.md) · [docs/agents.md](docs/agents.md) · [docs/agent-skills.md](docs/agent-skills.md)
+The agent, skill, and command counts cover local source files. External plugins provide their own components and installation requirements.
 
 ## How it works
 
-Each plugin is isolated and composable: agents, commands, and skills are auto-discovered
-from directory structure. **Installing a plugin loads only its components into
-context** — not the whole marketplace.
+A Claude Code plugin groups related agents, skills, and commands. Adding the marketplace registers the catalog, and installing a plugin makes that plugin's components available. Claude loads skill guidance when the task matches its description.
 
-```
-plugins/python-development/
-├── .claude-plugin/plugin.json
-├── agents/             # 3 Python agents (python-pro, django-pro, fastapi-pro)
-├── commands/           # 1 scaffolding command
-└── skills/             # 16 specialized skills (async, testing, packaging, …)
-```
+The source lives under `plugins/`. For example, `python-development` contains three agents, sixteen skills, and a scaffolding command. Adapters read those same files and generate the formats used by other coding tools.
 
-Tiered model strategy:
-
-| Tier | Model | Use |
-|---|---|---|
-| 0 | Fable 5  | Longest-horizon autonomous work — large migrations, multi-hour runs (opt-in, premium cost) |
-| 1 | Opus     | Architecture, security, code review, production-critical |
-| 2 | inherit  | User-chosen — backend, frontend, AI/ML, specialized |
-| 3 | Sonnet   | Docs, testing, debugging, API references |
-| 4 | Haiku    | Fast operational tasks, SEO, deployment, content |
-
-[→ Model configuration details](docs/agents.md#model-configuration)
+Agents specify Claude Code model aliases such as `opus`, `sonnet`, `haiku`, `fable`, or `inherit`. Other tools use adapter-specific model mappings, including fixed defaults for some `inherit` entries. See [model configuration](docs/agents.md#model-configuration) and the [adapter mappings](tools/adapters/capabilities.py).
 
 ## Multi-harness support
 
-This marketplace ships to seven agentic harnesses from one Markdown source. Each adapter
-emits harness-native artifacts (not lowest-common-denominator translations):
+The repository supports seven coding tools, including Claude Code as the source format. Available components depend on the installation route and the tool's capabilities.
 
-| Harness | Generates | Notes |
+| Tool | Installation | Components and limits |
 |---|---|---|
-| **Claude Code** | (source-of-truth) | Native `marketplace.json` + `plugins/` |
-| **Codex CLI** | `.agents/plugins/marketplace.json` + `plugins/*/.codex-plugin/plugin.json` (committed); `.codex/skills/`, `.codex/agents/` (gitignored) | 8 KB skill cap respected; commands → skills |
-| **Cursor** | `.cursor-plugin/`, `.cursor/rules/` | Thin marketplace + curated rules; reuses `.claude/` |
-| **OpenCode** | `.opencode/agents/`, `.opencode/commands/`, `.opencode/skills/` | `permission:` block from `tools:` allowlist; OpenCode-safe skill names |
-| **Antigravity CLI** | `.antigravity/plugins/<p>/{skills/,agents/,commands/}` | Self-contained agy plugin per source plugin; model tier alias (`inherit`/`flash`/`pro`) |
-| **Copilot** | `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` | Markdown agent profiles + SKILL.md skills + commands-as-skills; model maps to native Claude models |
-| **Pi** | `.pi/{skills/<plugin>/<skill>/,prompts/<plugin>__<cmd>.md,agents/<plugin>__<agent>.md}` | Skills discovered recursively; commands become prompt templates; agents use the reference subagent-extension format; the generator owns only those three subdirectories, so your own files elsewhere under `.pi/` are left alone |
+| Claude Code | Plugin marketplace | Source agents, skills, and commands; plugin-specific hooks and MCP configuration |
+| Codex CLI | Native marketplace or generated artifacts | Native source skills; generated TOML agents and commands as skills use a separate route |
+| Cursor | Plugin marketplace | Source agents, skills, and commands, with curated project rules |
+| OpenCode | `make install-opencode` | Generated agents, skills, and commands, with translated tool permissions |
+| Antigravity CLI | `make install-antigravity` | Generated plugins containing agents, skills, and commands |
+| GitHub Copilot | `make install-copilot` | Generated agent profiles and skills; commands also become invocable skills |
+| Pi | `make install-pi` | Generated skills and prompt templates; agents require a subagent extension |
 
-```bash
-make generate-all                        # all six
-make validate                            # structural checks
-make garden                              # drift / dead-link / cap detection
-```
-
-Codex and Cursor install from source via committed registries; Antigravity, OpenCode, and Pi install via clone + `make`. Individual skills install into any agent with `gh skill install wshobson/agents` or `npx skills add wshobson/agents`, no clone needed.
-
-[→ Full capability matrix and per-harness deep-dives](docs/harnesses.md)
+See the [capability matrix](docs/harnesses.md) for model mappings, tool permissions, hooks, and installation differences.
 
 ## Quality evaluation
 
-[`plugin-eval`](plugins/plugin-eval/) scores plugin and skill quality in up to three layers:
-
-- **Static:** a deterministic lint of structure, such as frontmatter, headings, and links. It makes no model calls.
-- **LLM judge (experimental):** Haiku and Sonnet rate a skill on 4 dimensions. It is not validated against human labels.
-- **Monte Carlo (experimental):** runs a skill 50 or 100 times on generated prompts. It is not validated against human labels.
+The repository validates plugin structure, generated artifacts, and documentation. Contributors can run these checks from the repository root:
 
 ```bash
-uv run plugin-eval score path/to/skill --depth quick
-uv run plugin-eval certify path/to/skill
+make generate-all
+make validate STRICT=1
+make garden
 ```
 
-[→ PluginEval framework documentation](docs/plugin-eval.md)
+[`plugin-eval`](plugins/plugin-eval/) also provides static skill checks without model calls. For example:
+
+```bash
+uv run --project plugins/plugin-eval plugin-eval score plugins/python-development/skills/python-testing-patterns --depth quick
+```
+
+The LLM judge and Monte Carlo layers are experimental and are not validated against human labels. Their scores describe model assessments and repeated simulations and do not prove that a task succeeds in a project. They require the optional `llm` dependencies. Model calls use `ANTHROPIC_API_KEY` when it is set and bill that API account. Otherwise they use your Claude Code login. See the [evaluation guide](docs/plugin-eval.md) for setup and limits.
 
 ## Documentation map
 
-Detail lives in `docs/`. Read in this order:
-
-- **[docs/plugins.md](docs/plugins.md)** — full catalog of all 94 plugins
-- **[docs/agents.md](docs/agents.md)** — all 202 agents by category
-- **[docs/agent-skills.md](docs/agent-skills.md)** — 184 skills with progressive disclosure
-- **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
-- **[docs/architecture.md](docs/architecture.md)** — design principles
-- **[docs/harnesses.md](docs/harnesses.md)** — cross-harness capability matrix
-- **[docs/authoring.md](docs/authoring.md)** — portable-content style guide
-- **[docs/plugin-eval.md](docs/plugin-eval.md)** — quality evaluation framework
-- **[docs/round-trip-results.md](docs/round-trip-results.md)** — real-CLI verification recipes
-
-Harness setup, capability deltas, and gotchas live in [docs/harnesses.md](docs/harnesses.md).
-
-Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · Authoring: [docs/authoring.md](docs/authoring.md)
-
-## External Memory Integration
-
-[Pensyve](https://github.com/major7apps/pensyve) is included as an external
-`git-subdir` entry for Claude Code. Pensyve also maintains direct upstream
-integrations for Codex CLI, Cursor, OpenCode, and Copilot (not yet the Antigravity CLI or Pi).
-
-| Harness | Pensyve integration |
+| Guide | Covers |
 |---|---|
-| Claude Code | `/plugin install pensyve` from this marketplace (`integrations/claude-code`) |
-| Codex CLI | [integrations/codex-plugin](https://github.com/major7apps/pensyve/tree/main/integrations/codex-plugin) |
-| Cursor | [integrations/cursor](https://github.com/major7apps/pensyve/tree/main/integrations/cursor) |
-| OpenCode | [integrations/opencode-plugin](https://github.com/major7apps/pensyve/tree/main/integrations/opencode-plugin) |
-| Copilot | `.copilot/` in repo root or `~/.copilot/` via `make install-copilot` |
+| [Plugin catalog](docs/plugins.md) | Plugins by task and domain |
+| [Agents](docs/agents.md) and [skills](docs/agent-skills.md) | Available components and model configuration |
+| [Usage](docs/usage.md) and [tool setup](docs/harnesses.md) | Commands, examples, and installation |
+| [Architecture](ARCHITECTURE.md) and [design details](docs/architecture.md) | Source layout and adapters |
+| [Quality evaluation](docs/plugin-eval.md) and [CLI verification](docs/round-trip-results.md) | Checks and their limits |
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) to propose a change and [authoring conventions](docs/authoring.md) to write plugin content.
+
+## External memory integration
+
+[Pensyve](https://github.com/major7apps/pensyve) remains an optional external Claude Code marketplace entry. Major7 Apps maintains Pensyve, and this repository's maintainer founded Major7 Apps. Its open-source runtime can run locally or on your own server. [Pensyve Cloud closed on October 1, 2026](https://pensyve.com/), and its dashboard, API, and hosted MCP endpoints are unavailable. Use the [self-hosting guide](https://github.com/major7apps/pensyve/blob/main/docs/self-host.md) when configuring the runtime.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+The repository is [MIT licensed](LICENSE). External plugins have their own licenses.
 
 ## Star history
 
