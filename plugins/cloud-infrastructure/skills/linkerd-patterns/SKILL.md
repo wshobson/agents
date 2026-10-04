@@ -53,9 +53,13 @@ Production patterns for Linkerd service mesh - the lightweight, security-first s
 
 ### Template 1: Mesh Installation
 
+Use a CLI version compatible with the target cluster. The example uses Homebrew;
+for other systems, follow the [official installation guide](https://linkerd.io/docs/getting-started/).
+
 ```bash
-# Install CLI
-curl --proto '=https' --tlsv1.2 -sSfL https://run.linkerd.io/install | sh
+# Install the CLI with Homebrew
+brew install linkerd
+linkerd version
 
 # Validate cluster
 linkerd check --pre

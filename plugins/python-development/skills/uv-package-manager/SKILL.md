@@ -54,21 +54,21 @@ Comprehensive guide to using uv, an extremely fast Python package installer and 
 ### Quick Install
 
 ```bash
-# macOS/Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Windows (PowerShell)
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-# Using pip (if you already have Python)
-pip install uv
-
-# Using Homebrew (macOS)
+# Using Homebrew (macOS or Linux)
 brew install uv
 
-# Using cargo (if you have Rust)
-cargo install --git https://github.com/astral-sh/uv uv
+# Using Cargo (if you have Rust)
+cargo install --locked uv
 ```
+
+On Windows, use WinGet:
+
+```powershell
+winget install --id=astral-sh.uv -e
+```
+
+Use the [official installation guide](https://docs.astral.sh/uv/getting-started/installation/)
+for other supported installation methods.
 
 ### Verify Installation
 

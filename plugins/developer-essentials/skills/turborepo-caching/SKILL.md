@@ -215,11 +215,11 @@ app.head("/v8/artifacts/:hash", async (req, res) => {
   }
 });
 
-app.listen(3000);
+app.listen(3000, "127.0.0.1");
 ```
 
 ```json
-// turbo.json for self-hosted cache
+// turbo.json for the local cache demo
 {
   "remoteCache": {
     "signature": false
@@ -228,8 +228,9 @@ app.listen(3000);
 ```
 
 ```bash
-# Use self-hosted cache
-turbo build --api="http://localhost:3000" --token="my-token" --team="my-team"
+# This local demo does not authenticate the dummy token.
+# Use only disposable artifacts on a trusted machine; do not expose the server.
+turbo build --api="http://127.0.0.1:3000" --token="my-token" --team="my-team"
 ```
 
 ### Template 5: Filtering and Scoping

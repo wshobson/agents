@@ -164,7 +164,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **code-refactoring**      | Code cleanup and technical debt management | `/plugin install code-refactoring`      |
 | **dependency-management** | Dependency auditing and version management | `/plugin install dependency-management` |
 | **error-debugging**       | Error analysis and trace debugging         | `/plugin install error-debugging`       |
-| **file-conversion**       | Convert files across 1,000+ format pairs   | `/plugin install file-conversion`       |
+| **file-conversion**       | Local file conversion with installed tools | `/plugin install file-conversion`       |
 | **team-collaboration**    | Team workflows and standup automation      | `/plugin install team-collaboration`    |
 
 ### 🤖 AI & ML (6 plugins)

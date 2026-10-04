@@ -178,27 +178,38 @@ data:
 
 ### 5. Create Secret
 
-**For sensitive data:**
+Create secrets from files supplied by your secret manager or deployment environment.
+Keep those files outside the repository and restrict their local permissions. Replace
+the paths below with the intended inputs, and set `APP_NAME` and `NAMESPACE` for the
+application. Use the same namespace as the Deployment (`production` in the full
+example in `references/deployment-spec.md`). The commands below match that full
+example. For the Step 2 template or `assets/deployment-template.yaml`, first change
+`envFrom[].secretRef.name` from `<app-name>-secret` to `app-secrets` to match the
+application Secret created below.
+Do not copy placeholder credentials into a manifest. Plain Kubernetes YAML does not
+expand shell environment variables.
 
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: <app-name>-secret
-  namespace: <namespace>
-type: Opaque
-stringData:
-  DATABASE_PASSWORD: "changeme"
-  API_KEY: "secret-api-key"
-  # For certificate files
-  tls.crt: |
-    -----BEGIN CERTIFICATE-----
-    ...
-    -----END CERTIFICATE-----
-  tls.key: |
-    -----BEGIN PRIVATE KEY-----
-    ...
-    -----END PRIVATE KEY-----
+`--from-file` preserves every byte, including trailing newlines. Ensure credential files
+contain exactly the intended value; use `printf '%s'` rather than `echo` when creating
+a value that must not end with a newline.
+
+```bash
+kubectl create secret generic db-credentials \
+  --namespace "$NAMESPACE" \
+  --from-file=url=/secure/path/database-url
+
+kubectl create secret generic app-secrets \
+  --namespace "$NAMESPACE" \
+  --from-file=API_KEY=/secure/path/api-key
+```
+
+Create TLS secrets separately when required:
+
+```bash
+kubectl create secret tls "${APP_NAME}-tls" \
+  --namespace "$NAMESPACE" \
+  --cert=/secure/path/tls.crt \
+  --key=/secure/path/tls.key
 ```
 
 **Security considerations:**
