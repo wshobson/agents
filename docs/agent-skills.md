@@ -1,8 +1,8 @@
 # Agent Skills
 
-Agent Skills are modular packages that extend Claude's capabilities with specialized domain knowledge, following Anthropic's [Agent Skills Specification](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md). This plugin ecosystem includes **184 local specialized skills** across 51 plugins, enabling progressive disclosure and efficient token usage.
+Agent Skills provide specialized guidance for AI coding agents using the shared [Agent Skills Specification](https://agentskills.io/specification). The repository includes 184 local skills across 51 plugins, with support for seven coding tools. See the [capability matrix](./harnesses.md) for discovery and installation differences.
 
-Install any skill on its own, into any agent, with the Agent Skills installers:
+Install a skill on its own into a tool supported by the Agent Skills installers:
 
 ```bash
 gh skill install wshobson/agents <skill>              # GitHub CLI 2.90+
@@ -13,7 +13,7 @@ Naming, pinning, and gotchas: [harnesses.md](./harnesses.md#skills-only-installe
 
 ## Overview
 
-Skills provide Claude with deep expertise in specific domains without loading everything into context upfront. Each skill includes:
+Skills provide domain guidance that coding agents can load when relevant. Each skill includes:
 
 - **YAML Frontmatter**: Name and activation criteria
 - **Progressive Disclosure**: Metadata → Instructions → Resources
@@ -408,7 +408,7 @@ Skills provide Claude with deep expertise in specific domains without loading ev
 
 ### Activation
 
-Skills are automatically activated when Claude detects matching patterns in your request:
+Claude Code can load installed skills when their descriptions match your request. The examples below use Claude Code. Discovery and invocation vary by tool, as described in the [capability matrix](./harnesses.md):
 
 ```
 User: "Set up Kubernetes deployment with Helm chart"
@@ -423,7 +423,7 @@ User: "Optimize Python async performance"
 
 ### Progressive Disclosure
 
-Skills use a three-tier architecture for token efficiency:
+The Claude Code examples use three levels of progressive disclosure:
 
 1. **Metadata** (Frontmatter): Name and activation criteria (always loaded)
 2. **Instructions**: Core guidance and patterns (loaded when activated)

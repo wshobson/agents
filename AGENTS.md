@@ -1,8 +1,10 @@
-# claude-agents — multi-harness agentic plugin marketplace
+# Agents, skills, and commands for seven coding tools
 
-Production-ready agentic-workflow building blocks: **94 plugins** (92 local + 2 external), **202 agents**, **184 skills**, **105 commands**. Native source-of-truth for Claude Code; also consumed by OpenAI Codex CLI, Cursor, OpenCode, the Google Antigravity CLI (`agy`), and Pi from a single Markdown source.
+<a id="claude-agents--multi-harness-agentic-plugin-marketplace"></a>
 
-This file is the canonical context file. Codex / Cursor / OpenCode / Antigravity CLI / Pi read it directly. Claude Code reads it via `CLAUDE.md`, a symlink to this file.
+The repository provides 94 plugins (92 local + 2 external), 202 agents, 184 skills, and 105 commands for seven coding tools: Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Google Antigravity CLI (`agy`), GitHub Copilot, and Pi. Shared source files use the Claude Code format, and adapters provide the formats used by other tools. External entries have their own tool support.
+
+AGENTS.md is the canonical context file. Codex, Cursor, OpenCode, Antigravity CLI, GitHub Copilot, and Pi read it directly. Claude Code reads it via `CLAUDE.md`, a symlink to this file.
 
 > **Read this file like a table of contents.** Detail lives in `docs/`. Authoring conventions live in `docs/authoring.md`. Per-harness setup and capability deltas live in [`docs/harnesses.md`](docs/harnesses.md). This file should never grow beyond ~150 lines (per OpenAI's [harness-engineering](https://openai.com/index/harness-engineering/) practice).
 
@@ -46,11 +48,12 @@ make generate HARNESS=codex        # .codex/skills, .codex/agents, .codex/plugin
 make generate HARNESS=cursor       # .cursor-plugin/{marketplace,plugin}.json, .cursor/rules/
 make generate HARNESS=opencode     # .opencode/{skills,agents,commands,plugins}/, opencode.json
 make generate HARNESS=antigravity  # .antigravity/plugins/<p>/
+make generate HARNESS=copilot      # .copilot/{skills,agents,commands}/
 make generate HARNESS=pi           # .pi/{skills,prompts,agents}/
 make generate-all                  # every harness
 ```
 
-The small per-harness registries are **committed** so each harness installs natively from a clone / GitHub URL (native-install commands in [`docs/harnesses.md`](docs/harnesses.md)). The transformed skill and agent trees under `.codex/`, `.opencode/`, `.copilot/`, `.antigravity/` and `.pi/` stay gitignored and are rebuilt locally. Under `.pi/` the generator owns only `skills/`, `prompts/` and `agents/`, because Pi reads its own project config from the same directory. Run `make generate-all` before committing source changes — it also prunes artifacts whose source was removed; CI fails on drift. Source-of-truth lives only under `plugins/`; never hand-edit generated files.
+Small native-install registries are committed for tools that support that route. See the installation commands in [docs/harnesses.md](docs/harnesses.md). The transformed skill and agent trees under `.codex/`, `.opencode/`, `.copilot/`, `.antigravity/` and `.pi/` stay gitignored and are rebuilt locally. Under `.pi/` the generator owns only `skills/`, `prompts/` and `agents/`, because Pi reads its own project config from the same directory. Run `make generate-all` before committing source changes. It also prunes artifacts whose source was removed, and CI fails on drift. Source files live only under `plugins/`. Never hand-edit generated files.
 
 ## Skills (cross-harness)
 
@@ -61,6 +64,7 @@ The small per-harness registries are **committed** so each harness installs nati
 - **OpenCode**: mirrored to `.opencode/skills/<plugin>-<skill>/` using hyphenated names for global install
 - **Cursor**: reads `.claude/skills/` directly (no re-emit)
 - **Antigravity CLI**: native plugins at `.antigravity/plugins/<p>/` — bare `skills/<skill>/SKILL.md` (no `<plugin>__` namespacing; the plugin dir already scopes it)
+- GitHub Copilot: mirrored to `.copilot/skills/<plugin>__<skill>/`. Commands also become user-invocable skills.
 - **Pi**: mirrored to `.pi/skills/<plugin>/<skill>/`; discovery is recursive so names stay bare
 - **Skills-only installers**: `gh skill install wshobson/agents` and `npx skills add wshobson/agents` read `plugins/*/skills/` from GitHub directly (see `docs/harnesses.md`); `make smoke-test` runs both plus the agentskills.io spec check
 
@@ -71,6 +75,7 @@ The small per-harness registries are **committed** so each harness installs nati
 - **Codex**: `.codex/agents/<plugin>__<agent>.toml` (drop `tools:`, map model alias to the GPT-5.x family, infer `sandbox_mode`)
 - **OpenCode**: `.opencode/agents/<plugin>__<agent>.md` with `mode: subagent` + `permission:` block (locked agents — those with source `tools: []` — get deny-everything except base `skill`/`task`)
 - **Antigravity CLI**: `.antigravity/plugins/<p>/agents/<agent>.md` (Markdown + YAML frontmatter, `model:` is a tier alias — `inherit`/`flash`/`pro`); TOML commands at `commands/<p>/<cmd>.toml` (agy reports these as "converted to skills"); global install via `make install-antigravity` symlinks each plugin into `~/.gemini/config/plugins/`
+- GitHub Copilot: `.copilot/agents/<plugin>__<agent>.agent.md` profiles with translated tool names and Claude model IDs.
 - **Pi**: `.pi/agents/<plugin>__<agent>.md` in the reference `subagent` extension's format (name, description, tools, model); commands become prompt templates at `.pi/prompts/<plugin>__<cmd>.md`
 - **Cursor**: reads `.claude/agents/` directly
 

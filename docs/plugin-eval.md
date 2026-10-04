@@ -1,6 +1,6 @@
 # PluginEval quality evaluation framework
 
-PluginEval scores Claude Code plugins and skills in up to three layers, which are a static lint, an LLM judge, and a Monte Carlo simulation. It combines the layer scores into a composite score from 0 to 100, and it reports letter grades, anti-pattern flags, and a badge from Bronze to Platinum.
+PluginEval scores the shared plugin and skill source in the canonical Claude Code format. Its three layers are static lint, an LLM judge, and a Monte Carlo simulation. It combines the layer scores into a composite score from 0 to 100, and it reports letter grades, anti-pattern flags, and a badge from Bronze to Platinum.
 
 ## Status of each layer
 

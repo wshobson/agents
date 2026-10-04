@@ -1,9 +1,10 @@
 # Authoring portable plugin content
 
-Plugin content in this repo ships to **six** harnesses: OpenAI Codex CLI, Cursor, OpenCode, the Google Antigravity CLI (`agy`), GitHub Copilot, and Pi. Claude Code is the source-of-truth. The adapter framework handles per-harness
-mechanics (frontmatter rewrites, format transforms, output paths) so you author one set of
-markdown files. But content choices still affect portability — this guide tells you what to
-do, and what to avoid, so the work you do for Claude Code translates cleanly everywhere.
+Plugin content supports seven coding tools: Claude Code, OpenAI Codex CLI, Cursor, OpenCode,
+Google Antigravity CLI (`agy`), GitHub Copilot, and Pi. Author one set of shared Markdown files
+in the canonical Claude Code source format. Adapters rewrite frontmatter, transform formats,
+and generate tool-specific artifacts. Content choices still affect portability, so this guide
+explains how to write content for all supported tools.
 
 ## The principles (from OpenAI's harness-engineering post)
 

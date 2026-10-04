@@ -1,14 +1,14 @@
 # Architecture
 
-Top-level architectural map for the claude-agents marketplace. Detail lives in [`docs/architecture.md`](docs/architecture.md); this file is the index per the OpenAI [harness-engineering](https://openai.com/index/harness-engineering/) pattern.
+Top-level architectural map for agents, skills, and commands shared across seven coding tools. Detail lives in [docs/architecture.md](docs/architecture.md). The map follows the OpenAI [harness-engineering](https://openai.com/index/harness-engineering/) pattern.
 
 ## Invariants
 
 1. **Single source of truth.** All agent / skill / command authoring happens under `plugins/<name>/`. Generated harness-specific artifacts (`.codex/skills/`, `.codex/agents/`, `.opencode/`, `.copilot/`, `.antigravity/`, `.pi/`) are produced by adapters and gitignored. The exception: small native-install registries (`.agents/plugins/marketplace.json`, `plugins/*/.codex-plugin/plugin.json`, `.cursor-plugin/`, `.cursor/rules/`) are committed — they only point at the source `plugins/`, so the invariant holds. Never hand-edit generated files.
 
-2. **One canonical context file.** `AGENTS.md` at repo root is the only context file authored directly. Claude Code reads `CLAUDE.md`, a symlink to `AGENTS.md`. Codex / Cursor / OpenCode / the Antigravity CLI (`agy`) / Pi all read `AGENTS.md` natively.
+2. One canonical context file. `AGENTS.md` at repo root is the only context file authored directly. Claude Code reads `CLAUDE.md`, a symlink to `AGENTS.md`. Codex, Cursor, OpenCode, Antigravity CLI (`agy`), GitHub Copilot, and Pi read `AGENTS.md` natively.
 
-3. **Adapters own per-harness mechanics; source content stays portable.** Authors write Claude-Code-quality markdown. Adapters under `tools/adapters/` handle every harness-specific transform (frontmatter rewriting, model-alias mapping, body-size caps, tool-name remapping). Source files never carry harness conditional logic.
+3. Adapters handle tool-specific formats. Authors write portable Markdown in the canonical Claude Code source format. Adapters under `tools/adapters/` rewrite frontmatter, map model aliases and tool names, and enforce body-size caps. Source files do not need separate versions for each tool.
 
 4. **Mechanical enforcement with remediation hints.** Every lint / validator finding ships with a concrete fix string. `make validate`, `make garden`, and the `plugin-eval` `harness_portability` dimension all follow this convention.
 
@@ -17,7 +17,7 @@ Top-level architectural map for the claude-agents marketplace. Detail lives in [
 ## Component overview
 
 ```
-claude-agents/
+agents/
 ├── AGENTS.md                       # Canonical context file (committed)
 ├── CLAUDE.md                       # symlink → AGENTS.md (Claude-specific addenda live in AGENTS.md)
 ├── ARCHITECTURE.md                 # This file
@@ -89,6 +89,8 @@ Full conventions in [`docs/authoring.md`](docs/authoring.md). Authoring for port
 
 ## Model tiers
 
+The table describes model aliases in the shared Claude Code source format.
+
 | Tier | Model | Use |
 |---|---|---|
 | 1 | Opus | Architecture, security, code review, production coding |
@@ -96,7 +98,7 @@ Full conventions in [`docs/authoring.md`](docs/authoring.md). Authoring for port
 | 3 | Sonnet | Docs, testing, debugging, support |
 | 4 | Haiku | Fast ops, SEO, deployment, simple tasks |
 
-Per-harness adapter maps these aliases to native model IDs at generation time (see `tools/adapters/capabilities.py:MODEL_ALIASES`).
+Adapters map source aliases to each tool's model IDs at generation time. Some adapters map `inherit` to a fixed default. See [model mappings](tools/adapters/capabilities.py) and the [capability matrix](docs/harnesses.md).
 
 ## See also
 
