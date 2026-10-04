@@ -7,7 +7,12 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/database-design",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "postgresql-table-design"
+  ],
   "interface": {
     "displayName": "Database Design",
     "shortDescription": "Database architecture, schema design, and SQL optimization for production systems",

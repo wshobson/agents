@@ -8,7 +8,11 @@
     "url": "https://github.com/ndesv21"
   },
   "homepage": "https://getsocialclaw.com",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "social-publishing"
+  ],
   "interface": {
     "displayName": "Social Publishing",
     "shortDescription": "Schedule and publish social media posts across 13 platforms (X, LinkedIn Profile + Page, Instagram Business +\u2026",

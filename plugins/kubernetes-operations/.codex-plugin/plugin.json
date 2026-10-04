@@ -7,7 +7,15 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/kubernetes-operations",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "gitops-workflow",
+    "helm-chart-scaffolding",
+    "k8s-manifest-generator",
+    "k8s-security-policies"
+  ],
   "interface": {
     "displayName": "Kubernetes Operations",
     "shortDescription": "Kubernetes manifest generation, networking configuration, security policies, observability setup, GitOps workflows\u2026",

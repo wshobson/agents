@@ -7,7 +7,16 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/startup-business-analyst",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "competitive-landscape",
+    "market-sizing-analysis",
+    "startup-financial-modeling",
+    "startup-metrics-framework",
+    "team-composition-analysis"
+  ],
   "interface": {
     "displayName": "Startup Business Analyst",
     "shortDescription": "Comprehensive startup business analysis with market sizing (TAM/SAM/SOM), financial modeling, team planning, and\u2026",

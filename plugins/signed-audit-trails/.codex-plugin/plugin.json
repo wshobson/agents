@@ -7,7 +7,12 @@
     "name": "Tom Farley",
     "email": "tommy@scopeblind.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/signed-audit-trails",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "signed-audit-trails-recipe"
+  ],
   "interface": {
     "displayName": "Signed Audit Trails",
     "shortDescription": "Teaching skill: signed audit trails for Claude Code tool calls. Cookbook-style walkthrough of Cedar-gated tool calls\u2026",

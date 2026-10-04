@@ -7,7 +7,17 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/agent-teams",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "multi-reviewer-patterns",
+    "parallel-debugging",
+    "parallel-feature-development",
+    "task-coordination-strategies",
+    "team-communication-protocols",
+    "team-composition-patterns"
+  ],
   "interface": {
     "displayName": "Agent Teams",
     "shortDescription": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature\u2026",

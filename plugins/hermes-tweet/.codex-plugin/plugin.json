@@ -10,6 +10,9 @@
   "homepage": "https://github.com/Xquik-dev/hermes-tweet#readme",
   "repository": "https://github.com/Xquik-dev/hermes-tweet",
   "license": "MIT",
+  "keywords": [
+    "hermes-tweet"
+  ],
   "interface": {
     "displayName": "Hermes Tweet",
     "shortDescription": "Hermes Agent plugin for public X/Twitter research and approval-gated private or state-changing operations through\u2026",

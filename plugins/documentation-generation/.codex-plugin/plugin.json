@@ -7,7 +7,14 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/documentation-generation",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "architecture-decision-records",
+    "changelog-automation",
+    "openapi-spec-generation"
+  ],
   "interface": {
     "displayName": "Documentation Generation",
     "shortDescription": "OpenAPI specification generation, Mermaid diagram creation, tutorial writing, API reference documentation",

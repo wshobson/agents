@@ -7,7 +7,15 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/javascript-typescript",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "javascript-testing-patterns",
+    "modern-javascript-patterns",
+    "nodejs-backend-patterns",
+    "typescript-advanced-types"
+  ],
   "interface": {
     "displayName": "Javascript Typescript",
     "shortDescription": "JavaScript and TypeScript development with ES6+, Node.js, React, and modern web frameworks",

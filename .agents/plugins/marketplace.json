@@ -15,19 +15,6 @@
       "category": "Coding"
     },
     {
-      "name": "agent-orchestration",
-      "description": "Multi-agent system optimization, agent improvement workflows, and context management",
-      "source": {
-        "source": "local",
-        "path": "./plugins/agent-orchestration"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "agent-teams",
       "description": "Orchestrate multi-agent teams for parallel code review, hypothesis-driven debugging, and coordinated feature development using Claude Code's Agent Teams",
       "source": {
@@ -54,45 +41,6 @@
       "category": "Coding"
     },
     {
-      "name": "api-testing-observability",
-      "description": "API testing automation, request mocking, OpenAPI documentation generation, observability setup, and monitoring",
-      "source": {
-        "source": "local",
-        "path": "./plugins/api-testing-observability"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "application-performance",
-      "description": "Application profiling, performance optimization, and observability for frontend and backend systems",
-      "source": {
-        "source": "local",
-        "path": "./plugins/application-performance"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "arm-cortex-microcontrollers",
-      "description": "ARM Cortex-M firmware development for Teensy, STM32, nRF52, and SAMD with peripheral drivers and memory safety patterns",
-      "source": {
-        "source": "local",
-        "path": "./plugins/arm-cortex-microcontrollers"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "avoid-ai-writing",
       "description": "Audit and rewrite prose that reads as machine-generated, across READMEs, changelogs, PR descriptions, docs, and blog copy, with detect-only, rewrite, and edit-in-place modes.",
       "source": {
@@ -104,19 +52,6 @@
         "authentication": "ON_USE"
       },
       "category": "documentation"
-    },
-    {
-      "name": "backend-api-security",
-      "description": "API security hardening, authentication implementation, authorization patterns, rate limiting, and input validation",
-      "source": {
-        "source": "local",
-        "path": "./plugins/backend-api-security"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
     },
     {
       "name": "backend-development",
@@ -197,19 +132,6 @@
       "category": "Coding"
     },
     {
-      "name": "c4-architecture",
-      "description": "Comprehensive C4 architecture documentation workflow with bottom-up code analysis, component synthesis, container mapping, and context diagram generation",
-      "source": {
-        "source": "local",
-        "path": "./plugins/c4-architecture"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "cicd-automation",
       "description": "CI/CD pipeline configuration, GitHub Actions/GitLab CI workflow setup, and automated deployment pipeline orchestration",
       "source": {
@@ -236,102 +158,11 @@
       "category": "Coding"
     },
     {
-      "name": "code-documentation",
-      "description": "Documentation generation, code explanation, and technical writing with automated doc generation and tutorial creation",
-      "source": {
-        "source": "local",
-        "path": "./plugins/code-documentation"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "code-refactoring",
-      "description": "Code cleanup, refactoring automation, and technical debt management with context restoration",
-      "source": {
-        "source": "local",
-        "path": "./plugins/code-refactoring"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "codebase-cleanup",
-      "description": "Technical debt reduction, dependency updates, and code refactoring automation",
-      "source": {
-        "source": "local",
-        "path": "./plugins/codebase-cleanup"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "comprehensive-review",
-      "description": "Multi-perspective code analysis covering architecture, security, and best practices",
-      "source": {
-        "source": "local",
-        "path": "./plugins/comprehensive-review"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "conductor",
       "description": "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context \u2192 Spec & Plan \u2192 Implement",
       "source": {
         "source": "local",
         "path": "./plugins/conductor"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "content-marketing",
-      "description": "Content marketing strategy, web research, and information synthesis for marketing operations",
-      "source": {
-        "source": "local",
-        "path": "./plugins/content-marketing"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "context-management",
-      "description": "Context persistence, restoration, and long-running conversation management",
-      "source": {
-        "source": "local",
-        "path": "./plugins/context-management"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "customer-sales-automation",
-      "description": "Customer support workflow automation, sales pipeline management, email campaigns, and CRM integration",
-      "source": {
-        "source": "local",
-        "path": "./plugins/customer-sales-automation"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -353,102 +184,11 @@
       "category": "Coding"
     },
     {
-      "name": "data-validation-suite",
-      "description": "Schema validation, data quality monitoring, streaming validation pipelines, and input validation for backend APIs",
-      "source": {
-        "source": "local",
-        "path": "./plugins/data-validation-suite"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "database-cloud-optimization",
-      "description": "Database query optimization, cloud cost optimization, and scalability improvements",
-      "source": {
-        "source": "local",
-        "path": "./plugins/database-cloud-optimization"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "database-design",
       "description": "Database architecture, schema design, and SQL optimization for production systems",
       "source": {
         "source": "local",
         "path": "./plugins/database-design"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "database-migrations",
-      "description": "Database migration automation, observability, and cross-database migration strategies",
-      "source": {
-        "source": "local",
-        "path": "./plugins/database-migrations"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "debugging-toolkit",
-      "description": "Interactive debugging, developer experience optimization, and smart debugging workflows",
-      "source": {
-        "source": "local",
-        "path": "./plugins/debugging-toolkit"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "dependency-management",
-      "description": "Dependency auditing, version management, and security vulnerability scanning",
-      "source": {
-        "source": "local",
-        "path": "./plugins/dependency-management"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "deployment-strategies",
-      "description": "Deployment patterns, rollback automation, and infrastructure templates",
-      "source": {
-        "source": "local",
-        "path": "./plugins/deployment-strategies"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "deployment-validation",
-      "description": "Pre-deployment checks, configuration validation, and deployment readiness assessment",
-      "source": {
-        "source": "local",
-        "path": "./plugins/deployment-validation"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -475,19 +215,6 @@
       "source": {
         "source": "local",
         "path": "./plugins/dgx-spark-ops"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "distributed-debugging",
-      "description": "Distributed system tracing and debugging across microservices",
-      "source": {
-        "source": "local",
-        "path": "./plugins/distributed-debugging"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -535,32 +262,6 @@
       "category": "Coding"
     },
     {
-      "name": "error-debugging",
-      "description": "Error analysis, trace debugging, and multi-agent problem diagnosis",
-      "source": {
-        "source": "local",
-        "path": "./plugins/error-debugging"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "error-diagnostics",
-      "description": "Error tracing, root cause analysis, and smart debugging for production systems",
-      "source": {
-        "source": "local",
-        "path": "./plugins/error-diagnostics"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "file-conversion",
       "description": "Convert files between 999 routes \u2014 PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI \u2014 via the free ChangeThisFile API. MCP-aware with a zero-dependency script fallback; no API key required.",
       "source": {
@@ -600,63 +301,11 @@
       "category": "Coding"
     },
     {
-      "name": "frontend-mobile-security",
-      "description": "XSS prevention, CSRF protection, content security policies, mobile app security, and secure storage patterns",
-      "source": {
-        "source": "local",
-        "path": "./plugins/frontend-mobile-security"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "full-stack-orchestration",
-      "description": "End-to-end feature orchestration with testing, security, performance, and deployment",
-      "source": {
-        "source": "local",
-        "path": "./plugins/full-stack-orchestration"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "functional-programming",
-      "description": "Functional programming with Elixir, OTP patterns, Phoenix framework, and distributed systems",
-      "source": {
-        "source": "local",
-        "path": "./plugins/functional-programming"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "game-development",
       "description": "Unity game development with C# scripting, Minecraft server plugin development with Bukkit/Spigot APIs",
       "source": {
         "source": "local",
         "path": "./plugins/game-development"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "git-pr-workflows",
-      "description": "Git workflow automation, pull request enhancement, and team onboarding processes",
-      "source": {
-        "source": "local",
-        "path": "./plugins/git-pr-workflows"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -717,32 +366,6 @@
       "category": "Coding"
     },
     {
-      "name": "julia-development",
-      "description": "Modern Julia development with Julia 1.10+, package management, scientific computing, high-performance numerical code, and production best practices",
-      "source": {
-        "source": "local",
-        "path": "./plugins/julia-development"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "jvm-languages",
-      "description": "JVM language development including Java, Scala, and C# with enterprise patterns and frameworks",
-      "source": {
-        "source": "local",
-        "path": "./plugins/jvm-languages"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "kubernetes-operations",
       "description": "Kubernetes manifest generation, networking configuration, security policies, observability setup, GitOps workflows, and auto-scaling",
       "source": {
@@ -795,32 +418,6 @@
       "category": "Coding"
     },
     {
-      "name": "meigen-ai-design",
-      "description": "AI image generation with creative workflow orchestration, parallel multi-direction output, prompt engineering, and a 1,300+ curated inspiration library. Requires MeiGen MCP server (supports MeiGen Cloud, local ComfyUI, and OpenAI-compatible APIs).",
-      "source": {
-        "source": "local",
-        "path": "./plugins/meigen-ai-design"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "multi-platform-apps",
-      "description": "Cross-platform application development coordinating web, iOS, Android, and desktop implementations",
-      "source": {
-        "source": "local",
-        "path": "./plugins/multi-platform-apps"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "observability-monitoring",
       "description": "Metrics collection, logging infrastructure, distributed tracing, SLO implementation, and monitoring dashboards",
       "source": {
@@ -834,37 +431,11 @@
       "category": "Coding"
     },
     {
-      "name": "operating-kit",
-      "description": "Portable operating method: session lifecycle agents (session-start/end), pre-ship code review, deploy with live verification, and production log health check. All agents use {{placeholders}} that adapt to your project.",
-      "source": {
-        "source": "local",
-        "path": "./plugins/operating-kit"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "payment-processing",
       "description": "Payment gateway integration with Stripe, PayPal, checkout flow implementation, subscription billing, and PCI compliance",
       "source": {
         "source": "local",
         "path": "./plugins/payment-processing"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "performance-testing-review",
-      "description": "Performance analysis, test coverage review, and AI-powered code quality assessment",
-      "source": {
-        "source": "local",
-        "path": "./plugins/performance-testing-review"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -964,63 +535,11 @@
       "category": "Coding"
     },
     {
-      "name": "security-compliance",
-      "description": "SOC2, HIPAA, and GDPR compliance validation, secrets scanning, compliance checklists, and regulatory documentation",
-      "source": {
-        "source": "local",
-        "path": "./plugins/security-compliance"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "security-scanning",
       "description": "SAST analysis, dependency vulnerability scanning, OWASP Top 10 compliance, container security scanning, and automated security hardening",
       "source": {
         "source": "local",
         "path": "./plugins/security-scanning"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "seo-analysis-monitoring",
-      "description": "Content freshness analysis, cannibalization detection, and authority building for SEO",
-      "source": {
-        "source": "local",
-        "path": "./plugins/seo-analysis-monitoring"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "seo-content-creation",
-      "description": "SEO content writing, planning, and quality auditing with E-E-A-T optimization",
-      "source": {
-        "source": "local",
-        "path": "./plugins/seo-content-creation"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "seo-technical-optimization",
-      "description": "Technical SEO optimization including meta tags, keywords, structure, and featured snippets",
-      "source": {
-        "source": "local",
-        "path": "./plugins/seo-technical-optimization"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -1133,63 +652,11 @@
       "category": "Coding"
     },
     {
-      "name": "tdd-workflows",
-      "description": "Test-driven development methodology with red-green-refactor cycles and code review",
-      "source": {
-        "source": "local",
-        "path": "./plugins/tdd-workflows"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "team-collaboration",
-      "description": "Team workflows, issue management, standup automation, and developer experience optimization",
-      "source": {
-        "source": "local",
-        "path": "./plugins/team-collaboration"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
       "name": "ui-design",
       "description": "Comprehensive UI/UX design plugin for mobile (iOS, Android, React Native) and web applications with design systems, accessibility, and modern patterns",
       "source": {
         "source": "local",
         "path": "./plugins/ui-design"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "unit-testing",
-      "description": "Unit and integration test automation for Python and JavaScript with debugging support",
-      "source": {
-        "source": "local",
-        "path": "./plugins/unit-testing"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_USE"
-      },
-      "category": "Coding"
-    },
-    {
-      "name": "web-scripting",
-      "description": "Web scripting with PHP and Ruby for web applications, CMS development, and backend services",
-      "source": {
-        "source": "local",
-        "path": "./plugins/web-scripting"
       },
       "policy": {
         "installation": "AVAILABLE",

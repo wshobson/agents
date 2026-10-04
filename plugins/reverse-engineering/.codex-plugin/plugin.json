@@ -7,7 +7,15 @@
     "name": "D\u00e1vid Balatoni",
     "url": "https://github.com/balcsida"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/reverse-engineering",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "anti-reversing-techniques",
+    "binary-analysis-patterns",
+    "memory-forensics",
+    "protocol-reverse-engineering"
+  ],
   "interface": {
     "displayName": "Reverse Engineering",
     "shortDescription": "Binary reverse engineering, malware analysis, firmware security, and software protection research for authorized\u2026",

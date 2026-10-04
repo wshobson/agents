@@ -7,7 +7,13 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/hr-legal-compliance",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "employment-contract-templates",
+    "gdpr-data-handling"
+  ],
   "interface": {
     "displayName": "Hr Legal Compliance",
     "shortDescription": "HR policy documentation, legal compliance templates (GDPR/SOC2/HIPAA), employment contracts, and regulatory\u2026",

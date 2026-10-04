@@ -7,7 +7,13 @@
     "name": "Niksa Barlovic",
     "email": "catcam@gmail.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/documentation-standards",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "grounded-vault",
+    "hads"
+  ],
   "interface": {
     "displayName": "Documentation Standards",
     "shortDescription": "HADS (Human-AI Document Standard) \u2014 semantic tagging convention for writing documentation that works efficiently for\u2026",

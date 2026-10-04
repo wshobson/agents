@@ -7,7 +7,15 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/incident-response",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "connectivity-triage",
+    "incident-runbook-templates",
+    "on-call-handoff-patterns",
+    "postmortem-writing"
+  ],
   "interface": {
     "displayName": "Incident Response",
     "shortDescription": "Production incident management, triage workflows, and automated incident resolution",

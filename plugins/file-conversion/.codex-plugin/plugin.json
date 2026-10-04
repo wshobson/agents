@@ -8,7 +8,11 @@
     "url": "https://changethisfile.com"
   },
   "homepage": "https://github.com/aadilr/changethisfile-mcp",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "file-conversion"
+  ],
   "interface": {
     "displayName": "File Conversion",
     "shortDescription": "Convert files between 999 routes \u2014 PDF to Word, HEIC to JPG, MP4 to MP3, CSV to JSON, EPUB to MOBI \u2014 via the free\u2026",

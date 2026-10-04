@@ -7,7 +7,20 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/backend-development",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "api-design-principles",
+    "architecture-patterns",
+    "cqrs-implementation",
+    "event-store-design",
+    "microservices-patterns",
+    "projection-patterns",
+    "saga-orchestration",
+    "temporal-python-testing",
+    "workflow-orchestration-patterns"
+  ],
   "interface": {
     "displayName": "Backend Development",
     "shortDescription": "Backend API design, GraphQL architecture, workflow orchestration with Temporal, and test-driven backend development",

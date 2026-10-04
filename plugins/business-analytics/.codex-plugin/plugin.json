@@ -7,7 +7,13 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/business-analytics",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "data-storytelling",
+    "kpi-dashboard-design"
+  ],
   "interface": {
     "displayName": "Business Analytics",
     "shortDescription": "Business metrics analysis, KPI tracking, financial reporting, and data-driven decision making",

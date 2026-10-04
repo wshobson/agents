@@ -7,7 +7,15 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/blockchain-web3",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "defi-protocol-templates",
+    "nft-standards",
+    "solidity-security",
+    "web3-testing"
+  ],
   "interface": {
     "displayName": "Blockchain Web3",
     "shortDescription": "Smart contract development with Solidity, DeFi protocol implementation, NFT platforms, and Web3 application architecture",

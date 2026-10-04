@@ -7,7 +7,13 @@
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/accessibility-compliance",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "screen-reader-testing",
+    "wcag-audit-patterns"
+  ],
   "interface": {
     "displayName": "Accessibility Compliance",
     "shortDescription": "WCAG accessibility auditing, compliance validation, UI testing for screen readers, keyboard navigation, and\u2026",

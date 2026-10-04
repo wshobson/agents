@@ -8,7 +8,11 @@
     "url": "https://github.com/fxylabs"
   },
   "homepage": "https://github.com/fxylabs/superself",
+  "repository": "https://github.com/wshobson/agents",
   "license": "Apache-2.0",
+  "keywords": [
+    "superself"
+  ],
   "interface": {
     "displayName": "Superself",
     "shortDescription": "Drive the Superself `self` CLI: version control for a project's state \u2014 goals, decisions, work units, reports \u2014 kept\u2026",

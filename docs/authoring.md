@@ -206,7 +206,7 @@ Things that work in Claude Code but degrade across harnesses:
 | `color:` on agents | Cosmetic; dropped everywhere except Claude Code. |
 | Per-agent tool allowlist | Honored only on Claude Code/Antigravity/OpenCode, and on Pi through the subagent extension. Cursor and Codex have coarser models. |
 | Slash commands | Codex converts to skills. Antigravity transpiles to TOML. Copilot emits `.copilot/commands/` prompt files. Pi emits prompt templates under `.pi/prompts/`. |
-| Marketplace registry | Only Claude Code, Cursor, and Antigravity have one. Codex, OpenCode, and Pi have no marketplace; Pi installs packages from npm, git, or a local path. |
+| Marketplace registry | Claude Code, Codex, Cursor, and Antigravity have registries. Codex installs source skills only; use the [generated Codex setup](round-trip-results.md#codex-round-trip) for agents and command-derived skills. OpenCode and Pi have no marketplace; Pi installs packages from npm, git, or a local path. |
 
 When you must use a feature with no equivalent, the `harness_portability` lint won't fire
 (it's not a portability problem — it's a capability gap). Just document the constraint in

@@ -7,7 +7,12 @@
     "name": "Tom Farley",
     "email": "tommy@scopeblind.com"
   },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/review-agent-governance",
+  "repository": "https://github.com/wshobson/agents",
   "license": "MIT",
+  "keywords": [
+    "review-agent-setup"
+  ],
   "interface": {
     "displayName": "Review Agent Governance",
     "shortDescription": "Require a human approval signal before an AI agent can post PR reviews, comments, merges, or writes to CI config\u2026",
