@@ -55,7 +55,7 @@ extract() { python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d
 echo ""
 echo "=== Test 1: PreToolUse permit on Read ==="
 INPUT=fixtures/pretool-allow-read.json
-npx --yes protect-mcp@0.30.0 evaluate \
+npx --yes protect-mcp@0.31.0 evaluate \
     --policy fixtures/test-policy.cedar \
     --tool "$(extract "$INPUT" tool_name)" \
     --input "$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$INPUT")" \
@@ -66,7 +66,7 @@ check_exit $? 0 "Read is permitted by test-policy.cedar"
 echo ""
 echo "=== Test 2: PreToolUse permit on Bash git ==="
 INPUT=fixtures/pretool-allow-bash-safe.json
-npx --yes protect-mcp@0.30.0 evaluate \
+npx --yes protect-mcp@0.31.0 evaluate \
     --policy fixtures/test-policy.cedar \
     --tool "$(extract "$INPUT" tool_name)" \
     --input "$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$INPUT")" \
@@ -77,7 +77,7 @@ check_exit $? 0 "Bash 'git status' is permitted"
 echo ""
 echo "=== Test 3: PreToolUse forbid on Bash rm -rf ==="
 INPUT=fixtures/pretool-deny-bash-destructive.json
-npx --yes protect-mcp@0.30.0 evaluate \
+npx --yes protect-mcp@0.31.0 evaluate \
     --policy fixtures/test-policy.cedar \
     --tool "$(extract "$INPUT" tool_name)" \
     --input "$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$INPUT")" \
@@ -88,7 +88,7 @@ check_exit $? 2 "Bash 'rm -rf /' is denied with exit 2"
 echo ""
 echo "=== Test 4: PreToolUse forbid on Write ==="
 INPUT=fixtures/pretool-deny-write.json
-npx --yes protect-mcp@0.30.0 evaluate \
+npx --yes protect-mcp@0.31.0 evaluate \
     --policy fixtures/test-policy.cedar \
     --tool "$(extract "$INPUT" tool_name)" \
     --input "$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$INPUT")" \

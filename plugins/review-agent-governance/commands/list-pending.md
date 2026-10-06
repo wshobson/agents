@@ -39,7 +39,7 @@ evaluation in a shell. Exit 2 means the policy denies it, and exit 0 means it
 is allowed:
 
 ```bash
-npx protect-mcp@0.30.0 evaluate --policy ./review-governance.cedar \
+npx protect-mcp@0.31.0 evaluate --policy ./review-governance.cedar \
   --tool Bash --input '{"command":"gh pr review 42 --approve"}'
 ```
 

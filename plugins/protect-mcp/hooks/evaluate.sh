@@ -30,7 +30,7 @@ if [ -z "$tool" ]; then
   exit 2
 fi
 
-npx protect-mcp@0.30.0 evaluate --policy "$POLICY" --tool "$tool" --input "$input"
+npx protect-mcp@0.31.0 evaluate --policy "$POLICY" --tool "$tool" --input "$input"
 rc=$?
 case "$rc" in
   0|2) exit "$rc" ;;
