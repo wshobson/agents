@@ -1294,6 +1294,31 @@
         "deck-generation",
         "slide-design"
       ]
+    },
+    {
+      "name": "trustabl",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/trustabl/agent-reliability-analyzer.git",
+        "path": "distributions/wshobson-agents",
+        "sha": "d7f5d5c38b514bc1f39ce31656d706e42645b7a4"
+      },
+      "description": "Find and fix reliability and safety gaps in AI agent code before production: unsafe tool grants, missing turn limits, untyped tools, prompt-injectable shell tools, and fetch calls with no timeout.",
+      "version": "0.1.13",
+      "author": {
+        "name": "Trustabl",
+        "url": "https://github.com/trustabl"
+      },
+      "homepage": "https://github.com/trustabl/agent-reliability-analyzer",
+      "license": "Apache-2.0",
+      "category": "security",
+      "keywords": [
+        "agent-reliability",
+        "agent-security",
+        "static-analysis",
+        "mcp-security",
+        "code-review"
+      ]
     }
   ]
 }
