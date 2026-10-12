@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all 94 marketplace plugins organized by category: 92 local plugins plus 2 external Claude Code marketplace entries (`pensyve` and `hol-guard`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
+Browse all 95 marketplace plugins organized by category: 92 local plugins plus 3 external Claude Code marketplace entries (`pensyve`, `hol-guard`, and `trustabl`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
 
 ## Quick Start - Essential Plugins
 
@@ -224,7 +224,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **cloud-infrastructure**  | AWS/Azure/GCP cloud architecture            | `/plugin install cloud-infrastructure`  |
 | **cicd-automation**       | CI/CD pipeline configuration                | `/plugin install cicd-automation`       |
 
-### 🔒 Security (7 plugins)
+### 🔒 Security (8 plugins)
 
 | Plugin                       | Description                                                     | Install                                    |
 | ---------------------------- | --------------------------------------------------------------- | ------------------------------------------ |
@@ -235,6 +235,7 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **reverse-engineering**      | Binary analysis, malware triage, firmware security (authorized) | `/plugin install reverse-engineering`      |
 | **block-no-verify**          | PreToolUse hook blocking `--no-verify` and hook-bypass flags    | `/plugin install block-no-verify`          |
 | **hol-guard**                | Local pre-execution policy and pre-install agent supply-chain scanning | `/plugin install hol-guard`                 |
+| **trustabl**                 | Static analysis of agent code: unsafe tool grants, missing turn limits, untyped tools | `/plugin install trustabl`                  |
 
 ### 🛡️ Governance (3 plugins)
 
@@ -367,7 +368,7 @@ The marketplace commands in this section run inside Claude Code. Other tools use
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 95 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 

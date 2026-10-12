@@ -36,7 +36,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 
 ### Plugin Distribution
 
-- **94 marketplace plugins** (92 local + 2 external via git-subdir) optimized for specific use cases
+- **95 marketplace plugins** (92 local + 3 external via git-subdir) optimized for specific use cases
 - **Skills-only distribution** through `gh skill install wshobson/agents` and `npx skills add wshobson/agents`, which read `plugins/*/skills/` directly (see [harnesses.md](./harnesses.md#skills-only-installers))
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
@@ -82,7 +82,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 ```
 agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (94 plugins)
+│   └── marketplace.json          # Marketplace catalog (95 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -394,5 +394,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 94 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 95 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows
