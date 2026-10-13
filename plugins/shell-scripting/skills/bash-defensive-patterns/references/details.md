@@ -147,10 +147,9 @@ process_files() {
 #!/bin/bash
 set -Eeuo pipefail
 
-trap 'rm -rf -- "$TMPDIR"' EXIT
-
 # Create temporary directory
 TMPDIR=$(mktemp -d) || { echo "ERROR: Failed to create temp directory" >&2; exit 1; }
+trap 'rm -rf -- "$TMPDIR"' EXIT
 
 # Create temporary files in directory
 TMPFILE1="$TMPDIR/temp1.txt"
