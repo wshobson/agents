@@ -189,7 +189,7 @@ async def process_items(item_ids: List[int]):
 
     # Filter out failures
     successful = [r for r in results if r is not None and not isinstance(r, Exception)]
-    failed = [r for r in results if isinstance(r, Exception)]
+    failed = [r for r in results if r is None or isinstance(r, Exception)]
 
     print(f"Success: {len(successful)}, Failed: {len(failed)}")
     return successful
