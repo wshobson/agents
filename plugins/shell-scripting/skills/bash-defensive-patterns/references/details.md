@@ -26,10 +26,10 @@ Implement proper cleanup on script exit or error.
 #!/bin/bash
 set -Eeuo pipefail
 
+TMPDIR=$(mktemp -d)
 trap 'echo "Error on line $LINENO"' ERR
 trap 'echo "Cleaning up..."; rm -rf "$TMPDIR"' EXIT
 
-TMPDIR=$(mktemp -d)
 # Script code here
 ```
 
@@ -335,7 +335,7 @@ safe_rmdir() {
 # Atomic file writes
 atomic_write() {
     local -r target="$1"
-    local -r tmpfile
+    local tmpfile
     tmpfile=$(mktemp) || return 1
 
     # Write to temp file first
