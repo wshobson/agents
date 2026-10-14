@@ -151,7 +151,7 @@ Detailed pattern documentation lives in `references/details.md`. Read that file 
 3. **Descriptive Commit Messages**: Future you will thank present you
 4. **Atomic Commits**: Each commit should be a single logical change
 5. **Test Before Force Push**: Ensure history rewrite didn't break anything
-6. **Keep Reflog Aware**: Remember reflog is your safety net for 90 days
+6. **Keep Reflog Aware**: Reflog is your safety net, but commits no longer on any branch expire after 30 days by default (`gc.reflogExpireUnreachable`); 90 days applies only to reachable entries
 7. **Branch Before Risky Operations**: Create backup branch before complex rebases
 
 ```bash
@@ -190,9 +190,12 @@ git restore --source=abc123 path/to/file
 git reset --soft HEAD^
 
 # Undo last commit and discard changes
+# WARNING: --hard also deletes uncommitted changes (staged and unstaged),
+# and the reflog cannot recover them. Check `git status` and stash first.
 git reset --hard HEAD^
 
-# Recover deleted branch (within 90 days)
+# Recover deleted branch (its commits are unreachable: ~30 days by default)
+# Deleting a branch also deletes its own reflog; search HEAD's reflog
 git reflog
 git branch recovered-branch abc123
 ```
