@@ -44,11 +44,13 @@ from app.api.v1.router import api_router
 app.include_router(api_router, prefix="/api/v1")
 
 # core/config.py
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 
 class Settings(BaseSettings):
     """Application settings."""
+    model_config = SettingsConfigDict(env_file=".env")
+
     DATABASE_URL: str
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
@@ -56,17 +58,13 @@ class Settings(BaseSettings):
     # Explicit browser origins, e.g. CORS_ORIGINS='["https://app.example.com"]'
     CORS_ORIGINS: list[str] = []
 
-    class Config:
-        env_file = ".env"
-
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
 
 # core/database.py
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -83,7 +81,8 @@ AsyncSessionLocal = sessionmaker(
     expire_on_commit=False
 )
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 async def get_db() -> AsyncSession:
     """Dependency for database session."""
@@ -209,6 +208,9 @@ from app.repositories.user_repository import user_repository
 from app.schemas.user import UserCreate, UserUpdate, User
 from app.core.security import get_password_hash, verify_password
 
+class EmailAlreadyRegisteredError(Exception):
+    """Email is taken. Carries no user data, so the API can report it."""
+
 class UserService:
     """Business logic for users."""
 
@@ -224,7 +226,7 @@ class UserService:
         # Check if email exists
         existing = await self.repository.get_by_email(db, user_in.email)
         if existing:
-            raise ValueError("Email already registered")
+            raise EmailAlreadyRegisteredError()
 
         # Hash password. Pass a dict: rebuilding UserCreate would require
         # `password` again and would drop the unknown `hashed_password` field.
@@ -280,7 +282,7 @@ from typing import List
 
 from app.core.database import get_db
 from app.schemas.user import User, UserCreate, UserUpdate
-from app.services.user_service import user_service
+from app.services.user_service import EmailAlreadyRegisteredError, user_service
 from app.api.dependencies import get_current_user
 
 router = APIRouter()
@@ -294,8 +296,11 @@ async def create_user(
     try:
         user = await user_service.create_user(db, user_in)
         return user
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except EmailAlreadyRegisteredError:
+        # Fixed message, never str(e): exception text can carry request data or
+        # the password hash (pydantic's ValidationError is a ValueError whose
+        # message includes input values). Anything unexpected becomes a 500.
+        raise HTTPException(status_code=400, detail="Email already registered")
 
 @router.get("/me", response_model=User)
 async def read_current_user(
@@ -352,7 +357,7 @@ async def delete_user(
 ```python
 # core/security.py
 # pip install pyjwt "pwdlib[argon2]"  (the libraries the FastAPI security docs use)
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 import jwt
 from pwdlib import PasswordHash
@@ -367,9 +372,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """Create JWT access token. Put a string in "sub", e.g. {"sub": str(user.id)}."""
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt

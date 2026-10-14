@@ -68,6 +68,28 @@ Proper async/await usage:
 - Async background tasks
 - Async middleware
 
+### 4. Dependencies
+
+The packages the examples import:
+
+```text
+# requirements.txt
+fastapi
+uvicorn[standard]
+pydantic-settings
+sqlalchemy[asyncio]>=2.0  # DeclarativeBase; [asyncio] installs greenlet for the async engine
+asyncpg                   # PostgreSQL driver: postgresql+asyncpg://...
+PyJWT
+pwdlib[argon2]
+python-multipart          # only for a login route that uses OAuth2PasswordRequestForm
+
+# requirements-dev.txt
+pytest
+pytest-asyncio
+httpx
+aiosqlite                 # test database: sqlite+aiosqlite:///:memory:
+```
+
 ## Detailed worked examples and patterns
 
 Detailed sections (starting with `## Implementation Patterns`) live in `references/details.md`. Read that file when the navigation summary above is insufficient.
