@@ -91,7 +91,7 @@ local msg_types = {
 
 local function dissect_pdu(buffer, pinfo, tree)
     -- Reject incomplete captures before creating any packet ranges.
-    if buffer:len() < 12 then return 0 end
+    if buffer:len() < 12 or buffer(0, 4):string() ~= "PROT" then return 0 end
     local length = buffer(8, 4):uint()
     if length > buffer:len() - 12 then return 0 end
 

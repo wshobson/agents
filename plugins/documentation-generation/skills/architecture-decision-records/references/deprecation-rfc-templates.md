@@ -123,5 +123,5 @@ OrderShipped { orderId, trackingNumber, timestamp }
 ## References
 
 - [Event Sourcing by Martin Fowler](https://martinfowler.com/eaaDev/EventSourcing.html)
-- [EventStoreDB Documentation](https://www.eventstore.com/docs)
+- [KurrentDB Documentation](https://docs.kurrent.io/)
 ```
