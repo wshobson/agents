@@ -38,7 +38,7 @@ Deprecate MongoDB and migrate user profiles to PostgreSQL.
 
 ### Negative
 
-- Migration effort (~4 weeks)
+- Migration effort (~6 weeks)
 - Risk of data issues during migration
 - Lose some schema flexibility
 

@@ -24,7 +24,7 @@ YoY Growth = (This Year ARR - Last Year ARR) / Last Year ARR
 **Target Benchmarks:**
 
 - Seed stage: 15-20% MoM growth
-- Series A: 10-15% MoM growth, 3-5x YoY
+- Series A: 10-15% MoM growth, 3-5x ARR year over year (200-400% YoY growth)
 - Series B+: 100%+ YoY growth
 
 ### Unit Economics
