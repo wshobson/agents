@@ -25,7 +25,7 @@ YoY Growth = (This Year ARR - Last Year ARR) / Last Year ARR
 
 - Seed stage: 15-20% MoM growth
 - Series A: 10-15% MoM growth, 3-5x YoY
-- Series B+: 100%+ YoY (Rule of 40)
+- Series B+: 100%+ YoY growth
 
 ### Unit Economics
 
@@ -78,24 +78,28 @@ CAC Payback = CAC / (ARPU × Gross Margin%)
 **Burn Rate**
 
 ```
-Monthly Burn = Monthly Revenue - Monthly Expenses
+Monthly Net Burn = Monthly Expenses - Monthly Revenue
 ```
 
-Negative burn = losing money (typical early-stage)
+Positive net burn means the business is losing cash (typical early-stage).
 
 **Runway**
 
 ```
-Runway (months) = Cash Balance / Monthly Burn Rate
+Runway (months) = Cash Balance / Positive Monthly Net Burn
 ```
 
 **Target:** Always maintain 12-18 months runway
 
+When net burn is zero or negative, this formula has no finite burn-based runway; report break-even or cash generation instead of dividing by zero or reporting negative months.
+
 **Burn Multiple**
 
 ```
-Burn Multiple = Net Burn / Net New ARR
+Quarterly Burn Multiple = Total Net Burn During Quarter / Net New ARR Added During Quarter
 ```
+
+Sum the three monthly net-burn amounts for the numerator. The denominator is the change in annual recurring revenue over that same quarter (ending ARR minus starting ARR); do not substitute monthly revenue or annualize the quarterly burn again. Report the ratio only when net new ARR is positive. See [Craft Ventures' quarterly example](https://www.craftventures.com/articles/the-burn-multiple).
 
 **Benchmarks:**
 
@@ -194,6 +198,10 @@ Rule of 40 = Revenue Growth Rate% + Profit Margin%
 ```
 Quick Ratio = (New MRR + Expansion MRR) / (Churned MRR + Contraction MRR)
 ```
+
+If Churned MRR + Contraction MRR is zero, report **N/A (no losses)**,
+including when the numerator is also zero. Do not apply the numeric benchmarks
+to that period; report new and expansion MRR separately.
 
 **Benchmarks:**
 

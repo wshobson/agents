@@ -148,7 +148,7 @@ Based on gathered info, ask:
    - Diff data
 ```
 
-Before selecting debugging tools or performing bisect, differential, trace, or memory analysis, read [tools and advanced techniques](references/tools-and-techniques.md).
+Before selecting debugging tools or performing bisect, differential, trace, or memory analysis, read `references/tools-and-techniques.md`.
 
 ## Debugging Patterns by Issue Type
 

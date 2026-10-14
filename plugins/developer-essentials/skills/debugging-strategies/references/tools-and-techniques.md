@@ -123,8 +123,10 @@ stats.print_stats(10)  # Top 10 slowest
 
 import (
     "fmt"
-    "runtime"
+    _ "net/http/pprof"
+    "os"
     "runtime/debug"
+    "runtime/pprof"
 )
 
 // Print stack trace
@@ -144,20 +146,24 @@ func processRequest() {
     // ... code that might panic
 }
 
-// Memory profiling
-import _ "net/http/pprof"
-// Visit http://localhost:6060/debug/pprof/
+// The blank import above registers profiling handlers on the default mux.
+// Serve that mux on a loopback-only endpoint in your application before visiting
+// http://localhost:6060/debug/pprof/; importing alone does not start a server.
 
-// CPU profiling
-import (
-    "os"
-    "runtime/pprof"
-)
-
-f, _ := os.Create("cpu.prof")
-pprof.StartCPUProfile(f)
-defer pprof.StopCPUProfile()
-// ... code to profile
+// CPU profiling: invoke this helper around the workload you want to measure.
+func profileCPU() error {
+    f, err := os.Create("cpu.prof")
+    if err != nil {
+        return err
+    }
+    defer f.Close()
+    if err := pprof.StartCPUProfile(f); err != nil {
+        return err
+    }
+    defer pprof.StopCPUProfile()
+    // ... code to profile
+    return nil
+}
 ```
 
 ## Advanced Debugging Techniques

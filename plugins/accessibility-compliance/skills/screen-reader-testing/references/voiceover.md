@@ -3,10 +3,12 @@
 ### Setup
 
 ```
-Enable: System Preferences → Accessibility → VoiceOver
+Enable: System Settings → Accessibility → VoiceOver
 Toggle: Cmd + F5
-Quick Toggle: Triple-press Touch ID
+Quick Toggle: Hold Command while quickly pressing Touch ID three times
 ```
+
+Source: [Apple VoiceOver setup](https://support.apple.com/guide/voiceover/vo2682/mac).
 
 ### Essential Commands
 

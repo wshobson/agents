@@ -158,9 +158,9 @@ For each file:
 4. Offer to pair if complex
 ```
 
-Before writing review feedback, read [checklists, question framing, collaboration, and severity techniques](references/review-techniques.md).
+Before writing review feedback, read `references/review-techniques.md` for checklists, question framing, collaboration, and severity techniques.
 
-Before language-specific, architectural, test-quality, or security review, read [review patterns and checklists](references/review-patterns.md).
+Before language-specific, architectural, test-quality, or security review, read `references/review-patterns.md` for review patterns and checklists.
 
 ## Giving Difficult Feedback
 

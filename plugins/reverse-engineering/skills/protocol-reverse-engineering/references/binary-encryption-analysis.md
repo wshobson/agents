@@ -2,12 +2,12 @@
 
 ### Structure Identification
 
-```python
+```text
 # Common patterns in binary protocols
 
 # Length-prefixed message
 struct Message {
-    uint32_t length;      # Total message length
+    uint32_t length;      # Payload length (excludes header)
     uint16_t msg_type;    # Message type identifier
     uint8_t  flags;       # Flags/options
     uint8_t  reserved;    # Padding/alignment
@@ -56,7 +56,11 @@ def parse_messages(data: bytes):
     messages = []
 
     while offset < len(data):
+        if len(data) - offset < 12:
+            raise ValueError("truncated message header")
         header = MessageHeader.from_bytes(data[offset:])
+        if header.length > len(data) - offset - 12:
+            raise ValueError("truncated message payload")
         payload = data[offset+12:offset+12+header.length]
         messages.append((header, payload))
         offset += 12 + header.length
@@ -69,8 +73,12 @@ def parse_tlv(data: bytes):
     offset = 0
 
     while offset < len(data):
+        if len(data) - offset < 3:
+            raise ValueError("truncated TLV header")
         field_type = data[offset]
         length = struct.unpack(">H", data[offset+1:offset+3])[0]
+        if length > len(data) - offset - 3:
+            raise ValueError("truncated TLV value")
         value = data[offset+3:offset+3+length]
         fields.append((field_type, value))
         offset += 3 + length
@@ -129,22 +137,24 @@ def entropy(data: bytes) -> float:
 
 ### TLS Analysis
 
+These fields follow the [TLS](https://www.wireshark.org/docs/dfref/t/tls.html) and [X.509](https://www.wireshark.org/docs/dfref/x/x509sat.html) display-filter references (JA3/JA3S requires Wireshark 3.6+).
+
 ```bash
 # Extract TLS metadata
-tshark -r capture.pcap -Y "ssl.handshake" \
-    -T fields -e ip.src -e ssl.handshake.ciphersuite
+tshark -r capture.pcap -Y "tls.handshake" \
+    -T fields -e ip.src -e tls.handshake.ciphersuite
 
 # JA3 fingerprinting (client)
-tshark -r capture.pcap -Y "ssl.handshake.type == 1" \
-    -T fields -e ssl.handshake.ja3
+tshark -r capture.pcap -Y "tls.handshake.type == 1" \
+    -T fields -e tls.handshake.ja3
 
 # JA3S fingerprinting (server)
-tshark -r capture.pcap -Y "ssl.handshake.type == 2" \
-    -T fields -e ssl.handshake.ja3s
+tshark -r capture.pcap -Y "tls.handshake.type == 2" \
+    -T fields -e tls.handshake.ja3s
 
-# Certificate extraction
-tshark -r capture.pcap -Y "ssl.handshake.certificate" \
-    -T fields -e x509sat.printableString
+# Certificate name/attribute strings
+tshark -r capture.pcap -Y "tls.handshake.certificate" \
+    -T fields -e x509sat.PrintableString
 ```
 
 ### Decryption Approaches
