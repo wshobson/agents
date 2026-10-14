@@ -304,7 +304,7 @@ import type { User, CreateUserInput } from "@repo/types";
 ```json
 // turbo.json
 {
-  "pipeline": {
+  "tasks": {
     "build": {
       // Build depends on dependencies being built first
       "dependsOn": ["^build"],
@@ -395,8 +395,9 @@ jobs:
 # Deploy only changed apps
 - name: Deploy affected apps
   run: |
-    if pnpm nx affected:apps --base=origin/main --head=HEAD | grep -q "web"; then
+    if pnpm nx show projects --affected --base=origin/main --head=HEAD | grep -qx "web"; then
       echo "Deploying web app"
-      pnpm --filter web deploy
+      # `pnpm deploy` is a built-in command; use `run` for the package's deploy script
+      pnpm --filter web run deploy
     fi
 ```
