@@ -9,15 +9,18 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from app.core.config import get_settings
+from app.core.database import engine
+
+settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
-    # Startup
-    await database.connect()
+    # Startup: the engine connects lazily on first use
     yield
-    # Shutdown
-    await database.disconnect()
+    # Shutdown: close pooled connections
+    await engine.dispose()
 
 app = FastAPI(
     title="API Template",
@@ -28,7 +31,9 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    # Never combine ["*"] with allow_credentials=True: Starlette then echoes
+    # any request Origin, so every site can make credentialed requests.
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -48,6 +53,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     API_V1_STR: str = "/api/v1"
+    # Explicit browser origins, e.g. CORS_ORIGINS='["https://app.example.com"]'
+    CORS_ORIGINS: list[str] = []
 
     class Config:
         env_file = ".env"
@@ -132,10 +139,11 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def create(
         self,
         db: AsyncSession,
-        obj_in: CreateSchemaType
+        obj_in: CreateSchemaType | dict
     ) -> ModelType:
         """Create new record."""
-        db_obj = self.model(**obj_in.dict())
+        data = obj_in if isinstance(obj_in, dict) else obj_in.model_dump()
+        db_obj = self.model(**data)
         db.add(db_obj)
         await db.flush()
         await db.refresh(db_obj)
@@ -145,10 +153,12 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self,
         db: AsyncSession,
         db_obj: ModelType,
-        obj_in: UpdateSchemaType
+        obj_in: UpdateSchemaType | dict
     ) -> ModelType:
         """Update record."""
-        update_data = obj_in.dict(exclude_unset=True)
+        update_data = (
+            obj_in if isinstance(obj_in, dict) else obj_in.model_dump(exclude_unset=True)
+        )
         for field, value in update_data.items():
             setattr(db_obj, field, value)
         await db.flush()
@@ -164,6 +174,9 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return False
 
 # repositories/user_repository.py
+from typing import Optional
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.base_repository import BaseRepository
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
@@ -213,12 +226,13 @@ class UserService:
         if existing:
             raise ValueError("Email already registered")
 
-        # Hash password
-        user_in_dict = user_in.dict()
-        user_in_dict["hashed_password"] = get_password_hash(user_in_dict.pop("password"))
+        # Hash password. Pass a dict: rebuilding UserCreate would require
+        # `password` again and would drop the unknown `hashed_password` field.
+        user_data = user_in.model_dump(exclude={"password"})
+        user_data["hashed_password"] = get_password_hash(user_in.password)
 
         # Create user
-        user = await self.repository.create(db, UserCreate(**user_in_dict))
+        user = await self.repository.create(db, user_data)
         return user
 
     async def authenticate(
@@ -246,14 +260,12 @@ class UserService:
         if not user:
             return None
 
-        if user_in.password:
-            user_in_dict = user_in.dict(exclude_unset=True)
-            user_in_dict["hashed_password"] = get_password_hash(
-                user_in_dict.pop("password")
-            )
-            user_in = UserUpdate(**user_in_dict)
+        update_data = user_in.model_dump(exclude_unset=True)
+        password = update_data.pop("password", None)
+        if password:
+            update_data["hashed_password"] = get_password_hash(password)
 
-        return await self.repository.update(db, user, user_in)
+        return await self.repository.update(db, user, update_data)
 
 user_service = UserService()
 ```
@@ -339,19 +351,20 @@ async def delete_user(
 
 ```python
 # core/security.py
+# pip install pyjwt "pwdlib[argon2]"  (the libraries the FastAPI security docs use)
 from datetime import datetime, timedelta
 from typing import Optional
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+import jwt
+from pwdlib import PasswordHash
 from app.core.config import get_settings
 
 settings = get_settings()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+password_hash = PasswordHash.recommended()  # Argon2
 
 ALGORITHM = "HS256"
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    """Create JWT access token."""
+    """Create JWT access token. Put a string in "sub", e.g. {"sub": str(user.id)}."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -363,16 +376,17 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify password against hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    return password_hash.verify(plain_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
     """Hash password."""
-    return pwd_context.hash(password)
+    return password_hash.hash(password)
 
 # api/dependencies.py
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
+import jwt
+from jwt.exceptions import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -380,6 +394,7 @@ from app.core.security import ALGORITHM
 from app.core.config import get_settings
 from app.repositories.user_repository import user_repository
 
+settings = get_settings()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
 
 async def get_current_user(
@@ -395,10 +410,11 @@ async def get_current_user(
 
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("sub")
-        if user_id is None:
+        sub = payload.get("sub")  # PyJWT requires "sub" to be a string
+        if sub is None:
             raise credentials_exception
-    except JWTError:
+        user_id = int(sub)
+    except (InvalidTokenError, ValueError):
         raise credentials_exception
 
     user = await user_repository.get(db, user_id)
