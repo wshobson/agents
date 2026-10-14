@@ -140,6 +140,7 @@ func processRequest() {
         if r := recover(); r != nil {
             fmt.Println("Panic:", r)
             debug.PrintStack()
+            panic(r) // re-panic so callers still see the failure
         }
     }()
 
@@ -207,7 +208,8 @@ Hypothesis: Time-based issue? Check timezone handling.
 ### Technique 3: Trace Debugging
 
 ```typescript
-// Function call tracing
+// Function call tracing (legacy decorator signature: needs
+// "experimentalDecorators": true in tsconfig.json)
 function trace(
   target: any,
   propertyKey: string,

@@ -24,7 +24,7 @@ VO + Shift + Up    Exit group
 Reading:
 VO + A             Read all from cursor
 Ctrl               Stop speaking
-VO + B             Read current paragraph
+VO + P             Read current paragraph
 
 Interaction:
 VO + Space         Activate element

@@ -71,6 +71,7 @@ CAC Payback = CAC / (ARPU × Gross Margin%)
 
 - < 12 months = Excellent
 - 12-18 months = Good
+- 18-24 months = Needs attention
 - > 24 months = Concerning
 
 ### Cash Efficiency Metrics

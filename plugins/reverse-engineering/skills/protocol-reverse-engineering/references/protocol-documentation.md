@@ -116,12 +116,21 @@ local function dissect_pdu(buffer, pinfo, tree)
     return buffer:len()
 end
 
+-- Set this to the largest payload the protocol allows.
+local MAX_PAYLOAD = 65536
+
 -- The helper requests missing TCP bytes and invokes dissect_pdu for every PDU.
 local function get_pdu_length(buffer, pinfo, offset)
-    return 12 + buffer(offset + 8, 4):uint()
+    local length = buffer(offset + 8, 4):uint()
+    -- For an impossible length, return only the header size, so the helper
+    -- does not wait for bytes that never arrive and dissect_pdu rejects it.
+    if length > MAX_PAYLOAD then return 12 end
+    return 12 + length
 end
 
 function proto.dissector(buffer, pinfo, tree)
+    -- Leave traffic that does not start with the magic to other dissectors.
+    if buffer:len() < 4 or buffer(0, 4):string() ~= "PROT" then return 0 end
     dissect_tcp_pdus(buffer, tree, 12, get_pdu_length, dissect_pdu, true)
 end
 

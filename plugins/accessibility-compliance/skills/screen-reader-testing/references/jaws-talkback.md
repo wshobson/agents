@@ -19,7 +19,7 @@ F                  Next form field
 B                  Next button
 G                  Next graphic
 L                  Next list
-;                  Next landmark
+R                  Next region (landmark)
 
 Forms Mode:
 Enter              Enter forms mode

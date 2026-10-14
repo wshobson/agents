@@ -91,7 +91,7 @@ OrderShipped { orderId, trackingNumber, timestamp }
 
 ### Technology
 
-- Event Store: EventStoreDB (purpose-built, handles projections)
+- Event Store: KurrentDB, formerly EventStoreDB (purpose-built, handles projections)
 - Alternative considered: Kafka + custom projection service
 
 ## Drawbacks

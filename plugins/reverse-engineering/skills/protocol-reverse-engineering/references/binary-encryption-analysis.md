@@ -152,7 +152,8 @@ tshark -r capture.pcap -Y "tls.handshake.type == 1" \
 tshark -r capture.pcap -Y "tls.handshake.type == 2" \
     -T fields -e tls.handshake.ja3s
 
-# Certificate name/attribute strings
+# Certificate name/attribute strings. TLS 1.3 encrypts the certificate, so
+# load a key log first (see Decryption Approaches below).
 tshark -r capture.pcap -Y "tls.handshake.certificate" \
     -T fields -e x509sat.PrintableString
 ```

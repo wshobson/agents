@@ -88,7 +88,7 @@ function UserProfile({ user }: Props) {
 function UserProfile({ user, onView }: Props) {
     useEffect(() => {
         onView(user.id);  // Notify parent to update
-    }, [user.id]);
+    }, [user.id, onView]);
     return <div>{user.name}</div>;
 }
 ```
