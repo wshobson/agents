@@ -156,10 +156,12 @@ test("user can update profile", async ({ page, testUser }) => {
 // ❌ Bad: Fixed timeouts
 await page.waitForTimeout(3000); // Flaky!
 
-// ✅ Good: Wait for specific conditions
+// ❌ Bad: Discouraged in the Playwright API docs; use web assertions instead
 await page.waitForLoadState("networkidle");
-await page.waitForURL("/dashboard");
 await page.waitForSelector('[data-testid="user-profile"]');
+
+// ✅ Good: Wait for specific conditions
+await page.waitForURL("/dashboard");
 
 // ✅ Better: Auto-waiting with assertions
 await expect(page.getByText("Welcome")).toBeVisible();
@@ -178,7 +180,6 @@ expect(data.users).toHaveLength(10);
 // Wait for multiple conditions
 await Promise.all([
   page.waitForURL("/success"),
-  page.waitForLoadState("networkidle"),
   expect(page.getByText("Payment successful")).toBeVisible(),
 ]);
 ```
@@ -320,7 +321,7 @@ cy.intercept("GET", "/api/users", (req) => {
 // Simulate slow network
 cy.intercept("GET", "/api/data", (req) => {
   req.reply((res) => {
-    res.delay(3000); // 3 second delay
+    res.setDelay(3000); // 3 second delay (renamed from res.delay in Cypress 7)
     res.send();
   });
 });
@@ -364,24 +365,13 @@ test("button in all states", async ({ page }) => {
 
 ```typescript
 // playwright.config.ts
+// `shard` is not a project option; pick the shard per CI job with --shard.
 export default defineConfig({
-  projects: [
-    {
-      name: "shard-1",
-      use: { ...devices["Desktop Chrome"] },
-      grepInvert: /@slow/,
-      shard: { current: 1, total: 4 },
-    },
-    {
-      name: "shard-2",
-      use: { ...devices["Desktop Chrome"] },
-      shard: { current: 2, total: 4 },
-    },
-    // ... more shards
-  ],
+  fullyParallel: true, // balance shards per test instead of per file
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });
 
-// Run in CI
+// Run in CI, one command per job
 // npx playwright test --shard=1/4
 // npx playwright test --shard=2/4
 ```
