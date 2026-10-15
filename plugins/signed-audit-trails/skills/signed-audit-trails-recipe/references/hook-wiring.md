@@ -22,7 +22,7 @@ not set `TOOL_NAME` or `TOOL_INPUT` variables. Each script reads the JSON with
 `node` and passes the fields to protect-mcp as flags:
 
 - `evaluate.sh` reads `tool_name` and `tool_input`, and it runs
-  `protect-mcp@0.7.4 evaluate --policy ./protect.cedar --tool <name> --input <json>`.
+  `protect-mcp@0.31.0 evaluate --policy ./protect.cedar --tool <name> --input <json>`.
   Exit 0 allows the call, and exit 2 blocks it. If the evaluator cannot run,
   the script also exits 2, so the call is blocked.
 - `sign.sh` reads `tool_name`, and it runs

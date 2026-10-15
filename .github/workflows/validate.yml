@@ -163,6 +163,10 @@ jobs:
   multi-harness-generate:
     name: Cross-harness generation + validation
     runs-on: ubuntu-latest
+    # plugins/plugin-eval/.python-version pins other jobs to 3.14. UV_PYTHON
+    # overrides it here, so uv sync and uv run keep this job on 3.12.
+    env:
+      UV_PYTHON: "3.12"
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
@@ -226,6 +230,10 @@ jobs:
     # Real-CLI subprocess tests: invokes the actual harness binaries against our
     # generated artifacts to catch issues that pure-Python parsing misses (CLI
     # version drift, schema-loader surprises, plugin discovery bugs).
+    # plugins/plugin-eval/.python-version pins other jobs to 3.14. UV_PYTHON
+    # overrides it here, so uv sync and uv run keep this job on 3.12.
+    env:
+      UV_PYTHON: "3.12"
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
