@@ -27,9 +27,9 @@ Implement proper cleanup on script exit or error.
 set -Eeuo pipefail
 
 trap 'echo "Error on line $LINENO"' ERR
+TMPDIR=$(mktemp -d)
 trap 'echo "Cleaning up..."; rm -rf "$TMPDIR"' EXIT
 
-TMPDIR=$(mktemp -d)
 # Script code here
 ```
 
@@ -147,10 +147,9 @@ process_files() {
 #!/bin/bash
 set -Eeuo pipefail
 
-trap 'rm -rf -- "$TMPDIR"' EXIT
-
 # Create temporary directory
 TMPDIR=$(mktemp -d) || { echo "ERROR: Failed to create temp directory" >&2; exit 1; }
+trap 'rm -rf -- "$TMPDIR"' EXIT
 
 # Create temporary files in directory
 TMPFILE1="$TMPDIR/temp1.txt"
@@ -335,8 +334,9 @@ safe_rmdir() {
 # Atomic file writes
 atomic_write() {
     local -r target="$1"
-    local -r tmpfile
-    tmpfile=$(mktemp) || return 1
+    local tmpfile
+    # Temp file in the target's directory, so the rename stays on one filesystem
+    tmpfile=$(mktemp "$(dirname -- "$target")/.atomic_write.XXXXXX") || return 1
 
     # Write to temp file first
     cat > "$tmpfile"

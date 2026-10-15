@@ -84,16 +84,11 @@ async def producer(queue: Queue, producer_id: int, num_items: int):
         await queue.put(item)
         print(f"Producer {producer_id} produced: {item}")
         await asyncio.sleep(0.1)
-    await queue.put(None)  # Signal completion
 
 async def consumer(queue: Queue, consumer_id: int):
     """Consume items from queue."""
     while True:
         item = await queue.get()
-        if item is None:
-            queue.task_done()
-            break
-
         print(f"Consumer {consumer_id} processing: {item}")
         await asyncio.sleep(0.2)  # Simulate work
         queue.task_done()

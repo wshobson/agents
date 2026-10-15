@@ -409,7 +409,7 @@ app.get(
 
 ```typescript
 // Check if user owns resource
-async function requireOwnership(
+function requireOwnership(
   resourceType: "post" | "comment",
   resourceIdParam: string = "id",
 ) {

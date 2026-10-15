@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills provide specialized guidance for AI coding agents using the shared [Agent Skills Specification](https://agentskills.io/specification). The repository includes 184 local skills across 51 plugins, with support for seven coding tools. See the [capability matrix](./harnesses.md) for discovery and installation differences.
+Agent Skills provide specialized guidance for AI coding agents using the shared [Agent Skills Specification](https://agentskills.io/specification). The repository includes 185 local skills across 52 plugins, with support for seven coding tools. See the [capability matrix](./harnesses.md) for discovery and installation differences.
 
 Install a skill on its own into a tool supported by the Agent Skills installers:
 
@@ -371,6 +371,12 @@ Skills provide domain guidance that coding agents can load when relevant. Each s
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **social-publishing**  | Schedule and publish social media posts across 13 platforms via the SocialClaw API                                       |
 
+### Content Marketing (1 skill)
+
+| Skill                         | Description                                                                                          |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **social-evidence-research**  | Research public social discussion with source-level citations, sample limits, and recorded access gaps |
+
 ### LLM Fine-Tuning (10 skills)
 
 | Skill                           | Description                                                                              |
@@ -448,7 +454,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 184 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
+All 185 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause
