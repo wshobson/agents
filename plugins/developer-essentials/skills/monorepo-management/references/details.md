@@ -391,6 +391,8 @@ jobs:
 
 ### Deploy Affected Only
 
+The step below runs the `deploy` script in `apps/web/package.json`. The `create-turbo` starter doesn't define one, so add a `deploy` script for your hosting provider first.
+
 ```yaml
 # Deploy only changed apps
 - name: Deploy affected apps
