@@ -1,0 +1,21 @@
+{
+  "name": "content-marketing",
+  "version": "1.3.0",
+  "description": "Content marketing strategy, web research, and information synthesis for marketing operations",
+  "skills": "./skills/",
+  "author": {
+    "name": "Seth Hobson",
+    "email": "seth@major7apps.com"
+  },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/content-marketing",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "social-evidence-research"
+  ],
+  "interface": {
+    "displayName": "Content Marketing",
+    "shortDescription": "Content marketing strategy, web research, and information synthesis for marketing operations",
+    "category": "Coding"
+  }
+}

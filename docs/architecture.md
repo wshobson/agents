@@ -70,11 +70,11 @@ The repository shares agents, skills, and commands across seven AI coding tools.
   - Component scaffolding (React, React Native)
   - Infrastructure setup (Terraform, Kubernetes)
 
-**184 Local Agent Skills**
+**185 Local Agent Skills**
 
 - Modular knowledge packages
 - Progressive disclosure architecture
-- Domain-specific expertise across 51 plugins
+- Domain-specific expertise across 52 plugins
 - Spec-compliant (Anthropic Agent Skills Specification)
 
 ## Repository Structure
@@ -195,7 +195,7 @@ description: What the skill does. Use when [trigger]. # Required: < 1024 chars
 - **Composability**: Mix and match skills across workflows
 - **Maintainability**: Isolated updates don't affect other skills
 
-See [Agent Skills](./agent-skills.md) for complete details on the 184 skills.
+See [Agent Skills](./agent-skills.md) for complete details on the 185 skills.
 
 ## Model Configuration Strategy
 

@@ -171,6 +171,19 @@
       "category": "Coding"
     },
     {
+      "name": "content-marketing",
+      "description": "Content marketing strategy, web research, and information synthesis for marketing operations",
+      "source": {
+        "source": "local",
+        "path": "./plugins/content-marketing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "data-engineering",
       "description": "ETL pipeline construction, data warehouse design, batch processing workflows, and data-driven feature development",
       "source": {
