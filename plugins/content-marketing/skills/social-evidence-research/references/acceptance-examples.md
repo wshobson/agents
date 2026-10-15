@@ -48,7 +48,7 @@ Input:
 
 Expected result:
 
-- Group D1 counts once, as support for "@lumen_labs says the lamp runs 40 hours". It doesn't count as three sources.
+- Group D1 counts once as support for "@lumen_labs says the lamp runs 40 hours", not as three independent sources. The collection counts still list E010, E011, and E012 as three inspected sources in one duplicate group.
 - The duplicate groups table shows E010 as the original and keeps the E011 and E012 references.
 - E013 is attributed to @k_ramos. It doesn't change what @lumen_labs said, and the report shows the two statements separately.
 
