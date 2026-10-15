@@ -119,12 +119,9 @@ async def db_session():
         engine, class_=AsyncSession, expire_on_commit=False
     )
 
-    try:
-        async with AsyncSessionLocal() as session:
-            yield session
-    finally:
-        # An async engine must be disposed before the event loop closes
-        await engine.dispose()
+    async with AsyncSessionLocal() as session:
+        yield session
+    await engine.dispose()
 
 @pytest_asyncio.fixture
 async def client(db_session):
@@ -135,12 +132,9 @@ async def client(db_session):
 
     # httpx 0.28 removed AsyncClient(app=...); use an ASGI transport
     transport = ASGITransport(app=app)
-    try:
-        async with AsyncClient(transport=transport, base_url="http://test") as client:
-            yield client
-    finally:
-        # app is shared: do not leak this test's session into later tests
-        app.dependency_overrides.pop(get_db, None)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        yield client
+    app.dependency_overrides.clear()
 
 # tests/test_users.py
 import pytest
