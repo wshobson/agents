@@ -126,7 +126,7 @@ cd my-monorepo
 }
 ```
 
-pnpm ignores the `workspaces` field in `package.json`. Declare workspace packages in `pnpm-workspace.yaml` (see `references/details.md`). Turborepo 2 renamed `pipeline` to `tasks` and rejects a `turbo.json` that still uses `pipeline`; run `npx @turbo/codemod migrate` to upgrade a 1.x config.
+pnpm reads workspace packages only from `pnpm-workspace.yaml`, so declare them there (see `references/details.md`). Turborepo 2 renamed `pipeline` to `tasks` and rejects a `turbo.json` that still uses `pipeline`; run `npx @turbo/codemod migrate` to upgrade a 1.x config.
 
 ### Package Structure
 
