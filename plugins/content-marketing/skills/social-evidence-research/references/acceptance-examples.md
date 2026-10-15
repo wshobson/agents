@@ -31,7 +31,7 @@ Input:
 
 Expected result:
 
-- Only E001 supports a claim about the post's text, such as "@hike_lena's caption praises the headlamp's battery life."
+- Only E001 supports a claim about the post's text, such as "@hike_lena's caption says the headlamp 'doesn't die halfway up.'" Reading that as praise for battery life is an interpretation, so it goes in the interpretation column.
 - E002 to E004 count under Discovered and support no finding. "Returned mine" in E003 is a snippet, so the report can't say @summit_jo returned the product.
 - The video's contents are unknown. The report lists E005 under unanswered questions and makes no claim about what the video shows.
 
