@@ -391,6 +391,8 @@ jobs:
 
 ### Deploy Affected Only
 
+The step below uses Nx to check whether `web` changed, then runs the `deploy` script in `apps/web/package.json`. The `create-turbo` starter has neither, so add Nx (`npx nx@latest init`) and a `deploy` script for your hosting provider first.
+
 ```yaml
 # Deploy only changed apps
 - name: Deploy affected apps

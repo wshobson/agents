@@ -194,7 +194,9 @@ git reset --soft HEAD^
 # and the reflog cannot recover them. Check `git status` and stash first.
 git reset --hard HEAD^
 
-# Recover deleted branch (unmerged commits stay in HEAD's reflog for about 30 days by default)
+# Recover a deleted branch soon. By default, git gc can prune HEAD's reflog
+# entries for unmerged commits once they're 30 days old, counted from when
+# each entry was recorded, not from the deletion
 # Deleting a branch also deletes its own reflog; search HEAD's reflog
 git reflog
 git branch recovered-branch abc123
