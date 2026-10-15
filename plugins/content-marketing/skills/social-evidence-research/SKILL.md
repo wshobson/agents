@@ -22,7 +22,7 @@ Turn public or user-authorized social material into a report where each claim po
 4. **Group duplicates.** Put reposts, cross-posts, and repeated captures of the same original into one duplicate group. Keep both the original and the repost references, and mark the grouping as uncertain when you can't confirm it.
 5. **Attribute.** Attribute each comment to its commenter. Keep commenters separate from the post author, and keep both separate from your own conclusions. A repost's added commentary is a separate statement by the reposting author.
 6. **Build the claim table.** Link each claim to evidence IDs and precise locators, with separate fields for what the source said, your interpretation, and the limitation. Use the template in `references/report-template.md`.
-7. **Count and state limits.** Report how many records were discovered, inspected, excluded, and blocked by access gaps, with units, and explain any overlap between those counts.
+7. **Count and state limits.** Report the discovery, inspection, exclusion, and access gap counts, each with its unit, such as sources discovered or parts inspected. Explain any overlap between those counts using the source IDs and discovery links.
 8. **Report gaps and stop honestly.** List access gaps and unanswered questions. When the evidence the question needs is unavailable, return a partial report and say what is missing.
 
 ## Rules
@@ -45,7 +45,7 @@ Turn public or user-authorized social material into a report where each claim po
 
 **Access gaps**
 
-- Record login gates, unavailable or deleted content, missing export fields, rate limits, and incomplete comments or media.
+- Record login gates, paywalls, unavailable or deleted content, missing export fields, rate limits, and incomplete comments or media.
 - An empty search result or a failed retrieval is an access or collection limit. It is never evidence that a discussion doesn't exist.
 
 ## Auditing an existing report

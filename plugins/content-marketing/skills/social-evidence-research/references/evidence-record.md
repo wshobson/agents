@@ -27,7 +27,7 @@ Write `unknown` for any value you can't determine. Don't leave a field blank, an
 | `duplicate_role` | `original`, `repost`, `cross-post`, or `repeated-capture`, or `none` when there is no group. |
 | `original_ref` | For a repost, cross-post, or repeated capture, the ID or locator of the original. Otherwise `none`. |
 | `duplicate_uncertain` | `yes` when the grouping is likely but not confirmed, otherwise `no`. |
-| `access_gap` | `none`, `login-gate`, `deleted`, `unavailable`, `rate-limited`, `missing-field`, or `incomplete`. |
+| `access_gap` | `none`, `login-gate`, `paywall`, `deleted`, `unavailable`, `rate-limited`, `missing-field`, `incomplete`, or `other` (describe the gap in `notes`, such as a region or age gate). |
 | `exclusion` | `none`, or the reason the record was left out of the analysis, such as "outside date range". |
 | `notes` | Anything else a reviewer needs, such as "auto-generated transcript". |
 
