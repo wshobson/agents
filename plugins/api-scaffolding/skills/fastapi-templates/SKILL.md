@@ -68,6 +68,28 @@ Proper async/await usage:
 - Async background tasks
 - Async middleware
 
+### 4. Dependencies
+
+The packages the examples import:
+
+```text
+# requirements.txt
+fastapi
+uvicorn[standard]
+pydantic-settings
+sqlalchemy[asyncio]>=2.0  # DeclarativeBase; [asyncio] installs greenlet for the async engine
+asyncpg                   # PostgreSQL driver: postgresql+asyncpg://...
+PyJWT
+pwdlib[argon2]
+python-multipart          # only for a login route that uses OAuth2PasswordRequestForm
+
+# requirements-dev.txt
+pytest
+pytest-asyncio
+httpx
+aiosqlite                 # test database: sqlite+aiosqlite:///:memory:
+```
+
 ## Detailed worked examples and patterns
 
 Detailed sections (starting with `## Implementation Patterns`) live in `references/details.md`. Read that file when the navigation summary above is insufficient.
@@ -76,9 +98,8 @@ Detailed sections (starting with `## Implementation Patterns`) live in `referenc
 
 ```python
 # tests/conftest.py
-import pytest
-import asyncio
-from httpx import AsyncClient
+import pytest_asyncio
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
@@ -87,13 +108,8 @@ from app.core.database import get_db, Base
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
-@pytest.fixture(scope="session")
-def event_loop():
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
-@pytest.fixture
+# Async fixtures need pytest_asyncio.fixture in pytest-asyncio's default strict mode
+@pytest_asyncio.fixture
 async def db_session():
     engine = create_async_engine(TEST_DATABASE_URL, echo=True)
     async with engine.begin() as conn:
@@ -105,16 +121,20 @@ async def db_session():
 
     async with AsyncSessionLocal() as session:
         yield session
+    await engine.dispose()
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def client(db_session):
     async def override_get_db():
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    # httpx 0.28 removed AsyncClient(app=...); use an ASGI transport
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
         yield client
+    app.dependency_overrides.clear()
 
 # tests/test_users.py
 import pytest
