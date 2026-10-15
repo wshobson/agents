@@ -79,9 +79,10 @@ Detailed pattern documentation lives in `references/details.md`. Read that file 
 cy.get(".btn.btn-primary.submit-button").click();
 cy.get("div > form > div:nth-child(2) > input").type("text");
 
-// ✅ Good selectors
-cy.getByRole("button", { name: "Submit" }).click();
-cy.getByLabel("Email address").type("user@example.com");
+// ✅ Good selectors (findBy* commands come from @testing-library/cypress;
+// add `import "@testing-library/cypress/add-commands";` to your Cypress support file)
+cy.findByRole("button", { name: "Submit" }).click();
+cy.findByLabelText("Email address").type("user@example.com");
 cy.get('[data-testid="email-input"]').type("user@example.com");
 ```
 
@@ -105,9 +106,9 @@ npx playwright test --headed
 // 2. Run in debug mode
 npx playwright test --debug
 
-// 3. Use trace viewer
+// 3. Use trace viewer (record with `use: { trace: 'on-first-retry' }` in the config)
+npx playwright show-trace path/to/trace.zip
 await page.screenshot({ path: 'screenshot.png' });
-await page.video()?.saveAs('video.webm');
 
 // 4. Add test.step for better reporting
 test('checkout flow', async ({ page }) => {
