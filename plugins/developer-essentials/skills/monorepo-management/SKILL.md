@@ -80,7 +80,7 @@ cd my-monorepo
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
@@ -109,7 +109,6 @@ cd my-monorepo
 {
   "name": "my-monorepo",
   "private": true,
-  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -119,13 +118,15 @@ cd my-monorepo
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "turbo": "^1.10.0",
+    "turbo": "^2.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.0.0"
   },
   "packageManager": "pnpm@8.0.0"
 }
 ```
+
+pnpm reads workspace packages only from `pnpm-workspace.yaml`, so declare them there (see `references/details.md`). Turborepo 2 renamed `pipeline` to `tasks` and rejects a `turbo.json` that still uses `pipeline`; run `npx @turbo/codemod migrate` to upgrade a 1.x config.
 
 ### Package Structure
 
