@@ -33,13 +33,13 @@ Prepared: <date and time>
 
 | Stage | Count | Unit | Notes |
 | --- | --- | --- | --- |
-| Discovered | | | <search cards, snippets, and supplied URLs> |
-| Inspected | | | <parts examined; one post can have several inspected parts> |
+| Discovered | | sources | <discovery-only records: search cards, snippets, and supplied URLs> |
+| Inspected | | parts | <inspected parts, and the number of distinct sources (`source_id`) they come from> |
 | Excluded | | | <each exclusion reason with its count> |
 | Access gaps | | | <each gap type with its count> |
 | Duplicate groups | | groups | <members per group; repeated content counted once> |
 
-Overlap: <explain how the rows relate, for example "Inspected records are a subset of Discovered, except 4 export rows that were never discovered by search">
+Overlap: <explain how the rows relate, using `discovered_via` and `source_id`, for example "31 of the 40 discovered sources were opened, giving 58 inspected parts. 4 export rows were inspected without a discovery record.">
 
 ## Findings
 

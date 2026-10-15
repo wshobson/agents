@@ -44,7 +44,7 @@ Input:
 | E010 | post-text | inspected | @lumen_labs | "Our new lamp runs 40 hours on one charge." | D1, original |
 | E011 | post-text | inspected | @deals_daily | Same text, no added words | D1, repost of E010 |
 | E012 | post-text | inspected | @lamp_fan | Same text, no added words | D1, repost of E010 |
-| E013 | comment | inspected | @k_ramos | "Mine got 22 hours, not 40." (parent E010) | none |
+| E013 | comment | inspected | @k_ramos | "Mine got 22 hours, not 40." (on E010's post) | none |
 
 Expected result:
 
@@ -56,13 +56,13 @@ Expected result:
 
 Protocol: the first 12 top-level comments under one post, sorted by newest, inspected on 2026-10-14. The unit of analysis is the comment.
 
-Input: E020 to E031, twelve inspected comments. E021, E025, and E030 express support. The post shows 340 comments in total.
+Input: E020 to E031, twelve inspected comments. E021, E025, and E030 express support. The post shows a count of 340 comments, and the page doesn't say how many of them are replies.
 
 Expected result:
 
 - The report can say "3 of 12 inspected comments expressed support (E021, E025, E030)", with the selection method in the limitation column.
 - It can't say "25% of the audience supports the product" or "most commenters are positive".
-- The 328 comments that weren't inspected appear in the limits section as a sampling limit.
+- The limits section says 12 top-level comments were inspected, and the post shows 340 comments that may include replies. The number of top-level comments that weren't inspected is `unknown`, so the report doesn't give one.
 
 ## 4. A blocked source and an empty search
 
