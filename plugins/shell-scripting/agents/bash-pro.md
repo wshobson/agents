@@ -248,7 +248,7 @@ model: sonnet
 ## Advanced Techniques
 
 - **Error Context**: Use `trap 'echo "Error at line $LINENO: exit $?" >&2' ERR` for debugging
-- **Safe Temp Handling**: `trap 'rm -rf "$tmpdir"' EXIT; tmpdir=$(mktemp -d)`
+- **Safe Temp Handling**: `tmpdir=$(mktemp -d) || exit 1; trap 'rm -rf "$tmpdir"' EXIT`
 - **Version Checking**: `(( BASH_VERSINFO[0] >= 5 ))` before using modern features
 - **Binary-Safe Arrays**: `readarray -d '' files < <(find . -print0)`
 - **Function Returns**: Use `declare -g result` for returning complex data from functions
