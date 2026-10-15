@@ -144,9 +144,9 @@ Restore the field and verification passes again.
 Two invariants make receipts verifiable offline across any conformant
 implementation:
 
-1. **JCS canonicalization (RFC 8785)** before signing. Keys sorted,
-   whitespace minimized, strings NFC-normalized. Two independent
-   implementations produce byte-identical signing payloads for the same
+1. **JCS canonicalization (RFC 8785)** before signing. Keys sorted by
+   UTF-16 code units, whitespace minimized, strings not normalized. Two
+   independent implementations produce byte-identical signing payloads for the same
    receipt content.
 2. **Ed25519 signatures (RFC 8032)** over the canonical bytes.
    Deterministic, fixed-size, no nonce dependency.
