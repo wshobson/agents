@@ -110,8 +110,9 @@ adr new "Use PostgreSQL as Primary Database"
 # Supersede an ADR
 adr new -s 3 "Deprecate MongoDB in Favor of PostgreSQL"
 
-# Generate table of contents
-adr generate toc > docs/adr/README.md
+# Generate table of contents (to a separate file, so the hand-written
+# index and guidelines in README.md are not overwritten)
+adr generate toc > docs/adr/toc.md
 
 # Link related ADRs
 adr link 2 "Complements" 1 "Is complemented by"
