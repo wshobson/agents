@@ -51,6 +51,7 @@ Skills provide domain guidance that coding agents can load when relevant. Each s
 | **architecture-patterns**           | Implement Clean Architecture, Hexagonal Architecture, and Domain-Driven Design                        |
 | **microservices-patterns**          | Design microservices with service boundaries, event-driven communication, and resilience              |
 | **workflow-orchestration-patterns** | Design durable workflows with Temporal for distributed systems, saga patterns, and state management   |
+
 | **temporal-python-testing**         | Test Temporal workflows with pytest, time-skipping, and mocking strategies for comprehensive coverage |
 | **event-store-design**              | Design event stores with optimized schemas, snapshots, and stream partitioning                        |
 | **cqrs-implementation**             | Implement CQRS with separate read/write models and eventual consistency patterns                      |
