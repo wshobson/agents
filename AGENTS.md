@@ -66,7 +66,6 @@ Small native-install registries are committed for tools that support that route.
 - **Antigravity CLI**: native plugins at `.antigravity/plugins/<p>/` — bare `skills/<skill>/SKILL.md` (no `<plugin>__` namespacing; the plugin dir already scopes it)
 - **GitHub Copilot**: mirrored to `.copilot/skills/<plugin>__<skill>/`. Commands also become user-invocable skills.
 - **Pi**: mirrored to `.pi/skills/<plugin>/<skill>/`; discovery is recursive so names stay bare
-
 - **Skills-only installers**: `gh skill install wshobson/agents` and `npx skills add wshobson/agents` read `plugins/*/skills/` from GitHub directly (see `docs/harnesses.md`); `make smoke-test` runs both plus the agentskills.io spec check
 
 ## Subagents (cross-harness)
