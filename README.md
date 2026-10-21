@@ -36,7 +36,7 @@ Choose a plugin for the work you do:
 | [developer-essentials](plugins/developer-essentials/) | Code review, debugging, Git, and testing patterns |
 | [security-scanning](plugins/security-scanning/) | Security review, dependency checks, and code scanning |
 
-See the [plugin catalog](docs/plugins.md) for all 94 plugins and the [usage guide](docs/usage.md) for commands and examples.
+See the [plugin catalog](docs/plugins.md) for all 95 plugins and the [usage guide](docs/usage.md) for commands and examples.
 
 ### Claude Code
 
