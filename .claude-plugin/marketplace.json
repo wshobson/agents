@@ -1294,6 +1294,20 @@
         "deck-generation",
         "slide-design"
       ]
+    },
+    {
+      "name": "party-planning",
+      "source": "./plugins/party-planning",
+      "description": "Party game recommendations with tested rules, party food and drink quantity calculations, trivia night packs, printables, and hosting timelines",
+      "version": "1.0.0",
+      "author": {
+        "name": "Tarun Batta",
+        "email": "admin@hostpartyplay.com",
+        "url": "https://github.com/tarunbatta"
+      },
+      "license": "MIT",
+      "category": "creative",
+      "keywords": ["party-planning", "party-games", "trivia", "food-calculator", "drink-calculator", "printables"]
     }
   ]
 }
