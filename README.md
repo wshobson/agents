@@ -110,7 +110,7 @@ Pi's agents require its reference `subagent` extension or a compatible extension
 |---|---:|---|
 | Plugins | 95 | Installable groups of components, including 93 local plugins and 2 external entries |
 | Agents | 202 | Instructions for specialist subagents that handle delegated work |
-| Skills | 185 | Guidance and reference material that an agent loads when relevant |
+| Skills | 186 | Guidance and reference material that an agent loads when relevant |
 | Commands | 105 | Named workflows you invoke, such as project scaffolding or a security scan |
 
 The agent, skill, and command counts cover local source files. External plugins provide their own components and installation requirements.
