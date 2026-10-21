@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all 94 marketplace plugins organized by category: 92 local plugins plus 2 external Claude Code marketplace entries (`pensyve` and `hol-guard`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
+Browse all 95 marketplace plugins organized by category: 93 local plugins plus 2 external Claude Code marketplace entries (`pensyve` and `hol-guard`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
 
 ## Quick Start - Essential Plugins
 
@@ -324,13 +324,14 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | ---------------------------- | ---------------------------------- | ------------------------------------------ |
 | **accessibility-compliance** | WCAG auditing and inclusive design | `/plugin install accessibility-compliance` |
 
-### 🎨 Creative (3 plugins)
+### 🎨 Creative (4 plugins)
 
 | Plugin               | Description                                                              | Install                            |
 | -------------------- | ------------------------------------------------------------------------ | ---------------------------------- |
 | **meigen-ai-design** | AI image generation with creative workflow orchestration and prompt MCPs | `/plugin install meigen-ai-design` |
 | **brand-landingpage** | Brand discovery through deployment-ready landing page HTML              | `/plugin install brand-landingpage` |
 | **pptx-deck-creation** | Production-ready editable PowerPoint decks via spec-first, coordinate-explicit workflow | `/plugin install pptx-deck-creation` |
+| **party-planning** | Party games, food & drink quantity calculators, trivia | `/plugin install party-planning` |
 
 ## Plugin Structure
 
@@ -368,7 +369,7 @@ The marketplace commands in this section run inside Claude Code. Other tools use
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 95 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
@@ -422,7 +423,7 @@ Selectors, install paths, and gotchas: [harnesses.md](./harnesses.md#skills-only
 
 ## See Also
 
-- [Agent Skills](./agent-skills.md) - 185 specialized skills across plugins
+- [Agent Skills](./agent-skills.md) - 186 specialized skills across plugins
 - [Agent Reference](./agents.md) - Complete agent catalog
 - [Usage Guide](./usage.md) - Commands and workflows
 - [Architecture](./architecture.md) - Design principles
