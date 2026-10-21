@@ -57,7 +57,7 @@ Small native-install registries are committed for tools that support that route.
 
 ## Skills (cross-harness)
 
-185 skills under `plugins/*/skills/<n>/SKILL.md` — discoverable by every harness:
+186 skills under `plugins/*/skills/<n>/SKILL.md` — discoverable by every harness:
 
 - **Claude Code**: auto-discovery via Anthropic's SKILL.md spec
 - **Codex CLI**: mirrored to `.codex/skills/<plugin>__<skill>/` (8 KB body cap; detail in `references/details.md`)
