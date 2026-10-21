@@ -62,7 +62,6 @@
       },
       "policy": {
         "installation": "AVAILABLE",
-
         "authentication": "ON_USE"
       },
       "category": "Coding"
