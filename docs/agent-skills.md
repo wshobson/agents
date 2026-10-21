@@ -378,6 +378,12 @@ Skills provide domain guidance that coding agents can load when relevant. Each s
 | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **social-evidence-research**  | Research public social discussion with source-level citations, sample limits, and recorded access gaps |
 
+### Party Planning (1 skill)
+
+| Skill | Description |
+| ----- | ----------- |
+| **party-planning** | Party game recommendations with tested rules, party food and drink quantity calculations, trivia night packs, printables, and hosting timelines |
+
 ### LLM Fine-Tuning (10 skills)
 
 | Skill                           | Description                                                                              |
