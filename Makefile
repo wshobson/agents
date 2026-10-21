@@ -220,7 +220,7 @@ format:
 
 # Full pytest suite — plugin-eval framework + tools/ adapters/validators/gardener.
 test:
-	uv run $(EVAL_PROJECT) pytest -q plugins/plugin-eval/ tools/tests/ --ignore=tools/tests/test_cli_smoke.py
+	uv run $(EVAL_PROJECT) --extra dev pytest -q plugins/plugin-eval/ tools/tests/ --ignore=tools/tests/test_cli_smoke.py
 
 # Per-skill static score snapshot, keyed by a hash of each skill's content.
 # tools/tests/test_static_score_snapshot.py fails when a skill whose content did not
@@ -237,7 +237,7 @@ smoke-test:
 		echo "Generating harness artifacts first..."; \
 		$(MAKE) generate-all; \
 	fi
-	uv run $(EVAL_PROJECT) pytest -v tools/tests/test_cli_smoke.py
+	uv run $(EVAL_PROJECT) --extra dev pytest -v tools/tests/test_cli_smoke.py
 
 clean-generated:
 ifdef HARNESS
