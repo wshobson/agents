@@ -66,7 +66,6 @@ The following natural-language examples ask Claude Code to choose a specialist:
 "Use backend-architect to design the authentication API"
 "Have security-auditor scan for OWASP vulnerabilities"
 "Get performance-engineer to optimize this database query"
-
 ```
 
 Claude Code automatically selects and coordinates the appropriate agents based on your request.
