@@ -53,6 +53,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
+
 - Model-optimized with a five-tier strategy (Fable, Opus, Sonnet, Haiku, Inherit) for performance and cost
 
 **16 Workflow Orchestrators**
