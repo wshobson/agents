@@ -444,6 +444,19 @@
       "category": "Coding"
     },
     {
+      "name": "party-planning",
+      "description": "Party game recommendations with tested rules, party food and drink quantity calculations, trivia night packs, printables, and hosting timelines",
+      "source": {
+        "source": "local",
+        "path": "./plugins/party-planning"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Coding"
+    },
+    {
       "name": "payment-processing",
       "description": "Payment gateway integration with Stripe, PayPal, checkout flow implementation, subscription billing, and PCI compliance",
       "source": {

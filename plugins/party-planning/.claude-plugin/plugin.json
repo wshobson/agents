@@ -1,0 +1,19 @@
+{
+  "name": "party-planning",
+  "version": "1.0.0",
+  "description": "Party game recommendations with tested rules, party food and drink quantity calculations, trivia night packs, printables, and hosting timelines",
+  "author": {
+    "name": "Tarun Batta",
+    "email": "admin@hostpartyplay.com",
+    "url": "https://github.com/tarunbatta"
+  },
+  "license": "MIT",
+  "keywords": [
+    "party-planning",
+    "party-games",
+    "trivia",
+    "food-calculator",
+    "drink-calculator",
+    "printables"
+  ]
+}

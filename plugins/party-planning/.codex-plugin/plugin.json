@@ -1,0 +1,27 @@
+{
+  "name": "party-planning",
+  "version": "1.0.0",
+  "description": "Party game recommendations with tested rules, party food and drink quantity calculations, trivia night packs, printables, and hosting timelines",
+  "skills": "./skills/",
+  "author": {
+    "name": "Tarun Batta",
+    "email": "admin@hostpartyplay.com",
+    "url": "https://github.com/tarunbatta"
+  },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/party-planning",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "party-planning",
+    "party-games",
+    "trivia",
+    "food-calculator",
+    "drink-calculator",
+    "printables"
+  ],
+  "interface": {
+    "displayName": "Party Planning",
+    "shortDescription": "Party game recommendations with tested rules, party food and drink quantity calculations, trivia night packs\u2026",
+    "category": "Coding"
+  }
+}

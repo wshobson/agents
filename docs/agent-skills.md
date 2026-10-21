@@ -1,6 +1,6 @@
 # Agent Skills
 
-Agent Skills provide specialized guidance for AI coding agents using the shared [Agent Skills Specification](https://agentskills.io/specification). The repository includes 185 local skills across 52 plugins, with support for seven coding tools. See the [capability matrix](./harnesses.md) for discovery and installation differences.
+Agent Skills provide specialized guidance for AI coding agents using the shared [Agent Skills Specification](https://agentskills.io/specification). The repository includes 186 local skills across 53 plugins, with support for seven coding tools. See the [capability matrix](./harnesses.md) for discovery and installation differences.
 
 Install a skill on its own into a tool supported by the Agent Skills installers:
 
@@ -377,6 +377,12 @@ Skills provide domain guidance that coding agents can load when relevant. Each s
 | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **social-evidence-research**  | Research public social discussion with source-level citations, sample limits, and recorded access gaps |
 
+### Party Planning (1 skill)
+
+| Skill | Description |
+| ----- | ----------- |
+| **party-planning** | Party game recommendations with tested rules, party food and drink quantity calculations, trivia night packs, printables, and hosting timelines |
+
 ### LLM Fine-Tuning (10 skills)
 
 | Skill                           | Description                                                                              |
@@ -454,7 +460,7 @@ fastapi-templates skill → Supplies production-ready templates
 
 ## Specification Compliance
 
-All 185 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
+All 186 skills follow the [Agent Skills Specification](https://agentskills.io/specification):
 
 - ✓ Required `name` field (hyphen-case)
 - ✓ Required `description` field with "Use when" clause

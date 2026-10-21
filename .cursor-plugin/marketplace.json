@@ -733,6 +733,17 @@
       "category": "Coding"
     },
     {
+      "name": "party-planning",
+      "source": "./plugins/party-planning",
+      "version": "1.0.0",
+      "description": "Party game recommendations with tested rules, party food and drink quantity calculations, trivia night packs, printables, and hosting timelines",
+      "author": {
+        "name": "Tarun Batta",
+        "email": "admin@hostpartyplay.com"
+      },
+      "license": "MIT"
+    },
+    {
       "name": "payment-processing",
       "source": "./plugins/payment-processing",
       "version": "1.2.3",
