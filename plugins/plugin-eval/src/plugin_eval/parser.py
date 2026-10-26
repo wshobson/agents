@@ -13,6 +13,13 @@ _CROSS_REFERENCE_PATTERN = re.compile(
     r"(?<![\w-])((?:skill|skills|sub-skills)/[a-z0-9-]+(?:/[a-z0-9-]+)*)"
 )
 _CODE_FENCE_PATTERN = re.compile(r"^\s*(?:>\s*)*(`{3,}|~{3,})(\w*)(.*)")
+# Fenced blocks (``` / ~~~ pairs, non-greedy, DOTALL) and inline code spans.
+# Cross-reference extraction excludes both: a skill path inside code is an
+# example or command, not an ecosystem reference. Without this, prose and
+# command examples generate DEAD_CROSS_REF false positives whenever they
+# mention a skills/<slug> path that does not exist on disk.
+_CODE_BLOCK_PATTERN = re.compile(r"(?s)(`{3,}|~{3,}).*?\1")
+_INLINE_CODE_PATTERN = re.compile(r"`[^`\n]*`")
 
 
 @dataclass
@@ -242,9 +249,16 @@ def _split_frontmatter(content: str) -> tuple[dict, str]:
 
 
 def _extract_cross_references(body: str) -> list[str]:
-    """Extract skill paths while keeping references to nested skills intact."""
+    """Extract skill paths while keeping references to nested skills intact.
+
+    Fenced code blocks and inline code spans are excluded first: skill paths
+    inside code formatting are illustrative (examples, commands), not
+    ecosystem references, and counting them produced DEAD_CROSS_REF false
+    positives for any mention whose target does not exist on disk.
+    """
+    stripped = _INLINE_CODE_PATTERN.sub(" ", _CODE_BLOCK_PATTERN.sub(" ", body))
     references = []
-    for reference in _CROSS_REFERENCE_PATTERN.findall(body):
+    for reference in _CROSS_REFERENCE_PATTERN.findall(stripped):
         if reference.startswith(("skill/", "skills/")):
             reference = reference.split("/", 1)[1]
         references.append(reference)

@@ -36,12 +36,50 @@ class TestParseSkill:
             "name: parent\n"
             'description: "Use when testing nested references."\n'
             "---\n\n"
-            "See `sub-skills/child/SKILL.md` and `skills/sibling/SKILL.md`.\n"
+            "See sub-skills/child/SKILL.md and skills/sibling/SKILL.md in prose.\n"
         )
 
         skill = parse_skill(skill_dir)
 
         assert skill.cross_references == ["sub-skills/child", "sibling"]
+
+    def test_cross_references_exclude_inline_code_spans(self, tmp_path: Path):
+        """Inline code mentions are illustrative (commands, examples), not refs.
+
+        Without this exclusion, any backticked mention of a skills/<slug>
+        path whose target does not exist on disk produces a DEAD_CROSS_REF
+        false positive (observed in practice: 12 such flags on one
+        narrative-heavy skill).
+        """
+        skill_dir = tmp_path / "commanded"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: commanded\n"
+            'description: "Use when testing inline code exclusion."\n'
+            "---\n\n"
+            "Run `bash skills/self/scripts/run.sh` and read `skills/self/results.json`.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == []
+
+    def test_cross_references_exclude_fenced_blocks(self, tmp_path: Path):
+        skill_dir = tmp_path / "fenced"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: fenced\n"
+            'description: "Use when testing fenced block exclusion."\n'
+            "---\n\n"
+            "```\nskills/ghost/does-not-exist\n```\n\n"
+            "Real reference: skills/sibling/SKILL.md in prose.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
 
 
 class TestCodeBlockCounting:
