@@ -81,6 +81,59 @@ class TestParseSkill:
 
         assert skill.cross_references == ["sibling"]
 
+    def test_fence_like_line_inside_a_block_does_not_close_it(self, tmp_path: Path):
+        """A closing fence must be a bare marker run: `echo "```"` is content."""
+        skill_dir = tmp_path / "fence-like"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: fence-like\n"
+            'description: "Use when testing fence-line closing rules."\n'
+            "---\n\n"
+            "```bash\n"
+            'echo "```"\n'
+            "skills/ghost/does-not-exist\n"
+            "```\n\n"
+            "Real reference: skills/sibling/SKILL.md in prose.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
+
+    def test_unclosed_fence_extends_to_end_of_body(self, tmp_path: Path):
+        skill_dir = tmp_path / "unclosed"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: unclosed\n"
+            'description: "Use when testing unclosed fence handling."\n'
+            "---\n\n"
+            "```bash\n"
+            "skills/ghost/does-not-exist\n"
+            "and the block never closes\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == []
+
+    def test_code_spans_match_by_delimiter_length(self, tmp_path: Path):
+        """A double-backtick span closes on a double-backtick run, per CommonMark."""
+        skill_dir = tmp_path / "multi-span"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: multi-span\n"
+            'description: "Use when testing multi-backtick code spans."\n'
+            "---\n\n"
+            "``skills/ghost/does-not-exist`` stays illustrative, and a ``nested `tick` span`` too.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == []
+
 
 class TestCodeBlockCounting:
     def _skill(self, tmp_path: Path, body: str, name: str = "counted") -> Path:
