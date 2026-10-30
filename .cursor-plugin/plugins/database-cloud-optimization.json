@@ -1,7 +1,7 @@
 {
   "name": "database-cloud-optimization",
   "displayName": "Database Cloud Optimization",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Database query optimization, cloud cost optimization, and scalability improvements",
   "author": {
     "name": "Seth Hobson",

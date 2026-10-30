@@ -1,7 +1,7 @@
 {
   "name": "performance-testing-review",
   "displayName": "Performance Testing Review",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Performance analysis, test coverage review, and AI-powered code quality assessment",
   "author": {
     "name": "Seth Hobson",

@@ -1,6 +1,6 @@
 {
   "name": "ship-mate",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Your AI development teammate. Turns a story file into a shipped, reviewed, and tested feature via orchestrator \u2192 architect \u2192 developer \u2192 PR reviewer \u2192 QA \u2192 Playwright.",
   "skills": "./skills/",
   "author": {
