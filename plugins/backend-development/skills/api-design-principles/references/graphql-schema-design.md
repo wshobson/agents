@@ -381,8 +381,8 @@ type User {
   email: String! @deprecated(reason: "Use emails field instead")
   emails: [String!]!
 
-  # Conditional inclusion
-  privateData: PrivateData @include(if: $isOwner)
+  # Owner-only data: check authorization in the resolver
+  privateData: PrivateData
 }
 
 # Query
@@ -531,7 +531,7 @@ def complexity_limit_validator(max_complexity: int):
             complexity *= get_list_size_arg(node)
         return complexity
 
-    return validate_complexity
+    return calculate_complexity
 ```
 
 ## Schema Versioning
