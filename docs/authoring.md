@@ -180,6 +180,14 @@ anyway. Prefer stating goals over step-by-step scaffolding in fable-tier agent b
 and never instruct the model to echo its reasoning (triggers `reasoning_extraction`
 refusals).
 
+### Bump the version with every change
+
+Claude Code updates an installed plugin only when its version goes up. Any change under
+`plugins/<name>/` therefore needs a patch bump in `plugins/<name>/.claude-plugin/plugin.json`
+and in the plugin's `.claude-plugin/marketplace.json` entry, followed by `make generate-all`
+to carry it into the Codex and Cursor manifests. `make check-version-bumps` runs on every
+pull request; lockfile-only changes such as `uv.lock` are exempt.
+
 ## Skills layout for progressive disclosure
 
 The OpenAI harness-engineering post argues that "agents start with a small, stable entry

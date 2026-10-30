@@ -7,7 +7,7 @@ Per the OpenAI harness engineering pattern, a recurring task scans for:
 3. Dead links from docs/ into plugins/ or other docs/, and inside skill files
 4. Skills above 8 KB body without `references/` (Codex hard cap)
 5. Plugin entries in marketplace.json without a corresponding plugins/<name>/ directory
-6. Plugins missing from marketplace.json
+6. Plugins missing from marketplace.json, and entries whose version differs from plugin.json
 7. Component counts quoted in README.md / AGENTS.md that no longer match reality
 8. Same-named agents whose bodies have diverged across plugins
 9. Generated Markdown artifacts with invalid YAML frontmatter
@@ -626,6 +626,31 @@ def check_marketplace_consistency(report: Report) -> None:
             message=f"plugin `{name}` listed in marketplace.json with local source but plugins/{name}/ missing",
             fix=f"Either remove the entry or create plugins/{name}/.",
         )
+    # Claude Code compares the plugin.json version when deciding whether an installed
+    # copy is current, and the marketplace entry advertises it. The Codex and Cursor
+    # manifests are generated from plugin.json, so this pair is the only one to check.
+    for name in sorted(listed_local & actual):
+        manifest = PLUGINS_DIR / name / ".claude-plugin" / "plugin.json"
+        if not manifest.is_file():
+            continue
+        try:
+            plugin_json = json.loads(manifest.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            continue  # the validate-json CI job reports unreadable plugin.json files
+        plugin_version = plugin_json.get("version") if isinstance(plugin_json, dict) else None
+        entry_version = local_entries[name].get("version")
+        if plugin_version != entry_version:
+            report.add(
+                kind="MARKETPLACE_VERSION_MISMATCH",
+                severity="error",
+                path=MARKETPLACE_JSON,
+                message=(
+                    f"`{name}` entry has version {entry_version!r} but "
+                    f"plugins/{name}/.claude-plugin/plugin.json has {plugin_version!r}"
+                ),
+                fix="Set the same version in both files.",
+            )
+
     listed_all = listed_local | external_names
     for name in sorted(actual - listed_all):
         # External git-subdir plugins (like the existing `codex` external plugin) may

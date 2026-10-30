@@ -24,6 +24,15 @@ The repository supports seven coding tools: Claude Code, OpenAI Codex CLI, Curso
 
 Full frontmatter conventions in [`docs/authoring.md`](docs/authoring.md).
 
+## Changing a plugin
+
+Any change to a file under `plugins/<name>/` needs a patch bump of that plugin's version
+in `plugins/<name>/.claude-plugin/plugin.json` and in its `.claude-plugin/marketplace.json`
+entry. Then run `make generate-all` so the Codex and Cursor manifests get the new version.
+Claude Code updates an installed plugin only when the version goes up, so a change without
+a bump never reaches people who already installed it. CI enforces this on pull requests
+with `make check-version-bumps`; lockfile-only changes such as `uv.lock` are exempt.
+
 ## Commercial content and disclosure
 
 - Plugin content must not funnel users to paid products, affiliate programs, or
@@ -79,11 +88,11 @@ make validate STRICT=1     # structural validation across all harness outputs
 make garden                # drift, dead-link, stale-artifact detection
 make test                  # full pytest suite (plugin-eval + tools/tests/)
 make smoke-test            # real-CLI subprocess tests (OpenCode, Antigravity, Codex, Claude, Pi, gh skill, npx skills)
+make check-version-bumps   # every changed plugin raised its version
 ```
 
-`make garden STRICT=1` also fails on warnings. Main currently carries ten
-`SKILL_OVER_CODEX_CAP` warnings, so treat it as something to read rather than a
-pass/fail gate until those skills are split. CI gates on errors only.
+`make garden STRICT=1` also fails on warnings. CI gates on errors only, but main
+has no garden errors or warnings, so any finding comes from your change.
 
 Code-quality checks (also in CI):
 

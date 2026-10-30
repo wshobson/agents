@@ -20,9 +20,9 @@ UV_TOOLS := uv run $(EVAL_PROJECT) python
 # ruff and ty config lives. ty skips tools/yt-design-extractor/ because that tool
 # imports optional OCR dependencies installed only by `make install-ocr`.
 RUFF_PATHS := ../../tools/ src/plugin_eval/
-TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/install_pi.py ../../tools/check_agent_name_collisions.py ../../tools/tests/ src/plugin_eval/
+TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/install_pi.py ../../tools/check_agent_name_collisions.py ../../tools/check_version_bumps.py ../../tools/tests/ src/plugin_eval/
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity install-pi uninstall-pi validate garden lint format test smoke-test eval-snapshot
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity install-pi uninstall-pi validate garden check-version-bumps lint format test smoke-test eval-snapshot
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
@@ -42,6 +42,7 @@ help:
 	@echo "  make uninstall-pi                                Remove repo-owned Pi symlinks"
 	@echo "  make validate [HARNESS=<h>] [STRICT=1]           Structural validation of generated artifacts"
 	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
+	@echo "  make check-version-bumps [BASE=origin/main]      Fail if a changed plugin kept its version"
 	@echo "  make lint                                        ruff + ty, exactly as CI runs them"
 	@echo "  make format                                      Apply ruff format and safe fixes"
 	@echo "  make test                                        Full pytest suite (plugin-eval + tools)"
@@ -200,6 +201,12 @@ endif
 
 garden:
 	$(UV_TOOLS) tools/doc_gardener.py $(if $(STRICT),--strict)
+
+# Every plugin changed since the merge base with BASE must have a higher plugin.json
+# version, or installed copies never update. CI runs this on pull requests.
+BASE ?= origin/main
+check-version-bumps:
+	$(UV_TOOLS) tools/check_version_bumps.py --base '$(BASE)'
 
 # Code-quality gates. These MUST run from plugins/plugin-eval/, which is where the
 # [tool.ruff] and [tool.ty] config lives and where CI runs them. Running ruff from the

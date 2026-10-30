@@ -579,6 +579,35 @@ class TestMarketplaceConsistency:
         check_marketplace_consistency(report)
         assert [f for f in report.findings if f.kind == "MARKETPLACE_MISSING"]
 
+    def _write_versioned_plugin(self, tmp_path: Path, version: str) -> None:
+        manifest_dir = tmp_path / "plugins" / "demo" / ".claude-plugin"
+        manifest_dir.mkdir(parents=True)
+        (manifest_dir / "plugin.json").write_text(json.dumps({"name": "demo", "version": version}))
+
+    def test_version_mismatch_errors(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        self._write_versioned_plugin(tmp_path, "1.0.1")
+        self._write_marketplace(
+            tmp_path, [{"name": "demo", "source": "./plugins/demo", "version": "1.0.0"}]
+        )
+
+        report = Report()
+        check_marketplace_consistency(report)
+        mismatches = [f for f in report.findings if f.kind == "MARKETPLACE_VERSION_MISMATCH"]
+        assert [f.severity for f in mismatches] == ["error"]
+        assert "'1.0.0'" in mismatches[0].message and "'1.0.1'" in mismatches[0].message
+
+    def test_matching_versions_no_finding(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        _patch_paths(monkeypatch, tmp_path)
+        self._write_versioned_plugin(tmp_path, "1.0.1")
+        self._write_marketplace(
+            tmp_path, [{"name": "demo", "source": "./plugins/demo", "version": "1.0.1"}]
+        )
+
+        report = Report()
+        check_marketplace_consistency(report)
+        assert not [f for f in report.findings if f.kind == "MARKETPLACE_VERSION_MISMATCH"]
+
 
 # ── Doc counts ───────────────────────────────────────────────────────────────
 
