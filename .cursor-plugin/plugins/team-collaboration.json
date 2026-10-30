@@ -1,7 +1,7 @@
 {
   "name": "team-collaboration",
   "displayName": "Team Collaboration",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Team workflows, issue management, standup automation, and developer experience optimization",
   "author": {
     "name": "Seth Hobson",

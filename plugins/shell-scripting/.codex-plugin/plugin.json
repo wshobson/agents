@@ -1,6 +1,6 @@
 {
   "name": "shell-scripting",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Production-grade Bash scripting with defensive programming, POSIX compliance, and comprehensive testing",
   "skills": "./skills/",
   "author": {

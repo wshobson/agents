@@ -1,7 +1,7 @@
 {
   "name": "game-development",
   "displayName": "Game Development",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Unity game development with C# scripting, Minecraft server plugin development with Bukkit/Spigot APIs",
   "author": {
     "name": "Seth Hobson",

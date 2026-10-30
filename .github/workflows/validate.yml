@@ -110,6 +110,25 @@ jobs:
       - name: Check agent name uniqueness
         run: python3 tools/check_agent_name_collisions.py --fail-on-duplicates
 
+  plugin-version-bumps:
+    name: Changed plugins raise their version
+    # Claude Code updates an installed plugin only when its plugin.json version goes up,
+    # so a PR that changes files under plugins/<name>/ must raise that version. Pushes
+    # to main have no target branch to compare with, so this runs on pull requests only.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+          # Full history, so the merge base with the target branch can be found.
+          fetch-depth: 0
+
+      - name: Check version bumps
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: python3 tools/check_version_bumps.py --base "origin/$BASE_REF"
+
   plugin-eval-tests:
     name: plugin-eval pytest
     runs-on: ubuntu-latest

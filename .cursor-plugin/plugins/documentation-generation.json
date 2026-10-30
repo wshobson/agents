@@ -1,7 +1,7 @@
 {
   "name": "documentation-generation",
   "displayName": "Documentation Generation",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "OpenAPI specification generation, Mermaid diagram creation, tutorial writing, API reference documentation",
   "author": {
     "name": "Seth Hobson",
