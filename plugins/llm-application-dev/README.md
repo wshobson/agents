@@ -86,3 +86,11 @@ Build production-ready LLM applications, advanced RAG systems, and intelligent a
 ## License
 
 MIT License - See the plugin configuration for details.
+
+## Milvus recipe disclosure
+
+The Milvus example in the RAG implementation reference was contributed by a
+Zilliz employee. It uses the open-source `langchain-milvus`, `pymilvus`, and
+`milvus-lite` packages with local persistence by default, and reuses the
+application's embedding provider. Zilliz also offers a paid managed service;
+that service is not required or configured by the example.
