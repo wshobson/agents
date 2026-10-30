@@ -124,13 +124,19 @@ codeql database create mydb --language=python
 ### New Project Setup
 
 ```bash
-./scripts/run-sast.sh --setup --language python --tools semgrep,sonarqube
+# Semgrep: install, then run an auto-config scan that exits non-zero on findings
+pip install semgrep
+semgrep --config=auto --error
+
+# SonarQube: start a community server for local evaluation, then analyze with sonar-scanner.
+# SONAR_ES_BOOTSTRAP_CHECKS_DISABLE skips the Elasticsearch host checks for a local try-out;
+# a real deployment needs vm.max_map_count>=524288 and fs.file-max>=131072 on the host instead.
+docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:10.8-community
 ```
 
 ### Custom Rule Development
 
 ```yaml
-# See references/semgrep-rules.md for detailed examples
 rules:
   - id: hardcoded-jwt-secret
     pattern: jwt.encode($DATA, "...", ...)
