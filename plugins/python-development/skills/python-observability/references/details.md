@@ -50,9 +50,12 @@ def track_request(func):
     async def wrapper(request: Request, *args, **kwargs):
         method = request.method
         # Use the route template ("/users/{user_id}"), not the raw path,
-        # so IDs in URLs do not create a new label value per request
+        # so IDs in URLs do not create a new label value per request.
+        # root_path adds the mount prefix for mounted sub-apps.
         route = request.scope.get("route")
-        endpoint = route.path if route else "unmatched"
+        endpoint = (
+            request.scope.get("root_path", "") + route.path if route else "unmatched"
+        )
         start = time.perf_counter()
 
         try:

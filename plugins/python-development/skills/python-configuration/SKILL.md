@@ -191,10 +191,10 @@ FEATURE_NEW_CHECKOUT=true
 FEATURE_BETA_UI=false
 ```
 
-Makes the database settings easy to list for debugging. Hide secret values when you do:
+Makes the database settings easy to list for debugging. Print only the names, so no value (such as a password inside a connection URL) reaches your terminal or logs:
 
 ```bash
-env | grep '^DB_' | sed -E 's/^([A-Z_]*(PASSWORD|SECRET|KEY)[A-Z_]*)=.*/\1=***/'
+env | grep -o '^DB_[A-Za-z0-9_]*'
 ```
 
 ## Detailed worked examples and patterns
