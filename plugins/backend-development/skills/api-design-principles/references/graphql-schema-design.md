@@ -529,6 +529,10 @@ def complexity_limit_validator(max_complexity: int):
         complexity = 1
         if is_list_field(node):
             complexity *= get_list_size_arg(node)
+        if complexity > max_complexity:
+            raise GraphQLError(
+                f"Query complexity {complexity} exceeds maximum {max_complexity}"
+            )
         return complexity
 
     return calculate_complexity

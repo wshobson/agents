@@ -49,14 +49,17 @@ function verifyToken(token: string): JWTPayload {
   }
 }
 
-// Middleware
+// Middleware: read the Bearer header, or the access_token cookie that the
+// OAuth callback sets (req.cookies needs the cookie-parser middleware)
 function authenticate(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.substring(7)
+    : req.cookies?.access_token;
+  if (!token) {
     return res.status(401).json({ error: "No token provided" });
   }
 
-  const token = authHeader.substring(7);
   try {
     const payload = verifyToken(token);
     req.user = payload; // Attach user to request
