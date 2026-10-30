@@ -190,19 +190,8 @@ spec:
     - IPv4
   ipFamilyPolicy: SingleStack
 
-  # External traffic policy
-  externalTrafficPolicy: Local
-
   # Internal traffic policy
   internalTrafficPolicy: Local
-
-  # Health check
-  healthCheckNodePort: 30000
-
-  # Load balancer config (for type: LoadBalancer)
-  loadBalancerIP: 203.0.113.100
-  loadBalancerSourceRanges:
-    - 203.0.113.0/24
 
   # External IPs
   externalIPs:
@@ -210,6 +199,25 @@ spec:
 
   # Publishing strategy
   publishNotReadyAddresses: false
+```
+
+The following fields apply only to a `LoadBalancer` Service (`externalTrafficPolicy` also
+applies to `NodePort`), and the API server rejects most of them on a `ClusterIP` Service:
+
+```yaml
+spec:
+  type: LoadBalancer
+
+  # External traffic policy
+  externalTrafficPolicy: Local
+
+  # Health check (only with externalTrafficPolicy: Local; auto-assigned if omitted)
+  healthCheckNodePort: 30000
+
+  # Load balancer config
+  loadBalancerIP: 203.0.113.100
+  loadBalancerSourceRanges:
+    - 203.0.113.0/24
 ```
 
 ## Port Configuration
