@@ -293,10 +293,15 @@ app.get(
   (req, res) => {
     // Generate JWT
     const tokens = generateTokens(req.user.id, req.user.email, req.user.role);
-    // Redirect to frontend with token
-    res.redirect(
-      `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.accessToken}`,
-    );
+    // Send the token in an HttpOnly cookie, not in the URL: query strings
+    // end up in browser history, server logs, and Referer headers
+    res.cookie("access_token", tokens.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax", // Allows the cookie on the top-level redirect back from Google
+      maxAge: 15 * 60 * 1000, // Matches the 15m token lifetime
+    });
+    res.redirect(`${process.env.FRONTEND_URL}/auth/callback`);
   },
 );
 ```

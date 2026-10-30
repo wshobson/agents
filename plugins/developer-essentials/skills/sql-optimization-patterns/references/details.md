@@ -238,7 +238,8 @@ CREATE INDEX idx_user_summary_spent ON user_order_summary(total_spent DESC);
 -- Refresh materialized view
 REFRESH MATERIALIZED VIEW user_order_summary;
 
--- Concurrent refresh (PostgreSQL)
+-- Concurrent refresh (PostgreSQL) requires a unique index on the view
+CREATE UNIQUE INDEX idx_user_summary_id ON user_order_summary(id);
 REFRESH MATERIALIZED VIEW CONCURRENTLY user_order_summary;
 
 -- Query materialized view (very fast)
