@@ -36,12 +36,103 @@ class TestParseSkill:
             "name: parent\n"
             'description: "Use when testing nested references."\n'
             "---\n\n"
-            "See `sub-skills/child/SKILL.md` and `skills/sibling/SKILL.md`.\n"
+            "See sub-skills/child/SKILL.md and skills/sibling/SKILL.md in prose.\n"
         )
 
         skill = parse_skill(skill_dir)
 
         assert skill.cross_references == ["sub-skills/child", "sibling"]
+
+    def test_cross_references_exclude_inline_code_spans(self, tmp_path: Path):
+        """Inline code mentions are illustrative (commands, examples), not refs.
+
+        Without this exclusion, any backticked mention of a skills/<slug>
+        path whose target does not exist on disk produces a DEAD_CROSS_REF
+        false positive (observed in practice: 12 such flags on one
+        narrative-heavy skill).
+        """
+        skill_dir = tmp_path / "commanded"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: commanded\n"
+            'description: "Use when testing inline code exclusion."\n'
+            "---\n\n"
+            "Run `bash skills/self/scripts/run.sh` and read `skills/self/results.json`.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == []
+
+    def test_cross_references_exclude_fenced_blocks(self, tmp_path: Path):
+        skill_dir = tmp_path / "fenced"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: fenced\n"
+            'description: "Use when testing fenced block exclusion."\n'
+            "---\n\n"
+            "```\nskills/ghost/does-not-exist\n```\n\n"
+            "Real reference: skills/sibling/SKILL.md in prose.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
+
+    def test_fence_like_line_inside_a_block_does_not_close_it(self, tmp_path: Path):
+        """A closing fence must be a bare marker run: `echo "```"` is content."""
+        skill_dir = tmp_path / "fence-like"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: fence-like\n"
+            'description: "Use when testing fence-line closing rules."\n'
+            "---\n\n"
+            "```bash\n"
+            'echo "```"\n'
+            "skills/ghost/does-not-exist\n"
+            "```\n\n"
+            "Real reference: skills/sibling/SKILL.md in prose.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
+
+    def test_unclosed_fence_extends_to_end_of_body(self, tmp_path: Path):
+        skill_dir = tmp_path / "unclosed"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: unclosed\n"
+            'description: "Use when testing unclosed fence handling."\n'
+            "---\n\n"
+            "```bash\n"
+            "skills/ghost/does-not-exist\n"
+            "and the block never closes\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == []
+
+    def test_code_spans_match_by_delimiter_length(self, tmp_path: Path):
+        """A double-backtick span closes on a double-backtick run, per CommonMark."""
+        skill_dir = tmp_path / "multi-span"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: multi-span\n"
+            'description: "Use when testing multi-backtick code spans."\n'
+            "---\n\n"
+            "``skills/ghost/does-not-exist`` stays illustrative, and a ``nested `tick` span`` too.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == []
 
 
 class TestCodeBlockCounting:

@@ -13,6 +13,12 @@ _CROSS_REFERENCE_PATTERN = re.compile(
     r"(?<![\w-])((?:skill|skills|sub-skills)/[a-z0-9-]+(?:/[a-z0-9-]+)*)"
 )
 _CODE_FENCE_PATTERN = re.compile(r"^\s*(?:>\s*)*(`{3,}|~{3,})(\w*)(.*)")
+_INLINE_BACKTICK_RUN_PATTERN = re.compile(r"`+")
+# Cross-reference extraction excludes fenced code blocks and inline code
+# spans: a skill path inside code formatting is an example or command, not
+# an ecosystem reference. Without this, prose and command examples generate
+# DEAD_CROSS_REF false positives whenever they mention a skills/<slug> path
+# that does not exist on disk.
 
 
 @dataclass
@@ -241,10 +247,87 @@ def _split_frontmatter(content: str) -> tuple[dict, str]:
     return frontmatter, parts[2]
 
 
+def _strip_fenced_blocks(body: str) -> str:
+    """Remove fenced code block content, using the same fence rules as _count_code_blocks.
+
+    A block closes only on a run of the same character at least as long as
+    its opener with nothing but whitespace after it, so a fence-like line
+    carrying other text (e.g. `echo "```"` inside a block) is content, not a
+    closer. An unclosed fence extends to the end of the body. Lines are
+    replaced with blanks rather than deleted so line-oriented consumers of
+    the stripped text keep their positions.
+    """
+    out_lines: list[str] = []
+    open_fence = ""
+
+    for line in body.split("\n"):
+        match = _CODE_FENCE_PATTERN.match(line)
+        if match is not None:
+            fence, language, trailing = match.group(1), match.group(2), match.group(3)
+            if open_fence:
+                if (
+                    fence[0] == open_fence[0]
+                    and len(fence) >= len(open_fence)
+                    and not language
+                    and not trailing.strip()
+                ):
+                    open_fence = ""
+                out_lines.append("")
+                continue
+            if fence[0] == "`" and "`" in trailing:
+                # CommonMark keeps backticks out of the info string of a backtick fence.
+                out_lines.append(line)
+                continue
+            open_fence = fence
+            out_lines.append("")
+            continue
+        out_lines.append("" if open_fence else line)
+
+    return "\n".join(out_lines)
+
+
+def _strip_inline_code_spans(text: str) -> str:
+    """Remove CommonMark code spans, pairing backtick runs of equal length.
+
+    A span opens on a backtick run and closes on the next run of the same
+    length, crossing newlines; longer or shorter runs between are content
+    (CommonMark closing delimiter must equal the opener's length). An
+    unmatched opener run is kept literally.
+    """
+    runs = list(_INLINE_BACKTICK_RUN_PATTERN.finditer(text))
+    out: list[str] = []
+    last = 0
+    i = 0
+    while i < len(runs):
+        open_run = runs[i]
+        open_len = open_run.end() - open_run.start()
+        j = i + 1
+        while j < len(runs) and (runs[j].end() - runs[j].start()) != open_len:
+            j += 1
+        if j < len(runs):
+            out.append(text[last:open_run.start()])
+            out.append(" ")
+            last = runs[j].end()
+            i = j + 1
+        else:
+            out.append(text[last:open_run.end()])
+            last = open_run.end()
+            i += 1
+    out.append(text[last:])
+    return "".join(out)
+
+
 def _extract_cross_references(body: str) -> list[str]:
-    """Extract skill paths while keeping references to nested skills intact."""
+    """Extract skill paths while keeping references to nested skills intact.
+
+    Fenced code blocks and inline code spans are excluded first: skill paths
+    inside code formatting are illustrative (examples, commands), not
+    ecosystem references, and counting them produced DEAD_CROSS_REF false
+    positives for any mention whose target does not exist on disk.
+    """
+    stripped = _strip_inline_code_spans(_strip_fenced_blocks(body))
     references = []
-    for reference in _CROSS_REFERENCE_PATTERN.findall(body):
+    for reference in _CROSS_REFERENCE_PATTERN.findall(stripped):
         if reference.startswith(("skill/", "skills/")):
             reference = reference.split("/", 1)[1]
         references.append(reference)
