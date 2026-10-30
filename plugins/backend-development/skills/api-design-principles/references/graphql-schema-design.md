@@ -381,8 +381,8 @@ type User {
   email: String! @deprecated(reason: "Use emails field instead")
   emails: [String!]!
 
-  # Conditional inclusion
-  privateData: PrivateData @include(if: $isOwner)
+  # Owner-only data: check authorization in the resolver
+  privateData: PrivateData
 }
 
 # Query
@@ -524,14 +524,20 @@ def depth_limit_validator(max_depth: int):
 
 ```python
 def complexity_limit_validator(max_complexity: int):
+    # Checks each field's cost. A limit on the whole query needs a pass that
+    # sums these costs over the full document before execution.
     def calculate_complexity(node):
         # Each field = 1, lists multiply
         complexity = 1
         if is_list_field(node):
             complexity *= get_list_size_arg(node)
+        if complexity > max_complexity:
+            raise GraphQLError(
+                f"Query complexity {complexity} exceeds maximum {max_complexity}"
+            )
         return complexity
 
-    return validate_complexity
+    return calculate_complexity
 ```
 
 ## Schema Versioning

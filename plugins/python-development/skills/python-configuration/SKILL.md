@@ -191,7 +191,11 @@ FEATURE_NEW_CHECKOUT=true
 FEATURE_BETA_UI=false
 ```
 
-Makes `env | grep DB_` useful for debugging.
+Makes the database settings easy to list for debugging. Print only the names, so no value (such as a password inside a connection URL) reaches your terminal or logs:
+
+```bash
+env | grep -o '^DB_[A-Za-z0-9_]*'
+```
 
 ## Detailed worked examples and patterns
 

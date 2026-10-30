@@ -49,7 +49,12 @@ def track_request(func):
     @wraps(func)
     async def wrapper(request: Request, *args, **kwargs):
         method = request.method
-        endpoint = request.url.path
+        # Use the route template ("/users/{user_id}"), not the raw path,
+        # so IDs in URLs do not create a new label value per request.
+        # Inside a mounted sub-app this is the sub-app's own template, so
+        # add a fixed per-app label if two mounts share route paths.
+        route = request.scope.get("route")
+        endpoint = route.path if route else "unmatched"
         start = time.perf_counter()
 
         try:
@@ -86,8 +91,13 @@ REQUEST_COUNT.labels(method="GET", endpoint="/users", status="200")
 # If you need per-user metrics, use a different approach:
 # - Log the user_id and query logs
 # - Use a separate analytics system
-# - Bucket users by type/tier
-REQUEST_COUNT.labels(
+# - Bucket users by type/tier, in a metric that declares that label
+REQUESTS_BY_TIER = Counter(
+    "http_requests_by_tier_total",
+    "HTTP requests by user tier",
+    ["method", "endpoint", "user_tier"],
+)
+REQUESTS_BY_TIER.labels(
     method="GET",
     endpoint="/users",
     user_tier="premium",  # Bounded set of values

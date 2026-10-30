@@ -177,7 +177,7 @@ async def database_transaction(conn: AsyncConnection):
     try:
         yield conn
         await conn.execute("COMMIT")
-    except Exception:
+    except BaseException:  # also roll back on asyncio.CancelledError
         await conn.execute("ROLLBACK")
         raise
 
