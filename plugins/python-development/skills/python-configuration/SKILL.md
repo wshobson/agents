@@ -191,7 +191,11 @@ FEATURE_NEW_CHECKOUT=true
 FEATURE_BETA_UI=false
 ```
 
-Makes `env | grep DB_` useful for debugging.
+Makes the database settings easy to list for debugging. Hide secret values when you do:
+
+```bash
+env | grep '^DB_' | sed -E 's/^([A-Z_]*(PASSWORD|SECRET|KEY)[A-Z_]*)=.*/\1=***/'
+```
 
 ## Detailed worked examples and patterns
 
