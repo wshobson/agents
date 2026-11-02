@@ -338,8 +338,17 @@ class PostgresOutboxPublisher:
 
 
 # use_cases/place_order.py — aggregate saves, events are extracted and stored
+# For the outbox, the repository port takes the open connection:
+#   async def save(self, order: Order, conn) -> None
+# so the order row and the outbox rows commit in the same transaction.
 class PlaceOrderUseCase:
-    def __init__(self, order_repo: OrderRepository, event_publisher: PostgresOutboxPublisher):
+    def __init__(
+        self,
+        db: Database,
+        order_repo: OrderRepository,
+        event_publisher: PostgresOutboxPublisher,
+    ):
+        self.db = db
         self.orders = order_repo
         self.publisher = event_publisher
 

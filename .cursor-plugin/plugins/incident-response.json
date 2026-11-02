@@ -1,7 +1,7 @@
 {
   "name": "incident-response",
   "displayName": "Incident Response",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Production incident management, triage workflows, and automated incident resolution",
   "author": {
     "name": "Seth Hobson",

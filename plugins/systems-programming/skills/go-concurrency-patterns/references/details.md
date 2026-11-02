@@ -25,20 +25,27 @@ type Result struct {
 }
 
 func WorkerPool(ctx context.Context, numWorkers int, jobs <-chan Job) <-chan Result {
-    results := make(chan Result, len(jobs))
+    results := make(chan Result)
 
     var wg sync.WaitGroup
     for i := 0; i < numWorkers; i++ {
         wg.Add(1)
         go func(workerID int) {
             defer wg.Done()
-            for job := range jobs {
+            for {
+                // Stop on cancel even while waiting for a job or a reader
                 select {
                 case <-ctx.Done():
                     return
-                default:
-                    result := processJob(job)
-                    results <- result
+                case job, ok := <-jobs:
+                    if !ok {
+                        return
+                    }
+                    select {
+                    case results <- processJob(job):
+                    case <-ctx.Done():
+                        return
+                    }
                 }
             }
         }(i)

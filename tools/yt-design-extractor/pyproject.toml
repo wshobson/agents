@@ -2,7 +2,7 @@
 name = "yt-design-extractor"
 version = "0.1.0"
 description = "Extract design tokens (colors, OCR text, transcripts) from YouTube videos"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "yt-dlp>=2026.7.4",
     "youtube-transcript-api>=0.6.0",

@@ -1,6 +1,6 @@
 {
   "name": "database-design",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Database architecture, schema design, and SQL optimization for production systems",
   "skills": "./skills/",
   "author": {

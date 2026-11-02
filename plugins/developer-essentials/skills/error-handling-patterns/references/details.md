@@ -291,7 +291,7 @@ func getUser(id string) (*User, error) {
         return nil, fmt.Errorf("failed to query user: %w", err)
     }
     if user == nil {
-        return nil, errors.New("user not found")
+        return nil, fmt.Errorf("user %s: %w", id, ErrNotFound)
     }
     return user, nil
 }

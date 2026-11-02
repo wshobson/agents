@@ -1,7 +1,7 @@
 {
   "name": "dependency-management",
   "displayName": "Dependency Management",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Dependency auditing, version management, and security vulnerability scanning",
   "author": {
     "name": "Seth Hobson",

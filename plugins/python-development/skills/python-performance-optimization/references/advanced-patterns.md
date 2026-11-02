@@ -83,7 +83,7 @@ print(f"Cache info: {fibonacci_fast.cache_info()}")
 ### Pattern 13: Using __slots__ for Memory
 
 ```python
-import sys
+import tracemalloc
 
 class RegularClass:
     """Regular class with __dict__."""
@@ -101,19 +101,17 @@ class SlottedClass:
         self.y = y
         self.z = z
 
-# Memory comparison
-regular = RegularClass(1, 2, 3)
-slotted = SlottedClass(1, 2, 3)
+# Memory comparison: sys.getsizeof is shallow and leaves out each
+# instance's __dict__, so measure real allocations with tracemalloc
+def measure(cls, n=10000):
+    tracemalloc.start()
+    objects = [cls(i, i+1, i+2) for i in range(n)]
+    current, _ = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    return current
 
-print(f"Regular class size: {sys.getsizeof(regular)} bytes")
-print(f"Slotted class size: {sys.getsizeof(slotted)} bytes")
-
-# Significant savings with many instances
-regular_objects = [RegularClass(i, i+1, i+2) for i in range(10000)]
-slotted_objects = [SlottedClass(i, i+1, i+2) for i in range(10000)]
-
-print(f"\nMemory for 10000 regular objects: ~{sys.getsizeof(regular) * 10000} bytes")
-print(f"Memory for 10000 slotted objects: ~{sys.getsizeof(slotted) * 10000} bytes")
+print(f"Memory for 10000 regular objects: {measure(RegularClass)} bytes")
+print(f"Memory for 10000 slotted objects: {measure(SlottedClass)} bytes")
 ```
 
 ### Pattern 14: Multiprocessing for CPU-Bound Tasks

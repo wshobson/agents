@@ -63,6 +63,7 @@ jobs:
             ../../tools/install_antigravity.py \
             ../../tools/install_pi.py \
             ../../tools/check_agent_name_collisions.py \
+            ../../tools/check_version_bumps.py \
             ../../tools/tests/ \
             src/plugin_eval/
 

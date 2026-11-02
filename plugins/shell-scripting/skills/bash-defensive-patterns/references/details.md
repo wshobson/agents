@@ -338,11 +338,17 @@ atomic_write() {
     # Temp file in the target's directory, so the rename stays on one filesystem
     tmpfile=$(mktemp "$(dirname -- "$target")/.atomic_write.XXXXXX") || return 1
 
-    # Write to temp file first
-    cat > "$tmpfile"
+    # Write to temp file first; on failure leave the target untouched
+    if ! cat > "$tmpfile"; then
+        rm -f -- "$tmpfile"
+        return 1
+    fi
 
     # Atomic rename
-    mv "$tmpfile" "$target"
+    if ! mv -- "$tmpfile" "$target"; then
+        rm -f -- "$tmpfile"
+        return 1
+    fi
 }
 ```
 

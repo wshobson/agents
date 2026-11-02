@@ -278,12 +278,22 @@ jobs:
 ```bash
 # Install from private index
 pip install my-package --index-url https://private.pypi.org/simple/
+```
 
-# Or add to pip.conf
+Or add it to `pip.conf`:
+
+```ini
 [global]
 index-url = https://private.pypi.org/simple/
-extra-index-url = https://pypi.org/simple/
+```
 
+Do not pair a private `index-url` with `extra-index-url = https://pypi.org/simple/`.
+pip treats every index as equal and installs the highest version it finds, so anyone who
+publishes a package with one of your private names on PyPI can replace it (dependency
+confusion). If you also need public packages, let the private index proxy PyPI, or use a
+tool that pins each package to one index.
+
+```bash
 # Upload to private index
 twine upload --repository-url https://private.pypi.org/ dist/*
 ```

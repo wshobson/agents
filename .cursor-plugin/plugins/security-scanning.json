@@ -1,7 +1,7 @@
 {
   "name": "security-scanning",
   "displayName": "Security Scanning",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "SAST analysis, dependency vulnerability scanning, OWASP Top 10 compliance, container security scanning, and automated security hardening",
   "author": {
     "name": "Seth Hobson",

@@ -146,7 +146,8 @@ import pytest
 
 def is_valid_email(email: str) -> bool:
     """Check if email is valid."""
-    return "@" in email and "." in email.split("@")[1]
+    local, sep, domain = email.partition("@")
+    return bool(local) and bool(sep) and "." in domain and "@" not in domain
 
 
 @pytest.mark.parametrize("email,expected", [
