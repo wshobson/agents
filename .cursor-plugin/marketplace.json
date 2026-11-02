@@ -656,7 +656,7 @@
     {
       "name": "llm-application-dev",
       "source": "./plugins/llm-application-dev",
-      "version": "2.0.7",
+      "version": "2.0.8",
       "description": "LLM application development with LangGraph, RAG systems, vector search, and AI agent architectures for Claude 4.6 and GPT-5.4",
       "author": {
         "name": "Seth Hobson",

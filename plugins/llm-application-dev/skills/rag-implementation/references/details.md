@@ -238,61 +238,26 @@ vectorstore = Chroma(
 )
 ```
 
-### Milvus (Local Persistence or Server)
+### Milvus (Local Persistence)
 
-Install `langchain-milvus>=0.4,<0.5` and `milvus-lite>=3.2.2,<4` in the project
-Python environment (Python 3.10+). Reuse the application's `embeddings` object;
-this recipe does not require a new embedding provider or a database account.
+Install `langchain-milvus>=0.4,<0.5` and `milvus-lite>=3.2.2,<4` (Python 3.10+).
+Reuse the application's `embeddings` object.
 
 ```python
-import os
-from langchain_core.documents import Document
 from langchain_milvus import Milvus
-
-connection_args = {"uri": os.environ.get("MILVUS_DB_URI", "./rag_milvus.db")}
-if os.environ.get("MILVUS_TOKEN"):
-    connection_args["token"] = os.environ["MILVUS_TOKEN"]
 
 vectorstore = Milvus(
     embedding_function=embeddings,
-    collection_name="rag_milvus_example",
-    connection_args=connection_args,
+    collection_name="documents",
+    connection_args={"uri": "./rag_milvus.db"},
     index_params={"index_type": "AUTOINDEX", "metric_type": "COSINE", "params": {}},
     consistency_level="Strong",
-    enable_dynamic_field=True,
-    auto_id=False,
     drop_old=False,
 )
-try:
-    ids = ["guide:local", "recipe:bread"]
-    docs = [
-        Document(page_content="Milvus Lite persists vectors locally.",
-                 metadata={"source": "guide"}),
-        Document(page_content="Bread dough contains flour and yeast.",
-                 metadata={"source": "recipe"}),
-    ]
-    if vectorstore.client.has_collection(collection_name="rag_milvus_example"):
-        vectorstore.upsert(ids=ids, documents=docs)
-    else:
-        vectorstore.add_documents(documents=docs, ids=ids)
-    retriever = vectorstore.as_retriever(
-        search_kwargs={"k": 4, "expr": 'source == "guide"'},
-    )
-    relevant_docs = retriever.invoke("How can I store vectors locally?")
-finally:
-    vectorstore.client.close()
 ```
 
-In an application, keep the client open for the retriever's lifetime and close
-it during shutdown. Reopen the same collection with the same embedding model,
-dimension, and schema to reuse persisted data. Stable primary keys and `upsert`
-make repeated ingestion update the example records. Avoid `drop_old=True` for
-persisted collections.
-
-Set `MILVUS_DB_URI` to an existing server endpoint when concurrent clients are
-needed. Changing the connection does not transfer data: export/import or reingest
-into the new deployment and verify retrieval before switching traffic. Lite 2.x
-files require migration before use with Lite 3.x. See the
+Reuse the same file, collection, and embedding model to reopen persisted data.
+Close `vectorstore.client` on application shutdown. See the
 [Milvus integration guide](https://docs.langchain.com/oss/python/integrations/vectorstores/milvus).
 
 ### pgvector (PostgreSQL)
