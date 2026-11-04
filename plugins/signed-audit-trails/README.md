@@ -55,3 +55,24 @@ A single skill file containing:
 ## License
 
 MIT. Same as the adjacent governance-category plugins in this marketplace.
+
+## Upgrading an existing installation
+
+Update the installed plugin, then restrict the existing signing key to its
+owner before the next session (use your configured key path if overridden):
+
+```bash
+chmod 600 ./protect-mcp.key
+```
+
+Keep the existing key and receipts; the setup command does not replace the key.
+New keys use `protect-mcp@0.32.4 init`, which no longer sends the older
+initializer's opt-out installation ping.
+
+## Disclosure
+
+Tom Farley maintains `protect-mcp` (MIT) and `@veritasacta/verify`
+(Apache-2.0) and runs ScopeBlind, which publishes both and sells separate
+paid services. These plugin instructions use the local `init`, `evaluate`,
+and `sign` commands and offline verifier, fetched from npm; they do not
+recommend or call those paid services. Cedar CLI validation is optional.
