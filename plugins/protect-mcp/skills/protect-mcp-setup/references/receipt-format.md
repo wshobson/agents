@@ -73,3 +73,11 @@ stdout; it also checks that the CLI summary's `request_id` appears in a
 persisted signed receipt and preserves a failed signer's exit status and stderr. A
 PostToolUse error cannot undo the completed tool call. Verify the receipt log
 to establish which receipts were actually written.
+
+Receipt confirmation reads backwards in 64 KiB chunks from one file-size
+snapshot and stops at the matching receipt. A recent match therefore avoids
+scanning the historical prefix; an absent match can still scan the whole
+snapshot. This bounds the common confirmation path, not the signer's own
+work. Bytes appended after the snapshot are ignored. The signer writes an
+LF after each receipt, so an unterminated trailing fragment is not confirmed;
+a complete matching receipt before that fragment can still be found.

@@ -32,7 +32,7 @@ test/
 Requires `node` (>= 18), `npx`, and `python3`. Fetches `protect-mcp` and
 `@veritasacta/verify@0.11.1` from npm on first run. The runtime uses
 `protect-mcp@0.32.4`; migration checks also fetch the legacy 0.7.4 signer.
-Runs thirteen test groups:
+Runs fourteen test groups:
 
 | # | Scenario | Expected exit |
 |---|----------|----------------|
@@ -49,6 +49,7 @@ Runs thirteen test groups:
 | 11 | `hooks.json` PostToolUse, payload on stdin           | receipt written; exit 0; empty stdout |
 | 12 | `hooks.json` PreToolUse when `npx` cannot run       | 2 (forbid)  |
 | 13 | Both signing hooks: migration, corruption, stdout, and failures | regression checks pass |
+| 14 | Reverse readback: byte boundaries, snapshot, bounded I/O, and cleanup | regression checks pass |
 
 Test 13 runs `hook-migration.mjs` against both plugins' exact `hooks.json`
 commands. It checks tool-only coverage, empty stdout on success and failure,
@@ -61,6 +62,14 @@ interior deletion and reordering, tail truncation, and migration from legacy
 receipts. Tail truncation and deletion/reordering within an unlinked legacy
 prefix intentionally still verify; these are documented coverage limits.
 All keys and logs are temporary and cleaned on exit.
+
+Test 14 runs `hook-readback.mjs` with controlled receipt-shaped fixtures and
+an instrumented filesystem. It verifies that confirming a recent receipt
+reads one 64 KiB chunk despite a multi-megabyte prefix, reconstructs lines
+across chunk boundaries without splitting UTF-8, ignores an unfinished
+trailing append, and reads only the size snapshot. Read/stat/short-read
+failures must close the descriptor, fail, and keep stdout empty. These checks
+cover confirmation I/O; Test 13 still verifies real signatures and chains.
 
 Run both suites with Node 18, 20, and 22 on PATH:
 

@@ -254,6 +254,12 @@ echo "=== Test 13: signed-hook migration and failure regressions ==="
 node "$SCRIPT_DIR/hook-migration.mjs"
 check_exit $? 0 "signed-hook migration regression suite"
 
+# --- Test 14: reverse readback bounds and filesystem failures -----------------
+echo ""
+echo "=== Test 14: bounded reverse receipt confirmation ==="
+node "$SCRIPT_DIR/hook-readback.mjs"
+check_exit $? 0 "reverse readback regression suite"
+
 # --- Summary ----------------------------------------------------------------
 echo ""
 echo "─────────────────────────────────────────────"
