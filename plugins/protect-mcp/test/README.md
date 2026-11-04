@@ -30,7 +30,9 @@ test/
 ```
 
 Requires `node` (>= 18), `npx`, and `python3`. Fetches `protect-mcp` and
-`@veritasacta/verify` from npm on first run. Runs twelve tests:
+`@veritasacta/verify@0.11.1` from npm on first run. The runtime uses
+`protect-mcp@0.32.4`; migration checks also fetch the legacy 0.7.4 signer.
+Runs thirteen test groups:
 
 | # | Scenario | Expected exit |
 |---|----------|----------------|
@@ -44,10 +46,32 @@ Requires `node` (>= 18), `npx`, and `python3`. Fetches `protect-mcp` and
 | 8 | Tampered receipt is rejected                   | 1 (tampered)|
 | 9 | `hooks.json` PreToolUse on `Read`, payload on stdin  | 0 (permit)  |
 | 10 | `hooks.json` PreToolUse on `Write`, payload on stdin | 2 (forbid)  |
-| 11 | `hooks.json` PostToolUse, payload on stdin           | receipt written |
+| 11 | `hooks.json` PostToolUse, payload on stdin           | receipt written; exit 0; empty stdout |
 | 12 | `hooks.json` PreToolUse when `npx` cannot run       | 2 (forbid)  |
+| 13 | Both signing hooks: migration, corruption, stdout, and failures | regression checks pass |
 
-Test 8 is the critical regression guard: flipping the `decision` field in a
+Test 13 runs `hook-migration.mjs` against both plugins' exact `hooks.json`
+commands. It checks tool-only coverage, empty stdout on success and failure,
+nonzero signer exit/stderr propagation, missing keys, and empty/malformed/
+unsigned CLI summaries, and receipts paths that cannot accept an append.
+A later concurrent append must not invalidate the earlier receipt readback;
+unreadable logs must be preserved when the signer starts a fresh chain.
+A signed summary must match a persisted receipt. Real logs exercise tampering, malformed lines,
+interior deletion and reordering, tail truncation, and migration from legacy
+receipts. Tail truncation and deletion/reordering within an unlinked legacy
+prefix intentionally still verify; these are documented coverage limits.
+All keys and logs are temporary and cleaned on exit.
+
+Run both suites with Node 18, 20, and 22 on PATH:
+
+```bash
+bash plugins/protect-mcp/test/run-tests.sh
+bash plugins/review-agent-governance/test/run-tests.sh
+```
+
+The repository's main CI does not run these shell suites.
+
+Test 8 is a signature regression guard: flipping the `decision` field in a
 signed receipt must invalidate the Ed25519 signature, so `@veritasacta/verify`
 must exit 1 rather than 0.
 
@@ -65,8 +89,8 @@ sandboxed or offline CI.
 
 - **Policy evaluation:** Cedar `permit` and `forbid` rules produce the
   expected exit codes (0 / 2).
-- **Receipt schema:** signed receipts include every required field from
-  [`draft-farley-acta-signed-receipts`](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/).
+- **Receipt schema:** the pinned signer emits the expected nested
+  payload/signature envelope; negative controls reject missing required fields.
 - **Signature integrity:** `@veritasacta/verify` validates authentic
   receipts and rejects tampered ones, with the documented exit codes.
 - **End-to-end integration:** the plugin's two hooks compose into a

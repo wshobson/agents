@@ -16,8 +16,8 @@ with the public key.
 
 - **Cedar policy enforcement** — Block tool calls that violate your rules before they execute. Cedar is AWS's open authorization engine, formally verified.
 - **Ed25519 signed receipts**: every tool call that runs produces a tamper-evident receipt, signed with RFC 8032 Ed25519 over RFC 8785 JCS canonical bytes.
-- **Receipts file**: receipts are appended to `./receipts/receipts.jsonl`. A modified receipt fails verification, but receipts carry no link to the previous receipt, so a deleted line goes undetected.
-- **Offline verification**: `npx @veritasacta/verify@0.9.2 --replay-chain` with the public key needs no vendor lookup or account. `npx` downloads the verifier on first use, so run `npm install --no-save @veritasacta/verify@0.9.2` in the project before you go offline.
+- **Receipts file**: receipts are appended to `./receipts/receipts.jsonl`. Modified receipts fail signature verification; linked receipts also expose interior deletion or reordering. A truncated tail and changes to the ordering or membership of an unlinked legacy prefix can go undetected.
+- **Offline verification**: `npx @veritasacta/verify@0.11.1 --replay-chain` with the public key needs no vendor lookup or account. `npx` downloads the verifier on first use, so run `npm install --no-save @veritasacta/verify@0.11.1` in the project before you go offline.
 
 ## Quick Start
 
@@ -28,7 +28,7 @@ claude plugin install wshobson/agents/protect-mcp
 # 2. Create a Cedar policy file at ./protect.cedar
 #    (see skills/protect-mcp-setup/SKILL.md for examples)
 
-# 3. Create the signing key once (protect-mcp 0.7.4 sign does not create it).
+# 3. Create the signing key once (protect-mcp 0.32.4 sign does not create it).
 #    Installing the plugin already registers the hooks. An existing key is
 #    never replaced. To rotate it, archive the key and receipts.jsonl first.
 if [ ! -e ./protect-mcp.key ]; then
@@ -84,12 +84,12 @@ plugins/protect-mcp/
 ┌─────────────────────────────────────────────┐
 │  PostToolUse hook → Ed25519 signed receipt  │
 │                                             │
-│  Receipt fields (v2 envelope):              │
-│    - payload.tool, payload.decision         │
-│    - payload.request_id, issued_at, kid     │
-│    - signature over every other field       │
-│    - no public key, no link to the          │
-│      previous receipt                       │
+│  Receipt: payload + signature               │
+│    - payload.tool_name and decision         │
+│    - payload.request_id and issued_at       │
+│    - signature over canonical payload       │
+│    - signed public key and hash link to     │
+│      the previous receipt                   │
 │                                             │
 │  Appended to ./receipts/receipts.jsonl      │
 └─────────────────────────────────────────────┘
@@ -157,14 +157,17 @@ value from `./protect-mcp.key`:
 
 ```bash
 PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')
-npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
+npx @veritasacta/verify@0.11.1 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
 # Exit 0 = every receipt verified
 # Exit 1 = a receipt failed (tampered, wrong key, or malformed line)
 # Exit 2 = the file could not be read
 ```
 
-The receipts carry no link to the previous receipt, so a deleted line goes
-undetected.
+The verifier detects broken links between surviving receipts, including
+interior deletion or reordering. A truncated tail and deletion or reordering
+within the legacy portion of a mixed log can go undetected. Editing signed
+contents still fails signature verification. Keep an externally retained
+checkpoint or copy to check completeness.
 
 Use the `receipt-verifier` agent for help interpreting verification failures.
 
