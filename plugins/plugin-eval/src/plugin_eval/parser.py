@@ -305,12 +305,12 @@ def _strip_inline_code_spans(text: str) -> str:
         while j < len(runs) and (runs[j].end() - runs[j].start()) != open_len:
             j += 1
         if j < len(runs):
-            out.append(text[last:open_run.start()])
+            out.append(text[last : open_run.start()])
             out.append(" ")
             last = runs[j].end()
             i = j + 1
         else:
-            out.append(text[last:open_run.end()])
+            out.append(text[last : open_run.end()])
             last = open_run.end()
             i += 1
     out.append(text[last:])
