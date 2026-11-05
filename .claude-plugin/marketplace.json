@@ -1130,6 +1130,32 @@
       "category": "memory"
     },
     {
+      "name": "deja-vu",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/vshulcz/deja-vu.git",
+        "path": "claude-plugin",
+        "sha": "8fbf4e8d71826a28db52be416349c682298bc9cf"
+      },
+      "description": "Local session memory for coding agents: indexes existing session transcripts on disk across 43 coding agents into a local BM25 store with MCP recall, hooks, skill, and /deja command",
+      "version": "0.24.0",
+      "author": {
+        "name": "vshulcz",
+        "url": "https://github.com/vshulcz"
+      },
+      "homepage": "https://github.com/vshulcz/deja-vu",
+      "license": "MIT",
+      "category": "memory",
+      "keywords": [
+        "memory",
+        "session-history",
+        "recall",
+        "bm25",
+        "local-first",
+        "mcp"
+      ]
+    },
+    {
       "name": "protect-mcp",
       "source": "./plugins/protect-mcp",
       "description": "Cedar policy enforcement + Ed25519 signed receipts for every Claude Code tool call. First cryptographic governance plugin \u2014 decisions are policy-gated before they run and every decision produces a tamper-evident receipt verifiable offline.",
