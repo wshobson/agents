@@ -2,7 +2,11 @@ from pathlib import Path
 
 import pytest
 
-from plugin_eval.parser import ParsedSkill, ParsedAgent, ParsedPlugin, parse_skill, parse_agent, parse_plugin
+from plugin_eval.parser import (
+    parse_agent,
+    parse_plugin,
+    parse_skill,
+)
 
 
 class TestParseSkill:
@@ -133,6 +137,42 @@ class TestParseSkill:
         skill = parse_skill(skill_dir)
 
         assert skill.cross_references == []
+
+    def test_stray_backtick_does_not_pair_across_paragraphs(self, tmp_path: Path):
+        """Inline parsing is per block, so a lone backtick cannot open a span that
+        closes in a later paragraph and swallow the prose between."""
+        skill_dir = tmp_path / "stray"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: stray\n"
+            'description: "Use when testing stray backticks."\n'
+            "---\n\n"
+            "Press the ` key to open the console.\n\n"
+            "See skills/sibling/SKILL.md, then run `make test`.\n\n"
+            "Another unmatched ` marker.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
+
+    def test_fence_inside_blockquote_ends_with_the_blockquote(self, tmp_path: Path):
+        skill_dir = tmp_path / "quoted-fence"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: quoted-fence\n"
+            'description: "Use when testing quoted fences."\n'
+            "---\n\n"
+            "> ```text\n"
+            "> skills/ghost/does-not-exist\n\n"
+            "See skills/sibling/SKILL.md.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
 
 
 class TestCodeBlockCounting:

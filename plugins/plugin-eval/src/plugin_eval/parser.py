@@ -259,8 +259,15 @@ def _strip_fenced_blocks(body: str) -> str:
     """
     out_lines: list[str] = []
     open_fence = ""
+    fence_in_blockquote = False
 
     for line in body.split("\n"):
+        if open_fence and fence_in_blockquote and not line.strip():
+            # A blank line ends the blockquote, and with it the fenced block
+            # (CommonMark closes the code block when its container ends).
+            open_fence = ""
+            out_lines.append("")
+            continue
         match = _CODE_FENCE_PATTERN.match(line)
         if match is not None:
             fence, language, trailing = match.group(1), match.group(2), match.group(3)
@@ -279,6 +286,7 @@ def _strip_fenced_blocks(body: str) -> str:
                 out_lines.append(line)
                 continue
             open_fence = fence
+            fence_in_blockquote = line.lstrip().startswith(">")
             out_lines.append("")
             continue
         out_lines.append("" if open_fence else line)
@@ -325,7 +333,11 @@ def _extract_cross_references(body: str) -> list[str]:
     ecosystem references, and counting them produced DEAD_CROSS_REF false
     positives for any mention whose target does not exist on disk.
     """
-    stripped = _strip_inline_code_spans(_strip_fenced_blocks(body))
+    # Code spans pair within one paragraph only (inline parsing happens per
+    # block), so split on blank lines first. Fence lines are already blank by
+    # now, so fenced blocks also act as boundaries.
+    paragraphs = re.split(r"\n[ \t]*\n", _strip_fenced_blocks(body))
+    stripped = "\n\n".join(_strip_inline_code_spans(p) for p in paragraphs)
     references = []
     for reference in _CROSS_REFERENCE_PATTERN.findall(stripped):
         if reference.startswith(("skill/", "skills/")):
