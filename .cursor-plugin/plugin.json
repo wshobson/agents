@@ -2,7 +2,7 @@
   "name": "claude-code-workflows",
   "displayName": "Claude Code Workflows",
   "version": "1.7.1",
-  "description": "Plugins with agents, skills, and commands for Claude Code and six other coding tools, maintained as one Markdown source and adapted to each tool.",
+  "description": "Plugins with agents, skills, and commands for Claude Code and six other coding tools. Local plugins are maintained as one Markdown source and adapted to each tool.",
   "author": {
     "name": "Seth Hobson",
     "email": "seth@major7apps.com"

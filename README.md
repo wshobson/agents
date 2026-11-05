@@ -5,7 +5,7 @@
 
 Use one collection of plugins, agents, skills, and commands across Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Antigravity CLI, GitHub Copilot, and Pi. A harness is the coding tool that loads and runs the components.
 
-Contributors write each component once, in Markdown, in the Claude Code plugin format. Adapters under `tools/adapters/` generate the format each harness reads, map model aliases to that harness's models, and translate tool permissions. CI regenerates the artifacts for every harness, validates them, and runs them through the installed CLIs. [ARCHITECTURE.md](ARCHITECTURE.md) describes the design.
+Contributors write each component once, in Markdown, in the Claude Code plugin format. Adapters under `tools/adapters/` generate the format each harness reads, map model aliases to that harness's models, and translate tool permissions where the harness supports them. CI regenerates the artifacts for every harness, validates them, and runs the OpenCode, Antigravity CLI, and Pi artifacts through their installed CLIs. The [capability matrix](docs/harnesses.md) lists what each harness supports, and [ARCHITECTURE.md](ARCHITECTURE.md) describes the design.
 
 The catalog contains 94 plugins, including 92 local plugins and 2 external entries. The local source contains 202 agents, 185 skills, and 105 commands. Plugins cover Python and JavaScript development, code review, testing, infrastructure, security, and other work.
 

@@ -6,7 +6,7 @@
     "url": "https://github.com/wshobson"
   },
   "metadata": {
-    "description": "Plugins with agents, skills, and commands for Claude Code and six other coding tools, maintained as one Markdown source and adapted to each tool.",
+    "description": "Plugins with agents, skills, and commands for Claude Code and six other coding tools. Local plugins are maintained as one Markdown source and adapted to each tool.",
     "version": "1.7.1"
   },
   "plugins": [
