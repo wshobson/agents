@@ -275,7 +275,7 @@ log_error "Error occurred"
 
 ### Pattern 6: Process Orchestration with Signals
 
-Track the child jobs that the script starts, stop them on exit or interrupt, and wait for them so none are left running.
+Track the child jobs that the script starts, stop them on exit or interrupt, and wait for them. The signal reaches only each tracked PID, not the commands that those jobs start.
 
 ```bash
 #!/bin/bash
@@ -284,20 +284,22 @@ set -Eeuo pipefail
 # PIDs of child jobs started by this script
 CHILD_PIDS=()
 
+# log_info comes from Pattern 5
 cleanup() {
     log_info "Stopping child jobs..."
 
     local pid
 
     # Ask each running child job to stop
-    for pid in "${CHILD_PIDS[@]}"; do
+    # (the ${arr[@]+...} form keeps an empty array safe under set -u on Bash 3.2)
+    for pid in ${CHILD_PIDS[@]+"${CHILD_PIDS[@]}"}; do
         if kill -0 "$pid" 2>/dev/null; then
             kill -TERM "$pid" 2>/dev/null || true
         fi
     done
 
     # Wait for the child jobs to exit
-    for pid in "${CHILD_PIDS[@]}"; do
+    for pid in ${CHILD_PIDS[@]+"${CHILD_PIDS[@]}"}; do
         wait "$pid" 2>/dev/null || true
     done
 }
@@ -312,8 +314,12 @@ CHILD_PIDS+=($!)
 worker_job_b &
 CHILD_PIDS+=($!)
 
-# Wait for all child jobs to finish
-wait "${CHILD_PIDS[@]}"
+# Wait for each child job and keep a nonzero status if any job fails
+status=0
+for pid in ${CHILD_PIDS[@]+"${CHILD_PIDS[@]}"}; do
+    wait "$pid" || status=$?
+done
+exit "$status"
 ```
 
 ### Pattern 7: Safe File Operations
@@ -340,28 +346,38 @@ safe_move() {
     mv "$source" "$dest"
 }
 
-# Safe directory cleanup
+# Safe directory cleanup: remove DIR only if it is strictly inside BASE
 safe_rmdir() {
-    local -r dir="$1"
-    local resolved
+    if [[ $# -ne 2 || -z "$1" || -z "$2" ]]; then
+        echo "Usage: safe_rmdir DIR BASE" >&2
+        return 1
+    fi
+    local -r dir="$1" base="$2"
+    local dir_real base_real
 
-    if [[ ! -d "$dir" ]]; then
-        echo "ERROR: Not a directory: $dir" >&2
+    # ${dir%/} also catches a symlink written with a trailing slash
+    if [[ -L "${dir%/}" || ! -d "$dir" ]]; then
+        echo "ERROR: Not a real directory: $dir" >&2
         return 1
     fi
 
-    # Resolve symlinks and relative parts before checking the path
-    resolved=$(cd -- "$dir" && pwd -P)
+    # Resolve symlinks and relative parts on both sides (CDPATH= keeps cd quiet)
+    dir_real=$(CDPATH= cd -P -- "$dir" && pwd -P) || return 1
+    base_real=$(CDPATH= cd -P -- "$base" && pwd -P) || return 1
 
-    case "$resolved" in
-        /|"$HOME"|/etc|/usr|/var|/bin|/sbin)
-            echo "ERROR: Refusing to remove protected path: $resolved" >&2
-            return 1
-            ;;
+    # DIR must be below BASE; BASE itself and outside paths fail
+    case "$dir_real/" in
+        "$base_real"/?*) ;;
+        *) echo "ERROR: $dir is not inside $base" >&2; return 1 ;;
+    esac
+
+    # Refuse DIR if it is, or contains, the current directory
+    case "$(pwd -P)/" in
+        "$dir_real"/*) echo "ERROR: Refusing to remove the current directory or a parent" >&2; return 1 ;;
     esac
 
     # -i makes rm ask before each removal, so the user confirms the deletion
-    rm -ri -- "$resolved"
+    rm -ri -- "$dir"
 }
 
 # Atomic file writes
