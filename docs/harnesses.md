@@ -224,21 +224,6 @@ before using an upstream integration:
 | Antigravity CLI | `integrations/antigravity-plugin` |
 | Copilot | `.copilot/` (repo-level) or `~/.copilot/` (global install via `make install-copilot`) |
 
-## External HOL Guard entry
-
-The Claude Code marketplace lists HOL Guard as an external `git-subdir` entry from
-`hashgraph-online/hol-guard-plugin`, path `distributions/wshobson-agents`, pinned to a reviewed
-commit on upstream's `main` branch. The payload is two Markdown skills, and they install the
-`hol-guard` and `plugin-scanner` CLIs only after the user approves. When a user asks for
-protection, the `hol-guard` CLI edits that harness's hook and settings files. The entry is not
-generated for any other harness.
-
-To update the entry, review the payload at a newer upstream `main` commit, then change the
-marketplace `sha`, and change `version` too if the payload's `plugin.json` version changed.
-The review checks that the payload adds no hooks, `.mcp.json`, scripts, or hosted endpoints,
-that the default path needs no account or paid service, and that each CLI install is pinned to
-an exact version.
-
 ## Global install
 
 OpenCode, Copilot, Antigravity, and Pi support installing generated artifacts globally for

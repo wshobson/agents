@@ -36,12 +36,12 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 
 ### Plugin Distribution
 
-- **94 marketplace plugins** (92 local + 2 external via git-subdir) optimized for specific use cases
+- **93 marketplace plugins** (92 local + 1 external via git-subdir) optimized for specific use cases
 - **Skills-only distribution** through `gh skill install wshobson/agents` and `npx skills add wshobson/agents`, which read `plugins/*/skills/` directly (see [harnesses.md](./harnesses.md#skills-only-installers))
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
   - **Development**: 6 plugins (debugging, backend, frontend, UI, multi-platform, essentials)
-  - **Security**: 7 plugins (scanning, compliance, API, frontend/mobile, reverse engineering, hook policy, HOL Guard)
+  - **Security**: 6 plugins (scanning, compliance, API, frontend/mobile, reverse engineering, hook policy)
   - **Operations**: 4 plugins (incident, diagnostics, distributed, observability)
   - **Languages**: 10 plugins (Python, JS/TS, systems, JVM, scripting, functional, embedded, and more)
   - **Infrastructure**: 5 plugins (deployment, validation, K8s, cloud, CI/CD)
@@ -82,7 +82,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 ```
 agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (94 plugins)
+│   └── marketplace.json          # Marketplace catalog (93 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -394,5 +394,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 94 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 93 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows
