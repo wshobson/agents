@@ -262,12 +262,12 @@ def _strip_fenced_blocks(body: str) -> str:
     fence_in_blockquote = False
 
     for line in body.split("\n"):
-        if open_fence and fence_in_blockquote and not line.strip():
-            # A blank line ends the blockquote, and with it the fenced block
-            # (CommonMark closes the code block when its container ends).
+        if open_fence and fence_in_blockquote and not line.lstrip().startswith(">"):
+            # A line outside the blockquote ends it, and with it the fenced block
+            # (CommonMark closes the code block when its container ends, and
+            # fenced code has no lazy continuation). The line itself is then
+            # handled by the normal path below.
             open_fence = ""
-            out_lines.append("")
-            continue
         match = _CODE_FENCE_PATTERN.match(line)
         if match is not None:
             fence, language, trailing = match.group(1), match.group(2), match.group(3)
@@ -294,6 +294,14 @@ def _strip_fenced_blocks(body: str) -> str:
     return "\n".join(out_lines)
 
 
+def _is_backslash_escaped(text: str, position: int) -> bool:
+    """Return True when an odd number of backslashes precede position."""
+    count = 0
+    while position - count > 0 and text[position - count - 1] == "\\":
+        count += 1
+    return count % 2 == 1
+
+
 def _strip_inline_code_spans(text: str) -> str:
     """Remove CommonMark code spans, pairing backtick runs of equal length.
 
@@ -308,6 +316,11 @@ def _strip_inline_code_spans(text: str) -> str:
     i = 0
     while i < len(runs):
         open_run = runs[i]
+        if _is_backslash_escaped(text, open_run.start()):
+            # An escaped backtick is literal text and cannot open a span. The
+            # rest of the run, if any, is too short to matter here.
+            i += 1
+            continue
         open_len = open_run.end() - open_run.start()
         j = i + 1
         while j < len(runs) and (runs[j].end() - runs[j].start()) != open_len:

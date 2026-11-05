@@ -166,13 +166,28 @@ class TestParseSkill:
             'description: "Use when testing quoted fences."\n'
             "---\n\n"
             "> ```text\n"
-            "> skills/ghost/does-not-exist\n\n"
+            "> skills/ghost/does-not-exist\n"
             "See skills/sibling/SKILL.md.\n"
         )
 
         skill = parse_skill(skill_dir)
 
         assert skill.cross_references == ["sibling"]
+
+    def test_backslash_escaped_backtick_is_literal(self, tmp_path: Path):
+        skill_dir = tmp_path / "escaped"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: escaped\n"
+            'description: "Use when testing escaped backtick openers."\n'
+            "---\n\n"
+            "\\`literal skills/missing/SKILL.md`\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["missing"]
 
 
 class TestCodeBlockCounting:
