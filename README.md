@@ -27,6 +27,32 @@ See the [capability matrix](docs/harnesses.md) for model mappings, tool permissi
 
 For individual skills, use a [skills-only installer](#skills-only) and select your coding tool.
 
+## How it works
+
+A plugin groups related agents, skills, and commands under `plugins/`. For example, `python-development` contains three agents, sixteen skills, and a scaffolding command. The chosen harness loads the installed components according to its own discovery and invocation rules.
+
+Contributors maintain one Markdown source in the Claude Code plugin format. Native registries point to that source where supported, and adapters generate the formats needed by each harness. Commands may become skills or prompt templates, and agent formats, model choices, and tool permissions vary by harness.
+
+Source agents specify model aliases such as `opus`, `sonnet`, `haiku`, `fable`, or `inherit`. Adapters map those aliases to each harness's model settings, including fixed defaults for some `inherit` entries. See [model configuration](docs/agents.md#model-configuration) and the [adapter mappings](tools/adapters/capabilities.py).
+
+## Quality evaluation
+
+The repository validates plugin structure, generated artifacts, and documentation. Contributors can run these checks from the repository root:
+
+```bash
+make generate-all
+make validate STRICT=1
+make garden
+```
+
+[`plugin-eval`](plugins/plugin-eval/) also provides static skill checks without model calls. For example:
+
+```bash
+uv run --project plugins/plugin-eval plugin-eval score plugins/python-development/skills/python-testing-patterns --depth quick
+```
+
+The LLM judge and Monte Carlo layers are experimental and are not validated against human labels. Their scores describe model assessments and repeated simulations and do not prove that a task succeeds in a project. They require the optional `llm` dependencies. Model calls use `ANTHROPIC_API_KEY` when it is set and bill that API account. Otherwise they use your Claude Code login. See the [evaluation guide](docs/plugin-eval.md) for setup and limits.
+
 ## Quick start
 
 Choose a plugin for the work you do:
@@ -117,32 +143,6 @@ Pi's agents require its reference `subagent` extension or a compatible extension
 | Commands | 105 | Named workflows you invoke, such as project scaffolding or a security scan |
 
 The agent, skill, and command counts cover local source files. External plugins provide their own components and installation requirements.
-
-## How it works
-
-A plugin groups related agents, skills, and commands under `plugins/`. For example, `python-development` contains three agents, sixteen skills, and a scaffolding command. The chosen harness loads the installed components according to its own discovery and invocation rules.
-
-Contributors maintain one Markdown source in the Claude Code plugin format. Native registries point to that source where supported, and adapters generate the formats needed by each harness. Commands may become skills or prompt templates, and agent formats, model choices, and tool permissions vary by harness.
-
-Source agents specify model aliases such as `opus`, `sonnet`, `haiku`, `fable`, or `inherit`. Adapters map those aliases to each harness's model settings, including fixed defaults for some `inherit` entries. See [model configuration](docs/agents.md#model-configuration) and the [adapter mappings](tools/adapters/capabilities.py).
-
-## Quality evaluation
-
-The repository validates plugin structure, generated artifacts, and documentation. Contributors can run these checks from the repository root:
-
-```bash
-make generate-all
-make validate STRICT=1
-make garden
-```
-
-[`plugin-eval`](plugins/plugin-eval/) also provides static skill checks without model calls. For example:
-
-```bash
-uv run --project plugins/plugin-eval plugin-eval score plugins/python-development/skills/python-testing-patterns --depth quick
-```
-
-The LLM judge and Monte Carlo layers are experimental and are not validated against human labels. Their scores describe model assessments and repeated simulations and do not prove that a task succeeds in a project. They require the optional `llm` dependencies. Model calls use `ANTHROPIC_API_KEY` when it is set and bill that API account. Otherwise they use your Claude Code login. See the [evaluation guide](docs/plugin-eval.md) for setup and limits.
 
 ## Documentation map
 
