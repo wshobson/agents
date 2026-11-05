@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all 93 marketplace plugins organized by category: 92 local plugins plus 1 external Claude Code marketplace entry (`pensyve`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
+Browse all 94 marketplace plugins organized by category: 92 local plugins plus 2 external Claude Code marketplace entries (`pensyve` and `deja-vu`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
 
 ## Quick Start - Essential Plugins
 
@@ -178,11 +178,12 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 | **llm-finetuning**       | Eval-gated LLM fine-tuning lifecycle: dataset prep, LoRA/QLoRA training, and promotion gating | `/plugin install llm-finetuning`       |
 | **dgx-spark-ops**        | NVIDIA DGX Spark (GB10) environment ops: aarch64/CUDA-13 stack setup, training preflights, unified-memory/thermal management | `/plugin install dgx-spark-ops`        |
 
-### 🧠 Memory (1 external plugin)
+### 🧠 Memory (2 external plugins)
 
 | Plugin      | Description                                                                                  | Install                   |
 | ----------- | -------------------------------------------------------------------------------------------- | ------------------------- |
 | **pensyve** | Cross-session memory runtime with MCP-backed recall, skills, commands, agents, and hooks     | `/plugin install pensyve` |
+| **deja-vu** | Local cross-agent session transcript recall (BM25 over 43 coding agents) with MCP, hooks, skill, and `/deja` command | `/plugin install deja-vu` |
 
 ### 📊 Data (2 plugins)
 
@@ -366,7 +367,7 @@ The marketplace commands in this section run inside Claude Code. Other tools use
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 93 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 
