@@ -189,6 +189,41 @@ class TestParseSkill:
 
         assert skill.cross_references == ["missing"]
 
+    def test_escaped_first_backtick_leaves_a_shorter_opener(self, tmp_path: Path):
+        """A backslash escapes one backtick; the rest of the run can still open a span."""
+        skill_dir = tmp_path / "escaped-run"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: escaped-run\n"
+            'description: "Use when testing escaped backtick runs."\n'
+            "---\n\n"
+            "\\```skills/ghost/a`` then skills/sibling/SKILL.md\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
+
+    def test_heading_and_list_items_bound_code_spans(self, tmp_path: Path):
+        """A heading line and each list item are their own inline blocks."""
+        skill_dir = tmp_path / "blocks"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: blocks\n"
+            'description: "Use when testing block boundaries."\n'
+            "---\n\n"
+            "## The ` key\n"
+            "See skills/sibling/SKILL.md and `make test`.\n\n"
+            "- Press ` to open the console\n"
+            "- See skills/cousin/SKILL.md, then run `make`\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling", "cousin"]
+
 
 class TestCodeBlockCounting:
     def _skill(self, tmp_path: Path, body: str, name: str = "counted") -> Path:

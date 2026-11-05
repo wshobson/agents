@@ -14,6 +14,9 @@ _CROSS_REFERENCE_PATTERN = re.compile(
 )
 _CODE_FENCE_PATTERN = re.compile(r"^\s*(?:>\s*)*(`{3,}|~{3,})(\w*)(.*)")
 _INLINE_BACKTICK_RUN_PATTERN = re.compile(r"`+")
+# A heading or list-item line starts a new inline block for code-span pairing.
+_BLOCK_START_PATTERN = re.compile(r"[ \t]{0,3}(?:#{1,6}(?:[ \t]|$)|[-*+][ \t]|\d{1,9}[.)][ \t])")
+_HEADING_LINE_PATTERN = re.compile(r"[ \t]{0,3}#{1,6}(?:[ \t]|$)")
 # Cross-reference extraction excludes fenced code blocks and inline code
 # spans: a skill path inside code formatting is an example or command, not
 # an ecosystem reference. Without this, prose and command examples generate
@@ -316,17 +319,20 @@ def _strip_inline_code_spans(text: str) -> str:
     i = 0
     while i < len(runs):
         open_run = runs[i]
-        if _is_backslash_escaped(text, open_run.start()):
-            # An escaped backtick is literal text and cannot open a span. The
-            # rest of the run, if any, is too short to matter here.
-            i += 1
-            continue
-        open_len = open_run.end() - open_run.start()
+        open_start = open_run.start()
+        if _is_backslash_escaped(text, open_start):
+            # The escaped backtick is literal text. The rest of the run, if
+            # any, is a shorter backtick string that can still open a span.
+            open_start += 1
+            if open_start == open_run.end():
+                i += 1
+                continue
+        open_len = open_run.end() - open_start
         j = i + 1
         while j < len(runs) and (runs[j].end() - runs[j].start()) != open_len:
             j += 1
         if j < len(runs):
-            out.append(text[last : open_run.start()])
+            out.append(text[last:open_start])
             out.append(" ")
             last = runs[j].end()
             i = j + 1
@@ -338,6 +344,24 @@ def _strip_inline_code_spans(text: str) -> str:
     return "".join(out)
 
 
+def _split_inline_blocks(text: str) -> list[str]:
+    """Split text into the inline blocks that bound code-span pairing.
+
+    A new block starts at a blank line, before a heading or list-item line,
+    and after a heading line. Lines within a block keep their newlines, so a
+    span may still cross a soft line break inside one paragraph.
+    """
+    blocks: list[list[str]] = [[]]
+    for line in text.split("\n"):
+        is_blank = not line.strip()
+        if is_blank or _BLOCK_START_PATTERN.match(line):
+            blocks.append([])
+        blocks[-1].append(line)
+        if _HEADING_LINE_PATTERN.match(line):
+            blocks.append([])
+    return ["\n".join(b) for b in blocks if b]
+
+
 def _extract_cross_references(body: str) -> list[str]:
     """Extract skill paths while keeping references to nested skills intact.
 
@@ -346,11 +370,12 @@ def _extract_cross_references(body: str) -> list[str]:
     ecosystem references, and counting them produced DEAD_CROSS_REF false
     positives for any mention whose target does not exist on disk.
     """
-    # Code spans pair within one paragraph only (inline parsing happens per
-    # block), so split on blank lines first. Fence lines are already blank by
-    # now, so fenced blocks also act as boundaries.
-    paragraphs = re.split(r"\n[ \t]*\n", _strip_fenced_blocks(body))
-    stripped = "\n\n".join(_strip_inline_code_spans(p) for p in paragraphs)
+    # Code spans pair within one inline block only, so split the body into
+    # segments at blank lines and before heading or list-item lines, and
+    # again after a heading line. Fence lines are already blank by now, so
+    # fenced blocks also act as boundaries.
+    segments = _split_inline_blocks(_strip_fenced_blocks(body))
+    stripped = "\n".join(_strip_inline_code_spans(p) for p in segments)
     references = []
     for reference in _CROSS_REFERENCE_PATTERN.findall(stripped):
         if reference.startswith(("skill/", "skills/")):
