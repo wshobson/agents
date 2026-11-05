@@ -26,9 +26,18 @@ Implement proper cleanup on script exit or error.
 #!/bin/bash
 set -Eeuo pipefail
 
-trap 'echo "Error on line $LINENO"' ERR
-TMPDIR=$(mktemp -d)
-trap 'echo "Cleaning up..."; rm -rf "$TMPDIR"' EXIT
+task_tmp=""
+
+cleanup() {
+    if [[ -n "$task_tmp" && -d "$task_tmp" ]]; then
+        rm -rf -- "$task_tmp"
+    fi
+}
+
+trap 'echo "Error on line $LINENO" >&2' ERR
+trap cleanup EXIT
+
+task_tmp=$(mktemp -d) || { echo "ERROR: Failed to create temp directory" >&2; exit 1; }
 
 # Script code here
 ```
@@ -147,18 +156,26 @@ process_files() {
 #!/bin/bash
 set -Eeuo pipefail
 
-# Create temporary directory
-TMPDIR=$(mktemp -d) || { echo "ERROR: Failed to create temp directory" >&2; exit 1; }
-trap 'rm -rf -- "$TMPDIR"' EXIT
+task_tmp=""
+
+cleanup() {
+    if [[ -n "$task_tmp" && -d "$task_tmp" ]]; then
+        rm -rf -- "$task_tmp"
+    fi
+}
+
+trap cleanup EXIT
+
+task_tmp=$(mktemp -d) || { echo "ERROR: Failed to create temp directory" >&2; exit 1; }
 
 # Create temporary files in directory
-TMPFILE1="$TMPDIR/temp1.txt"
-TMPFILE2="$TMPDIR/temp2.txt"
+TMPFILE1="$task_tmp/temp1.txt"
+TMPFILE2="$task_tmp/temp2.txt"
 
 # Use temporary files
 touch "$TMPFILE1" "$TMPFILE2"
 
-echo "Temp files created in: $TMPDIR"
+echo "Temp files created in: $task_tmp"
 ```
 
 ### Pattern 4: Robust Argument Parsing
@@ -258,40 +275,45 @@ log_error "Error occurred"
 
 ### Pattern 6: Process Orchestration with Signals
 
+Track the child jobs that the script starts, stop them on exit or interrupt, and wait for them so none are left running.
+
 ```bash
 #!/bin/bash
 set -Eeuo pipefail
 
-# Track background processes
-PIDS=()
+# PIDs of child jobs started by this script
+CHILD_PIDS=()
 
 cleanup() {
-    log_info "Shutting down..."
+    log_info "Stopping child jobs..."
 
-    # Terminate all background processes
-    for pid in "${PIDS[@]}"; do
+    local pid
+
+    # Ask each running child job to stop
+    for pid in "${CHILD_PIDS[@]}"; do
         if kill -0 "$pid" 2>/dev/null; then
             kill -TERM "$pid" 2>/dev/null || true
         fi
     done
 
-    # Wait for graceful shutdown
-    for pid in "${PIDS[@]}"; do
+    # Wait for the child jobs to exit
+    for pid in "${CHILD_PIDS[@]}"; do
         wait "$pid" 2>/dev/null || true
     done
 }
 
-trap cleanup SIGTERM SIGINT
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
-# Start background tasks
-background_task &
-PIDS+=($!)
+worker_job_a &
+CHILD_PIDS+=($!)
 
-another_task &
-PIDS+=($!)
+worker_job_b &
+CHILD_PIDS+=($!)
 
-# Wait for all background processes
-wait
+# Wait for all child jobs to finish
+wait "${CHILD_PIDS[@]}"
 ```
 
 ### Pattern 7: Safe File Operations
@@ -321,14 +343,25 @@ safe_move() {
 # Safe directory cleanup
 safe_rmdir() {
     local -r dir="$1"
+    local resolved
 
     if [[ ! -d "$dir" ]]; then
         echo "ERROR: Not a directory: $dir" >&2
         return 1
     fi
 
-    # Use -I flag to prompt before rm (BSD/GNU compatible)
-    rm -rI -- "$dir"
+    # Resolve symlinks and relative parts before checking the path
+    resolved=$(cd -- "$dir" && pwd -P)
+
+    case "$resolved" in
+        /|"$HOME"|/etc|/usr|/var|/bin|/sbin)
+            echo "ERROR: Refusing to remove protected path: $resolved" >&2
+            return 1
+            ;;
+    esac
+
+    # -i makes rm ask before each removal, so the user confirms the deletion
+    rm -ri -- "$resolved"
 }
 
 # Atomic file writes
