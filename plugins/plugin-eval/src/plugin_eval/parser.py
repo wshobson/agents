@@ -13,6 +13,15 @@ _CROSS_REFERENCE_PATTERN = re.compile(
     r"(?<![\w-])((?:skill|skills|sub-skills)/[a-z0-9-]+(?:/[a-z0-9-]+)*)"
 )
 _CODE_FENCE_PATTERN = re.compile(r"^\s*(?:>\s*)*(`{3,}|~{3,})(\w*)(.*)")
+_INLINE_BACKTICK_RUN_PATTERN = re.compile(r"`+")
+# A heading or list-item line starts a new inline block for code-span pairing.
+_BLOCK_START_PATTERN = re.compile(r"[ \t]{0,3}(?:#{1,6}(?:[ \t]|$)|[-*+][ \t]|\d{1,9}[.)][ \t])")
+_HEADING_LINE_PATTERN = re.compile(r"[ \t]{0,3}#{1,6}(?:[ \t]|$)")
+# Cross-reference extraction excludes fenced code blocks and inline code
+# spans: a skill path inside code formatting is an example or command, not
+# an ecosystem reference. Without this, prose and command examples generate
+# DEAD_CROSS_REF false positives whenever they mention a skills/<slug> path
+# that does not exist on disk.
 
 
 @dataclass
@@ -241,10 +250,134 @@ def _split_frontmatter(content: str) -> tuple[dict, str]:
     return frontmatter, parts[2]
 
 
+def _strip_fenced_blocks(body: str) -> str:
+    """Remove fenced code block content, using the same fence rules as _count_code_blocks.
+
+    A block closes only on a run of the same character at least as long as
+    its opener with nothing but whitespace after it, so a fence-like line
+    carrying other text (e.g. `echo "```"` inside a block) is content, not a
+    closer. An unclosed fence extends to the end of the body. Lines are
+    replaced with blanks rather than deleted so line-oriented consumers of
+    the stripped text keep their positions.
+    """
+    out_lines: list[str] = []
+    open_fence = ""
+    fence_in_blockquote = False
+
+    for line in body.split("\n"):
+        if open_fence and fence_in_blockquote and not line.lstrip().startswith(">"):
+            # A line outside the blockquote ends it, and with it the fenced block
+            # (CommonMark closes the code block when its container ends, and
+            # fenced code has no lazy continuation). The line itself is then
+            # handled by the normal path below.
+            open_fence = ""
+        match = _CODE_FENCE_PATTERN.match(line)
+        if match is not None:
+            fence, language, trailing = match.group(1), match.group(2), match.group(3)
+            if open_fence:
+                if (
+                    fence[0] == open_fence[0]
+                    and len(fence) >= len(open_fence)
+                    and not language
+                    and not trailing.strip()
+                ):
+                    open_fence = ""
+                out_lines.append("")
+                continue
+            if fence[0] == "`" and "`" in trailing:
+                # CommonMark keeps backticks out of the info string of a backtick fence.
+                out_lines.append(line)
+                continue
+            open_fence = fence
+            fence_in_blockquote = line.lstrip().startswith(">")
+            out_lines.append("")
+            continue
+        out_lines.append("" if open_fence else line)
+
+    return "\n".join(out_lines)
+
+
+def _is_backslash_escaped(text: str, position: int) -> bool:
+    """Return True when an odd number of backslashes precede position."""
+    count = 0
+    while position - count > 0 and text[position - count - 1] == "\\":
+        count += 1
+    return count % 2 == 1
+
+
+def _strip_inline_code_spans(text: str) -> str:
+    """Remove CommonMark code spans, pairing backtick runs of equal length.
+
+    A span opens on a backtick run and closes on the next run of the same
+    length, crossing newlines; longer or shorter runs between are content
+    (CommonMark closing delimiter must equal the opener's length). An
+    unmatched opener run is kept literally.
+    """
+    runs = list(_INLINE_BACKTICK_RUN_PATTERN.finditer(text))
+    out: list[str] = []
+    last = 0
+    i = 0
+    while i < len(runs):
+        open_run = runs[i]
+        open_start = open_run.start()
+        if _is_backslash_escaped(text, open_start):
+            # The escaped backtick is literal text. The rest of the run, if
+            # any, is a shorter backtick string that can still open a span.
+            open_start += 1
+            if open_start == open_run.end():
+                i += 1
+                continue
+        open_len = open_run.end() - open_start
+        j = i + 1
+        while j < len(runs) and (runs[j].end() - runs[j].start()) != open_len:
+            j += 1
+        if j < len(runs):
+            out.append(text[last:open_start])
+            out.append(" ")
+            last = runs[j].end()
+            i = j + 1
+        else:
+            out.append(text[last : open_run.end()])
+            last = open_run.end()
+            i += 1
+    out.append(text[last:])
+    return "".join(out)
+
+
+def _split_inline_blocks(text: str) -> list[str]:
+    """Split text into the inline blocks that bound code-span pairing.
+
+    A new block starts at a blank line, before a heading or list-item line,
+    and after a heading line. Lines within a block keep their newlines, so a
+    span may still cross a soft line break inside one paragraph.
+    """
+    blocks: list[list[str]] = [[]]
+    for line in text.split("\n"):
+        is_blank = not line.strip()
+        if is_blank or _BLOCK_START_PATTERN.match(line):
+            blocks.append([])
+        blocks[-1].append(line)
+        if _HEADING_LINE_PATTERN.match(line):
+            blocks.append([])
+    return ["\n".join(b) for b in blocks if b]
+
+
 def _extract_cross_references(body: str) -> list[str]:
-    """Extract skill paths while keeping references to nested skills intact."""
+    """Extract skill paths while keeping references to nested skills intact.
+
+    Fenced code blocks and inline code spans are excluded first: skill paths
+    inside code formatting are illustrative (examples, commands), not
+    ecosystem references, and counting them produced DEAD_CROSS_REF false
+    positives for any mention whose target does not exist on disk.
+    """
+    # Code spans pair within one inline block only, so split the body into
+    # segments at blank lines and before heading or list-item lines, and
+    # again after a heading line. Fence lines are already blank by now, so
+    # fenced blocks also act as boundaries.
+    segments = _split_inline_blocks(_strip_fenced_blocks(body))
+    stripped = "\n".join(_strip_inline_code_spans(p) for p in segments)
     references = []
-    for reference in _CROSS_REFERENCE_PATTERN.findall(body):
+    for reference in _CROSS_REFERENCE_PATTERN.findall(stripped):
         if reference.startswith(("skill/", "skills/")):
             reference = reference.split("/", 1)[1]
         references.append(reference)
