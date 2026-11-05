@@ -32,8 +32,9 @@ claude plugin install wshobson/agents/protect-mcp
 #    Installing the plugin already registers the hooks. An existing key is
 #    never replaced. To rotate it, archive the key and receipts.jsonl first.
 if [ ! -e ./protect-mcp.key ]; then
-  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+  d=$(mktemp -d) && npx protect-mcp@0.32.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
 fi
+chmod 600 ./protect-mcp.key
 echo "/protect-mcp.key" >> .gitignore
 
 # 4. Run Claude Code normally — every tool call is now policy-evaluated
@@ -186,3 +187,24 @@ Use the `receipt-verifier` agent for help interpreting verification failures.
 ## License
 
 MIT. See [LICENSE](../../LICENSE).
+
+## Upgrading an existing installation
+
+Update the installed plugin, then restrict the existing signing key to its
+owner before the next session (use your configured key path if overridden):
+
+```bash
+chmod 600 ./protect-mcp.key
+```
+
+Keep the existing key and receipts; the setup command does not replace the key.
+New keys use `protect-mcp@0.32.4 init`, which no longer sends the older
+initializer's opt-out installation ping.
+
+## Disclosure
+
+Tom Farley maintains `protect-mcp` (MIT) and `@veritasacta/verify`
+(Apache-2.0) and runs ScopeBlind, which publishes both and sells separate
+paid services. These plugin instructions use the local `init`, `evaluate`,
+and `sign` commands and offline verifier, fetched from npm; they do not
+recommend or call those paid services. Cedar CLI validation is optional.

@@ -52,8 +52,9 @@ echo "/review-receipts/" >> .gitignore
 echo "/review-governance.key" >> .gitignore
 echo "/.review-approved" >> .gitignore
 if [ ! -e ./review-governance.key ]; then
-  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./review-governance.key
+  d=$(mktemp -d) && npx protect-mcp@0.32.4 init --dir "$d" && mv "$d/keys/gateway.json" ./review-governance.key
 fi
+chmod 600 ./review-governance.key
 ```
 
 protect-mcp 0.7.4 `sign` does not create the key, so the last command creates

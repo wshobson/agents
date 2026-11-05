@@ -48,8 +48,9 @@ claude plugin install wshobson/agents/protect-mcp
 # 3. Create the signing key once (protect-mcp 0.7.4 sign does not create it).
 #    An existing key is never replaced. See references/receipt-format.md to rotate.
 if [ ! -e ./protect-mcp.key ]; then
-  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+  d=$(mktemp -d) && npx protect-mcp@0.32.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
 fi
+chmod 600 ./protect-mcp.key
 echo "/protect-mcp.key" >> .gitignore
 
 # 4. Use Claude Code normally. Every tool call is now policy-evaluated

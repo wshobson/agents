@@ -47,8 +47,9 @@ replaces an existing key:
 
 ```bash
 if [ ! -e ./protect-mcp.key ]; then
-  d=$(mktemp -d) && npx protect-mcp@0.7.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+  d=$(mktemp -d) && npx protect-mcp@0.32.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
 fi
+chmod 600 ./protect-mcp.key
 ```
 
 Give auditors the `publicKey` value from that file. Do not commit the file,
