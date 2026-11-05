@@ -27,7 +27,7 @@ Master Retrieval-Augmented Generation (RAG) to build LLM applications that provi
 
 - **Pinecone**: Managed, scalable, serverless
 - **Weaviate**: Open-source, hybrid search, GraphQL
-- **Milvus**: High performance, on-premise
+- **Milvus**: Local persistence with Lite, or self-hosted server deployments
 - **Chroma**: Lightweight, easy to use, local development
 - **Qdrant**: Fast, filtered search, Rust-based
 - **pgvector**: PostgreSQL extension, SQL integration

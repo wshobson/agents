@@ -238,6 +238,28 @@ vectorstore = Chroma(
 )
 ```
 
+### Milvus (Local Persistence)
+
+Install `langchain-milvus>=0.4,<0.5` and `milvus-lite>=3.2.2,<4` (Python 3.10+).
+Reuse the application's `embeddings` object.
+
+```python
+from langchain_milvus import Milvus
+
+vectorstore = Milvus(
+    embedding_function=embeddings,
+    collection_name="documents",
+    connection_args={"uri": "./rag_milvus.db"},
+    index_params={"index_type": "AUTOINDEX", "metric_type": "COSINE", "params": {}},
+    consistency_level="Strong",
+    drop_old=False,
+)
+```
+
+Reuse the same file, collection, and embedding model to reopen persisted data.
+Close `vectorstore.client` on application shutdown. See the
+[Milvus integration guide](https://docs.langchain.com/oss/python/integrations/vectorstores/milvus).
+
 ### pgvector (PostgreSQL)
 
 ```python
