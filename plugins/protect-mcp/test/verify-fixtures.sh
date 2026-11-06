@@ -39,7 +39,9 @@ python3 -c "
 import json
 s = json.load(open('expected/receipt-schema.json'))
 assert '\$schema' in s and 'json-schema.org' in s['\$schema']
-assert 'required' in s and len(s['required']) >= 6
+assert set(s['required']) == {'payload', 'signature'}
+assert 'tool_name' in s['properties']['payload']['required']
+assert set(s['properties']['signature']['required']) == {'alg', 'kid', 'sig'}
 " 2>/dev/null
 check $? "expected/receipt-schema.json is well-formed"
 

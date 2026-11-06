@@ -6,8 +6,8 @@ description: Configure human-in-the-loop gating for AI agent review actions in C
 # review-agent-governance — Setup
 
 Gate AI agent review actions (PR reviews, comments, merges, CI edits) behind
-explicit human approval. Every attempt, approved or denied, produces an
-Ed25519-signed receipt.
+explicit human approval. Each tool call that runs produces an
+Ed25519-signed receipt; denied calls never reach the signing hook.
 
 ## When to use this plugin
 
@@ -57,7 +57,7 @@ fi
 chmod 600 ./review-governance.key
 ```
 
-protect-mcp 0.7.4 `sign` does not create the key, so the last command creates
+protect-mcp 0.32.4 `sign` does not create the key, so the last command creates
 it, and it never replaces an existing key. Without a key, the receipts are
 unsigned. To rotate the key, archive `./review-governance.key` and
 `./review-receipts/receipts.jsonl` first, then run the command again. Give auditors the `publicKey`
@@ -115,7 +115,7 @@ Verify every receipt offline with the public key:
 
 ```bash
 PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./review-governance.key")).publicKey')
-npx @veritasacta/verify@0.9.2 --replay-chain ./review-receipts/receipts.jsonl --key "$PUB"
+npx @veritasacta/verify@0.11.1 --replay-chain ./review-receipts/receipts.jsonl --key "$PUB"
 ```
 
 Exit 0 means every receipt verified. Exit 1 means a receipt failed
