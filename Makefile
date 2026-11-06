@@ -20,15 +20,15 @@ UV_TOOLS := uv run $(EVAL_PROJECT) python
 # ruff and ty config lives. ty skips tools/yt-design-extractor/ because that tool
 # imports optional OCR dependencies installed only by `make install-ocr`.
 RUFF_PATHS := ../../tools/ src/plugin_eval/
-TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/install_pi.py ../../tools/check_agent_name_collisions.py ../../tools/check_version_bumps.py ../../tools/tests/ src/plugin_eval/
+TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/install_pi.py ../../tools/install_qwen.py ../../tools/check_agent_name_collisions.py ../../tools/check_version_bumps.py ../../tools/tests/ src/plugin_eval/
 
-.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity install-pi uninstall-pi validate garden check-version-bumps lint format test smoke-test eval-snapshot
+.PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity install-pi uninstall-pi install-qwen uninstall-qwen validate garden check-version-bumps lint format test smoke-test eval-snapshot
 
 help:
 	@echo "claude-agents — multi-harness plugin marketplace"
 	@echo "================================================="
 	@echo ""
-	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Antigravity / Pi):"
+	@echo "Multi-harness adapter (Codex / Cursor / OpenCode / Antigravity / Pi / Qwen Code):"
 	@echo "  make generate HARNESS=<h> [PLUGIN=<p>]           Generate per-harness artifacts (defaults to all plugins)"
 	@echo "  make generate-all                                Generate for ALL harnesses + ALL plugins"
 	@echo "  make clean-generated [HARNESS=<h>]               Remove generated artifacts"
@@ -40,6 +40,8 @@ help:
 	@echo "  make uninstall-antigravity                       Remove repo-owned Antigravity symlinks"
 	@echo "  make install-pi [FORCE=1]                        Symlink Pi skills, prompts, and agents into ~/.pi/agent"
 	@echo "  make uninstall-pi                                Remove repo-owned Pi symlinks"
+	@echo "  make install-qwen [FORCE=1]                      Symlink the Qwen Code extension into ~/.qwen/extensions"
+	@echo "  make uninstall-qwen                              Remove the repo-owned Qwen Code extension symlink"
 	@echo "  make validate [HARNESS=<h>] [STRICT=1]           Structural validation of generated artifacts"
 	@echo "  make garden [STRICT=1]                           Run doc-gardener (drift detection)"
 	@echo "  make check-version-bumps [BASE=origin/main]      Fail if a changed plugin kept its version"
@@ -170,7 +172,7 @@ clean:
 #   make generate-all
 #   make clean-generated HARNESS=opencode
 
-HARNESSES := codex copilot cursor opencode antigravity pi
+HARNESSES := codex copilot cursor opencode antigravity pi qwen
 
 generate:
 ifndef HARNESS
@@ -282,3 +284,10 @@ install-pi:
 
 uninstall-pi:
 	$(UV_TOOLS) tools/install_pi.py uninstall
+
+install-qwen:
+	$(UV_TOOLS) $(GENERATE) --harness qwen --all --prune
+	$(UV_TOOLS) tools/install_qwen.py install $(if $(filter 1 true TRUE yes YES,$(FORCE)),--force)
+
+uninstall-qwen:
+	$(UV_TOOLS) tools/install_qwen.py uninstall

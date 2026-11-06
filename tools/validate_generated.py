@@ -840,6 +840,201 @@ def validate_copilot(report: Report) -> None:
         return
 
 
+_QWEN_EXTENSION_NAME = "qwen-code-workflows"
+_QWEN_AGENT_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+_QWEN_SKILL_NAME_RE = re.compile(r"^[A-Za-z0-9_:.-]+$")
+_QWEN_AGENT_NAME_MAX = 50
+_QWEN_DESCRIPTION_MAX = 1024
+_QWEN_CONTEXT_MAX = 8192
+# Canonical Qwen Code tool names (packages/core/src/tools/tool-names.ts). A name
+# outside this set is either an MCP tool or a name Qwen cannot resolve.
+_QWEN_TOOLS = {
+    "read_file",
+    "grep_search",
+    "glob",
+    "list_directory",
+    "run_shell_command",
+    "edit",
+    "write_file",
+    "notebook_edit",
+    "web_fetch",
+    "web_search",
+    "agent",
+    "skill",
+    "todo_write",
+    "ask_user_question",
+    "enter_plan_mode",
+    "exit_plan_mode",
+    "read_mcp_resource",
+    "task_create",
+    "task_update",
+    "task_list",
+    "task_stop",
+    "send_message",
+    "team_create",
+    "team_delete",
+    "team_plan_approval",
+    "request_shutdown",
+}
+# Sentinel the adapter emits for an agent that must run without tools: Qwen
+# treats `tools: []` as "inherit every tool", so an unknown name keeps the
+# allow-list restrictive (fail closed).
+_QWEN_NO_TOOLS_SENTINEL = "none"
+
+
+def validate_qwen(report: Report) -> None:
+    """Validate the `.qwen/` extension tree: manifest, agents, commands, skills.
+
+    Qwen Code reads `agents/` and `skills/` one level deep, globs `commands/`
+    recursively, and injects the extension's context file on every request.
+    """
+    root = WORKTREE / ".qwen" / "extensions" / _QWEN_EXTENSION_NAME
+    if not root.is_dir():
+        return
+    fix = "Regenerate via `make generate HARNESS=qwen`."
+
+    # 1. Manifest: Qwen refuses an extension without name/version.
+    manifest_path = root / "qwen-extension.json"
+    if not manifest_path.is_file():
+        report.add(
+            severity="error",
+            harness="qwen",
+            path=manifest_path,
+            message="extension has no qwen-extension.json",
+            remediation=fix,
+        )
+    else:
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            report.add(
+                severity="error",
+                harness="qwen",
+                path=manifest_path,
+                message=f"qwen-extension.json is not valid JSON: {exc}",
+                remediation=fix,
+            )
+        else:
+            for field in ("name", "version", "description"):
+                if not str(manifest.get(field, "")).strip():
+                    report.add(
+                        severity="error",
+                        harness="qwen",
+                        path=manifest_path,
+                        message=f"qwen-extension.json needs a non-empty `{field}`",
+                        remediation=fix,
+                    )
+
+    # 2. Agents: name matches the filename, obeys Qwen's name rules, and every
+    # tool in the allowlist is a canonical Qwen tool.
+    for agent_md in sorted((root / "agents").glob("*.md")):
+        fm, _ = parse_frontmatter(agent_md.read_text(encoding="utf-8"))
+        name = fm.get("name")
+        _check_nonempty_str_field(report, fm, "name", "qwen", agent_md, label="agent")
+        _check_nonempty_str_field(report, fm, "description", "qwen", agent_md, label="agent")
+        if isinstance(name, str) and name:
+            if name != agent_md.stem:
+                report.add(
+                    severity="error",
+                    harness="qwen",
+                    path=agent_md,
+                    message=f"frontmatter name {name!r} != filename stem {agent_md.stem!r}",
+                    remediation=fix,
+                )
+            if len(name) > _QWEN_AGENT_NAME_MAX or not _QWEN_AGENT_NAME_RE.fullmatch(name):
+                report.add(
+                    severity="error",
+                    harness="qwen",
+                    path=agent_md,
+                    message=(
+                        f"agent name {name!r} violates Qwen's name rules "
+                        f"(letters/digits/_/-, max {_QWEN_AGENT_NAME_MAX})"
+                    ),
+                    remediation="Shorten the source agent name; Qwen skips invalid agents.",
+                )
+        tools = fm.get("tools")
+        if isinstance(tools, str):
+            tools = [t.strip() for t in tools.split(",") if t.strip()]
+        if isinstance(tools, list):
+            for tool in tools:
+                if not isinstance(tool, str):
+                    continue
+                if tool.startswith("mcp__"):
+                    continue
+                if tool == _QWEN_NO_TOOLS_SENTINEL:
+                    continue
+                if tool not in _QWEN_TOOLS:
+                    report.add(
+                        severity="error",
+                        harness="qwen",
+                        path=agent_md,
+                        message=f"tool {tool!r} is not a canonical Qwen tool name",
+                        remediation=(
+                            "Map it in TOOL_NAME_MAPS['qwen']; Qwen refuses tools it "
+                            "cannot resolve (Read/Bash/Grep do not match)."
+                        ),
+                    )
+
+    # 3. Skills: SKILL.md names its own directory and carries a description.
+    for skill_md in sorted((root / "skills").glob("*/SKILL.md")):
+        fm, _ = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
+        name = fm.get("name")
+        _check_nonempty_str_field(report, fm, "name", "qwen", skill_md, label="skill")
+        _check_nonempty_str_field(report, fm, "description", "qwen", skill_md, label="skill")
+        if isinstance(name, str) and name:
+            if name != skill_md.parent.name:
+                report.add(
+                    severity="error",
+                    harness="qwen",
+                    path=skill_md,
+                    message=f"frontmatter name {name!r} != directory {skill_md.parent.name!r}",
+                    remediation=fix,
+                )
+            if not _QWEN_SKILL_NAME_RE.fullmatch(name):
+                report.add(
+                    severity="error",
+                    harness="qwen",
+                    path=skill_md,
+                    message=f"skill name {name!r} violates Qwen's name rules",
+                    remediation="Rename the source skill; Qwen skips invalid skills.",
+                )
+        description = fm.get("description")
+        if isinstance(description, str) and len(description) > _QWEN_DESCRIPTION_MAX:
+            report.add(
+                severity="warning",
+                harness="qwen",
+                path=skill_md,
+                message=f"description is {len(description)} chars (Qwen warns above {_QWEN_DESCRIPTION_MAX})",
+                remediation="Shorten the source skill description.",
+            )
+
+    # 4. Commands: frontmatter with a description (Qwen lists them by name).
+    for command_md in sorted((root / "commands").glob("*/*.md")):
+        fm, _ = parse_frontmatter(command_md.read_text(encoding="utf-8"))
+        _check_nonempty_str_field(report, fm, "description", "qwen", command_md, label="command")
+
+    # 5. Context file: injected on every request, so it stays small.
+    context_path = root / "AGENTS.md"
+    if context_path.is_file():
+        size = context_path.stat().st_size
+        if size > _QWEN_CONTEXT_MAX:
+            report.add(
+                severity="warning",
+                harness="qwen",
+                path=context_path,
+                message=f"context file is {size} bytes (budget {_QWEN_CONTEXT_MAX})",
+                remediation="Keep the index to one row per plugin.",
+            )
+    else:
+        report.add(
+            severity="warning",
+            harness="qwen",
+            path=context_path,
+            message="extension has no AGENTS.md context file",
+            remediation=fix,
+        )
+
+
 _VALIDATORS = {
     "codex": validate_codex,
     "copilot": validate_copilot,
@@ -847,6 +1042,7 @@ _VALIDATORS = {
     "opencode": validate_opencode,
     "antigravity": validate_antigravity,
     "pi": validate_pi,
+    "qwen": validate_qwen,
 }
 
 

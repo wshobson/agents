@@ -208,6 +208,34 @@ CAPABILITIES: dict[str, Capability] = {
             "`/skill:name` expand in --mode json before any model call."
         ),
     ),
+    "qwen": Capability(
+        harness_id="qwen",
+        display_name="Qwen Code",
+        skills_native=True,  # SKILL.md under skills/<plugin>__<skill>/
+        agents_native=True,  # agents/<plugin>__<agent>.md with Qwen frontmatter
+        commands_native=True,  # commands/<plugin>/<cmd>.md -> /<plugin>:<cmd>
+        plugin_marketplace=True,  # `qwen extensions install <git-url>`
+        parallel_agents=True,
+        tool_allowlist_per_agent=True,  # honors `tools:` in agent frontmatter
+        todowrite=True,
+        task_spawn=True,  # `agent` tool
+        mcp_servers=True,  # `mcpServers` in the extension manifest
+        hooks=True,  # hooks/hooks.json, PascalCase events, ${CLAUDE_PLUGIN_ROOT}
+        context_file_name="AGENTS.md",
+        context_file_max_lines=_CONTEXT_LINES_CAP,
+        skill_body_max_bytes=_NO_CAP,
+        tool_name_case="snake_case",
+        bare_model_aliases=False,
+        notes=(
+            "Emits a gitignored .qwen/extensions/qwen-code-workflows/ tree: one Qwen "
+            "extension for every plugin, because Qwen installs one extension per source "
+            "URL. skills/<plugin>__<skill>/SKILL.md and agents/<plugin>__<agent>.md are "
+            "flat (Qwen reads those directories one level deep), commands are nested so "
+            "they resolve as /<plugin>:<cmd>. Claude tool names do not resolve against "
+            "Qwen's registry, so they are mapped to canonical snake_case names. Qwen's "
+            "model catalog is user-configured, so every model alias maps to `inherit`."
+        ),
+    ),
 }
 
 
@@ -294,6 +322,37 @@ TOOL_NAME_MAPS: dict[str, dict[str, str]] = {
         "Agent": "subagent",
         "Task": "subagent",
     },
+    # Qwen Code tool names are canonical snake_case (packages/core/src/tools/tool-names.ts).
+    # Claude names do not resolve against Qwen's registry, so they are mapped here;
+    # names with no Qwen equivalent are dropped by the adapter with a warning.
+    "qwen": {
+        "Read": "read_file",
+        "Edit": "edit",
+        "Write": "write_file",
+        "MultiEdit": "edit",
+        "NotebookEdit": "notebook_edit",
+        "Bash": "run_shell_command",
+        "Grep": "grep_search",
+        "Glob": "glob",
+        "LS": "list_directory",
+        "Agent": "agent",
+        "Task": "agent",
+        "TodoWrite": "todo_write",
+        "TaskCreate": "task_create",
+        "TaskUpdate": "task_update",
+        "TaskList": "task_list",
+        "TaskGet": "task_list",
+        "TaskStop": "task_stop",
+        "TeamCreate": "team_create",
+        "TeamDelete": "team_delete",
+        "SendMessage": "send_message",
+        "WebFetch": "web_fetch",
+        "WebSearch": "web_search",
+        "AskUserQuestion": "ask_user_question",
+        "Skill": "skill",
+        "ExitPlanMode": "exit_plan_mode",
+        "EnterPlanMode": "enter_plan_mode",
+    },
 }
 
 
@@ -358,6 +417,17 @@ MODEL_ALIASES: dict[str, dict[str, str]] = {
         "opus": "anthropic/claude-opus-4-8",
         "sonnet": "anthropic/claude-sonnet-5",
         "haiku": "anthropic/claude-haiku-4-5",
+        "inherit": "inherit",
+    },
+    # Qwen Code's model catalog is user-configured (settings.json -> modelProviders),
+    # so there is no fixed id to map to. Qwen understands the literal `inherit`,
+    # which the adapter emits by omitting the `model:` field so the agent reuses
+    # the session model — the tier information cannot be preserved.
+    "qwen": {
+        "fable": "inherit",
+        "opus": "inherit",
+        "sonnet": "inherit",
+        "haiku": "inherit",
         "inherit": "inherit",
     },
 }
