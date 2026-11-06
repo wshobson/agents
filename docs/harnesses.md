@@ -18,27 +18,28 @@ formats used by other tools.
 | **Google Antigravity CLI** (`agy`) | supported | gitignored: `.antigravity/plugins/<name>/{skills/,agents/,commands/}` |
 | **GitHub Copilot** | supported | gitignored: `.copilot/agents/`, `.copilot/skills/`, `.copilot/commands/` |
 | **Pi** (`pi`, `@earendil-works/pi-coding-agent`) | supported | gitignored: `.pi/{skills/<plugin>/<skill>/,prompts/,agents/}` |
+| **Qwen Code** (`qwen`, `@qwen-code/qwen-code`) | supported | gitignored: `.qwen/extensions/qwen-code-workflows/` (one extension: `qwen-extension.json`, `agents/`, `commands/`, `skills/`, `AGENTS.md`) |
 | **Agent Skills installers** (`gh skill` 2.90+, `npx skills`) | supported, skills only | nothing generated; both read `plugins/*/skills/` from GitHub directly, see [Skills-only installers](#skills-only-installers) |
 
 ## Capability matrix
 
-| Capability | Claude Code | Codex | Cursor | OpenCode | Antigravity | Copilot | Pi |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Skills (SKILL.md native) | ✅ | ✅ | ✅ via `.claude/` | ✅ via `.opencode/skills/` | ✅ (native, self-contained per plugin) | ✅ via `.copilot/skills/` | ✅ (recursive discovery) |
-| Subagents (markdown native) | ✅ | TOML format | ✅ via `.claude/` | ✅ (different frontmatter) | ✅ (`agents/<name>.md` + `invoke_subagent`/`define_subagent`) | ✅ (`.agent.md` profiles) | via the reference `subagent` extension (`agents/<plugin>__<agent>.md`) |
-| Slash commands | ✅ | converted to skills | ✅ | ✅ | TOML at `commands/<p>/<cmd>.toml` (agy reports these as "converted to skills") | converted to user-invocable skills | prompt templates at `prompts/<plugin>__<cmd>.md` |
-| Plugin marketplace | ✅ | ✅ (`codex plugin marketplace`) | ✅ (2.5+) | — | ✅ (`agy plugin install <name>@marketplace` / `agy plugin link`) | none | — (packages via npm, git, or a local path) |
-| Parallel subagents | ✅ | ✅ | ✅ | ✅ | ✅ | not declared | ✅ (extension) |
-| Per-agent tool allowlist | ✅ (`tools:`) | only `sandbox_mode` | only `readonly:` | ✅ (`permission:` block) | ✅ (`tools:`, agy-native names) | ✅ (`tools:`, translated names) | ✅ (`tools:`, extension) |
-| `TodoWrite` tool | ✅ | — | — | ✅ | — | not declared | — |
-| `Task`/`Agent` spawn tool | ✅ | name in prose | ✅ | ✅ (`task`) | ✅ (`invoke_subagent`/`define_subagent`) | ✅ (`agent`) | `subagent` (extension) |
-| MCP servers | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | via extension |
-| Lifecycle hooks | ✅ | — | — | ✅ (TS plugins) | ✅ | none emitted | ✅ (TypeScript extensions) |
-| Context file | `CLAUDE.md` | `AGENTS.md` (32 KiB cap) | `AGENTS.md` | `AGENTS.md` / `~/.claude/CLAUDE.md` | `AGENTS.md` (read natively) | `AGENTS.md` | `AGENTS.md` |
-| Context file recommended cap | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens |
-| Skill body hard cap | none | **8 KB** | none | none | none | none | none |
-| Tool name case | CamelCase (`Read`) | action verbs (no tool vocab) | lowercase | lowercase (strict) | lowercase (agy-native names) | lowercase (`read`, `execute`) | lowercase (`read`, `bash`) |
-| Bare model aliases | ✅ (`fable`/`opus`/`sonnet`/`haiku`) | mapped to GPT-5.x family | use `inherit` | full provider/model-id | mapped to tier alias (`pro`/`flash`/`inherit`) | mapped to full Claude model IDs | full provider/model-id |
+| Capability | Claude Code | Codex | Cursor | OpenCode | Antigravity | Copilot | Pi | Qwen Code |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Skills (SKILL.md native) | ✅ | ✅ | ✅ via `.claude/` | ✅ via `.opencode/skills/` | ✅ (native, self-contained per plugin) | ✅ via `.copilot/skills/` | ✅ (recursive discovery) | ✅ via `skills/<plugin>__<skill>/` |
+| Subagents (markdown native) | ✅ | TOML format | ✅ via `.claude/` | ✅ (different frontmatter) | ✅ (`agents/<name>.md` + `invoke_subagent`/`define_subagent`) | ✅ (`.agent.md` profiles) | via the reference `subagent` extension (`agents/<plugin>__<agent>.md`) | ✅ (`agents/<plugin>__<agent>.md`, Qwen frontmatter) |
+| Slash commands | ✅ | converted to skills | ✅ | ✅ | TOML at `commands/<p>/<cmd>.toml` (agy reports these as "converted to skills") | converted to user-invocable skills | prompt templates at `prompts/<plugin>__<cmd>.md` | ✅ at `commands/<plugin>/<cmd>.md` → `/<plugin>:<cmd>` |
+| Plugin marketplace | ✅ | ✅ (`codex plugin marketplace`) | ✅ (2.5+) | — | ✅ (`agy plugin install <name>@marketplace` / `agy plugin link`) | none | — (packages via npm, git, or a local path) | ✅ (`qwen extensions install <git-url>`) |
+| Parallel subagents | ✅ | ✅ | ✅ | ✅ | ✅ | not declared | ✅ (extension) | ✅ |
+| Per-agent tool allowlist | ✅ (`tools:`) | only `sandbox_mode` | only `readonly:` | ✅ (`permission:` block) | ✅ (`tools:`, agy-native names) | ✅ (`tools:`, translated names) | ✅ (`tools:`, extension) | ✅ (`tools:`, Qwen-canonical names) |
+| `TodoWrite` tool | ✅ | — | — | ✅ | — | not declared | — | ✅ (`todo_write`) |
+| `Task`/`Agent` spawn tool | ✅ | name in prose | ✅ | ✅ (`task`) | ✅ (`invoke_subagent`/`define_subagent`) | ✅ (`agent`) | `subagent` (extension) | ✅ (`agent`) |
+| MCP servers | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | via extension | ✅ (`mcpServers` in the manifest) |
+| Lifecycle hooks | ✅ | — | — | ✅ (TS plugins) | ✅ | none emitted | ✅ (TypeScript extensions) | ✅ (`hooks/hooks.json`, PascalCase events) |
+| Context file | `CLAUDE.md` | `AGENTS.md` (32 KiB cap) | `AGENTS.md` | `AGENTS.md` / `~/.claude/CLAUDE.md` | `AGENTS.md` (read natively) | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` (injected on every request — keep it an index) |
+| Context file recommended cap | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 500 tokens | 150 lines / 8 KB |
+| Skill body hard cap | none | **8 KB** | none | none | none | none | none | none |
+| Tool name case | CamelCase (`Read`) | action verbs (no tool vocab) | lowercase | lowercase (strict) | lowercase (agy-native names) | lowercase (`read`, `execute`) | lowercase (`read`, `bash`) | snake_case (`read_file`, `run_shell_command`) |
+| Bare model aliases | ✅ (`fable`/`opus`/`sonnet`/`haiku`) | mapped to GPT-5.x family | use `inherit` | full provider/model-id | mapped to tier alias (`pro`/`flash`/`inherit`) | mapped to full Claude model IDs | full provider/model-id | mapped to `inherit` (Qwen's model catalog is user-configured) |
 
 Copilot entries describe the adapter output and declared capabilities. The adapter rewrites
 `TodoWrite` references to `todo` without declaring a native equivalent. Claude model aliases

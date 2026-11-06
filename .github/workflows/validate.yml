@@ -240,6 +240,7 @@ jobs:
             opencode.json
             .antigravity/
             .pi/
+            .qwen/extensions/
             AGENTS.md
           retention-days: 7
 

@@ -63,6 +63,9 @@ opencode.json
 # Pi — transformed skills/prompts/agents (local generation; `make generate HARNESS=pi`)
 .pi/
 
+# Qwen Code: generated extension (see tools/adapters/qwen.py)
+.qwen/extensions/
+
 
 # Superpowers plugin artifacts (specs/plans are session-local, never committed)
 docs/superpowers/
