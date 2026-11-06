@@ -195,6 +195,11 @@ def prune_orphans(harness_id: str, output_root: Path, written: set[Path]) -> lis
         ):
             if sub_path.is_dir():
                 candidates.extend(p for p in sub_path.rglob("*") if p.is_file())
+    elif harness_id == "qwen":
+        # The adapter owns the whole generated extension tree.
+        d = output_root / ".qwen" / "extensions"
+        if d.is_dir():
+            candidates.extend(p for p in d.rglob("*") if p.is_file())
 
     for f in candidates:
         if f.resolve() not in written_resolved:
