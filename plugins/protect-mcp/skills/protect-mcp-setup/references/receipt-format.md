@@ -58,14 +58,15 @@ The verifier accepts mixed logs. The first new receipt can link to the last
 legacy receipt, but earlier legacy lines have no links. Deletion or reordering
 within that legacy portion can go undetected; the chain does not retrofit
 integrity links onto it. Editing a legacy receipt's signed contents still
-fails its own signature check. Archive the old log before upgrading if you
-want a clear boundary, and verify the archive with its original public key.
+fails its own signature check. For a clear boundary between formats, move the
+old log to an archive before upgrading and verify it with its original public key.
 
 ## Rotating the signing key
 
-Archive both the signing key and receipt log before creating a new key.
-Verify each archive with its original public key and distribute the new
-public key through a trusted channel. Never commit the private key.
+Move the old signing key and active receipt log to a secure archive before
+creating a new key. Start a fresh `receipts.jsonl` for the new key. Verify
+each log with its original public key and distribute the new public key
+through a trusted channel. Never commit the private key.
 
 Missing or unusable keys can make the CLI append an unsigned diagnostic line
 and return `signed: false`. The hook reports that as an error with empty

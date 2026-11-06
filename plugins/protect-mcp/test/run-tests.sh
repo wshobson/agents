@@ -110,7 +110,7 @@ TOOL_NAME="$(extract "$INPUT" tool_name)"
 SIGN_ARGS=(--tool "$TOOL_NAME" --receipts "$RECEIPTS_DIR/")
 [ -f "$KEY" ] && SIGN_ARGS+=(--key "$KEY")
 
-npx --yes protect-mcp@0.32.4 sign "${SIGN_ARGS[@]}" >/dev/null 2>&1
+npx --yes protect-mcp@0.32.4 sign "${SIGN_ARGS[@]}" </dev/null >/dev/null 2>&1
 SIGN_RC=$?
 # protect-mcp >= 0.7.0 appends receipts to receipts.jsonl in the --receipts dir (one JSON per
 # line) rather than one file per receipt; extract the newest line as a

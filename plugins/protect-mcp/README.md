@@ -30,7 +30,7 @@ claude plugin install wshobson/agents/protect-mcp
 
 # 3. Create the signing key once (protect-mcp 0.32.4 sign does not create it).
 #    Installing the plugin already registers the hooks. An existing key is
-#    never replaced. To rotate it, archive the key and receipts.jsonl first.
+#    never replaced. To rotate it, move the key and receipts.jsonl to a secure archive first.
 if [ ! -e ./protect-mcp.key ]; then
   d=$(mktemp -d) && npx protect-mcp@0.32.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
 fi
