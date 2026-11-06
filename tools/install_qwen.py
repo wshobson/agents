@@ -44,6 +44,7 @@ def default_config_dir(env: dict[str, str] | None = None) -> Path:
 
 
 def _is_relative_to(child: Path, parent: Path) -> bool:
+    """Return whether the child path resolves inside the parent path."""
     try:
         child.resolve(strict=False).relative_to(parent.resolve(strict=False))
     except ValueError:
@@ -52,6 +53,7 @@ def _is_relative_to(child: Path, parent: Path) -> bool:
 
 
 def _generated_extension(repo_root: Path) -> Path:
+    """Return the generated extension directory, or explain that it is missing."""
     source = repo_root / ".qwen" / "extensions" / EXTENSION_NAME
     if not source.is_dir():
         raise FileNotFoundError(
@@ -70,6 +72,11 @@ def install(
     config_dir: Path | None = None,
     force: bool = False,
 ) -> InstallReport:
+    """Symlink the generated extension into the user's Qwen home.
+
+    An existing non-symlink target is never overwritten; a symlink that points
+    somewhere else is only replaced when force=True.
+    """
     config_dir = (config_dir or default_config_dir()).expanduser()
     report = InstallReport()
     try:
@@ -105,6 +112,7 @@ def uninstall(
     repo_root: Path = REPO_ROOT,
     config_dir: Path | None = None,
 ) -> InstallReport:
+    """Remove the symlink this repository owns, leaving foreign targets alone."""
     config_dir = (config_dir or default_config_dir()).expanduser()
     generated_root = (repo_root / ".qwen" / "extensions").resolve(strict=False)
     report = InstallReport()
@@ -123,6 +131,7 @@ def uninstall(
 
 
 def _print_report(action: str, config_dir: Path, report: InstallReport) -> None:
+    """Print a one-line summary of an install or uninstall action."""
     print(
         f"{action}: config={config_dir} linked={report.linked} unchanged={report.unchanged} "
         f"removed={report.removed} skipped={report.skipped}"
@@ -132,6 +141,7 @@ def _print_report(action: str, config_dir: Path, report: InstallReport) -> None:
 
 
 def main() -> int:
+    """Install or uninstall the generated Qwen Code extension."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("install", "uninstall"))
     parser.add_argument("--config-dir", type=Path, default=None)

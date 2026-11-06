@@ -27,6 +27,7 @@ Qwen Code specifics this adapter handles:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -92,13 +93,27 @@ _EXTENSION_NAME = "qwen-code-workflows"
 _MAX_AGENT_NAME = 50
 _MAX_CONTEXT_BYTES = 8192
 
+# Sentinel for an agent that must run without tools. Qwen treats `tools: []`
+# as "inherit every tool" (packages/core/src/subagents/validation.ts warns
+# exactly that), and an agent that declares no `tools:` key inherits the
+# parent's tools. A name that resolves to no registered tool stays in the
+# allow-list as a dead restrictive entry, so the agent ends up tool-less
+# (fail closed) instead of gaining shell and write access it never asked for.
+_NO_TOOLS_SENTINEL = "none"
+
 
 def qwen_agent_id(plugin_name: str, agent_name: str) -> str:
-    """Filename stem for a plugin agent: `<plugin>__<agent>`, Qwen-safe."""
-    stem = f"{plugin_name}__{agent_name}"
-    stem = re.sub(r"[^A-Za-z0-9_-]+", "-", stem).strip("-")
+    """Filename stem for a plugin agent: `<plugin>__<agent>`, Qwen-safe.
+
+    Qwen accepts agent names of at most 50 characters. When the namespaced id
+    is longer, the tail is replaced by a digest of the full id so two agents
+    whose stems share a prefix keep distinct ids instead of colliding.
+    """
+    raw = f"{plugin_name}__{agent_name}"
+    stem = re.sub(r"[^A-Za-z0-9_-]+", "-", raw).strip("-")
     if len(stem) > _MAX_AGENT_NAME:
-        stem = stem[:_MAX_AGENT_NAME].rstrip("-")
+        digest = hashlib.sha1(raw.encode("utf-8")).hexdigest()[:8]
+        stem = f"{stem[: _MAX_AGENT_NAME - len(digest) - 1].rstrip('-')}-{digest}"
     if stem.lower() in _RESERVED_AGENT_NAMES:
         stem = f"{stem}-x"
     return stem
@@ -147,6 +162,7 @@ class QwenAdapter(HarnessAdapter):
         self._counts = {"agents": 0, "commands": 0, "skills": 0}
 
     def emit_plugin(self, plugin: PluginSource) -> EmitResult:
+        """Emit the skills, commands and agents of one plugin into the extension."""
         result = EmitResult()
         for skill in plugin.skills:
             self._emit_skill(plugin, skill, result)
@@ -157,7 +173,11 @@ class QwenAdapter(HarnessAdapter):
         return result
 
     def emit_global(self, plugins: list[PluginSource]) -> EmitResult:
-        """Write the extension manifest and the compact always-on index."""
+        """Write the extension manifest and the compact always-on index.
+
+        The index lists one row per plugin: Qwen injects the extension context
+        file on every request, so it must stay small.
+        """
         result = EmitResult()
         manifest = {
             "name": _EXTENSION_NAME,
@@ -190,6 +210,7 @@ class QwenAdapter(HarnessAdapter):
         return Path(".qwen") / "extensions" / _EXTENSION_NAME
 
     def _emit_skill(self, plugin: PluginSource, skill: SkillSource, result: EmitResult) -> None:
+        """Emit one skill with its namespaced id and its supporting files."""
         skill_id = qwen_skill_id(plugin.name, skill.name)
         if not _SKILL_NAME_RE.match(skill_id):
             result.warnings.append(f"skill `{plugin.name}/{skill.name}`: invalid Qwen name, skipped")
@@ -216,6 +237,7 @@ class QwenAdapter(HarnessAdapter):
         self._counts["skills"] += 1
 
     def _emit_command(self, plugin: PluginSource, cmd: CommandSource, result: EmitResult) -> None:
+        """Emit one command under commands/<plugin>/ so Qwen resolves /<plugin>:<cmd>."""
         fm: dict = {
             "description": cmd.description or cmd.name.replace("-", " ").title(),
         }
@@ -228,6 +250,13 @@ class QwenAdapter(HarnessAdapter):
         self._counts["commands"] += 1
 
     def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
+        """Emit one Qwen agent definition for `plugin`.
+
+        The tool allow-list is fail-closed: when the source declares no usable
+        tool (an empty list, or every name dropped by the mapping) the agent
+        gets a sentinel entry that resolves to no registered tool, so Qwen runs
+        it without tools instead of handing it the parent's shell and write.
+        """
         agent_id = qwen_agent_id(plugin.name, agent.name)
         if not _AGENT_NAME_RE.match(agent_id) or not 2 <= len(agent_id) <= _MAX_AGENT_NAME:
             result.warnings.append(f"agent `{plugin.name}/{agent.name}`: invalid Qwen name, skipped")
@@ -264,6 +293,14 @@ class QwenAdapter(HarnessAdapter):
                     continue
                 if mapped not in tools:
                     tools.append(mapped)
+            if not tools:
+                # `tools: []` means "inherit every tool" in Qwen, so an agent
+                # that asked for no tools would silently gain them all.
+                tools = [_NO_TOOLS_SENTINEL]
+                result.warnings.append(
+                    f"agent `{agent_id}`: no usable tool left after mapping, "
+                    f"restricted to a tool-less agent (sentinel `{_NO_TOOLS_SENTINEL}`)"
+                )
             fm["tools"] = tools
 
         body = self.strip_claude_tool_refs(agent.body, tool_case="lower")
@@ -273,7 +310,11 @@ class QwenAdapter(HarnessAdapter):
         self._counts["agents"] += 1
 
     def _context_index(self, plugins: list[PluginSource]) -> str:
-        """Compact always-on context: one row per plugin, not per component."""
+        """Build the compact always-on context: one row per plugin.
+
+        Qwen injects this file on every request, so it stays an index instead
+        of a catalog of the 202 agents and 185 skills.
+        """
         lines = [
             "# AI Dev Kit — Contexto para Qwen Code",
             "",

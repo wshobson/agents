@@ -108,3 +108,36 @@ class TestQwenAdapter:
         assert len(long_id) <= 50
 
         assert qwen_skill_id("demo", "hello") == "demo__hello"
+
+    def test_long_agent_ids_stay_distinct(self):
+        """Two agents whose ids share a prefix must not collapse into one id."""
+        first = qwen_agent_id("a" * 30, "b" * 30 + "-one")
+        second = qwen_agent_id("a" * 30, "b" * 30 + "-two")
+        assert first != second
+        assert len(first) <= 50
+        assert len(second) <= 50
+
+    def test_agent_without_usable_tools_fails_closed(self, synthetic_plugin, output_root):
+        """`tools: []` means "inherit every tool" in Qwen, so it cannot be copied."""
+        from tools.adapters.base import AgentSource, EmitResult
+
+        adapter = QwenAdapter(output_root=output_root)
+        agent = AgentSource(
+            plugin="demo",
+            name="locked",
+            path=Path("plugins/demo/agents/locked.md"),
+            frontmatter={
+                "name": "locked",
+                "description": "Agent that must not run with tools",
+                "tools": [],
+            },
+            body="Body",
+        )
+        result = EmitResult()
+        adapter._emit_agent(synthetic_plugin, agent, result)
+
+        fm, _ = parse_frontmatter(
+            (output_root / _EXTENSION / "agents" / "demo__locked.md").read_text()
+        )
+        assert fm["tools"] == ["none"]
+        assert any("tool-less" in warning for warning in result.warnings)

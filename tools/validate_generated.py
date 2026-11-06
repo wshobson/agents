@@ -876,6 +876,10 @@ _QWEN_TOOLS = {
     "team_plan_approval",
     "request_shutdown",
 }
+# Sentinel the adapter emits for an agent that must run without tools: Qwen
+# treats `tools: []` as "inherit every tool", so an unknown name keeps the
+# allow-list restrictive (fail closed).
+_QWEN_NO_TOOLS_SENTINEL = "none"
 
 
 def validate_qwen(report: Report) -> None:
@@ -956,6 +960,8 @@ def validate_qwen(report: Report) -> None:
                 if not isinstance(tool, str):
                     continue
                 if tool.startswith("mcp__"):
+                    continue
+                if tool == _QWEN_NO_TOOLS_SENTINEL:
                     continue
                 if tool not in _QWEN_TOOLS:
                     report.add(
