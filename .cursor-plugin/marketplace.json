@@ -885,7 +885,7 @@
     {
       "name": "shell-scripting",
       "source": "./plugins/shell-scripting",
-      "version": "1.2.4",
+      "version": "1.2.5",
       "description": "Production-grade Bash scripting with defensive programming, POSIX compliance, and comprehensive testing",
       "author": {
         "name": "Ryan Snodgrass",
