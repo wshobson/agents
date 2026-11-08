@@ -149,7 +149,7 @@ Invoke the `review` skill.
 - If no critical flags: set `checkpoints.review = "completed"` → set stage to `qa` → continue.
 
 ### `qa`
-Invoke the `qa-tester` skill.
+Delegate to the `ship-mate-qa-tester` agent.
 
 **After QA:**
 - If `flags.qa_bugs_pending == true`:
