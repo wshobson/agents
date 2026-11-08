@@ -149,7 +149,7 @@ Invoke the `review` skill.
 - If no critical flags: set `checkpoints.review = "completed"` → set stage to `qa` → continue.
 
 ### `qa`
-Invoke the `qa` skill.
+Invoke the `qa-tester` skill.
 
 **After QA:**
 - If `flags.qa_bugs_pending == true`:
