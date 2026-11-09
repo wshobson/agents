@@ -271,6 +271,9 @@ func attack() -> void:
 func _on_stat_changed(stat_name: StringName, value: float) -> void:
     if stat_name == "health" and value <= 0:
         die()
+
+func die() -> void:
+    queue_free()
 ```
 
 ### Pattern 4: Object Pooling
