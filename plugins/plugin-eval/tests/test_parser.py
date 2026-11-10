@@ -224,6 +224,56 @@ class TestParseSkill:
 
         assert skill.cross_references == ["sibling", "cousin"]
 
+    def test_nested_quote_fence_ends_when_the_inner_quote_ends(self, tmp_path: Path):
+        skill_dir = tmp_path / "nested-quote-fence"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: nested-quote-fence\n"
+            'description: "Use when testing nested quoted fences."\n'
+            "---\n\n"
+            "> > ```text\n"
+            "> > skills/ghost/does-not-exist\n"
+            "> See skills/sibling/SKILL.md.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
+
+    def test_heading_inside_a_blockquote_bounds_code_spans(self, tmp_path: Path):
+        skill_dir = tmp_path / "quoted-heading"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: quoted-heading\n"
+            'description: "Use when testing quoted headings."\n'
+            "---\n\n"
+            "> ## The ` key\n"
+            "> See skills/sibling/SKILL.md and `make test`.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
+
+    def test_marker_only_quote_line_bounds_code_spans(self, tmp_path: Path):
+        skill_dir = tmp_path / "quoted-blank"
+        skill_dir.mkdir()
+        (skill_dir / "SKILL.md").write_text(
+            "---\n"
+            "name: quoted-blank\n"
+            'description: "Use when testing blank quote lines."\n'
+            "---\n\n"
+            "> Press ` to open the console.\n"
+            ">\n"
+            "> See skills/sibling/SKILL.md and `make test`.\n"
+        )
+
+        skill = parse_skill(skill_dir)
+
+        assert skill.cross_references == ["sibling"]
+
 
 class TestCodeBlockCounting:
     def _skill(self, tmp_path: Path, body: str, name: str = "counted") -> Path:

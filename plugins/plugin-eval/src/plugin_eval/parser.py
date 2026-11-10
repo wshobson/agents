@@ -17,6 +17,8 @@ _INLINE_BACKTICK_RUN_PATTERN = re.compile(r"`+")
 # A heading or list-item line starts a new inline block for code-span pairing.
 _BLOCK_START_PATTERN = re.compile(r"[ \t]{0,3}(?:#{1,6}(?:[ \t]|$)|[-*+][ \t]|\d{1,9}[.)][ \t])")
 _HEADING_LINE_PATTERN = re.compile(r"[ \t]{0,3}#{1,6}(?:[ \t]|$)")
+# One blockquote marker: up to three spaces of indentation, ">", one optional space.
+_BLOCKQUOTE_MARKER_PATTERN = re.compile(r"[ \t]{0,3}>[ \t]?")
 # Cross-reference extraction excludes fenced code blocks and inline code
 # spans: a skill path inside code formatting is an example or command, not
 # an ecosystem reference. Without this, prose and command examples generate
@@ -250,6 +252,15 @@ def _split_frontmatter(content: str) -> tuple[dict, str]:
     return frontmatter, parts[2]
 
 
+def _split_blockquote_prefix(line: str) -> tuple[int, str]:
+    """Return the blockquote depth of a line and the line without its markers."""
+    depth = 0
+    while match := _BLOCKQUOTE_MARKER_PATTERN.match(line):
+        depth += 1
+        line = line[match.end() :]
+    return depth, line
+
+
 def _strip_fenced_blocks(body: str) -> str:
     """Remove fenced code block content, using the same fence rules as _count_code_blocks.
 
@@ -259,19 +270,27 @@ def _strip_fenced_blocks(body: str) -> str:
     closer. An unclosed fence extends to the end of the body. Lines are
     replaced with blanks rather than deleted so line-oriented consumers of
     the stripped text keep their positions.
+
+    Fence rules apply to the line after its blockquote markers. A block opened
+    inside a blockquote ends when a line drops below the opener's quote depth.
     """
     out_lines: list[str] = []
     open_fence = ""
-    fence_in_blockquote = False
+    fence_depth = 0
 
     for line in body.split("\n"):
-        if open_fence and fence_in_blockquote and not line.lstrip().startswith(">"):
-            # A line outside the blockquote ends it, and with it the fenced block
-            # (CommonMark closes the code block when its container ends, and
-            # fenced code has no lazy continuation). The line itself is then
-            # handled by the normal path below.
+        depth, content = _split_blockquote_prefix(line)
+        if open_fence and depth < fence_depth:
+            # A line outside the opener's blockquote ends it, and with it the
+            # fenced block (CommonMark closes the code block when its container
+            # ends, and fenced code has no lazy continuation). The line itself
+            # is then handled by the normal path below.
             open_fence = ""
-        match = _CODE_FENCE_PATTERN.match(line)
+        if open_fence and depth > fence_depth:
+            # Extra ">" markers are block content, so this line cannot close it.
+            out_lines.append("")
+            continue
+        match = _CODE_FENCE_PATTERN.match(content)
         if match is not None:
             fence, language, trailing = match.group(1), match.group(2), match.group(3)
             if open_fence:
@@ -289,7 +308,7 @@ def _strip_fenced_blocks(body: str) -> str:
                 out_lines.append(line)
                 continue
             open_fence = fence
-            fence_in_blockquote = line.lstrip().startswith(">")
+            fence_depth = depth
             out_lines.append("")
             continue
         out_lines.append("" if open_fence else line)
@@ -349,15 +368,18 @@ def _split_inline_blocks(text: str) -> list[str]:
 
     A new block starts at a blank line, before a heading or list-item line,
     and after a heading line. Lines within a block keep their newlines, so a
-    span may still cross a soft line break inside one paragraph.
+    span may still cross a soft line break inside one paragraph. The rules
+    apply to the line after its blockquote markers, so a line holding only
+    markers counts as blank.
     """
     blocks: list[list[str]] = [[]]
     for line in text.split("\n"):
-        is_blank = not line.strip()
-        if is_blank or _BLOCK_START_PATTERN.match(line):
+        _, content = _split_blockquote_prefix(line)
+        is_blank = not content.strip()
+        if is_blank or _BLOCK_START_PATTERN.match(content):
             blocks.append([])
         blocks[-1].append(line)
-        if _HEADING_LINE_PATTERN.match(line):
+        if _HEADING_LINE_PATTERN.match(content):
             blocks.append([])
     return ["\n".join(b) for b in blocks if b]
 
