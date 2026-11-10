@@ -149,6 +149,74 @@ class TestCodexAdapter:
         # Result fits cap (with pointer overhead)
         assert len(head.encode()) <= 7400
 
+    def test_mirrors_all_skill_support_dirs_not_just_references(
+        self, tmp_path: Path, output_root: Path
+    ):
+        """scripts/, assets/, resources/, examples/ and top-level support files travel
+        with the skill, like references/ does. A Codex skill that names a script it
+        does not ship cannot run it."""
+        from tools.tests.conftest import _make_skill
+
+        plugin_dir = tmp_path / "demo"
+        plugin_dir.mkdir()
+        (plugin_dir / ".claude-plugin").mkdir()
+        (plugin_dir / ".claude-plugin" / "plugin.json").write_text('{"name": "demo"}')
+        skill = _make_skill(
+            plugin_dir,
+            "toolkit",
+            "name: toolkit\ndescription: Use when running the toolkit.",
+            "# Toolkit\n\nRun `scripts/preflight.sh`.\n",
+        )
+        support = {
+            "references/notes.md": b"notes",
+            "scripts/preflight.sh": b"#!/bin/sh\necho ok\n",
+            "assets/logo.png": b"\x89PNG\r\n\x00\xff",
+            "resources/data.json": b"{}",
+            "examples/sample.txt": b"example",
+            "requirements.txt": b"python-pptx\n",
+        }
+        for rel, data in support.items():
+            (skill.dir / rel).parent.mkdir(parents=True, exist_ok=True)
+            (skill.dir / rel).write_bytes(data)
+        # Hidden files must NOT be mirrored.
+        (skill.dir / ".DS_Store").write_text("junk")
+        (skill.dir / ".cache").mkdir()
+        (skill.dir / ".cache" / "ignored.txt").write_text("ignored")
+        plugin = PluginSource(
+            name="demo", dir=plugin_dir, plugin_json={"name": "demo"}, skills=[skill]
+        )
+
+        result = CodexAdapter(output_root=output_root).emit_plugin(plugin)
+
+        skill_root = output_root / ".codex" / "skills" / "demo__toolkit"
+        for rel, data in support.items():
+            assert (skill_root / rel).read_bytes() == data, rel
+            # In the written set, so `generate.py --prune` keeps it.
+            assert (skill_root / rel).resolve() in result.written, rel
+        assert not (skill_root / ".DS_Store").exists()
+        assert not (skill_root / ".cache").exists()
+        # The source SKILL.md is not copied over the Codex rewrite.
+        fm, _ = parse_frontmatter((skill_root / "SKILL.md").read_text())
+        assert fm["name"] == "demo__toolkit"
+
+    @pytest.mark.parametrize("directory", [False, True])
+    def test_rejects_support_symlinks(
+        self, synthetic_plugin: PluginSource, output_root: Path, tmp_path: Path, directory: bool
+    ):
+        """A linked file cannot pull unrelated local data into a generated skill."""
+        outside = tmp_path / "outside.txt"
+        if directory:
+            outside.mkdir()
+            (outside / "private.txt").write_text("outside source boundary")
+        else:
+            outside.write_text("outside source boundary")
+        (synthetic_plugin.skills[0].dir / "linked.txt").symlink_to(
+            outside, target_is_directory=directory
+        )
+        with pytest.raises(ValueError, match="symlink"):
+            CodexAdapter(output_root=output_root).emit_plugin(synthetic_plugin)
+        assert not (output_root / ".codex" / "skills" / "demo__hello" / "linked.txt").exists()
+
     def test_emit_global_warns_when_agents_md_missing(
         self, synthetic_plugin: PluginSource, output_root: Path, tmp_path: Path
     ):
