@@ -1,6 +1,6 @@
 # Complete Plugin Reference
 
-Browse all 94 marketplace plugins organized by category: 92 local plugins plus 2 external Claude Code marketplace entries (`pensyve` and `deja-vu`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
+Browse all 93 marketplace plugins organized by category: 91 local plugins plus 2 external Claude Code marketplace entries (`pensyve` and `deja-vu`). The local source supports seven coding tools through native formats and adapters. Install commands below use Claude Code syntax. See the [tool setup guide](./harnesses.md) for other installation routes.
 
 ## Quick Start - Essential Plugins
 
@@ -327,7 +327,6 @@ Next.js, React + Vite, and Node.js project setup with pnpm and TypeScript best p
 
 | Plugin               | Description                                                              | Install                            |
 | -------------------- | ------------------------------------------------------------------------ | ---------------------------------- |
-| **meigen-ai-design** | AI image generation with creative workflow orchestration and prompt MCPs | `/plugin install meigen-ai-design` |
 | **brand-landingpage** | Brand discovery through deployment-ready landing page HTML              | `/plugin install brand-landingpage` |
 | **pptx-deck-creation** | Production-ready editable PowerPoint decks via spec-first, coordinate-explicit workflow | `/plugin install pptx-deck-creation` |
 
@@ -367,7 +366,7 @@ The marketplace commands in this section run inside Claude Code. Other tools use
 /plugin marketplace add wshobson/agents
 ```
 
-This makes all 94 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
+This makes all 93 marketplace plugins available for installation, but **does not load any agents or tools** into your context.
 
 ### Step 2: Install Specific Plugins
 

@@ -36,7 +36,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 
 ### Plugin Distribution
 
-- **94 marketplace plugins** (92 local + 2 external via git-subdir) optimized for specific use cases
+- **93 marketplace plugins** (91 local + 2 external via git-subdir) optimized for specific use cases
 - **Skills-only distribution** through `gh skill install wshobson/agents` and `npx skills add wshobson/agents`, which read `plugins/*/skills/` directly (see [harnesses.md](./harnesses.md#skills-only-installers))
 - **26 clear categories** with 1-10 plugins each for easy discovery
 - Organized by domain:
@@ -49,7 +49,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 
 ### Component Breakdown
 
-**202 Local Specialized Agents**
+**199 Local Specialized Agents**
 
 - Domain experts with deep knowledge
 - Organized across architecture, languages, infrastructure, quality, data/AI, documentation, business, and SEO
@@ -61,7 +61,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 - Complex operations like full-stack development, security hardening, ML pipelines, incident response
 - Pre-configured agent workflows
 
-**105 Local Commands**
+**103 Local Commands**
 
 - Optimized utilities including:
   - Project scaffolding (Python, TypeScript, Rust)
@@ -82,7 +82,7 @@ The repository shares agents, skills, and commands across seven AI coding tools.
 ```
 agents/
 ├── .claude-plugin/
-│   └── marketplace.json          # Marketplace catalog (94 plugins)
+│   └── marketplace.json          # Marketplace catalog (93 plugins)
 ├── plugins/                       # Isolated plugin directories
 │   ├── python-development/
 │   │   ├── agents/               # Python language agents
@@ -264,7 +264,7 @@ code-reviewer (Sonnet) validates architecture
 ### Component Coverage
 
 - **Full component coverage** - every plugin includes at least one agent, command, or skill
-- **100% component availability** - all 202 local agents accessible across plugins
+- **100% component availability** - all 199 local agents accessible across plugins
 - **Efficient distribution** - 5.5 components per plugin average
 
 ### Discoverability
@@ -394,5 +394,5 @@ Feature Development Workflow:
 
 - [Agent Skills](./agent-skills.md) - Modular knowledge packages
 - [Agent Reference](./agents.md) - Complete agent catalog
-- [Plugin Reference](./plugins.md) - All 94 marketplace plugins
+- [Plugin Reference](./plugins.md) - All 93 marketplace plugins
 - [Usage Guide](./usage.md) - Commands and workflows
