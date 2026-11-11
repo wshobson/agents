@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "meigen": {
+      "type": "http",
+      "url": "https://www.meigen.ai/api/mcp"
+    }
+  }
+}

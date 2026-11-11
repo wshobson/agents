@@ -1,112 +1,32 @@
 # MeiGen AI Design
 
-AI image generation plugin with creative workflow orchestration, parallel multi-direction output, prompt engineering, and a 1,300+ curated inspiration library.
+Find visual inspiration, create images and videos, and reuse your MeiGen favorites, boards and generation history through the hosted MCP service.
 
-## Prerequisites
+## Connect
 
-This plugin requires the **meigen** MCP server. Install it by adding to your project's `.mcp.json`:
+This plugin includes a native HTTP MCP connection to `https://www.meigen.ai/api/mcp`. In Claude Code, use `/mcp` to authenticate MeiGen and complete browser sign-in. New connections do not need Node.js, npm or an API key. Tools update on the server; this package supplies the connection and optional creative helpers.
 
-```json
-{
-  "mcpServers": {
-    "meigen": {
-      "command": "npx",
-      "args": ["-y", "meigen@1.4.0"]
-    }
-  }
-}
-```
+Other hosts must support HTTP MCP and OAuth. If a host does not load the bundled `.mcp.json`, add that URL through its MCP connection settings and sign in. Generated helper files alone do not establish a connection. Interactive pages appear only in hosts supporting MCP Apps; other hosts receive tool text and result URLs.
 
-**Restart Claude Code** after adding the configuration.
+Before upgrading from 1.x, inspect existing MeiGen connections privately. A saved stdio/API-key/BYOK entry may take precedence. Back up its configuration and credentials, deliberately choose remote OAuth, then keep one active MeiGen connection. Do not silently change the provider or billing account. Legacy BYOK and local-file handling remain on `meigen@3.4.0`; ComfyUI requires the older release that supplied it. See the [migration guide](https://github.com/jau123/MeiGen-AI-Design-MCP/blob/main/MIGRATION.md).
 
-Requires Node.js 18+.
+## Use
 
-## Provider Setup
+| Command | Purpose |
+| --- | --- |
+| `/meigen-ai-design:find <keywords>` | Search visual inspiration |
+| `/meigen-ai-design:gen <prompt>` | Generate with the supplied prompt and choices |
 
-Configure at least one provider to enable image generation. **Free features** (gallery search, prompt enhancement, model listing, preference management) work without any provider configured.
+The gallery-researcher, prompt-crafter and image-generator helpers are optional. Direct tool calls are supported; existing prompts and approved output scope are preserved.
 
-### Option A: MeiGen Cloud (Recommended)
+Use live `list_models` and `list_skills` for current parameters, availability and prices. Image/video generation and the five image workflows use purchased credits only, not daily free credits. Favorites, boards, history and characters require the relevant OAuth permissions. Saving requires a user request or prior opt-in.
 
-1. Sign up at [meigen.ai](https://www.meigen.ai)
-2. Click avatar → Settings → API Keys → create a new key (starts with `meigen_sk_`)
-3. Set environment variable:
+## Verify and recover
 
-```bash
-export MEIGEN_API_TOKEN=meigen_sk_your_token_here
-```
+Call `list_models` or `list_skills` without generating or uploading to verify connectivity; this does not prove private-account access. Authenticate through the host for protected tools. Never paste passwords or keys into chat.
 
-### Option B: Local ComfyUI (Free, Private)
+Keep each request ID and use `check_generation` or `check_skill` after an interrupted submission. Do not create another paid job just to check status. The remote service returns URLs and cannot read local paths; use a supported upload or accessible reference URL. Uploaded references receive public URLs. Downloading and display depend on the host.
 
-1. Install and run [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
-2. Set environment variable:
-
-```bash
-export COMFYUI_URL=http://localhost:8188
-```
-
-3. Export workflows from ComfyUI (API format JSON) and import via the plugin
-
-### Option C: OpenAI-compatible API (Bring Your Own Key)
-
-Works with any OpenAI-compatible image generation API (OpenAI, Together AI, Fireworks AI, etc.):
-
-```bash
-export OPENAI_API_KEY=your_key_here
-export OPENAI_BASE_URL=https://api.openai.com/v1
-export OPENAI_MODEL=gpt-image-1
-```
-
-Alternatively, store configuration in `~/.config/meigen/config.json`.
-
-## Agents
-
-| Agent | Model | Purpose |
-|-------|-------|---------|
-| `gallery-researcher` | haiku | Search 1,300+ curated gallery, find references, build mood boards |
-| `prompt-crafter` | haiku | Write multiple distinct prompts for parallel image generation |
-| `image-generator` | inherit | Execute `generate_image` calls and relay results |
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `/meigen-ai-design:gen <prompt>` | Quick image generation — skips intent assessment |
-| `/meigen-ai-design:find <keywords>` | Quick gallery search — browse inspiration |
-
-## Free Features (No API Key)
-
-These tools work immediately without any provider setup:
-- **search_gallery** — Search 1,300+ curated AI image prompts
-- **enhance_prompt** — Expand brief descriptions into detailed generation prompts
-- **list_models** — List available models across all configured providers
-- **manage_preferences** — Save default style, aspect ratio, and favorite prompts
-
-## Verification
-
-After setup, test with a free feature:
-> "Search the gallery for product photography inspiration"
-
-Then test generation:
-> "Generate a product photo for a glass perfume bottle on marble"
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| MCP tools not available | Restart Claude Code after adding `.mcp.json` configuration |
-| "No image generation providers configured" | Configure at least one provider (see Provider Setup above) |
-| API key / authentication errors | Verify env vars or check `~/.config/meigen/config.json` |
-| ComfyUI connection refused | Ensure ComfyUI is running at the configured URL |
-| Generation timeout | Server may be under high load — try again in a moment |
-| Empty gallery search results | Try different keywords or broader terms |
-
-## Links
-
-- [npm package](https://www.npmjs.com/package/meigen)
-- [GitHub](https://github.com/jau123/MeiGen-AI-Design-MCP)
-- [Homepage](https://www.meigen.ai)
-- [Demo Video](https://youtu.be/JQ3DZ1DXqvs)
-
-## License
+[Connection guide](https://github.com/jau123/MeiGen-AI-Design-MCP/blob/main/SETUP.md) · [Source](https://github.com/jau123/MeiGen-AI-Design-MCP) · [MeiGen](https://www.meigen.ai)
 
 MIT
