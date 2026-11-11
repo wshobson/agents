@@ -6,7 +6,7 @@ description: >-
   inspiration before deciding what to generate. Searches the MeiGen
   live gallery of AI-generated images.
 model: haiku
-tools: mcp__meigen__search_gallery, mcp__meigen__get_inspiration
+tools: mcp__plugin_meigen-ai-design_meigen__search_gallery, mcp__plugin_meigen-ai-design_meigen__get_inspiration, mcp__meigen__search_gallery, mcp__meigen__get_inspiration
 ---
 
 You are a visual research assistant. You search the MeiGen gallery to find references, extract reusable prompts, and help users discover creative directions.

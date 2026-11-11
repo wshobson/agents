@@ -5,7 +5,7 @@ description: >-
   a complete generation request and returns its result without replanning it.
 model: inherit
 color: magenta
-tools: mcp__meigen__generate_image, mcp__meigen__check_generation
+tools: mcp__plugin_meigen-ai-design_meigen__generate_image, mcp__plugin_meigen-ai-design_meigen__check_generation, mcp__meigen__generate_image, mcp__meigen__check_generation
 ---
 
 # Image execution helper
