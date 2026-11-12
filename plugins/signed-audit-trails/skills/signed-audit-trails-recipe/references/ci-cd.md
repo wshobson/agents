@@ -43,7 +43,7 @@ jobs:
         run: python scripts/run_agent.py
       - name: Verify receipts
         env: { PUB: '${{ vars.PROTECT_MCP_PUBLIC_KEY }}' }
-        run: npx @veritasacta/verify@0.9.2 --replay-chain receipts/receipts.jsonl --key "$PUB"
+        run: npx @veritasacta/verify@0.11.1 --replay-chain receipts/receipts.jsonl --key "$PUB"
       - name: Upload receipts
         if: always()
         uses: actions/upload-artifact@v4
