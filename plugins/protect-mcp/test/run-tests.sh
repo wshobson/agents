@@ -131,7 +131,7 @@ fi
 echo ""
 echo "=== Test 6: Receipt schema validation ==="
 if [ -n "$RECEIPT_FILE" ]; then
-    python3 - "$RECEIPT_FILE" expected/receipt-schema.json <<'PY'
+    python3 - "$RECEIPT_FILE" expected/receipt-schema.json "$TOOL_NAME" <<'PY'
 import copy, json, re, sys
 r = json.load(open(sys.argv[1]))
 s = json.load(open(sys.argv[2]))
@@ -158,6 +158,7 @@ def validate(value, schema, path="$"):
     if "enum" in schema:
         assert value in schema["enum"], f"{path}: invalid value"
 validate(r, s)
+assert r["payload"]["tool_name"] == sys.argv[3], "receipt tool does not match requested tool"
 assert r["payload"]["issuer_id"] == r["signature"]["kid"]
 # Negative controls: Test 6 must enforce nested requirements and signature shape.
 for section, key in [("payload", "tool_name"), ("signature", "sig")]:

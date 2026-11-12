@@ -70,10 +70,12 @@ through a trusted channel. Never commit the private key.
 
 Missing or unusable keys can make the CLI append an unsigned diagnostic line
 and return `signed: false`. The hook reports that as an error with empty
-stdout; it also checks that the CLI summary's `request_id` appears in a
-persisted signed receipt and preserves a failed signer's exit status and stderr. A
-PostToolUse error cannot undo the completed tool call. Verify the receipt log
-to establish which receipts were actually written.
+stdout. Confirmation checks the persisted receipt's `request_id`, tool name,
+and signature format; it does not verify the signature's cryptographic validity.
+Independent verification with the trusted public key is required. The hook
+preserves a failed signer's exit status and stderr. A PostToolUse error cannot
+undo the completed tool call. Inspect the log to establish what was written,
+and verify its receipts with the trusted public key.
 
 Receipt confirmation reads backwards in 64 KiB chunks from one file-size
 snapshot and stops at the matching receipt. A recent match therefore avoids
