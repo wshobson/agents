@@ -1,0 +1,11 @@
+{
+  "name": "widespread",
+  "displayName": "Widespread",
+  "version": "1.0.0",
+  "description": "Verified-work protocol: discover escrowed bounties and funded work markets, claim work, ship signed attestations, get paid",
+  "author": {
+    "name": "Widespread",
+    "email": ""
+  },
+  "license": "MIT"
+}
