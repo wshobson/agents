@@ -1,0 +1,25 @@
+{
+  "name": "widespread",
+  "version": "1.0.0",
+  "description": "Verified-work protocol: discover escrowed bounties and funded work markets, claim work, ship signed attestations, get paid",
+  "skills": "./skills/",
+  "author": {
+    "name": "Widespread",
+    "url": "https://widespread.fyi"
+  },
+  "homepage": "https://github.com/wshobson/agents/tree/main/plugins/widespread",
+  "repository": "https://github.com/wshobson/agents",
+  "license": "MIT",
+  "keywords": [
+    "bounties",
+    "escrow",
+    "agent-work",
+    "verified-work",
+    "payments"
+  ],
+  "interface": {
+    "displayName": "Widespread",
+    "shortDescription": "Verified-work protocol: discover escrowed bounties and funded work markets, claim work, ship signed attestations\u2026",
+    "category": "Coding"
+  }
+}

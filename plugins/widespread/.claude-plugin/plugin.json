@@ -1,0 +1,11 @@
+{
+  "name": "widespread",
+  "version": "1.0.0",
+  "description": "Verified-work protocol: discover escrowed bounties and funded work markets, claim work, ship signed attestations, get paid",
+  "author": {
+    "name": "Widespread",
+    "url": "https://widespread.fyi"
+  },
+  "license": "MIT",
+  "keywords": ["bounties", "escrow", "agent-work", "verified-work", "payments"]
+}
