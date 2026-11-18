@@ -26,9 +26,13 @@ not set `TOOL_NAME` or `TOOL_INPUT` variables. Each script reads the JSON with
   Exit 0 allows the call, and exit 2 blocks it. If the evaluator cannot run,
   the script also exits 2, so the call is blocked.
 - `sign.sh` reads `tool_name`, and it runs
-  `protect-mcp@0.7.4 sign --tool <name> --receipts ./receipts/ --key ./protect-mcp.key`.
-  The 0.7.4 signer records only the tool name, and it appends each receipt to
-  `./receipts/receipts.jsonl`.
+  `protect-mcp@0.32.4 sign --tool <name> --receipts ./receipts/ --key ./protect-mcp.key`.
+  The hook passes only the tool name and appends each receipt to
+  `./receipts/receipts.jsonl`. It captures the CLI summary, leaving stdout
+  empty, and checks `signed: true` plus a matching persisted `request_id`.
+  Signer failures retain their exit code
+  and stderr; an empty or malformed summary fails too. It does not use
+  `--format claude`, which would try to reread the consumed stdin.
 
 Set `PROTECT_MCP_POLICY`, `PROTECT_MCP_RECEIPTS`, or `PROTECT_MCP_KEY` to
 change these paths.

@@ -41,7 +41,7 @@ read the hook event from stdin, because Claude Code sets no `TOOL_NAME` or
 [`references/hook-wiring.md`](references/hook-wiring.md) for the hook
 configuration and what each script passes to protect-mcp.
 
-protect-mcp 0.7.4 does not create the signing key, and without a key the
+`protect-mcp@0.32.4 sign` does not create the signing key, and without a key the
 receipts are unsigned. Create `./protect-mcp.key` once. The command never
 replaces an existing key:
 
@@ -88,15 +88,15 @@ A session of 20 tool calls appends 20 receipts to `./receipts/receipts.jsonl`.
 
 ## Step 4: Inspect a receipt
 
-protect-mcp 0.7.4 appends each receipt as one line of
+protect-mcp 0.32.4 appends each receipt as one line of
 `./receipts/receipts.jsonl`. Print the newest one:
 
 ```bash
 tail -n 1 ./receipts/receipts.jsonl | python3 -m json.tool
 ```
 
-The receipt is a signed v2 envelope that names the tool, and it holds no
-public key. See [`references/receipt-format.md`](references/receipt-format.md)
+The receipt has a signed `payload` and an object `signature`. It names the
+tool and carries a signed public key; verify against an independently trusted key. See [`references/receipt-format.md`](references/receipt-format.md)
 for a sample and the signed fields.
 
 ## Step 5: Verify the receipts
@@ -105,7 +105,7 @@ Pass the `publicKey` value from `./protect-mcp.key` to the verifier:
 
 ```bash
 PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')
-npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
+npx @veritasacta/verify@0.11.1 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
 ```
 
 Exit codes:
@@ -131,7 +131,7 @@ lines[-1] = json.dumps(r)
 open(path, 'w').write('\n'.join(lines) + '\n')
 "
 
-npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
+npx @veritasacta/verify@0.11.1 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
 ```
 
 The verifier exits with code `1` and reports which line failed. The
@@ -152,8 +152,11 @@ implementation:
 2. **Ed25519 signatures (RFC 8032)** over the canonical bytes.
    Deterministic, fixed-size, no nonce dependency.
 
-protect-mcp 0.7.4 receipts carry no link to the previous receipt, so a
-deleted receipt goes undetected.
+The verifier detects broken links between surviving receipts, including
+interior deletion or reordering. A truncated tail and deletion or reordering
+within the legacy portion of a mixed log can go undetected. Editing signed
+contents still fails signature verification. Keep an externally retained
+checkpoint or copy to check completeness.
 
 For the formal wire format see
 [draft-farley-acta-signed-receipts](https://datatracker.ietf.org/doc/draft-farley-acta-signed-receipts/).

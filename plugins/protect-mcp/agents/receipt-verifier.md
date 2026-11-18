@@ -26,31 +26,15 @@ integrity failures.
 
 ### Receipt Format
 
-protect-mcp 0.7.4 appends each receipt as one line of
-`./receipts/receipts.jsonl`. Each line is a v2 envelope:
+protect-mcp 0.32.4 appends each receipt as one line of
+`./receipts/receipts.jsonl`, with a `payload` and an object `signature`.
+The payload includes `type: "protectmcp:decision"`, `tool_name`, `decision`,
+`reason`, `issued_at`, `issuer_id`, and `public_key`. The signature contains
+`alg: "EdDSA"`, `kid`, and a 128-character hex `sig`.
 
-```json
-{
-  "v": 2,
-  "type": "decision_receipt",
-  "algorithm": "ed25519",
-  "kid": "string",
-  "issuer": "protect-mcp",
-  "issued_at": "ISO 8601 UTC",
-  "payload": {
-    "tool": "string",
-    "decision": "allow",
-    "reason_code": "post_execution_receipt",
-    "policy_digest": "none",
-    "request_id": "string",
-    "spec": "draft-farley-acta-signed-receipts-01"
-  },
-  "signature": "<hex 128 chars>"
-}
-```
-
-The payload also has `scope`, `mode`, and `issuer_certification`. The receipt
-holds no public key and no link to the previous receipt.
+See `../skills/protect-mcp-setup/references/receipt-format.md` for the full
+sample and migration from the legacy v2 envelope. New receipts after the
+first contain `payload.previousReceiptHash`.
 
 ### Verification Procedure
 
@@ -59,7 +43,9 @@ To verify a receipt:
 1. Parse the JSON line.
 2. Get the signer's public key, which is the `publicKey` value in their
    `./protect-mcp.key`. The verifier rejects a key embedded in a receipt.
-3. Build the JCS canonical form of every field except `signature`.
+3. For a modern payload/signature envelope, canonicalize `payload` with JCS.
+   For a legacy `v: 2` receipt, canonicalize the whole envelope except its
+   string `signature` field. Let the verifier select the matching format.
 4. Verify the Ed25519 signature over those bytes against the public key.
 
 Exit codes for `@veritasacta/verify`:
@@ -80,8 +66,8 @@ User: Is this receipt valid?
 ```
 
 1. Check the structure — are all required fields present?
-2. Ask for the signer's public key, because the receipt does not hold it
-3. Run `npx @veritasacta/verify@0.9.2 <path> --key <hex>` in a shell
+2. Obtain the signer's public key independently; the embedded key is not a trust anchor
+3. Run `npx @veritasacta/verify@0.11.1 <path> --key <hex>` in a shell
 4. Interpret the result:
    - Exit 0: "Verified. Signed by key `{pub_key_short}`, no tampering detected."
    - Exit 1: "Tampered. The signature does not match the payload. Someone
@@ -97,22 +83,25 @@ User: Verify all of my receipts
 <path to receipts.jsonl>
 ```
 
-1. Run `npx @veritasacta/verify@0.9.2 --replay-chain <path> --key <hex>`
+1. Run `npx @veritasacta/verify@0.11.1 --replay-chain <path> --key <hex>`
 2. Report the line number of each receipt that failed
-3. Explain that protect-mcp 0.7.4 receipts carry no link to the previous
-   receipt, so the check cannot detect a deleted or reordered line
+3. Explain the coverage: The verifier detects broken links between surviving
+   receipts, including interior deletion or reordering. A truncated tail and
+   deletion or reordering within the legacy portion of a mixed log can go
+   undetected. Editing signed contents still fails signature verification.
+   Keep an externally retained checkpoint or copy to check completeness.
 
 ### When verification fails
 
 Be specific about WHY:
 
-**Signature mismatch.** The `signature` field does not verify against the
-canonical form of the other fields with the given public key. Either the
+**Signature mismatch.** The `signature.sig` value does not verify against the
+canonical payload with the given public key. Either the
 receipt was modified after signing, or the key is not the signer's key.
 
 **Chain break.** A receipt's `payload.previousReceiptHash` does not match the
-hash of the line before it. protect-mcp 0.7.4 does not write this field, so
-its receipts never report a chain break.
+SHA-256 of the JCS of the whole previous receipt, signature included. An
+interior linked line may have been removed, inserted, reordered, or replaced.
 
 **Malformed** — The receipt is missing required fields or has the wrong
 types. This is either a bug in the signer or an attempt to forge a receipt

@@ -6,9 +6,9 @@ argument-hint: "[--last N] [--dir path]"
 # Audit Chain
 
 Verify every receipt in the audit trail, not just a single receipt.
-protect-mcp 0.7.4 appends receipts to `receipts.jsonl` in `./receipts/` (or
+protect-mcp 0.32.4 appends receipts to `receipts.jsonl` in `./receipts/` (or
 the specified directory), one per line, and this command checks the signature
-on each line.
+on each line and links between successive linked receipts.
 
 ## Usage
 
@@ -28,9 +28,14 @@ on each line.
    verifier numbers the selected lines from 1, so the command prints the
    offset to add to get the line in `receipts.jsonl`
 
-protect-mcp 0.7.4 receipts carry no link to the previous receipt, so this
-check cannot detect a deleted, inserted, or reordered line. To detect deleted
-lines, keep a copy of the receipts file where the operator cannot change it.
+The verifier detects broken links between surviving receipts, including
+interior deletion or reordering. A truncated tail and deletion or reordering
+within the legacy portion of a mixed log can go undetected. Editing signed
+contents still fails signature verification. Keep an externally retained
+checkpoint or copy to check completeness.
+
+With `--last N`, the predecessor of the first selected line is unavailable,
+so its incoming link cannot be checked. Replay the complete file for that check.
 
 ## Implementation
 
@@ -63,7 +68,7 @@ if [ -n "$N" ]; then
     TMP="$(mktemp)"; tail -n "$N" "$FILE" > "$TMP"; FILE="$TMP"
 fi
 PUB=$(node -p 'JSON.parse(require("fs").readFileSync(process.env.PROTECT_MCP_KEY || "./protect-mcp.key")).publicKey')
-npx @veritasacta/verify@0.9.2 --replay-chain "$FILE" --key "$PUB"
+npx @veritasacta/verify@0.11.1 --replay-chain "$FILE" --key "$PUB"
 ```
 
 Exit 0 means every receipt verified. Exit 1 means at least one receipt
@@ -72,9 +77,9 @@ missing, or the algorithm is unsupported. With `--replay-chain`, the verifier
 reports those cases per line with exit 1. Exit 2 means the check could not
 run, e.g., because the file could not be read or an option had no value.
 
-`npx` downloads `@veritasacta/verify@0.9.2` the first time it runs. For an
+`npx` downloads `@veritasacta/verify@0.11.1` the first time it runs. For an
 offline machine, install it in the project first with
-`npm install --no-save @veritasacta/verify@0.9.2`, and `npx` then runs the
+`npm install --no-save @veritasacta/verify@0.11.1`, and `npx` then runs the
 local copy without network access.
 
 ## What to Show the User
@@ -88,8 +93,9 @@ Scanned:     247 receipts in ./receipts/receipts.jsonl
 Signatures:  247/247 valid ✓
 Key:         0faf558a90dfbf88...
 
-All 247 receipts verify. A deleted or reordered line would not show here,
-because 0.7.4 receipts carry no link to the previous receipt.
+All 247 receipts and available chain links verify. This does not establish
+completeness: tail truncation and changes to an unlinked legacy prefix may
+not be detected.
 ```
 
 ### Tampered receipt

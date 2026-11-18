@@ -1,5 +1,5 @@
 ---
-description: "List the review actions that the review-governance policy blocked in this session. protect-mcp 0.7.4 writes no receipt for a denied call, so the list comes from the session, not from ./review-receipts/."
+description: "List the review actions that the review-governance policy blocked in this session. protect-mcp 0.32.4 writes no receipt for a denied call, so the list comes from the session, not from ./review-receipts/."
 argument-hint: "[--last N]"
 ---
 
@@ -9,7 +9,7 @@ List the review-surface actions that the review-governance policy blocked in
 the current Claude Code session. These are candidates for human approval via
 `/approve-review`.
 
-protect-mcp 0.7.4 writes a receipt only for a tool call that ran. A denied
+protect-mcp 0.32.4 writes a receipt only for a tool call that ran. A denied
 call never runs, so it has no receipt, and `./review-receipts/receipts.jsonl`
 cannot show denials. The PreToolUse hook blocks a denied call with exit code
 2, and Claude Code shows that block in the session, so the session is where
@@ -29,7 +29,7 @@ denials are visible.
 2. Keeps the most recent N (default 10).
 3. Prints each one with the tool name and the command or file path.
 
-It cannot list denials from earlier sessions, because protect-mcp 0.7.4 does
+It cannot list denials from earlier sessions, because protect-mcp 0.32.4 does
 not log them.
 
 ## Check a command against the policy

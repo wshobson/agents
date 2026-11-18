@@ -1,81 +1,113 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://veritasacta.com/schemas/receipt-v2.json",
-  "title": "Veritas Acta Decision Receipt (v2 envelope)",
-  "description": "Expected shape of a protect-mcp@0.7.4 receipt. Mirrors draft-farley-acta-signed-receipts; the decision facts live in payload, signed as a unit.",
+  "title": "protect-mcp 0.32.4 signed receipt",
+  "description": "Payload/signature envelope written by the pinned signer; no legacy v2 envelope fields.",
   "type": "object",
   "required": [
-    "v",
-    "type",
-    "algorithm",
-    "kid",
-    "issuer",
-    "issued_at",
     "payload",
     "signature"
   ],
   "properties": {
-    "v": {
-      "type": "integer",
-      "const": 2
-    },
-    "type": {
-      "type": "string",
-      "enum": [
-        "decision_receipt",
-        "gateway_restraint"
-      ]
-    },
-    "algorithm": {
-      "type": "string",
-      "const": "ed25519"
-    },
-    "kid": {
-      "type": "string"
-    },
-    "issuer": {
-      "type": "string"
-    },
-    "issued_at": {
-      "type": "string",
-      "format": "date-time"
-    },
     "payload": {
       "type": "object",
       "required": [
-        "tool",
-        "decision"
+        "tool_name",
+        "reason",
+        "policy_digest",
+        "request_id",
+        "scope",
+        "mode",
+        "issuer_id",
+        "issued_at",
+        "type",
+        "decision",
+        "spec",
+        "issuer_certification",
+        "public_key"
       ],
       "properties": {
-        "tool": {
-          "type": "string"
+        "tool_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy_digest": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "issuer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "issued_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "const": "protectmcp:decision"
         },
         "decision": {
-          "type": "string",
           "enum": [
             "allow",
             "deny"
           ]
         },
-        "reason_code": {
-          "type": "string"
-        },
-        "policy_digest": {
-          "type": "string"
-        },
-        "request_id": {
-          "type": "string"
-        },
         "spec": {
-          "type": "string"
+          "const": "draft-farley-acta-signed-receipts-03"
+        },
+        "issuer_certification": {
+          "const": "self-signed"
+        },
+        "public_key": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "previousReceiptHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "payload_digest": {
+          "type": "object"
         }
       },
       "additionalProperties": true
     },
     "signature": {
-      "type": "string",
-      "minLength": 32
+      "type": "object",
+      "required": [
+        "alg",
+        "kid",
+        "sig"
+      ],
+      "properties": {
+        "alg": {
+          "const": "EdDSA"
+        },
+        "kid": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sig": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{128}$"
+        }
+      }
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

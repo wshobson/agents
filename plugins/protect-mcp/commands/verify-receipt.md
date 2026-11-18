@@ -7,9 +7,9 @@ argument-hint: "<path-to-receipt.json> [public-key-hex]"
 
 Verify an Ed25519 signed receipt produced by `protect-mcp` with
 `@veritasacta/verify` from npm. The check itself makes no network requests
-and needs no vendor lookup. `npx` downloads `@veritasacta/verify@0.9.2` the first time it runs. For an
+and needs no vendor lookup. `npx` downloads `@veritasacta/verify@0.11.1` the first time it runs. For an
 offline machine, install it in the project first with
-`npm install --no-save @veritasacta/verify@0.9.2`, and `npx` then runs the
+`npm install --no-save @veritasacta/verify@0.11.1`, and `npx` then runs the
 local copy without network access.
 
 ## Usage
@@ -18,7 +18,7 @@ local copy without network access.
 /verify-receipt ./receipt.json
 ```
 
-protect-mcp 0.7.4 appends receipts to `./receipts/receipts.jsonl`, one per
+protect-mcp 0.32.4 appends receipts to `./receipts/receipts.jsonl`, one per
 line. Save one line to its own file first, e.g., the newest one with
 `tail -n 1 ./receipts/receipts.jsonl > receipt.json`. Use `/audit-chain` to
 verify the whole file.
@@ -28,7 +28,7 @@ verify the whole file.
 1. Reads the receipt JSON file
 2. Validates the structure (required fields, correct types)
 3. Takes the public key from the second argument, or from the `publicKey`
-   value in `./protect-mcp.key` (the receipt does not hold a key)
+   value in `./protect-mcp.key` (do not trust the embedded key on its own)
 4. Reconstructs the canonical form (JCS, RFC 8785)
 5. Verifies the Ed25519 signature over the canonical bytes
 6. Reports the result
@@ -39,7 +39,7 @@ Run this in a shell:
 
 ```bash
 PUB="${2:-$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')}"
-npx @veritasacta/verify@0.9.2 "$1" --key "$PUB"
+npx @veritasacta/verify@0.11.1 "$1" --key "$PUB"
 ```
 
 Where `$1` is the receipt path provided by the user, and `$2` is an optional
@@ -94,8 +94,9 @@ MALFORMED ✗
 The file is not a valid Veritas Acta receipt. Missing or invalid fields:
 <list the specific structural issues>
 
-A protect-mcp 0.7.4 receipt includes: v, type, algorithm, kid, issuer,
-issued_at, payload, signature.
+A protect-mcp 0.32.4 receipt includes `payload` and an object `signature`.
+The payload includes `type`, `tool_name`, `decision`, `reason`, `issued_at`,
+`issuer_id`, and `public_key`; the signature includes `alg`, `kid`, and `sig`.
 ```
 
 ## References

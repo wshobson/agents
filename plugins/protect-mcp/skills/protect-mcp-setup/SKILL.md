@@ -45,7 +45,7 @@ claude plugin install wshobson/agents/protect-mcp
 
 # 2. Create ./protect.cedar (see below). The plugin installs the hooks.
 
-# 3. Create the signing key once (protect-mcp 0.7.4 sign does not create it).
+# 3. Create the signing key once (protect-mcp 0.32.4 sign does not create it).
 #    An existing key is never replaced. See references/receipt-format.md to rotate.
 if [ ! -e ./protect-mcp.key ]; then
   d=$(mktemp -d) && npx protect-mcp@0.32.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
@@ -88,7 +88,8 @@ script bundled with the plugin:
 Claude Code passes the hook event to the command as JSON on stdin and does not
 set `TOOL_NAME` or `TOOL_INPUT` variables. `evaluate.sh` reads `tool_name` and
 `tool_input` from that payload and passes them to `protect-mcp` as flags; `sign.sh` reads
-`tool_name` only, because the 0.7.4 signer records nothing else. Set
+`tool_name` only, preserving tool-only receipt coverage. The signing hook
+keeps stdout empty, checks the CLI summary, and reports signer failures on stderr. Set
 `PROTECT_MCP_POLICY`, `PROTECT_MCP_RECEIPTS`, and `PROTECT_MCP_KEY` to change the
 default paths. When the policy file is missing, the PreToolUse hook prints a
 warning to stderr and allows the call.
@@ -100,8 +101,8 @@ your Cedar policy file. If Cedar returns `deny`, the hook exits with code 2 and
 Claude Code blocks the tool call entirely.
 
 **PostToolUse** runs AFTER the tool completes. It signs a receipt that names
-the tool and appends it to `./receipts/receipts.jsonl`. protect-mcp 0.7.4 does
-not record the tool input or output.
+the tool and appends it to `./receipts/receipts.jsonl`. This hook does not
+pass the tool input or output to the signer.
 
 ## Cedar Policy File
 
@@ -158,7 +159,7 @@ Verify every receipt against the public key in `./protect-mcp.key`:
 
 ```bash
 PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./protect-mcp.key")).publicKey')
-npx @veritasacta/verify@0.9.2 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
+npx @veritasacta/verify@0.11.1 --replay-chain ./receipts/receipts.jsonl --key "$PUB"
 # Exit 0 = every receipt verified
 # Exit 1 = a receipt failed (tampered, wrong key, or malformed line)
 # Exit 2 = the file could not be read
@@ -178,10 +179,16 @@ takes one receipt in its own file, e.g., from
 Each receipt is one line of `./receipts/receipts.jsonl`. See
 [`references/receipt-format.md`](references/receipt-format.md) for a sample.
 
-- **Ed25519** signatures (RFC 8032) over all fields but `signature`
+- **Ed25519** signatures (RFC 8032) over the canonical `payload`
 - **JCS canonicalization** (RFC 8785) before signing
-- **No public key** in the receipt, so pass it with `--key`
-- **No link to the previous receipt**, so a deleted line goes undetected
+- **Signed public key** in the payload; supply a trusted key with `--key`
+- **Hash link** to the previous receipt, checked during replay
+
+The verifier detects broken links between surviving receipts, including
+interior deletion or reordering. A truncated tail and deletion or reordering
+within the legacy portion of a mixed log can go undetected. Editing signed
+contents still fails signature verification. Keep an externally retained
+checkpoint or copy to check completeness.
 
 ## Why This Matters
 

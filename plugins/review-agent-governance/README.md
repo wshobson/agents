@@ -149,14 +149,14 @@ them with the public key from `./review-governance.key`:
 
 ```bash
 PUB=$(node -p 'JSON.parse(require("fs").readFileSync("./review-governance.key")).publicKey')
-npx @veritasacta/verify@0.9.2 --replay-chain ./review-receipts/receipts.jsonl --key "$PUB"
+npx @veritasacta/verify@0.11.1 --replay-chain ./review-receipts/receipts.jsonl --key "$PUB"
 ```
 
 To add a signed record of an approval, emit a separate receipt. protect-mcp
-0.7.4 signs only the name `approve-review` and the time, not the reason:
+0.32.4 receives only the name `approve-review` here, not the approval reason:
 
 ```bash
-npx protect-mcp@0.7.4 sign --tool approve-review --receipts ./review-receipts/ --key ./review-governance.key
+npx protect-mcp@0.32.4 sign --tool approve-review --receipts ./review-receipts/ --key ./review-governance.key
 ```
 
 ### Listing pending or denied actions
@@ -170,7 +170,7 @@ denied call writes no receipt, so the receipts file cannot show denials.
 
 ### A note on what the signed receipts cover
 
-protect-mcp 0.7.4 signs the same fields for every tool call that ran: the
+The hook signs the same observation fields for every tool call that ran: the
 tool name, `decision: allow`, and `policy_digest: none`. A receipt does not
 show whether the approval flag was present, and a denied call has no
 receipt. The unsigned approval log shows when a window was opened.
@@ -229,8 +229,13 @@ Changes to the policy are diffable.
 tamper-evident evidence that does not depend on the operator. Any party with
 the public key can run the `--replay-chain` command above and get an exit
 code that shows whether every receipt is authentic. If any receipt was
-altered after signing, verification fails with exit 1. The receipts carry
-no link to the previous receipt, so a deleted line goes undetected.
+altered after signing, verification fails with exit 1. New receipts link to
+their predecessor via `payload.previousReceiptHash`. The verifier detects
+broken links between surviving receipts, including interior deletion or
+reordering. A truncated tail and deletion or reordering within the legacy
+portion of a mixed log can go undetected. Editing signed contents still fails
+signature verification. Keep an externally retained checkpoint or copy to
+check completeness.
 
 ## Standards
 
