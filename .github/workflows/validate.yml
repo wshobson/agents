@@ -258,20 +258,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Bun (for OpenCode CLI)
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6  # v2
-        with:
-          bun-version: latest
-
-      - name: Install OpenCode CLI
-        # Pinned. Without a version the installer asks api.github.com for the
-        # latest release, and shared runners hit the unauthenticated rate limit
-        # ("Failed to fetch version information"). Bump alongside the OpenCode
-        # release notes when the adapter needs a newer CLI.
-        run: |
-          curl -fsSL https://opencode.ai/install | bash -s -- --version 1.18.30
-          echo "$HOME/.opencode/bin" >> "$GITHUB_PATH"
-
       - name: Install Antigravity CLI
         # Bootstrapper defaults to $HOME/.local/bin; bump alongside any agy
         # plugin-schema changes it ships. The CDN sometimes returns the script
@@ -287,10 +273,22 @@ jobs:
           bash "$installer"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Set up Node.js (for npx skills)
+      - name: Set up Node.js (for npx skills and the OpenCode CLI)
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
         with:
           node-version: 22
+
+      - name: Install OpenCode CLI
+        # Pinned to the version the adapter was verified against. Bump alongside
+        # the OpenCode release notes when the adapter needs a newer CLI.
+        # Installed from npm instead of the opencode.ai/install pipe-to-shell
+        # script: npm verifies the package integrity (sha512) against the
+        # registry, so no unverified remote code is executed. Do NOT add
+        # --ignore-scripts: the package's postinstall copies the platform
+        # binary into place (without it the installed `opencode` is a stub
+        # that errors). `npm install -g` puts the binary on PATH, so no
+        # GITHUB_PATH entry is needed.
+        run: npm install -g opencode-ai@1.18.30
 
       - name: Install Pi CLI
         # Pinned to the version the adapter was verified against. Bump alongside any
