@@ -282,12 +282,13 @@ jobs:
         # Pinned to the version the adapter was verified against. Bump alongside
         # the OpenCode release notes when the adapter needs a newer CLI.
         # Installed from npm instead of the opencode.ai/install pipe-to-shell
-        # script: npm verifies the package integrity (sha512) against the
-        # registry, so no unverified remote code is executed. Do NOT add
-        # --ignore-scripts: the package's postinstall copies the platform
-        # binary into place (without it the installed `opencode` is a stub
-        # that errors). `npm install -g` puts the binary on PATH, so no
-        # GITHUB_PATH entry is needed.
+        # script: npm checks the downloaded package against the integrity hash
+        # in the registry metadata (sha512), so the tarball itself is verified.
+        # That does not audit the package's install script — postinstall is
+        # still trusted to copy the platform binary into place, which is why
+        # it stays enabled. Do NOT add --ignore-scripts: without it the
+        # installed `opencode` is a stub that errors. `npm install -g` puts
+        # the binary on PATH, so no GITHUB_PATH entry is needed.
         run: npm install -g opencode-ai@1.18.30
 
       - name: Install Pi CLI
