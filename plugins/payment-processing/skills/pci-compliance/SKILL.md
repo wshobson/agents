@@ -17,37 +17,37 @@ Master PCI DSS (Payment Card Industry Data Security Standard) compliance for sec
 - Implementing tokenization and encryption
 - Preparing for PCI DSS assessments
 
-## PCI DSS Requirements (12 Core Requirements)
+## PCI DSS v4.0.1 Requirements (12 Core Requirements)
 
-### Build and Maintain Secure Network
+### Build and Maintain a Secure Network and Systems
 
-1. Install and maintain firewall configuration
-2. Don't use vendor-supplied defaults for passwords
+1. Install and Maintain Network Security Controls
+2. Apply Secure Configurations to All System Components
 
-### Protect Cardholder Data
+### Protect Account Data
 
-3. Protect stored cardholder data
-4. Encrypt transmission of cardholder data across public networks
+3. Protect Stored Account Data
+4. Protect Cardholder Data with Strong Cryptography During Transmission Over Open, Public Networks
 
-### Maintain Vulnerability Management
+### Maintain a Vulnerability Management Program
 
-5. Protect systems against malware
-6. Develop and maintain secure systems and applications
+5. Protect All Systems and Networks from Malicious Software
+6. Develop and Maintain Secure Systems and Software
 
-### Implement Strong Access Control
+### Implement Strong Access Control Measures
 
-7. Restrict access to cardholder data by business need-to-know
-8. Identify and authenticate access to system components
-9. Restrict physical access to cardholder data
+7. Restrict Access to System Components and Cardholder Data by Business Need to Know
+8. Identify Users and Authenticate Access to System Components
+9. Restrict Physical Access to Cardholder Data
 
-### Monitor and Test Networks
+### Regularly Monitor and Test Networks
 
-10. Track and monitor all access to network resources and cardholder data
-11. Regularly test security systems and processes
+10. Log and Monitor All Access to System Components and Cardholder Data
+11. Test Security of Systems and Networks Regularly
 
-### Maintain Information Security Policy
+### Maintain an Information Security Policy
 
-12. Maintain a policy that addresses information security
+12. Support Information Security with Organizational Policies and Programs
 
 ## Compliance Levels
 

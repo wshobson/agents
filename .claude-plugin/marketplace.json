@@ -807,7 +807,7 @@
       "name": "payment-processing",
       "source": "./plugins/payment-processing",
       "description": "Payment gateway integration with Stripe, PayPal, checkout flow implementation, subscription billing, and PCI compliance",
-      "version": "1.2.3",
+      "version": "1.2.4",
       "author": {
         "name": "Seth Hobson",
         "email": "seth@major7apps.com"
