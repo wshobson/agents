@@ -2,7 +2,7 @@
 
 <a id="claude-agents--multi-harness-agentic-plugin-marketplace"></a>
 
-The repository provides 94 plugins (92 local + 2 external), 202 agents, 185 skills, and 105 commands for seven coding tools: Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Google Antigravity CLI (`agy`), GitHub Copilot, and Pi. Shared source files use the Claude Code format, and adapters provide the formats used by other tools. External entries have their own tool support.
+The repository provides 93 plugins (91 local + 2 external), 199 agents, 185 skills, and 103 commands for seven coding tools: Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Google Antigravity CLI (`agy`), GitHub Copilot, and Pi. Shared source files use the Claude Code format, and adapters provide the formats used by other tools. External entries have their own tool support.
 
 AGENTS.md is the canonical context file. Codex, Cursor, OpenCode, Antigravity CLI, GitHub Copilot, and Pi read it directly. Claude Code reads it via `CLAUDE.md`, a symlink to this file.
 
@@ -12,8 +12,8 @@ AGENTS.md is the canonical context file. Codex, Cursor, OpenCode, Antigravity CL
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — top-level architectural overview (adapter framework, source-of-truth invariant, capability matrix summary)
 - **[docs/architecture.md](docs/architecture.md)** — detailed design principles
-- **[docs/plugins.md](docs/plugins.md)** — full plugin catalog (94 plugins by category)
-- **[docs/agents.md](docs/agents.md)** — agent reference (202 agents, model tiers)
+- **[docs/plugins.md](docs/plugins.md)** — full plugin catalog (93 plugins by category)
+- **[docs/agents.md](docs/agents.md)** — agent reference (199 agents, model tiers)
 - **[docs/agent-skills.md](docs/agent-skills.md)** — skill reference (progressive disclosure model)
 - **[docs/usage.md](docs/usage.md)** — commands, workflows, examples
 - **[docs/authoring.md](docs/authoring.md)** — portable-content style guide (read before adding plugins)
@@ -70,7 +70,7 @@ Small native-install registries are committed for tools that support that route.
 
 ## Subagents (cross-harness)
 
-202 subagents under `plugins/*/agents/<name>.md`. Per-harness transpilation:
+199 subagents under `plugins/*/agents/<name>.md`. Per-harness transpilation:
 
 - **Codex**: `.codex/agents/<plugin>__<agent>.toml` (drop `tools:`, map model alias to the GPT-5.x family, infer `sandbox_mode`)
 - **OpenCode**: `.opencode/agents/<plugin>__<agent>.md` with `mode: subagent` + `permission:` block (locked agents — those with source `tools: []` — get deny-everything except base `skill`/`task`)

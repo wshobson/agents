@@ -1,6 +1,6 @@
 # Agent Reference
 
-Reference for 202 local AI agents organized by category. The model column lists aliases in the shared Claude Code source format. Adapters provide agent formats and model mappings for other tools. See the [capability matrix](./harnesses.md) for setup and tool-specific limits.
+Reference for 199 local AI agents organized by category. The model column lists aliases in the shared Claude Code source format. Adapters provide agent formats and model mappings for other tools. See the [capability matrix](./harnesses.md) for setup and tool-specific limits.
 
 ## Agent Categories
 
