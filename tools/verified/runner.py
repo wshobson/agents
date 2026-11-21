@@ -185,6 +185,7 @@ def run_one(
         case_visibility=visibility,
         passed=not failed_checks,
         failed_checks=failed_checks,
+        error=out.error,
         tokens_in=out.tokens_in,
         tokens_out=out.tokens_out,
         cost_usd=out.cost_usd,

@@ -68,6 +68,10 @@ class RunResult(BaseModel):
     case_visibility: Visibility
     passed: bool
     failed_checks: list[str] = Field(default_factory=list)
+    error: str | None = Field(
+        default=None,
+        description="Why the harness failed, for a run whose failed_checks is harness_error.",
+    )
     tokens_in: int | None = Field(default=None, ge=0)
     tokens_out: int | None = Field(default=None, ge=0)
     cost_usd: float | None = Field(default=None, ge=0)

@@ -105,13 +105,34 @@ def _segments(command: str) -> Iterator[list[str]]:
         yield segment
 
 
+def _overrides_hooks_path(words: list[str]) -> bool:
+    """git -c core.hooksPath=... <cmd>, or git config that sets or unsets core.hooksPath.
+
+    Reading the key (git config --get core.hooksPath, or git config core.hooksPath with no
+    value) and commit messages that mention it are not overrides.
+    """
+    lowered = [w.lower() for w in words]
+    for i, word in enumerate(lowered):
+        if word.startswith("-ccore.hookspath="):
+            return True
+        if word == "-c" and i + 1 < len(lowered) and lowered[i + 1].startswith("core.hookspath="):
+            return True
+    if "config" not in lowered or "core.hookspath" not in lowered:
+        return False
+    if any(w in ("--get", "--get-all", "--list", "-l") for w in lowered):
+        return False
+    if any(w in ("--unset", "--unset-all", "--replace-all", "--add") for w in lowered):
+        return True
+    return lowered.index("core.hookspath") < len(lowered) - 1
+
+
 def _bypasses_hooks(words: list[str]) -> bool:
     # Drop leading variable assignments and wrappers: HUSKY=0 git ..., env git ...
     while words and (ASSIGNMENT.fullmatch(words[0]) or words[0] in COMMAND_WRAPPERS):
         words = words[1:]
     if not words or words[0] != "git":
         return False
-    if "--no-verify" in words or any("core.hookspath" in w.lower() for w in words):
+    if "--no-verify" in words or _overrides_hooks_path(words):
         return True
     if "commit" not in words:
         return False

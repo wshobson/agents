@@ -174,6 +174,8 @@ class ClaudeCode(Harness):
                 turns.append(turn)
                 break
             turn = parse_stream_json(proc.stdout, version, proc.returncode)
+            if turn.error:
+                turn.error = with_stderr(turn.error, proc.stderr)
             turns.append(turn)
             # A turn that reports no cost, or an errored turn that reports zero (a crashed
             # session may), may have spent all it was allowed.
@@ -181,6 +183,15 @@ class ClaudeCode(Harness):
             if turn.error or turn.budget_stop:
                 break
         return merge_turns(turns)
+
+
+ERROR_DETAIL_CHARS = 500
+
+
+def with_stderr(error: str, stderr: str | None) -> str:
+    """Add the end of the process's stderr to an error, so the result shows the cause."""
+    tail = (stderr or "").strip()[-ERROR_DETAIL_CHARS:]
+    return f"{error}: {tail}" if tail else error
 
 
 def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> HarnessOutput:
@@ -270,14 +281,18 @@ class ScriptHarness(Harness):
                 timeout=120,
             )
             lines = proc.stdout.strip().splitlines()
+            error = with_stderr(f"exit {proc.returncode}", proc.stderr) if proc.returncode else None
             turns.append(
                 HarnessOutput(
                     final_message=lines[-1] if lines else "",
                     transcript=proc.stdout,
                     harness_version="script",
                     cost_usd=0.0,
+                    error=error,
                 )
             )
+            if error:
+                break
         return merge_turns(turns)
 
 

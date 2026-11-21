@@ -34,6 +34,19 @@
       "default": null,
       "title": "Cost Usd"
     },
+    "error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Why the harness failed, for a run whose failed_checks is harness_error.",
+      "title": "Error"
+    },
     "failed_checks": {
       "items": {
         "type": "string"
