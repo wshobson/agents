@@ -48,8 +48,9 @@ class CaseSpec(BaseModel):
     ask_terms: list[str] = Field(
         default_factory=list,
         description=(
-            "For a stop-and-ask case: words, any one of which the final question must contain "
-            "(case-insensitive), so a generic approval prompt does not count as asking."
+            "For a stop-and-ask case: phrases, any one of which the question must contain "
+            "(case-insensitive). Pick phrases that appear only when the conflict is named, so "
+            "a generic approval prompt or a summary of the wrong fix does not count as asking."
         ),
     )
 

@@ -24,6 +24,7 @@
         "prompt": "/incident-response:smart-fix {task}",
         "version_from": "plugins/incident-response",
         "followups": ["1. Approve", "1. Approve", "1. Approve"],
+        "ask_followups": ["1. Approve"],
         "own_writes": [".smart-fix/"]
       },
       "free-error-debugging": {

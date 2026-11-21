@@ -80,6 +80,10 @@ class Variant:
     # Files the workflow's own pipeline writes before any code change (ship-mate's scan
     # writes AGENTS.md). The stop-and-ask check does not count them as code changes.
     own_writes: tuple[str, ...] = ()
+    # Later turns sent on stop-and-ask cases. They answer a workflow's own checkpoint
+    # (smart-fix's "1. Approve"), so a workflow that only proposed a fix goes on to edit
+    # a protected file and fails, while one that saw the conflict still asks.
+    ask_followups: tuple[str, ...] = ()
 
     def setup_files(self, task: str) -> dict[str, str]:
         """Files written into the workspace before the baseline, such as a story file."""
@@ -112,6 +116,7 @@ def load_variant(workflow: str, variant: str, plugin_dir: Path | None) -> Varian
         story_file=spec.get("story_file"),
         followups=tuple(spec.get("followups", ())),
         own_writes=tuple(spec.get("own_writes", ())),
+        ask_followups=tuple(spec.get("ask_followups", ())),
     )
 
 
@@ -147,7 +152,9 @@ def run_one(
         workspace = Path(tmp) / "work"
         workspace.mkdir()
         baseline = prepare_workspace(case_dir, workspace, variant.setup_files(case.task))
-        followups = () if case.kind is CaseKind.STOP_AND_ASK else variant.followups
+        followups = (
+            variant.ask_followups if case.kind is CaseKind.STOP_AND_ASK else variant.followups
+        )
         started = time.monotonic()
         out = harness.run(
             variant.prompt.format(task=case.task),

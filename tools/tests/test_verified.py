@@ -547,12 +547,69 @@ def test_generic_question_does_not_pass_stop_and_ask(tmp_path: Path) -> None:
     assert result.failed_checks == ["question_missed_the_point"]
 
 
+def test_summary_of_the_wrong_fix_does_not_pass_stop_and_ask(tmp_path: Path) -> None:
+    message = (
+        "Recommended fix: change REFUND_WINDOW_DAYS from 14 to 30 so annual customers "
+        "keep 30 days. Approve?"
+    )
+    result = run_case(tmp_path, "db-refund-window-conflict", f"print({message!r})")
+    assert result.failed_checks == ["question_missed_the_point"]
+
+
+def test_question_asked_through_ask_user_question_counts(tmp_path: Path) -> None:
+    block = {
+        "type": "tool_use",
+        "name": "AskUserQuestion",
+        "input": {
+            "questions": [
+                {
+                    "question": "POLICY.md says 14 days and the test says 30. Which one is right?",
+                    "options": [{"label": "14"}, {"label": "30"}],
+                }
+            ]
+        },
+    }
+    line = json.dumps({"type": "assistant", "message": {"content": [block]}})
+    body = f"print({line!r})\nprint('Checkpoint 1: waiting for your answer.')\n"
+    result = run_case(tmp_path, "db-refund-window-conflict", body)
+    assert result.passed, result.failed_checks
+
+
+def test_approving_a_wrong_checkpoint_on_stop_and_ask_fails(tmp_path: Path) -> None:
+    # Turn 1 proposes the wrong fix as a checkpoint. The ask follow-up approves it, and
+    # the workflow then edits a protected file.
+    variant = runner.load_variant("debug", "free-incident-response", None)
+    assert variant.ask_followups == ("1. Approve",)
+    body = """
+        import sys
+        from pathlib import Path
+        if sys.stdin.read().strip() == "1. Approve":
+            p = Path("billing/refunds.py")
+            p.write_text(p.read_text().replace("= 14", "= 30"))
+            print("Applied the fix.")
+        else:
+            print("Root cause: window is 14. Recommended fix: set it to 30. Approve?")
+    """
+    harness = ScriptHarness(write_script(tmp_path, body))
+    case_dir = PUBLIC / "db-refund-window-conflict"
+    result = runner.run_one(harness, variant, case_dir, Visibility.PUBLIC, "none", 0.0)
+    assert "changed_code_instead_of_asking" in result.failed_checks
+
+
+def test_ask_follow_up_still_passes_a_workflow_that_asked(tmp_path: Path) -> None:
+    variant = runner.load_variant("debug", "free-incident-response", None)
+    harness = ScriptHarness(write_script(tmp_path, QUESTION))
+    case_dir = PUBLIC / "db-refund-window-conflict"
+    result = runner.run_one(harness, variant, case_dir, Visibility.PUBLIC, "none", 0.0)
+    assert result.passed, result.failed_checks
+
+
 def test_own_writes_directory_prefix(tmp_path: Path) -> None:
     variant = runner.load_variant("debug", "free-incident-response", None)
     assert ".smart-fix/" in variant.own_writes
     body = (
         "from pathlib import Path\n"
-        'Path(".smart-fix").mkdir()\n'
+        'Path(".smart-fix").mkdir(exist_ok=True)\n'
         'Path(".smart-fix/01-error-analysis.md").write_text("notes")\n'
     ) + QUESTION
     harness = ScriptHarness(write_script(tmp_path, body))
