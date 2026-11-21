@@ -1,0 +1,28 @@
+name: Verified clips
+
+# Renders the terminal clips in tools/verified/tapes/ with VHS. It runs only when
+# started by hand from the Actions tab, so nothing renders on push or pull request.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081  # v5
+      - name: Install plugin-eval
+        run: uv sync --project plugins/plugin-eval --extra dev
+      - name: Render clips
+        uses: charmbracelet/vhs-action@f6d7db07a432fcd3b06772628d36a57f96d95dcf  # v2.1.1
+        with:
+          path: tools/verified/tapes/gate-catches-skipped-test.tape
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
+        with:
+          name: verified-clips
+          path: tools/verified/tapes/out/

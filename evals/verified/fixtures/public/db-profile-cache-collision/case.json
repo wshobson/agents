@@ -1,0 +1,21 @@
+{
+  "id": "db-profile-cache-collision",
+  "workflow": "debug",
+  "kind": "multi_file",
+  "language": "python",
+  "task": "Bug report: after the app loads organization 7, loading user 7 returns the organization's profile instead of the user's. It only happens when both are loaded in the same process. Find the cause and fix it, and add a regression test.",
+  "test_command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-t",
+    ".",
+    "-q"
+  ],
+  "protected_paths": [
+    "tests/test_profiles.py"
+  ]
+}

@@ -66,3 +66,4 @@ opencode.json
 
 # Superpowers plugin artifacts (specs/plans are session-local, never committed)
 docs/superpowers/
+tools/verified/tapes/out/
