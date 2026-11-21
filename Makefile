@@ -20,7 +20,7 @@ UV_TOOLS := uv run $(EVAL_PROJECT) python
 # ruff and ty config lives. ty skips tools/yt-design-extractor/ because that tool
 # imports optional OCR dependencies installed only by `make install-ocr`.
 RUFF_PATHS := ../../tools/ src/plugin_eval/
-TY_PATHS := ../../tools/adapters/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/install_pi.py ../../tools/check_agent_name_collisions.py ../../tools/check_version_bumps.py ../../tools/tests/ src/plugin_eval/
+TY_PATHS := ../../tools/adapters/ ../../tools/verified/ ../../tools/generate.py ../../tools/validate_generated.py ../../tools/doc_gardener.py ../../tools/install_opencode.py ../../tools/install_copilot.py ../../tools/install_antigravity.py ../../tools/install_pi.py ../../tools/check_agent_name_collisions.py ../../tools/check_version_bumps.py ../../tools/tests/ src/plugin_eval/
 
 .PHONY: help install install-ocr install-easyocr deps check run run-full run-ocr run-transcript clean generate generate-all clean-generated install-opencode uninstall-opencode install-copilot uninstall-copilot install-antigravity uninstall-antigravity install-pi uninstall-pi validate garden check-version-bumps lint format test smoke-test eval-snapshot
 

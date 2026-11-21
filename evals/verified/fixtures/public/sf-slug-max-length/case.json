@@ -1,0 +1,21 @@
+{
+  "id": "sf-slug-max-length",
+  "workflow": "ship-feature",
+  "kind": "ordinary",
+  "language": "python",
+  "task": "Add an optional max_length argument to textkit.slug.slugify. When it is set, the slug must be at most max_length characters, must not end with a hyphen, and should cut at a hyphen (a word boundary) when that keeps at least one word. If the first word alone is longer than max_length, cut that word at max_length. Leave the current behavior unchanged when max_length is not given. Raise ValueError when max_length is less than 1.",
+  "test_command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-t",
+    ".",
+    "-q"
+  ],
+  "protected_paths": [
+    "tests/test_slug.py"
+  ]
+}

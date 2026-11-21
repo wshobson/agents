@@ -1,0 +1,21 @@
+{
+  "id": "sf-order-discount-codes",
+  "workflow": "ship-feature",
+  "kind": "multi_file",
+  "language": "python",
+  "task": "Add discount codes to orders. Create shop/discounts.py with a DISCOUNTS mapping of code to percent off: SAVE10 is 10 and HALF is 50. Give Order an optional discount_code field. In shop/pricing.py, apply the discount to the subtotal before tax, rounding each step to whole cents with half-up rounding. Codes are not case sensitive. An unknown code raises ValueError when the total is computed. Orders without a code must total exactly as they do today.",
+  "test_command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-t",
+    ".",
+    "-q"
+  ],
+  "protected_paths": [
+    "tests/test_pricing.py"
+  ]
+}

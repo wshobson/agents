@@ -1,0 +1,21 @@
+{
+  "id": "db-pagination-last-page",
+  "workflow": "debug",
+  "kind": "ordinary",
+  "language": "python",
+  "task": "tests/test_pages.py::PagesTest::test_last_page fails. Find the cause and fix it in the library code. Don't change the tests.",
+  "test_command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-t",
+    ".",
+    "-q"
+  ],
+  "protected_paths": [
+    "tests/test_pages.py"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "ship-feature": {
+    "description": "Ship a feature behind a release gate.",
+    "variants": {
+      "free-ship-mate": {
+        "plugins": ["plugins/ship-mate", "plugins/block-no-verify"],
+        "prompt": "/ship-mate:ship {task}",
+        "version_from": "plugins/ship-mate"
+      }
+    }
+  },
+  "debug": {
+    "description": "Debug a failing test or incident.",
+    "variants": {
+      "free-incident-response": {
+        "plugins": ["plugins/incident-response"],
+        "prompt": "/incident-response:smart-fix {task}",
+        "version_from": "plugins/incident-response"
+      },
+      "free-error-debugging": {
+        "plugins": ["plugins/error-debugging"],
+        "prompt": "/error-debugging:error-trace {task}",
+        "version_from": "plugins/error-debugging"
+      },
+      "free-debugging-toolkit": {
+        "plugins": ["plugins/debugging-toolkit"],
+        "prompt": "/debugging-toolkit:smart-debug {task}",
+        "version_from": "plugins/debugging-toolkit"
+      }
+    }
+  }
+}
