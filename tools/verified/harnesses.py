@@ -28,6 +28,11 @@ class HarnessOutput:
     tokens_in: int | None = None
     tokens_out: int | None = None
     cost_usd: float | None = None
+    # Set when the harness itself failed (crash, timeout, API or auth error), so the run
+    # says nothing about the workflow. A stop at the budget cap is not a harness error.
+    error: str | None = None
+    # The turn stopped because it reached its --max-budget-usd cap.
+    budget_stop: bool = False
 
 
 def _sum(values: list[int | None]) -> int | None:
@@ -45,7 +50,13 @@ def merge_turns(turns: list[HarnessOutput]) -> HarnessOutput:
         tokens_in=_sum([t.tokens_in for t in turns]),
         tokens_out=_sum([t.tokens_out for t in turns]),
         cost_usd=sum(costs) if costs else None,
+        error=next((t.error for t in turns if t.error), None),
+        budget_stop=turns[-1].budget_stop,
     )
+
+
+TURN_TIMEOUT_SECONDS = 3600
+BUDGET_STOP = "error_max_budget_usd"
 
 
 class Harness:
@@ -135,31 +146,45 @@ class ClaudeCode(Harness):
             remaining = budget_usd - spent
             if index > 0 and remaining <= 0:
                 break
-            proc = subprocess.run(
-                self.command(
-                    turn_prompt, model, plugin_dirs, remaining, session_id, resume=index > 0
-                ),
-                cwd=workspace,
-                capture_output=True,
-                text=True,
-                timeout=3600,
-            )
-            turn = parse_stream_json(proc.stdout, version)
+            try:
+                proc = subprocess.run(
+                    self.command(
+                        turn_prompt, model, plugin_dirs, remaining, session_id, resume=index > 0
+                    ),
+                    cwd=workspace,
+                    capture_output=True,
+                    text=True,
+                    timeout=TURN_TIMEOUT_SECONDS,
+                )
+            except subprocess.TimeoutExpired as exc:
+                stdout = exc.stdout.decode() if isinstance(exc.stdout, bytes) else exc.stdout
+                turn = parse_stream_json(stdout or "", version)
+                turn.error = f"timeout after {TURN_TIMEOUT_SECONDS}s"
+                turns.append(turn)
+                break
+            turn = parse_stream_json(proc.stdout, version, proc.returncode)
             turns.append(turn)
-            spent += turn.cost_usd or 0.0
+            # A turn that reports no cost may have spent all it was allowed.
+            spent += turn.cost_usd if turn.cost_usd is not None else remaining
+            if turn.error or turn.budget_stop:
+                break
         return merge_turns(turns)
 
 
-def parse_stream_json(stdout: str, version: str) -> HarnessOutput:
+def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> HarnessOutput:
     """Read Claude Code's stream-json output.
 
     Every line is kept in the transcript, so tool calls such as a `git commit --no-verify`
     are visible to the judge. Token and cost fields are read from the final result event
     when present and left empty when not.
+
+    The output's error is set when there is no result event, or when the result or the exit
+    code reports an error other than reaching the --max-budget-usd cap.
     """
     final_message = ""
     tokens_in = tokens_out = None
     cost = None
+    result_event: dict | None = None
     for line in stdout.splitlines():
         try:
             event = json.loads(line)
@@ -167,6 +192,7 @@ def parse_stream_json(stdout: str, version: str) -> HarnessOutput:
             continue
         if not isinstance(event, dict) or event.get("type") != "result":
             continue
+        result_event = event
         final_message = str(event.get("result") or "")
         usage = event.get("usage") or {}
         if isinstance(usage, dict):
@@ -180,6 +206,14 @@ def parse_stream_json(stdout: str, version: str) -> HarnessOutput:
                 tokens_out = usage["output_tokens"]
         if isinstance(event.get("total_cost_usd"), (int, float)):
             cost = float(event["total_cost_usd"])
+    error = None
+    subtype = str((result_event or {}).get("subtype") or "")
+    if result_event is None:
+        error = f"no result event (exit {returncode})"
+    elif subtype != BUDGET_STOP and (
+        result_event.get("is_error") is True or subtype.startswith("error") or returncode != 0
+    ):
+        error = subtype or f"exit {returncode}"
     return HarnessOutput(
         final_message=final_message,
         transcript=stdout,
@@ -187,6 +221,8 @@ def parse_stream_json(stdout: str, version: str) -> HarnessOutput:
         tokens_in=tokens_in,
         tokens_out=tokens_out,
         cost_usd=cost,
+        error=error,
+        budget_stop=subtype == BUDGET_STOP,
     )
 
 

@@ -34,7 +34,7 @@ from tools.verified.models import (
     load_case,
     result_schema_text,
 )
-from tools.verified.report import load_results, render_markdown
+from tools.verified.report import HARNESS_ERROR, load_results, render_markdown
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_CASES = REPO_ROOT / "evals" / "verified" / "fixtures" / "public"
@@ -156,15 +156,20 @@ def run_one(
             followups,
         )
         wall = time.monotonic() - started
-        verdict = judge(
-            case,
-            case_dir,
-            workspace,
-            baseline,
-            out.transcript,
-            out.final_message,
-            own_writes=variant.own_writes,
-        )
+        if out.error:
+            # The harness failed, so the run says nothing about the workflow. The report
+            # leaves these runs out of the pass rate and counts them separately.
+            failed_checks = [HARNESS_ERROR]
+        else:
+            failed_checks = judge(
+                case,
+                case_dir,
+                workspace,
+                baseline,
+                out.transcript,
+                out.final_message,
+                own_writes=variant.own_writes,
+            ).failed_checks
     return RunResult(
         workflow=f"{variant.workflow}/{variant.name}",
         workflow_version=variant.version,
@@ -173,8 +178,8 @@ def run_one(
         model=model,
         case_id=case.id,
         case_visibility=visibility,
-        passed=verdict.passed,
-        failed_checks=verdict.failed_checks,
+        passed=not failed_checks,
+        failed_checks=failed_checks,
         tokens_in=out.tokens_in,
         tokens_out=out.tokens_out,
         cost_usd=out.cost_usd,
@@ -226,10 +231,20 @@ def cmd_run(args: argparse.Namespace) -> int:
                     return 0
                 budget = min(remaining, DEFAULT_PER_RUN_CAP_USD)
                 result = run_one(harness, variant, case_dir, visibility, model, budget)
-                spent += result.cost_usd if result.cost_usd is not None else per_run
-                name = f"{variant.workflow}-{variant.name}-{model}-{result.case_id}-{rep}.json"
+                # With no reported cost, count the whole budget the run was allowed.
+                spent += result.cost_usd if result.cost_usd is not None else budget
+                # The start time keeps a second run on the same day from overwriting the first.
+                stamp = result.run_at.replace(":", "")
+                name = (
+                    f"{variant.workflow}-{variant.name}-{model}-{result.case_id}-{stamp}-{rep}.json"
+                )
                 (out_dir / name).write_text(result.model_dump_json(indent=2) + "\n")
-                print(f"{result.case_id} rep {rep}: {'pass' if result.passed else 'fail'}")
+                outcome = (
+                    "harness error"
+                    if HARNESS_ERROR in result.failed_checks
+                    else ("pass" if result.passed else "fail")
+                )
+                print(f"{result.case_id} rep {rep}: {outcome}")
     print(f"Done. ${spent:.2f} spent.")
     return 0
 

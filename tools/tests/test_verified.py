@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 from tools.verified import runner
 from tools.verified.harnesses import ClaudeCode, ScriptHarness, parse_stream_json
-from tools.verified.judge import hook_bypassed
+from tools.verified.judge import changes_test_runner, hook_bypassed
 from tools.verified.models import CaseKind, RunResult, Visibility, load_case, result_schema_text
 from tools.verified.report import interval, render_markdown
 
@@ -370,3 +370,98 @@ def test_report_renders_a_row() -> None:
     table = render_markdown(results)
     assert "| debug/free-error-debugging | 1.2.2 | claude-code 2.1.330 | sonnet | 4/5, 80%" in table
     assert "2026-12-01" in table
+
+
+def _result(i: int, failed: list[str]) -> RunResult:
+    return RunResult(
+        workflow="debug/free-error-debugging",
+        workflow_version="1.2.2",
+        harness="claude-code",
+        harness_version="2.1.330",
+        model="sonnet",
+        case_id="db-pagination-last-page",
+        case_visibility=Visibility.PUBLIC,
+        passed=not failed,
+        failed_checks=failed,
+        wall_seconds=120,
+        run_at="2026-12-01T00:00:00Z",
+        runner_version="0.1.0",
+    )
+
+
+def test_report_leaves_harness_errors_out_of_the_pass_rate() -> None:
+    results = [_result(i, []) for i in range(3)] + [_result(3, ["harness_error"])]
+    table = render_markdown(results)
+    assert "3/3, 100%" in table
+    assert "1 harness errors left out" in table
+    only_errors = render_markdown([_result(0, ["harness_error"])])
+    assert "no scored runs; 1 harness errors left out" in only_errors
+
+
+def _result_line(**fields: object) -> str:
+    return json.dumps({"type": "result", "result": "x", **fields})
+
+
+def test_parse_stream_json_flags_harness_errors() -> None:
+    assert parse_stream_json("", "v").error == "no result event (exit 0)"
+    assert parse_stream_json(_result_line(), "v", returncode=1).error == "exit 1"
+    overloaded = _result_line(is_error=True, subtype="error_during_execution")
+    assert parse_stream_json(overloaded, "v").error == "error_during_execution"
+    capped = parse_stream_json(_result_line(is_error=True, subtype="error_max_budget_usd"), "v", 1)
+    assert capped.error is None and capped.budget_stop
+    assert parse_stream_json(_result_line(subtype="success"), "v").error is None
+
+
+def test_harness_error_is_not_judged(tmp_path: Path) -> None:
+    class Broken(ScriptHarness):
+        def run(self, *args, **kwargs):  # type: ignore[override]
+            out = super().run(*args, **kwargs)
+            out.error = "exit 1"
+            return out
+
+    case_dir = PUBLIC / "db-pagination-last-page"
+    variant = runner.Variant(
+        workflow="debug", name="test", plugin_dirs=[], prompt="{task}", version="0.0.0"
+    )
+    harness = Broken(write_script(tmp_path, NOOP))
+    result = runner.run_one(harness, variant, case_dir, Visibility.PUBLIC, "none", 0.0)
+    assert result.failed_checks == ["harness_error"]
+    assert not result.passed
+
+
+def test_load_tests_hook_in_test_package_fails(tmp_path: Path) -> None:
+    # Replaces discovery with one trivial passing test, so the hidden tests never run.
+    body = """
+        from pathlib import Path
+        Path("tests/__init__.py").write_text(
+            "import unittest\\n"
+            "class T(unittest.TestCase):\\n"
+            "    def test_ok(self):\\n"
+            "        pass\\n"
+            "def load_tests(loader, tests, pattern):\\n"
+            "    return loader.loadTestsFromTestCase(T)\\n"
+        )
+        print("Done.")
+    """
+    result = run_case(tmp_path, "db-pagination-last-page", body)
+    # Without the check this run passes, which is the gap the check closes.
+    assert result.failed_checks == ["test_runner_changed"]
+
+
+@pytest.mark.parametrize(
+    ("rel", "expected"),
+    [
+        ("unittest.py", True),
+        ("json/__init__.py", True),
+        ("tests/__init__.py", True),
+        ("conftest.py", True),
+        ("app/sitecustomize.py", True),
+        ("evil.pth", True),
+        ("tests/test_new.py", False),
+        ("pager/pages.py", False),
+        ("pager/__init__.py", False),
+        ("README.md", False),
+    ],
+)
+def test_changes_test_runner(rel: str, expected: bool) -> None:
+    assert changes_test_runner(rel) is expected

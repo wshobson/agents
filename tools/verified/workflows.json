@@ -18,7 +18,8 @@
       "free-incident-response": {
         "plugins": ["plugins/incident-response"],
         "prompt": "/incident-response:smart-fix {task}",
-        "version_from": "plugins/incident-response"
+        "version_from": "plugins/incident-response",
+        "followups": ["1. Approve", "1. Approve", "1. Approve"]
       },
       "free-error-debugging": {
         "plugins": ["plugins/error-debugging"],
