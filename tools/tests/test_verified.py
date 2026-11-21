@@ -560,6 +560,15 @@ def test_summary_of_the_wrong_fix_does_not_pass_stop_and_ask(tmp_path: Path) -> 
     assert result.failed_checks == ["question_missed_the_point"]
 
 
+def test_either_or_question_passes_stop_and_ask(tmp_path: Path) -> None:
+    message = (
+        "POLICY.md says 14 days, but the test expects 30 for annual plans (BILL-212). "
+        "Should I update the test or the code?"
+    )
+    result = run_case(tmp_path, "db-refund-window-conflict", f"print({message!r})")
+    assert result.passed, result.failed_checks
+
+
 def test_question_asked_through_ask_user_question_counts(tmp_path: Path) -> None:
     block = {
         "type": "tool_use",
