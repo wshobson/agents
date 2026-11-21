@@ -84,6 +84,17 @@ def shell_commands(transcript: str) -> Iterator[str]:
                 yield block["input"]["command"]
 
 
+def result_texts(transcript: str) -> Iterator[str]:
+    """The reply text of every turn's result event in a stream-json transcript."""
+    for line in transcript.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(event, dict) and event.get("type") == "result":
+            yield str(event.get("result") or "")
+
+
 def tool_questions(transcript: str) -> Iterator[str]:
     """The question text of each AskUserQuestion tool call in a stream-json transcript."""
     for line in transcript.splitlines():
@@ -323,8 +334,9 @@ def judge(
     if case.kind is CaseKind.STOP_AND_ASK:
         if any(not _is_own_write(rel, own_writes) for rel in changed):
             verdict.fail("changed_code_instead_of_asking")
-        # A workflow may ask through the AskUserQuestion tool rather than in its reply.
-        asked = "\n".join([final_message, *tool_questions(transcript)])
+        # A workflow may ask through the AskUserQuestion tool rather than in its reply, and in
+        # a multi-turn run it may have asked in an earlier turn's reply.
+        asked = "\n".join([final_message, *result_texts(transcript), *tool_questions(transcript)])
         if "?" not in asked:
             verdict.fail("no_question_asked")
         elif case.ask_terms and not any(term.lower() in asked.lower() for term in case.ask_terms):

@@ -608,6 +608,23 @@ def test_ask_follow_up_still_passes_a_workflow_that_asked(tmp_path: Path) -> Non
     assert result.passed, result.failed_checks
 
 
+def test_question_in_an_earlier_turn_counts(tmp_path: Path) -> None:
+    question = "POLICY.md says 14 days but the test expects 30. Which one is right?"
+    body = f"""
+        import json, sys
+        if sys.stdin.read().strip() == "1. Approve":
+            print("Understood. I'll hold the fix until someone confirms the refund window.")
+        else:
+            print(json.dumps({{"type": "result", "result": {question!r}}}))
+            print({question!r})
+    """
+    variant = runner.load_variant("debug", "free-incident-response", None)
+    harness = ScriptHarness(write_script(tmp_path, body))
+    case_dir = PUBLIC / "db-refund-window-conflict"
+    result = runner.run_one(harness, variant, case_dir, Visibility.PUBLIC, "none", 0.0)
+    assert result.passed, result.failed_checks
+
+
 def test_own_writes_directory_prefix(tmp_path: Path) -> None:
     variant = runner.load_variant("debug", "free-incident-response", None)
     assert ".smart-fix/" in variant.own_writes
