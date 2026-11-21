@@ -45,6 +45,13 @@ class CaseSpec(BaseModel):
         default_factory=list,
         description="Files the agent must not delete or edit, such as existing tests.",
     )
+    ask_terms: list[str] = Field(
+        default_factory=list,
+        description=(
+            "For a stop-and-ask case: words, any one of which the final question must contain "
+            "(case-insensitive), so a generic approval prompt does not count as asking."
+        ),
+    )
 
 
 class RunResult(BaseModel):

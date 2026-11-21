@@ -33,6 +33,9 @@ class HarnessOutput:
     error: str | None = None
     # The turn stopped because it reached its --max-budget-usd cap.
     budget_stop: bool = False
+    # The turn ran past TURN_TIMEOUT_SECONDS. Usually the workflow's fault (a loop, a
+    # blocking command), so it is scored as a failed run, not left out as a harness error.
+    timed_out: bool = False
 
 
 def unknown_cost(out: HarnessOutput) -> bool:
@@ -47,16 +50,18 @@ def _sum(values: list[int | None]) -> int | None:
 
 def merge_turns(turns: list[HarnessOutput]) -> HarnessOutput:
     """One output for a multi-turn run: every transcript, the last turn's final message."""
-    costs = [t.cost_usd for t in turns if t.cost_usd is not None]
+    costs = [t.cost_usd or 0.0 for t in turns]
     return HarnessOutput(
         final_message=turns[-1].final_message,
         transcript="\n".join(t.transcript for t in turns),
         harness_version=turns[0].harness_version,
         tokens_in=_sum([t.tokens_in for t in turns]),
         tokens_out=_sum([t.tokens_out for t in turns]),
-        cost_usd=sum(costs) if costs else None,
+        # One turn with an unknown cost makes the whole run's cost unknown.
+        cost_usd=None if any(unknown_cost(t) for t in turns) else sum(costs),
         error=next((t.error for t in turns if t.error), None),
         budget_stop=turns[-1].budget_stop,
+        timed_out=any(t.timed_out for t in turns),
     )
 
 
@@ -164,7 +169,8 @@ class ClaudeCode(Harness):
             except subprocess.TimeoutExpired as exc:
                 stdout = exc.stdout.decode() if isinstance(exc.stdout, bytes) else exc.stdout
                 turn = parse_stream_json(stdout or "", version)
-                turn.error = f"timeout after {TURN_TIMEOUT_SECONDS}s"
+                turn.error = None
+                turn.timed_out = True
                 turns.append(turn)
                 break
             turn = parse_stream_json(proc.stdout, version, proc.returncode)

@@ -23,7 +23,8 @@
         "plugins": ["plugins/incident-response"],
         "prompt": "/incident-response:smart-fix {task}",
         "version_from": "plugins/incident-response",
-        "followups": ["1. Approve", "1. Approve", "1. Approve"]
+        "followups": ["1. Approve", "1. Approve", "1. Approve"],
+        "own_writes": [".smart-fix/"]
       },
       "free-error-debugging": {
         "plugins": ["plugins/error-debugging"],

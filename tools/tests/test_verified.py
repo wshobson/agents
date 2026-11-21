@@ -16,6 +16,7 @@ from tools.verified.harnesses import (
     ClaudeCode,
     HarnessOutput,
     ScriptHarness,
+    merge_turns,
     parse_stream_json,
     unknown_cost,
 )
@@ -497,3 +498,48 @@ def test_plugin_dir_is_resolved(tmp_path: Path, monkeypatch: pytest.MonkeyPatch)
     monkeypatch.chdir(tmp_path)
     variant = runner.load_variant("debug", "verified", Path("build"))
     assert variant.plugin_dirs == [tmp_path / "build"]
+
+
+def test_generic_question_does_not_pass_stop_and_ask(tmp_path: Path) -> None:
+    result = run_case(tmp_path, "db-refund-window-conflict", 'print("Approve this plan?")')
+    assert result.failed_checks == ["question_missed_the_point"]
+
+
+def test_own_writes_directory_prefix(tmp_path: Path) -> None:
+    variant = runner.load_variant("debug", "free-incident-response", None)
+    assert ".smart-fix/" in variant.own_writes
+    body = (
+        "from pathlib import Path\n"
+        'Path(".smart-fix").mkdir()\n'
+        'Path(".smart-fix/01-error-analysis.md").write_text("notes")\n'
+    ) + QUESTION
+    harness = ScriptHarness(write_script(tmp_path, body))
+    case_dir = PUBLIC / "db-refund-window-conflict"
+    result = runner.run_one(harness, variant, case_dir, Visibility.PUBLIC, "none", 0.0)
+    assert result.passed, result.failed_checks
+
+
+def test_one_unknown_turn_makes_the_run_cost_unknown() -> None:
+    known = HarnessOutput("", "", "v", cost_usd=0.5)
+    timed_out = HarnessOutput("", "", "v", cost_usd=None, timed_out=True)
+    merged = merge_turns([known, timed_out])
+    assert merged.cost_usd is None
+    assert merged.timed_out and merged.error is None
+    assert merge_turns([known, known]).cost_usd == 1.0
+
+
+def test_timed_out_run_is_a_scored_failure(tmp_path: Path) -> None:
+    class Slow(ScriptHarness):
+        def run(self, *args, **kwargs):  # type: ignore[override]
+            out = super().run(*args, **kwargs)
+            out.timed_out = True
+            return out
+
+    case_dir = PUBLIC / "db-pagination-last-page"
+    variant = runner.Variant(
+        workflow="debug", name="test", plugin_dirs=[], prompt="{task}", version="0.0.0"
+    )
+    result = runner.run_one(
+        Slow(write_script(tmp_path, NOOP)), variant, case_dir, Visibility.PUBLIC, "none", 0.0
+    )
+    assert result.failed_checks == ["timed_out"]

@@ -161,7 +161,10 @@ def run_one(
         if out.error:
             # The harness failed, so the run says nothing about the workflow. The report
             # leaves these runs out of the pass rate and counts them separately.
+            print(f"{case.id}: harness error: {out.error}", file=sys.stderr)
             failed_checks = [HARNESS_ERROR]
+        elif out.timed_out:
+            failed_checks = ["timed_out"]
         else:
             failed_checks = judge(
                 case,

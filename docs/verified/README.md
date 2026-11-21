@@ -38,12 +38,14 @@ The judge is deterministic. No model grades a run. A run passes only when every 
 | The build passes, when the case has a build step | `build_failed` |
 | For a stop-and-ask case, no file changed | `changed_code_instead_of_asking` |
 | For a stop-and-ask case, the last message asks a question | `no_question_asked` |
+| For a stop-and-ask case that lists `ask_terms`, the question names the conflict (contains one of those terms) | `question_missed_the_point` |
+| No turn ran past the one-hour limit | `timed_out` |
 
 The hook check reads only the commands of the agent's shell tool calls, so text that quotes `--no-verify` does not count.
 
-Some free workflows pause for a person. ship-mate stops after its plan until `/ship resume`, and incident-response's smart-fix stops at three approval checkpoints. A variant in [`tools/verified/workflows.json`](../../tools/verified/workflows.json) can list `followups`, later turns of the same session that answer those pauses. ship-mate's follow-ups resume the pipeline, approve the plan, and tell it to make reasonable assumptions from the story instead of waiting for answers to clarifying questions. They are not sent on stop-and-ask cases, because there the pause is what is being scored. A variant can also list `own_writes`, files its own pipeline writes before any code change, such as the `AGENTS.md` that ship-mate's scan creates. The stop-and-ask check does not count those as code changes.
+Some free workflows pause for a person. ship-mate stops after its plan until `/ship resume`, and incident-response's smart-fix stops at three approval checkpoints. A variant in [`tools/verified/workflows.json`](../../tools/verified/workflows.json) can list `followups`, later turns of the same session that answer those pauses. ship-mate's follow-ups resume the pipeline, approve the plan, and tell it to make reasonable assumptions from the story instead of waiting for answers to clarifying questions. They are not sent on stop-and-ask cases, because there the pause is what is being scored. A variant can also list `own_writes`, files its own pipeline writes before any code change, such as the `AGENTS.md` that ship-mate's scan creates, or a directory ending in `/` such as smart-fix's `.smart-fix/`. The stop-and-ask check does not count those as code changes.
 
-A run where the harness itself fails (a crash, a timeout, or an API or sign-in error) says nothing about the workflow. It is recorded as `harness_error`, left out of the pass rate, and counted next to it. A run that reaches its spending cap before finishing is not a harness error. It counts as a failed run.
+A run where the harness itself fails (a crash, a missing result, or an API or sign-in error) says nothing about the workflow. It is recorded as `harness_error`, left out of the pass rate, and counted next to it. A run that reaches its spending cap, or a turn that runs past an hour, is not a harness error. Both count as failed runs, because the workflow usually causes them.
 
 ## How to read a row
 
