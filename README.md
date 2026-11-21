@@ -58,7 +58,7 @@ The LLM judge and Monte Carlo layers are experimental and are not validated agai
 Some workflows in this repo are being measured. Each one runs on a fixed set of test cases, several times per harness and model, and the results are published with confidence intervals. Runs repeat after each Claude Code release, and other coding tools join as their runs are wired up.
 
 - Method and current scores: [docs/verified](docs/verified/README.md)
-- Join the waitlist for agents Verified, the tuned and re-tested versions: <POLAR_WAITLIST_URL>
+- Join the [waitlist for agents Verified](https://buy.polar.sh/polar_cl_yAj2XSCMpSY3vYTcoymlT102uGuJIAKgAI6134QYG9n), the tuned and re-tested versions.
 
 The free catalog stays MIT and keeps getting updates. Verified is a separate, paid layer sold by Major7 Apps, which this repository's maintainer founded. To support the free catalog directly, see [SPONSORING.md](SPONSORING.md).
 
