@@ -153,7 +153,7 @@ func load_game() -> Dictionary:
     var json := file.get_as_text()
     file.close()
 
-    var parsed := JSON.parse_string(json)
+    var parsed: Variant = JSON.parse_string(json)
     if parsed == null:
         save_error.emit("Could not parse save data")
         return {}
