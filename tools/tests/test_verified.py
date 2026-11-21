@@ -431,6 +431,10 @@ def test_parse_stream_json_flags_harness_errors() -> None:
     capped = parse_stream_json(_result_line(is_error=True, subtype="error_max_budget_usd"), "v", 1)
     assert capped.error is None and capped.budget_stop
     assert parse_stream_json(_result_line(subtype="success"), "v").error is None
+    assert parse_stream_json(_result_line(subtype="success"), "v", 1).error == "success, exit 1"
+    assert parse_stream_json(_result_line(subtype="error_during_execution"), "v").error == (
+        "error_during_execution"
+    )
 
 
 def test_harness_error_is_not_judged(tmp_path: Path) -> None:

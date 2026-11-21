@@ -236,7 +236,9 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
     elif subtype != BUDGET_STOP and (
         result_event.get("is_error") is True or subtype.startswith("error") or returncode != 0
     ):
-        error = subtype or f"exit {returncode}"
+        error = ", ".join(
+            part for part in (subtype, f"exit {returncode}" if returncode else "") if part
+        )
     return HarnessOutput(
         final_message=final_message,
         transcript=stdout,
