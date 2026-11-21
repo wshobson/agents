@@ -6,7 +6,9 @@
         "plugins": ["plugins/ship-mate", "plugins/block-no-verify"],
         "prompt": "/ship-mate:ship stories/verified-task.md",
         "story_file": "stories/verified-task.md",
-        "version_from": "plugins/ship-mate"
+        "version_from": "plugins/ship-mate",
+        "followups": ["/ship-mate:ship resume", "/ship-mate:ship resume"],
+        "own_writes": ["AGENTS.md"]
       }
     }
   },

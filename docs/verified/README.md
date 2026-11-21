@@ -32,11 +32,15 @@ The judge is deterministic. No model grades a run. A run passes only when every 
 | Files the case protects, such as existing tests, are unchanged | `protected_file_changed` |
 | No test file was deleted | `test_deleted` |
 | No new skip marker was added to a test file | `test_skipped` |
-| The agent never bypassed git hooks with `--no-verify` | `hook_bypassed` |
+| No shell command the agent ran skipped git hooks (`--no-verify`, or `-n` on `git commit`) | `hook_bypassed` |
 | The hidden tests pass | `hidden_tests_failed` |
 | The build passes, when the case has a build step | `build_failed` |
 | For a stop-and-ask case, no file changed | `changed_code_instead_of_asking` |
 | For a stop-and-ask case, the last message asks a question | `no_question_asked` |
+
+The hook check reads only the commands of the agent's shell tool calls, so text that quotes `--no-verify` does not count.
+
+Some free workflows pause for a person. ship-mate stops after its plan until `/ship resume`. A variant in [`tools/verified/workflows.json`](../../tools/verified/workflows.json) can list `followups`, later turns of the same session that answer those pauses. They are not sent on stop-and-ask cases, because there the pause is what is being scored. A variant can also list `own_writes`, files its own pipeline writes before any code change, such as the `AGENTS.md` that ship-mate's scan creates. The stop-and-ask check does not count those as code changes.
 
 ## How to read a row
 

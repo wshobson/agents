@@ -14,6 +14,8 @@ import json
 import os
 import subprocess
 import sys
+import uuid
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -26,6 +28,24 @@ class HarnessOutput:
     tokens_in: int | None = None
     tokens_out: int | None = None
     cost_usd: float | None = None
+
+
+def _sum(values: list[int | None]) -> int | None:
+    known = [v for v in values if v is not None]
+    return sum(known) if known else None
+
+
+def merge_turns(turns: list[HarnessOutput]) -> HarnessOutput:
+    """One output for a multi-turn run: every transcript, the last turn's final message."""
+    costs = [t.cost_usd for t in turns if t.cost_usd is not None]
+    return HarnessOutput(
+        final_message=turns[-1].final_message,
+        transcript="\n".join(t.transcript for t in turns),
+        harness_version=turns[0].harness_version,
+        tokens_in=_sum([t.tokens_in for t in turns]),
+        tokens_out=_sum([t.tokens_out for t in turns]),
+        cost_usd=sum(costs) if costs else None,
+    )
 
 
 class Harness:
@@ -46,7 +66,9 @@ class Harness:
         model: str,
         plugin_dirs: list[Path],
         budget_usd: float,
+        followups: Sequence[str] = (),
     ) -> HarnessOutput:
+        """Run the prompt, then each follow-up as a later turn of the same session."""
         raise NotImplementedError
 
 
@@ -55,8 +77,18 @@ class ClaudeCode(Harness):
     key_env = "ANTHROPIC_API_KEY"
 
     def command(
-        self, prompt: str, model: str, plugin_dirs: list[Path], budget_usd: float
+        self,
+        prompt: str,
+        model: str,
+        plugin_dirs: list[Path],
+        budget_usd: float,
+        session_id: str | None = None,
+        resume: bool = False,
     ) -> list[str]:
+        """One headless turn.
+
+        With a session_id the session is saved to disk, so a later turn can resume it.
+        """
         cmd = [
             "claude",
             "--bare",
@@ -69,10 +101,15 @@ class ClaudeCode(Harness):
             "--verbose",
             "--permission-mode",
             "bypassPermissions",
-            "--no-session-persistence",
             "--max-budget-usd",
             f"{budget_usd:.2f}",
         ]
+        if session_id is None:
+            cmd.append("--no-session-persistence")
+        elif resume:
+            cmd += ["--resume", session_id]
+        else:
+            cmd += ["--session-id", session_id]
         for plugin_dir in plugin_dirs:
             cmd += ["--plugin-dir", str(plugin_dir)]
         return cmd
@@ -84,19 +121,33 @@ class ClaudeCode(Harness):
         model: str,
         plugin_dirs: list[Path],
         budget_usd: float,
+        followups: Sequence[str] = (),
     ) -> HarnessOutput:
         self.require_key()
         version = subprocess.run(
             ["claude", "--version"], capture_output=True, text=True, check=True
         ).stdout.split()[0]
-        proc = subprocess.run(
-            self.command(prompt, model, plugin_dirs, budget_usd),
-            cwd=workspace,
-            capture_output=True,
-            text=True,
-            timeout=3600,
-        )
-        return parse_stream_json(proc.stdout, version)
+        session_id = str(uuid.uuid4()) if followups else None
+        turns: list[HarnessOutput] = []
+        spent = 0.0
+        for index, turn_prompt in enumerate([prompt, *followups]):
+            # The cap covers the whole run, so each turn gets only what is left of it.
+            remaining = budget_usd - spent
+            if index > 0 and remaining <= 0:
+                break
+            proc = subprocess.run(
+                self.command(
+                    turn_prompt, model, plugin_dirs, remaining, session_id, resume=index > 0
+                ),
+                cwd=workspace,
+                capture_output=True,
+                text=True,
+                timeout=3600,
+            )
+            turn = parse_stream_json(proc.stdout, version)
+            turns.append(turn)
+            spent += turn.cost_usd or 0.0
+        return merge_turns(turns)
 
 
 def parse_stream_json(stdout: str, version: str) -> HarnessOutput:
@@ -158,22 +209,28 @@ class ScriptHarness(Harness):
         model: str,
         plugin_dirs: list[Path],
         budget_usd: float,
+        followups: Sequence[str] = (),
     ) -> HarnessOutput:
-        proc = subprocess.run(
-            [sys.executable, str(self.script)],
-            input=prompt,
-            cwd=workspace,
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-        lines = proc.stdout.strip().splitlines()
-        return HarnessOutput(
-            final_message=lines[-1] if lines else "",
-            transcript=proc.stdout,
-            harness_version="script",
-            cost_usd=0.0,
-        )
+        turns = []
+        for turn_prompt in [prompt, *followups]:
+            proc = subprocess.run(
+                [sys.executable, str(self.script)],
+                input=turn_prompt,
+                cwd=workspace,
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+            lines = proc.stdout.strip().splitlines()
+            turns.append(
+                HarnessOutput(
+                    final_message=lines[-1] if lines else "",
+                    transcript=proc.stdout,
+                    harness_version="script",
+                    cost_usd=0.0,
+                )
+            )
+        return merge_turns(turns)
 
 
 HARNESSES: dict[str, type[Harness]] = {"claude-code": ClaudeCode}

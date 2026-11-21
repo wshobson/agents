@@ -27,7 +27,13 @@ from pathlib import Path
 from tools.verified import RUNNER_VERSION
 from tools.verified.harnesses import HARNESSES, Harness
 from tools.verified.judge import judge, prepare_workspace
-from tools.verified.models import RunResult, Visibility, load_case, result_schema_text
+from tools.verified.models import (
+    CaseKind,
+    RunResult,
+    Visibility,
+    load_case,
+    result_schema_text,
+)
 from tools.verified.report import load_results, render_markdown
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -67,6 +73,13 @@ class Variant:
     prompt: str
     version: str
     story_file: str | None = None
+    # Later turns of the same session, for workflows that pause for a human (ship-mate
+    # stops after its plan until `/ship resume`). They run only on cases that are not
+    # stop-and-ask, where answering the pause would hide the question being scored.
+    followups: tuple[str, ...] = ()
+    # Files the workflow's own pipeline writes before any code change (ship-mate's scan
+    # writes AGENTS.md). The stop-and-ask check does not count them as code changes.
+    own_writes: tuple[str, ...] = ()
 
     def setup_files(self, task: str) -> dict[str, str]:
         """Files written into the workspace before the baseline, such as a story file."""
@@ -95,6 +108,8 @@ def load_variant(workflow: str, variant: str, plugin_dir: Path | None) -> Varian
         prompt=spec["prompt"],
         version=json.loads(manifest.read_text())["version"],
         story_file=spec.get("story_file"),
+        followups=tuple(spec.get("followups", ())),
+        own_writes=tuple(spec.get("own_writes", ())),
     )
 
 
@@ -130,12 +145,26 @@ def run_one(
         workspace = Path(tmp) / "work"
         workspace.mkdir()
         baseline = prepare_workspace(case_dir, workspace, variant.setup_files(case.task))
+        followups = () if case.kind is CaseKind.STOP_AND_ASK else variant.followups
         started = time.monotonic()
         out = harness.run(
-            variant.prompt.format(task=case.task), workspace, model, variant.plugin_dirs, budget_usd
+            variant.prompt.format(task=case.task),
+            workspace,
+            model,
+            variant.plugin_dirs,
+            budget_usd,
+            followups,
         )
         wall = time.monotonic() - started
-        verdict = judge(case, case_dir, workspace, baseline, out.transcript, out.final_message)
+        verdict = judge(
+            case,
+            case_dir,
+            workspace,
+            baseline,
+            out.transcript,
+            out.final_message,
+            own_writes=variant.own_writes,
+        )
     return RunResult(
         workflow=f"{variant.workflow}/{variant.name}",
         workflow_version=variant.version,
