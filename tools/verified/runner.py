@@ -91,6 +91,8 @@ class Variant:
 def load_variant(workflow: str, variant: str, plugin_dir: Path | None) -> Variant:
     """A named variant from workflows.json, or a Verified build given by --plugin-dir."""
     if plugin_dir is not None:
+        # Resolve now: the harness runs from the temporary workspace, not the launch directory.
+        plugin_dir = plugin_dir.resolve()
         manifest = json.loads((plugin_dir / ".claude-plugin" / "plugin.json").read_text())
         return Variant(
             workflow=workflow,
@@ -231,8 +233,12 @@ def cmd_run(args: argparse.Namespace) -> int:
                     return 0
                 budget = min(remaining, DEFAULT_PER_RUN_CAP_USD)
                 result = run_one(harness, variant, case_dir, visibility, model, budget)
-                # With no reported cost, count the whole budget the run was allowed.
-                spent += result.cost_usd if result.cost_usd is not None else budget
+                # With no reported cost, or $0 on a harness error, count the whole budget the
+                # run was allowed.
+                unknown = result.cost_usd is None or (
+                    HARNESS_ERROR in result.failed_checks and result.cost_usd == 0
+                )
+                spent += budget if unknown else (result.cost_usd or 0.0)
                 # The start time keeps a second run on the same day from overwriting the first.
                 stamp = result.run_at.replace(":", "")
                 name = (

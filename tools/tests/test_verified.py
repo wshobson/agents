@@ -12,7 +12,13 @@ from pathlib import Path
 
 import pytest
 from tools.verified import runner
-from tools.verified.harnesses import ClaudeCode, ScriptHarness, parse_stream_json
+from tools.verified.harnesses import (
+    ClaudeCode,
+    HarnessOutput,
+    ScriptHarness,
+    parse_stream_json,
+    unknown_cost,
+)
 from tools.verified.judge import changes_test_runner, hook_bypassed
 from tools.verified.models import CaseKind, RunResult, Visibility, load_case, result_schema_text
 from tools.verified.report import interval, render_markdown
@@ -163,6 +169,10 @@ def test_hook_bypass_in_transcript_fails(tmp_path: Path) -> None:
         "git commit -q -n -m fix",
         "cd repo && git commit -qn -m 'fix'",
         "git push --no-verify",
+        "HUSKY=0 git commit --no-verify -m x",
+        "GIT_EDITOR=true git commit -n",
+        "env git commit -n -m x",
+        "git -c core.hooksPath=/dev/null commit -m x",
     ],
 )
 def test_hook_bypass_is_caught(command: str) -> None:
@@ -260,7 +270,10 @@ def test_harness_state_is_not_a_code_change(tmp_path: Path) -> None:
 
 def test_ship_mate_resumes_after_its_plan_pause(tmp_path: Path) -> None:
     variant = runner.load_variant("ship-feature", "free-ship-mate", None)
-    assert variant.followups == ("/ship-mate:ship resume", "/ship-mate:ship resume")
+    assert len(variant.followups) == 3
+    # Each follow-up resumes and also answers any open clarifying question.
+    assert all(f.startswith("/ship-mate:ship resume. ") for f in variant.followups)
+    assert all("plan is approved" in f for f in variant.followups)
     log = tmp_path / "prompts.log"
     body = f"""
         import sys
@@ -465,3 +478,22 @@ def test_load_tests_hook_in_test_package_fails(tmp_path: Path) -> None:
 )
 def test_changes_test_runner(rel: str, expected: bool) -> None:
     assert changes_test_runner(rel) is expected
+
+
+def test_unknown_cost() -> None:
+    def out(cost: float | None, error: str | None) -> HarnessOutput:
+        return HarnessOutput("", "", "v", cost_usd=cost, error=error)
+
+    assert unknown_cost(out(None, None))
+    assert unknown_cost(out(0.0, "exit 1"))
+    assert not unknown_cost(out(0.0, None))
+    assert not unknown_cost(out(0.3, "exit 1"))
+
+
+def test_plugin_dir_is_resolved(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    build = tmp_path / "build" / ".claude-plugin"
+    build.mkdir(parents=True)
+    (build / "plugin.json").write_text('{"name": "v", "version": "1.0.0"}')
+    monkeypatch.chdir(tmp_path)
+    variant = runner.load_variant("debug", "verified", Path("build"))
+    assert variant.plugin_dirs == [tmp_path / "build"]

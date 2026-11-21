@@ -43,6 +43,8 @@ SKIP_MARKERS = re.compile(
 )
 
 SHELL_SEPARATORS = {"&&", "||", ";", "|", "&", "\n", ";;", "|&"}
+ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*=.*")
+COMMAND_WRAPPERS = {"env", "command", "sudo", "nohup", "time"}
 # git commit options whose value is the next word, so that word is not read as a flag.
 COMMIT_VALUE_FLAGS = {"-m", "-F", "-C", "-c", "-t"}
 
@@ -104,9 +106,12 @@ def _segments(command: str) -> Iterator[list[str]]:
 
 
 def _bypasses_hooks(words: list[str]) -> bool:
+    # Drop leading variable assignments and wrappers: HUSKY=0 git ..., env git ...
+    while words and (ASSIGNMENT.fullmatch(words[0]) or words[0] in COMMAND_WRAPPERS):
+        words = words[1:]
     if not words or words[0] != "git":
         return False
-    if "--no-verify" in words:
+    if "--no-verify" in words or any("core.hookspath" in w.lower() for w in words):
         return True
     if "commit" not in words:
         return False

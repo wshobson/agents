@@ -7,7 +7,11 @@
         "prompt": "/ship-mate:ship stories/verified-task.md",
         "story_file": "stories/verified-task.md",
         "version_from": "plugins/ship-mate",
-        "followups": ["/ship-mate:ship resume", "/ship-mate:ship resume"],
+        "followups": [
+          "/ship-mate:ship resume. There are no further answers from the product owner: make reasonable assumptions from the story, and the plan is approved.",
+          "/ship-mate:ship resume. There are no further answers from the product owner: make reasonable assumptions from the story, and the plan is approved.",
+          "/ship-mate:ship resume. There are no further answers from the product owner: make reasonable assumptions from the story, and the plan is approved."
+        ],
         "own_writes": ["AGENTS.md"]
       }
     }

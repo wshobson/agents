@@ -35,6 +35,11 @@ class HarnessOutput:
     budget_stop: bool = False
 
 
+def unknown_cost(out: HarnessOutput) -> bool:
+    """True when the reported cost can't be trusted as what the run spent."""
+    return out.cost_usd is None or (out.error is not None and out.cost_usd == 0)
+
+
 def _sum(values: list[int | None]) -> int | None:
     known = [v for v in values if v is not None]
     return sum(known) if known else None
@@ -164,8 +169,9 @@ class ClaudeCode(Harness):
                 break
             turn = parse_stream_json(proc.stdout, version, proc.returncode)
             turns.append(turn)
-            # A turn that reports no cost may have spent all it was allowed.
-            spent += turn.cost_usd if turn.cost_usd is not None else remaining
+            # A turn that reports no cost, or an errored turn that reports zero (a crashed
+            # session may), may have spent all it was allowed.
+            spent += remaining if unknown_cost(turn) else turn.cost_usd or 0.0
             if turn.error or turn.budget_stop:
                 break
         return merge_turns(turns)
