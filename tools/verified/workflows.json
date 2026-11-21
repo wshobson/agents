@@ -4,7 +4,8 @@
     "variants": {
       "free-ship-mate": {
         "plugins": ["plugins/ship-mate", "plugins/block-no-verify"],
-        "prompt": "/ship-mate:ship {task}",
+        "prompt": "/ship-mate:ship stories/verified-task.md",
+        "story_file": "stories/verified-task.md",
         "version_from": "plugins/ship-mate"
       }
     }

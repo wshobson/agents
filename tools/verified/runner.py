@@ -41,6 +41,23 @@ SCHEMA_PATH = REPO_ROOT / "scorecards" / "result.schema.json"
 ESTIMATED_USD_PER_RUN = {"opus": 0.80, "sonnet": 0.40, "haiku": 0.02}
 DEFAULT_PER_RUN_CAP_USD = 2.00
 
+# Some free workflows, such as ship-mate, start from a story file rather than a sentence.
+STORY_TEMPLATE = """# Verified task
+
+## Description
+
+{task}
+
+## Acceptance criteria
+
+- The request in the description is met.
+- The full test suite passes.
+
+## Tasks
+
+- [ ] {task}
+"""
+
 
 @dataclass
 class Variant:
@@ -49,6 +66,13 @@ class Variant:
     plugin_dirs: list[Path]
     prompt: str
     version: str
+    story_file: str | None = None
+
+    def setup_files(self, task: str) -> dict[str, str]:
+        """Files written into the workspace before the baseline, such as a story file."""
+        if self.story_file is None:
+            return {}
+        return {self.story_file: STORY_TEMPLATE.format(task=task)}
 
 
 def load_variant(workflow: str, variant: str, plugin_dir: Path | None) -> Variant:
@@ -70,6 +94,7 @@ def load_variant(workflow: str, variant: str, plugin_dir: Path | None) -> Varian
         plugin_dirs=[REPO_ROOT / p for p in spec["plugins"]],
         prompt=spec["prompt"],
         version=json.loads(manifest.read_text())["version"],
+        story_file=spec.get("story_file"),
     )
 
 
@@ -104,7 +129,7 @@ def run_one(
     with tempfile.TemporaryDirectory(prefix=f"verified-{case.id}-") as tmp:
         workspace = Path(tmp) / "work"
         workspace.mkdir()
-        baseline = prepare_workspace(case_dir, workspace)
+        baseline = prepare_workspace(case_dir, workspace, variant.setup_files(case.task))
         started = time.monotonic()
         out = harness.run(
             variant.prompt.format(task=case.task), workspace, model, variant.plugin_dirs, budget_usd

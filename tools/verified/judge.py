@@ -20,7 +20,16 @@ from pathlib import Path
 
 from tools.verified.models import CaseKind, CaseSpec
 
-IGNORED_DIRS = {".git", "__pycache__", ".pytest_cache", "node_modules", ".venv", ".mypy_cache"}
+# .claude holds harness and pipeline state (for example ship-mate's state.json), not code.
+IGNORED_DIRS = {
+    ".git",
+    ".claude",
+    "__pycache__",
+    ".pytest_cache",
+    "node_modules",
+    ".venv",
+    ".mypy_cache",
+}
 
 TEST_FILE = re.compile(r"(^|/)(test_[^/]*\.py|[^/]*_test\.py|[^/]*\.(test|spec)\.[cm]?[jt]sx?)$")
 
@@ -67,11 +76,21 @@ def count_skips(root: Path, files: dict[str, str]) -> int:
     return total
 
 
-def prepare_workspace(case_dir: Path, workspace: Path) -> dict[str, str]:
-    """Copy the case's starting repo into an empty workspace and return its baseline."""
+def prepare_workspace(
+    case_dir: Path, workspace: Path, setup_files: dict[str, str] | None = None
+) -> dict[str, str]:
+    """Copy the case's starting repo into an empty workspace and return its baseline.
+
+    `setup_files` (path to text) are written before the baseline commit, so a workflow's
+    own inputs, such as a story file, do not count as changes made by the agent.
+    """
     if workspace.exists() and any(workspace.iterdir()):
         raise ValueError(f"workspace {workspace} is not empty")
     shutil.copytree(case_dir / "repo", workspace, dirs_exist_ok=True)
+    for rel, text in (setup_files or {}).items():
+        target = workspace / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text, encoding="utf-8")
     git = ["git", "-C", str(workspace)]
     subprocess.run([*git, "init", "-q", "-b", "main"], check=True)
     subprocess.run([*git, "add", "-A"], check=True)

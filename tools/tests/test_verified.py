@@ -192,6 +192,31 @@ def test_claude_code_command_forces_api_key_auth() -> None:
     assert cmd[cmd.index("--plugin-dir") + 1] == "plugins/ship-mate"
 
 
+def test_story_file_is_part_of_the_baseline(tmp_path: Path) -> None:
+    variant = runner.load_variant("ship-feature", "free-ship-mate", None)
+    assert variant.prompt == "/ship-mate:ship stories/verified-task.md"
+    files = variant.setup_files("Add a flag.")
+    assert "- [ ] Add a flag." in files["stories/verified-task.md"]
+    harness = ScriptHarness(write_script(tmp_path, QUESTION))
+    case_dir = PUBLIC / "db-refund-window-conflict"
+    result = runner.run_one(harness, variant, case_dir, Visibility.PUBLIC, "none", 0.0)
+    assert "changed_code_instead_of_asking" not in result.failed_checks
+
+
+def test_harness_state_is_not_a_code_change(tmp_path: Path) -> None:
+    body = (
+        (
+            "from pathlib import Path\n"
+            'Path(".claude/pipeline").mkdir(parents=True)\n'
+            'Path(".claude/pipeline/state.json").write_text("{}")\n'
+        )
+        + QUESTION
+        + "\n"
+    )
+    result = run_case(tmp_path, "db-refund-window-conflict", body)
+    assert result.passed, result.failed_checks
+
+
 def test_estimate() -> None:
     runs, usd = runner.estimate(["sonnet", "haiku"], cases=6, reps=5)
     assert runs == 60
