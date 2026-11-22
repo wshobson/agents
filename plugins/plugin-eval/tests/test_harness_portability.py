@@ -75,6 +75,23 @@ class TestSkillFindings:
         flags = [f.flag for f in detect_skill_findings(skill)]
         assert "CLAUDE_TOOL_PROSE" in flags
 
+    def test_lowercase_tool_refs_no_false_positive(self, tmp_path: Path):
+        """The lowercase spellings docs/authoring.md prescribes must NOT fire.
+
+        "Use `read`", "call `bash`" and "the `grep` tool" are the portable forms the
+        authoring guide tells authors to write, so a finding that calls them CamelCase
+        penalises exactly the fix it asks for.
+        """
+        skill_dir = _make_skill(
+            tmp_path,
+            "Use `read` to open the file. Call `bash` to run tests. The `grep` tool "
+            "searches. Invoke `glob` first, then `edit`.",
+        )
+        skill = parse_skill(skill_dir)
+        flags = [f.flag for f in detect_skill_findings(skill)]
+        assert "CLAUDE_TOOL_REFS" not in flags
+        assert score_skill_portability(skill) == 1.0
+
     def test_tool_prose_no_false_positive_on_lowercase_words(self, tmp_path: Path):
         """`the bash tool` (shell, lowercase) must NOT fire CLAUDE_TOOL_PROSE."""
         skill_dir = _make_skill(
@@ -130,3 +147,14 @@ class TestAgentFindings:
         agent = parse_agent(agent_file)
         flags = [f.flag for f in detect_agent_findings(agent)]
         assert "CLAUDE_TOOL_REFS" in flags
+
+    def test_lowercase_tool_refs_in_agent_body_no_false_positive(self, tmp_path: Path):
+        agent_file = _make_agent(
+            tmp_path,
+            "name: my-agent\ndescription: Use when delegating.\nmodel: inherit",
+            body="Use `read` and `glob` to explore the filesystem.",
+        )
+        agent = parse_agent(agent_file)
+        flags = [f.flag for f in detect_agent_findings(agent)]
+        assert "CLAUDE_TOOL_REFS" not in flags
+        assert score_agent_portability(agent) == 1.0
