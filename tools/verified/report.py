@@ -38,7 +38,9 @@ def render_markdown(results: list[RunResult]) -> str:
         return header + "| No runs yet | | | | | | | |\n"
     groups: dict[tuple[str, str, str, str, str], list[RunResult]] = defaultdict(list)
     for r in results:
-        groups[(r.workflow, r.workflow_version, r.harness, r.harness_version, r.model)].append(r)
+        # Show the exact model next to an alias, so a row says which model really ran.
+        model = r.model if not r.model_id or r.model_id == r.model else f"{r.model} ({r.model_id})"
+        groups[(r.workflow, r.workflow_version, r.harness, r.harness_version, model)].append(r)
     rows = []
     for (workflow, version, harness, harness_version, model), all_runs in sorted(groups.items()):
         runs = [r for r in all_runs if HARNESS_ERROR not in r.failed_checks]

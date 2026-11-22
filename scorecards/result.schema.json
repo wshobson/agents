@@ -66,6 +66,19 @@
       "title": "Model",
       "type": "string"
     },
+    "model_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The exact model the harness reported running, such as claude-haiku-5-5, when it reported one. `model` is what the runner was asked for and may be an alias.",
+      "title": "Model Id"
+    },
     "passed": {
       "title": "Passed",
       "type": "boolean"

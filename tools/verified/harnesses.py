@@ -36,6 +36,9 @@ class HarnessOutput:
     # The turn ran past TURN_TIMEOUT_SECONDS. Usually the workflow's fault (a loop, a
     # blocking command), so it is scored as a failed run, not left out as a harness error.
     timed_out: bool = False
+    # The exact model the harness says it ran, such as claude-haiku-5-5. A model alias like
+    # "haiku" can point at a newer model after a harness release, so results keep both.
+    model_id: str | None = None
 
 
 def unknown_cost(out: HarnessOutput) -> bool:
@@ -62,11 +65,15 @@ def merge_turns(turns: list[HarnessOutput]) -> HarnessOutput:
         error=next((t.error for t in turns if t.error), None),
         budget_stop=turns[-1].budget_stop,
         timed_out=any(t.timed_out for t in turns),
+        model_id=next((t.model_id for t in turns if t.model_id), None),
     )
 
 
 TURN_TIMEOUT_SECONDS = 3600
 BUDGET_STOP = "error_max_budget_usd"
+# Every case is an offline fixture repo, so web search and fetch can only add tokens and
+# outside content to a run. They are turned off for every variant alike.
+DISALLOWED_TOOLS = ("WebSearch", "WebFetch")
 
 
 class Harness:
@@ -122,6 +129,8 @@ class ClaudeCode(Harness):
             "--verbose",
             "--permission-mode",
             "bypassPermissions",
+            "--disallowedTools",
+            *DISALLOWED_TOOLS,
             "--max-budget-usd",
             f"{budget_usd:.2f}",
         ]
@@ -201,19 +210,28 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
     are visible to the judge. Token and cost fields are read from the final result event
     when present and left empty when not.
 
+    The model id is read from the session's init event.
+
     The output's error is set when there is no result event, or when the result or the exit
     code reports an error other than reaching the --max-budget-usd cap.
     """
     final_message = ""
     tokens_in = tokens_out = None
     cost = None
+    model_id = None
     result_event: dict | None = None
     for line in stdout.splitlines():
         try:
             event = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if not isinstance(event, dict) or event.get("type") != "result":
+        if not isinstance(event, dict):
+            continue
+        if event.get("type") == "system" and event.get("subtype") == "init":
+            if isinstance(event.get("model"), str) and model_id is None:
+                model_id = event["model"]
+            continue
+        if event.get("type") != "result":
             continue
         result_event = event
         final_message = str(event.get("result") or "")
@@ -248,6 +266,7 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
         cost_usd=cost,
         error=error,
         budget_stop=subtype == BUDGET_STOP,
+        model_id=model_id,
     )
 
 

@@ -672,3 +672,91 @@ def test_timed_out_run_is_a_scored_failure(tmp_path: Path) -> None:
         Slow(write_script(tmp_path, NOOP)), variant, case_dir, Visibility.PUBLIC, "none", 0.0
     )
     assert result.failed_checks == ["timed_out"]
+
+
+# --------------------------------------------------------------------------- cost controls
+
+
+def test_claude_code_turns_off_web_tools() -> None:
+    cmd = ClaudeCode().command("hi", "haiku", [Path("plugins/ship-mate")], 0.25)
+    i = cmd.index("--disallowedTools")
+    assert cmd[i + 1 : i + 3] == ["WebSearch", "WebFetch"]
+    # The next token is an option, so the variadic flag takes only the two tool names.
+    assert cmd[i + 3].startswith("--")
+
+
+def test_parse_stream_json_reads_the_model_id() -> None:
+    lines = [
+        json.dumps({"type": "system", "subtype": "init", "model": "claude-haiku-5-5"}),
+        _result_line(subtype="success"),
+    ]
+    assert parse_stream_json("\n".join(lines), "v").model_id == "claude-haiku-5-5"
+    assert parse_stream_json(_result_line(subtype="success"), "v").model_id is None
+
+
+def test_merged_turns_keep_the_model_id() -> None:
+    first = HarnessOutput("a", "", "v", cost_usd=0.01, model_id="claude-haiku-5-5")
+    second = HarnessOutput("b", "", "v", cost_usd=0.01)
+    assert merge_turns([first, second]).model_id == "claude-haiku-5-5"
+
+
+def test_estimate_matches_full_model_ids() -> None:
+    assert runner.estimated_usd("claude-haiku-5-5") == runner.estimated_usd("haiku")
+    assert runner.estimated_usd("claude-sonnet-5-5") == runner.estimated_usd("sonnet")
+    assert runner.estimated_usd("some-other-model") is None
+    _, usd = runner.estimate(["claude-haiku-5-5"], cases=6, reps=5)
+    assert usd == pytest.approx(0.6)
+
+
+def test_report_shows_the_model_id_next_to_an_alias() -> None:
+    result = RunResult(
+        workflow="debug/free-error-debugging",
+        workflow_version="1.2.2",
+        harness="claude-code",
+        harness_version="2.1.330",
+        model="haiku",
+        model_id="claude-haiku-5-5",
+        case_id="db-pagination-last-page",
+        case_visibility=Visibility.PUBLIC,
+        passed=True,
+        wall_seconds=60,
+        run_at="2026-12-01T00:00:00Z",
+        runner_version="0.2.0",
+    )
+    assert "| haiku (claude-haiku-5-5) |" in render_markdown([result])
+
+
+class _BudgetRecorder:
+    """A harness that records the budget each run was given and spends a cent."""
+
+    name = "recorder"
+    key_env = None
+
+    def __init__(self) -> None:
+        self.budgets: list[float] = []
+
+    def require_key(self) -> None:
+        return None
+
+    def run(self, prompt, workspace, model, plugin_dirs, budget_usd, followups=()):  # noqa: ANN001
+        self.budgets.append(budget_usd)
+        return HarnessOutput("I looked at it.", "", "test", cost_usd=0.01, model_id=model)
+
+
+def test_per_run_cap_limits_each_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    recorder = _BudgetRecorder()
+    monkeypatch.setitem(runner.HARNESSES, "claude-code", lambda: recorder)
+    args = ["run", "--workflow", "debug", "--variant", "free-error-debugging", "--model", "haiku"]
+    code = runner.main(
+        [*args, "--reps", "1", "--execute", "--max-usd", "5", "--per-run-usd", "0.25"]
+        + ["--out", str(tmp_path)]
+    )
+    assert code == 0
+    assert recorder.budgets and all(b == pytest.approx(0.25) for b in recorder.budgets)
+    saved = [RunResult.model_validate_json(p.read_text()) for p in tmp_path.rglob("*.json")]
+    assert {r.model_id for r in saved} == {"haiku"}
+
+
+def test_per_run_cap_must_be_positive() -> None:
+    args = ["run", "--workflow", "debug", "--variant", "free-error-debugging", "--model", "haiku"]
+    assert runner.main([*args, "--execute", "--max-usd", "1", "--per-run-usd", "0"]) == 2

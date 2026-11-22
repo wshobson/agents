@@ -80,6 +80,16 @@ uv run --project plugins/plugin-eval python -m tools.verified.runner run \
   --execute --max-usd 10
 ```
 
+`--max-usd` caps the whole command. `--per-run-usd` caps each run (default $2.00), so one run that loops can't use most of the total. Claude Code's web search and web fetch tools are turned off for every run, because every case is an offline repository.
+
+A model alias such as `haiku` points at Claude Code's latest model of that family, which can change with a Claude Code release. Each result records the alias in `model` and the exact model Claude Code reported in `model_id`, and the table shows both. To pin an alias, set Claude Code's own variable for it, for example `ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-haiku-5-5`. A cheap first pass on one rep shows the real cost per run before a full run:
+
+```bash
+uv run --project plugins/plugin-eval python -m tools.verified.runner run \
+  --workflow debug --variant free-error-debugging --model haiku --reps 1 \
+  --execute --max-usd 0.50 --per-run-usd 0.25
+```
+
 Turn the results into a table:
 
 ```bash

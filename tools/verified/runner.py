@@ -41,11 +41,22 @@ PUBLIC_CASES = REPO_ROOT / "evals" / "verified" / "fixtures" / "public"
 WORKFLOWS = Path(__file__).with_name("workflows.json")
 SCHEMA_PATH = REPO_ROOT / "scorecards" / "result.schema.json"
 
-# Rough cost of one agent run on a small fixture, in US dollars. These are planning
-# estimates (about 600k input tokens, mostly cache reads, and 20k output tokens), not
-# measurements. Replace them with measured medians after the first runs.
+# Rough cost of one agent run on a small fixture, in US dollars, by model family. These are
+# planning estimates (about 600k input tokens, mostly cache reads, and 20k output tokens),
+# not measurements. Replace them with measured medians after the first runs.
 ESTIMATED_USD_PER_RUN = {"opus": 0.80, "sonnet": 0.40, "haiku": 0.02}
+# The most one run may spend unless --per-run-usd says otherwise.
 DEFAULT_PER_RUN_CAP_USD = 2.00
+
+
+def estimated_usd(model: str) -> float | None:
+    """The planning estimate for a model alias or full id, such as haiku or claude-haiku-5-5."""
+    name = model.lower()
+    for family, usd in ESTIMATED_USD_PER_RUN.items():
+        if family in name:
+            return usd
+    return None
+
 
 # Some free workflows, such as ship-mate, start from a story file rather than a sentence.
 STORY_TEMPLATE = """# Verified task
@@ -135,7 +146,8 @@ def find_cases(
 
 def estimate(models: list[str], cases: int, reps: int) -> tuple[int, float]:
     runs = len(models) * cases * reps
-    usd = sum(ESTIMATED_USD_PER_RUN.get(m, max(ESTIMATED_USD_PER_RUN.values())) for m in models)
+    fallback = max(ESTIMATED_USD_PER_RUN.values())
+    usd = sum(estimated_usd(m) or fallback for m in models)
     return runs, usd * cases * reps
 
 
@@ -188,6 +200,7 @@ def run_one(
         harness=harness.name,
         harness_version=out.harness_version,
         model=model,
+        model_id=out.model_id,
         case_id=case.id,
         case_visibility=visibility,
         passed=not failed_checks,
@@ -227,6 +240,9 @@ def cmd_run(args: argparse.Namespace) -> int:
     if args.max_usd is None or args.max_usd <= 0:
         print("--execute needs a positive --max-usd cap.", file=sys.stderr)
         return 2
+    if args.per_run_usd <= 0:
+        print("--per-run-usd must be positive.", file=sys.stderr)
+        return 2
     harness = HARNESSES[args.harness]()
     harness.require_key()
     variant = load_variant(args.workflow, args.variant, args.plugin_dir)
@@ -235,14 +251,15 @@ def cmd_run(args: argparse.Namespace) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     spent = 0.0
     for model in args.model:
-        per_run = ESTIMATED_USD_PER_RUN.get(model, DEFAULT_PER_RUN_CAP_USD)
+        # Don't start a run the remaining cap probably can't pay for.
+        per_run = min(estimated_usd(model) or DEFAULT_PER_RUN_CAP_USD, args.per_run_usd)
         for case_dir, visibility in cases:
             for rep in range(args.reps):
                 remaining = args.max_usd - spent
                 if remaining < per_run:
                     print(f"Stopping: ${spent:.2f} spent, cap ${args.max_usd:.2f}.")
                     return 0
-                budget = min(remaining, DEFAULT_PER_RUN_CAP_USD)
+                budget = min(remaining, args.per_run_usd)
                 result = run_one(harness, variant, case_dir, visibility, model, budget)
                 # With no reported cost, or $0 on a harness error, count the whole budget the
                 # run was allowed.
@@ -298,6 +315,12 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "run":
             p.add_argument("--execute", action="store_true")
             p.add_argument("--max-usd", type=float)
+            p.add_argument(
+                "--per-run-usd",
+                type=float,
+                default=DEFAULT_PER_RUN_CAP_USD,
+                help=f"Most one run may spend (default {DEFAULT_PER_RUN_CAP_USD:.2f}).",
+            )
             p.add_argument("--out", type=Path, default=REPO_ROOT / "scorecards" / "runs")
         p.set_defaults(func=cmd_plan if name == "plan" else cmd_run)
 
