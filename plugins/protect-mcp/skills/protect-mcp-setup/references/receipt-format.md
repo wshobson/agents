@@ -1,4 +1,4 @@
-# Receipt format written by protect-mcp 0.32.4
+# Receipt format written by protect-mcp 0.32.5
 
 The hook appends one JSON object per line to the configured `receipts.jsonl`.
 The signer uses a payload/signature envelope:

@@ -8,6 +8,12 @@ set -uo pipefail
 
 POLICY="${PROTECT_MCP_POLICY:-./protect.cedar}"
 if [ ! -f "$POLICY" ]; then
+  # A policy that was named and is missing denies: a typo in PROTECT_MCP_POLICY
+  # must not turn the gate off. Only the unset default allows, with a warning.
+  if [ -n "${PROTECT_MCP_POLICY:-}" ]; then
+    echo "protect-mcp: PROTECT_MCP_POLICY is $POLICY, which does not exist; denying (fail-closed)." >&2
+    exit 2
+  fi
   echo "protect-mcp: no policy file at $POLICY, so every tool call is allowed. Create it or set PROTECT_MCP_POLICY to enforce." >&2
   exit 0
 fi
@@ -30,7 +36,7 @@ if [ -z "$tool" ]; then
   exit 2
 fi
 
-npx protect-mcp@0.32.4 evaluate --policy "$POLICY" --tool "$tool" --input "$input"
+npx protect-mcp@0.32.5 evaluate --policy "$POLICY" --tool "$tool" --input "$input"
 rc=$?
 case "$rc" in
   0|2) exit "$rc" ;;

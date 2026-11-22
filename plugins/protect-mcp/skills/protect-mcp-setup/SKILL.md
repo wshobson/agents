@@ -45,10 +45,10 @@ claude plugin install wshobson/agents/protect-mcp
 
 # 2. Create ./protect.cedar (see below). The plugin installs the hooks.
 
-# 3. Create the signing key once (protect-mcp 0.32.4 sign does not create it).
+# 3. Create the signing key once (protect-mcp 0.32.5 sign does not create it).
 #    An existing key is never replaced. See references/receipt-format.md to rotate.
 if [ ! -e ./protect-mcp.key ]; then
-  d=$(mktemp -d) && npx protect-mcp@0.32.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+  d=$(mktemp -d) && npx protect-mcp@0.32.5 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
 fi
 chmod 600 ./protect-mcp.key
 echo "/protect-mcp.key" >> .gitignore
@@ -91,8 +91,9 @@ set `TOOL_NAME` or `TOOL_INPUT` variables. `evaluate.sh` reads `tool_name` and
 `tool_name` only, preserving tool-only receipt coverage. The signing hook
 keeps stdout empty, checks the CLI summary, and reports signer failures on stderr. Set
 `PROTECT_MCP_POLICY`, `PROTECT_MCP_RECEIPTS`, and `PROTECT_MCP_KEY` to change the
-default paths. When the policy file is missing, the PreToolUse hook prints a
-warning to stderr and allows the call.
+default paths. When `PROTECT_MCP_POLICY` is unset and `./protect.cedar` is missing, the
+PreToolUse hook prints a warning to stderr and allows the call. When
+`PROTECT_MCP_POLICY` names a file that does not exist, the hook denies the call.
 
 ### What each hook does
 

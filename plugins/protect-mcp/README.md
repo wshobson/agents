@@ -28,11 +28,11 @@ claude plugin install wshobson/agents/protect-mcp
 # 2. Create a Cedar policy file at ./protect.cedar
 #    (see skills/protect-mcp-setup/SKILL.md for examples)
 
-# 3. Create the signing key once (protect-mcp 0.32.4 sign does not create it).
+# 3. Create the signing key once (protect-mcp 0.32.5 sign does not create it).
 #    Installing the plugin already registers the hooks. An existing key is
 #    never replaced. To rotate it, move the key and receipts.jsonl to a secure archive first.
 if [ ! -e ./protect-mcp.key ]; then
-  d=$(mktemp -d) && npx protect-mcp@0.32.4 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
+  d=$(mktemp -d) && npx protect-mcp@0.32.5 init --dir "$d" && mv "$d/keys/gateway.json" ./protect-mcp.key
 fi
 chmod 600 ./protect-mcp.key
 echo "/protect-mcp.key" >> .gitignore
@@ -201,7 +201,7 @@ chmod 600 ./protect-mcp.key
 ```
 
 Keep the existing key and receipts; the setup command does not replace the key.
-New keys use `protect-mcp@0.32.4 init`, which no longer sends the older
+New keys use `protect-mcp@0.32.5 init`, which no longer sends the older
 initializer's opt-out installation ping.
 
 ## Disclosure

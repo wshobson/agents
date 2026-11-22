@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "protect-mcp 0.32.4 signed receipt",
+  "title": "protect-mcp 0.32.5 signed receipt",
   "description": "Payload/signature envelope written by the pinned signer; no legacy v2 envelope fields.",
   "type": "object",
   "required": [
