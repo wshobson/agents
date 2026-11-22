@@ -25,7 +25,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from tools.verified import RUNNER_VERSION
-from tools.verified.harnesses import HARNESSES, Harness
+from tools.verified.harnesses import HARNESSES, Harness, budget_arg
 from tools.verified.judge import judge, prepare_workspace
 from tools.verified.models import (
     CaseKind,
@@ -240,8 +240,8 @@ def cmd_run(args: argparse.Namespace) -> int:
     if args.max_usd is None or args.max_usd <= 0:
         print("--execute needs a positive --max-usd cap.", file=sys.stderr)
         return 2
-    if args.per_run_usd <= 0:
-        print("--per-run-usd must be positive.", file=sys.stderr)
+    if float(budget_arg(args.per_run_usd)) <= 0:
+        print("--per-run-usd must be at least 0.0001.", file=sys.stderr)
         return 2
     harness = HARNESSES[args.harness]()
     harness.require_key()

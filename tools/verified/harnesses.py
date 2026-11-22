@@ -155,13 +155,14 @@ class ClaudeCode(Harness):
         followups: Sequence[str] = (),
     ) -> HarnessOutput:
         self.require_key()
+        if float(budget_arg(budget_usd)) <= 0:
+            raise ValueError(f"budget {budget_usd} rounds to $0.0000; it must be at least $0.0001")
         version = subprocess.run(
             ["claude", "--version"], capture_output=True, text=True, check=True
         ).stdout.split()[0]
         session_id = str(uuid.uuid4()) if followups else None
         turns: list[HarnessOutput] = []
         spent = 0.0
-        last_total: float | None = None
         for index, turn_prompt in enumerate([prompt, *followups]):
             # The cap covers the whole run, so each turn gets only what is left of it.
             remaining = budget_usd - spent
@@ -187,11 +188,6 @@ class ClaudeCode(Harness):
             turn = parse_stream_json(proc.stdout, version, proc.returncode)
             if turn.error:
                 turn.error = with_stderr(turn.error, proc.stderr)
-            reported = turn.cost_usd
-            if index > 0:
-                turn.cost_usd = own_cost(reported, last_total)
-            if reported is not None:
-                last_total = reported
             turns.append(turn)
             # A turn that reports no cost, or an errored turn that reports zero (a crashed
             # session may), may have spent all it was allowed.
@@ -207,21 +203,6 @@ def budget_arg(usd: float) -> str:
     return f"{max(math.floor(usd * 10_000), 0) / 10_000:.4f}"
 
 
-def own_cost(reported: float | None, previous_total: float | None) -> float | None:
-    """What a resumed turn spent by itself.
-
-    A resumed Claude Code session reports total_cost_usd as the session's running total,
-    continuing from the total its transcript saved, so the earlier turns are in it again.
-    The turn's own spend is the increase over the previous turn's total. A total below the
-    previous one means the session started counting afresh, so it is the turn's own spend.
-    --max-budget-usd, by contrast, counts only the spend since that process started, so the
-    runner still passes it what is left of the run's cap.
-    """
-    if reported is None or previous_total is None or reported < previous_total:
-        return reported
-    return reported - previous_total
-
-
 ERROR_DETAIL_CHARS = 500
 
 
@@ -229,6 +210,20 @@ def with_stderr(error: str, stderr: str | None) -> str:
     """Add the end of the process's stderr to an error, so the result shows the cause."""
     tail = (stderr or "").strip()[-ERROR_DETAIL_CHARS:]
     return f"{error}: {tail}" if tail else error
+
+
+def process_cost(usage: object) -> float | None:
+    """The cost in model_usage_since_last_result: what this process spent since its last result.
+
+    None when the field is missing or any entry lacks a numeric costUSD, so a partial figure is
+    never taken for the whole.
+    """
+    if not isinstance(usage, dict) or not usage:
+        return None
+    costs = [entry.get("costUSD") if isinstance(entry, dict) else None for entry in usage.values()]
+    if not all(isinstance(c, (int, float)) for c in costs):
+        return None
+    return float(sum(costs))
 
 
 def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> HarnessOutput:
@@ -246,6 +241,7 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
     final_message = ""
     tokens_in = tokens_out = None
     cost = None
+    process_spend: float | None = None
     model_id = None
     result_event: dict | None = None
     for line in stdout.splitlines():
@@ -275,6 +271,9 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
                 tokens_out = usage["output_tokens"]
         if isinstance(event.get("total_cost_usd"), (int, float)):
             cost = float(event["total_cost_usd"])
+        since_last = process_cost(event.get("model_usage_since_last_result"))
+        if since_last is not None:
+            process_spend = (process_spend or 0.0) + since_last
     error = None
     subtype = str((result_event or {}).get("subtype") or "")
     if result_event is None:
@@ -291,7 +290,10 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
         harness_version=version,
         tokens_in=tokens_in,
         tokens_out=tokens_out,
-        cost_usd=cost,
+        # A resumed session's total_cost_usd includes the turns before it, so it would count
+        # them again. The per-process usage, when Claude Code reports it, is this turn alone.
+        # Without it the total is kept: that can stop a multi-turn run early, never late.
+        cost_usd=process_spend if process_spend is not None else cost,
         error=error,
         budget_stop=subtype == BUDGET_STOP,
         model_id=model_id,

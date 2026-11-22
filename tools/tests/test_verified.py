@@ -19,8 +19,8 @@ from tools.verified.harnesses import (
     ScriptHarness,
     budget_arg,
     merge_turns,
-    own_cost,
     parse_stream_json,
+    process_cost,
     unknown_cost,
     with_stderr,
 )
@@ -790,6 +790,14 @@ def test_per_run_cap_limits_each_run(tmp_path: Path, monkeypatch: pytest.MonkeyP
 def test_per_run_cap_must_be_positive() -> None:
     args = ["run", "--workflow", "debug", "--variant", "free-error-debugging", "--model", "haiku"]
     assert runner.main([*args, "--execute", "--max-usd", "1", "--per-run-usd", "0"]) == 2
+    # A cap that rounds down to $0.0000 would start Claude Code with no budget at all.
+    assert runner.main([*args, "--execute", "--max-usd", "1", "--per-run-usd", "0.00009"]) == 2
+
+
+def test_harness_refuses_a_budget_that_rounds_to_zero(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+    with pytest.raises(ValueError, match="at least"):
+        ClaudeCode().run("go", Path("."), "haiku", [], 0.00009)
 
 
 def test_budget_arg_never_rounds_up() -> None:
@@ -799,28 +807,49 @@ def test_budget_arg_never_rounds_up() -> None:
     assert budget_arg(-0.01) == "0.0000"
 
 
-def test_resumed_turns_count_only_their_own_spend(monkeypatch: pytest.MonkeyPatch) -> None:
-    # A resumed session reports its running total, so four turns of $0.06 each report
-    # 0.06, 0.12, 0.18 and 0.24. Summing those would stop the run after turn three.
+def _fake_claude(monkeypatch: pytest.MonkeyPatch, results: list[dict]) -> list[str]:
+    """Replace subprocess.run in the harness with turns that return the given result fields."""
     monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
-    totals = iter([0.06, 0.12, 0.18, 0.24])
+    turns = iter(results)
     budgets: list[str] = []
 
-    def fake_run(cmd, **kwargs):  # noqa: ANN001, ANN003
+    def fake_run(cmd, **kwargs):
         if cmd[:2] == ["claude", "--version"]:
             return subprocess.CompletedProcess(cmd, 0, "2.1.330 (Claude Code)\n", "")
         budgets.append(cmd[cmd.index("--max-budget-usd") + 1])
-        line = _result_line(subtype="success", total_cost_usd=next(totals))
-        return subprocess.CompletedProcess(cmd, 0, line, "")
+        return subprocess.CompletedProcess(
+            cmd, 0, _result_line(subtype="success", **next(turns)), ""
+        )
 
     monkeypatch.setattr(harnesses.subprocess, "run", fake_run)
+    return budgets
+
+
+def _usage(cost: float) -> dict:
+    return {"model_usage_since_last_result": {"claude-haiku-5-5": {"costUSD": cost}}}
+
+
+def test_resumed_turns_count_their_own_spend(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A resumed session reports a running total (0.06, 0.12, ...), and the per-process usage
+    # says what each turn spent. Summing the totals would stop the run after turn three.
+    totals = [0.06, 0.12, 0.18, 0.24]
+    budgets = _fake_claude(monkeypatch, [{"total_cost_usd": t, **_usage(0.06)} for t in totals])
     out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a", "b", "c"))
     assert budgets == ["0.2500", "0.1900", "0.1300", "0.0700"]
     assert out.cost_usd == pytest.approx(0.24)
 
 
-def test_own_cost_handles_a_fresh_total() -> None:
-    assert own_cost(0.12, 0.06) == pytest.approx(0.06)
-    assert own_cost(0.05, 0.06) == 0.05
-    assert own_cost(None, 0.06) is None
-    assert own_cost(0.06, None) == 0.06
+def test_without_per_process_usage_the_totals_are_summed(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Whether a total covers one turn or the session can't be told apart, so the runner
+    # counts each reported total in full. That can stop a run early, never let it overspend.
+    budgets = _fake_claude(monkeypatch, [{"total_cost_usd": 0.30}] * 4)
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 2.0, followups=("a", "b", "c"))
+    assert budgets == ["2.0000", "1.7000", "1.4000", "1.1000"]
+    assert out.cost_usd == pytest.approx(1.20)
+
+
+def test_process_cost_needs_every_entry() -> None:
+    assert process_cost({"a": {"costUSD": 0.01}, "b": {"costUSD": 0.02}}) == pytest.approx(0.03)
+    assert process_cost({"a": {"costUSD": 0.01}, "b": {}}) is None
+    assert process_cost({}) is None
+    assert process_cost(None) is None
