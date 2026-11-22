@@ -53,6 +53,15 @@ uv run --project plugins/plugin-eval plugin-eval score plugins/python-developmen
 
 The LLM judge and Monte Carlo layers are experimental and are not validated against human labels. Their scores describe model assessments and repeated simulations and do not prove that a task succeeds in a project. They require the optional `llm` dependencies. Model calls use `ANTHROPIC_API_KEY` when it is set and bill that API account. Otherwise they use your Claude Code login. See the [evaluation guide](docs/plugin-eval.md) for setup and limits.
 
+## Verified workflows
+
+Some workflows in this repo are being measured. Each one runs on a fixed set of test cases, several times per harness and model, and the results are published with confidence intervals. Runs repeat after each Claude Code release, and other coding tools join as their runs are wired up.
+
+- Method and current scores: [docs/verified](docs/verified/README.md)
+- Join the [waitlist for agents Verified](https://buy.polar.sh/polar_cl_yAj2XSCMpSY3vYTcoymlT102uGuJIAKgAI6134QYG9n), the tuned and re-tested versions.
+
+The free catalog stays MIT and keeps getting updates. Verified is a separate, paid layer sold by Major7 Apps, which this repository's maintainer founded. To support the free catalog directly, see [SPONSORING.md](SPONSORING.md).
+
 ## Quick start
 
 Choose a plugin for the work you do:
@@ -153,6 +162,7 @@ The agent, skill, and command counts cover local source files. External plugins 
 | [Usage](docs/usage.md) and [tool setup](docs/harnesses.md) | Commands, examples, and installation |
 | [Architecture](ARCHITECTURE.md) and [design details](docs/architecture.md) | Source layout and adapters |
 | [Quality evaluation](docs/plugin-eval.md) and [CLI verification](docs/round-trip-results.md) | Checks and their limits |
+| [Verified scorecards](docs/verified/README.md) | Measured pass rates and how they are produced |
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) to propose a change and [authoring conventions](docs/authoring.md) to write plugin content.
 

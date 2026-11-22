@@ -1,0 +1,137 @@
+{
+  "$defs": {
+    "Visibility": {
+      "enum": [
+        "public",
+        "private"
+      ],
+      "title": "Visibility",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/wshobson/agents/scorecards/result.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The outcome of one agent run on one case.",
+  "properties": {
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "case_visibility": {
+      "$ref": "#/$defs/Visibility"
+    },
+    "cost_usd": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cost Usd"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Why the harness failed, for a run whose failed_checks is harness_error.",
+      "title": "Error"
+    },
+    "failed_checks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Failed Checks",
+      "type": "array"
+    },
+    "harness": {
+      "title": "Harness",
+      "type": "string"
+    },
+    "harness_version": {
+      "title": "Harness Version",
+      "type": "string"
+    },
+    "model": {
+      "title": "Model",
+      "type": "string"
+    },
+    "passed": {
+      "title": "Passed",
+      "type": "boolean"
+    },
+    "run_at": {
+      "description": "ISO 8601 time in UTC, for example 2026-12-01T14:00:00Z.",
+      "title": "Run At",
+      "type": "string"
+    },
+    "runner_version": {
+      "title": "Runner Version",
+      "type": "string"
+    },
+    "tokens_in": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tokens In"
+    },
+    "tokens_out": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tokens Out"
+    },
+    "wall_seconds": {
+      "minimum": 0,
+      "title": "Wall Seconds",
+      "type": "number"
+    },
+    "workflow": {
+      "title": "Workflow",
+      "type": "string"
+    },
+    "workflow_version": {
+      "title": "Workflow Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "workflow",
+    "workflow_version",
+    "harness",
+    "harness_version",
+    "model",
+    "case_id",
+    "case_visibility",
+    "passed",
+    "wall_seconds",
+    "run_at",
+    "runner_version"
+  ],
+  "title": "RunResult",
+  "type": "object"
+}

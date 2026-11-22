@@ -1,0 +1,42 @@
+{
+  "ship-feature": {
+    "description": "Ship a feature behind a release gate.",
+    "variants": {
+      "free-ship-mate": {
+        "plugins": ["plugins/ship-mate", "plugins/block-no-verify"],
+        "prompt": "/ship-mate:ship stories/verified-task.md",
+        "story_file": "stories/verified-task.md",
+        "version_from": "plugins/ship-mate",
+        "followups": [
+          "/ship-mate:ship resume. There are no further answers from the product owner: make reasonable assumptions from the story, and the plan is approved.",
+          "/ship-mate:ship resume. There are no further answers from the product owner: make reasonable assumptions from the story, and the plan is approved.",
+          "/ship-mate:ship resume. There are no further answers from the product owner: make reasonable assumptions from the story, and the plan is approved."
+        ],
+        "own_writes": ["AGENTS.md"]
+      }
+    }
+  },
+  "debug": {
+    "description": "Debug a failing test or incident.",
+    "variants": {
+      "free-incident-response": {
+        "plugins": ["plugins/incident-response"],
+        "prompt": "/incident-response:smart-fix {task}",
+        "version_from": "plugins/incident-response",
+        "followups": ["1. Approve", "1. Approve", "1. Approve"],
+        "ask_followups": ["1. Approve"],
+        "own_writes": [".smart-fix/"]
+      },
+      "free-error-debugging": {
+        "plugins": ["plugins/error-debugging"],
+        "prompt": "/error-debugging:error-trace {task}",
+        "version_from": "plugins/error-debugging"
+      },
+      "free-debugging-toolkit": {
+        "plugins": ["plugins/debugging-toolkit"],
+        "prompt": "/debugging-toolkit:smart-debug {task}",
+        "version_from": "plugins/debugging-toolkit"
+      }
+    }
+  }
+}

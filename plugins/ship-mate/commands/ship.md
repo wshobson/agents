@@ -117,7 +117,9 @@ Invoke the `scan` skill. On completion → set stage to `orchestrate` → contin
 Invoke the `orchestrate` skill. On completion → set stage to `architect` → continue.
 
 ### `architect`
-Invoke the `architect` skill.
+If `checkpoints.architect == "awaiting_approval"`, this is `/ship resume` after the plan pause, and running it means the plan is approved: set stage to `implement` → continue. Do not run the architect skill again.
+
+Otherwise invoke the `architect` skill.
 On completion → set `checkpoints.architect = "awaiting_approval"` → set stage to `architect` → **PAUSE**.
 
 Print:
