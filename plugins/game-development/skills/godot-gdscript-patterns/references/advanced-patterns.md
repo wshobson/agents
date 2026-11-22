@@ -113,6 +113,7 @@ func _play_transition_in() -> void:
 extends Node
 
 const SAVE_PATH := "user://savegame.save"
+const TEMP_SAVE_PATH := SAVE_PATH + ".tmp"
 const ENCRYPTION_KEY := "your_secret_key_here"
 
 signal save_completed
@@ -120,42 +121,79 @@ signal load_completed
 signal save_error(message: String)
 
 func save_game(data: Dictionary) -> void:
+    var payload: String = JSON.stringify(data)
     var file := FileAccess.open_encrypted_with_pass(
-        SAVE_PATH,
-        FileAccess.WRITE,
-        ENCRYPTION_KEY
+        TEMP_SAVE_PATH, FileAccess.WRITE, ENCRYPTION_KEY
     )
-
     if file == null:
-        save_error.emit("Could not open save file")
+        save_error.emit("Could not open temporary save file: %s" % error_string(FileAccess.get_open_error()))
         return
 
-    var json := JSON.stringify(data)
-    file.store_string(json)
+    # Encrypted FileAccess buffers data; close() persists the encrypted bytes.
+    file.store_string(payload)
     file.close()
 
+    # Reopening verifies that close() successfully wrote and encrypted the file.
+    if not _verify_temp(payload):
+        _remove_temp()
+        save_error.emit("Could not verify written save data")
+        return
+
+    var result: Error = _replace_temp()
+    if result != OK:
+        _remove_temp()
+        save_error.emit("Could not replace existing save: %s" % error_string(result))
+        return
+
     save_completed.emit()
+
+func _verify_temp(expected_payload: String) -> bool:
+    var file := FileAccess.open_encrypted_with_pass(
+        TEMP_SAVE_PATH, FileAccess.READ, ENCRYPTION_KEY
+    )
+    if file == null:
+        return false
+    var actual_payload: String = file.get_as_text()
+    file.close()
+    return actual_payload == expected_payload
+
+func _replace_temp() -> Error:
+    return DirAccess.rename_absolute(
+        ProjectSettings.globalize_path(TEMP_SAVE_PATH),
+        ProjectSettings.globalize_path(SAVE_PATH)
+    )
+
+func _remove_temp() -> void:
+    if FileAccess.file_exists(TEMP_SAVE_PATH):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(TEMP_SAVE_PATH))
 
 func load_game() -> Dictionary:
     if not FileAccess.file_exists(SAVE_PATH):
         return {}
 
     var file := FileAccess.open_encrypted_with_pass(
-        SAVE_PATH,
-        FileAccess.READ,
-        ENCRYPTION_KEY
+        SAVE_PATH, FileAccess.READ, ENCRYPTION_KEY
     )
-
     if file == null:
-        save_error.emit("Could not open save file")
+        save_error.emit("Could not open save file: %s" % error_string(FileAccess.get_open_error()))
         return {}
 
-    var json := file.get_as_text()
+    var json: String = file.get_as_text()
     file.close()
 
-    var parsed: Variant = JSON.parse_string(json)
-    if parsed == null:
-        save_error.emit("Could not parse save data")
+    # Unlike JSON.parse_string(), JSON.parse() returns structured error data
+    # instead of printing a built-in engine error for malformed JSON.
+    var parser := JSON.new()
+    var parse_error: Error = parser.parse(json)
+    if parse_error != OK:
+        save_error.emit("Could not parse save data at line %d: %s" % [
+            parser.get_error_line(), parser.get_error_message()
+        ])
+        return {}
+
+    var parsed: Variant = parser.data
+    if not parsed is Dictionary:
+        save_error.emit("Save data must be a JSON dictionary")
         return {}
 
     load_completed.emit()
@@ -163,10 +201,13 @@ func load_game() -> Dictionary:
 
 func delete_save() -> void:
     if FileAccess.file_exists(SAVE_PATH):
-        DirAccess.remove_absolute(SAVE_PATH)
+        var result: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+        if result != OK:
+            save_error.emit("Could not delete save: %s" % error_string(result))
 
 func has_save() -> bool:
     return FileAccess.file_exists(SAVE_PATH)
+
 ```
 
 ```gdscript
