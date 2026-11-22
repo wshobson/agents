@@ -114,6 +114,7 @@ extends Node
 
 const SAVE_PATH := "user://savegame.save"
 const TEMP_SAVE_PATH := SAVE_PATH + ".tmp"
+const BACKUP_SAVE_PATH := SAVE_PATH + ".bak"
 const ENCRYPTION_KEY := "your_secret_key_here"
 
 signal save_completed
@@ -121,6 +122,13 @@ signal load_completed
 signal save_error(message: String)
 
 func save_game(data: Dictionary) -> void:
+    # Resume an interrupted replacement before starting another save.
+    if not FileAccess.file_exists(SAVE_PATH) and FileAccess.file_exists(BACKUP_SAVE_PATH):
+        var recovery: Error = _restore_backup()
+        if recovery != OK:
+            save_error.emit("Could not recover previous save: %s" % error_string(recovery))
+            return
+
     var payload: String = JSON.stringify(data)
     var file := FileAccess.open_encrypted_with_pass(
         TEMP_SAVE_PATH, FileAccess.WRITE, ENCRYPTION_KEY
@@ -139,12 +147,29 @@ func save_game(data: Dictionary) -> void:
         save_error.emit("Could not verify written save data")
         return
 
-    var result: Error = _replace_temp()
-    if result != OK:
+    # Godot's Windows rename may delete the destination before moving the source.
+    # Preserve a verified backup before attempting replacement.
+    var backup_error: Error = _backup_existing_save()
+    if backup_error != OK:
         _remove_temp()
-        save_error.emit("Could not replace existing save: %s" % error_string(result))
+        save_error.emit("Could not back up previous save: %s" % error_string(backup_error))
         return
 
+    var result: Error = _replace_temp()
+    if result != OK:
+        var recovery_error: Error = _restore_backup()
+        _remove_temp()
+        if recovery_error != OK:
+            save_error.emit("Replacement failed (%s); recovery failed (%s). Backup retained at %s" % [
+                error_string(result), error_string(recovery_error), BACKUP_SAVE_PATH
+            ])
+        else:
+            save_error.emit("Could not replace existing save: %s" % error_string(result))
+        return
+
+    # The backup is no longer needed once replacement succeeds.
+    if FileAccess.file_exists(BACKUP_SAVE_PATH):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(BACKUP_SAVE_PATH))
     save_completed.emit()
 
 func _verify_temp(expected_payload: String) -> bool:
@@ -157,17 +182,79 @@ func _verify_temp(expected_payload: String) -> bool:
     file.close()
     return actual_payload == expected_payload
 
+func _backup_existing_save() -> Error:
+    if not FileAccess.file_exists(SAVE_PATH):
+        return OK
+    var result: Error = DirAccess.copy_absolute(
+        ProjectSettings.globalize_path(SAVE_PATH),
+        ProjectSettings.globalize_path(BACKUP_SAVE_PATH)
+    )
+    if result != OK:
+        return result
+    var old_hash: String = FileAccess.get_sha256(SAVE_PATH)
+    var backup_hash: String = FileAccess.get_sha256(BACKUP_SAVE_PATH)
+    if old_hash.is_empty() or old_hash != backup_hash:
+        return ERR_FILE_CORRUPT
+    return OK
+
 func _replace_temp() -> Error:
     return DirAccess.rename_absolute(
         ProjectSettings.globalize_path(TEMP_SAVE_PATH),
         ProjectSettings.globalize_path(SAVE_PATH)
     )
 
+func _restore_backup() -> Error:
+    if not FileAccess.file_exists(BACKUP_SAVE_PATH):
+        return OK
+    var result: Error = DirAccess.copy_absolute(
+        ProjectSettings.globalize_path(BACKUP_SAVE_PATH),
+        ProjectSettings.globalize_path(SAVE_PATH)
+    )
+    if result != OK:
+        return result
+    var backup_hash: String = FileAccess.get_sha256(BACKUP_SAVE_PATH)
+    if backup_hash.is_empty() or FileAccess.get_sha256(SAVE_PATH) != backup_hash:
+        return ERR_FILE_CORRUPT
+    return OK
+
 func _remove_temp() -> void:
     if FileAccess.file_exists(TEMP_SAVE_PATH):
         DirAccess.remove_absolute(ProjectSettings.globalize_path(TEMP_SAVE_PATH))
 
+# Godot accepts trailing commas and raw control characters in strings.
+# Detect both before reporting a successful load.
+func _has_nonstandard_json(text: String) -> bool:
+    var in_string: bool = false
+    var escaped: bool = false
+    for i in text.length():
+        var ch: String = text[i]
+        if in_string:
+            if escaped:
+                escaped = false
+            elif ch == "\\":
+                escaped = true
+            elif ch == "\"":
+                in_string = false
+            elif text.unicode_at(i) < 32:
+                return true
+        elif ch == "\"":
+            in_string = true
+        elif text.unicode_at(i) < 32 and ch != "\t" and ch != "\r" and ch != "\n":
+            return true
+        elif ch == ",":
+            var j: int = i + 1
+            while j < text.length() and (text[j] == " " or text[j] == "\t" or text[j] == "\r" or text[j] == "\n"):
+                j += 1
+            if j < text.length() and (text[j] == "}" or text[j] == "]"):
+                return true
+    return false
+
 func load_game() -> Dictionary:
+    if not FileAccess.file_exists(SAVE_PATH) and FileAccess.file_exists(BACKUP_SAVE_PATH):
+        var recovery: Error = _restore_backup()
+        if recovery != OK:
+            save_error.emit("Could not recover previous save: %s" % error_string(recovery))
+            return {}
     if not FileAccess.file_exists(SAVE_PATH):
         return {}
 
@@ -183,6 +270,10 @@ func load_game() -> Dictionary:
 
     # Unlike JSON.parse_string(), JSON.parse() returns structured error data
     # instead of printing a built-in engine error for malformed JSON.
+    if _has_nonstandard_json(json):
+        save_error.emit("Save data contains nonstandard JSON syntax")
+        return {}
+
     var parser := JSON.new()
     var parse_error: Error = parser.parse(json)
     if parse_error != OK:
@@ -200,13 +291,16 @@ func load_game() -> Dictionary:
     return parsed
 
 func delete_save() -> void:
-    if FileAccess.file_exists(SAVE_PATH):
-        var result: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
-        if result != OK:
-            save_error.emit("Could not delete save: %s" % error_string(result))
+    # Do not leave a backup that can resurrect an explicitly deleted save.
+    for path in [SAVE_PATH, BACKUP_SAVE_PATH, TEMP_SAVE_PATH]:
+        if FileAccess.file_exists(path):
+            var result: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+            if result != OK:
+                save_error.emit("Could not delete %s: %s" % [path, error_string(result)])
+                return
 
 func has_save() -> bool:
-    return FileAccess.file_exists(SAVE_PATH)
+    return FileAccess.file_exists(SAVE_PATH) or FileAccess.file_exists(BACKUP_SAVE_PATH)
 
 ```
 
