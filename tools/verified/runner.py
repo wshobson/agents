@@ -319,7 +319,10 @@ def build_parser() -> argparse.ArgumentParser:
                 "--per-run-usd",
                 type=float,
                 default=DEFAULT_PER_RUN_CAP_USD,
-                help=f"Most one run may spend (default {DEFAULT_PER_RUN_CAP_USD:.2f}).",
+                help=(
+                    f"Spend at which one run is stopped (default {DEFAULT_PER_RUN_CAP_USD:.2f}). "
+                    "Claude Code checks its own cost estimate, so a run can go a little over."
+                ),
             )
             p.add_argument("--out", type=Path, default=REPO_ROOT / "scorecards" / "runs")
         p.set_defaults(func=cmd_plan if name == "plan" else cmd_run)

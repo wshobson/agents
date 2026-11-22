@@ -7,16 +7,19 @@ from __future__ import annotations
 
 import json
 import math
+import subprocess
 import textwrap
 from pathlib import Path
 
 import pytest
-from tools.verified import runner
+from tools.verified import harnesses, runner
 from tools.verified.harnesses import (
     ClaudeCode,
     HarnessOutput,
     ScriptHarness,
+    budget_arg,
     merge_turns,
+    own_cost,
     parse_stream_json,
     unknown_cost,
     with_stderr,
@@ -247,7 +250,7 @@ def test_execute_needs_an_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_claude_code_command_forces_api_key_auth() -> None:
     cmd = ClaudeCode().command("hi", "sonnet", [Path("plugins/ship-mate")], 1.5)
     assert cmd[:2] == ["claude", "--bare"]
-    assert cmd[cmd.index("--max-budget-usd") + 1] == "1.50"
+    assert cmd[cmd.index("--max-budget-usd") + 1] == "1.5000"
     assert cmd[cmd.index("--plugin-dir") + 1] == "plugins/ship-mate"
 
 
@@ -726,6 +729,33 @@ def test_report_shows_the_model_id_next_to_an_alias() -> None:
     assert "| haiku (claude-haiku-5-5) |" in render_markdown([result])
 
 
+def test_harness_error_without_a_model_id_stays_in_its_alias_row() -> None:
+    def run(i: int, model_id: str | None, failed: list[str]) -> RunResult:
+        return RunResult(
+            workflow="debug/free-error-debugging",
+            workflow_version="1.2.2",
+            harness="claude-code",
+            harness_version="2.1.330",
+            model="haiku",
+            model_id=model_id,
+            case_id=f"case-{i}",
+            case_visibility=Visibility.PUBLIC,
+            passed=not failed,
+            failed_checks=failed,
+            wall_seconds=60,
+            run_at="2026-12-01T00:00:00Z",
+            runner_version="0.2.0",
+        )
+
+    results = [run(i, "claude-haiku-5-5", []) for i in range(4)]
+    results.append(run(4, None, ["harness_error"]))
+    table = render_markdown(results)
+    rows = [line for line in table.splitlines() if line.startswith("| debug/")]
+    assert len(rows) == 1
+    assert "| haiku (claude-haiku-5-5) | 4/4, 100%" in rows[0]
+    assert "1 harness errors left out" in rows[0]
+
+
 class _BudgetRecorder:
     """A harness that records the budget each run was given and spends a cent."""
 
@@ -760,3 +790,37 @@ def test_per_run_cap_limits_each_run(tmp_path: Path, monkeypatch: pytest.MonkeyP
 def test_per_run_cap_must_be_positive() -> None:
     args = ["run", "--workflow", "debug", "--variant", "free-error-debugging", "--model", "haiku"]
     assert runner.main([*args, "--execute", "--max-usd", "1", "--per-run-usd", "0"]) == 2
+
+
+def test_budget_arg_never_rounds_up() -> None:
+    assert budget_arg(0.016) == "0.0160"
+    assert budget_arg(0.004) == "0.0040"
+    assert budget_arg(0.123456) == "0.1234"
+    assert budget_arg(-0.01) == "0.0000"
+
+
+def test_resumed_turns_count_only_their_own_spend(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A resumed session reports its running total, so four turns of $0.06 each report
+    # 0.06, 0.12, 0.18 and 0.24. Summing those would stop the run after turn three.
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+    totals = iter([0.06, 0.12, 0.18, 0.24])
+    budgets: list[str] = []
+
+    def fake_run(cmd, **kwargs):  # noqa: ANN001, ANN003
+        if cmd[:2] == ["claude", "--version"]:
+            return subprocess.CompletedProcess(cmd, 0, "2.1.330 (Claude Code)\n", "")
+        budgets.append(cmd[cmd.index("--max-budget-usd") + 1])
+        line = _result_line(subtype="success", total_cost_usd=next(totals))
+        return subprocess.CompletedProcess(cmd, 0, line, "")
+
+    monkeypatch.setattr(harnesses.subprocess, "run", fake_run)
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a", "b", "c"))
+    assert budgets == ["0.2500", "0.1900", "0.1300", "0.0700"]
+    assert out.cost_usd == pytest.approx(0.24)
+
+
+def test_own_cost_handles_a_fresh_total() -> None:
+    assert own_cost(0.12, 0.06) == pytest.approx(0.06)
+    assert own_cost(0.05, 0.06) == 0.05
+    assert own_cost(None, 0.06) is None
+    assert own_cost(0.06, None) == 0.06

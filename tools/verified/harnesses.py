@@ -11,6 +11,7 @@ harness only after checking its own --help.
 from __future__ import annotations
 
 import json
+import math
 import os
 import subprocess
 import sys
@@ -132,7 +133,7 @@ class ClaudeCode(Harness):
             "--disallowedTools",
             *DISALLOWED_TOOLS,
             "--max-budget-usd",
-            f"{budget_usd:.2f}",
+            budget_arg(budget_usd),
         ]
         if session_id is None:
             cmd.append("--no-session-persistence")
@@ -160,10 +161,11 @@ class ClaudeCode(Harness):
         session_id = str(uuid.uuid4()) if followups else None
         turns: list[HarnessOutput] = []
         spent = 0.0
+        last_total: float | None = None
         for index, turn_prompt in enumerate([prompt, *followups]):
             # The cap covers the whole run, so each turn gets only what is left of it.
             remaining = budget_usd - spent
-            if index > 0 and remaining <= 0:
+            if index > 0 and float(budget_arg(remaining)) <= 0:
                 break
             try:
                 proc = subprocess.run(
@@ -185,6 +187,11 @@ class ClaudeCode(Harness):
             turn = parse_stream_json(proc.stdout, version, proc.returncode)
             if turn.error:
                 turn.error = with_stderr(turn.error, proc.stderr)
+            reported = turn.cost_usd
+            if index > 0:
+                turn.cost_usd = own_cost(reported, last_total)
+            if reported is not None:
+                last_total = reported
             turns.append(turn)
             # A turn that reports no cost, or an errored turn that reports zero (a crashed
             # session may), may have spent all it was allowed.
@@ -192,6 +199,27 @@ class ClaudeCode(Harness):
             if turn.error or turn.budget_stop:
                 break
         return merge_turns(turns)
+
+
+def budget_arg(usd: float) -> str:
+    """The --max-budget-usd value, rounded down to a hundredth of a cent so it never exceeds
+    the cap the runner was given."""
+    return f"{max(math.floor(usd * 10_000), 0) / 10_000:.4f}"
+
+
+def own_cost(reported: float | None, previous_total: float | None) -> float | None:
+    """What a resumed turn spent by itself.
+
+    A resumed Claude Code session reports total_cost_usd as the session's running total,
+    continuing from the total its transcript saved, so the earlier turns are in it again.
+    The turn's own spend is the increase over the previous turn's total. A total below the
+    previous one means the session started counting afresh, so it is the turn's own spend.
+    --max-budget-usd, by contrast, counts only the spend since that process started, so the
+    runner still passes it what is left of the run's cap.
+    """
+    if reported is None or previous_total is None or reported < previous_total:
+        return reported
+    return reported - previous_total
 
 
 ERROR_DETAIL_CHARS = 500

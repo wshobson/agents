@@ -28,6 +28,16 @@ def interval(passes: int, runs: int) -> tuple[float, float]:
     return wilson_score_ci(passes, runs, confidence=0.95)
 
 
+def model_text(alias: str, runs: list[RunResult]) -> str:
+    """The model a row asked for, with the exact models that really ran next to an alias.
+
+    Runs are grouped by what the runner was asked for, so a harness error that ended before
+    the harness named its model stays in the row whose pass rate it qualifies.
+    """
+    ids = sorted({r.model_id for r in runs if r.model_id and r.model_id != alias})
+    return f"{alias} ({', '.join(ids)})" if ids else alias
+
+
 def render_markdown(results: list[RunResult]) -> str:
     header = (
         "| Workflow | Version | Harness | Model | Pass rate (95% interval) | "
@@ -38,11 +48,10 @@ def render_markdown(results: list[RunResult]) -> str:
         return header + "| No runs yet | | | | | | | |\n"
     groups: dict[tuple[str, str, str, str, str], list[RunResult]] = defaultdict(list)
     for r in results:
-        # Show the exact model next to an alias, so a row says which model really ran.
-        model = r.model if not r.model_id or r.model_id == r.model else f"{r.model} ({r.model_id})"
-        groups[(r.workflow, r.workflow_version, r.harness, r.harness_version, model)].append(r)
+        groups[(r.workflow, r.workflow_version, r.harness, r.harness_version, r.model)].append(r)
     rows = []
-    for (workflow, version, harness, harness_version, model), all_runs in sorted(groups.items()):
+    for (workflow, version, harness, harness_version, alias), all_runs in sorted(groups.items()):
+        model = model_text(alias, all_runs)
         runs = [r for r in all_runs if HARNESS_ERROR not in r.failed_checks]
         errors = len(all_runs) - len(runs)
         error_text = f"; {errors} harness errors left out" if errors else ""
