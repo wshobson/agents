@@ -14,6 +14,7 @@ from pathlib import Path
 import pytest
 from tools.verified import harnesses, runner
 from tools.verified.harnesses import (
+    BUDGET_STOP,
     ClaudeCode,
     HarnessOutput,
     ScriptHarness,
@@ -21,6 +22,7 @@ from tools.verified.harnesses import (
     merge_turns,
     parse_stream_json,
     process_cost,
+    process_tokens,
     unknown_cost,
     with_stderr,
 )
@@ -818,15 +820,25 @@ def _fake_claude(monkeypatch: pytest.MonkeyPatch, results: list[dict]) -> list[s
             return subprocess.CompletedProcess(cmd, 0, "2.1.330 (Claude Code)\n", "")
         budgets.append(cmd[cmd.index("--max-budget-usd") + 1])
         return subprocess.CompletedProcess(
-            cmd, 0, _result_line(subtype="success", **next(turns)), ""
+            cmd, 0, _result_line(**{"subtype": "success", **next(turns)}), ""
         )
 
     monkeypatch.setattr(harnesses.subprocess, "run", fake_run)
     return budgets
 
 
-def _usage(cost: float) -> dict:
-    return {"model_usage_since_last_result": {"claude-haiku-5-5": {"costUSD": cost}}}
+def _usage(cost: float, tokens_in: int = 100, tokens_out: int = 10) -> dict:
+    return {
+        "model_usage_since_last_result": {
+            "claude-haiku-5-5": {
+                "costUSD": cost,
+                "inputTokens": tokens_in,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0,
+                "outputTokens": tokens_out,
+            }
+        }
+    }
 
 
 def test_resumed_turns_count_their_own_spend(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -853,3 +865,75 @@ def test_process_cost_needs_every_entry() -> None:
     assert process_cost({"a": {"costUSD": 0.01}, "b": {}}) is None
     assert process_cost({}) is None
     assert process_cost(None) is None
+
+
+def test_resumed_turns_count_their_own_tokens(monkeypatch: pytest.MonkeyPatch) -> None:
+    # The result's usage carries the earlier turns forward like its cost does, so the
+    # per-process counts are summed instead.
+    results = [
+        {
+            "total_cost_usd": 0.06 * n,
+            "usage": {"input_tokens": 100 * n, "output_tokens": 10 * n},
+            **_usage(0.06),
+        }
+        for n in (1, 2, 3)
+    ]
+    _fake_claude(monkeypatch, results)
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 1.0, followups=("a", "b"))
+    assert (out.tokens_in, out.tokens_out) == (300, 30)
+
+
+def test_process_tokens_needs_every_entry() -> None:
+    full = {
+        "inputTokens": 5,
+        "cacheReadInputTokens": 3,
+        "cacheCreationInputTokens": 2,
+        "outputTokens": 4,
+    }
+    assert process_tokens({"a": full, "b": full}) == (20, 8)
+    assert process_tokens({"a": full, "b": {"costUSD": 0.1}}) == (None, None)
+    assert process_tokens(None) == (None, None)
+
+
+def test_skipped_followups_mark_the_run_cut_short(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Without per-process usage the totals are summed: 0.06 + 0.12 + 0.18 leaves nothing of a
+    # $0.25 cap for turn four, so its follow-up is never sent.
+    _fake_claude(monkeypatch, [{"total_cost_usd": t} for t in (0.06, 0.12, 0.18, 0.24)])
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a", "b", "c"))
+    assert out.budget_exhausted and not out.budget_stop
+
+
+def test_a_cap_stop_with_followups_left_marks_the_run_cut_short(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _fake_claude(
+        monkeypatch, [{"total_cost_usd": 0.05}, {"total_cost_usd": 0.20, "subtype": BUDGET_STOP}]
+    )
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a", "b"))
+    assert out.budget_stop and out.budget_exhausted
+
+
+def test_a_cap_stop_on_the_last_turn_is_not_cut_short(monkeypatch: pytest.MonkeyPatch) -> None:
+    _fake_claude(
+        monkeypatch, [{"total_cost_usd": 0.05}, {"total_cost_usd": 0.20, "subtype": BUDGET_STOP}]
+    )
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a",))
+    assert out.budget_stop and not out.budget_exhausted
+
+
+def test_a_run_cut_short_by_its_cap_fails_as_budget_exhausted(tmp_path: Path) -> None:
+    class CutShort(ScriptHarness):
+        def run(self, *args, **kwargs):  # type: ignore[override]
+            out = super().run(*args, **kwargs)
+            out.budget_exhausted = True
+            return out
+
+    case_dir = PUBLIC / "db-pagination-last-page"
+    variant = runner.Variant(
+        workflow="debug", name="test", plugin_dirs=[], prompt="{task}", version="0.0.0"
+    )
+    result = runner.run_one(
+        CutShort(write_script(tmp_path, NOOP)), variant, case_dir, Visibility.PUBLIC, "none", 0.0
+    )
+    assert "budget_exhausted" in result.failed_checks
+    assert not result.passed

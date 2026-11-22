@@ -34,6 +34,8 @@ class HarnessOutput:
     error: str | None = None
     # The turn stopped because it reached its --max-budget-usd cap.
     budget_stop: bool = False
+    # The run's cap ran out before every follow-up was sent, so the workflow never finished.
+    budget_exhausted: bool = False
     # The turn ran past TURN_TIMEOUT_SECONDS. Usually the workflow's fault (a loop, a
     # blocking command), so it is scored as a failed run, not left out as a harness error.
     timed_out: bool = False
@@ -65,6 +67,7 @@ def merge_turns(turns: list[HarnessOutput]) -> HarnessOutput:
         cost_usd=None if any(unknown_cost(t) for t in turns) else sum(costs),
         error=next((t.error for t in turns if t.error), None),
         budget_stop=turns[-1].budget_stop,
+        budget_exhausted=any(t.budget_exhausted for t in turns),
         timed_out=any(t.timed_out for t in turns),
         model_id=next((t.model_id for t in turns if t.model_id), None),
     )
@@ -163,10 +166,12 @@ class ClaudeCode(Harness):
         session_id = str(uuid.uuid4()) if followups else None
         turns: list[HarnessOutput] = []
         spent = 0.0
-        for index, turn_prompt in enumerate([prompt, *followups]):
+        prompts = [prompt, *followups]
+        for index, turn_prompt in enumerate(prompts):
             # The cap covers the whole run, so each turn gets only what is left of it.
             remaining = budget_usd - spent
             if index > 0 and float(budget_arg(remaining)) <= 0:
+                turns[-1].budget_exhausted = True
                 break
             try:
                 proc = subprocess.run(
@@ -193,6 +198,8 @@ class ClaudeCode(Harness):
             # session may), may have spent all it was allowed.
             spent += remaining if unknown_cost(turn) else turn.cost_usd or 0.0
             if turn.error or turn.budget_stop:
+                # A turn stopped at the cap with follow-ups still to send was cut short too.
+                turn.budget_exhausted = turn.budget_stop and index < len(prompts) - 1
                 break
         return merge_turns(turns)
 
@@ -212,18 +219,40 @@ def with_stderr(error: str, stderr: str | None) -> str:
     return f"{error}: {tail}" if tail else error
 
 
-def process_cost(usage: object) -> float | None:
-    """The cost in model_usage_since_last_result: what this process spent since its last result.
+def _entry_sum(usage: object, *keys: str) -> float | None:
+    """Sum the given fields over every model entry in model_usage_since_last_result.
 
-    None when the field is missing or any entry lacks a numeric costUSD, so a partial figure is
-    never taken for the whole.
+    None when the field is missing or any entry lacks one of the fields as a number, so a
+    partial figure is never taken for the whole.
     """
     if not isinstance(usage, dict) or not usage:
         return None
-    costs = [entry.get("costUSD") if isinstance(entry, dict) else None for entry in usage.values()]
-    if not all(isinstance(c, (int, float)) for c in costs):
-        return None
-    return float(sum(costs))
+    total = 0.0
+    for entry in usage.values():
+        if not isinstance(entry, dict):
+            return None
+        for key in keys:
+            value = entry.get(key)
+            if not isinstance(value, (int, float)) or isinstance(value, bool):
+                return None
+            total += value
+    return total
+
+
+def process_cost(usage: object) -> float | None:
+    """The cost in model_usage_since_last_result: what this process spent since its last result."""
+    return _entry_sum(usage, "costUSD")
+
+
+def process_tokens(usage: object) -> tuple[int | None, int | None]:
+    """Input tokens (cache reads and writes included) and output tokens in
+    model_usage_since_last_result, counted the same way as the cost."""
+    tokens_in = _entry_sum(usage, "inputTokens", "cacheReadInputTokens", "cacheCreationInputTokens")
+    tokens_out = _entry_sum(usage, "outputTokens")
+    return (
+        None if tokens_in is None else int(tokens_in),
+        None if tokens_out is None else int(tokens_out),
+    )
 
 
 def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> HarnessOutput:
@@ -242,6 +271,8 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
     tokens_in = tokens_out = None
     cost = None
     process_spend: float | None = None
+    process_in: int | None = None
+    process_out: int | None = None
     model_id = None
     result_event: dict | None = None
     for line in stdout.splitlines():
@@ -271,9 +302,15 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
                 tokens_out = usage["output_tokens"]
         if isinstance(event.get("total_cost_usd"), (int, float)):
             cost = float(event["total_cost_usd"])
-        since_last = process_cost(event.get("model_usage_since_last_result"))
+        per_process = event.get("model_usage_since_last_result")
+        since_last = process_cost(per_process)
         if since_last is not None:
             process_spend = (process_spend or 0.0) + since_last
+        last_in, last_out = process_tokens(per_process)
+        if last_in is not None:
+            process_in = (process_in or 0) + last_in
+        if last_out is not None:
+            process_out = (process_out or 0) + last_out
     error = None
     subtype = str((result_event or {}).get("subtype") or "")
     if result_event is None:
@@ -288,8 +325,10 @@ def parse_stream_json(stdout: str, version: str, returncode: int = 0) -> Harness
         final_message=final_message,
         transcript=stdout,
         harness_version=version,
-        tokens_in=tokens_in,
-        tokens_out=tokens_out,
+        # The result's usage may carry a resumed session's earlier turns, like its cost, so
+        # the per-process counts are used when Claude Code reports them.
+        tokens_in=process_in if process_in is not None else tokens_in,
+        tokens_out=process_out if process_out is not None else tokens_out,
         # A resumed session's total_cost_usd includes the turns before it, so it would count
         # them again. The per-process usage, when Claude Code reports it, is this turn alone.
         # Without it the total is kept: that can stop a multi-turn run early, never late.

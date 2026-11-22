@@ -13,6 +13,8 @@ from plugin_eval.stats import wilson_score_ci
 # A run whose harness failed (crash, timeout, API error). It says nothing about the
 # workflow, so it is left out of the pass rate and counted on its own.
 HARNESS_ERROR = "harness_error"
+# A run whose cap ran out before every follow-up was sent. Scored as a failed run.
+BUDGET_EXHAUSTED = "budget_exhausted"
 
 
 def load_results(root: Path) -> list[RunResult]:

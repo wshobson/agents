@@ -34,7 +34,7 @@ from tools.verified.models import (
     load_case,
     result_schema_text,
 )
-from tools.verified.report import HARNESS_ERROR, load_results, render_markdown
+from tools.verified.report import BUDGET_EXHAUSTED, HARNESS_ERROR, load_results, render_markdown
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_CASES = REPO_ROOT / "evals" / "verified" / "fixtures" / "public"
@@ -194,6 +194,10 @@ def run_one(
                 out.final_message,
                 own_writes=variant.own_writes,
             ).failed_checks
+            if out.budget_exhausted:
+                # The cap ran out before the workflow got every follow-up, so the run is
+                # scored as failed for that reason, whatever the judge found.
+                failed_checks = [*failed_checks, BUDGET_EXHAUSTED]
     return RunResult(
         workflow=f"{variant.workflow}/{variant.name}",
         workflow_version=variant.version,
