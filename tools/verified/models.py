@@ -65,6 +65,13 @@ class RunResult(BaseModel):
     harness: str
     harness_version: str
     model: str
+    model_id: str | None = Field(
+        default=None,
+        description=(
+            "The exact model the harness reported running, such as claude-haiku-5-5, when it "
+            "reported one. `model` is what the runner was asked for and may be an alias."
+        ),
+    )
     case_id: str
     case_visibility: Visibility
     passed: bool

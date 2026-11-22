@@ -25,7 +25,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from tools.verified import RUNNER_VERSION
-from tools.verified.harnesses import HARNESSES, Harness
+from tools.verified.harnesses import HARNESSES, Harness, budget_arg
 from tools.verified.judge import judge, prepare_workspace
 from tools.verified.models import (
     CaseKind,
@@ -34,18 +34,29 @@ from tools.verified.models import (
     load_case,
     result_schema_text,
 )
-from tools.verified.report import HARNESS_ERROR, load_results, render_markdown
+from tools.verified.report import BUDGET_EXHAUSTED, HARNESS_ERROR, load_results, render_markdown
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_CASES = REPO_ROOT / "evals" / "verified" / "fixtures" / "public"
 WORKFLOWS = Path(__file__).with_name("workflows.json")
 SCHEMA_PATH = REPO_ROOT / "scorecards" / "result.schema.json"
 
-# Rough cost of one agent run on a small fixture, in US dollars. These are planning
-# estimates (about 600k input tokens, mostly cache reads, and 20k output tokens), not
-# measurements. Replace them with measured medians after the first runs.
+# Rough cost of one agent run on a small fixture, in US dollars, by model family. These are
+# planning estimates (about 600k input tokens, mostly cache reads, and 20k output tokens),
+# not measurements. Replace them with measured medians after the first runs.
 ESTIMATED_USD_PER_RUN = {"opus": 0.80, "sonnet": 0.40, "haiku": 0.02}
+# The most one run may spend unless --per-run-usd says otherwise.
 DEFAULT_PER_RUN_CAP_USD = 2.00
+
+
+def estimated_usd(model: str) -> float | None:
+    """The planning estimate for a model alias or full id, such as haiku or claude-haiku-5-5."""
+    name = model.lower()
+    for family, usd in ESTIMATED_USD_PER_RUN.items():
+        if family in name:
+            return usd
+    return None
+
 
 # Some free workflows, such as ship-mate, start from a story file rather than a sentence.
 STORY_TEMPLATE = """# Verified task
@@ -135,7 +146,8 @@ def find_cases(
 
 def estimate(models: list[str], cases: int, reps: int) -> tuple[int, float]:
     runs = len(models) * cases * reps
-    usd = sum(ESTIMATED_USD_PER_RUN.get(m, max(ESTIMATED_USD_PER_RUN.values())) for m in models)
+    fallback = max(ESTIMATED_USD_PER_RUN.values())
+    usd = sum(estimated_usd(m) or fallback for m in models)
     return runs, usd * cases * reps
 
 
@@ -182,12 +194,17 @@ def run_one(
                 out.final_message,
                 own_writes=variant.own_writes,
             ).failed_checks
+            if out.budget_exhausted:
+                # The cap ran out before the workflow got every follow-up, so the run is
+                # scored as failed for that reason, whatever the judge found.
+                failed_checks = [*failed_checks, BUDGET_EXHAUSTED]
     return RunResult(
         workflow=f"{variant.workflow}/{variant.name}",
         workflow_version=variant.version,
         harness=harness.name,
         harness_version=out.harness_version,
         model=model,
+        model_id=out.model_id,
         case_id=case.id,
         case_visibility=visibility,
         passed=not failed_checks,
@@ -227,6 +244,9 @@ def cmd_run(args: argparse.Namespace) -> int:
     if args.max_usd is None or args.max_usd <= 0:
         print("--execute needs a positive --max-usd cap.", file=sys.stderr)
         return 2
+    if float(budget_arg(args.per_run_usd)) <= 0:
+        print("--per-run-usd must be at least 0.0001.", file=sys.stderr)
+        return 2
     harness = HARNESSES[args.harness]()
     harness.require_key()
     variant = load_variant(args.workflow, args.variant, args.plugin_dir)
@@ -235,14 +255,15 @@ def cmd_run(args: argparse.Namespace) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     spent = 0.0
     for model in args.model:
-        per_run = ESTIMATED_USD_PER_RUN.get(model, DEFAULT_PER_RUN_CAP_USD)
+        # Don't start a run the remaining cap probably can't pay for.
+        per_run = min(estimated_usd(model) or DEFAULT_PER_RUN_CAP_USD, args.per_run_usd)
         for case_dir, visibility in cases:
             for rep in range(args.reps):
                 remaining = args.max_usd - spent
                 if remaining < per_run:
                     print(f"Stopping: ${spent:.2f} spent, cap ${args.max_usd:.2f}.")
                     return 0
-                budget = min(remaining, DEFAULT_PER_RUN_CAP_USD)
+                budget = min(remaining, args.per_run_usd)
                 result = run_one(harness, variant, case_dir, visibility, model, budget)
                 # With no reported cost, or $0 on a harness error, count the whole budget the
                 # run was allowed.
@@ -298,6 +319,15 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "run":
             p.add_argument("--execute", action="store_true")
             p.add_argument("--max-usd", type=float)
+            p.add_argument(
+                "--per-run-usd",
+                type=float,
+                default=DEFAULT_PER_RUN_CAP_USD,
+                help=(
+                    f"Spend at which one run is stopped (default {DEFAULT_PER_RUN_CAP_USD:.2f}). "
+                    "Claude Code checks its own cost estimate, so a run can go a little over."
+                ),
+            )
             p.add_argument("--out", type=Path, default=REPO_ROOT / "scorecards" / "runs")
         p.set_defaults(func=cmd_plan if name == "plan" else cmd_run)
 

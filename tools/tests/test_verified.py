@@ -7,17 +7,22 @@ from __future__ import annotations
 
 import json
 import math
+import subprocess
 import textwrap
 from pathlib import Path
 
 import pytest
-from tools.verified import runner
+from tools.verified import harnesses, runner
 from tools.verified.harnesses import (
+    BUDGET_STOP,
     ClaudeCode,
     HarnessOutput,
     ScriptHarness,
+    budget_arg,
     merge_turns,
     parse_stream_json,
+    process_cost,
+    process_tokens,
     unknown_cost,
     with_stderr,
 )
@@ -247,7 +252,7 @@ def test_execute_needs_an_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_claude_code_command_forces_api_key_auth() -> None:
     cmd = ClaudeCode().command("hi", "sonnet", [Path("plugins/ship-mate")], 1.5)
     assert cmd[:2] == ["claude", "--bare"]
-    assert cmd[cmd.index("--max-budget-usd") + 1] == "1.50"
+    assert cmd[cmd.index("--max-budget-usd") + 1] == "1.5000"
     assert cmd[cmd.index("--plugin-dir") + 1] == "plugins/ship-mate"
 
 
@@ -672,3 +677,263 @@ def test_timed_out_run_is_a_scored_failure(tmp_path: Path) -> None:
         Slow(write_script(tmp_path, NOOP)), variant, case_dir, Visibility.PUBLIC, "none", 0.0
     )
     assert result.failed_checks == ["timed_out"]
+
+
+# --------------------------------------------------------------------------- cost controls
+
+
+def test_claude_code_turns_off_web_tools() -> None:
+    cmd = ClaudeCode().command("hi", "haiku", [Path("plugins/ship-mate")], 0.25)
+    i = cmd.index("--disallowedTools")
+    assert cmd[i + 1 : i + 3] == ["WebSearch", "WebFetch"]
+    # The next token is an option, so the variadic flag takes only the two tool names.
+    assert cmd[i + 3].startswith("--")
+
+
+def test_parse_stream_json_reads_the_model_id() -> None:
+    lines = [
+        json.dumps({"type": "system", "subtype": "init", "model": "claude-haiku-5-5"}),
+        _result_line(subtype="success"),
+    ]
+    assert parse_stream_json("\n".join(lines), "v").model_id == "claude-haiku-5-5"
+    assert parse_stream_json(_result_line(subtype="success"), "v").model_id is None
+
+
+def test_merged_turns_keep_the_model_id() -> None:
+    first = HarnessOutput("a", "", "v", cost_usd=0.01, model_id="claude-haiku-5-5")
+    second = HarnessOutput("b", "", "v", cost_usd=0.01)
+    assert merge_turns([first, second]).model_id == "claude-haiku-5-5"
+
+
+def test_estimate_matches_full_model_ids() -> None:
+    assert runner.estimated_usd("claude-haiku-5-5") == runner.estimated_usd("haiku")
+    assert runner.estimated_usd("claude-sonnet-5-5") == runner.estimated_usd("sonnet")
+    assert runner.estimated_usd("some-other-model") is None
+    _, usd = runner.estimate(["claude-haiku-5-5"], cases=6, reps=5)
+    assert usd == pytest.approx(0.6)
+
+
+def test_report_shows_the_model_id_next_to_an_alias() -> None:
+    result = RunResult(
+        workflow="debug/free-error-debugging",
+        workflow_version="1.2.2",
+        harness="claude-code",
+        harness_version="2.1.330",
+        model="haiku",
+        model_id="claude-haiku-5-5",
+        case_id="db-pagination-last-page",
+        case_visibility=Visibility.PUBLIC,
+        passed=True,
+        wall_seconds=60,
+        run_at="2026-12-01T00:00:00Z",
+        runner_version="0.2.0",
+    )
+    assert "| haiku (claude-haiku-5-5) |" in render_markdown([result])
+
+
+def test_harness_error_without_a_model_id_stays_in_its_alias_row() -> None:
+    def run(i: int, model_id: str | None, failed: list[str]) -> RunResult:
+        return RunResult(
+            workflow="debug/free-error-debugging",
+            workflow_version="1.2.2",
+            harness="claude-code",
+            harness_version="2.1.330",
+            model="haiku",
+            model_id=model_id,
+            case_id=f"case-{i}",
+            case_visibility=Visibility.PUBLIC,
+            passed=not failed,
+            failed_checks=failed,
+            wall_seconds=60,
+            run_at="2026-12-01T00:00:00Z",
+            runner_version="0.2.0",
+        )
+
+    results = [run(i, "claude-haiku-5-5", []) for i in range(4)]
+    results.append(run(4, None, ["harness_error"]))
+    table = render_markdown(results)
+    rows = [line for line in table.splitlines() if line.startswith("| debug/")]
+    assert len(rows) == 1
+    assert "| haiku (claude-haiku-5-5) | 4/4, 100%" in rows[0]
+    assert "1 harness errors left out" in rows[0]
+
+
+class _BudgetRecorder:
+    """A harness that records the budget each run was given and spends a cent."""
+
+    name = "recorder"
+    key_env = None
+
+    def __init__(self) -> None:
+        self.budgets: list[float] = []
+
+    def require_key(self) -> None:
+        return None
+
+    def run(self, prompt, workspace, model, plugin_dirs, budget_usd, followups=()):  # noqa: ANN001
+        self.budgets.append(budget_usd)
+        return HarnessOutput("I looked at it.", "", "test", cost_usd=0.01, model_id=model)
+
+
+def test_per_run_cap_limits_each_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    recorder = _BudgetRecorder()
+    monkeypatch.setitem(runner.HARNESSES, "claude-code", lambda: recorder)
+    args = ["run", "--workflow", "debug", "--variant", "free-error-debugging", "--model", "haiku"]
+    code = runner.main(
+        [*args, "--reps", "1", "--execute", "--max-usd", "5", "--per-run-usd", "0.25"]
+        + ["--out", str(tmp_path)]
+    )
+    assert code == 0
+    assert recorder.budgets and all(b == pytest.approx(0.25) for b in recorder.budgets)
+    saved = [RunResult.model_validate_json(p.read_text()) for p in tmp_path.rglob("*.json")]
+    assert {r.model_id for r in saved} == {"haiku"}
+
+
+def test_per_run_cap_must_be_positive() -> None:
+    args = ["run", "--workflow", "debug", "--variant", "free-error-debugging", "--model", "haiku"]
+    assert runner.main([*args, "--execute", "--max-usd", "1", "--per-run-usd", "0"]) == 2
+    # A cap that rounds down to $0.0000 would start Claude Code with no budget at all.
+    assert runner.main([*args, "--execute", "--max-usd", "1", "--per-run-usd", "0.00009"]) == 2
+
+
+def test_harness_refuses_a_budget_that_rounds_to_zero(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+    with pytest.raises(ValueError, match="at least"):
+        ClaudeCode().run("go", Path("."), "haiku", [], 0.00009)
+
+
+def test_budget_arg_never_rounds_up() -> None:
+    assert budget_arg(0.016) == "0.0160"
+    assert budget_arg(0.004) == "0.0040"
+    assert budget_arg(0.123456) == "0.1234"
+    assert budget_arg(-0.01) == "0.0000"
+
+
+def _fake_claude(monkeypatch: pytest.MonkeyPatch, results: list[dict]) -> list[str]:
+    """Replace subprocess.run in the harness with turns that return the given result fields."""
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+    turns = iter(results)
+    budgets: list[str] = []
+
+    def fake_run(cmd, **kwargs):
+        if cmd[:2] == ["claude", "--version"]:
+            return subprocess.CompletedProcess(cmd, 0, "2.1.330 (Claude Code)\n", "")
+        budgets.append(cmd[cmd.index("--max-budget-usd") + 1])
+        return subprocess.CompletedProcess(
+            cmd, 0, _result_line(**{"subtype": "success", **next(turns)}), ""
+        )
+
+    monkeypatch.setattr(harnesses.subprocess, "run", fake_run)
+    return budgets
+
+
+def _usage(cost: float, tokens_in: int = 100, tokens_out: int = 10) -> dict:
+    return {
+        "model_usage_since_last_result": {
+            "claude-haiku-5-5": {
+                "costUSD": cost,
+                "inputTokens": tokens_in,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0,
+                "outputTokens": tokens_out,
+            }
+        }
+    }
+
+
+def test_resumed_turns_count_their_own_spend(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A resumed session reports a running total (0.06, 0.12, ...), and the per-process usage
+    # says what each turn spent. Summing the totals would stop the run after turn three.
+    totals = [0.06, 0.12, 0.18, 0.24]
+    budgets = _fake_claude(monkeypatch, [{"total_cost_usd": t, **_usage(0.06)} for t in totals])
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a", "b", "c"))
+    assert budgets == ["0.2500", "0.1900", "0.1300", "0.0700"]
+    assert out.cost_usd == pytest.approx(0.24)
+
+
+def test_without_per_process_usage_the_totals_are_summed(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Whether a total covers one turn or the session can't be told apart, so the runner
+    # counts each reported total in full. That can stop a run early, never let it overspend.
+    budgets = _fake_claude(monkeypatch, [{"total_cost_usd": 0.30}] * 4)
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 2.0, followups=("a", "b", "c"))
+    assert budgets == ["2.0000", "1.7000", "1.4000", "1.1000"]
+    assert out.cost_usd == pytest.approx(1.20)
+
+
+def test_process_cost_needs_every_entry() -> None:
+    assert process_cost({"a": {"costUSD": 0.01}, "b": {"costUSD": 0.02}}) == pytest.approx(0.03)
+    assert process_cost({"a": {"costUSD": 0.01}, "b": {}}) is None
+    assert process_cost({}) is None
+    assert process_cost(None) is None
+
+
+def test_resumed_turns_count_their_own_tokens(monkeypatch: pytest.MonkeyPatch) -> None:
+    # The result's usage carries the earlier turns forward like its cost does, so the
+    # per-process counts are summed instead.
+    results = [
+        {
+            "total_cost_usd": 0.06 * n,
+            "usage": {"input_tokens": 100 * n, "output_tokens": 10 * n},
+            **_usage(0.06),
+        }
+        for n in (1, 2, 3)
+    ]
+    _fake_claude(monkeypatch, results)
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 1.0, followups=("a", "b"))
+    assert (out.tokens_in, out.tokens_out) == (300, 30)
+
+
+def test_process_tokens_needs_every_entry() -> None:
+    full = {
+        "inputTokens": 5,
+        "cacheReadInputTokens": 3,
+        "cacheCreationInputTokens": 2,
+        "outputTokens": 4,
+    }
+    assert process_tokens({"a": full, "b": full}) == (20, 8)
+    assert process_tokens({"a": full, "b": {"costUSD": 0.1}}) == (None, None)
+    assert process_tokens(None) == (None, None)
+
+
+def test_skipped_followups_mark_the_run_cut_short(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Without per-process usage the totals are summed: 0.06 + 0.12 + 0.18 leaves nothing of a
+    # $0.25 cap for turn four, so its follow-up is never sent.
+    _fake_claude(monkeypatch, [{"total_cost_usd": t} for t in (0.06, 0.12, 0.18, 0.24)])
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a", "b", "c"))
+    assert out.budget_exhausted and not out.budget_stop
+
+
+def test_a_cap_stop_with_followups_left_marks_the_run_cut_short(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _fake_claude(
+        monkeypatch, [{"total_cost_usd": 0.05}, {"total_cost_usd": 0.20, "subtype": BUDGET_STOP}]
+    )
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a", "b"))
+    assert out.budget_stop and out.budget_exhausted
+
+
+def test_a_cap_stop_on_the_last_turn_is_not_cut_short(monkeypatch: pytest.MonkeyPatch) -> None:
+    _fake_claude(
+        monkeypatch, [{"total_cost_usd": 0.05}, {"total_cost_usd": 0.20, "subtype": BUDGET_STOP}]
+    )
+    out = ClaudeCode().run("go", Path("."), "haiku", [], 0.25, followups=("a",))
+    assert out.budget_stop and not out.budget_exhausted
+
+
+def test_a_run_cut_short_by_its_cap_fails_as_budget_exhausted(tmp_path: Path) -> None:
+    class CutShort(ScriptHarness):
+        def run(self, *args, **kwargs):  # type: ignore[override]
+            out = super().run(*args, **kwargs)
+            out.budget_exhausted = True
+            return out
+
+    case_dir = PUBLIC / "db-pagination-last-page"
+    variant = runner.Variant(
+        workflow="debug", name="test", plugin_dirs=[], prompt="{task}", version="0.0.0"
+    )
+    result = runner.run_one(
+        CutShort(write_script(tmp_path, NOOP)), variant, case_dir, Visibility.PUBLIC, "none", 0.0
+    )
+    assert "budget_exhausted" in result.failed_checks
+    assert not result.passed

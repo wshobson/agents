@@ -40,12 +40,13 @@ The judge is deterministic. No model grades a run. A run passes only when every 
 | For a stop-and-ask case, the last message or an `AskUserQuestion` call asks a question | `no_question_asked` |
 | For a stop-and-ask case that lists `ask_terms`, the question names the conflict (contains one of those phrases, chosen so that a summary of the wrong fix does not match) | `question_missed_the_point` |
 | No turn ran past the one-hour limit | `timed_out` |
+| The run's spending cap did not run out before every follow-up was sent | `budget_exhausted` |
 
 The hook check reads only the commands of the agent's shell tool calls, so text that quotes `--no-verify` does not count.
 
 Some free workflows pause for a person. ship-mate stops after its plan until `/ship resume`, and incident-response's smart-fix stops at three approval checkpoints. A variant in [`tools/verified/workflows.json`](../../tools/verified/workflows.json) can list `followups`, later turns of the same session that answer those pauses. ship-mate's follow-ups resume the pipeline, approve the plan, and tell it to make reasonable assumptions from the story instead of waiting for answers to clarifying questions. They are not sent on stop-and-ask cases, because there the pause is what is being scored. A variant can list `ask_followups` for those cases instead. smart-fix's is one `1. Approve`: a workflow whose first checkpoint proposed the wrong fix then edits a protected file and fails, while one that noticed the conflict still asks. The approval answers the workflow's checkpoint, not the business question, so it never picks 14 or 30 days. A workflow that names the conflict but picks a side itself, for example by recommending that the protected test be changed to match POLICY.md, and then edits a protected file after the approval, still fails. The question can come in any turn's reply or in an `AskUserQuestion` call. A variant can also list `own_writes`, files its own pipeline writes before any code change, such as the `AGENTS.md` that ship-mate's scan creates, or a directory ending in `/` such as smart-fix's `.smart-fix/`. The stop-and-ask check does not count those as code changes.
 
-A run where the harness itself fails (a crash, a missing result, or an API or sign-in error) says nothing about the workflow. It is recorded as `harness_error`, with the cause and the end of the harness's stderr in the result's `error` field. It is left out of the pass rate and counted next to it. A run that reaches its spending cap, or a turn that runs past an hour, is not a harness error. Both count as failed runs, because the workflow usually causes them.
+A run where the harness itself fails (a crash, a missing result, or an API or sign-in error) says nothing about the workflow. It is recorded as `harness_error`, with the cause and the end of the harness's stderr in the result's `error` field. It is left out of the pass rate and counted next to it. A run that reaches its spending cap, or a turn that runs past an hour, is not a harness error, because the workflow usually causes them. A turn that runs past an hour fails as `timed_out`. A run whose cap runs out while follow-ups are still unsent fails as `budget_exhausted`, because the workflow never got to finish. A run that reaches its cap on its last turn is judged on the work it left: if the hidden tests and every other check pass, it passes.
 
 ## How to read a row
 
@@ -78,6 +79,16 @@ export ANTHROPIC_API_KEY=...
 uv run --project plugins/plugin-eval python -m tools.verified.runner run \
   --workflow debug --variant free-error-debugging --model sonnet --reps 5 \
   --execute --max-usd 10
+```
+
+`--max-usd` is where the whole command stops starting runs, and `--per-run-usd` is where one run is stopped (default $2.00), so one run that loops can't use most of the total. Both are stopping points, not hard ceilings: Claude Code stops a run once its own cost estimate reaches the cap, so the call in progress can take a run a little past it, and the estimate can differ from the bill. Leave some headroom under what you're willing to spend. Claude Code's web search and web fetch tools are turned off for every run, because every case is an offline repository.
+
+A model alias such as `haiku` points at Claude Code's latest model of that family, which can change with a Claude Code release. Each result records the alias in `model` and the exact model Claude Code reported in `model_id`, and the table shows both. To pin an alias, set Claude Code's own variable for it, for example `ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-haiku-5-5`. A cheap first pass on one rep shows the real cost per run before a full run:
+
+```bash
+uv run --project plugins/plugin-eval python -m tools.verified.runner run \
+  --workflow debug --variant free-error-debugging --model haiku --reps 1 \
+  --execute --max-usd 0.50 --per-run-usd 0.25
 ```
 
 Turn the results into a table:
