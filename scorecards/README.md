@@ -2,7 +2,7 @@
 
 <a id="scorecard-results"></a>
 
-This directory holds raw results for the [Verified scorecards](../docs/verified/README.md). Each run writes one JSON file under `runs/<date>/`. No runs have been published yet.
+The [Verified scorecards](../docs/verified/) publish aggregate results. The November 2026 per-run records are kept in the private Verified repository. When you run a scorecard locally, the runner writes one JSON file per run under the dated output directory.
 
 Every file follows [`result.schema.json`](result.schema.json), which is generated from `RunResult` in [`tools/verified/models.py`](../tools/verified/models.py). A test fails if the two drift apart. To regenerate the schema after changing the model:
 
@@ -22,5 +22,3 @@ uv run --project plugins/plugin-eval python -m tools.verified.runner schema
 | `wall_seconds` | How long the agent ran |
 | `run_at` | When the run happened, in UTC |
 | `runner_version` | The version of `tools/verified` that produced the file |
-
-Results for private cases are kept here too, so the pass rates of private cases can be checked once those cases are published.

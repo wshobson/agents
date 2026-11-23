@@ -2,7 +2,7 @@
 
 <a id="verified-scorecards"></a>
 
-Some workflows in this repository are being measured. Each one runs on a fixed set of test cases, several times per harness and model, and the results are published with confidence intervals. This page describes the method. The tools that produce the numbers live in [`tools/verified/`](../../tools/verified/), so anyone can rerun the public cases and check a published number.
+Some workflows in this repository are being measured. Each one runs on a fixed set of test cases, several times per harness and model, and the results are published with confidence intervals. This page describes the method. The tools that produce the numbers live in [`tools/verified/`](../../tools/verified/), so anyone can run the public cases with the same judge.
 
 agents Verified, the tuned and re-tested versions of these workflows, is a paid layer sold by Major7 Apps. This repository's maintainer founded Major7 Apps. The free catalog stays MIT licensed and keeps getting updates, and nothing in it moves behind the paid layer.
 
@@ -15,7 +15,9 @@ On November 23, 2026, each Verified workflow (version 0.1.1) ran five times on e
 | debug | 29/30 | 97% (83% to 99%) | $0.00370 | 60k | 0.4 min | `no_question_asked` (1) |
 | ship-feature | 20/30 | 67% (49% to 81%) | $0.00274 | 41k | 0.3 min | `hidden_tests_failed` (10) |
 
-The free workflows have yet to be measured as baselines.
+Each rate includes three public and three private cases. Rerunning the public fixtures alone cannot reproduce the six-case rate. The per-run records for this measurement are held in the private Verified repository. The private fixtures are released when they rotate at quarter end.
+
+The free workflows have yet to be measured as baselines, so the scores do not establish a difference between the Verified and free workflows.
 
 The [static scores](static-scores.md) for the free source plugins are available now. They come from the plugin-eval static layer, which reads files and makes no model calls, so they describe structure and portability rather than whether a task succeeds.
 
@@ -66,11 +68,11 @@ center     = (k + z²/2) / (n + z²)
 half-width = z × sqrt(k(n−k)/n + z²/4) / (n + z²)
 ```
 
-When two intervals overlap, the difference may be noise. When measured, the baseline for a Verified workflow is the free workflow it was built from, or Anthropic's built-in where one exists. A row also shows median tokens, median wall time and the run date.
+When two intervals overlap, the difference may be noise. When measured, the baseline for a Verified workflow is the free workflow it was built from, or Anthropic's built-in where one exists. The rows show median tokens and median wall time. The date, harness version and model are shared across rows and given above the table.
 
 ## When it runs
 
-After each release of a supported harness, and whenever a workflow changes. Raw results are JSON files under [`scorecards/`](../../scorecards/), one per run, in the format described by [`scorecards/result.schema.json`](../../scorecards/result.schema.json).
+After each release of a supported harness, and whenever a workflow changes. The runner writes one JSON file per run to its output directory, in the format described by [`scorecards/result.schema.json`](../../scorecards/result.schema.json).
 
 ## Rerun the public cases
 
@@ -92,7 +94,7 @@ uv run --project plugins/plugin-eval python -m tools.verified.runner run \
 
 `--max-usd` is where the whole command stops starting runs, and `--per-run-usd` is where one run is stopped (default $2.00), so one run that loops can't use most of the total. Both are stopping points, not hard ceilings: Claude Code stops a run once its own cost estimate reaches the cap, so the call in progress can take a run a little past it, and the estimate can differ from the bill. Leave some headroom under what you're willing to spend. Claude Code's web search and web fetch tools are turned off for every run, because every case is an offline repository.
 
-A model alias such as `haiku` points at Claude Code's latest model of that family, which can change with a Claude Code release. Each result records the alias in `model` and the exact model Claude Code reported in `model_id`, and the table shows both. To pin an alias, set Claude Code's own variable for it, for example `ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-haiku-5-5`. A cheap first pass on one rep shows the real cost per run before a full run:
+A model alias such as `haiku` points at Claude Code's latest model of that family, which can change with a Claude Code release. Each result records the alias in `model` and the exact model Claude Code reported in `model_id`, and both are listed above the published table. To pin an alias, set Claude Code's own variable for it, for example `ANTHROPIC_DEFAULT_HAIKU_MODEL=claude-haiku-5-5`. A cheap first pass on one rep shows the real cost per run before a full run:
 
 ```bash
 uv run --project plugins/plugin-eval python -m tools.verified.runner run \
@@ -100,11 +102,13 @@ uv run --project plugins/plugin-eval python -m tools.verified.runner run \
   --execute --max-usd 0.50 --per-run-usd 0.25
 ```
 
-Turn the results into a table:
+Generate the pass rates, Wilson intervals and medians from a local results directory:
 
 ```bash
 uv run --project plugins/plugin-eval python -m tools.verified.runner report scorecards/
 ```
+
+For the published table, mean cost is the sum of the scored runs’ `cost_usd` divided by the number of scored runs in each workflow. Failed-check counts tally the occurrences of each check name in those runs’ `failed_checks`.
 
 The variants that can be run are listed in [`tools/verified/workflows.json`](../../tools/verified/workflows.json). Claude Code is the only harness wired up so far. Others are added after their headless flags are checked against their own `--help`.
 
