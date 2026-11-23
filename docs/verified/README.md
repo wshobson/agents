@@ -8,7 +8,16 @@ agents Verified, the tuned and re-tested versions of these workflows, is a paid 
 
 ## Current scores
 
-No measured runs have been published yet. The [static scores](static-scores.md) for the free source plugins are available now. They come from the plugin-eval static layer, which reads files and makes no model calls, so they describe structure and portability rather than whether a task succeeds.
+On November 23, 2026, each Verified workflow (version 0.1.1) ran five times on each of six cases. Claude Code 2.1.330 used `haiku` pinned to `claude-haiku-5-5`. The public runner was version 0.2.0 at [commit `1eecf4b`](https://github.com/wshobson/agents/commit/1eecf4b58eb380ff7ddc258a11c6586381d67b95).
+
+| Verified workflow | Passed / runs | Pass rate (95% Wilson interval) | Mean cost per run | Median tokens | Median time | Failed checks (count) |
+|---|---:|---|---:|---:|---:|---|
+| debug | 29/30 | 97% (83% to 99%) | $0.00370 | 60k | 0.4 min | `no_question_asked` (1) |
+| ship-feature | 20/30 | 67% (49% to 81%) | $0.00274 | 41k | 0.3 min | `hidden_tests_failed` (10) |
+
+The free workflows have yet to be measured as baselines.
+
+The [static scores](static-scores.md) for the free source plugins are available now. They come from the plugin-eval static layer, which reads files and makes no model calls, so they describe structure and portability rather than whether a task succeeds.
 
 ## What is measured
 
@@ -57,7 +66,7 @@ center     = (k + z²/2) / (n + z²)
 half-width = z × sqrt(k(n−k)/n + z²/4) / (n + z²)
 ```
 
-When two intervals overlap, the difference may be noise. Each Verified row is shown next to a baseline: the free workflow it was built from, or Anthropic's built-in where one exists. A row also shows median tokens, median wall time and the run date.
+When two intervals overlap, the difference may be noise. When measured, the baseline for a Verified workflow is the free workflow it was built from, or Anthropic's built-in where one exists. A row also shows median tokens, median wall time and the run date.
 
 ## When it runs
 
