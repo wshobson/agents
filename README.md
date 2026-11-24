@@ -3,7 +3,7 @@
 <a id="agentic-plugin-marketplace"></a>
 <a id="claude-code-plugins-agents-and-skills"></a>
 
-**New:** some workflows here are now measured with a deterministic judge. See [Verified scorecards](docs/verified/README.md), or join the [agents Verified waitlist](https://buy.polar.sh/polar_cl_yAj2XSCMpSY3vYTcoymlT102uGuJIAKgAI6134QYG9n) for the tuned, re-tested versions.
+**New:** A deterministic judge scored the Verified versions of two workflows. [See the scorecards](docs/verified/README.md) or join the [agents Verified waitlist](https://buy.polar.sh/polar_cl_yAj2XSCMpSY3vYTcoymlT102uGuJIAKgAI6134QYG9n). Verified is a paid product from Major7 Apps, founded by this repository’s maintainer.
 
 Use one collection of plugins, agents, skills, and commands across Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Antigravity CLI, GitHub Copilot, and Pi. A harness is the coding tool that loads and runs the components.
 
