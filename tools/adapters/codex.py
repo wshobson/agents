@@ -384,16 +384,21 @@ class CodexAdapter(HarnessAdapter):
         content = _frontmatter_block(fm) + "\n\n" + head
         result.written.append(self.write(skill_dir / "SKILL.md", content))
 
-        # Mirror any existing references/ assets — use binary copy so non-text assets
-        # (PDFs, images, fonts) don't crash the run with UnicodeDecodeError.
+        # Mirror every support file (references/, scripts/, assets/, resources/, ...),
+        # not just references/: a skill that names `scripts/x.py` has to ship it.
+        # Binary copy so non-text assets (PDFs, images, fonts) don't crash the run with
+        # UnicodeDecodeError. As in the Copilot adapter, hidden files stay out and
+        # symlinks are refused, so a link cannot pull outside data into the output.
         # The overflow vs source-details collision was handled above by routing
         # overflow to references/_overflow.md when source already has details.md.
-        if skill.references_dir:
-            for ref in sorted(skill.references_dir.rglob("*")):
-                if not ref.is_file():
-                    continue
-                rel = ref.relative_to(skill.references_dir)
-                result.written.append(self.mirror_file(ref, skill_dir / "references" / rel))
+        for src in sorted(skill.dir.rglob("*")):
+            rel = src.relative_to(skill.dir)
+            if rel == Path("SKILL.md") or any(part.startswith(".") for part in rel.parts):
+                continue
+            if src.is_symlink():
+                raise ValueError(f"refusing skill support symlink: {src}")
+            if src.is_file():
+                result.written.append(self.mirror_file(src, skill_dir / rel))
 
     def _emit_agent(self, plugin: PluginSource, agent: AgentSource, result: EmitResult) -> None:
         agent_id = f"{plugin.name}__{agent.name}"
