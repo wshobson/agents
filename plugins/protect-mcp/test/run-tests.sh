@@ -55,7 +55,7 @@ extract() { python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d
 echo ""
 echo "=== Test 1: PreToolUse permit on Read ==="
 INPUT=fixtures/pretool-allow-read.json
-npx --yes protect-mcp@0.32.4 evaluate \
+npx --yes protect-mcp@0.32.5 evaluate \
     --policy fixtures/test-policy.cedar \
     --tool "$(extract "$INPUT" tool_name)" \
     --input "$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$INPUT")" \
@@ -66,7 +66,7 @@ check_exit $? 0 "Read is permitted by test-policy.cedar"
 echo ""
 echo "=== Test 2: PreToolUse permit on Bash git ==="
 INPUT=fixtures/pretool-allow-bash-safe.json
-npx --yes protect-mcp@0.32.4 evaluate \
+npx --yes protect-mcp@0.32.5 evaluate \
     --policy fixtures/test-policy.cedar \
     --tool "$(extract "$INPUT" tool_name)" \
     --input "$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$INPUT")" \
@@ -77,7 +77,7 @@ check_exit $? 0 "Bash 'git status' is permitted"
 echo ""
 echo "=== Test 3: PreToolUse forbid on Bash rm -rf ==="
 INPUT=fixtures/pretool-deny-bash-destructive.json
-npx --yes protect-mcp@0.32.4 evaluate \
+npx --yes protect-mcp@0.32.5 evaluate \
     --policy fixtures/test-policy.cedar \
     --tool "$(extract "$INPUT" tool_name)" \
     --input "$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$INPUT")" \
@@ -88,7 +88,7 @@ check_exit $? 2 "Bash 'rm -rf /' is denied with exit 2"
 echo ""
 echo "=== Test 4: PreToolUse forbid on Write ==="
 INPUT=fixtures/pretool-deny-write.json
-npx --yes protect-mcp@0.32.4 evaluate \
+npx --yes protect-mcp@0.32.5 evaluate \
     --policy fixtures/test-policy.cedar \
     --tool "$(extract "$INPUT" tool_name)" \
     --input "$(python3 -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1]))["tool_input"]))' "$INPUT")" \
@@ -99,7 +99,7 @@ check_exit $? 2 "Write is denied with exit 2"
 echo ""
 echo "=== Test 5: PostToolUse sign produces a receipt ==="
 # protect-mcp >= 0.7.0 has no keygen subcommand; init generates keys/gateway.json under --dir.
-npx --yes protect-mcp@0.32.4 init --dir "$WORKDIR" >/dev/null 2>&1
+npx --yes protect-mcp@0.32.5 init --dir "$WORKDIR" >/dev/null 2>&1
 KEY="$WORKDIR/keys/gateway.json"
 chmod 600 "$KEY"
 PUBKEY="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["publicKey"])' "$KEY" 2>/dev/null || true)"
@@ -110,7 +110,7 @@ TOOL_NAME="$(extract "$INPUT" tool_name)"
 SIGN_ARGS=(--tool "$TOOL_NAME" --receipts "$RECEIPTS_DIR/")
 [ -f "$KEY" ] && SIGN_ARGS+=(--key "$KEY")
 
-npx --yes protect-mcp@0.32.4 sign "${SIGN_ARGS[@]}" </dev/null >/dev/null 2>&1
+npx --yes protect-mcp@0.32.5 sign "${SIGN_ARGS[@]}" </dev/null >/dev/null 2>&1
 SIGN_RC=$?
 # protect-mcp >= 0.7.0 appends receipts to receipts.jsonl in the --receipts dir (one JSON per
 # line) rather than one file per receipt; extract the newest line as a
@@ -248,6 +248,20 @@ printf '#!/bin/sh\nexit 126\n' > "$FAKE_BIN/npx"; chmod +x "$FAKE_BIN/npx"
 PATH="$FAKE_BIN:$PATH" CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" PROTECT_MCP_POLICY=fixtures/test-policy.cedar \
     bash -c "$PRE_CMD" < fixtures/pretool-allow-read.json >/dev/null 2>&1
 check_exit $? 2 "evaluator exit 126 is mapped to a blocking exit 2"
+
+# --- Tests 12b-12c: a named policy that is missing denies; the default allows --
+echo ""
+echo "=== Test 12b: PROTECT_MCP_POLICY naming a missing file blocks ==="
+CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" PROTECT_MCP_POLICY="$WORKDIR/no-such-policy.cedar" \
+    bash -c "$PRE_CMD" < fixtures/pretool-allow-read.json >/dev/null 2>&1
+check_exit $? 2 "a missing PROTECT_MCP_POLICY file is a blocking exit 2"
+
+echo ""
+echo "=== Test 12c: no PROTECT_MCP_POLICY and no ./protect.cedar allows with a warning ==="
+(cd "$WORKDIR" && env -u PROTECT_MCP_POLICY CLAUDE_PLUGIN_ROOT="$PLUGIN_ROOT" \
+    bash -c "$PRE_CMD" < "$OLDPWD/fixtures/pretool-allow-read.json" >/dev/null 2>"$WORKDIR/default.stderr")
+check_exit $? 0 "the unset default with no policy file allows"
+if grep -q "every tool call is allowed" "$WORKDIR/default.stderr"; then pass "the unset default warns on stderr"; else fail "the unset default did not warn"; fi
 
 # --- Test 13: released-package migration and signer failure regressions -------
 echo ""

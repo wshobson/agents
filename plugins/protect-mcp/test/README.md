@@ -31,7 +31,7 @@ test/
 
 Requires `node` (>= 18), `npx`, and `python3`. Fetches `protect-mcp` and
 `@veritasacta/verify@0.11.1` from npm on first run. The runtime uses
-`protect-mcp@0.32.4`; migration checks also fetch the legacy 0.7.4 signer.
+`protect-mcp@0.32.5`; migration checks also fetch the legacy 0.7.4 signer.
 Runs fourteen test groups:
 
 | # | Scenario | Expected exit |

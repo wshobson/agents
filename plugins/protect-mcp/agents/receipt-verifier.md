@@ -26,7 +26,7 @@ integrity failures.
 
 ### Receipt Format
 
-protect-mcp 0.32.4 appends each receipt as one line of
+protect-mcp 0.32.5 appends each receipt as one line of
 `./receipts/receipts.jsonl`, with a `payload` and an object `signature`.
 The payload includes `type: "protectmcp:decision"`, `tool_name`, `decision`,
 `reason`, `issued_at`, `issuer_id`, and `public_key`. The signature contains

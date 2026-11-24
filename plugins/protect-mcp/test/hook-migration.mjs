@@ -21,9 +21,9 @@ function quiet(result, status = 0) {
   assert.equal(result.stdout, '', 'PostToolUse must never emit a CLI summary');
 }
 try {
-  ok(npm('protect-mcp@0.32.4', ['init', '--dir', work]));
+  ok(npm('protect-mcp@0.32.5', ['init', '--dir', work]));
   const key = join(work, 'keys/gateway.json');
-  check('0.32.4 init creates an owner-only key', () => assert.equal(statSync(key).mode & 0o777, 0o600));
+  check('0.32.5 init creates an owner-only key', () => assert.equal(statSync(key).mode & 0o777, 0o600));
   const originalKey = readFileSync(key, 'utf8');
   const publicKey = JSON.parse(originalKey).publicKey;
   const verify = file => npm('@veritasacta/verify@0.11.1', ['--replay-chain', file, '--key', publicKey, '--json']);
@@ -124,7 +124,7 @@ process.stdout.write(first.stdout);
   for (let i = 0; i < 3; i++) ok(npm('protect-mcp@0.7.4', ['sign', '--tool', 'Read', '--key', key, '--receipts', mixedDir]));
   const mixedLog = join(mixedDir, 'receipts.jsonl');
   check('0.11.1 verifies legacy 0.7.4 receipts with the independent key', () => ok(verify(mixedLog)));
-  ok(npm('protect-mcp@0.32.4', ['sign', '--tool', 'Read', '--key', key, '--receipts', mixedDir]));
+  ok(npm('protect-mcp@0.32.5', ['sign', '--tool', 'Read', '--key', key, '--receipts', mixedDir]));
   check('0.11.1 verifies the mixed legacy and modern log', () => ok(verify(mixedLog)));
   const mixed = readFileSync(mixedLog, 'utf8').trim().split('\n');
   check('first modern receipt links to the last legacy receipt', () => assert.match(JSON.parse(mixed[3]).payload.previousReceiptHash, /^sha256:[0-9a-f]{64}$/));

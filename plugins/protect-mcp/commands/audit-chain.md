@@ -6,7 +6,7 @@ argument-hint: "[--last N] [--dir path]"
 # Audit Chain
 
 Verify every receipt in the audit trail, not just a single receipt.
-protect-mcp 0.32.4 appends receipts to `receipts.jsonl` in `./receipts/` (or
+protect-mcp 0.32.5 appends receipts to `receipts.jsonl` in `./receipts/` (or
 the specified directory), one per line, and this command checks the signature
 on each line and links between successive linked receipts.
 

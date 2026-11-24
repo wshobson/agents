@@ -18,7 +18,7 @@ local copy without network access.
 /verify-receipt ./receipt.json
 ```
 
-protect-mcp 0.32.4 appends receipts to `./receipts/receipts.jsonl`, one per
+protect-mcp 0.32.5 appends receipts to `./receipts/receipts.jsonl`, one per
 line. Save one line to its own file first, e.g., the newest one with
 `tail -n 1 ./receipts/receipts.jsonl > receipt.json`. Use `/audit-chain` to
 verify the whole file.
@@ -94,7 +94,7 @@ MALFORMED ✗
 The file is not a valid Veritas Acta receipt. Missing or invalid fields:
 <list the specific structural issues>
 
-A protect-mcp 0.32.4 receipt includes `payload` and an object `signature`.
+A protect-mcp 0.32.5 receipt includes `payload` and an object `signature`.
 The payload includes `type`, `tool_name`, `decision`, `reason`, `issued_at`,
 `issuer_id`, and `public_key`; the signature includes `alg`, `kid`, and `sig`.
 ```

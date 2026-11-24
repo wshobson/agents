@@ -21,7 +21,7 @@ process.stdin.on("data", d => { s += d; }).on("end", () => {
 # --format claude would read stdin again after the parser consumed it and fail.
 # Capture the ordinary CLI summary while preserving stderr and nonzero exits.
 receipts="${PROTECT_MCP_RECEIPTS:-./receipts/}"
-result=$(npx --yes protect-mcp@0.32.4 sign --tool "$tool" \
+result=$(npx --yes protect-mcp@0.32.5 sign --tool "$tool" \
   --receipts "$receipts" \
   --key "${PROTECT_MCP_KEY:-./protect-mcp.key}" </dev/null)
 rc=$?
