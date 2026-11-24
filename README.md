@@ -3,6 +3,8 @@
 <a id="agentic-plugin-marketplace"></a>
 <a id="claude-code-plugins-agents-and-skills"></a>
 
+**New:** some workflows here are now measured with a deterministic judge. See [Verified scorecards](docs/verified/README.md), or join the [agents Verified waitlist](https://buy.polar.sh/polar_cl_yAj2XSCMpSY3vYTcoymlT102uGuJIAKgAI6134QYG9n) for the tuned, re-tested versions.
+
 Use one collection of plugins, agents, skills, and commands across Claude Code, OpenAI Codex CLI, Cursor, OpenCode, Antigravity CLI, GitHub Copilot, and Pi. A harness is the coding tool that loads and runs the components.
 
 Contributors write each component once, in Markdown, in the Claude Code plugin format. Adapters under `tools/adapters/` generate the format each harness reads, map model aliases to that harness's models, and translate tool permissions where the harness supports them. CI regenerates the artifacts for every harness, validates them, and runs the OpenCode, Antigravity CLI, and Pi artifacts through their installed CLIs. The [capability matrix](docs/harnesses.md) lists what each harness supports, and [ARCHITECTURE.md](ARCHITECTURE.md) describes the design.
