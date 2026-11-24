@@ -41,10 +41,13 @@ _TOOL_ALTERNATION = "|".join(_CLAUDE_TOOLS)
 #   - or suffixed by " tool" (`Task` tool)
 #   - or "use `Bash`" / "call `Read`" / "invoke `Task`"
 # This rules out generic prose backticks like Rust's `Task` type in API docs.
+# A finding here means a CamelCase tool name, so the name itself must match exact
+# case: the surrounding keyword is matched case-insensitively with a scoped flag
+# (the same way _TOOL_PROSE_PATTERN below does it), which leaves `read`, `bash`,
+# `grep` — the lowercase spellings docs/authoring.md tells authors to write — alone.
 _CAMEL_TOOL_PATTERN = re.compile(
-    rf"(?:\b(?:the|use|using|call|calling|invoke|invoking|via)\s+)`({_TOOL_ALTERNATION})`"
-    rf"|`({_TOOL_ALTERNATION})`\s+tool\b",
-    re.IGNORECASE,
+    rf"(?i:\b(?:the|use|using|call|calling|invoke|invoking|via)\s+)`({_TOOL_ALTERNATION})`"
+    rf"|`({_TOOL_ALTERNATION})`(?i:\s+tool\b)",
 )
 
 # Phrases like "use the Read tool" / "Use the Bash tool".
