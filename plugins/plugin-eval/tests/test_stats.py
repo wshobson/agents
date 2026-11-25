@@ -65,6 +65,26 @@ class TestClopperPearson:
         with pytest.raises(ValueError):
             clopper_pearson_ci(failures=0, trials=0)
 
+    @pytest.mark.parametrize(
+        ("failures", "trials", "lower", "upper"),
+        [
+            (0, 50, 0.0, 0.071122),
+            (0, 10, 0.0, 0.308497),
+            (1, 50, 0.000506, 0.106470),
+            (49, 50, 0.893530, 0.999494),
+            (1, 1000, 0.0000253, 0.005559),
+        ],
+    )
+    def test_matches_exact_bounds(self, failures, trials, lower, upper):
+        # Reference values from scipy.stats.beta.ppf
+        got_lower, got_upper = clopper_pearson_ci(failures, trials, confidence=0.95)
+        assert got_lower == pytest.approx(lower, abs=1e-6)
+        assert got_upper == pytest.approx(upper, abs=1e-6)
+
+    def test_zero_failures_closed_form(self):
+        _, upper = clopper_pearson_ci(failures=0, trials=50, confidence=0.95)
+        assert upper == pytest.approx(1 - 0.025 ** (1 / 50), abs=1e-9)
+
 
 class TestCoefficientOfVariation:
     def test_low_variation(self):

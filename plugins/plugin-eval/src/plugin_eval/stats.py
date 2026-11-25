@@ -123,61 +123,43 @@ def _z_score(confidence: float) -> float:
     return t - (c0 + c1 * t + c2 * t**2) / (1 + d1 * t + d2 * t**2 + d3 * t**3)
 
 
-def _beta_ppf(p: float, a: float, b: float) -> float:
-    """Approximate beta distribution percent point function via Newton's method."""
+def _beta_ppf(p: float, a: int, b: int) -> float:
+    """Beta distribution percent point function for integer shapes via bisection."""
     if p <= 0:
         return 0.0
     if p >= 1:
         return 1.0
 
-    mu = a / (a + b)
-    sigma = math.sqrt(a * b / ((a + b) ** 2 * (a + b + 1)))
-    z = _z_score(2 * p - 1) if p > 0.5 else -_z_score(2 * (1 - p) - 1)
-    x = max(0.001, min(0.999, mu + sigma * z))
-
-    for _ in range(50):
-        cdf = _beta_cdf(x, a, b)
-        pdf = _beta_pdf(x, a, b)
-        if pdf < 1e-12:
+    lo, hi = 0.0, 1.0
+    for _ in range(200):
+        mid = (lo + hi) / 2
+        if mid in (lo, hi):
             break
-        x_new = x - (cdf - p) / pdf
-        x_new = max(0.001, min(0.999, x_new))
-        if abs(x_new - x) < 1e-10:
-            break
-        x = x_new
+        if _beta_cdf(mid, a, b) < p:
+            lo = mid
+        else:
+            hi = mid
 
-    return x
-
-
-def _beta_pdf(x: float, a: float, b: float) -> float:
-    """Beta distribution probability density function."""
-    if x <= 0 or x >= 1:
-        return 0.0
-    log_pdf = (a - 1) * math.log(x) + (b - 1) * math.log(1 - x) - _log_beta(a, b)
-    return math.exp(log_pdf)
+    return (lo + hi) / 2
 
 
-def _beta_cdf(x: float, a: float, b: float, steps: int = 200) -> float:
-    """Beta CDF via numerical integration (Simpson's rule)."""
+def _beta_cdf(x: float, a: int, b: int) -> float:
+    """Exact regularized incomplete beta I_x(a, b) for integer shapes.
+
+    For integer a, b >= 1 this equals P(X >= a) with X ~ Binomial(a + b - 1, x).
+    """
     if x <= 0:
         return 0.0
     if x >= 1:
         return 1.0
 
-    h = x / steps
-    # Endpoints: f(0) is 0 for a>=1, divergent for a<1 — use 0.0 safely
-    f_0 = 0.0 if a <= 1 else _beta_pdf(h / 2, a, b)
-    total = f_0 + _beta_pdf(x, a, b)
-    for i in range(1, steps):
-        xi = i * h
-        if xi <= 0 or xi >= 1:
-            continue
-        weight = 4 if i % 2 == 1 else 2
-        total += weight * _beta_pdf(xi, a, b)
-
-    return total * h / 3
-
-
-def _log_beta(a: float, b: float) -> float:
-    """Log of the beta function."""
-    return math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b)
+    n = a + b - 1
+    log_x = math.log(x)
+    log_1mx = math.log1p(-x)
+    log_n_fact = math.lgamma(n + 1)
+    return math.fsum(
+        math.exp(
+            log_n_fact - math.lgamma(j + 1) - math.lgamma(n - j + 1) + j * log_x + (n - j) * log_1mx
+        )
+        for j in range(a, n + 1)
+    )
